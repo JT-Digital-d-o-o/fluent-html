@@ -2,7 +2,8 @@
 // Html Builder "Framework"
 // ------------------------------------
 
-export type HTML = () => string;
+type Thunk<T> = () => T;
+export type HTML = Thunk<String>;
 
 export interface HtmlElement {
   el?: string,
@@ -430,21 +431,22 @@ export function Empty(): HTML {
 // 1.
 //    ```typescript
 //    function IfThenElse(
-//      condition: () => boolean, 
-//      thenView: HTML, 
-//      elseView: HTML
+//      condition: Thunk<boolean>, 
+//      thenView: Thunk<HTML>, 
+//      elseView: Thunk<HTML>
 //    ): HTML {
-//      return () => condition() ? thenView() : elseView();
+//      return () => condition() ? thenView()() : elseView()();
+//      //                                 ^^^^ looks odd
 //    }
 //    ```
 // 2.
 //    ```typescript
 //    function IfThenElse(
 //      condition: boolean, 
-//      thenView: HTML, 
-//      elseView: HTML
+//      thenView: Thunk<HTML>, 
+//      elseView: Thunk<HTML>
 //    ): HTML {
-//      return condition ? thenView : elseView;
+//      return condition ? thenView() : elseView();
 //    }
 //
 // Though the difference is subtle, the semantics between twe two differ.
@@ -453,18 +455,18 @@ export function Empty(): HTML {
 // side-effects, the semantics might matter.
 export function IfThenElse(
   condition: boolean, // @TODO: - Should `condition` be delayed?
-  thenView: () => HTML, 
-  elseView: () => HTML
+  thenView: Thunk<HTML>, 
+  elseView: Thunk<HTML>
 ): HTML {
   return condition ? thenView() : elseView();
 }
 
-export function IfThen(condition: boolean, content: () => HTML): HTML {
+export function IfThen(condition: boolean, content: Thunk<HTML>): HTML {
   return condition ? content() : Empty();
 }
 
 export function SwitchCase(
-  cases: { condition: () => boolean, component: HTML }[],
+  cases: { condition: Thunk<boolean>, component: HTML }[],
   defaultComponent: HTML = Empty()
 ): HTML {
   return () => {
@@ -527,7 +529,7 @@ export function HStack(children: HTML[], clss: string = ""): HTML {
   return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
 }
 
-export function Lazy(loadComponent: () => HTML): HTML {
+export function Lazy(loadComponent: Thunk<HTML>): HTML {
   let cachedComponent: HTML | null = null;
   return () => {
     if (!cachedComponent) {
