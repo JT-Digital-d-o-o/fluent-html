@@ -3,6 +3,13 @@
 // ------------------------------------
 
 type Thunk<T> = () => T;
+function liftValue<T>(html: T): Thunk<T> {
+  return () => html;
+}
+function id<T>(val: T): T {
+  return val;
+}
+
 export type HTML = Thunk<String>;
 
 export interface HtmlElement {
@@ -413,14 +420,10 @@ export function Select({
   });
 }
 
-export function Lift(html: string): HTML {
-  return () => html;
-}
-
 // @TODO: - Think about a way to automatically lift strings.
 // Probably possible to do with JS's weak typing, but might not be worth it.
 export function Text(text: string = ""): HTML {
-  return Lift(text);
+  return liftValue(text);
 }
 
 export function Empty(): HTML {
@@ -483,25 +486,25 @@ export function MapJoin<T>(
   items: T[], 
   renderItem: (_: T) => HTML
 ): HTML {
-  return () => items.map(item => renderItem(item)()).join("\n");
+  return liftValue(items.map(item => renderItem(item)()).join("\n"));
 }
 
 export function MapJoin1<T>(
   items: T[],
   renderItem: (item: T, index: number) => HTML
 ): HTML {
-  return () => items.map((item, index) => renderItem(item, index)()).join("\n");
+  return liftValue(items.map((item, index) => renderItem(item, index)()).join("\n"));
 }
 
 export function Repeat(
   times: number, 
   content: HTML
 ): HTML {
-  return () => Array(times).fill(null).map(() => content()).join("\n");
+  return liftValue(Array(times).fill(null).map(() => content()).join("\n"));
 }
 
 export function VStack(children: HTML[]): HTML {
-  return MapJoin(children, c => c);
+  return MapJoin(children, id);
 }
 
 export function VStackDiv(children: HTML[], {
@@ -526,7 +529,7 @@ export function HStack(children: HTML[], clss: string = ""): HTML {
   //   style: ...
   //   child: 
   // });
-  return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
+  return liftValue(`<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`);
 }
 
 export function Lazy(loadComponent: Thunk<HTML>): HTML {
