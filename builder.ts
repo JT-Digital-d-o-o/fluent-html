@@ -2,11 +2,11 @@
 // Html Builder "Framework"
 // ------------------------------------
 
-type Thunk<T> = () => T;
-function liftValue<T>(html: T): Thunk<T> {
-  return () => html;
-}
-function id<T>(val: T): T {
+export type Thunk<T> = () => T;
+// export function liftValue<T>(html: T): Thunk<T> {
+//   return () => html;
+// }
+export function id<T>(val: T): T {
   return val;
 }
 
@@ -19,6 +19,7 @@ export interface HtmlElement {
   attributes?: Record<string, string>;
   htmx?: HTMX;
   child?: HTML;
+  selected?: boolean;
   // @TODO: - Add `style` attribute
 }
 
@@ -72,11 +73,11 @@ export function hx(
 }
 
 // The most basic building block of the framework.
-export function El({ el, id = "", class: className = "", htmx, attributes = {}, child = () => '' }: HtmlElement = {}): HTML {
+export function El({ el, id = "", class: className = "", htmx, attributes = {}, child = () => '', selected = undefined }: HtmlElement = {}): HTML {
   const baseAttrs = { id, class: className, ...attributes };
   // Design impl. note: this is the only place the whole framework where html is generated.
   // No visitors or similar.
-  return () => `<${el} ${buildAttributes(baseAttrs)} ${buildHtmx(htmx)}>${child()}</${el}>`;
+  return () => `<${el} ${buildAttributes(baseAttrs)} ${buildHtmx(htmx)} ${selected ? 'selected' : ''}>${child()}</${el}>`;
 }
 
 export function Div({
@@ -405,17 +406,18 @@ export function Select({
   name = "",
   options = [],
   attributes = {},
-}: HtmlElement & { name?: string, options?: { value: string, text: string }[] } = {}): HTML {
+}: HtmlElement & { name?: string, options?: { value: string, text: string, selected: boolean }[] } = {}): HTML {
   return El({
     el: "select",
     id,
     class: className,
     htmx,
-    attributes: { ...attributes, name },
+    attributes: { ...attributes, name, },
     child: MapJoin(options, option => El({ 
       el: "option", 
       attributes: { "value": option.value, },
-      child: Text(option.text)
+      child: Text(option.text),
+      selected: option.selected,
     }))
   });
 }
@@ -423,7 +425,7 @@ export function Select({
 // @TODO: - Think about a way to automatically lift strings.
 // Probably possible to do with JS's weak typing, but might not be worth it.
 export function Text(text: string = ""): HTML {
-  return liftValue(text);
+  return () => text;
 }
 
 export function Empty(): HTML {
@@ -483,24 +485,31 @@ export function SwitchCase(
 }
 
 export function MapJoin<T>(
-  items: T[], 
+  items: Iterable<T>,
   renderItem: (_: T) => HTML
 ): HTML {
-  return liftValue(items.map(item => renderItem(item)()).join("\n"));
+  return () => Array.from(items).map(item => renderItem(item)()).join("\n");
+  //               ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function MapJoin1<T>(
-  items: T[],
+  items: Iterable<T>,
   renderItem: (item: T, index: number) => HTML
 ): HTML {
-  return liftValue(items.map((item, index) => renderItem(item, index)()).join("\n"));
+  return () => Array.from(items).map((item, index) => renderItem(item, index)()).join("\n");
+  //               ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
+function* range(low: number, high: number) {
+  for (var i = low; i < high; i++) {
+    yield i;
+  }
+}
 export function Repeat(
   times: number, 
   content: HTML
 ): HTML {
-  return liftValue(Array(times).fill(null).map(() => content()).join("\n"));
+  return MapJoin(range(0, times), () => content);
 }
 
 export function VStack(children: HTML[]): HTML {
@@ -529,7 +538,7 @@ export function HStack(children: HTML[], clss: string = ""): HTML {
   //   style: ...
   //   child: 
   // });
-  return liftValue(`<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`);
+  return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
 }
 
 export function Lazy(loadComponent: Thunk<HTML>): HTML {
