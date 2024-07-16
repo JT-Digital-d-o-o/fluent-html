@@ -10,7 +10,7 @@ export function id<T>(val: T): T {
   return val;
 }
 
-export type HTML = Thunk<String>;
+export type HTML = Thunk<string>;
 
 export interface HtmlElement {
   el?: string,
@@ -18,14 +18,15 @@ export interface HtmlElement {
   class?: string;
   attributes?: Record<string, string>;
   htmx?: HTMX;
-  child?: HTML;
   selected?: boolean;
-  // @TODO: - Add `style` attribute
+  style?: string;
+  child?: HTML;
+  controls?: boolean;
 }
 
 export type HttpMethod = "get" | "post";
 
-interface HTMX {
+export interface HTMX {
   method: HttpMethod;
   endpoint: string;
   target?: string;
@@ -34,9 +35,13 @@ interface HTMX {
   replaceUrl?: boolean;
 }
 
-function buildAttributes(attributes: Record<string, string> = {}): string {
+function buildAttributes(attributes: Record<string, string | undefined> | undefined): string {
+  if (!attributes) { return ""; }
   return Object.entries(attributes)
-   .map(([key, value]) => `${key}="${value}"`)
+   .map(([key, value]) => {
+    return value ? `${key}="${value}"` : "";
+   })
+   .filter(s => s.length > 0)
    .join(" ");
 }
 
@@ -52,19 +57,22 @@ function buildHtmx(htmx: HTMX | undefined): string {
   return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''}`;
 }
 
+export type Swap = "innerHTML" | "outerHTML" | string;
+export type Trigger = "click" | "load" | "intersect" | string;
+
 export function hx(
-  method: HttpMethod, 
-  options: { 
-    endpoint: string, 
-    target?: string, 
-    trigger?: string, 
-    swap?: string,
+  endpoint: string,
+  options: {
+    method?: HttpMethod,
+    target?: string,
+    trigger?: Trigger, 
+    swap?: Swap,
     replaceUrl?: boolean,
-  }
+  } = {}
 ): HTMX {
   return {
-    method,
-    endpoint: options.endpoint,
+    method: options.method ?? "get",
+    endpoint,
     target: options.target,
     trigger: options.trigger,
     swap: options.swap,
@@ -73,37 +81,59 @@ export function hx(
 }
 
 // The most basic building block of the framework.
-export function El({ el, id = "", class: className = "", htmx, attributes = {}, child = () => '', selected = undefined }: HtmlElement = {}): HTML {
-  const baseAttrs = { id, class: className, ...attributes };
+export function El({ 
+  el, 
+  id = undefined, 
+  class: className = undefined,
+  htmx, 
+  attributes = undefined,
+  child = undefined,
+  style = undefined,
+  selected = undefined,
+  controls = undefined,
+}: HtmlElement = {}): HTML {
   // Design impl. note: this is the only place the whole framework where html is generated.
   // No visitors or similar.
-  return () => `<${el} ${buildAttributes(baseAttrs)} ${buildHtmx(htmx)} ${selected ? 'selected' : ''}>${child()}</${el}>`;
+  return () => {
+    const baseAttrs = { id, class: className, ...attributes };
+    const renderedAttributes = buildAttributes(baseAttrs);
+    const renderedHtmx = buildHtmx(htmx);
+    const renderedSelected = selected ? 'selected' : '';
+    const renderedControls = controls ? 'controls' : '';
+    const renderedChild = child ? child() : "";
+    const renderedStyle = style ? `style="${style}"` : "";
+    const renderedEl = `<${el} ${renderedAttributes} ${renderedHtmx} ${renderedStyle} ${renderedSelected} ${renderedControls}>${renderedChild}</${el}>`;
+    return renderedEl;
+  };
 }
 
 export function Div({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
-  attributes = {},
-  child = () => ''
+  style = undefined,
+  attributes = undefined,
+  child = undefined
 }: HtmlElement = {}): HTML {
   return El({
     el: "div",
     id,
     class: className,
     htmx,
+    style,
     attributes,
     child
   });
 }
 
 export function Button({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
+  style = undefined,
   type = "button",
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement & { type?: string } = {}): HTML {
   const buttonAttributes = {
     ...attributes,
@@ -114,21 +144,24 @@ export function Button({
     id,
     class: className,
     htmx,
+    style,
     attributes: buttonAttributes,
     child
   });
 }
 
+// @TODO: - Add `style` to the rest of combinators.
+
 export function Input({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   type = "",
   placeholder = "",
   name = "",
   required = false,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement & { type?: string, placeholder?: string, name?: string, required?: boolean } = {}): HTML {
   const inputAttributes = {
     type,
@@ -148,8 +181,8 @@ export function Input({
 }
 
 export function Textarea({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   placeholder = "",
   name = "",
@@ -157,7 +190,7 @@ export function Textarea({
   cols = 50,
   required = false,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement & { placeholder?: string, name?: string, rows?: number, cols?: number, required?: boolean } = {}): HTML {
   const textareaAttributes = {
     placeholder,
@@ -178,11 +211,11 @@ export function Textarea({
 }
 
 export function Label({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "label",
@@ -195,11 +228,11 @@ export function Label({
 }
 
 export function H1({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "h1",
@@ -212,11 +245,11 @@ export function H1({
 }
 
 export function H2({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "h2",
@@ -229,11 +262,11 @@ export function H2({
 }
 
 export function H3({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "h3",
@@ -245,11 +278,11 @@ export function H3({
   });
 }
 export function H4({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "h4",
@@ -262,11 +295,11 @@ export function H4({
 }
 
 export function Span({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "span",
@@ -279,12 +312,12 @@ export function Span({
 }
 
 export function A({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   href = "",
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement & { href?: string } = {}): HTML {
   const anchorAttributes = {
     href,
@@ -301,11 +334,11 @@ export function A({
 }
 
 export function Ul({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "ul",
@@ -318,11 +351,11 @@ export function Ul({
 }
 
 export function Li({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "li",
@@ -335,13 +368,13 @@ export function Li({
 }
 
 export function Form({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   action = "",
   method = "get",
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement & { action?: string, method?: string } = {}): HTML {
   const formAttributes = {
     action,
@@ -359,13 +392,13 @@ export function Form({
 }
 
 export function Img({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   src = "",
   alt = "",
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement & { src?: string, alt?: string } = {}): HTML {
   const imgAttributes = {
     src,
@@ -383,11 +416,11 @@ export function Img({
 }
 
 export function P({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
-  child = () => ''
+  child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "p",
@@ -399,14 +432,17 @@ export function P({
   });
 }
 
+interface Option {
+  value: string, text: string, selected: boolean
+}
 export function Select({
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   name = "",
   options = [],
   attributes = {},
-}: HtmlElement & { name?: string, options?: { value: string, text: string, selected: boolean }[] } = {}): HTML {
+}: HtmlElement & { name?: string, options?: Option[] } = {}): HTML {
   return El({
     el: "select",
     id,
@@ -489,7 +525,7 @@ export function MapJoin<T>(
   renderItem: (_: T) => HTML
 ): HTML {
   return () => Array.from(items).map(item => renderItem(item)()).join("\n");
-  //               ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+  //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function MapJoin1<T>(
@@ -497,7 +533,15 @@ export function MapJoin1<T>(
   renderItem: (item: T, index: number) => HTML
 ): HTML {
   return () => Array.from(items).map((item, index) => renderItem(item, index)()).join("\n");
-  //               ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+  //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+}
+
+export function MapJoin2(
+  n: number,
+  renderItem: (index: number) => HTML
+): HTML {
+  return () => Array.from(range(0, n)).map((index) => renderItem(index)()).join("\n");
+  //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 function* range(low: number, high: number) {
@@ -505,11 +549,12 @@ function* range(low: number, high: number) {
     yield i;
   }
 }
+
 export function Repeat(
   times: number, 
-  content: HTML
+  content: Thunk<HTML>
 ): HTML {
-  return MapJoin(range(0, times), () => content);
+  return MapJoin(range(0, times), content);
 }
 
 export function VStack(children: HTML[]): HTML {
@@ -517,8 +562,8 @@ export function VStack(children: HTML[]): HTML {
 }
 
 export function VStackDiv(children: HTML[], {
-  id = "",
-  class: className = "",
+  id = undefined,
+  class: className = undefined,
   htmx = undefined,
   attributes = {},
 }: HtmlElement = {}): HTML {
@@ -528,17 +573,28 @@ export function VStackDiv(children: HTML[], {
     class: className,
     htmx,
     attributes,
-    child: VStack(children ?? [])
+    child: VStack(children)
   });
 }
 
-export function HStack(children: HTML[], clss: string = ""): HTML {
-  // @TODO: - `style` is missing from the builder
-  // return Div({
-  //   style: ...
-  //   child: 
-  // });
-  return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
+// @TODO: - Make it the same as other Elements (all things should be configurable)
+export function HStack({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  style = undefined,
+  attributes = undefined,
+}: HtmlElement = {}, children: HTML[]): HTML {
+  const cls = `flex ${(className === undefined) ? "" : className}`;
+  return Div({
+    id,
+    htmx,
+    style,
+    attributes,
+    class: cls,
+    child: MapJoin(children, child => child)
+  });
+  // return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
 }
 
 export function Lazy(loadComponent: Thunk<HTML>): HTML {
@@ -550,3 +606,23 @@ export function Lazy(loadComponent: Thunk<HTML>): HTML {
     return cachedComponent();
   };
 }
+
+export function FadeIn({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  attributes = undefined,
+  style = undefined,
+  child = undefined,
+}: HtmlElement = {}): HTML {
+  return Div({
+    id,
+    class: `fade-in-05s ${className}`,
+    htmx,
+    attributes,
+    style,
+    child
+  });
+}
+
+// @TODO: - Overlay view
