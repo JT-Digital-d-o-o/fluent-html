@@ -476,8 +476,7 @@ export function Empty(): HTML {
 //      thenView: Thunk<HTML>, 
 //      elseView: Thunk<HTML>
 //    ): HTML {
-//      return () => condition() ? thenView()() : elseView()();
-//      //                                 ^^^^ looks odd
+//      return condition() ? thenView() : elseView();
 //    }
 //    ```
 // 2.
