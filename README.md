@@ -6,21 +6,17 @@ Lambda.html is a TypeScript-based HTML builder framework designed to simplify th
 
 ### Key Features
 
-- **Functional and Declarative Syntax**: Write HTML elements in a clear and expressive way using pure functions.
-- **Lazy Evaluation**: Elements are defined as thunks, allowing for delayed computation and potential performance optimizations.
+- **Robustness**: Designed with a focus on producing robust software, Lambda.html emphasizes error handling, predictable behaviors, and compatibility across different environments.
 - **HTMX Integration**: Easily integrate with HTMX for modern AJAX-driven web applications without writing JavaScript.
 - **Extensible and Customizable**: Extend the framework with custom components and attributes to fit any use case.
 - **Type Safety**: Built with TypeScript to ensure reliability and maintainability through static type checking.
 - **Tailwind CSS Compatibility**: Completely orthogonal to Tailwind CSS, allowing for frictionless integration without any conflicts, making it ideal for developers who use Tailwind for styling.
-- **Robustness**: Designed with a focus on producing robust software, Lambda.html emphasizes error handling, predictable behaviors, and compatibility across different environments.
+- **Functional and Declarative Syntax**: Write HTML elements in a clear and expressive way using pure functions.
 
 ### Core Concepts
 
-- **HTML Thunks**: HTML elements are created as thunks (functions that delay computation), which helps in managing side effects and optimizing rendering.
-- **HtmlElement Interface**: A flexible interface that defines the structure for all HTML elements, including optional attributes like classes, IDs, styles, and HTMX-specific attributes.
-- **HTMX Attributes**: First-class support for HTMX attributes allows for easy creation of interactive elements without full page reloads.
-- **Seamless Style Integration**: Use any CSS framework, such as Tailwind CSS, without modifications or special configurations. Simply pass the class names as attributes to the HTML elements.
 - **Robust Design**: Lambda.html is built to handle errors gracefully, provide clear and helpful error messages, and ensure that components behave consistently across different browsers and platforms.
+- **Seamless Style Integration**: Use any CSS framework, such as Tailwind CSS, without modifications or special configurations. Simply pass the class names as attributes to the HTML elements.
 
 ### Installation
 
@@ -87,7 +83,10 @@ function CallView(name: string, phone: string): HTML {
 }
 
 // Usage of CallView in an application
-const contactInfo = CallView("Alice Johnson", "+1234567890");
+const contactInfo = VStack([
+  CallView("Alice Johnson", "+1234567890"),
+  CallView("John Wick", "+9876543210"),
+]);
 
 console.log(contactInfo());
 ```
