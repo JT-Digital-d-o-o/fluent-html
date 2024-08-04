@@ -19,9 +19,13 @@ export interface HtmlElement {
   attributes?: Record<string, string>;
   htmx?: HTMX;
   selected?: boolean;
+  required?: boolean;
   style?: string;
   child?: HTML;
   controls?: boolean;
+  loop?: boolean;
+  autoplay?: boolean;
+  muted?: boolean;
 }
 
 export type HttpMethod = "get" | "post";
@@ -90,19 +94,44 @@ export function El({
   child = undefined,
   style = undefined,
   selected = undefined,
+  required = undefined,
   controls = undefined,
+  loop = undefined,
+  autoplay = undefined,
+  muted = undefined,
 }: HtmlElement = {}): HTML {
   // Design impl. note: this is the only place the whole framework where html is generated.
   // No visitors or similar.
   return () => {
+    const renderedChild = child ? child() : "";
     const baseAttrs = { id, class: className, ...attributes };
     const renderedAttributes = buildAttributes(baseAttrs);
     const renderedHtmx = buildHtmx(htmx);
-    const renderedSelected = selected ? 'selected' : '';
-    const renderedControls = controls ? 'controls' : '';
-    const renderedChild = child ? child() : "";
-    const renderedStyle = style ? `style="${style}"` : "";
-    const renderedEl = `<${el} ${renderedAttributes} ${renderedHtmx} ${renderedStyle} ${renderedSelected} ${renderedControls}>${renderedChild}</${el}>`;
+    const renderedSelected = selected ? 'selected ' : '';
+    const renderedRequired = required ? 'required ' : '';
+    const renderedControls = controls ? 'controls ' : '';
+    const renderedLoop = loop ? 'loop ' : '';
+    const renderedAutoplay = autoplay ? 'autoplay ' : '';
+    const renderedMuted = muted ? 'muted ' : '';
+    const renderedStyle = style ? 'style="'+style+'" ' : "";
+    var renderedEl = "<";
+    renderedEl += el;
+    renderedEl += " ";
+    renderedEl += renderedAttributes;
+    renderedEl += renderedStyle;
+    renderedEl += renderedHtmx;
+    renderedEl += renderedRequired;
+    renderedEl += renderedControls;
+    renderedEl += renderedSelected;
+    renderedEl += renderedLoop;
+    renderedEl += renderedAutoplay;
+    renderedEl += renderedMuted;
+    renderedEl += ">";
+    renderedEl += renderedChild;
+    renderedEl += "</";
+    renderedEl += el;
+    renderedEl += ">";
+    // const renderedEl = `<${el} ${renderedAttributes} ${renderedHtmx} ${renderedStyle} ${renderedSelected} ${renderedControls} ${renderedRequired}>${renderedChild}</${el}>`;
     return renderedEl;
   };
 }
@@ -168,7 +197,6 @@ export function Input({
     placeholder,
     name,
     ...attributes,
-    ...(required ? { required: "required" } : {})
   };
   return El({
     el: "input",
@@ -176,6 +204,7 @@ export function Input({
     class: className,
     htmx,
     attributes: inputAttributes,
+    required,
     child
   });
 }
@@ -198,7 +227,6 @@ export function Textarea({
     rows: rows.toString(),
     cols: cols.toString(),
     ...attributes,
-    ...(required ? { required: "required" } : {})
   };
   return El({
     el: "textarea",
@@ -206,6 +234,7 @@ export function Textarea({
     class: className,
     htmx,
     attributes: textareaAttributes,
+    required,
     child
   });
 }
@@ -397,6 +426,7 @@ export function Img({
   htmx = undefined,
   src = "",
   alt = "",
+  style = undefined,
   attributes = {},
   child = undefined,
 }: HtmlElement & { src?: string, alt?: string } = {}): HTML {
@@ -410,6 +440,7 @@ export function Img({
     id,
     class: className,
     htmx,
+    style,
     attributes: imgAttributes,
     child
   });
@@ -495,8 +526,9 @@ export function Empty(): HTML {
 // side-effects, the semantics might matter.
 export function IfThenElse(
   condition: boolean, // @TODO: - Should `condition` be delayed?
-  thenView: Thunk<HTML>, 
-  elseView: Thunk<HTML>
+  thenView: Thunk<HTML>,
+  //        ^ () => () => string
+  elseView: Thunk<HTML>,
 ): HTML {
   return condition ? thenView() : elseView();
 }
@@ -521,18 +553,19 @@ export function SwitchCase(
 
 export function MapJoin<T>(
   items: Iterable<T>,
-  renderItem: (_: T) => HTML
+  renderItem: (item: T) => HTML
 ): HTML {
   return () => Array.from(items).map(item => renderItem(item)()).join("\n");
   //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function MapJoin1<T>(
-  items: Iterable<T>,
+  items: Array<T>,
   renderItem: (item: T, index: number) => HTML
 ): HTML {
   return () => Array.from(items).map((item, index) => renderItem(item, index)()).join("\n");
   //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+  // return () => items.map((item, index) => renderItem(item, index)()).join("\n");
 }
 
 export function MapJoin2(
@@ -556,7 +589,7 @@ export function Repeat(
   return MapJoin(range(0, times), content);
 }
 
-export function VStack(children: HTML[]): HTML {
+export function VStack(children: HTML[] = []): HTML {
   return MapJoin(children, id);
 }
 
@@ -564,6 +597,7 @@ export function VStackDiv(children: HTML[], {
   id = undefined,
   class: className = undefined,
   htmx = undefined,
+  style = undefined,
   attributes = {},
 }: HtmlElement = {}): HTML {
   return El({
@@ -571,6 +605,7 @@ export function VStackDiv(children: HTML[], {
     id,
     class: className,
     htmx,
+    style,
     attributes,
     child: VStack(children)
   });
@@ -583,7 +618,8 @@ export function HStack({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-}: HtmlElement = {}, children: HTML[]): HTML {
+}: HtmlElement = {}, children: HTML[] = []): HTML {
+  // @NOTE: - Use `style` if you don't use tailwind
   const cls = `flex ${(className === undefined) ? "" : className}`;
   return Div({
     id,
@@ -624,4 +660,33 @@ export function FadeIn({
   });
 }
 
-// @TODO: - Overlay view
+type Position = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
+
+export function Overlay(
+  content: HTML,
+  overlay: HTML,
+  position: Position = 'center'
+): HTML {
+  return Div({
+    style: "position: relative",
+    child: VStack([
+      content,
+      Div({
+        style: `position: absolute; ${positionStyles[position]}`,
+        child: overlay
+      })
+    ])
+  });
+}
+
+const positionStyles: Record<Position, string> = {
+  'top': 'top: 0; left: 50%; transform: translateX(-50%);',
+  'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
+  'top-left': 'top: 0; left: 0;',
+  'top-right': 'top: 0; right: 0;',
+  'bottom-left': 'bottom: 0; left: 0;',
+  'bottom-right': 'bottom: 0; right: 0;',
+  'left': 'top: 50%; left: 0; transform: translateY(-50%);',
+  'right': 'top: 50%; right: 0; transform: translateY(-50%);',
+  'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
+};
