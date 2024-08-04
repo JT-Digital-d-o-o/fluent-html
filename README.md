@@ -269,3 +269,90 @@ const styledPage = Div({
 
 console.log(styledPage());
 ```
+
+### 1. **Dashboard Layout**
+
+Create a dashboard layout with a sidebar, header, and content area. This example can demonstrate how to use `Div`, `VStack`, and `HStack` to create a layout structure, and how to integrate interactive elements using HTMX.
+
+```typescript
+import { Div, VStack, HStack, Button, Text } from 'lambda.html';
+
+// Reusable
+export function DashboardLayout(sidebarContent: HTML, mainContent: HTML): HTML {
+  return Div({
+    class: "min-h-screen flex",
+    child: HStack([
+      Div({ class: "w-64 bg-gray-800 text-white", child: sidebarContent }),
+      VStack([
+        Div({ class: "bg-gray-200 p-4 shadow", child: Text("Header") }),
+        mainContent
+      ])
+    ])
+  });
+}
+
+function MyDashboard(): HTML {
+  return DashboardLayout(
+    VStack([
+      Button({ child: Text("Home"), class: "p-2 hover:bg-gray-700" }),
+      Button({ child: Text("Settings"), class: "p-2 hover:bg-gray-700" })
+    ]),
+    Div({ class: "p-4", child: Text("Welcome to the dashboard!") }),
+  );
+}
+
+console.log(render(MyDashboard()));
+```
+
+### 2. **Interactive Data Table**
+
+Build a data table component that supports sorting and pagination. This component can utilize `MapJoin` to render rows based on data and `IfThenElse` for conditional rendering of table states.
+
+```typescript
+import { Div, Button, Text, MapJoin, IfThenElse } from 'lambda.html';
+
+function DataTable(headers: string[], data: any[]): HTML {
+  return Div({
+    child: VStack([
+      Div({
+        child: MapJoin(headers, header => Div({ child: Text(header), class: "font-bold p-2" }))
+      }),
+      MapJoin(data, row => 
+        Div({
+          child: MapJoin(Object.values(row), value => Div({ child: Text(value.toString()), class: "p-2" }))
+        })
+      )
+    ])
+  });
+}
+
+const headers = ["Name", "Age", "Location"];
+const data = [
+  { Name: "Alice", Age: 28, Location: "New York" },
+  { Name: "Bob", Age: 25, Location: "California" }
+];
+
+console.log(DataTable(headers, data)());
+```
+
+### 3. **Modal Component**
+
+Create a reusable modal component that can be opened and closed, demonstrating the use of `Overlay` and `IfThen`.
+
+```typescript
+import { Div, Button, Text, Overlay, IfThen } from 'lambda.html';
+
+function Modal(isOpen: boolean, content: HTML, onClose: () => void): HTML {
+  return IfThen(isOpen, () => Overlay(
+    Div({ class: "p-4 max-w-md mx-auto" }, content),
+    Button({ class: "absolute top-0 right-0 p-2", child: Text("×"), onClick: onClose })
+  ));
+}
+
+const modalContent = Div({ child: Text("This is a modal. Click outside to close.") });
+const closeModal = () => console.log("Modal closed");
+
+console.log(Modal(true, modalContent, closeModal)());
+```
+
+These examples can be expanded with more features and interactivity to fully demonstrate the capabilities of Lambda.html. They provide a solid foundation for building complex UI components that are both functional and visually appealing.

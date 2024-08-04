@@ -1,0 +1,31 @@
+{
+  "name": "lambda.html",
+  "version": "1.0.0",
+  "description": "Lambda.html is a TypeScript-based HTML builder framework that leverages functional programming principles to provide a declarative, composable, and extensible approach for building dynamic web interfaces. Designed for robustness and maintainability, it integrates seamlessly with CSS frameworks like Tailwind CSS and supports HTMX for enhanced interactivity without the need for JavaScript. Ideal for developers seeking to create clean, maintainable, and scalable web applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/seckmaster/lambda.html.git"
+  },
+  "keywords": [
+    "html-builder",
+    "typescript",
+    "functional-programming",
+    "declarative-ui",
+    "web-development",
+    "htmx",
+    "tailwind-css",
+    "composability",
+    "robust-web-apps",
+    "web-components"
+  ],
+  "author": "Toni K. Turk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/seckmaster/lambda.html/issues"
+  },
+  "homepage": "https://gitlab.com/seckmaster/lambda.html#readme"
+}
