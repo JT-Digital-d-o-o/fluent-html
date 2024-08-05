@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.id = exports.VStackDiv = exports.Textarea = exports.Select = exports.Li = exports.Ul = exports.Img = exports.HStack = exports.Empty = exports.A = exports.VStack = exports.Text = exports.P = exports.MapJoin2 = exports.MapJoin1 = exports.MapJoin = exports.Label = exports.Input = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.hx = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Div = exports.Button = void 0;
+exports.FadeIn = exports.Overlay = exports.id = exports.VStackDiv = exports.Textarea = exports.Select = exports.Li = exports.Ul = exports.Img = exports.HStack = exports.Empty = exports.A = exports.VStack = exports.Text = exports.P = exports.MapJoin2 = exports.MapJoin1 = exports.MapJoin = exports.Label = exports.Input = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.hx = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Div = exports.Button = void 0;
 var builder_1 = require("./builder");
 Object.defineProperty(exports, "Button", { enumerable: true, get: function () { return builder_1.Button; } });
 var builder_2 = require("./builder");
@@ -59,3 +59,7 @@ var builder_23 = require("./builder");
 Object.defineProperty(exports, "VStackDiv", { enumerable: true, get: function () { return builder_23.VStackDiv; } });
 var builder_24 = require("./builder");
 Object.defineProperty(exports, "id", { enumerable: true, get: function () { return builder_24.id; } });
+var builder_25 = require("./builder");
+Object.defineProperty(exports, "Overlay", { enumerable: true, get: function () { return builder_25.Overlay; } });
+var builder_26 = require("./builder");
+Object.defineProperty(exports, "FadeIn", { enumerable: true, get: function () { return builder_26.FadeIn; } });

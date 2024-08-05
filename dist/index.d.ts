@@ -24,3 +24,6 @@ export { Select } from './builder';
 export { Textarea } from './builder';
 export { VStackDiv } from './builder';
 export { id } from './builder';
+export { Overlay } from './builder';
+export { FadeIn } from './builder';
+export { HTMX } from './builder';
