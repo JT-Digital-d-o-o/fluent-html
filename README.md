@@ -88,7 +88,7 @@ const contactInfo = VStack([
 console.log(contactInfo());
 ```
 
-This `CallView` component encapsulates all the HTML necessary to display a contact card, including an image, name, and clickable phone number. It can be easily reused wherever needed in your application.
+This component encapsulates the HTML necessary to display a contact card, including an image, name, and clickable phone number. It can be easily reused wherever needed in your application.
 
 ### Benefits of Composability
 
@@ -203,6 +203,40 @@ console.log(itemList());
 
 This example creates an unordered list of fruit names, demonstrating how `MapJoin` can be used to iterate over an array of data.
 
+Sometimes, it is useful to know the index of the item. Use `MapJoin1` in those cases:
+
+```typescript
+import { Div, Input, Label, MapJoin1, Text } from 'lambda.html';
+
+// Example tasks array
+const tasks = [
+  "Finish the report",
+  "Call the client",
+  "Prepare meeting agenda",
+];
+
+// Function to render a single task
+function TaskView(task: string, index: number): HTML {
+  return Div({
+    child: Label({
+      child: VStack([
+        Input({ type: "checkbox", id: `task-${index + 1}` }),
+        Text(`${index + 1}. ${task}`),
+      ]),
+      attributes: { "for": `task-${index + 1}` },
+    }),
+  });
+}
+
+// Create the list of tasks using MapJoin1
+function TasksView(tasks: string[]): HTML {
+  return MapJoin1(tasks, (task, index) => TaskView(task, index));
+}
+
+// Render the task list
+console.log(TasksView(tasks)());
+```
+
 ### Combined Example: A Dynamic User Profile
 
 Let's combine these concepts to create a more complex example:
@@ -210,35 +244,32 @@ Let's combine these concepts to create a more complex example:
 ```typescript
 import { Div, H1, P, IfThenElse, MapJoin, Text } from 'lambda.html';
 
-const user = {
-  name: "Alice",
-  loggedIn: true,
-  interests: ["Reading", "Hiking", "Coding"]
-};
+function UserProfileView(name: string, loggedIn: boolean, interests: string[]): HTML {
+  return Div({
+    child: VStack([
+      H1({
+        child: Text(`Profile: ${name}`)
+      }),
+      P({
+        child: IfThenElse(
+          isLoggedIn,
+          () => Text("Status: Online"),
+          () => Text("Status: Offline")
+        )
+      }),
+      P({
+        child: Text("Interests:")
+      }),
+      Ul({
+        child: MapJoin(interests, interest => Li({
+          child: Text(interest)
+        }))
+      })
+    ])
+  });
+}
 
-const userProfile = Div({
-  child: VStack([
-    H1({
-      child: Text(`Profile: ${user.name}`)
-    }),
-    P({
-      child: IfThenElse(
-        user.loggedIn,
-        () => Text("Status: Online"),
-        () => Text("Status: Offline")
-      )
-    }),
-    P({
-      child: Text("Interests:")
-    }),
-    Ul({
-      child: MapJoin(user.interests, interest => Li({
-        child: Text(interest)
-      }))
-    })
-  ])
-});
-
+const userProfile = UserProfileView("Alice", true, ["Reading", "Hiking", "Coding"]);
 console.log(userProfile());
 ```
 
@@ -310,8 +341,7 @@ Create a dashboard layout with a sidebar, header, and content area. This example
 ```typescript
 import { Div, VStack, HStack, Button, Text } from 'lambda.html';
 
-// Reusable
-export function DashboardLayout(sidebarContent: HTML, mainContent: HTML): HTML {
+function DashboardLayout(sidebarContent: HTML, mainContent: HTML): HTML {
   return Div({
     class: "min-h-screen flex",
     child: HStack([
@@ -334,7 +364,8 @@ function MyDashboard(): HTML {
   );
 }
 
-console.log(render(MyDashboard()));
+const dashboard = MyDashboard();
+console.log(dashboard());
 ```
 
 ### 2. **Interactive Data Table**
@@ -367,25 +398,3 @@ const data = [
 
 console.log(DataTable(headers, data)());
 ```
-
-### 3. **Modal Component**
-
-Create a reusable modal component that can be opened and closed, demonstrating the use of `Overlay` and `IfThen`.
-
-```typescript
-import { Div, Button, Text, Overlay, IfThen } from 'lambda.html';
-
-function Modal(isOpen: boolean, content: HTML, onClose: () => void): HTML {
-  return IfThen(isOpen, () => Overlay(
-    Div({ class: "p-4 max-w-md mx-auto" }, content),
-    Button({ class: "absolute top-0 right-0 p-2", child: Text("×"), onClick: onClose })
-  ));
-}
-
-const modalContent = Div({ child: Text("This is a modal. Click outside to close.") });
-const closeModal = () => console.log("Modal closed");
-
-console.log(Modal(true, modalContent, closeModal)());
-```
-
-These examples can be expanded with more features and interactivity to fully demonstrate the capabilities of Lambda.html. They provide a solid foundation for building complex UI components that are both functional and visually appealing.
