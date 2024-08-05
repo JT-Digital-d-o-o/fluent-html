@@ -43,6 +43,7 @@ function hx(endpoint, options = {}) {
         trigger: options.trigger,
         swap: options.swap,
         replaceUrl: options.replaceUrl,
+        encoding: options.encoding,
     };
 }
 exports.hx = hx;

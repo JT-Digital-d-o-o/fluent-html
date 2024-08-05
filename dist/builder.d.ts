@@ -35,6 +35,7 @@ export declare function hx(endpoint: string, options?: {
     trigger?: Trigger;
     swap?: Swap;
     replaceUrl?: boolean;
+    encoding?: Encoding;
 }): HTMX;
 export declare function El({ el, id, class: className, htmx, attributes, child, style, selected, required, controls, loop, autoplay, muted, }?: HtmlElement): HTML;
 export declare function Div({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;

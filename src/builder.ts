@@ -75,6 +75,7 @@ export function hx(
     trigger?: Trigger, 
     swap?: Swap,
     replaceUrl?: boolean,
+    encoding?: Encoding,
   } = {}
 ): HTMX {
   return {
@@ -84,6 +85,7 @@ export function hx(
     trigger: options.trigger,
     swap: options.swap,
     replaceUrl: options.replaceUrl,
+    encoding: options.encoding,
   };
 }
 
