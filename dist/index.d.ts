@@ -1,9 +1,9 @@
 export { Button } from './builder';
-export { Div } from './builder';'./Div';
-export { El } from './builder';'./El';
-export { Form } from './builder';'./Form';
+export { Div } from './builder';
+export { El } from './builder';
+export { Form } from './builder';
 export { H1, H2, H3, H4 } from './builder';
-export { HTML } from './builder';'./HTML';
+export { HTML } from './builder';
 export { hx } from './builder';
 export { IfThen, IfThenElse, SwitchCase } from './builder';
 export { Input } from './builder';

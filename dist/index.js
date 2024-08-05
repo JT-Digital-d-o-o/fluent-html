@@ -20,7 +20,6 @@ Object.defineProperty(exports, "H4", { enumerable: true, get: function () { retu
 './HTML';
 var builder_6 = require("./builder");
 Object.defineProperty(exports, "hx", { enumerable: true, get: function () { return builder_6.hx; } });
-'./Hx';
 var builder_7 = require("./builder");
 Object.defineProperty(exports, "IfThen", { enumerable: true, get: function () { return builder_7.IfThen; } });
 Object.defineProperty(exports, "IfThenElse", { enumerable: true, get: function () { return builder_7.IfThenElse; } });
@@ -43,4 +42,3 @@ var builder_15 = require("./builder");
 Object.defineProperty(exports, "Empty", { enumerable: true, get: function () { return builder_15.Empty; } });
 var builder_16 = require("./builder");
 Object.defineProperty(exports, "FadeIn", { enumerable: true, get: function () { return builder_16.FadeIn; } });
-//# sourceMappingURL=index.js.map
