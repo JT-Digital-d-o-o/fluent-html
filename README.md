@@ -15,7 +15,7 @@ Lambda.html is a TypeScript-based HTML builder framework designed to simplify th
 
 ### Core Concepts
 
-- **Robust Design**: Lambda.html is built to handle errors gracefully, provide clear and helpful error messages, and ensure that components behave consistently across different browsers and platforms.
+- **Robust Design**: Lambda.html is build with robustness in mind - it's all about producing robust, predictable and reusable components.
 - **Seamless Style Integration**: Use any CSS framework, such as Tailwind CSS, without modifications or special configurations. Simply pass the class names as attributes to the HTML elements.
 
 ### Installation
