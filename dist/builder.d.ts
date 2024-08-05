@@ -3,18 +3,13 @@ export declare function id<T>(val: T): T;
 export type HTML = Thunk<string>;
 export interface HtmlElement {
     el?: string;
+    child?: HTML;
     id?: string;
     class?: string;
     attributes?: Record<string, string>;
     htmx?: HTMX;
-    selected?: boolean;
-    required?: boolean;
     style?: string;
-    child?: HTML;
-    controls?: boolean;
-    loop?: boolean;
-    autoplay?: boolean;
-    muted?: boolean;
+    toggles?: string[];
 }
 export type HttpMethod = "get" | "post";
 export interface HTMX {
@@ -37,7 +32,7 @@ export declare function hx(endpoint: string, options?: {
     replaceUrl?: boolean;
     encoding?: Encoding;
 }): HTMX;
-export declare function El({ el, id, class: className, htmx, attributes, child, style, selected, required, controls, loop, autoplay, muted, }?: HtmlElement): HTML;
+export declare function El({ el, id, class: className, htmx, attributes, child, style, toggles, }?: HtmlElement): HTML;
 export declare function Div({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
 export declare function Button({ id, class: className, htmx, style, type, attributes, child, }?: HtmlElement & {
     type?: string;

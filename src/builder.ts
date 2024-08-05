@@ -14,18 +14,13 @@ export type HTML = Thunk<string>;
 
 export interface HtmlElement {
   el?: string,
+  child?: HTML;
   id?: string;
   class?: string;
   attributes?: Record<string, string>;
   htmx?: HTMX;
-  selected?: boolean;
-  required?: boolean;
   style?: string;
-  child?: HTML;
-  controls?: boolean;
-  loop?: boolean;
-  autoplay?: boolean;
-  muted?: boolean;
+  toggles?: string[];
 }
 
 export type HttpMethod = "get" | "post";
@@ -44,7 +39,7 @@ function buildAttributes(attributes: Record<string, string | undefined> | undefi
   if (!attributes) { return ""; }
   return Object.entries(attributes)
    .map(([key, value]) => {
-    return value ? `${key}="${value}"` : "";
+     return value ? `${key}="${value}"` : "";
    })
    .filter(s => s.length > 0)
    .join(" ");
@@ -98,12 +93,7 @@ export function El({
   attributes = undefined,
   child = undefined,
   style = undefined,
-  selected = undefined,
-  required = undefined,
-  controls = undefined,
-  loop = undefined,
-  autoplay = undefined,
-  muted = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): HTML {
   // Design impl. note: this is the only place the whole framework where html is generated.
   // No visitors or similar.
@@ -112,25 +102,15 @@ export function El({
     const baseAttrs = { id, class: className, ...attributes };
     const renderedAttributes = buildAttributes(baseAttrs);
     const renderedHtmx = buildHtmx(htmx);
-    const renderedSelected = selected ? 'selected ' : '';
-    const renderedRequired = required ? 'required ' : '';
-    const renderedControls = controls ? 'controls ' : '';
-    const renderedLoop = loop ? 'loop ' : '';
-    const renderedAutoplay = autoplay ? 'autoplay ' : '';
-    const renderedMuted = muted ? 'muted ' : '';
-    const renderedStyle = style ? 'style="'+style+'" ' : "";
+    const renderedToggles = toggles ? toggles.join(" ") : " ";
+    const renderedStyle = style ? 'style="'+style+'" ' : " ";
     var renderedEl = "<";
     renderedEl += el;
     renderedEl += " ";
     renderedEl += renderedAttributes;
     renderedEl += renderedStyle;
     renderedEl += renderedHtmx;
-    renderedEl += renderedRequired;
-    renderedEl += renderedControls;
-    renderedEl += renderedSelected;
-    renderedEl += renderedLoop;
-    renderedEl += renderedAutoplay;
-    renderedEl += renderedMuted;
+    renderedEl += renderedToggles;
     renderedEl += ">";
     renderedEl += renderedChild;
     renderedEl += "</";
@@ -208,8 +188,8 @@ export function Input({
     class: className,
     htmx,
     attributes: inputAttributes,
-    required,
-    child
+    toggles: ["required"],
+    child,
   });
 }
 
@@ -238,7 +218,7 @@ export function Textarea({
     class: className,
     htmx,
     attributes: textareaAttributes,
-    required,
+    toggles: ["required"],
     child
   });
 }
@@ -488,7 +468,7 @@ export function Select({
       el: "option", 
       attributes: { "value": option.value, },
       child: Text(option.text),
-      selected: option.selected,
+      toggles: option.selected ? ["selected"] : undefined,
     }))
   });
 }

@@ -48,7 +48,7 @@ function hx(endpoint, options = {}) {
 }
 exports.hx = hx;
 // The most basic building block of the framework.
-function El({ el, id = undefined, class: className = undefined, htmx, attributes = undefined, child = undefined, style = undefined, selected = undefined, required = undefined, controls = undefined, loop = undefined, autoplay = undefined, muted = undefined, } = {}) {
+function El({ el, id = undefined, class: className = undefined, htmx, attributes = undefined, child = undefined, style = undefined, toggles = undefined, } = {}) {
     // Design impl. note: this is the only place the whole framework where html is generated.
     // No visitors or similar.
     return () => {
@@ -56,25 +56,15 @@ function El({ el, id = undefined, class: className = undefined, htmx, attributes
         const baseAttrs = Object.assign({ id, class: className }, attributes);
         const renderedAttributes = buildAttributes(baseAttrs);
         const renderedHtmx = buildHtmx(htmx);
-        const renderedSelected = selected ? 'selected ' : '';
-        const renderedRequired = required ? 'required ' : '';
-        const renderedControls = controls ? 'controls ' : '';
-        const renderedLoop = loop ? 'loop ' : '';
-        const renderedAutoplay = autoplay ? 'autoplay ' : '';
-        const renderedMuted = muted ? 'muted ' : '';
-        const renderedStyle = style ? 'style="' + style + '" ' : "";
+        const renderedToggles = toggles ? toggles.join(" ") : " ";
+        const renderedStyle = style ? 'style="' + style + '" ' : " ";
         var renderedEl = "<";
         renderedEl += el;
         renderedEl += " ";
         renderedEl += renderedAttributes;
         renderedEl += renderedStyle;
         renderedEl += renderedHtmx;
-        renderedEl += renderedRequired;
-        renderedEl += renderedControls;
-        renderedEl += renderedSelected;
-        renderedEl += renderedLoop;
-        renderedEl += renderedAutoplay;
-        renderedEl += renderedMuted;
+        renderedEl += renderedToggles;
         renderedEl += ">";
         renderedEl += renderedChild;
         renderedEl += "</";
@@ -120,8 +110,8 @@ function Input({ id = undefined, class: className = undefined, htmx = undefined,
         class: className,
         htmx,
         attributes: inputAttributes,
-        required,
-        child
+        toggles: ["required"],
+        child,
     });
 }
 exports.Input = Input;
@@ -134,7 +124,7 @@ function Textarea({ id = undefined, class: className = undefined, htmx = undefin
         class: className,
         htmx,
         attributes: textareaAttributes,
-        required,
+        toggles: ["required"],
         child
     });
 }
@@ -288,7 +278,7 @@ function Select({ id = undefined, class: className = undefined, htmx = undefined
             el: "option",
             attributes: { "value": option.value, },
             child: Text(option.text),
-            selected: option.selected,
+            toggles: option.selected ? ["selected"] : undefined,
         }))
     });
 }

@@ -6,7 +6,7 @@ Lambda.html is a TypeScript-based HTML builder framework designed to simplify th
 
 ### Key Features
 
-- **Robustness**: Designed with a focus on producing robust software, the zero-dependency package Lambda.html emphasizes predictable behavior.
+- **Producing robust software**: Designed with a focus on producing robust software, the zero-dependency package Lambda.html emphasizes predictable behavior.
 - **HTMX Integration**: Easily integrate with HTMX for modern AJAX-driven web applications without writing JavaScript.
 - **Extensible and Customizable**: Extend the framework with custom components and attributes to fit any use case.
 - **Type Safety**: Built with TypeScript to ensure reliability and maintainability through static type checking.
@@ -126,23 +126,16 @@ Lambda.html provides `IfThen` and `IfThenElse` for conditional rendering of HTML
 ```typescript
 import { Div, Text, IfThen, IfThenElse } from 'lambda.html';
 
-const userLoggedIn = true;
-const userName = "Alice";
-
-const userProfile = IfThenElse(
-  userLoggedIn,
-  () => Text(`Welcome back, ${userName}!`),
-  () => Text("Please log in.")
+function UserProfile(state: string | undefined): HTML {
+  return IfThenElse(
+    state,
+    () => Text(`Welcome back, ${state}!`),
+    () => Text("Please log in.")
+  );
 );
 
-const loginMessage = IfThen(
-  userLoggedIn,
-  () => Div({
-    child: userProfile
-  })
-);
-
-console.log(loginMessage());
+const profile = UserProfile("Alice");
+console.log(profile());
 ```
 
 This example shows how to conditionally render different text based on whether the user is logged in.
@@ -160,7 +153,7 @@ const user = {
 
 // Create the SwitchCase component
 const greeting = SwitchCase(
-  [
+    [
     {
       condition: () => user.role === "admin",
       component: Text("Welcome, admin!")
@@ -218,13 +211,10 @@ const tasks = [
 // Function to render a single task
 function TaskView(task: string, index: number): HTML {
   return Div({
-    child: Label({
-      child: VStack([
-        Input({ type: "checkbox", id: `task-${index + 1}` }),
-        Text(`${index + 1}. ${task}`),
-      ]),
-      attributes: { "for": `task-${index + 1}` },
-    }),
+    child: VStack([
+      Input({ type: "checkbox", id: `task-${index + 1}` }),
+      Text(`${index + 1}. ${task}`),
+    ]),
   });
 }
 
