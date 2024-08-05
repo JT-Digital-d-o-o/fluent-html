@@ -136,7 +136,6 @@ export function El({
     renderedEl += "</";
     renderedEl += el;
     renderedEl += ">";
-    // const renderedEl = `<${el} ${renderedAttributes} ${renderedHtmx} ${renderedStyle} ${renderedSelected} ${renderedControls} ${renderedRequired}>${renderedChild}</${el}>`;
     return renderedEl;
   };
 }
@@ -530,9 +529,8 @@ export function Empty(): HTML {
 // the compuation of `condition` is delayed. If evaluating `condition` causes
 // side-effects, the semantics might matter.
 export function IfThenElse(
-  condition: boolean, // @TODO: - Should `condition` be delayed?
+  condition: boolean,
   thenView: Thunk<HTML>,
-  //        ^ () => () => string
   elseView: Thunk<HTML>,
 ): HTML {
   return condition ? thenView() : elseView();
@@ -544,7 +542,7 @@ export function IfThen(condition: boolean, content: Thunk<HTML>): HTML {
 
 export function SwitchCase(
   cases: { condition: Thunk<boolean>, component: HTML }[],
-  defaultComponent: HTML = Empty()
+  defaultComponent: Thunk<HTML> = Empty
 ): HTML {
   return () => {
     for (const caseItem of cases) {
@@ -552,7 +550,7 @@ export function SwitchCase(
         return caseItem.component();
       }
     }
-    return defaultComponent();
+    return defaultComponent()();
   };
 }
 

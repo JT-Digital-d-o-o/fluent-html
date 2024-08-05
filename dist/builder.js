@@ -80,7 +80,6 @@ function El({ el, id = undefined, class: className = undefined, htmx, attributes
         renderedEl += "</";
         renderedEl += el;
         renderedEl += ">";
-        // const renderedEl = `<${el} ${renderedAttributes} ${renderedHtmx} ${renderedStyle} ${renderedSelected} ${renderedControls} ${renderedRequired}>${renderedChild}</${el}>`;
         return renderedEl;
     };
 }
@@ -329,10 +328,7 @@ exports.Empty = Empty;
 // The latter expression evaluates `condition` eagerly whereas in the former
 // the compuation of `condition` is delayed. If evaluating `condition` causes
 // side-effects, the semantics might matter.
-function IfThenElse(condition, // @TODO: - Should `condition` be delayed?
-thenView, 
-//        ^ () => () => string
-elseView) {
+function IfThenElse(condition, thenView, elseView) {
     return condition ? thenView() : elseView();
 }
 exports.IfThenElse = IfThenElse;
@@ -340,14 +336,14 @@ function IfThen(condition, content) {
     return condition ? content() : Empty();
 }
 exports.IfThen = IfThen;
-function SwitchCase(cases, defaultComponent = Empty()) {
+function SwitchCase(cases, defaultComponent = Empty) {
     return () => {
         for (const caseItem of cases) {
             if (caseItem.condition()) {
                 return caseItem.component();
             }
         }
-        return defaultComponent();
+        return defaultComponent()();
     };
 }
 exports.SwitchCase = SwitchCase;

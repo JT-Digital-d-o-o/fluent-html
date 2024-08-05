@@ -86,13 +86,12 @@ export declare function Select({ id, class: className, htmx, name, options, attr
 }): HTML;
 export declare function Text(text?: string): HTML;
 export declare function Empty(): HTML;
-export declare function IfThenElse(condition: boolean, // @TODO: - Should `condition` be delayed?
-thenView: Thunk<HTML>, elseView: Thunk<HTML>): HTML;
+export declare function IfThenElse(condition: boolean, thenView: Thunk<HTML>, elseView: Thunk<HTML>): HTML;
 export declare function IfThen(condition: boolean, content: Thunk<HTML>): HTML;
 export declare function SwitchCase(cases: {
     condition: Thunk<boolean>;
     component: HTML;
-}[], defaultComponent?: HTML): HTML;
+}[], defaultComponent?: Thunk<HTML>): HTML;
 export declare function MapJoin<T>(items: Iterable<T>, renderItem: (item: T) => HTML): HTML;
 export declare function MapJoin1<T>(items: Array<T>, renderItem: (item: T, index: number) => HTML): HTML;
 export declare function MapJoin2(n: number, renderItem: (index: number) => HTML): HTML;

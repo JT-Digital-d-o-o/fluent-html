@@ -6,7 +6,7 @@ Lambda.html is a TypeScript-based HTML builder framework designed to simplify th
 
 ### Key Features
 
-- **Robustness**: Designed with a focus on producing robust software, Lambda.html emphasizes error handling, predictable behaviors, and compatibility across different environments.
+- **Robustness**: Designed with a focus on producing robust software, the zero-dependency package Lambda.html emphasizes predictable behavior.
 - **HTMX Integration**: Easily integrate with HTMX for modern AJAX-driven web applications without writing JavaScript.
 - **Extensible and Customizable**: Extend the framework with custom components and attributes to fit any use case.
 - **Type Safety**: Built with TypeScript to ensure reliability and maintainability through static type checking.
@@ -59,19 +59,17 @@ Lambda.html is designed with a strong emphasis on **composability**, a core prin
 
 To leverage the full power of composability, we recommend defining reusable components as pure functions. Here’s how you can create and use a reusable component in Lambda.html:
 
-### Example: Call View Component
-
-Consider a scenario where you need to display user contact information repeatedly across different parts of your application. You can create a `CallView` component to handle this:
+Consider a scenario where you need to display user contact information repeatedly across different parts of your application. You can create a `ContactDetailsView` component to handle this:
 
 ```typescript
 import { Div, Img, P, A, Text, VStack } from 'lambda.html';
 
-// Reusable CallView component
-function CallView(name: string, phone: string): HTML {
+// Reusable components are pure functions returning `HTML`.
+function ContactDetailsView(name: string, phone: string): HTML {
   return Div({
-    class: "call-view",
+    class: "p-4 mx-3 border border-my-color",
     child: VStack([
-      Img({ src: "../images/call.svg" }),
+      Img({ src: "call.svg" }),
       Div({
         child: VStack([
           P({ child: Text(name) }),
@@ -82,10 +80,9 @@ function CallView(name: string, phone: string): HTML {
   });
 }
 
-// Usage of CallView in an application
 const contactInfo = VStack([
-  CallView("Alice Johnson", "+1234567890"),
-  CallView("John Wick", "+9876543210"),
+  ContactDetailsView("Alice Johnson", "+1234567890"),
+  ContactDetailsView("John Wick", "+9876543210"),
 ]);
 
 console.log(contactInfo());
@@ -149,6 +146,42 @@ console.log(loginMessage());
 ```
 
 This example shows how to conditionally render different text based on whether the user is logged in.
+
+### Conditional Rendering with SwitchCase
+
+```typescript
+import { Text, SwitchCase } from 'lambda.html';
+
+// Simulated user data
+const user = {
+  name: "Alice",
+  role: "admin"
+};
+
+// Create the SwitchCase component
+const greeting = SwitchCase(
+  [
+    {
+      condition: () => user.role === "admin",
+      component: Text("Welcome, admin!")
+    },
+    {
+      condition: () => user.role === "user",
+      component: Text("Welcome, user!")
+    },
+    {
+      condition: () => user.role === "guest",
+      component: Text("Welcome, guest!")
+    }
+  ], 
+  () => Text("Role not recognized."),
+);
+
+// Render the component
+console.log(greeting());
+```
+
+This approach makes the code cleaner and more maintainable, especially when dealing with multiple conditions that affect what should be rendered. The `SwitchCase` function encapsulates the conditional logic, making the main component code more straightforward and focused on defining what to render rather than how to select what to render.
 
 ### Looping with MapJoin
 
