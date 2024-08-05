@@ -37,6 +37,7 @@ export interface HTMX {
   trigger?: string;
   swap?: string;
   replaceUrl?: boolean;
+  encoding?: Encoding;
 }
 
 function buildAttributes(attributes: Record<string, string | undefined> | undefined): string {
@@ -58,11 +59,13 @@ function buildHtmx(htmx: HTMX | undefined): string {
   const trigger = htmx.trigger ? `hx-trigger="${htmx.trigger}"` : null;
   const swap = htmx.swap ? `hx-swap="${htmx.swap}"` : null;
   const replaceUrl = htmx.replaceUrl ? `hx-replace-url="${htmx.replaceUrl}"` : null;
-  return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''}`;
+  const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
+  return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''}`;
 }
 
 export type Swap = "innerHTML" | "outerHTML" | string;
 export type Trigger = "click" | "load" | "intersect" | string;
+export type Encoding = "multipart/form-data";
 
 export function hx(
   endpoint: string,

@@ -24,9 +24,11 @@ export interface HTMX {
     trigger?: string;
     swap?: string;
     replaceUrl?: boolean;
+    encoding?: Encoding;
 }
 export type Swap = "innerHTML" | "outerHTML" | string;
 export type Trigger = "click" | "load" | "intersect" | string;
+export type Encoding = "multipart/form-data";
 export declare function hx(endpoint: string, options?: {
     method?: HttpMethod;
     target?: string;
