@@ -1,6 +1,6 @@
 {
   "name": "lambda.html",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Lambda.html is a TypeScript-based HTML builder framework that leverages functional programming principles to provide a declarative, composable, and extensible approach for building dynamic web interfaces. Designed for robustness and maintainability, it integrates seamlessly with CSS frameworks like Tailwind CSS and supports HTMX for enhanced interactivity without the need for JavaScript. Ideal for developers seeking to create clean, maintainable, and scalable web applications.",
   "type": "module",
   "main": "dist/src/index.js",

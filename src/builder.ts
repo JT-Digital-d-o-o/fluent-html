@@ -113,7 +113,7 @@ export function Button({
   htmx = undefined,
   style = undefined,
   type = "button",
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement & { type?: string } = {}): HTML {
   const buttonAttributes = {
@@ -137,11 +137,11 @@ export function Input({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  type = "",
-  placeholder = "",
-  name = "",
-  required = false,
-  attributes = {},
+  style = undefined,
+  type = undefined,
+  placeholder = undefined,
+  name = undefined,
+  attributes = undefined,
   child = undefined,
 }: HtmlElement & { type?: string, placeholder?: string, name?: string, required?: boolean } = {}): HTML {
   const inputAttributes = {
@@ -155,8 +155,9 @@ export function Input({
     id,
     class: className,
     htmx,
+    style,
     attributes: inputAttributes,
-    toggles: ["required"],
+    // toggles: ["required"],
     child,
   });
 }
@@ -165,12 +166,11 @@ export function Textarea({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  placeholder = "",
-  name = "",
-  rows = 4,
-  cols = 50,
-  required = false,
-  attributes = {},
+  placeholder = undefined,
+  name = undefined,
+  rows = undefined,
+  cols = undefined,
+  attributes = undefined,
   child = undefined,
 }: HtmlElement & { placeholder?: string, name?: string, rows?: number, cols?: number, required?: boolean } = {}): HTML {
   const textareaAttributes = {
@@ -195,7 +195,7 @@ export function Label({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -212,7 +212,7 @@ export function H1({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -229,7 +229,7 @@ export function H2({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -246,7 +246,7 @@ export function H3({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -262,7 +262,7 @@ export function H4({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -279,7 +279,7 @@ export function Span({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -297,7 +297,7 @@ export function A({
   class: className = undefined,
   htmx = undefined,
   href = "",
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement & { href?: string } = {}): HTML {
   const anchorAttributes = {
@@ -318,7 +318,7 @@ export function Ul({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -335,7 +335,7 @@ export function Li({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -352,9 +352,9 @@ export function Form({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  action = "",
-  method = "get",
-  attributes = {},
+  action = undefined,
+  method = undefined,
+  attributes = undefined,
   child = undefined,
 }: HtmlElement & { action?: string, method?: string } = {}): HTML {
   const formAttributes = {
@@ -376,10 +376,10 @@ export function Img({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  src = "",
-  alt = "",
+  src = undefined,
+  alt = undefined,
   style = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement & { src?: string, alt?: string } = {}): HTML {
   const imgAttributes = {
@@ -402,7 +402,7 @@ export function P({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  attributes = {},
+  attributes = undefined,
   child = undefined,
 }: HtmlElement = {}): HTML {
   return El({
@@ -422,9 +422,9 @@ export function Select({
   id = undefined,
   class: className = undefined,
   htmx = undefined,
-  name = "",
+  name = undefined,
   options = [],
-  attributes = {},
+  attributes = undefined,
 }: HtmlElement & { name?: string, options?: Option[] } = {}): HTML {
   return El({
     el: "select",
@@ -549,7 +549,7 @@ export function VStackDiv(children: HTML[], {
   class: className = undefined,
   htmx = undefined,
   style = undefined,
-  attributes = {},
+  attributes = undefined,
 }: HtmlElement = {}): HTML {
   return El({
     el: "div",

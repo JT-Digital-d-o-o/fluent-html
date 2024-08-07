@@ -18,13 +18,13 @@ export declare function Div({ id, class: className, htmx, style, attributes, chi
 export declare function Button({ id, class: className, htmx, style, type, attributes, child, }?: HtmlElement & {
     type?: string;
 }): HTML;
-export declare function Input({ id, class: className, htmx, type, placeholder, name, required, attributes, child, }?: HtmlElement & {
+export declare function Input({ id, class: className, htmx, style, type, placeholder, name, attributes, child, }?: HtmlElement & {
     type?: string;
     placeholder?: string;
     name?: string;
     required?: boolean;
 }): HTML;
-export declare function Textarea({ id, class: className, htmx, placeholder, name, rows, cols, required, attributes, child, }?: HtmlElement & {
+export declare function Textarea({ id, class: className, htmx, placeholder, name, rows, cols, attributes, child, }?: HtmlElement & {
     placeholder?: string;
     name?: string;
     rows?: number;
