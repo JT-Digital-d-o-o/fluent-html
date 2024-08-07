@@ -1,4 +1,4 @@
-import { HTMX } from "./htmx.mjs";
+import { HTMX } from "./htmx.js";
 export type Thunk<T> = () => T;
 export declare function id<T>(val: T): T;
 export type HTML = Thunk<string>;

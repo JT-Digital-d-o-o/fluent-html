@@ -1,4 +1,4 @@
-import { Div, HTML, hx, render } from "../src/index.mjs";
+import { Div, HTML, hx, render } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {

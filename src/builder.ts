@@ -2,7 +2,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 
-import { HTMX } from "./htmx.mjs";
+import { HTMX } from "./htmx.js";
 
 export type Thunk<T> = () => T;
 export function id<T>(val: T): T {

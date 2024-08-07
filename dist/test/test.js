@@ -1,4 +1,4 @@
-import { Div, hx, render } from "../src/index.mjs";
+import { Div, hx, render } from "../src/index.js";
 function runTest(got, expected, test) {
     if (expected === got) {
         console.log(`✅ ${test} passed`);
