@@ -6,6 +6,7 @@ export { H1, H2, H3, H4 } from './builder.js';
 export { IfThen, IfThenElse, SwitchCase } from './builder.js';
 export { Input } from './builder.js';
 export { Label } from './builder.js';
+export { Button } from './builder.js';
 export { MapJoin } from './builder.js';
 export { MapJoin1 } from './builder.js';
 export { MapJoin2 } from './builder.js';
