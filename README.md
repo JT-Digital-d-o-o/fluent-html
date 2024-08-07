@@ -153,7 +153,7 @@ const user = {
 
 // Create the SwitchCase component
 const greeting = SwitchCase(
-    [
+  [
     {
       condition: () => user.role === "admin",
       component: Text("Welcome, admin!")

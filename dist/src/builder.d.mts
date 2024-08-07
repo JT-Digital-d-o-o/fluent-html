@@ -1,6 +1,8 @@
+import { HTMX } from "./htmx.mjs";
 export type Thunk<T> = () => T;
 export declare function id<T>(val: T): T;
 export type HTML = Thunk<string>;
+export declare function render(html: HTML): string;
 export interface HtmlElement {
     el?: string;
     child?: HTML;
@@ -11,27 +13,6 @@ export interface HtmlElement {
     style?: string;
     toggles?: string[];
 }
-export type HttpMethod = "get" | "post";
-export interface HTMX {
-    method: HttpMethod;
-    endpoint: string;
-    target?: string;
-    trigger?: string;
-    swap?: string;
-    replaceUrl?: boolean;
-    encoding?: Encoding;
-}
-export type Swap = "innerHTML" | "outerHTML" | string;
-export type Trigger = "click" | "load" | "intersect" | string;
-export type Encoding = "multipart/form-data";
-export declare function hx(endpoint: string, options?: {
-    method?: HttpMethod;
-    target?: string;
-    trigger?: Trigger;
-    swap?: Swap;
-    replaceUrl?: boolean;
-    encoding?: Encoding;
-}): HTMX;
 export declare function El({ el, id, class: className, htmx, attributes, child, style, toggles, }?: HtmlElement): HTML;
 export declare function Div({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
 export declare function Button({ id, class: className, htmx, style, type, attributes, child, }?: HtmlElement & {

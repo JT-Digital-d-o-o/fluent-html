@@ -2,15 +2,17 @@
 // Html Builder "Framework"
 // ------------------------------------
 
+import { HTMX } from "./htmx.mjs";
+
 export type Thunk<T> = () => T;
-// export function liftValue<T>(html: T): Thunk<T> {
-//   return () => html;
-// }
 export function id<T>(val: T): T {
   return val;
 }
 
 export type HTML = Thunk<string>;
+export function render(html: HTML): string {
+  return html();
+}
 
 export interface HtmlElement {
   el?: string,
@@ -21,67 +23,6 @@ export interface HtmlElement {
   htmx?: HTMX;
   style?: string;
   toggles?: string[];
-}
-
-export type HttpMethod = "get" | "post";
-
-export interface HTMX {
-  method: HttpMethod;
-  endpoint: string;
-  target?: string;
-  trigger?: string;
-  swap?: string;
-  replaceUrl?: boolean;
-  encoding?: Encoding;
-}
-
-function buildAttributes(attributes: Record<string, string | undefined> | undefined): string {
-  if (!attributes) { return ""; }
-  return Object.entries(attributes)
-   .map(([key, value]) => {
-     return value ? `${key}="${value}"` : "";
-   })
-   .filter(s => s.length > 0)
-   .join(" ");
-}
-
-function buildHtmx(htmx: HTMX | undefined): string {
-  if (!htmx) {
-    return '';
-  }
-  const methodAndEndpoint = `hx-${htmx.method}="${htmx.endpoint}"`;
-  const target = htmx.target ? `hx-target="${htmx.target}"` : null;
-  const trigger = htmx.trigger ? `hx-trigger="${htmx.trigger}"` : null;
-  const swap = htmx.swap ? `hx-swap="${htmx.swap}"` : null;
-  const replaceUrl = htmx.replaceUrl ? `hx-replace-url="${htmx.replaceUrl}"` : null;
-  const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
-  return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''}`;
-}
-
-export type Swap = "innerHTML" | "outerHTML" | string;
-export type Trigger = "click" | "load" | "intersect" | string;
-export type Encoding = "multipart/form-data";
-
-export function hx(
-  endpoint: string,
-  options: {
-    method?: HttpMethod,
-    target?: string,
-    trigger?: Trigger, 
-    swap?: Swap,
-    replaceUrl?: boolean,
-    encoding?: Encoding,
-  } = {}
-): HTMX {
-  return {
-    method: options.method ?? "get",
-    endpoint,
-    target: options.target,
-    trigger: options.trigger,
-    swap: options.swap,
-    replaceUrl: options.replaceUrl,
-    encoding: options.encoding,
-  };
 }
 
 // The most basic building block of the framework.
@@ -95,6 +36,29 @@ export function El({
   style = undefined,
   toggles = undefined,
 }: HtmlElement = {}): HTML {
+  function buildAttributes(attributes: Record<string, string | undefined> | undefined): string {
+    if (!attributes) { return ""; }
+    return Object.entries(attributes)
+    .map(([key, value]) => {
+      return value ? `${key}="${value}"` : "";
+    })
+    .filter(s => s.length > 0)
+    .join(" ");
+  }
+
+  function buildHtmx(htmx: HTMX | undefined): string {
+    if (!htmx) {
+      return '';
+    }
+    const methodAndEndpoint = `hx-${htmx.method}="${htmx.endpoint}"`;
+    const target = htmx.target ? `hx-target="${htmx.target}"` : null;
+    const trigger = htmx.trigger ? `hx-trigger="${htmx.trigger}"` : null;
+    const swap = htmx.swap ? `hx-swap="${htmx.swap}"` : null;
+    const replaceUrl = htmx.replaceUrl ? `hx-replace-url="${htmx.replaceUrl}"` : null;
+    const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
+    return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''}`;
+  }
+
   // Design impl. note: this is the only place the whole framework where html is generated.
   // No visitors or similar.
   return () => {
@@ -104,13 +68,17 @@ export function El({
     const renderedHtmx = buildHtmx(htmx);
     const renderedToggles = toggles ? toggles.join(" ") : " ";
     const renderedStyle = style ? 'style="'+style+'" ' : " ";
+    
+    var renderedAttributesAndToggles = "";
+    renderedAttributesAndToggles += renderedAttributes;
+    renderedAttributesAndToggles += renderedStyle;
+    renderedAttributesAndToggles += renderedHtmx;
+    renderedAttributesAndToggles += renderedToggles;
+
     var renderedEl = "<";
     renderedEl += el;
     renderedEl += " ";
-    renderedEl += renderedAttributes;
-    renderedEl += renderedStyle;
-    renderedEl += renderedHtmx;
-    renderedEl += renderedToggles;
+    renderedEl += renderedAttributesAndToggles;
     renderedEl += ">";
     renderedEl += renderedChild;
     renderedEl += "</";
