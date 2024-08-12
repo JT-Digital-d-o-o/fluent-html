@@ -1,4 +1,4 @@
-import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, MapJoin1, render, Text, VStack } from "../src/index.js";
+import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -121,13 +121,13 @@ runTestHTML(
 
   // Do we care about indentation, etc. ?
   runTestHTML(
-    MapJoin1(tasks, TaskView),
+    ForEach1(tasks, TaskView),
     `<div   ><input id="task-1" type="checkbox"  ></input>
 1. Finish the report</div>
 <div   ><input id="task-2" type="checkbox"  ></input>
 2. Call the client</div>
 <div   ><input id="task-3" type="checkbox"  ></input>
 3. Prepare meeting agenda</div>`,
-    "MapJoin"
+    "ForEach"
   );
 }

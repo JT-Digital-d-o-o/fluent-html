@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clss = exports.div = exports.hx = exports.Tbody = exports.Tr = exports.Th = exports.Td = exports.Thead = exports.Table = exports.FadeIn = exports.Overlay = exports.VStackDiv = exports.Textarea = exports.Select = exports.Li = exports.Ul = exports.Img = exports.HStack = exports.Empty = exports.A = exports.VStack = exports.Text = exports.P = exports.MapJoin2 = exports.MapJoin1 = exports.MapJoin = exports.Button = exports.Label = exports.Input = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Div = exports.id = exports.render = void 0;
+exports.clss = exports.div = exports.hx = exports.Tbody = exports.Tr = exports.Th = exports.Td = exports.Thead = exports.Table = exports.FadeIn = exports.Overlay = exports.VStackDiv = exports.Textarea = exports.Select = exports.Li = exports.Ul = exports.Img = exports.HStack = exports.Empty = exports.A = exports.VStack = exports.Text = exports.P = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.Button = exports.Label = exports.Input = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Div = exports.id = exports.render = void 0;
 var builder_js_1 = require("./builder.js");
 Object.defineProperty(exports, "render", { enumerable: true, get: function () { return builder_js_1.render; } });
 Object.defineProperty(exports, "id", { enumerable: true, get: function () { return builder_js_1.id; } });
@@ -26,11 +26,11 @@ Object.defineProperty(exports, "Label", { enumerable: true, get: function () { r
 var builder_js_9 = require("./builder.js");
 Object.defineProperty(exports, "Button", { enumerable: true, get: function () { return builder_js_9.Button; } });
 var builder_js_10 = require("./builder.js");
-Object.defineProperty(exports, "MapJoin", { enumerable: true, get: function () { return builder_js_10.MapJoin; } });
+Object.defineProperty(exports, "ForEach", { enumerable: true, get: function () { return builder_js_10.ForEach; } });
 var builder_js_11 = require("./builder.js");
-Object.defineProperty(exports, "MapJoin1", { enumerable: true, get: function () { return builder_js_11.MapJoin1; } });
+Object.defineProperty(exports, "ForEach1", { enumerable: true, get: function () { return builder_js_11.ForEach1; } });
 var builder_js_12 = require("./builder.js");
-Object.defineProperty(exports, "MapJoin2", { enumerable: true, get: function () { return builder_js_12.MapJoin2; } });
+Object.defineProperty(exports, "ForEach2", { enumerable: true, get: function () { return builder_js_12.ForEach2; } });
 var builder_js_13 = require("./builder.js");
 Object.defineProperty(exports, "P", { enumerable: true, get: function () { return builder_js_13.P; } });
 var builder_js_14 = require("./builder.js");

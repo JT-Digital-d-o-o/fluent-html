@@ -68,9 +68,9 @@ export declare function SwitchCase(cases: {
     condition: Thunk<boolean>;
     component: HTML;
 }[], defaultComponent?: Thunk<HTML>): HTML;
-export declare function MapJoin<T>(items: Iterable<T>, renderItem: (item: T) => HTML): HTML;
-export declare function MapJoin1<T>(items: Array<T>, renderItem: (item: T, index: number) => HTML): HTML;
-export declare function MapJoin2(n: number, renderItem: (index: number) => HTML): HTML;
+export declare function ForEach<T>(items: Iterable<T>, renderItem: (item: T) => HTML): HTML;
+export declare function ForEach1<T>(items: Array<T>, renderItem: (item: T, index: number) => HTML): HTML;
+export declare function ForEach2(n: number, renderItem: (index: number) => HTML): HTML;
 export declare function Repeat(times: number, content: Thunk<HTML>): HTML;
 export declare function VStack(children?: HTML[]): HTML;
 export declare function VStackDiv(children: HTML[], { id, class: className, htmx, style, attributes, }?: HtmlElement): HTML;

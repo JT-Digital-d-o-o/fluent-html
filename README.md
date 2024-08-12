@@ -176,17 +176,17 @@ console.log(render(greeting));
 
 This approach makes the code cleaner and more maintainable, especially when dealing with multiple conditions that affect what should be rendered. The `SwitchCase` function encapsulates the conditional logic, making the main component code more straightforward and focused on defining what to render rather than how to select what to render.
 
-### Looping with MapJoin
+### Looping with ForEach
 
-`MapJoin` is used to render lists of elements. It's particularly useful for creating dynamic lists or tables. Here's an example:
+`ForEach` is used to render lists of elements. It's particularly useful for creating dynamic lists or tables. Here's an example:
 
 ```typescript
-import { Ul, Li, MapJoin, Text, render } from 'lambda.html';
+import { Ul, Li, ForEach, Text, render } from 'lambda.html';
 
 const items = ["Apple", "Banana", "Cherry"];
 
 const itemList = Ul({
-  child: MapJoin(items, item => Li({
+  child: ForEach(items, item => Li({
     child: Text(item)
   }))
 });
@@ -194,12 +194,12 @@ const itemList = Ul({
 console.log(render(itemList));
 ```
 
-This example creates an unordered list of fruit names, demonstrating how `MapJoin` can be used to iterate over an array of data.
+This example creates an unordered list of fruit names, demonstrating how `ForEach` can be used to iterate over an array of data.
 
-Sometimes, it is useful to know the index of the item. Use `MapJoin1` in those cases:
+Sometimes, it is useful to know the index of the item. Use `ForEach1` in those cases:
 
 ```typescript
-import { Div, Input, Label, MapJoin1, Text, render } from 'lambda.html';
+import { Div, Input, Label, ForEach1, Text, render } from 'lambda.html';
 
 // Example tasks array
 const tasks = [
@@ -218,9 +218,9 @@ function TaskView(task: string, index: number): HTML {
   });
 }
 
-// Create the list of tasks using MapJoin1
+// Create the list of tasks using ForEach1
 function TasksView(tasks: string[]): HTML {
-  return MapJoin1(tasks, TaskView);
+  return ForEach1(tasks, TaskView);
 }
 
 // Render the task list
@@ -233,7 +233,7 @@ console.log(render(view));
 Let's combine these concepts to create a more complex example:
 
 ```typescript
-import { Div, H1, P, IfThenElse, MapJoin, Text, render } from 'lambda.html';
+import { Div, H1, P, IfThenElse, ForEach, Text, render } from 'lambda.html';
 
 function UserProfileView(name: string, loggedIn: boolean, interests: string[]): HTML {
   return Div({
@@ -252,7 +252,7 @@ function UserProfileView(name: string, loggedIn: boolean, interests: string[]): 
         child: Text("Interests:")
       }),
       Ul({
-        child: MapJoin(interests, interest => Li({
+        child: ForEach(interests, interest => Li({
           child: Text(interest)
         }))
       })
@@ -264,7 +264,7 @@ const userProfile = UserProfileView("Alice", true, ["Reading", "Hiking", "Coding
 console.log(render(userProfile));
 ```
 
-This example creates a user profile page that displays the user's name, online status, and a list of interests. It showcases how to use `IfThenElse` for conditional rendering and `MapJoin` for looping through an array, all within a structured layout.
+This example creates a user profile page that displays the user's name, online status, and a list of interests. It showcases how to use `IfThenElse` for conditional rendering and `ForEach` for looping through an array, all within a structured layout.
 
 These examples should help you understand how to use the core abstractions of Lambda.html to build robust and dynamic HTML structures.
 
@@ -361,23 +361,23 @@ console.log(render(dashboard));
 
 ### 2. **Interactive Data Table**
 
-Build a data table component that supports sorting and pagination. This component can utilize `MapJoin` to render rows based on data and `IfThenElse` for conditional rendering of table states.
+Build a data table component that supports sorting and pagination. This component can utilize `ForEach` to render rows based on data and `IfThenElse` for conditional rendering of table states.
 
 ```typescript
-import { Div, Button, Text, MapJoin, IfThenElse, render } from 'lambda.html';
+import { Div, Button, Text, ForEach, IfThenElse, render } from 'lambda.html';
 
 function DataTable(headers: string[], data: any[]): HTML {
   return Table({
     child: VStack([
       Thead({
         child: Tr({
-          child: MapJoin(headers, header => Th({ child: Text(header), class: "font-bold p-2" }))
+          child: ForEach(headers, header => Th({ child: Text(header), class: "font-bold p-2" }))
         })
       }),
       Tbody({
-        child: MapJoin(data, row => 
+        child: ForEach(data, row => 
           Tr({
-            child: MapJoin(Object.values(row), (value: any) => Td({ child: Text(value.toString()), class: "p-2" }))
+            child: ForEach(Object.values(row), (value: any) => Td({ child: Text(value.toString()), class: "p-2" }))
           })
         )
       })

@@ -3,7 +3,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Td = exports.Tbody = exports.Th = exports.Tr = exports.Thead = exports.Table = exports.Overlay = exports.FadeIn = exports.Lazy = exports.HStack = exports.VStackDiv = exports.VStack = exports.Repeat = exports.MapJoin2 = exports.MapJoin1 = exports.MapJoin = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Empty = exports.Text = exports.Select = exports.P = exports.Img = exports.Form = exports.Li = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Textarea = exports.Input = exports.Button = exports.Div = exports.El = exports.render = exports.id = void 0;
+exports.Td = exports.Tbody = exports.Th = exports.Tr = exports.Thead = exports.Table = exports.Overlay = exports.FadeIn = exports.Lazy = exports.HStack = exports.VStackDiv = exports.VStack = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Empty = exports.Text = exports.Select = exports.P = exports.Img = exports.Form = exports.Li = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Textarea = exports.Input = exports.Button = exports.Div = exports.El = exports.render = exports.id = void 0;
 function id(val) {
     return val;
 }
@@ -265,7 +265,7 @@ function Select({ id = undefined, class: className = undefined, htmx = undefined
         class: className,
         htmx,
         attributes: Object.assign(Object.assign({}, attributes), { name }),
-        child: MapJoin(options, option => El({
+        child: ForEach(options, option => El({
             el: "option",
             attributes: { "value": option.value, },
             child: Text(option.text),
@@ -328,33 +328,33 @@ function SwitchCase(cases, defaultComponent = Empty) {
     };
 }
 exports.SwitchCase = SwitchCase;
-function MapJoin(items, renderItem) {
+function ForEach(items, renderItem) {
     return () => Array.from(items).map(item => renderItem(item)()).join("\n");
     //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
-exports.MapJoin = MapJoin;
-function MapJoin1(items, renderItem) {
+exports.ForEach = ForEach;
+function ForEach1(items, renderItem) {
     return () => Array.from(items).map((item, index) => renderItem(item, index)()).join("\n");
     //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
     // return () => items.map((item, index) => renderItem(item, index)()).join("\n");
 }
-exports.MapJoin1 = MapJoin1;
-function MapJoin2(n, renderItem) {
+exports.ForEach1 = ForEach1;
+function ForEach2(n, renderItem) {
     return () => Array.from(range(0, n)).map((index) => renderItem(index)()).join("\n");
     //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
-exports.MapJoin2 = MapJoin2;
+exports.ForEach2 = ForEach2;
 function* range(low, high) {
     for (var i = low; i < high; i++) {
         yield i;
     }
 }
 function Repeat(times, content) {
-    return MapJoin(range(0, times), content);
+    return ForEach(range(0, times), content);
 }
 exports.Repeat = Repeat;
 function VStack(children = []) {
-    return MapJoin(children, id);
+    return ForEach(children, id);
 }
 exports.VStack = VStack;
 function VStackDiv(children, { id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, } = {}) {
@@ -379,7 +379,7 @@ function HStack({ id = undefined, class: className = undefined, htmx = undefined
         style,
         attributes,
         class: cls,
-        child: MapJoin(children, child => child)
+        child: ForEach(children, child => child)
     });
     // return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
 }

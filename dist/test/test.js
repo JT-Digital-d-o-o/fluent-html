@@ -57,10 +57,10 @@ runTestHTML((0, index_js_1.IfThenElse)(false, () => (0, index_js_1.Text)("true")
         });
     }
     // Do we care about indentation, etc. ?
-    runTestHTML((0, index_js_1.MapJoin1)(tasks, TaskView), `<div   ><input id="task-1" type="checkbox"  ></input>
+    runTestHTML((0, index_js_1.ForEach1)(tasks, TaskView), `<div   ><input id="task-1" type="checkbox"  ></input>
 1. Finish the report</div>
 <div   ><input id="task-2" type="checkbox"  ></input>
 2. Call the client</div>
 <div   ><input id="task-3" type="checkbox"  ></input>
-3. Prepare meeting agenda</div>`, "MapJoin");
+3. Prepare meeting agenda</div>`, "ForEach");
 }

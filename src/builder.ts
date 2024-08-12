@@ -432,7 +432,7 @@ export function Select({
     class: className,
     htmx,
     attributes: { ...attributes, name, },
-    child: MapJoin(options, option => El({ 
+    child: ForEach(options, option => El({ 
       el: "option", 
       attributes: { "value": option.value, },
       child: Text(option.text),
@@ -502,7 +502,7 @@ export function SwitchCase(
   };
 }
 
-export function MapJoin<T>(
+export function ForEach<T>(
   items: Iterable<T>,
   renderItem: (item: T) => HTML
 ): HTML {
@@ -510,7 +510,7 @@ export function MapJoin<T>(
   //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
-export function MapJoin1<T>(
+export function ForEach1<T>(
   items: Array<T>,
   renderItem: (item: T, index: number) => HTML
 ): HTML {
@@ -519,7 +519,7 @@ export function MapJoin1<T>(
   // return () => items.map((item, index) => renderItem(item, index)()).join("\n");
 }
 
-export function MapJoin2(
+export function ForEach2(
   n: number,
   renderItem: (index: number) => HTML
 ): HTML {
@@ -537,11 +537,11 @@ export function Repeat(
   times: number, 
   content: Thunk<HTML>
 ): HTML {
-  return MapJoin(range(0, times), content);
+  return ForEach(range(0, times), content);
 }
 
 export function VStack(children: HTML[] = []): HTML {
-  return MapJoin(children, id);
+  return ForEach(children, id);
 }
 
 export function VStackDiv(children: HTML[], {
@@ -578,7 +578,7 @@ export function HStack({
     style,
     attributes,
     class: cls,
-    child: MapJoin(children, child => child)
+    child: ForEach(children, child => child)
   });
   // return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
 }
