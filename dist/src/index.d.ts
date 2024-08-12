@@ -1,4 +1,4 @@
-export { render } from './builder.js';
+export { render, id, Thunk } from './builder.js';
 export { HtmlElement } from './builder.js';
 export { Div } from './builder.js';
 export { El } from './builder.js';
@@ -23,7 +23,6 @@ export { Ul, Li } from './builder.js';
 export { Select } from './builder.js';
 export { Textarea } from './builder.js';
 export { VStackDiv } from './builder.js';
-export { id } from './builder.js';
 export { Overlay, OverlayPosition } from './builder.js';
 export { FadeIn } from './builder.js';
 export { Table, Thead, Td, Th, Tr, Tbody } from './builder.js';

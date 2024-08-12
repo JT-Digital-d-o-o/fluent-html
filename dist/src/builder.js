@@ -8,7 +8,7 @@ export function render(html) {
     return html();
 }
 // The most basic building block of the framework.
-export function El({ el, id = undefined, class: className = undefined, htmx, attributes = undefined, child = undefined, style = undefined, toggles = undefined, } = {}) {
+export function El({ el, id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, style = undefined, toggles = undefined, } = {}) {
     function buildAttributes(attributes) {
         if (!attributes) {
             return "";

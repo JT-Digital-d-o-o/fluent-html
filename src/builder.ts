@@ -30,7 +30,7 @@ export function El({
   el, 
   id = undefined, 
   class: className = undefined,
-  htmx, 
+  htmx = undefined,
   attributes = undefined,
   child = undefined,
   style = undefined,
