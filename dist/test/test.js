@@ -18,6 +18,11 @@ const trigger1 = 'click';
 const trigger2 = 'click once, keyup delay:500ms';
 const trigger3 = 'every 1s';
 const trigger4 = 'load, click delay:1s';
+/// Typesafe Hx-Swap-s:
+const swap1 = "outerHTML";
+const swap2 = "innerHTML show:window:top";
+const swap3 = "innerHTML show:#another-div:top";
+const swap4 = "beforeend scroll:bottom";
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
 runTestHTML((0, index_js_1.Div)(), `<div   ></div>`, "Empty div");
 runTestHTML((0, index_js_1.Div)({
@@ -64,3 +69,7 @@ runTestHTML((0, index_js_1.IfThenElse)(false, () => (0, index_js_1.Text)("true")
 <div   ><input id="task-3" type="checkbox"  ></input>
 3. Prepare meeting agenda</div>`, "ForEach");
 }
+runTestHTML((0, index_js_1.HStack)({
+    children: [(0, index_js_1.Text)("a"), (0, index_js_1.Text)("b")]
+}), `<div class="flex "  >a
+b</div>`, "HStack");

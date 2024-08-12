@@ -562,14 +562,15 @@ export function VStackDiv(children: HTML[], {
   });
 }
 
-// @TODO: - Make it the same as other Elements (all things should be configurable)
-export function HStack({
-  id = undefined,
+export function HStack({ 
+  id = undefined, 
   class: className = undefined,
   htmx = undefined,
-  style = undefined,
   attributes = undefined,
-}: HtmlElement = {}, children: HTML[] = []): HTML {
+  children = undefined,
+  style = undefined,
+  toggles = undefined,
+}: { id?: string, class?: string, htmx?: HTMX, attributes?: Record<string, string>, children?: HTML[], style?: string, toggles?: string[] } = {}): HTML {
   // @NOTE: - Use `style` if you don't use tailwind
   const cls = `flex ${(className === undefined) ? "" : className}`;
   return Div({
@@ -578,9 +579,9 @@ export function HStack({
     style,
     attributes,
     class: cls,
-    child: ForEach(children, child => child)
+    toggles,
+    child: VStack(children) 
   });
-  // return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
 }
 
 export function Lazy(loadComponent: Thunk<HTML>): HTML {

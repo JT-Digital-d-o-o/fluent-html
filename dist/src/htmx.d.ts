@@ -1,7 +1,7 @@
 export type HxHttpMethod = "get" | "post" | "put" | "delete";
-export type HxSwap = "innerHTML" | "outerHTML" | "textContent" | "beforebegin" | "afterbegin" | "beforeend" | "afterend" | "none";
 export type HxTrigger = HxTriggerValue | `${HxTriggerValue}, ${HxTriggerValue}`;
 export type HxEncoding = "multipart/form-data";
+export type HxSwap = SwapType | `${SwapType} ${TransitionModifier | TimingModifier | TitleModifier | ScrollModifier | FocusScrollModifier}`;
 export type HxTarget = StandardCSSSelector | ExtendedCSSSelector;
 export interface HTMX {
     endpoint: string;
@@ -20,6 +20,12 @@ export declare function hx(endpoint: string, options?: {
     encoding?: HxEncoding;
     replaceUrl?: boolean;
 }): HTMX;
+type SwapType = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
+type TransitionModifier = `transition:${boolean}`;
+type TimingModifier = `swap:${string}` | `settle:${string}`;
+type TitleModifier = `ignoreTitle:${boolean}`;
+type ScrollModifier = `scroll:${'top' | 'bottom'}` | `show:${'top' | 'bottom' | `window:${'' | 'bottom'}` | `${string}:${'top' | 'bottom'}`}`;
+type FocusScrollModifier = `focus-scroll:${boolean}`;
 export declare function div(id: string): HxTarget;
 export declare function clss(clss: string): HxTarget;
 type StandardCSSSelector = string;

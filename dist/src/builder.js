@@ -369,8 +369,7 @@ function VStackDiv(children, { id = undefined, class: className = undefined, htm
     });
 }
 exports.VStackDiv = VStackDiv;
-// @TODO: - Make it the same as other Elements (all things should be configurable)
-function HStack({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, } = {}, children = []) {
+function HStack({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, children = undefined, style = undefined, toggles = undefined, } = {}) {
     // @NOTE: - Use `style` if you don't use tailwind
     const cls = `flex ${(className === undefined) ? "" : className}`;
     return Div({
@@ -379,9 +378,9 @@ function HStack({ id = undefined, class: className = undefined, htmx = undefined
         style,
         attributes,
         class: cls,
-        child: ForEach(children, child => child)
+        toggles,
+        child: VStack(children)
     });
-    // return () => `<div class="${clss}" style="display: flex;">${children.map(child => `<div>${child()}</div>`).join("")}</div>`;
 }
 exports.HStack = HStack;
 function Lazy(loadComponent) {

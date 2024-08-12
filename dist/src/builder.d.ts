@@ -74,7 +74,15 @@ export declare function ForEach2(n: number, renderItem: (index: number) => HTML)
 export declare function Repeat(times: number, content: Thunk<HTML>): HTML;
 export declare function VStack(children?: HTML[]): HTML;
 export declare function VStackDiv(children: HTML[], { id, class: className, htmx, style, attributes, }?: HtmlElement): HTML;
-export declare function HStack({ id, class: className, htmx, style, attributes, }?: HtmlElement, children?: HTML[]): HTML;
+export declare function HStack({ id, class: className, htmx, attributes, children, style, toggles, }?: {
+    id?: string;
+    class?: string;
+    htmx?: HTMX;
+    attributes?: Record<string, string>;
+    children?: HTML[];
+    style?: string;
+    toggles?: string[];
+}): HTML;
 export declare function Lazy(loadComponent: Thunk<HTML>): HTML;
 export declare function FadeIn({ id, class: className, htmx, attributes, style, child, }?: HtmlElement): HTML;
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';

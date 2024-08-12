@@ -1,4 +1,4 @@
-import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack } from "../src/index.js";
+import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -18,6 +18,12 @@ const trigger1: HxTrigger = 'click';
 const trigger2: HxTrigger = 'click once, keyup delay:500ms';
 const trigger3: HxTrigger = 'every 1s';
 const trigger4: HxTrigger = 'load, click delay:1s';
+
+/// Typesafe Hx-Swap-s:
+const swap1: HxSwap = "outerHTML";
+const swap2: HxSwap = "innerHTML show:window:top";
+const swap3: HxSwap = "innerHTML show:#another-div:top";
+const swap4: HxSwap = "beforeend scroll:bottom";
 
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
 
@@ -131,3 +137,12 @@ runTestHTML(
     "ForEach"
   );
 }
+
+runTestHTML(
+  HStack({
+    children: [Text("a"), Text("b")]
+  }),
+  `<div class="flex "  >a
+b</div>`,
+  "HStack"
+);
