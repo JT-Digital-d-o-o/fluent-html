@@ -1,4 +1,7 @@
-export function hx(endpoint, options = {}) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.clss = exports.div = exports.hx = void 0;
+function hx(endpoint, options = {}) {
     var _a;
     return {
         method: (_a = options.method) !== null && _a !== void 0 ? _a : "get",
@@ -10,9 +13,12 @@ export function hx(endpoint, options = {}) {
         encoding: options.encoding,
     };
 }
-export function div(id) {
+exports.hx = hx;
+function div(id) {
     return `#${id}`;
 }
-export function clss(clss) {
+exports.div = div;
+function clss(clss) {
     return `.${clss}`;
 }
+exports.clss = clss;
