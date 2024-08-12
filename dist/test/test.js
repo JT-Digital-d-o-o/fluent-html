@@ -38,3 +38,29 @@ runTestHTML((0, index_js_1.Div)({
         trigger: "load delay:1s"
     }),
 }), `<div  hx-post="/home" hx-target="#my-id" hx-trigger="load delay:1s" hx-swap="innerHTML"   ></div>`, "Div with htmx");
+runTestHTML((0, index_js_1.IfThen)(true, () => (0, index_js_1.Text)("true")), "true", "IfThen true");
+runTestHTML((0, index_js_1.IfThen)(false, () => (0, index_js_1.Text)("true")), "", "IfThen false");
+runTestHTML((0, index_js_1.IfThenElse)(true, () => (0, index_js_1.Text)("true"), () => (0, index_js_1.Text)("false")), "true", "IfThenElse true");
+runTestHTML((0, index_js_1.IfThenElse)(false, () => (0, index_js_1.Text)("true"), () => (0, index_js_1.Text)("false")), "false", "IfThenElse false");
+{
+    const tasks = [
+        "Finish the report",
+        "Call the client",
+        "Prepare meeting agenda",
+    ];
+    function TaskView(task, index) {
+        return (0, index_js_1.Div)({
+            child: (0, index_js_1.VStack)([
+                (0, index_js_1.Input)({ type: "checkbox", id: `task-${index + 1}` }),
+                (0, index_js_1.Text)(`${index + 1}. ${task}`),
+            ]),
+        });
+    }
+    // Do we care about indentation, etc. ?
+    runTestHTML((0, index_js_1.MapJoin1)(tasks, TaskView), `<div   ><input id="task-1" type="checkbox"  ></input>
+1. Finish the report</div>
+<div   ><input id="task-2" type="checkbox"  ></input>
+2. Call the client</div>
+<div   ><input id="task-3" type="checkbox"  ></input>
+3. Prepare meeting agenda</div>`, "MapJoin");
+}

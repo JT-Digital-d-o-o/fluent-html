@@ -220,7 +220,7 @@ function TaskView(task: string, index: number): HTML {
 
 // Create the list of tasks using MapJoin1
 function TasksView(tasks: string[]): HTML {
-  return MapJoin1(tasks, (task, index) => TaskView(task, index));
+  return MapJoin1(tasks, TaskView);
 }
 
 // Render the task list

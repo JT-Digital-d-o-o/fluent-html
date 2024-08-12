@@ -1,4 +1,4 @@
-import { Div, HTML, hx, HxTrigger, render } from "../src/index.js";
+import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, MapJoin1, render, Text, VStack } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -26,6 +26,7 @@ runTestHTML(
   `<div   ></div>`,
   "Empty div"
 );
+
 runTestHTML(
   Div({
     id: "my-div",
@@ -33,6 +34,7 @@ runTestHTML(
   `<div id="my-div"  ></div>`,
   "Div with id"
 );
+
 runTestHTML(
   Div({
     id: "my-div",
@@ -41,6 +43,7 @@ runTestHTML(
   `<div id="my-div" class="my-style"  ></div>`,
   "Div with id and class"
 );
+
 runTestHTML(
   Div({
     htmx: hx("/home"),
@@ -48,6 +51,7 @@ runTestHTML(
   `<div  hx-get="/home"      ></div>`,
   "Div with htmx [endpoint]"
 );
+
 runTestHTML(
   Div({
     htmx: hx("/home", {
@@ -60,3 +64,70 @@ runTestHTML(
   `<div  hx-post="/home" hx-target="#my-id" hx-trigger="load delay:1s" hx-swap="innerHTML"   ></div>`,
   "Div with htmx"
 );
+
+runTestHTML(
+  IfThen(
+    true,
+    () => Text("true"),
+  ),
+  "true",
+  "IfThen true"
+);
+
+runTestHTML(
+  IfThen(
+    false,
+    () => Text("true"),
+  ),
+  "",
+  "IfThen false"
+);
+
+runTestHTML(
+  IfThenElse(
+    true,
+    () => Text("true"),
+    () => Text("false"),
+  ),
+  "true",
+  "IfThenElse true"
+);
+
+runTestHTML(
+  IfThenElse(
+    false,
+    () => Text("true"),
+    () => Text("false"),
+  ),
+  "false",
+  "IfThenElse false"
+);
+
+{
+  const tasks = [
+    "Finish the report",
+    "Call the client",
+    "Prepare meeting agenda",
+  ];
+
+  function TaskView(task: string, index: number): HTML {
+    return Div({
+      child: VStack([
+        Input({ type: "checkbox", id: `task-${index + 1}` }),
+        Text(`${index + 1}. ${task}`),
+      ]),
+    });
+  }
+
+  // Do we care about indentation, etc. ?
+  runTestHTML(
+    MapJoin1(tasks, TaskView),
+    `<div   ><input id="task-1" type="checkbox"  ></input>
+1. Finish the report</div>
+<div   ><input id="task-2" type="checkbox"  ></input>
+2. Call the client</div>
+<div   ><input id="task-3" type="checkbox"  ></input>
+3. Prepare meeting agenda</div>`,
+    "MapJoin"
+  );
+}
