@@ -84,4 +84,5 @@ export declare function Thead({ id, class: className, htmx, style, attributes, c
 export declare function Tr({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
 export declare function Th({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
 export declare function Tbody({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
+export declare function Td({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
 export {};

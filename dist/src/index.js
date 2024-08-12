@@ -24,4 +24,5 @@ export { VStackDiv } from './builder.js';
 export { id } from './builder.js';
 export { Overlay } from './builder.js';
 export { FadeIn } from './builder.js';
+export { Table, Thead, Td, Th, Tr, Tbody } from './builder.js';
 export { hx, div, clss } from './htmx.js';

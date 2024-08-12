@@ -446,3 +446,14 @@ export function Tbody({ id = undefined, class: className = undefined, htmx = und
         child
     });
 }
+export function Td({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+    return El({
+        el: "td",
+        id,
+        class: className,
+        htmx,
+        style,
+        attributes,
+        child
+    });
+}

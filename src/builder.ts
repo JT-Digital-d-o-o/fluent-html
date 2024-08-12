@@ -736,3 +736,22 @@ export function Tbody({
     child
   });
 }
+
+export function Td({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  style = undefined,
+  attributes = undefined,
+  child = undefined
+}: HtmlElement = {}): HTML {
+  return El({
+    el: "td",
+    id,
+    class: className,
+    htmx,
+    style,
+    attributes,
+    child
+  });
+}
