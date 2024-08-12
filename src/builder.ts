@@ -611,12 +611,12 @@ export function FadeIn({
   });
 }
 
-type Position = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
+export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 
 export function Overlay(
   content: HTML,
   overlay: HTML,
-  position: Position = 'center'
+  position: OverlayPosition = 'center'
 ): HTML {
   return Div({
     style: "position: relative",
@@ -630,7 +630,7 @@ export function Overlay(
   });
 }
 
-const positionStyles: Record<Position, string> = {
+const positionStyles: Record<OverlayPosition, string> = {
   'top': 'top: 0; left: 50%; transform: translateX(-50%);',
   'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
   'top-left': 'top: 0; left: 0;',
@@ -641,3 +641,98 @@ const positionStyles: Record<Position, string> = {
   'right': 'top: 50%; right: 0; transform: translateY(-50%);',
   'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
 };
+
+export function Table({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  style = undefined,
+  attributes = undefined,
+  child = undefined
+}: HtmlElement = {}): HTML {
+  return El({
+    el: "table",
+    id,
+    class: className,
+    htmx,
+    style,
+    attributes,
+    child
+  });
+}
+
+export function Thead({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  style = undefined,
+  attributes = undefined,
+  child = undefined
+}: HtmlElement = {}): HTML {
+  return El({
+    el: "thead",
+    id,
+    class: className,
+    htmx,
+    style,
+    attributes,
+    child
+  });
+}
+
+export function Tr({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  style = undefined,
+  attributes = undefined,
+  child = undefined
+}: HtmlElement = {}): HTML {
+  return El({
+    el: "tr",
+    id,
+    class: className,
+    htmx,
+    style,
+    attributes,
+    child
+  });
+}
+
+export function Th({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  style = undefined,
+  attributes = undefined,
+  child = undefined
+}: HtmlElement = {}): HTML {
+  return El({
+    el: "th",
+    id,
+    class: className,
+    htmx,
+    style,
+    attributes,
+    child
+  });
+}
+
+export function Tbody({
+  id = undefined,
+  class: className = undefined,
+  htmx = undefined,
+  style = undefined,
+  attributes = undefined,
+  child = undefined
+}: HtmlElement = {}): HTML {
+  return El({
+    el: "tbody",
+    id,
+    class: className,
+    htmx,
+    style,
+    attributes,
+    child
+  });
+}

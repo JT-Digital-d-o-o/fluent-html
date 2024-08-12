@@ -29,7 +29,7 @@ To integrate Lambda.html into your project, follow these steps:
 
 2. **Import in your project**:
    ```typescript
-   import { Div, Button, Text } from 'lambda.html';
+   import { Div, Button, Text, render } from 'lambda.html';
    ```
 
 3. **Start building your HTML**:
@@ -46,7 +46,7 @@ To integrate Lambda.html into your project, follow these steps:
      child: myButton
    });
 
-   console.log(myPage());
+   console.log(render(myPage));
    ```
 
 This section provides a high-level overview of what Lambda.html is about, its main features, and how to get started quickly. The next sections will delve into detailed API documentation, comprehensive examples, and best practices.
@@ -62,7 +62,7 @@ To leverage the full power of composability, we recommend defining reusable comp
 Consider a scenario where you need to display user contact information repeatedly across different parts of your application. You can create a `ContactDetailsView` component to handle this:
 
 ```typescript
-import { Div, Img, P, A, Text, VStack } from 'lambda.html';
+import { Div, Img, P, A, Text, VStack, render } from 'lambda.html';
 
 // Reusable components are pure functions returning `HTML`.
 function ContactDetailsView(name: string, phone: string): HTML {
@@ -85,7 +85,7 @@ const contactInfo = VStack([
   ContactDetailsView("John Wick", "+9876543210"),
 ]);
 
-console.log(contactInfo());
+console.log(render(contactInfo));
 ```
 
 This component encapsulates the HTML necessary to display a contact card, including an image, name, and clickable phone number. It can be easily reused wherever needed in your application.
@@ -107,14 +107,14 @@ By following these guidelines and utilizing the composability of Lambda.html, de
 ## Examples
 
 ```typescript
-import { Div, Text } from 'lambda.html';
+import { Div, Text, render } from 'lambda.html';
 
 const greeting = Div({
   class: "p-4 text-center text-lg",
   child: Text("Hello, world!")
 });
 
-console.log(greeting());
+console.log(render(greeting));
 ```
 
 This example creates a `div` with padding and centered text, demonstrating how easy it is to apply Tailwind CSS classes.
@@ -124,7 +124,7 @@ This example creates a `div` with padding and centered text, demonstrating how e
 Lambda.html provides `IfThen` and `IfThenElse` for conditional rendering of HTML elements. Here's how you can use these functions:
 
 ```typescript
-import { Div, Text, IfThen, IfThenElse } from 'lambda.html';
+import { Div, Text, IfThen, IfThenElse, render } from 'lambda.html';
 
 function UserProfile(state: string | undefined): HTML {
   return IfThenElse(
@@ -135,7 +135,7 @@ function UserProfile(state: string | undefined): HTML {
 );
 
 const profile = UserProfile("Alice");
-console.log(profile());
+console.log(render(profile));
 ```
 
 This example shows how to conditionally render different text based on whether the user is logged in.
@@ -143,7 +143,7 @@ This example shows how to conditionally render different text based on whether t
 ### Conditional Rendering with SwitchCase
 
 ```typescript
-import { Text, SwitchCase } from 'lambda.html';
+import { Text, SwitchCase, render } from 'lambda.html';
 
 // Simulated user data
 const user = {
@@ -171,7 +171,7 @@ const greeting = SwitchCase(
 );
 
 // Render the component
-console.log(greeting());
+console.log(render(greeting));
 ```
 
 This approach makes the code cleaner and more maintainable, especially when dealing with multiple conditions that affect what should be rendered. The `SwitchCase` function encapsulates the conditional logic, making the main component code more straightforward and focused on defining what to render rather than how to select what to render.
@@ -181,7 +181,7 @@ This approach makes the code cleaner and more maintainable, especially when deal
 `MapJoin` is used to render lists of elements. It's particularly useful for creating dynamic lists or tables. Here's an example:
 
 ```typescript
-import { Ul, Li, MapJoin, Text } from 'lambda.html';
+import { Ul, Li, MapJoin, Text, render } from 'lambda.html';
 
 const items = ["Apple", "Banana", "Cherry"];
 
@@ -191,7 +191,7 @@ const itemList = Ul({
   }))
 });
 
-console.log(itemList());
+console.log(render(itemList));
 ```
 
 This example creates an unordered list of fruit names, demonstrating how `MapJoin` can be used to iterate over an array of data.
@@ -199,7 +199,7 @@ This example creates an unordered list of fruit names, demonstrating how `MapJoi
 Sometimes, it is useful to know the index of the item. Use `MapJoin1` in those cases:
 
 ```typescript
-import { Div, Input, Label, MapJoin1, Text } from 'lambda.html';
+import { Div, Input, Label, MapJoin1, Text, render } from 'lambda.html';
 
 // Example tasks array
 const tasks = [
@@ -224,7 +224,8 @@ function TasksView(tasks: string[]): HTML {
 }
 
 // Render the task list
-console.log(TasksView(tasks)());
+const view = TasksView(tasks);
+console.log(render(view));
 ```
 
 ### Combined Example: A Dynamic User Profile
@@ -232,7 +233,7 @@ console.log(TasksView(tasks)());
 Let's combine these concepts to create a more complex example:
 
 ```typescript
-import { Div, H1, P, IfThenElse, MapJoin, Text } from 'lambda.html';
+import { Div, H1, P, IfThenElse, MapJoin, Text, render } from 'lambda.html';
 
 function UserProfileView(name: string, loggedIn: boolean, interests: string[]): HTML {
   return Div({
@@ -260,7 +261,7 @@ function UserProfileView(name: string, loggedIn: boolean, interests: string[]): 
 }
 
 const userProfile = UserProfileView("Alice", true, ["Reading", "Hiking", "Coding"]);
-console.log(userProfile());
+console.log(render(userProfile));
 ```
 
 This example creates a user profile page that displays the user's name, online status, and a list of interests. It showcases how to use `IfThenElse` for conditional rendering and `MapJoin` for looping through an array, all within a structured layout.
@@ -272,7 +273,7 @@ These examples should help you understand how to use the core abstractions of La
 HTMX allows you to add interactivity to your web pages without writing JavaScript. Here's an example of how to use HTMX Lambda.html to handle form submission:
 
 ```typescript
-import { Form, Input, Button, Text } from 'lambda.html';
+import { Form, Input, Button, Text, render } from 'lambda.html';
 
 const interactiveForm = Form({
   action: "/submit",
@@ -295,7 +296,7 @@ const interactiveForm = Form({
   ])
 });
 
-console.log(interactiveForm());
+console.log(render(interactiveForm));
 ```
 
 This example creates a form that submits data to "/submit-form" using a POST request when the form is submitted, and the response will replace the form element in the DOM.
@@ -305,7 +306,7 @@ This example creates a form that submits data to "/submit-form" using a POST req
 Tailwind CSS is a utility-first CSS framework that can be used seamlessly with Lambda.html. Here's how you can style your elements using Tailwind CSS classes:
 
 ```typescript
-import { Div, H1, P, Text } from 'lambda.html';
+import { Div, H1, P, Text, render } from 'lambda.html';
 
 const styledPage = Div({
   class: "bg-gray-200 p-4",
@@ -321,7 +322,7 @@ const styledPage = Div({
   ])
 });
 
-console.log(styledPage());
+console.log(render(styledPage));
 ```
 
 ### 1. **Dashboard Layout**
@@ -329,7 +330,7 @@ console.log(styledPage());
 Create a dashboard layout with a sidebar, header, and content area. This example can demonstrate how to use `Div`, `VStack`, and `HStack` to create a layout structure, and how to integrate interactive elements using HTMX.
 
 ```typescript
-import { Div, VStack, HStack, Button, Text } from 'lambda.html';
+import { Div, VStack, HStack, Button, Text, render } from 'lambda.html';
 
 function DashboardLayout(sidebarContent: HTML, mainContent: HTML): HTML {
   return Div({
@@ -355,7 +356,7 @@ function MyDashboard(): HTML {
 }
 
 const dashboard = MyDashboard();
-console.log(dashboard());
+console.log(render(dashboard));
 ```
 
 ### 2. **Interactive Data Table**
@@ -363,19 +364,23 @@ console.log(dashboard());
 Build a data table component that supports sorting and pagination. This component can utilize `MapJoin` to render rows based on data and `IfThenElse` for conditional rendering of table states.
 
 ```typescript
-import { Div, Button, Text, MapJoin, IfThenElse } from 'lambda.html';
+import { Div, Button, Text, MapJoin, IfThenElse, render } from 'lambda.html';
 
 function DataTable(headers: string[], data: any[]): HTML {
-  return Div({
+  return Table({
     child: VStack([
-      Div({
-        child: MapJoin(headers, header => Div({ child: Text(header), class: "font-bold p-2" }))
-      }),
-      MapJoin(data, row => 
-        Div({
-          child: MapJoin(Object.values(row), value => Div({ child: Text(value.toString()), class: "p-2" }))
+      Thead({
+        child: Tr({
+          child: MapJoin(headers, header => Th({ child: Text(header), class: "font-bold p-2" }))
         })
-      )
+      }),
+      Tbody({
+        child: MapJoin(data, row => 
+          Tr({
+            child: MapJoin(Object.values(row), (value: any) => Td({ child: Text(value.toString()), class: "p-2" }))
+          })
+        )
+      })
     ])
   });
 }
@@ -386,5 +391,6 @@ const data = [
   { Name: "Bob", Age: 25, Location: "California" }
 ];
 
-console.log(DataTable(headers, data)());
+const table = DataTable(headers, data);
+console.log(render(table));
 ```

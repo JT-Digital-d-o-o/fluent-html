@@ -1,4 +1,4 @@
-import { Div, HTML, hx, render } from "../src/index.js";
+import { Div, HTML, hx, HxTrigger, render } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -12,6 +12,12 @@ function runTestHTML(got: HTML, expected: string, test: string) {
   const renderedHTML = render(got);
   runTest(renderedHTML, expected, test);
 }
+
+/// Typesafe HxTrigger-s:
+const trigger1: HxTrigger = 'click';
+const trigger2: HxTrigger = 'click once, keyup delay:500ms';
+const trigger3: HxTrigger = 'every 1s';
+const trigger4: HxTrigger = 'load, click delay:1s';
 
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
 

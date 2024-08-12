@@ -77,6 +77,11 @@ export declare function VStackDiv(children: HTML[], { id, class: className, htmx
 export declare function HStack({ id, class: className, htmx, style, attributes, }?: HtmlElement, children?: HTML[]): HTML;
 export declare function Lazy(loadComponent: Thunk<HTML>): HTML;
 export declare function FadeIn({ id, class: className, htmx, attributes, style, child, }?: HtmlElement): HTML;
-type Position = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
-export declare function Overlay(content: HTML, overlay: HTML, position?: Position): HTML;
+export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
+export declare function Overlay(content: HTML, overlay: HTML, position?: OverlayPosition): HTML;
+export declare function Table({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
+export declare function Thead({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
+export declare function Tr({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
+export declare function Th({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
+export declare function Tbody({ id, class: className, htmx, style, attributes, child }?: HtmlElement): HTML;
 export {};

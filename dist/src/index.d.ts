@@ -1,4 +1,5 @@
 export { render } from './builder.js';
+export { HtmlElement } from './builder.js';
 export { Div } from './builder.js';
 export { El } from './builder.js';
 export { Form } from './builder.js';
@@ -23,6 +24,6 @@ export { Select } from './builder.js';
 export { Textarea } from './builder.js';
 export { VStackDiv } from './builder.js';
 export { id } from './builder.js';
-export { Overlay } from './builder.js';
+export { Overlay, OverlayPosition } from './builder.js';
 export { FadeIn } from './builder.js';
 export { hx, HTMX, HxSwap, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, div, clss } from './htmx.js';

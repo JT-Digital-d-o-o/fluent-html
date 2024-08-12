@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_js_1 = require("../src/index.js");
+import { Div, hx, render } from "../src/index.js";
 function runTest(got, expected, test) {
     if (expected === got) {
         console.log(`✅ ${test} passed`);
@@ -10,23 +8,28 @@ function runTest(got, expected, test) {
     }
 }
 function runTestHTML(got, expected, test) {
-    const renderedHTML = (0, index_js_1.render)(got);
+    const renderedHTML = render(got);
     runTest(renderedHTML, expected, test);
 }
+/// Typesafe HxTrigger-s:
+const trigger1 = 'click';
+const trigger2 = 'click once, keyup delay:500ms';
+const trigger3 = 'every 1s';
+const trigger4 = 'load, click delay:1s';
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
-runTestHTML((0, index_js_1.Div)(), `<div   ></div>`, "Empty div");
-runTestHTML((0, index_js_1.Div)({
+runTestHTML(Div(), `<div   ></div>`, "Empty div");
+runTestHTML(Div({
     id: "my-div",
 }), `<div id="my-div"  ></div>`, "Div with id");
-runTestHTML((0, index_js_1.Div)({
+runTestHTML(Div({
     id: "my-div",
     class: "my-style",
 }), `<div id="my-div" class="my-style"  ></div>`, "Div with id and class");
-runTestHTML((0, index_js_1.Div)({
-    htmx: (0, index_js_1.hx)("/home"),
+runTestHTML(Div({
+    htmx: hx("/home"),
 }), `<div  hx-get="/home"      ></div>`, "Div with htmx [endpoint]");
-runTestHTML((0, index_js_1.Div)({
-    htmx: (0, index_js_1.hx)("/home", {
+runTestHTML(Div({
+    htmx: hx("/home", {
         method: "post",
         swap: "innerHTML",
         target: "#my-id",
