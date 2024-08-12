@@ -24,12 +24,11 @@ export declare function Input({ id, class: className, htmx, style, type, placeho
     name?: string;
     required?: boolean;
 }): HTML;
-export declare function Textarea({ id, class: className, htmx, placeholder, name, rows, cols, attributes, child, }?: HtmlElement & {
+export declare function Textarea({ id, class: className, htmx, placeholder, name, rows, cols, attributes, toggles, child, }?: HtmlElement & {
     placeholder?: string;
     name?: string;
     rows?: number;
     cols?: number;
-    required?: boolean;
 }): HTML;
 export declare function Label({ id, class: className, htmx, attributes, child, }?: HtmlElement): HTML;
 export declare function H1({ id, class: className, htmx, attributes, child, }?: HtmlElement): HTML;

@@ -106,16 +106,16 @@ function Input({ id = undefined, class: className = undefined, htmx = undefined,
     });
 }
 exports.Input = Input;
-function Textarea({ id = undefined, class: className = undefined, htmx = undefined, placeholder = undefined, name = undefined, rows = undefined, cols = undefined, attributes = undefined, child = undefined, } = {}) {
+function Textarea({ id = undefined, class: className = undefined, htmx = undefined, placeholder = undefined, name = undefined, rows = undefined, cols = undefined, attributes = undefined, toggles = undefined, child = undefined, } = {}) {
     const textareaAttributes = Object.assign({ placeholder,
-        name, rows: rows.toString(), cols: cols.toString() }, attributes);
+        name, rows: rows === null || rows === void 0 ? void 0 : rows.toString(), cols: cols === null || cols === void 0 ? void 0 : cols.toString() }, attributes);
     return El({
         el: "textarea",
         id,
         class: className,
         htmx,
         attributes: textareaAttributes,
-        toggles: ["required"],
+        toggles: toggles,
         child
     });
 }

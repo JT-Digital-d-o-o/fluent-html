@@ -1,4 +1,4 @@
-import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack } from "../src/index.js";
+import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack, Textarea } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -145,4 +145,10 @@ runTestHTML(
   `<div class="flex "  >a
 b</div>`,
   "HStack"
+);
+
+runTestHTML(
+  Textarea({ id: "dodatno", name: "dodatno" }),
+  `<textarea id="dodatno" name="dodatno"  ></textarea>`,
+  "Textarea"
 );

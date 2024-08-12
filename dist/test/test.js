@@ -73,3 +73,4 @@ runTestHTML((0, index_js_1.HStack)({
     children: [(0, index_js_1.Text)("a"), (0, index_js_1.Text)("b")]
 }), `<div class="flex "  >a
 b</div>`, "HStack");
+runTestHTML((0, index_js_1.Textarea)({ id: "dodatno", name: "dodatno" }), `<textarea id="dodatno" name="dodatno"  ></textarea>`, "Textarea");

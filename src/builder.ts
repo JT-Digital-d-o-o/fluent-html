@@ -171,13 +171,14 @@ export function Textarea({
   rows = undefined,
   cols = undefined,
   attributes = undefined,
+  toggles = undefined,
   child = undefined,
-}: HtmlElement & { placeholder?: string, name?: string, rows?: number, cols?: number, required?: boolean } = {}): HTML {
+}: HtmlElement & { placeholder?: string, name?: string, rows?: number, cols?: number } = {}): HTML {
   const textareaAttributes = {
     placeholder,
     name,
-    rows: rows.toString(),
-    cols: cols.toString(),
+    rows: rows?.toString(),
+    cols: cols?.toString(),
     ...attributes,
   };
   return El({
@@ -186,7 +187,7 @@ export function Textarea({
     class: className,
     htmx,
     attributes: textareaAttributes,
-    toggles: ["required"],
+    toggles: toggles,
     child
   });
 }
