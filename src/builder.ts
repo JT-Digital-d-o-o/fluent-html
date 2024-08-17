@@ -157,7 +157,6 @@ export function Input({
     htmx,
     style,
     attributes: inputAttributes,
-    // toggles: ["required"],
     child,
   });
 }
