@@ -101,7 +101,6 @@ function Input({ id = undefined, class: className = undefined, htmx = undefined,
         htmx,
         style,
         attributes: inputAttributes,
-        // toggles: ["required"],
         child,
     });
 }
@@ -289,9 +288,9 @@ exports.Empty = Empty;
 //    ```typescript
 //    function IfThenElse(
 //      condition: Thunk<boolean>, 
-//      thenView: Thunk<HTML>, 
-//      elseView: Thunk<HTML>
-//    ): HTML {
+//      thenView: Thunk<View>, 
+//      elseView: Thunk<View>
+//    ): View {
 //      return condition() ? thenView() : elseView();
 //    }
 //    ```
@@ -299,9 +298,9 @@ exports.Empty = Empty;
 //    ```typescript
 //    function IfThenElse(
 //      condition: boolean, 
-//      thenView: Thunk<HTML>, 
-//      elseView: Thunk<HTML>
-//    ): HTML {
+//      thenView: Thunk<View>, 
+//      elseView: Thunk<View>
+//    ): View {
 //      return condition ? thenView() : elseView();
 //    }
 //

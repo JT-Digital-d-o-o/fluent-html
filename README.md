@@ -62,7 +62,7 @@ For effective composability, define reusable components as pure functions. Hereâ
 import { Div, Img, P, A, Text, HStack, VStack, render } from 'lambda.html';
 
 // Define a reusable component as a pure function.
-function ContactDetailsView(name: string, phone: string): HTML {
+function ContactDetailsView(name: string, phone: string): View {
   return Div({
     child: HStack([
       Img({ src: "call.svg" }),
@@ -125,7 +125,7 @@ Lambda.html provides `IfThen` and `IfThenElse` for conditional rendering of HTML
 ```typescript
 import { Div, Text, IfThen, IfThenElse, render } from 'lambda.html';
 
-function UserProfile(state: string | undefined): HTML {
+function UserProfile(state: string | undefined): View {
   return IfThenElse(
     state,
     () => Text(`Welcome back, ${state}!`),
@@ -208,7 +208,7 @@ const tasks = [
 ];
 
 // Function to render a single task
-function TaskView(task: string, index: number): HTML {
+function TaskView(task: string, index: number): View {
   return Div({
     child: VStack([
       Input({ type: "checkbox", id: `task-${index + 1}` }),
@@ -218,7 +218,7 @@ function TaskView(task: string, index: number): HTML {
 }
 
 // Create the list of tasks using ForEach1
-function TasksView(tasks: string[]): HTML {
+function TasksView(tasks: string[]): View {
   return ForEach1(tasks, TaskView);
 }
 
@@ -234,7 +234,7 @@ Let's combine these concepts to create a more complex example:
 ```typescript
 import { Div, H1, P, IfThenElse, ForEach, Text, render } from 'lambda.html';
 
-function UserProfileView(name: string, loggedIn: boolean, interests: string[]): HTML {
+function UserProfileView(name: string, loggedIn: boolean, interests: string[]): View {
   return Div({
     child: VStack([
       H1({
@@ -323,7 +323,7 @@ Create a dashboard layout with a sidebar, header, and content area. This example
 ```typescript
 import { Div, VStack, HStack, Button, Text, render } from 'lambda.html';
 
-function DashboardLayout(sidebarContent: HTML, mainContent: HTML): HTML {
+function DashboardLayout(sidebarContent: View, mainContent: View): View {
   return Div({
     class: "min-h-screen flex",
     child: HStack({
@@ -340,7 +340,7 @@ function DashboardLayout(sidebarContent: HTML, mainContent: HTML): HTML {
   });
 }
 
-function MyDashboard(): HTML {
+function MyDashboard(): View {
   return DashboardLayout(
     VStack([
       Button({ child: Text("Home"), class: "p-2 hover:bg-gray-700" }),
@@ -361,7 +361,7 @@ Build a data table component that supports sorting and pagination. This componen
 ```typescript
 import { Div, Button, Text, ForEach, IfThenElse, render } from 'lambda.html';
 
-function DataTable(headers: string[], data: any[]): HTML {
+function DataTable(headers: string[], data: any[]): View {
   return Table({
     child: VStack([
       Thead({

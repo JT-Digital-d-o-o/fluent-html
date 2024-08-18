@@ -9,14 +9,14 @@ export function id<T>(val: T): T {
   return val;
 }
 
-export type HTML = Thunk<string>;
-export function render(html: HTML): string {
+export type View = Thunk<string>;
+export function render(html: View): string {
   return html();
 }
 
 export interface HtmlElement {
   el?: string,
-  child?: HTML;
+  child?: View;
   id?: string;
   class?: string;
   attributes?: Record<string, string>;
@@ -35,7 +35,7 @@ export function El({
   child = undefined,
   style = undefined,
   toggles = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   function buildAttributes(attributes: Record<string, string | undefined> | undefined): string {
     if (!attributes) { return ""; }
     return Object.entries(attributes)
@@ -95,7 +95,7 @@ export function Div({
   style = undefined,
   attributes = undefined,
   child = undefined
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "div",
     id,
@@ -115,7 +115,7 @@ export function Button({
   type = "button",
   attributes = undefined,
   child = undefined,
-}: HtmlElement & { type?: string } = {}): HTML {
+}: HtmlElement & { type?: string } = {}): View {
   const buttonAttributes = {
     ...attributes,
     type
@@ -143,7 +143,7 @@ export function Input({
   name = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement & { type?: string, placeholder?: string, name?: string, required?: boolean } = {}): HTML {
+}: HtmlElement & { type?: string, placeholder?: string, name?: string, required?: boolean } = {}): View {
   const inputAttributes = {
     type,
     placeholder,
@@ -172,7 +172,7 @@ export function Textarea({
   attributes = undefined,
   toggles = undefined,
   child = undefined,
-}: HtmlElement & { placeholder?: string, name?: string, rows?: number, cols?: number } = {}): HTML {
+}: HtmlElement & { placeholder?: string, name?: string, rows?: number, cols?: number } = {}): View {
   const textareaAttributes = {
     placeholder,
     name,
@@ -197,7 +197,7 @@ export function Label({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "label",
     id,
@@ -214,7 +214,7 @@ export function H1({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "h1",
     id,
@@ -231,7 +231,7 @@ export function H2({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "h2",
     id,
@@ -248,7 +248,7 @@ export function H3({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "h3",
     id,
@@ -264,7 +264,7 @@ export function H4({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "h4",
     id,
@@ -281,7 +281,7 @@ export function Span({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "span",
     id,
@@ -299,7 +299,7 @@ export function A({
   href = "",
   attributes = undefined,
   child = undefined,
-}: HtmlElement & { href?: string } = {}): HTML {
+}: HtmlElement & { href?: string } = {}): View {
   const anchorAttributes = {
     href,
     ...attributes
@@ -320,7 +320,7 @@ export function Ul({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "ul",
     id,
@@ -337,7 +337,7 @@ export function Li({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "li",
     id,
@@ -356,7 +356,7 @@ export function Form({
   method = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement & { action?: string, method?: string } = {}): HTML {
+}: HtmlElement & { action?: string, method?: string } = {}): View {
   const formAttributes = {
     action,
     method,
@@ -381,7 +381,7 @@ export function Img({
   style = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement & { src?: string, alt?: string } = {}): HTML {
+}: HtmlElement & { src?: string, alt?: string } = {}): View {
   const imgAttributes = {
     src,
     alt,
@@ -404,7 +404,7 @@ export function P({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "p",
     id,
@@ -425,7 +425,7 @@ export function Select({
   name = undefined,
   options = [],
   attributes = undefined,
-}: HtmlElement & { name?: string, options?: Option[] } = {}): HTML {
+}: HtmlElement & { name?: string, options?: Option[] } = {}): View {
   return El({
     el: "select",
     id,
@@ -443,11 +443,11 @@ export function Select({
 
 // @TODO: - Think about a way to automatically lift strings.
 // Probably possible to do with JS's weak typing, but might not be worth it.
-export function Text(text: string = ""): HTML {
+export function Text(text: string = ""): View {
   return () => text;
 }
 
-export function Empty(): HTML {
+export function Empty(): View {
   return Text();
 }
 
@@ -456,9 +456,9 @@ export function Empty(): HTML {
 //    ```typescript
 //    function IfThenElse(
 //      condition: Thunk<boolean>, 
-//      thenView: Thunk<HTML>, 
-//      elseView: Thunk<HTML>
-//    ): HTML {
+//      thenView: Thunk<View>, 
+//      elseView: Thunk<View>
+//    ): View {
 //      return condition() ? thenView() : elseView();
 //    }
 //    ```
@@ -466,9 +466,9 @@ export function Empty(): HTML {
 //    ```typescript
 //    function IfThenElse(
 //      condition: boolean, 
-//      thenView: Thunk<HTML>, 
-//      elseView: Thunk<HTML>
-//    ): HTML {
+//      thenView: Thunk<View>, 
+//      elseView: Thunk<View>
+//    ): View {
 //      return condition ? thenView() : elseView();
 //    }
 //
@@ -478,20 +478,20 @@ export function Empty(): HTML {
 // side-effects, the semantics might matter.
 export function IfThenElse(
   condition: boolean,
-  thenView: Thunk<HTML>,
-  elseView: Thunk<HTML>,
-): HTML {
+  thenView: Thunk<View>,
+  elseView: Thunk<View>,
+): View {
   return condition ? thenView() : elseView();
 }
 
-export function IfThen(condition: boolean, content: Thunk<HTML>): HTML {
+export function IfThen(condition: boolean, content: Thunk<View>): View {
   return condition ? content() : Empty();
 }
 
 export function SwitchCase(
-  cases: { condition: Thunk<boolean>, component: HTML }[],
-  defaultComponent: Thunk<HTML> = Empty
-): HTML {
+  cases: { condition: Thunk<boolean>, component: View }[],
+  defaultComponent: Thunk<View> = Empty
+): View {
   return () => {
     for (const caseItem of cases) {
       if (caseItem.condition()) {
@@ -504,16 +504,16 @@ export function SwitchCase(
 
 export function ForEach<T>(
   items: Iterable<T>,
-  renderItem: (item: T) => HTML
-): HTML {
+  renderItem: (item: T) => View
+): View {
   return () => Array.from(items).map(item => renderItem(item)()).join("\n");
   //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function ForEach1<T>(
   items: Array<T>,
-  renderItem: (item: T, index: number) => HTML
-): HTML {
+  renderItem: (item: T, index: number) => View
+): View {
   return () => Array.from(items).map((item, index) => renderItem(item, index)()).join("\n");
   //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
   // return () => items.map((item, index) => renderItem(item, index)()).join("\n");
@@ -521,8 +521,8 @@ export function ForEach1<T>(
 
 export function ForEach2(
   n: number,
-  renderItem: (index: number) => HTML
-): HTML {
+  renderItem: (index: number) => View
+): View {
   return () => Array.from(range(0, n)).map((index) => renderItem(index)()).join("\n");
   //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
@@ -535,22 +535,22 @@ function* range(low: number, high: number) {
 
 export function Repeat(
   times: number, 
-  content: Thunk<HTML>
-): HTML {
+  content: Thunk<View>
+): View {
   return ForEach(range(0, times), content);
 }
 
-export function VStack(children: HTML[] = []): HTML {
+export function VStack(children: View[] = []): View {
   return ForEach(children, id);
 }
 
-export function VStackDiv(children: HTML[], {
+export function VStackDiv(children: View[], {
   id = undefined,
   class: className = undefined,
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "div",
     id,
@@ -570,7 +570,7 @@ export function HStack({
   children = undefined,
   style = undefined,
   toggles = undefined,
-}: { id?: string, class?: string, htmx?: HTMX, attributes?: Record<string, string>, children?: HTML[], style?: string, toggles?: string[] } = {}): HTML {
+}: { id?: string, class?: string, htmx?: HTMX, attributes?: Record<string, string>, children?: View[], style?: string, toggles?: string[] } = {}): View {
   // @NOTE: - Use `style` if you don't use tailwind
   const cls = `flex ${(className === undefined) ? "" : className}`;
   return Div({
@@ -584,8 +584,8 @@ export function HStack({
   });
 }
 
-export function Lazy(loadComponent: Thunk<HTML>): HTML {
-  let cachedComponent: HTML | null = null;
+export function Lazy(loadComponent: Thunk<View>): View {
+  let cachedComponent: View | null = null;
   return () => {
     if (!cachedComponent) {
       cachedComponent = loadComponent();
@@ -601,7 +601,7 @@ export function FadeIn({
   attributes = undefined,
   style = undefined,
   child = undefined,
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return Div({
     id,
     class: `fade-in-05s ${className}`,
@@ -615,10 +615,10 @@ export function FadeIn({
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 
 export function Overlay(
-  content: HTML,
-  overlay: HTML,
+  content: View,
+  overlay: View,
   position: OverlayPosition = 'center'
-): HTML {
+): View {
   return Div({
     style: "position: relative",
     child: VStack([
@@ -650,7 +650,7 @@ export function Table({
   style = undefined,
   attributes = undefined,
   child = undefined
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "table",
     id,
@@ -669,7 +669,7 @@ export function Thead({
   style = undefined,
   attributes = undefined,
   child = undefined
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "thead",
     id,
@@ -688,7 +688,7 @@ export function Tr({
   style = undefined,
   attributes = undefined,
   child = undefined
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "tr",
     id,
@@ -707,7 +707,7 @@ export function Th({
   style = undefined,
   attributes = undefined,
   child = undefined
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "th",
     id,
@@ -726,7 +726,7 @@ export function Tbody({
   style = undefined,
   attributes = undefined,
   child = undefined
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "tbody",
     id,
@@ -745,7 +745,7 @@ export function Td({
   style = undefined,
   attributes = undefined,
   child = undefined
-}: HtmlElement = {}): HTML {
+}: HtmlElement = {}): View {
   return El({
     el: "td",
     id,

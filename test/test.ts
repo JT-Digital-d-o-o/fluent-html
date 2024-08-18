@@ -1,4 +1,4 @@
-import { Div, HTML, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack, Textarea } from "../src/index.js";
+import { Div, View, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack, Textarea } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -8,7 +8,7 @@ function runTest<T>(got: T, expected: T, test: string) {
   }
 }
 
-function runTestHTML(got: HTML, expected: string, test: string) {
+function runTestHTML(got: View, expected: string, test: string) {
   const renderedHTML = render(got);
   runTest(renderedHTML, expected, test);
 }
@@ -116,7 +116,7 @@ runTestHTML(
     "Prepare meeting agenda",
   ];
 
-  function TaskView(task: string, index: number): HTML {
+  function TaskView(task: string, index: number): View {
     return Div({
       child: VStack([
         Input({ type: "checkbox", id: `task-${index + 1}` }),

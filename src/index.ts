@@ -4,7 +4,7 @@ export { Div } from './builder.js';
 export { El } from './builder.js'
 export { Form } from './builder.js';
 export { H1, H2, H3, H4 } from './builder.js';
-export { HTML } from './builder.js';
+export { View } from './builder.js';
 export { IfThen, IfThenElse, SwitchCase } from './builder.js';
 export { Input } from './builder.js';
 export { Label } from './builder.js';
