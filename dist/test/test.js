@@ -23,6 +23,8 @@ const swap1 = "outerHTML";
 const swap2 = "innerHTML show:window:top";
 const swap3 = "innerHTML show:#another-div:top";
 const swap4 = "beforeend scroll:bottom";
+runTest("#my-target", (0, index_js_1.div)("my-target"), "htmx target - div");
+runTest(".my-target", (0, index_js_1.clss)("my-target"), "htmx target - class");
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
 runTestHTML((0, index_js_1.Div)(), `<div   ></div>`, "Empty div");
 runTestHTML((0, index_js_1.Div)({
@@ -74,3 +76,4 @@ runTestHTML((0, index_js_1.HStack)({
 }), `<div class="flex "  >a
 b</div>`, "HStack");
 runTestHTML((0, index_js_1.Textarea)({ id: "dodatno", name: "dodatno" }), `<textarea id="dodatno" name="dodatno"  ></textarea>`, "Textarea");
+runTestHTML((0, index_js_1.Input)({ toggles: ["required"] }), `<input  required></input>`, "Required");

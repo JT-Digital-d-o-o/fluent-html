@@ -14,11 +14,11 @@ export interface HtmlElement {
     toggles?: string[];
 }
 export declare function El({ el, id, class: className, htmx, attributes, child, style, toggles, }?: HtmlElement): View;
-export declare function Div({ id, class: className, htmx, style, attributes, child }?: HtmlElement): View;
-export declare function Button({ id, class: className, htmx, style, type, attributes, child, }?: HtmlElement & {
+export declare function Div({ id, class: className, htmx, style, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Button({ id, class: className, htmx, style, type, attributes, child, toggles, }?: HtmlElement & {
     type?: string;
 }): View;
-export declare function Input({ id, class: className, htmx, style, type, placeholder, name, attributes, child, }?: HtmlElement & {
+export declare function Input({ id, class: className, htmx, style, type, placeholder, name, attributes, child, toggles, }?: HtmlElement & {
     type?: string;
     placeholder?: string;
     name?: string;
@@ -30,32 +30,32 @@ export declare function Textarea({ id, class: className, htmx, placeholder, name
     rows?: number;
     cols?: number;
 }): View;
-export declare function Label({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function H1({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function H2({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function H3({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function H4({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function Span({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function A({ id, class: className, htmx, href, attributes, child, }?: HtmlElement & {
+export declare function Label({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function H1({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function H2({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function H3({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function H4({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Span({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function A({ id, class: className, htmx, href, attributes, child, toggles, }?: HtmlElement & {
     href?: string;
 }): View;
-export declare function Ul({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function Li({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
-export declare function Form({ id, class: className, htmx, action, method, attributes, child, }?: HtmlElement & {
+export declare function Ul({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Li({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Form({ id, class: className, htmx, action, method, attributes, child, toggles, }?: HtmlElement & {
     action?: string;
     method?: string;
 }): View;
-export declare function Img({ id, class: className, htmx, src, alt, style, attributes, child, }?: HtmlElement & {
+export declare function Img({ id, class: className, htmx, src, alt, style, attributes, child, toggles, }?: HtmlElement & {
     src?: string;
     alt?: string;
 }): View;
-export declare function P({ id, class: className, htmx, attributes, child, }?: HtmlElement): View;
+export declare function P({ id, class: className, htmx, attributes, child, toggles, }?: HtmlElement): View;
 interface Option {
     value: string;
     text: string;
     selected: boolean;
 }
-export declare function Select({ id, class: className, htmx, name, options, attributes, }?: HtmlElement & {
+export declare function Select({ id, class: className, htmx, name, options, attributes, toggles, }?: HtmlElement & {
     name?: string;
     options?: Option[];
 }): View;
@@ -83,13 +83,13 @@ export declare function HStack({ id, class: className, htmx, attributes, childre
     toggles?: string[];
 }): View;
 export declare function Lazy(loadComponent: Thunk<View>): View;
-export declare function FadeIn({ id, class: className, htmx, attributes, style, child, }?: HtmlElement): View;
+export declare function FadeIn({ id, class: className, htmx, attributes, style, child, toggles, }?: HtmlElement): View;
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 export declare function Overlay(content: View, overlay: View, position?: OverlayPosition): View;
-export declare function Table({ id, class: className, htmx, style, attributes, child }?: HtmlElement): View;
-export declare function Thead({ id, class: className, htmx, style, attributes, child }?: HtmlElement): View;
-export declare function Tr({ id, class: className, htmx, style, attributes, child }?: HtmlElement): View;
-export declare function Th({ id, class: className, htmx, style, attributes, child }?: HtmlElement): View;
-export declare function Tbody({ id, class: className, htmx, style, attributes, child }?: HtmlElement): View;
-export declare function Td({ id, class: className, htmx, style, attributes, child }?: HtmlElement): View;
+export declare function Table({ id, class: className, htmx, style, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Thead({ id, class: className, htmx, style, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Tr({ id, class: className, htmx, style, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Th({ id, class: className, htmx, style, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Tbody({ id, class: className, htmx, style, attributes, child, toggles, }?: HtmlElement): View;
+export declare function Td({ id, class: className, htmx, style, attributes, child, toggles, }?: HtmlElement): View;
 export {};

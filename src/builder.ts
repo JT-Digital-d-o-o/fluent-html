@@ -94,7 +94,8 @@ export function Div({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-  child = undefined
+  child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "div",
@@ -103,7 +104,8 @@ export function Div({
     htmx,
     style,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -115,6 +117,7 @@ export function Button({
   type = "button",
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement & { type?: string } = {}): View {
   const buttonAttributes = {
     ...attributes,
@@ -127,7 +130,8 @@ export function Button({
     htmx,
     style,
     attributes: buttonAttributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -143,6 +147,7 @@ export function Input({
   name = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement & { type?: string, placeholder?: string, name?: string, required?: boolean } = {}): View {
   const inputAttributes = {
     type,
@@ -158,6 +163,7 @@ export function Input({
     style,
     attributes: inputAttributes,
     child,
+    toggles,
   });
 }
 
@@ -197,6 +203,7 @@ export function Label({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "label",
@@ -204,7 +211,8 @@ export function Label({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -214,6 +222,7 @@ export function H1({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "h1",
@@ -221,7 +230,8 @@ export function H1({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -231,6 +241,7 @@ export function H2({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "h2",
@@ -238,7 +249,8 @@ export function H2({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -248,6 +260,7 @@ export function H3({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "h3",
@@ -255,7 +268,8 @@ export function H3({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 export function H4({
@@ -264,6 +278,7 @@ export function H4({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "h4",
@@ -271,7 +286,8 @@ export function H4({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -281,6 +297,7 @@ export function Span({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "span",
@@ -288,7 +305,8 @@ export function Span({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -299,6 +317,7 @@ export function A({
   href = "",
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement & { href?: string } = {}): View {
   const anchorAttributes = {
     href,
@@ -310,7 +329,8 @@ export function A({
     class: className,
     htmx,
     attributes: anchorAttributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -320,6 +340,7 @@ export function Ul({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "ul",
@@ -327,7 +348,8 @@ export function Ul({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -337,6 +359,7 @@ export function Li({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "li",
@@ -344,7 +367,8 @@ export function Li({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -356,6 +380,7 @@ export function Form({
   method = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement & { action?: string, method?: string } = {}): View {
   const formAttributes = {
     action,
@@ -368,7 +393,8 @@ export function Form({
     class: className,
     htmx,
     attributes: formAttributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -381,6 +407,7 @@ export function Img({
   style = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement & { src?: string, alt?: string } = {}): View {
   const imgAttributes = {
     src,
@@ -394,7 +421,8 @@ export function Img({
     htmx,
     style,
     attributes: imgAttributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -404,6 +432,7 @@ export function P({
   htmx = undefined,
   attributes = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "p",
@@ -411,7 +440,8 @@ export function P({
     class: className,
     htmx,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -425,6 +455,7 @@ export function Select({
   name = undefined,
   options = [],
   attributes = undefined,
+  toggles = undefined,
 }: HtmlElement & { name?: string, options?: Option[] } = {}): View {
   return El({
     el: "select",
@@ -437,7 +468,8 @@ export function Select({
       attributes: { "value": option.value, },
       child: Text(option.text),
       toggles: option.selected ? ["selected"] : undefined,
-    }))
+    })),
+    toggles,
   });
 }
 
@@ -580,7 +612,7 @@ export function HStack({
     attributes,
     class: cls,
     toggles,
-    child: VStack(children) 
+    child: VStack(children),
   });
 }
 
@@ -601,6 +633,7 @@ export function FadeIn({
   attributes = undefined,
   style = undefined,
   child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return Div({
     id,
@@ -608,7 +641,8 @@ export function FadeIn({
     htmx,
     attributes,
     style,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -649,7 +683,8 @@ export function Table({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-  child = undefined
+  child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "table",
@@ -658,7 +693,8 @@ export function Table({
     htmx,
     style,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -668,7 +704,8 @@ export function Thead({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-  child = undefined
+  child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "thead",
@@ -677,7 +714,8 @@ export function Thead({
     htmx,
     style,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -687,7 +725,8 @@ export function Tr({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-  child = undefined
+  child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "tr",
@@ -696,7 +735,8 @@ export function Tr({
     htmx,
     style,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -706,7 +746,8 @@ export function Th({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-  child = undefined
+  child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "th",
@@ -715,7 +756,8 @@ export function Th({
     htmx,
     style,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -725,7 +767,8 @@ export function Tbody({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-  child = undefined
+  child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "tbody",
@@ -734,7 +777,8 @@ export function Tbody({
     htmx,
     style,
     attributes,
-    child
+    child,
+    toggles,
   });
 }
 
@@ -744,7 +788,8 @@ export function Td({
   htmx = undefined,
   style = undefined,
   attributes = undefined,
-  child = undefined
+  child = undefined,
+  toggles = undefined,
 }: HtmlElement = {}): View {
   return El({
     el: "td",
@@ -753,6 +798,7 @@ export function Td({
     htmx,
     style,
     attributes,
-    child
+    child,
+    toggles,
   });
 }

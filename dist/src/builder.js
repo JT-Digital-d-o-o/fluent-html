@@ -64,7 +64,7 @@ function El({ el, id = undefined, class: className = undefined, htmx = undefined
     };
 }
 exports.El = El;
-function Div({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+function Div({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "div",
         id,
@@ -72,11 +72,12 @@ function Div({ id = undefined, class: className = undefined, htmx = undefined, s
         htmx,
         style,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Div = Div;
-function Button({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, type = "button", attributes = undefined, child = undefined, } = {}) {
+function Button({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, type = "button", attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     const buttonAttributes = Object.assign(Object.assign({}, attributes), { type });
     return El({
         el: "button",
@@ -85,12 +86,13 @@ function Button({ id = undefined, class: className = undefined, htmx = undefined
         htmx,
         style,
         attributes: buttonAttributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Button = Button;
 // @TODO: - Add `style` to the rest of combinators.
-function Input({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, type = undefined, placeholder = undefined, name = undefined, attributes = undefined, child = undefined, } = {}) {
+function Input({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, type = undefined, placeholder = undefined, name = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     const inputAttributes = Object.assign({ type,
         placeholder,
         name }, attributes);
@@ -102,6 +104,7 @@ function Input({ id = undefined, class: className = undefined, htmx = undefined,
         style,
         attributes: inputAttributes,
         child,
+        toggles,
     });
 }
 exports.Input = Input;
@@ -119,73 +122,79 @@ function Textarea({ id = undefined, class: className = undefined, htmx = undefin
     });
 }
 exports.Textarea = Textarea;
-function Label({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function Label({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "label",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Label = Label;
-function H1({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function H1({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "h1",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.H1 = H1;
-function H2({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function H2({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "h2",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.H2 = H2;
-function H3({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function H3({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "h3",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.H3 = H3;
-function H4({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function H4({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "h4",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.H4 = H4;
-function Span({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function Span({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "span",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Span = Span;
-function A({ id = undefined, class: className = undefined, htmx = undefined, href = "", attributes = undefined, child = undefined, } = {}) {
+function A({ id = undefined, class: className = undefined, htmx = undefined, href = "", attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     const anchorAttributes = Object.assign({ href }, attributes);
     return El({
         el: "a",
@@ -193,33 +202,36 @@ function A({ id = undefined, class: className = undefined, htmx = undefined, hre
         class: className,
         htmx,
         attributes: anchorAttributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.A = A;
-function Ul({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function Ul({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "ul",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Ul = Ul;
-function Li({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function Li({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "li",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Li = Li;
-function Form({ id = undefined, class: className = undefined, htmx = undefined, action = undefined, method = undefined, attributes = undefined, child = undefined, } = {}) {
+function Form({ id = undefined, class: className = undefined, htmx = undefined, action = undefined, method = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     const formAttributes = Object.assign({ action,
         method }, attributes);
     return El({
@@ -228,11 +240,12 @@ function Form({ id = undefined, class: className = undefined, htmx = undefined, 
         class: className,
         htmx,
         attributes: formAttributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Form = Form;
-function Img({ id = undefined, class: className = undefined, htmx = undefined, src = undefined, alt = undefined, style = undefined, attributes = undefined, child = undefined, } = {}) {
+function Img({ id = undefined, class: className = undefined, htmx = undefined, src = undefined, alt = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     const imgAttributes = Object.assign({ src,
         alt }, attributes);
     return El({
@@ -242,22 +255,24 @@ function Img({ id = undefined, class: className = undefined, htmx = undefined, s
         htmx,
         style,
         attributes: imgAttributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Img = Img;
-function P({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, } = {}) {
+function P({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "p",
         id,
         class: className,
         htmx,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.P = P;
-function Select({ id = undefined, class: className = undefined, htmx = undefined, name = undefined, options = [], attributes = undefined, } = {}) {
+function Select({ id = undefined, class: className = undefined, htmx = undefined, name = undefined, options = [], attributes = undefined, toggles = undefined, } = {}) {
     return El({
         el: "select",
         id,
@@ -269,7 +284,8 @@ function Select({ id = undefined, class: className = undefined, htmx = undefined
             attributes: { "value": option.value, },
             child: Text(option.text),
             toggles: option.selected ? ["selected"] : undefined,
-        }))
+        })),
+        toggles,
     });
 }
 exports.Select = Select;
@@ -378,7 +394,7 @@ function HStack({ id = undefined, class: className = undefined, htmx = undefined
         attributes,
         class: cls,
         toggles,
-        child: VStack(children)
+        child: VStack(children),
     });
 }
 exports.HStack = HStack;
@@ -392,14 +408,15 @@ function Lazy(loadComponent) {
     };
 }
 exports.Lazy = Lazy;
-function FadeIn({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, style = undefined, child = undefined, } = {}) {
+function FadeIn({ id = undefined, class: className = undefined, htmx = undefined, attributes = undefined, style = undefined, child = undefined, toggles = undefined, } = {}) {
     return Div({
         id,
         class: `fade-in-05s ${className}`,
         htmx,
         attributes,
         style,
-        child
+        child,
+        toggles,
     });
 }
 exports.FadeIn = FadeIn;
@@ -427,7 +444,7 @@ const positionStyles = {
     'right': 'top: 50%; right: 0; transform: translateY(-50%);',
     'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
 };
-function Table({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+function Table({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "table",
         id,
@@ -435,11 +452,12 @@ function Table({ id = undefined, class: className = undefined, htmx = undefined,
         htmx,
         style,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Table = Table;
-function Thead({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+function Thead({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "thead",
         id,
@@ -447,11 +465,12 @@ function Thead({ id = undefined, class: className = undefined, htmx = undefined,
         htmx,
         style,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Thead = Thead;
-function Tr({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+function Tr({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "tr",
         id,
@@ -459,11 +478,12 @@ function Tr({ id = undefined, class: className = undefined, htmx = undefined, st
         htmx,
         style,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Tr = Tr;
-function Th({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+function Th({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "th",
         id,
@@ -471,11 +491,12 @@ function Th({ id = undefined, class: className = undefined, htmx = undefined, st
         htmx,
         style,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Th = Th;
-function Tbody({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+function Tbody({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "tbody",
         id,
@@ -483,11 +504,12 @@ function Tbody({ id = undefined, class: className = undefined, htmx = undefined,
         htmx,
         style,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Tbody = Tbody;
-function Td({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined } = {}) {
+function Td({ id = undefined, class: className = undefined, htmx = undefined, style = undefined, attributes = undefined, child = undefined, toggles = undefined, } = {}) {
     return El({
         el: "td",
         id,
@@ -495,7 +517,8 @@ function Td({ id = undefined, class: className = undefined, htmx = undefined, st
         htmx,
         style,
         attributes,
-        child
+        child,
+        toggles,
     });
 }
 exports.Td = Td;

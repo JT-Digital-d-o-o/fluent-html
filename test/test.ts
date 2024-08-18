@@ -1,4 +1,4 @@
-import { Div, View, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack, Textarea } from "../src/index.js";
+import { Div, View, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack, Textarea, div, clss } from "../src/index.js";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -24,6 +24,9 @@ const swap1: HxSwap = "outerHTML";
 const swap2: HxSwap = "innerHTML show:window:top";
 const swap3: HxSwap = "innerHTML show:#another-div:top";
 const swap4: HxSwap = "beforeend scroll:bottom";
+
+runTest("#my-target", div("my-target"), "htmx target - div");
+runTest(".my-target", clss("my-target"), "htmx target - class");
 
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
 
@@ -151,4 +154,10 @@ runTestHTML(
   Textarea({ id: "dodatno", name: "dodatno" }),
   `<textarea id="dodatno" name="dodatno"  ></textarea>`,
   "Textarea"
+);
+
+runTestHTML(
+  Input({ toggles: ["required"] }),
+  `<input  required></input>`,
+  "Required",
 );
