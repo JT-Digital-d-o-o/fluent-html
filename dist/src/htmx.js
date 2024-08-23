@@ -11,6 +11,7 @@ function hx(endpoint, options = {}) {
         swap: options.swap,
         replaceUrl: options.replaceUrl,
         encoding: options.encoding,
+        validate: options.validate,
     };
 }
 exports.hx = hx;

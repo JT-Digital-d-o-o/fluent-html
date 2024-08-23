@@ -12,6 +12,7 @@ export interface HTMX {
   swap?: HxSwap;
   replaceUrl?: boolean;
   encoding?: HxEncoding;
+  validate?: boolean;
 }
 
 export function hx(
@@ -23,6 +24,7 @@ export function hx(
     swap?: HxSwap,
     encoding?: HxEncoding,
     replaceUrl?: boolean,
+    validate?: boolean,
   } = {}
 ): HTMX {
   return {
@@ -33,6 +35,7 @@ export function hx(
     swap: options.swap,
     replaceUrl: options.replaceUrl,
     encoding: options.encoding,
+    validate: options.validate,
   };
 }
 

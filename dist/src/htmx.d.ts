@@ -11,6 +11,7 @@ export interface HTMX {
     swap?: HxSwap;
     replaceUrl?: boolean;
     encoding?: HxEncoding;
+    validate?: boolean;
 }
 export declare function hx(endpoint: string, options?: {
     method?: HxHttpMethod;
@@ -19,6 +20,7 @@ export declare function hx(endpoint: string, options?: {
     swap?: HxSwap;
     encoding?: HxEncoding;
     replaceUrl?: boolean;
+    validate?: boolean;
 }): HTMX;
 type SwapType = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
 type TransitionModifier = `transition:${boolean}`;
