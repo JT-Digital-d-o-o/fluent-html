@@ -3,7 +3,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.render = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Overlay = exports.Repeat = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.HtmlElement = void 0;
+exports.render = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Overlay = exports.Repeat = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.HtmlElement = void 0;
 class HtmlElement {
     constructor(element) {
         this.el = element;
@@ -171,6 +171,10 @@ function Td(props) {
     return El("td", props);
 }
 exports.Td = Td;
+function Hr(props) {
+    return El("hr", props);
+}
+exports.Hr = Hr;
 // Control flow:
 function IfThen(condition, then) {
     return condition
@@ -249,10 +253,12 @@ function renderImpl(view) {
         const renderedChild = view.child ? render(view.child) : "";
         const baseAttrs = {};
         Object.assign(baseAttrs, view);
+        Object.assign(baseAttrs, view.attributes);
         baseAttrs.el = undefined;
         baseAttrs.htmx = undefined;
         baseAttrs.child = undefined;
         baseAttrs.toggles = undefined;
+        baseAttrs.attributes = undefined;
         const renderedAttributes = buildAttributes(baseAttrs);
         const renderedHtmx = buildHtmx(view.htmx);
         const renderedToggles = view.toggles ? view.toggles.join(" ") : " ";

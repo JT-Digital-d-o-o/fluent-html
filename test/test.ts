@@ -257,3 +257,11 @@ runTestHTML(
   `<img src="img.png" alt="alt"  ></img>`,
   "Img",
 );
+
+runTestHTML(
+  Div({
+    attributes: { "width": "1000" }
+  }),
+  `<div width="1000"  ></div>`,
+  "Div with attributes",
+);

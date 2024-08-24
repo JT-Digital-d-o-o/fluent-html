@@ -248,6 +248,10 @@ export function Td(props?: Partial<HtmlElement>): View {
   return El("td", props);
 }
 
+export function Hr(props?: Partial<HtmlElement>): View {
+  return El("hr", props);
+}
+
 // Control flow:
 
 export function IfThen(
@@ -350,10 +354,12 @@ function renderImpl(view: View): string {
     const renderedChild = view.child ? render(view.child) : "";
     const baseAttrs: any = {};
     Object.assign(baseAttrs, view);
+    Object.assign(baseAttrs, view.attributes);
     baseAttrs.el = undefined;
     baseAttrs.htmx = undefined;
     baseAttrs.child = undefined;
     baseAttrs.toggles = undefined;
+    baseAttrs.attributes = undefined;
     const renderedAttributes = buildAttributes(baseAttrs);
     const renderedHtmx = buildHtmx(view.htmx);
     const renderedToggles = view.toggles ? view.toggles.join(" ") : " ";

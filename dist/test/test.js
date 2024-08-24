@@ -121,3 +121,6 @@ runTestHTML((0, builder_1.Img)({
     src: "img.png",
     alt: "alt"
 }), `<img src="img.png" alt="alt"  ></img>`, "Img");
+runTestHTML((0, builder_1.Div)({
+    attributes: { "width": "1000" }
+}), `<div width="1000"  ></div>`, "Div with attributes");

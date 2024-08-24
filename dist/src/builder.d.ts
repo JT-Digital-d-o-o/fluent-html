@@ -88,6 +88,7 @@ export declare function Tbody(props?: Partial<HtmlElement>): View;
 export declare function Tr(props?: Partial<HtmlElement>): View;
 export declare function Th(props?: Partial<HtmlElement>): View;
 export declare function Td(props?: Partial<HtmlElement>): View;
+export declare function Hr(props?: Partial<HtmlElement>): View;
 export declare function IfThen(condition: boolean, then: Thunk<View>): View;
 export declare function IfThenElse(condition: boolean, thenBranch: Thunk<View>, elseBranch: Thunk<View>): View;
 type Case = {
