@@ -117,3 +117,7 @@ runTestHTML((0, builder_1.Ol)({
     ]
 }), `<ol   ><li   >Item 1</li>
 <li   >Item 2</li></ol>`, "Ordered list");
+runTestHTML((0, builder_1.Img)({
+    src: "img.png",
+    alt: "alt"
+}), `<img src="img.png" alt="alt"  ></img>`, "Img");

@@ -158,7 +158,7 @@ export function Form(props: Partial<HtmlElement & FormParams>): View {
   return El("form", props);
 }
 
-type ImgParams = { action?: string, method?: string };
+type ImgParams = { src?: string, alt?: string, width?: string, height?: string };
 export function Img(props: Partial<HtmlElement & ImgParams>): View {
   return El("img", props);
 }

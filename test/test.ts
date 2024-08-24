@@ -1,4 +1,4 @@
-import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li } from "../src/builder";
+import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img } from "../src/builder";
 import { clss, div, hx, HxSwap, HxTrigger } from "../src/htmx";
 
 function runTest<T>(got: T, expected: T, test: string) {
@@ -247,4 +247,13 @@ runTestHTML(
   `<ol   ><li   >Item 1</li>
 <li   >Item 2</li></ol>`,
   "Ordered list",
+);
+
+runTestHTML(
+  Img({
+    src: "img.png",
+    alt: "alt"
+  }),
+  `<img src="img.png" alt="alt"  ></img>`,
+  "Img",
 );

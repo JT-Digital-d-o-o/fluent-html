@@ -63,8 +63,10 @@ type FormParams = {
 };
 export declare function Form(props: Partial<HtmlElement & FormParams>): View;
 type ImgParams = {
-    action?: string;
-    method?: string;
+    src?: string;
+    alt?: string;
+    width?: string;
+    height?: string;
 };
 export declare function Img(props: Partial<HtmlElement & ImgParams>): View;
 interface Option {
