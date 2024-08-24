@@ -1,4 +1,4 @@
-import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P } from "../src/builder";
+import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li } from "../src/builder";
 import { clss, div, hx, HxSwap, HxTrigger } from "../src/htmx";
 
 function runTest<T>(got: T, expected: T, test: string) {
@@ -103,7 +103,7 @@ runTestHTML(
 runTestHTML(
   IfThen(
     false,
-    () => Text("true"),
+    () => "true",
   ),
   "",
   "IfThen false"
@@ -112,8 +112,8 @@ runTestHTML(
 runTestHTML(
   IfThenElse(
     true,
-    () => Text("true"),
-    () => Text("false"),
+    () => "true",
+    () => "false",
   ),
   "true",
   "IfThenElse true"
@@ -122,8 +122,8 @@ runTestHTML(
 runTestHTML(
   IfThenElse(
     false,
-    () => Text("true"),
-    () => Text("false"),
+    () => "true",
+    () => "false",
   ),
   "false",
   "IfThenElse false"
@@ -140,7 +140,7 @@ runTestHTML(
     return Div({
       child: [
         Input({ type: "checkbox", id: `task-${index + 1}` }),
-        Text(`${index + 1}. ${task}`),
+        `${index + 1}. ${task}`,
       ],
     });
   }
@@ -194,4 +194,57 @@ runTestHTML(
   }),
   "<p   >Text text text</p>",
   "Paragraph"
+);
+
+runTestHTML(
+  Button({
+    child: "Click",
+    type: "input",
+    toggles: ["enabled"]
+  }),
+  `<button type="input" enabled>Click</button>`,
+  "Button"
+);
+
+runTestHTML(
+  Label({
+    for: "password"
+  }),
+  `<label for="password"  ></label>`,
+  "Label",
+);
+
+runTestHTML(
+  [
+    H1({ child: "h1" }),
+    H2({ child: "h2" }),
+    H3({ child: "h3" }),
+    H4({ child: "h4" }),
+  ],
+  `<h1   >h1</h1>
+<h2   >h2</h2>
+<h3   >h3</h3>
+<h4   >h4</h4>`,
+  "Headings",
+);
+
+runTestHTML(
+  A({
+    href: "mailto:aa@aa.si",
+    child: "Send email",
+  }),
+  `<a href="mailto:aa@aa.si"  >Send email</a>`,
+  "A href",
+);
+
+runTestHTML(
+  Ol({
+    child: [
+      Li({ child: "Item 1" }),
+      Li({ child: "Item 2" }),
+    ]
+  }),
+  `<ol   ><li   >Item 1</li>
+<li   >Item 2</li></ol>`,
+  "Ordered list",
 );

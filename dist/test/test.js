@@ -1,5 +1,4 @@
 "use strict";
-// import { Div, View, hx, HxTrigger, IfThen, IfThenElse, Input, ForEach1, render, Text, VStack, HxSwap, HStack, Textarea, div, clss } from "../src/index.js";
 Object.defineProperty(exports, "__esModule", { value: true });
 const builder_1 = require("../src/builder");
 const htmx_1 = require("../src/htmx");
@@ -27,7 +26,7 @@ const swap3 = "innerHTML show:#another-div:top";
 const swap4 = "beforeend scroll:bottom";
 runTest("#my-target", (0, htmx_1.div)("my-target"), "htmx target - div");
 runTest(".my-target", (0, htmx_1.clss)("my-target"), "htmx target - class");
-// // @TODO: - there is currently some redundant whitespace rendered. fix in future!
+// @TODO: - there is currently some redundant whitespace rendered. fix in future!
 runTestHTML((0, builder_1.Div)(), `<div   ></div>`, "Empty div");
 runTestHTML((0, builder_1.Div)({
     id: "my-div",
@@ -52,9 +51,9 @@ runTestHTML((0, builder_1.Div)({
 }), `<div  hx-post="/home" hx-target="#my-id" hx-trigger="load delay:1s" hx-swap="innerHTML"   ></div>`, "Div with htmx");
 runTestHTML((0, builder_1.IfThen)(true, () => (0, builder_1.Text)("true")), "true", "IfThen true");
 runTestHTML((0, builder_1.IfThen)(true, () => "true"), "true", "IfThen true");
-runTestHTML((0, builder_1.IfThen)(false, () => (0, builder_1.Text)("true")), "", "IfThen false");
-runTestHTML((0, builder_1.IfThenElse)(true, () => (0, builder_1.Text)("true"), () => (0, builder_1.Text)("false")), "true", "IfThenElse true");
-runTestHTML((0, builder_1.IfThenElse)(false, () => (0, builder_1.Text)("true"), () => (0, builder_1.Text)("false")), "false", "IfThenElse false");
+runTestHTML((0, builder_1.IfThen)(false, () => "true"), "", "IfThen false");
+runTestHTML((0, builder_1.IfThenElse)(true, () => "true", () => "false"), "true", "IfThenElse true");
+runTestHTML((0, builder_1.IfThenElse)(false, () => "true", () => "false"), "false", "IfThenElse false");
 {
     const tasks = [
         "Finish the report",
@@ -65,7 +64,7 @@ runTestHTML((0, builder_1.IfThenElse)(false, () => (0, builder_1.Text)("true"), 
         return (0, builder_1.Div)({
             child: [
                 (0, builder_1.Input)({ type: "checkbox", id: `task-${index + 1}` }),
-                (0, builder_1.Text)(`${index + 1}. ${task}`),
+                `${index + 1}. ${task}`,
             ],
         });
     }
@@ -90,3 +89,31 @@ runTestHTML((0, builder_1.Input)({ toggles: ["required"] }), `<input  required><
 runTestHTML((0, builder_1.P)({
     child: "Text text text"
 }), "<p   >Text text text</p>", "Paragraph");
+runTestHTML((0, builder_1.Button)({
+    child: "Click",
+    type: "input",
+    toggles: ["enabled"]
+}), `<button type="input" enabled>Click</button>`, "Button");
+runTestHTML((0, builder_1.Label)({
+    for: "password"
+}), `<label for="password"  ></label>`, "Label");
+runTestHTML([
+    (0, builder_1.H1)({ child: "h1" }),
+    (0, builder_1.H2)({ child: "h2" }),
+    (0, builder_1.H3)({ child: "h3" }),
+    (0, builder_1.H4)({ child: "h4" }),
+], `<h1   >h1</h1>
+<h2   >h2</h2>
+<h3   >h3</h3>
+<h4   >h4</h4>`, "Headings");
+runTestHTML((0, builder_1.A)({
+    href: "mailto:aa@aa.si",
+    child: "Send email",
+}), `<a href="mailto:aa@aa.si"  >Send email</a>`, "A href");
+runTestHTML((0, builder_1.Ol)({
+    child: [
+        (0, builder_1.Li)({ child: "Item 1" }),
+        (0, builder_1.Li)({ child: "Item 2" }),
+    ]
+}), `<ol   ><li   >Item 1</li>
+<li   >Item 2</li></ol>`, "Ordered list");
