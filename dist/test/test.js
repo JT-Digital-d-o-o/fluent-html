@@ -16,17 +16,17 @@ function runTestHTML(got, expected, test) {
     runTest(renderedHTML, expected, test);
 }
 /// Typesafe HxTrigger-s:
-// const trigger1: HxTrigger = 'click';
-// const trigger2: HxTrigger = 'click once, keyup delay:500ms';
-// const trigger3: HxTrigger = 'every 1s';
-// const trigger4: HxTrigger = 'load, click delay:1s';
+const trigger1 = 'click';
+const trigger2 = 'click once, keyup delay:500ms';
+const trigger3 = 'every 1s';
+const trigger4 = 'load, click delay:1s';
 // /// Typesafe Hx-Swap-s:
-// const swap1: HxSwap = "outerHTML";
-// const swap2: HxSwap = "innerHTML show:window:top";
-// const swap3: HxSwap = "innerHTML show:#another-div:top";
-// const swap4: HxSwap = "beforeend scroll:bottom";
-// runTest("#my-target", div("my-target"), "htmx target - div");
-// runTest(".my-target", clss("my-target"), "htmx target - class");
+const swap1 = "outerHTML";
+const swap2 = "innerHTML show:window:top";
+const swap3 = "innerHTML show:#another-div:top";
+const swap4 = "beforeend scroll:bottom";
+runTest("#my-target", (0, htmx_1.div)("my-target"), "htmx target - div");
+runTest(".my-target", (0, htmx_1.clss)("my-target"), "htmx target - class");
 // // @TODO: - there is currently some redundant whitespace rendered. fix in future!
 runTestHTML((0, builder_1.Div)(), `<div   ></div>`, "Empty div");
 runTestHTML((0, builder_1.Div)({
