@@ -171,7 +171,6 @@ export function Select(props: Partial<HtmlElement & OptionParams>): View {
   return El("select", props);
 }
 
-
 export function Repeat(
   times: number, 
   content: Thunk<View>
@@ -241,6 +240,9 @@ export function Tbody(props: Partial<HtmlElement>): View {
 }
 export function Tr(props: Partial<HtmlElement>): View {
   return El("tr", props);
+}
+export function Th(props: Partial<HtmlElement>): View {
+  return El("th", props);
 }
 export function Td(props: Partial<HtmlElement>): View {
   return El("td", props);

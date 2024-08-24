@@ -3,7 +3,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.render = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Td = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Overlay = exports.Repeat = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.HtmlElement = void 0;
+exports.render = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Overlay = exports.Repeat = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.HtmlElement = void 0;
 class HtmlElement {
     constructor(element) {
         this.el = element;
@@ -163,6 +163,10 @@ function Tr(props) {
     return El("tr", props);
 }
 exports.Tr = Tr;
+function Th(props) {
+    return El("th", props);
+}
+exports.Th = Th;
 function Td(props) {
     return El("td", props);
 }
