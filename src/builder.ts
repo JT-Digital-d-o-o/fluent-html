@@ -118,22 +118,22 @@ export function Label(props: Partial<HtmlElement & LabelParams>): View {
   return El("label", props);
 }
 
-export function H1(props: Partial<HtmlElement>): View {
+export function H1(props?: Partial<HtmlElement>): View {
   return El("h1", props);
 }
-export function H2(props: Partial<HtmlElement>): View {
+export function H2(props?: Partial<HtmlElement>): View {
   return El("h2", props);
 }
 
-export function H3(props: Partial<HtmlElement>): View {
+export function H3(props?: Partial<HtmlElement>): View {
   return El("h3", props);
 }
 
-export function H4(props: Partial<HtmlElement>): View {
+export function H4(props?: Partial<HtmlElement>): View {
   return El("h4", props);
 }
 
-export function Span(props: Partial<HtmlElement>): View {
+export function Span(props?: Partial<HtmlElement>): View {
   return El("span", props);
 }
 
@@ -141,15 +141,15 @@ export function A(props: Partial<HtmlElement & { href?: string }>): View {
   return El("a", props);
 }
 
-export function Ul(props: Partial<HtmlElement>): View {
+export function Ul(props?: Partial<HtmlElement>): View {
   return El("ul", props);
 }
 
-export function Ol(props: Partial<HtmlElement>): View {
+export function Ol(props?: Partial<HtmlElement>): View {
   return El("ol", props);
 }
 
-export function Li(props: Partial<HtmlElement>): View {
+export function Li(props?: Partial<HtmlElement>): View {
   return El("li", props);
 }
 
@@ -229,22 +229,22 @@ const positionStyles: Record<OverlayPosition, string> = {
   'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
 };
 
-export function Table(props: Partial<HtmlElement>): View {
+export function Table(props?: Partial<HtmlElement>): View {
   return El("table", props);
 }
-export function Thead(props: Partial<HtmlElement>): View {
+export function Thead(props?: Partial<HtmlElement>): View {
   return El("thead", props);
 }
-export function Tbody(props: Partial<HtmlElement>): View {
+export function Tbody(props?: Partial<HtmlElement>): View {
   return El("tbody", props);
 }
-export function Tr(props: Partial<HtmlElement>): View {
+export function Tr(props?: Partial<HtmlElement>): View {
   return El("tr", props);
 }
-export function Th(props: Partial<HtmlElement>): View {
+export function Th(props?: Partial<HtmlElement>): View {
   return El("th", props);
 }
-export function Td(props: Partial<HtmlElement>): View {
+export function Td(props?: Partial<HtmlElement>): View {
   return El("td", props);
 }
 

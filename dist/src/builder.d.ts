@@ -46,17 +46,17 @@ type LabelParams = {
     for?: string;
 };
 export declare function Label(props: Partial<HtmlElement & LabelParams>): View;
-export declare function H1(props: Partial<HtmlElement>): View;
-export declare function H2(props: Partial<HtmlElement>): View;
-export declare function H3(props: Partial<HtmlElement>): View;
-export declare function H4(props: Partial<HtmlElement>): View;
-export declare function Span(props: Partial<HtmlElement>): View;
+export declare function H1(props?: Partial<HtmlElement>): View;
+export declare function H2(props?: Partial<HtmlElement>): View;
+export declare function H3(props?: Partial<HtmlElement>): View;
+export declare function H4(props?: Partial<HtmlElement>): View;
+export declare function Span(props?: Partial<HtmlElement>): View;
 export declare function A(props: Partial<HtmlElement & {
     href?: string;
 }>): View;
-export declare function Ul(props: Partial<HtmlElement>): View;
-export declare function Ol(props: Partial<HtmlElement>): View;
-export declare function Li(props: Partial<HtmlElement>): View;
+export declare function Ul(props?: Partial<HtmlElement>): View;
+export declare function Ol(props?: Partial<HtmlElement>): View;
+export declare function Li(props?: Partial<HtmlElement>): View;
 type FormParams = {
     action?: string;
     method?: string;
@@ -82,12 +82,12 @@ export declare function Select(props: Partial<HtmlElement & OptionParams>): View
 export declare function Repeat(times: number, content: Thunk<View>): View;
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 export declare function Overlay(content: View, overlay: View, position?: OverlayPosition): View;
-export declare function Table(props: Partial<HtmlElement>): View;
-export declare function Thead(props: Partial<HtmlElement>): View;
-export declare function Tbody(props: Partial<HtmlElement>): View;
-export declare function Tr(props: Partial<HtmlElement>): View;
-export declare function Th(props: Partial<HtmlElement>): View;
-export declare function Td(props: Partial<HtmlElement>): View;
+export declare function Table(props?: Partial<HtmlElement>): View;
+export declare function Thead(props?: Partial<HtmlElement>): View;
+export declare function Tbody(props?: Partial<HtmlElement>): View;
+export declare function Tr(props?: Partial<HtmlElement>): View;
+export declare function Th(props?: Partial<HtmlElement>): View;
+export declare function Td(props?: Partial<HtmlElement>): View;
 export declare function IfThen(condition: boolean, then: Thunk<View>): View;
 export declare function IfThenElse(condition: boolean, thenBranch: Thunk<View>, elseBranch: Thunk<View>): View;
 type Case = {
