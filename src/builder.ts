@@ -9,48 +9,45 @@ export type Thunk<T> = () => T;
 export type View = HtmlElement | string | View[];
 
 export class HtmlElement {
-  el?: string;
+  el: string;
+  child: View;
+
   id?: string;
   class?: string;
   attributes?: Record<string, string>;
   htmx?: HTMX;
   style?: string;
   toggles?: string[];
-  child?: View;
 
-  constructor(element: string) {
+  constructor(element: string, child: View = Empty()) {
     this.el = element;
+    this.child = child;
   }
 
-  // setId(id: string): HtmlElement {
-  //   this.id = id;
-  //   return this;
-  // }
+  setId(id: string): HtmlElement {
+    this.id = id;
+    return this;
+  }
 
-  // setClass(className: string): HtmlElement {
-  //   this.class = className;
-  //   return this;
-  // }
+  setClass(className: string): HtmlElement {
+    this.class = className;
+    return this;
+  }
 
-  // setAttributes(attributes: Record<string, string>): HtmlElement {
-  //   this.attributes = attributes;
-  //   return this;
-  // }
+  setAttributes(attributes: Record<string, string>): HtmlElement {
+    this.attributes = attributes;
+    return this;
+  }
 
-  // setStyle(style: string): HtmlElement {
-  //   this.style = style;
-  //   return this;
-  // }
+  setStyle(style: string): HtmlElement {
+    this.style = style;
+    return this;
+  }
 
-  // setChild(child: View): View {
-  //   this.child = child;
-  //   return this;
-  // }
-
-  // setHtmx(htmx: HTMX): HtmlElement {
-  //   this.htmx = htmx;
-  //   return this;
-  // }
+  setHtmx(htmx: HTMX): HtmlElement {
+    this.htmx = htmx;
+    return this;
+  }
 }
 
 export function El(el: string, props?: Partial<HtmlElement>): View {
@@ -94,11 +91,10 @@ export function HStack(props?: Partial<HtmlElement>): View {
   return Div(props);
 }
 
-type InputParams = { type?: string, placeholder?: string, name?: string, required?: boolean };
+type InputParams = { type?: string, placeholder?: string, name?: string };
 export function Input(props?: Partial<HtmlElement & InputParams>): View {
   return El("input", props);
 }
-
 
 type TextareaParams = { placeholder?: string, name?: string, rows?: number, cols?: number };
 export function Textarea(props?: Partial<HtmlElement & TextareaParams>): View {
@@ -171,32 +167,28 @@ export function Select(props: Partial<HtmlElement & OptionParams>): View {
   return El("select", props);
 }
 
-export function Repeat(
-  times: number, 
-  content: Thunk<View>
-): View {
-  return ForEach(range(0, times), content);
+export function Table(props?: Partial<HtmlElement>): View {
+  return El("table", props);
+}
+export function Thead(props?: Partial<HtmlElement>): View {
+  return El("thead", props);
+}
+export function Tbody(props?: Partial<HtmlElement>): View {
+  return El("tbody", props);
+}
+export function Tr(props?: Partial<HtmlElement>): View {
+  return El("tr", props);
+}
+export function Th(props?: Partial<HtmlElement>): View {
+  return El("th", props);
+}
+export function Td(props?: Partial<HtmlElement>): View {
+  return El("td", props);
 }
 
-// export function FadeIn({
-//   id = undefined,
-//   class: className = undefined,
-//   htmx = undefined,
-//   attributes = undefined,
-//   style = undefined,
-//   child = undefined,
-//   toggles = undefined,
-// }: HtmlElement = {}): View {
-//   return Div({
-//     id,
-//     class: `fade-in-05s ${className}`,
-//     htmx,
-//     attributes,
-//     style,
-//     child,
-//     toggles,
-//   });
-// }
+export function Hr(props?: Partial<HtmlElement>): View {
+  return El("hr", props);
+}
 
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 
@@ -229,39 +221,7 @@ const positionStyles: Record<OverlayPosition, string> = {
   'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
 };
 
-export function Table(props?: Partial<HtmlElement>): View {
-  return El("table", props);
-}
-export function Thead(props?: Partial<HtmlElement>): View {
-  return El("thead", props);
-}
-export function Tbody(props?: Partial<HtmlElement>): View {
-  return El("tbody", props);
-}
-export function Tr(props?: Partial<HtmlElement>): View {
-  return El("tr", props);
-}
-export function Th(props?: Partial<HtmlElement>): View {
-  return El("th", props);
-}
-export function Td(props?: Partial<HtmlElement>): View {
-  return El("td", props);
-}
-
-export function Hr(props?: Partial<HtmlElement>): View {
-  return El("hr", props);
-}
-
 // Control flow:
-
-export function IfThen(
-  condition: boolean,
-  then: Thunk<View>,
-): View {
-  return condition 
-  ? then()
-  : Empty();
-}
 
 export function IfThenElse(
   condition: boolean,
@@ -271,6 +231,17 @@ export function IfThenElse(
   return condition 
   ? thenBranch()
   : elseBranch();
+}
+
+export function IfThen(
+  condition: boolean,
+  then: Thunk<View>,
+): View {
+  return IfThenElse(
+    condition,
+    then,
+    Empty,
+  );
 }
 
 type Case = { condition: boolean, component: Thunk<View> };
@@ -291,7 +262,7 @@ export function ForEach<T>(
   renderItem: (item: T) => View
 ): View {
   return Array.from(views).map(renderItem);
-  //           ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+  //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function ForEach1<T>(
@@ -299,7 +270,7 @@ export function ForEach1<T>(
   renderItem: (item: T, index: number) => View
 ): View {
   return Array.from(views).map(renderItem);
-  //           ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+  //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function ForEach2(
@@ -307,13 +278,20 @@ export function ForEach2(
   renderItem: (index: number) => View
 ): View {
   return Array.from(range(0, n)).map((index) => renderItem(index));
-  //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+  //           ^^^^^^^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 function* range(low: number, high: number) {
   for (var i = low; i < high; i++) {
     yield i;
   }
+}
+
+export function Repeat(
+  times: number, 
+  content: Thunk<View>
+): View {
+  return ForEach(range(0, times), content);
 }
 
 // render
@@ -326,14 +304,14 @@ function renderImpl(view: View): string {
   function buildAttributes(attributes: Record<string, string | undefined> | undefined): string {
     if (!attributes) { return ""; }
     return Object.entries(attributes)
-    .map(([key, value]) => {
-      return value ? `${key}="${value}"` : "";
-    })
-    .filter(s => s.length > 0)
-    .join(" ");
+      .map(([key, value]) => {
+        return value ? `${key}="${value}"` : "";
+      })
+      .filter(s => s.length > 0)
+      .join(" ");
   }
 
-  function buildHtmx(htmx: HTMX | undefined): string {
+  function buildHtmx(htmx?: HTMX): string {
     if (!htmx) {
       return '';
     }
@@ -351,7 +329,6 @@ function renderImpl(view: View): string {
   }
 
   if (view instanceof HtmlElement) {
-    const renderedChild = view.child ? render(view.child) : "";
     const baseAttrs: any = {};
     Object.assign(baseAttrs, view);
     Object.assign(baseAttrs, view.attributes);
@@ -360,6 +337,8 @@ function renderImpl(view: View): string {
     baseAttrs.child = undefined;
     baseAttrs.toggles = undefined;
     baseAttrs.attributes = undefined;
+
+    const renderedChild = render(view.child);
     const renderedAttributes = buildAttributes(baseAttrs);
     const renderedHtmx = buildHtmx(view.htmx);
     const renderedToggles = view.toggles ? view.toggles.join(" ") : " ";
@@ -388,4 +367,220 @@ function renderImpl(view: View): string {
   }
 
   return "";
+}
+
+// new syntax
+
+export function El1(el: string, child: View = Empty()): HtmlElement {
+  return new HtmlElement(el, child);
+}
+
+export function Div1(child: View = Empty()): HtmlElement {
+  return El1("div", child);
+}
+
+export function P1(child: View = Empty()): HtmlElement {
+  return El1("p", child);
+}
+
+export class InputHtmlElement extends HtmlElement { 
+  type?: string; 
+  placeholder?: string;
+  name?: string;
+
+  setType(type: string): InputHtmlElement {
+    this.type = type;
+    return this;
+  }
+
+  setPlaceholder(placeholder: string): InputHtmlElement {
+    this.placeholder = placeholder;
+    return this;
+  }
+
+  setName(name: string): InputHtmlElement {
+    this.name = name;
+    return this;
+  }
+};
+export function Input1(child: View = Empty()): InputHtmlElement {
+  return new InputHtmlElement("input", child);
+}
+
+export class TextareaHtmlElement extends HtmlElement {
+  placeholder?: string;
+  name?: string;
+  rows?: number;
+  cols?: number;
+
+  setPlaceholder(placeholder: string): TextareaHtmlElement {
+    this.placeholder = placeholder;
+    return this;
+  }
+
+  setName(name: string): TextareaHtmlElement {
+    this.name = name;
+    return this;
+  }
+
+  setRows(rows: number): TextareaHtmlElement {
+    this.rows = rows;
+    return this;
+  }
+
+  setCols(cols: number): TextareaHtmlElement {
+    this.cols = cols;
+    return this;
+  }
+};
+export function Textarea1(child: View = Empty()): TextareaHtmlElement {
+  return new TextareaHtmlElement("textarea", child);
+}
+
+export class ButtonHtmlElement extends HtmlElement {
+  type?: string;
+
+  setType(type: string): ButtonHtmlElement {
+    this.type = type;
+    return this;
+  }
+};
+export function Button1(child: View = Empty()): ButtonHtmlElement {
+  return new ButtonHtmlElement("button", child);
+}
+
+export class LabelHtmlElement extends HtmlElement {
+  for?: string;
+
+  setFor(forId: string): LabelHtmlElement {
+    this.for = forId;
+    return this;
+  }
+};
+export function Label1(child: View = Empty()): LabelHtmlElement {
+  return new LabelHtmlElement("label", child);
+}
+
+export class AnchorHtmlElement extends HtmlElement {
+  href?: string;
+
+  setHref(href: string): AnchorHtmlElement {
+    this.href = href;
+    return this;
+  }
+};
+export function A1(child: View = Empty()): AnchorHtmlElement {
+  return new AnchorHtmlElement("a", child);
+}
+
+export class FormHtmlElement extends HtmlElement {
+  action?: string;
+  method?: string;
+
+  setAction(action: string): FormHtmlElement {
+    this.action = action;
+    return this;
+  }
+
+  setMethod(method: string): FormHtmlElement {
+    this.method = method;
+    return this;
+  }
+};
+export function Form1(child: View = Empty()): FormHtmlElement {
+  return new FormHtmlElement("form", child);
+}
+
+export class ImgHtmlElement extends HtmlElement {
+  src?: string;
+  alt?: string;
+  width?: string;
+  height?: string;
+
+  setSrc(src: string): HtmlElement {
+    this.src = src;
+    return this;
+  }
+
+  set(alt: string): ImgHtmlElement {
+    this.alt = alt;
+    return this;
+  }
+
+  setWidth(width: string): ImgHtmlElement {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height: string): ImgHtmlElement {
+    this.height = height;
+    return this;
+  }
+};
+export function Img1(child: View = Empty()): ImgHtmlElement {
+  return new ImgHtmlElement("img", child);
+}
+
+export class SelectHtmlElement extends HtmlElement {
+  name?: string;
+  options?: Option[];
+
+  setName(name: string): SelectHtmlElement {
+    this.name = name;
+    return this;
+  }
+
+  setOptions(options: Option[]): SelectHtmlElement {
+    this.options = options;
+    return this;
+  }
+};
+export function Select1(child: View = Empty()): SelectHtmlElement {
+  return new SelectHtmlElement("select", child);
+}
+
+export function H11(child: View = Empty()): HtmlElement {
+  return new HtmlElement("h1", child);
+}
+export function H21(child: View = Empty()): HtmlElement {
+  return new HtmlElement("h2", child);
+}
+export function H31(child: View = Empty()): HtmlElement {
+  return new HtmlElement("h3", child);
+}
+export function H41(child: View = Empty()): HtmlElement {
+  return new HtmlElement("h4", child);
+}
+export function Span1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("span", child);
+}
+export function Ul1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("ul", child);
+}
+export function Ol1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("ol", child);
+}
+export function Li1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("li", child);
+}
+export function Table1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("table", child);
+}
+export function Thead1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("thead", child);
+}
+export function Tbody1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("tbody", child);
+}
+export function Tr1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("tr", child);
+}
+export function Th1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("th", child);
+}
+export function Td1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("td", child);
+}
+export function Hr1(child: View = Empty()): HtmlElement {
+  return new HtmlElement("hr", child);
 }

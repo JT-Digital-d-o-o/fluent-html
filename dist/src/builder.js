@@ -3,10 +3,32 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.render = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Overlay = exports.Repeat = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.HtmlElement = void 0;
+exports.LabelHtmlElement = exports.Button1 = exports.ButtonHtmlElement = exports.Textarea1 = exports.TextareaHtmlElement = exports.Input1 = exports.InputHtmlElement = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.HtmlElement = void 0;
+exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Select1 = exports.SelectHtmlElement = exports.Img1 = exports.ImgHtmlElement = exports.Form1 = exports.FormHtmlElement = exports.A1 = exports.AnchorHtmlElement = exports.Label1 = void 0;
 class HtmlElement {
-    constructor(element) {
+    constructor(element, child = Empty()) {
         this.el = element;
+        this.child = child;
+    }
+    setId(id) {
+        this.id = id;
+        return this;
+    }
+    setClass(className) {
+        this.class = className;
+        return this;
+    }
+    setAttributes(attributes) {
+        this.attributes = attributes;
+        return this;
+    }
+    setStyle(style) {
+        this.style = style;
+        return this;
+    }
+    setHtmx(htmx) {
+        this.htmx = htmx;
+        return this;
     }
 }
 exports.HtmlElement = HtmlElement;
@@ -119,34 +141,6 @@ function Select(props) {
     return El("select", props);
 }
 exports.Select = Select;
-function Repeat(times, content) {
-    return ForEach(range(0, times), content);
-}
-exports.Repeat = Repeat;
-function Overlay(content, overlay, position = 'center') {
-    return Div({
-        style: "position: relative",
-        child: [
-            content,
-            Div({
-                style: `position: absolute; ${positionStyles[position]}`,
-                child: overlay
-            })
-        ]
-    });
-}
-exports.Overlay = Overlay;
-const positionStyles = {
-    'top': 'top: 0; left: 50%; transform: translateX(-50%);',
-    'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
-    'top-left': 'top: 0; left: 0;',
-    'top-right': 'top: 0; right: 0;',
-    'bottom-left': 'bottom: 0; left: 0;',
-    'bottom-right': 'bottom: 0; right: 0;',
-    'left': 'top: 50%; left: 0; transform: translateY(-50%);',
-    'right': 'top: 50%; right: 0; transform: translateY(-50%);',
-    'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
-};
 function Table(props) {
     return El("table", props);
 }
@@ -175,19 +169,41 @@ function Hr(props) {
     return El("hr", props);
 }
 exports.Hr = Hr;
-// Control flow:
-function IfThen(condition, then) {
-    return condition
-        ? then()
-        : Empty();
+function Overlay(content, overlay, position = 'center') {
+    return Div({
+        style: "position: relative",
+        child: [
+            content,
+            Div({
+                style: `position: absolute; ${positionStyles[position]}`,
+                child: overlay
+            })
+        ]
+    });
 }
-exports.IfThen = IfThen;
+exports.Overlay = Overlay;
+const positionStyles = {
+    'top': 'top: 0; left: 50%; transform: translateX(-50%);',
+    'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
+    'top-left': 'top: 0; left: 0;',
+    'top-right': 'top: 0; right: 0;',
+    'bottom-left': 'bottom: 0; left: 0;',
+    'bottom-right': 'bottom: 0; right: 0;',
+    'left': 'top: 50%; left: 0; transform: translateY(-50%);',
+    'right': 'top: 50%; right: 0; transform: translateY(-50%);',
+    'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
+};
+// Control flow:
 function IfThenElse(condition, thenBranch, elseBranch) {
     return condition
         ? thenBranch()
         : elseBranch();
 }
 exports.IfThenElse = IfThenElse;
+function IfThen(condition, then) {
+    return IfThenElse(condition, then, Empty);
+}
+exports.IfThen = IfThen;
 function SwitchCase(cases, defaultView = Empty) {
     for (const caseItem of cases) {
         if (caseItem.condition) {
@@ -199,17 +215,17 @@ function SwitchCase(cases, defaultView = Empty) {
 exports.SwitchCase = SwitchCase;
 function ForEach(views, renderItem) {
     return Array.from(views).map(renderItem);
-    //           ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+    //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 exports.ForEach = ForEach;
 function ForEach1(views, renderItem) {
     return Array.from(views).map(renderItem);
-    //           ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+    //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 exports.ForEach1 = ForEach1;
 function ForEach2(n, renderItem) {
     return Array.from(range(0, n)).map((index) => renderItem(index));
-    //                 ^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+    //           ^^^^^^^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 exports.ForEach2 = ForEach2;
 function* range(low, high) {
@@ -217,6 +233,10 @@ function* range(low, high) {
         yield i;
     }
 }
+function Repeat(times, content) {
+    return ForEach(range(0, times), content);
+}
+exports.Repeat = Repeat;
 // render
 function render(view) {
     return renderImpl(view);
@@ -250,7 +270,6 @@ function renderImpl(view) {
         return view;
     }
     if (view instanceof HtmlElement) {
-        const renderedChild = view.child ? render(view.child) : "";
         const baseAttrs = {};
         Object.assign(baseAttrs, view);
         Object.assign(baseAttrs, view.attributes);
@@ -259,6 +278,7 @@ function renderImpl(view) {
         baseAttrs.child = undefined;
         baseAttrs.toggles = undefined;
         baseAttrs.attributes = undefined;
+        const renderedChild = render(view.child);
         const renderedAttributes = buildAttributes(baseAttrs);
         const renderedHtmx = buildHtmx(view.htmx);
         const renderedToggles = view.toggles ? view.toggles.join(" ") : " ";
@@ -284,3 +304,212 @@ function renderImpl(view) {
     }
     return "";
 }
+// new syntax
+function El1(el, child = Empty()) {
+    return new HtmlElement(el, child);
+}
+exports.El1 = El1;
+function Div1(child = Empty()) {
+    return El1("div", child);
+}
+exports.Div1 = Div1;
+function P1(child = Empty()) {
+    return El1("p", child);
+}
+exports.P1 = P1;
+class InputHtmlElement extends HtmlElement {
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setPlaceholder(placeholder) {
+        this.placeholder = placeholder;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+}
+exports.InputHtmlElement = InputHtmlElement;
+;
+function Input1(child = Empty()) {
+    return new InputHtmlElement("input", child);
+}
+exports.Input1 = Input1;
+class TextareaHtmlElement extends HtmlElement {
+    setPlaceholder(placeholder) {
+        this.placeholder = placeholder;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setRows(rows) {
+        this.rows = rows;
+        return this;
+    }
+    setCols(cols) {
+        this.cols = cols;
+        return this;
+    }
+}
+exports.TextareaHtmlElement = TextareaHtmlElement;
+;
+function Textarea1(child = Empty()) {
+    return new TextareaHtmlElement("textarea", child);
+}
+exports.Textarea1 = Textarea1;
+class ButtonHtmlElement extends HtmlElement {
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+}
+exports.ButtonHtmlElement = ButtonHtmlElement;
+;
+function Button1(child = Empty()) {
+    return new ButtonHtmlElement("button", child);
+}
+exports.Button1 = Button1;
+class LabelHtmlElement extends HtmlElement {
+    setFor(forId) {
+        this.for = forId;
+        return this;
+    }
+}
+exports.LabelHtmlElement = LabelHtmlElement;
+;
+function Label1(child = Empty()) {
+    return new LabelHtmlElement("label", child);
+}
+exports.Label1 = Label1;
+class AnchorHtmlElement extends HtmlElement {
+    setHref(href) {
+        this.href = href;
+        return this;
+    }
+}
+exports.AnchorHtmlElement = AnchorHtmlElement;
+;
+function A1(child = Empty()) {
+    return new AnchorHtmlElement("a", child);
+}
+exports.A1 = A1;
+class FormHtmlElement extends HtmlElement {
+    setAction(action) {
+        this.action = action;
+        return this;
+    }
+    setMethod(method) {
+        this.method = method;
+        return this;
+    }
+}
+exports.FormHtmlElement = FormHtmlElement;
+;
+function Form1(child = Empty()) {
+    return new FormHtmlElement("form", child);
+}
+exports.Form1 = Form1;
+class ImgHtmlElement extends HtmlElement {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    set(alt) {
+        this.alt = alt;
+        return this;
+    }
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+}
+exports.ImgHtmlElement = ImgHtmlElement;
+;
+function Img1(child = Empty()) {
+    return new ImgHtmlElement("img", child);
+}
+exports.Img1 = Img1;
+class SelectHtmlElement extends HtmlElement {
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setOptions(options) {
+        this.options = options;
+        return this;
+    }
+}
+exports.SelectHtmlElement = SelectHtmlElement;
+;
+function Select1(child = Empty()) {
+    return new SelectHtmlElement("select", child);
+}
+exports.Select1 = Select1;
+function H11(child = Empty()) {
+    return new HtmlElement("h1", child);
+}
+exports.H11 = H11;
+function H21(child = Empty()) {
+    return new HtmlElement("h2", child);
+}
+exports.H21 = H21;
+function H31(child = Empty()) {
+    return new HtmlElement("h3", child);
+}
+exports.H31 = H31;
+function H41(child = Empty()) {
+    return new HtmlElement("h4", child);
+}
+exports.H41 = H41;
+function Span1(child = Empty()) {
+    return new HtmlElement("span", child);
+}
+exports.Span1 = Span1;
+function Ul1(child = Empty()) {
+    return new HtmlElement("ul", child);
+}
+exports.Ul1 = Ul1;
+function Ol1(child = Empty()) {
+    return new HtmlElement("ol", child);
+}
+exports.Ol1 = Ol1;
+function Li1(child = Empty()) {
+    return new HtmlElement("li", child);
+}
+exports.Li1 = Li1;
+function Table1(child = Empty()) {
+    return new HtmlElement("table", child);
+}
+exports.Table1 = Table1;
+function Thead1(child = Empty()) {
+    return new HtmlElement("thead", child);
+}
+exports.Thead1 = Thead1;
+function Tbody1(child = Empty()) {
+    return new HtmlElement("tbody", child);
+}
+exports.Tbody1 = Tbody1;
+function Tr1(child = Empty()) {
+    return new HtmlElement("tr", child);
+}
+exports.Tr1 = Tr1;
+function Th1(child = Empty()) {
+    return new HtmlElement("th", child);
+}
+exports.Th1 = Th1;
+function Td1(child = Empty()) {
+    return new HtmlElement("td", child);
+}
+exports.Td1 = Td1;
+function Hr1(child = Empty()) {
+    return new HtmlElement("hr", child);
+}
+exports.Hr1 = Hr1;

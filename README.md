@@ -59,7 +59,7 @@ Lambda.html emphasizes **composability**, allowing developers to construct compl
 For effective composability, define reusable components as pure functions. Here’s an example of creating a `ContactDetailsView` component in Lambda.html:
 
 ```typescript
-import { Div, Img, P, A, Text, HStack, VStack, render } from 'lambda.html';
+import { Div, Img, P, A, Text, HStack, render } from 'lambda.html';
 
 // Define a reusable component as a pure function.
 function ContactDetailsView(name: string, phone: string): View {
@@ -67,22 +67,22 @@ function ContactDetailsView(name: string, phone: string): View {
     child: HStack([
       Img({ src: "call.svg" }),
       Div({
-        child: VStack([
+        child: [
           P({ child: Text(name) }),
           P({ 
             class: "orange", 
             child: A({ href: `tel:${phone}`, child: Text(phone) }) 
           }),
-        ]),
+        ],
       })
     ])
   });
 }
 
-const contactInfo = VStack([
+const contactInfo: View = [
   ContactDetailsView("Alice Johnson", "+1234567890"),
   ContactDetailsView("John Wick", "+9876543210"),
-]);
+];
 
 console.log(render(contactInfo));
 ```
@@ -210,10 +210,10 @@ const tasks = [
 // Function to render a single task
 function TaskView(task: string, index: number): View {
   return Div({
-    child: VStack([
+    child: [
       Input({ type: "checkbox", id: `task-${index + 1}` }),
       Text(`${index + 1}. ${task}`),
-    ]),
+    ],
   });
 }
 
@@ -236,7 +236,7 @@ import { Div, H1, P, IfThenElse, ForEach, Text, render } from 'lambda.html';
 
 function UserProfileView(name: string, loggedIn: boolean, interests: string[]): View {
   return Div({
-    child: VStack([
+    child: [
       H1({
         child: Text(`Profile: ${name}`)
       }),
@@ -253,7 +253,7 @@ function UserProfileView(name: string, loggedIn: boolean, interests: string[]): 
           child: Text(interest)
         }))
       })
-    ])
+    ]
   });
 }
 
@@ -276,7 +276,7 @@ const interactiveForm = Form({
     swap: "outerHTML",
     trigger: "submit"
   }),
-  child: VStack([
+  child: [
     Input({
       type: "text",
       name: "username",
@@ -286,7 +286,7 @@ const interactiveForm = Form({
       type: "submit",
       child: Text("Submit")
     })
-  ])
+  ]
 });
 
 console.log(render(interactiveForm));
@@ -301,7 +301,7 @@ import { Div, H1, P, Text, render } from 'lambda.html';
 
 const styledPage = Div({
   class: "bg-gray-200 p-4",
-  child: VStack([
+  child: [
     H1({
       class: "text-xl font-bold text-center text-blue-500",
       child: Text("Welcome to Lambda.html")
@@ -310,7 +310,7 @@ const styledPage = Div({
       class: "text-base text-gray-700",
       child: Text("Start building beautiful and interactive web pages easily.")
     })
-  ])
+  ]
 });
 
 console.log(render(styledPage));
@@ -318,10 +318,10 @@ console.log(render(styledPage));
 
 ### 1. **Dashboard Layout**
 
-Create a dashboard layout with a sidebar, header, and content area. This example can demonstrate how to use `Div`, `VStack`, and `HStack` to create a layout structure, and how to integrate interactive elements using HTMX.
+Create a dashboard layout with a sidebar, header, and content area. This example can demonstrate how to use `Div` and `HStack` to create a layout structure, and how to integrate interactive elements using HTMX.
 
 ```typescript
-import { Div, VStack, HStack, Button, Text, render } from 'lambda.html';
+import { Div, HStack, Button, Text, render } from 'lambda.html';
 
 function DashboardLayout(sidebarContent: View, mainContent: View): View {
   return Div({
@@ -330,10 +330,10 @@ function DashboardLayout(sidebarContent: View, mainContent: View): View {
       children: [
         Div({ class: "w-64 bg-gray-800 text-white", child: sidebarContent }),
         Div({
-          child: VStack([
+          child: [
             Div({ class: "bg-gray-200 p-4 shadow", child: Text("Header") }),
             mainContent
-          ])
+          ]
         })
       ]
     })
@@ -342,10 +342,10 @@ function DashboardLayout(sidebarContent: View, mainContent: View): View {
 
 function MyDashboard(): View {
   return DashboardLayout(
-    VStack([
+    [
       Button({ child: Text("Home"), class: "p-2 hover:bg-gray-700" }),
       Button({ child: Text("Settings"), class: "p-2 hover:bg-gray-700" })
-    ]),
+    ],
     Div({ class: "p-4", child: Text("Welcome to the dashboard!") }),
   );
 }
@@ -363,7 +363,7 @@ import { Div, Button, Text, ForEach, IfThenElse, render } from 'lambda.html';
 
 function DataTable(headers: string[], data: any[]): View {
   return Table({
-    child: VStack([
+    child: [
       Thead({
         child: Tr({
           child: ForEach(headers, header => Th({ child: Text(header), class: "font-bold p-2" }))
@@ -376,7 +376,7 @@ function DataTable(headers: string[], data: any[]): View {
           })
         )
       })
-    ])
+    ]
   });
 }
 

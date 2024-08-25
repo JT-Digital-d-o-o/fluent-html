@@ -124,3 +124,15 @@ runTestHTML((0, builder_1.Img)({
 runTestHTML((0, builder_1.Div)({
     attributes: { "width": "1000" }
 }), `<div width="1000"  ></div>`, "Div with attributes");
+runTestHTML((0, builder_1.Div1)()
+    .setId("id"), `<div id="id"  ></div>`, "Div");
+// 2.0 syntax
+runTestHTML((0, builder_1.Div1)((0, builder_1.P1)("Danes je lep dan")
+    .setClass("text-main-cl text-center"))
+    .setId("id")
+    .setClass("cursor-pointer")
+    .setHtmx((0, htmx_1.hx)("/get")), `<div id="id" class="cursor-pointer" hx-get="/get"      ><p class="text-main-cl text-center"  >Danes je lep dan</p></div>`, "lambda.html new syntax");
+runTestHTML((0, builder_1.Input1)()
+    .setName("name")
+    .setPlaceholder("placeholder")
+    .setType("type"), `<input name="name" placeholder="placeholder" type="type"  ></input>`, "Input new syntax");

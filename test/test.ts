@@ -1,4 +1,4 @@
-import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img } from "../src/builder";
+import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img, Div1, P1, Input1 } from "../src/builder";
 import { clss, div, hx, HxSwap, HxTrigger } from "../src/htmx";
 
 function runTest<T>(got: T, expected: T, test: string) {
@@ -265,3 +265,35 @@ runTestHTML(
   `<div width="1000"  ></div>`,
   "Div with attributes",
 );
+
+runTestHTML(
+  Div1()
+    .setId("id"),
+  `<div id="id"  ></div>`,
+  "Div",
+)
+
+// 2.0 syntax
+
+runTestHTML(
+  Div1(
+    P1(
+      "Danes je lep dan"
+    )
+    .setClass("text-main-cl text-center")
+  )
+  .setId("id")
+  .setClass("cursor-pointer")
+  .setHtmx(hx("/get")),
+  `<div id="id" class="cursor-pointer" hx-get="/get"      ><p class="text-main-cl text-center"  >Danes je lep dan</p></div>`,
+  "lambda.html new syntax",
+)
+
+runTestHTML(
+  Input1()
+    .setName("name")
+    .setPlaceholder("placeholder")
+    .setType("type"),
+  `<input name="name" placeholder="placeholder" type="type"  ></input>`,
+  "Input new syntax",
+)
