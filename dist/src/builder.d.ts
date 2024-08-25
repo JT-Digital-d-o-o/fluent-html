@@ -11,11 +11,11 @@ export declare class HtmlElement {
     style?: string;
     toggles?: string[];
     constructor(element: string, child?: View);
-    setId(id: string): HtmlElement;
-    setClass(className: string): HtmlElement;
-    setAttributes(attributes: Record<string, string>): HtmlElement;
-    setStyle(style: string): HtmlElement;
-    setHtmx(htmx: HTMX): HtmlElement;
+    setId(id?: string): HtmlElement;
+    setClass(className?: string): HtmlElement;
+    setAttributes(attributes?: Record<string, string>): HtmlElement;
+    setStyle(style?: string): HtmlElement;
+    setHtmx(htmx?: HTMX): HtmlElement;
 }
 export declare function El(el: string, props?: Partial<HtmlElement>): View;
 export declare function Div(props?: Partial<HtmlElement>): View;

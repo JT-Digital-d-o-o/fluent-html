@@ -24,27 +24,27 @@ export class HtmlElement {
     this.child = child;
   }
 
-  setId(id: string): HtmlElement {
+  setId(id?: string): HtmlElement {
     this.id = id;
     return this;
   }
 
-  setClass(className: string): HtmlElement {
+  setClass(className?: string): HtmlElement {
     this.class = className;
     return this;
   }
 
-  setAttributes(attributes: Record<string, string>): HtmlElement {
+  setAttributes(attributes?: Record<string, string>): HtmlElement {
     this.attributes = attributes;
     return this;
   }
 
-  setStyle(style: string): HtmlElement {
+  setStyle(style?: string): HtmlElement {
     this.style = style;
     return this;
   }
 
-  setHtmx(htmx: HTMX): HtmlElement {
+  setHtmx(htmx?: HTMX): HtmlElement {
     this.htmx = htmx;
     return this;
   }
