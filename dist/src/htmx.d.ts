@@ -22,14 +22,14 @@ export declare function hx(endpoint: string, options?: {
     replaceUrl?: boolean;
     validate?: boolean;
 }): HTMX;
+export declare function div(id: string): HxTarget;
+export declare function clss(clss: string): HxTarget;
 type SwapType = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
 type TransitionModifier = `transition:${boolean}`;
 type TimingModifier = `swap:${string}` | `settle:${string}`;
 type TitleModifier = `ignoreTitle:${boolean}`;
 type ScrollModifier = `scroll:${'top' | 'bottom'}` | `show:${'top' | 'bottom' | `window:${'' | 'bottom'}` | `${string}:${'top' | 'bottom'}`}`;
 type FocusScrollModifier = `focus-scroll:${boolean}`;
-export declare function div(id: string): HxTarget;
-export declare function clss(clss: string): HxTarget;
 type StandardCSSSelector = string;
 type ExtendedCSSSelector = 'this' | `closest ${string}` | `next ${string}` | `previous ${string}` | `find ${string}`;
 type HxTriggerTimingDeclaration = `${number}s` | `${number}ms`;

@@ -39,19 +39,19 @@ export function hx(
   };
 }
 
-type SwapType = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
-type TransitionModifier = `transition:${boolean}`;
-type TimingModifier = `swap:${string}` | `settle:${string}`;
-type TitleModifier = `ignoreTitle:${boolean}`;
-type ScrollModifier = `scroll:${'top' | 'bottom'}` | `show:${'top' | 'bottom' | `window:${'' | 'bottom'}` | `${string}:${'top' | 'bottom'}`}`;
-type FocusScrollModifier = `focus-scroll:${boolean}`;
-
 export function div(id: string): HxTarget {
   return `#${id}`;
 }
 export function clss(clss: string): HxTarget {
   return `.${clss}`;
 }
+
+type SwapType = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
+type TransitionModifier = `transition:${boolean}`;
+type TimingModifier = `swap:${string}` | `settle:${string}`;
+type TitleModifier = `ignoreTitle:${boolean}`;
+type ScrollModifier = `scroll:${'top' | 'bottom'}` | `show:${'top' | 'bottom' | `window:${'' | 'bottom'}` | `${string}:${'top' | 'bottom'}`}`;
+type FocusScrollModifier = `focus-scroll:${boolean}`;
 
 type StandardCSSSelector = string;
 type ExtendedCSSSelector = 

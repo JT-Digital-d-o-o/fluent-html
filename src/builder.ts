@@ -6,9 +6,9 @@ import { HTMX } from "./htmx.js";
 
 export type Thunk<T> = () => T;
 
-export type View = HtmlElement | string | View[];
+export type View = Tag | string | View[];
 
-export class HtmlElement {
+class Tag {
   el: string;
   child: View;
 
@@ -24,41 +24,41 @@ export class HtmlElement {
     this.child = child;
   }
 
-  setId(id?: string): HtmlElement {
+  setId(id?: string): Tag {
     this.id = id;
     return this;
   }
 
-  setClass(className?: string): HtmlElement {
+  setClass(className?: string): Tag {
     this.class = className;
     return this;
   }
 
-  setAttributes(attributes?: Record<string, string>): HtmlElement {
+  setAttributes(attributes?: Record<string, string>): Tag {
     this.attributes = attributes;
     return this;
   }
 
-  setStyle(style?: string): HtmlElement {
+  setStyle(style?: string): Tag {
     this.style = style;
     return this;
   }
 
-  setHtmx(htmx?: HTMX): HtmlElement {
+  setHtmx(htmx?: HTMX): Tag {
     this.htmx = htmx;
     return this;
   }
 }
 
-export function El(el: string, props?: Partial<HtmlElement>): View {
-  const element = new HtmlElement(el);
+export function El(el: string, props?: Partial<Tag>): View {
+  const element = new Tag(el);
   if (props) {
     Object.assign(element, props);
   }
   return element;
 }
 
-export function Div(props?: Partial<HtmlElement>): View {
+export function Div(props?: Partial<Tag>): View {
   return El("div", props);
 }
 
@@ -81,7 +81,7 @@ export function VStack(views: View[]): View {
   return views;
 }
 
-export function HStack(props?: Partial<HtmlElement>): View {
+export function HStack(props?: Partial<Tag>): View {
   const flex = `flex ${(props.class === undefined) ? "" : props.class}`;
   if (props) {
     props.class = flex;
@@ -92,70 +92,70 @@ export function HStack(props?: Partial<HtmlElement>): View {
 }
 
 type InputParams = { type?: string, placeholder?: string, name?: string };
-export function Input(props?: Partial<HtmlElement & InputParams>): View {
+export function Input(props?: Partial<Tag & InputParams>): View {
   return El("input", props);
 }
 
 type TextareaParams = { placeholder?: string, name?: string, rows?: number, cols?: number };
-export function Textarea(props?: Partial<HtmlElement & TextareaParams>): View {
+export function Textarea(props?: Partial<Tag & TextareaParams>): View {
   return El("textarea", props);
 }
 
-export function P(props?: Partial<HtmlElement>): View {
+export function P(props?: Partial<Tag>): View {
   return El("p", props);
 }
 
-export function Button(props: Partial<HtmlElement & { type?: string }>): View {
+export function Button(props: Partial<Tag & { type?: string }>): View {
   return El("button", props);
 }
 
 type LabelParams = { for?: string };
-export function Label(props: Partial<HtmlElement & LabelParams>): View {
+export function Label(props: Partial<Tag & LabelParams>): View {
   return El("label", props);
 }
 
-export function H1(props?: Partial<HtmlElement>): View {
+export function H1(props?: Partial<Tag>): View {
   return El("h1", props);
 }
-export function H2(props?: Partial<HtmlElement>): View {
+export function H2(props?: Partial<Tag>): View {
   return El("h2", props);
 }
 
-export function H3(props?: Partial<HtmlElement>): View {
+export function H3(props?: Partial<Tag>): View {
   return El("h3", props);
 }
 
-export function H4(props?: Partial<HtmlElement>): View {
+export function H4(props?: Partial<Tag>): View {
   return El("h4", props);
 }
 
-export function Span(props?: Partial<HtmlElement>): View {
+export function Span(props?: Partial<Tag>): View {
   return El("span", props);
 }
 
-export function A(props: Partial<HtmlElement & { href?: string }>): View {
+export function A(props: Partial<Tag & { href?: string }>): View {
   return El("a", props);
 }
 
-export function Ul(props?: Partial<HtmlElement>): View {
+export function Ul(props?: Partial<Tag>): View {
   return El("ul", props);
 }
 
-export function Ol(props?: Partial<HtmlElement>): View {
+export function Ol(props?: Partial<Tag>): View {
   return El("ol", props);
 }
 
-export function Li(props?: Partial<HtmlElement>): View {
+export function Li(props?: Partial<Tag>): View {
   return El("li", props);
 }
 
 type FormParams = { action?: string, method?: string };
-export function Form(props: Partial<HtmlElement & FormParams>): View {
+export function Form(props: Partial<Tag & FormParams>): View {
   return El("form", props);
 }
 
 type ImgParams = { src?: string, alt?: string, width?: string, height?: string };
-export function Img(props: Partial<HtmlElement & ImgParams>): View {
+export function Img(props: Partial<Tag & ImgParams>): View {
   return El("img", props);
 }
 
@@ -163,30 +163,30 @@ interface Option {
   value: string, text: string, selected: boolean
 }
 type OptionParams = { name?: string, options?: Option[] };
-export function Select(props: Partial<HtmlElement & OptionParams>): View {
+export function Select(props: Partial<Tag & OptionParams>): View {
   return El("select", props);
 }
 
-export function Table(props?: Partial<HtmlElement>): View {
+export function Table(props?: Partial<Tag>): View {
   return El("table", props);
 }
-export function Thead(props?: Partial<HtmlElement>): View {
+export function Thead(props?: Partial<Tag>): View {
   return El("thead", props);
 }
-export function Tbody(props?: Partial<HtmlElement>): View {
+export function Tbody(props?: Partial<Tag>): View {
   return El("tbody", props);
 }
-export function Tr(props?: Partial<HtmlElement>): View {
+export function Tr(props?: Partial<Tag>): View {
   return El("tr", props);
 }
-export function Th(props?: Partial<HtmlElement>): View {
+export function Th(props?: Partial<Tag>): View {
   return El("th", props);
 }
-export function Td(props?: Partial<HtmlElement>): View {
+export function Td(props?: Partial<Tag>): View {
   return El("td", props);
 }
 
-export function Hr(props?: Partial<HtmlElement>): View {
+export function Hr(props?: Partial<Tag>): View {
   return El("hr", props);
 }
 
@@ -328,7 +328,7 @@ function renderImpl(view: View): string {
     return view;
   }
 
-  if (view instanceof HtmlElement) {
+  if (view instanceof Tag) {
     const baseAttrs: any = {};
     Object.assign(baseAttrs, view);
     Object.assign(baseAttrs, view.attributes);
@@ -371,216 +371,216 @@ function renderImpl(view: View): string {
 
 // new syntax
 
-export function El1(el: string, child: View = Empty()): HtmlElement {
-  return new HtmlElement(el, child);
+export function El1(el: string, child: View = Empty()): Tag {
+  return new Tag(el, child);
 }
 
-export function Div1(child: View = Empty()): HtmlElement {
+export function Div1(child: View = Empty()): Tag {
   return El1("div", child);
 }
 
-export function P1(child: View = Empty()): HtmlElement {
+export function P1(child: View = Empty()): Tag {
   return El1("p", child);
 }
 
-export class InputHtmlElement extends HtmlElement { 
+class InputTag extends Tag { 
   type?: string; 
   placeholder?: string;
   name?: string;
 
-  setType(type: string): InputHtmlElement {
+  setType(type?: string): InputTag {
     this.type = type;
     return this;
   }
 
-  setPlaceholder(placeholder: string): InputHtmlElement {
+  setPlaceholder(placeholder?: string): InputTag {
     this.placeholder = placeholder;
     return this;
   }
 
-  setName(name: string): InputHtmlElement {
+  setName(name?: string): InputTag {
     this.name = name;
     return this;
   }
 };
-export function Input1(child: View = Empty()): InputHtmlElement {
-  return new InputHtmlElement("input", child);
+export function Input1(child: View = Empty()): InputTag {
+  return new InputTag("input", child);
 }
 
-export class TextareaHtmlElement extends HtmlElement {
+class TextareaTag extends Tag {
   placeholder?: string;
   name?: string;
   rows?: number;
   cols?: number;
 
-  setPlaceholder(placeholder: string): TextareaHtmlElement {
+  setPlaceholder(placeholder?: string): TextareaTag {
     this.placeholder = placeholder;
     return this;
   }
 
-  setName(name: string): TextareaHtmlElement {
+  setName(name?: string): TextareaTag {
     this.name = name;
     return this;
   }
 
-  setRows(rows: number): TextareaHtmlElement {
+  setRows(rows?: number): TextareaTag {
     this.rows = rows;
     return this;
   }
 
-  setCols(cols: number): TextareaHtmlElement {
+  setCols(cols?: number): TextareaTag {
     this.cols = cols;
     return this;
   }
 };
-export function Textarea1(child: View = Empty()): TextareaHtmlElement {
-  return new TextareaHtmlElement("textarea", child);
+export function Textarea1(child: View = Empty()): TextareaTag {
+  return new TextareaTag("textarea", child);
 }
 
-export class ButtonHtmlElement extends HtmlElement {
+class ButtonTag extends Tag {
   type?: string;
 
-  setType(type: string): ButtonHtmlElement {
+  setType(type?: string): ButtonTag {
     this.type = type;
     return this;
   }
 };
-export function Button1(child: View = Empty()): ButtonHtmlElement {
-  return new ButtonHtmlElement("button", child);
+export function Button1(child: View = Empty()): ButtonTag {
+  return new ButtonTag("button", child);
 }
 
-export class LabelHtmlElement extends HtmlElement {
+class LabelTag extends Tag {
   for?: string;
 
-  setFor(forId: string): LabelHtmlElement {
+  setFor(forId?: string): LabelTag {
     this.for = forId;
     return this;
   }
 };
-export function Label1(child: View = Empty()): LabelHtmlElement {
-  return new LabelHtmlElement("label", child);
+export function Label1(child: View = Empty()): LabelTag {
+  return new LabelTag("label", child);
 }
 
-export class AnchorHtmlElement extends HtmlElement {
+class AnchorTag extends Tag {
   href?: string;
 
-  setHref(href: string): AnchorHtmlElement {
+  setHref(href?: string): AnchorTag {
     this.href = href;
     return this;
   }
 };
-export function A1(child: View = Empty()): AnchorHtmlElement {
-  return new AnchorHtmlElement("a", child);
+export function A1(child: View = Empty()): AnchorTag {
+  return new AnchorTag("a", child);
 }
 
-export class FormHtmlElement extends HtmlElement {
+class FormTag extends Tag {
   action?: string;
   method?: string;
 
-  setAction(action: string): FormHtmlElement {
+  setAction(action?: string): FormTag {
     this.action = action;
     return this;
   }
 
-  setMethod(method: string): FormHtmlElement {
+  setMethod(method?: string): FormTag {
     this.method = method;
     return this;
   }
 };
-export function Form1(child: View = Empty()): FormHtmlElement {
-  return new FormHtmlElement("form", child);
+export function Form1(child: View = Empty()): FormTag {
+  return new FormTag("form", child);
 }
 
-export class ImgHtmlElement extends HtmlElement {
+class ImgTag extends Tag {
   src?: string;
   alt?: string;
   width?: string;
   height?: string;
 
-  setSrc(src: string): HtmlElement {
+  setSrc(src?: string): Tag {
     this.src = src;
     return this;
   }
 
-  set(alt: string): ImgHtmlElement {
+  set(alt?: string): ImgTag {
     this.alt = alt;
     return this;
   }
 
-  setWidth(width: string): ImgHtmlElement {
+  setWidth(width?: string): ImgTag {
     this.width = width;
     return this;
   }
 
-  setHeight(height: string): ImgHtmlElement {
+  setHeight(height?: string): ImgTag {
     this.height = height;
     return this;
   }
 };
-export function Img1(child: View = Empty()): ImgHtmlElement {
-  return new ImgHtmlElement("img", child);
+export function Img1(child: View = Empty()): ImgTag {
+  return new ImgTag("img", child);
 }
 
-export class SelectHtmlElement extends HtmlElement {
+class SelectTag extends Tag {
   name?: string;
   options?: Option[];
 
-  setName(name: string): SelectHtmlElement {
+  setName(name?: string): SelectTag {
     this.name = name;
     return this;
   }
 
-  setOptions(options: Option[]): SelectHtmlElement {
+  setOptions(options?: Option[]): SelectTag {
     this.options = options;
     return this;
   }
 };
-export function Select1(child: View = Empty()): SelectHtmlElement {
-  return new SelectHtmlElement("select", child);
+export function Select1(child: View = Empty()): SelectTag {
+  return new SelectTag("select", child);
 }
 
-export function H11(child: View = Empty()): HtmlElement {
-  return new HtmlElement("h1", child);
+export function H11(child: View = Empty()): Tag {
+  return new Tag("h1", child);
 }
-export function H21(child: View = Empty()): HtmlElement {
-  return new HtmlElement("h2", child);
+export function H21(child: View = Empty()): Tag {
+  return new Tag("h2", child);
 }
-export function H31(child: View = Empty()): HtmlElement {
-  return new HtmlElement("h3", child);
+export function H31(child: View = Empty()): Tag {
+  return new Tag("h3", child);
 }
-export function H41(child: View = Empty()): HtmlElement {
-  return new HtmlElement("h4", child);
+export function H41(child: View = Empty()): Tag {
+  return new Tag("h4", child);
 }
-export function Span1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("span", child);
+export function Span1(child: View = Empty()): Tag {
+  return new Tag("span", child);
 }
-export function Ul1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("ul", child);
+export function Ul1(child: View = Empty()): Tag {
+  return new Tag("ul", child);
 }
-export function Ol1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("ol", child);
+export function Ol1(child: View = Empty()): Tag {
+  return new Tag("ol", child);
 }
-export function Li1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("li", child);
+export function Li1(child: View = Empty()): Tag {
+  return new Tag("li", child);
 }
-export function Table1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("table", child);
+export function Table1(child: View = Empty()): Tag {
+  return new Tag("table", child);
 }
-export function Thead1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("thead", child);
+export function Thead1(child: View = Empty()): Tag {
+  return new Tag("thead", child);
 }
-export function Tbody1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("tbody", child);
+export function Tbody1(child: View = Empty()): Tag {
+  return new Tag("tbody", child);
 }
-export function Tr1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("tr", child);
+export function Tr1(child: View = Empty()): Tag {
+  return new Tag("tr", child);
 }
-export function Th1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("th", child);
+export function Th1(child: View = Empty()): Tag {
+  return new Tag("th", child);
 }
-export function Td1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("td", child);
+export function Td1(child: View = Empty()): Tag {
+  return new Tag("td", child);
 }
-export function Hr1(child: View = Empty()): HtmlElement {
-  return new HtmlElement("hr", child);
+export function Hr1(child: View = Empty()): Tag {
+  return new Tag("hr", child);
 }

@@ -19,6 +19,7 @@ const trigger1: HxTrigger = 'click';
 const trigger2: HxTrigger = 'click once, keyup delay:500ms';
 const trigger3: HxTrigger = 'every 1s';
 const trigger4: HxTrigger = 'load, click delay:1s';
+const trigger5: HxTrigger = 'intersect changed, click queue:none';
 
 // /// Typesafe Hx-Swap-s:
 const swap1: HxSwap = "outerHTML";
