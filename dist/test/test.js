@@ -25,7 +25,7 @@ const swap1 = "outerHTML";
 const swap2 = "innerHTML show:window:top";
 const swap3 = "innerHTML show:#another-div:top";
 const swap4 = "beforeend scroll:bottom";
-runTest("#my-target", (0, htmx_1.div)("my-target"), "htmx target - div");
+runTest("#my-target", (0, htmx_1.id)("my-target"), "htmx target - div");
 runTest(".my-target", (0, htmx_1.clss)("my-target"), "htmx target - class");
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
 runTestHTML((0, builder_1.Div)(), `<div   ></div>`, "Empty div");
@@ -137,3 +137,4 @@ runTestHTML((0, builder_1.Input1)()
     .setName("name")
     .setPlaceholder("placeholder")
     .setType("type"), `<input name="name" placeholder="placeholder" type="type"  ></input>`, "Input new syntax");
+//# sourceMappingURL=test.js.map

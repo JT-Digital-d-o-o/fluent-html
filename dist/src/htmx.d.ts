@@ -22,7 +22,7 @@ export declare function hx(endpoint: string, options?: {
     replaceUrl?: boolean;
     validate?: boolean;
 }): HTMX;
-export declare function div(id: string): HxTarget;
+export declare function id(id: string): HxTarget;
 export declare function clss(clss: string): HxTarget;
 type SwapType = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
 type TransitionModifier = `transition:${boolean}`;

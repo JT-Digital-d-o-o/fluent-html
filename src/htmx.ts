@@ -39,7 +39,7 @@ export function hx(
   };
 }
 
-export function div(id: string): HxTarget {
+export function id(id: string): HxTarget {
   return `#${id}`;
 }
 export function clss(clss: string): HxTarget {

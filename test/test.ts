@@ -1,5 +1,5 @@
 import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img, Div1, P1, Input1 } from "../src/builder";
-import { clss, div, hx, HxSwap, HxTrigger } from "../src/htmx";
+import { clss, id, hx, HxSwap, HxTrigger } from "../src/htmx";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -27,7 +27,7 @@ const swap2: HxSwap = "innerHTML show:window:top";
 const swap3: HxSwap = "innerHTML show:#another-div:top";
 const swap4: HxSwap = "beforeend scroll:bottom";
 
-runTest("#my-target", div("my-target"), "htmx target - div");
+runTest("#my-target", id("my-target"), "htmx target - div");
 runTest(".my-target", clss("my-target"), "htmx target - class");
 
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!

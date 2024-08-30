@@ -5,7 +5,8 @@
     "target": "ES2017",
     "declaration": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "sourceMap": true
   },
   "include": ["src/**/*", "test/**/*"]
 }

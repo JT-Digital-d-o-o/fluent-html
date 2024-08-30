@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.A1 = exports.P1 = exports.Input1 = exports.Label1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Form1 = exports.Div1 = exports.El1 = exports.clss = exports.div = exports.hx = exports.Tbody = exports.Tr = exports.Th = exports.Td = exports.Thead = exports.Table = exports.Overlay = exports.Hr = exports.Textarea = exports.Select = exports.Li = exports.Ul = exports.Img = exports.HStack = exports.Empty = exports.A = exports.VStack = exports.Text = exports.P = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.Button = exports.Label = exports.Input = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Div = exports.render = void 0;
-exports.Hr1 = exports.Tbody1 = exports.Tr1 = exports.Th1 = exports.Td1 = exports.Thead1 = exports.Table1 = exports.Textarea1 = exports.Select1 = exports.Li1 = exports.Ul1 = exports.Img1 = void 0;
+exports.A1 = exports.P1 = exports.Input1 = exports.Label1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Form1 = exports.Div1 = exports.El1 = exports.clss = exports.id = exports.hx = exports.Tbody = exports.Tr = exports.Th = exports.Td = exports.Thead = exports.Table = exports.Overlay = exports.Hr = exports.Textarea = exports.Select = exports.Li = exports.Ul = exports.Img = exports.HStack = exports.Empty = exports.A = exports.VStack = exports.Text = exports.P = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.Button = exports.Label = exports.Input = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Div = exports.render = void 0;
+exports.Button1 = exports.Hr1 = exports.Tbody1 = exports.Tr1 = exports.Th1 = exports.Td1 = exports.Thead1 = exports.Table1 = exports.Textarea1 = exports.Select1 = exports.Li1 = exports.Ul1 = exports.Img1 = void 0;
 var builder_js_1 = require("./builder.js");
 Object.defineProperty(exports, "render", { enumerable: true, get: function () { return builder_js_1.render; } });
 var builder_js_2 = require("./builder.js");
@@ -65,7 +65,7 @@ Object.defineProperty(exports, "Tr", { enumerable: true, get: function () { retu
 Object.defineProperty(exports, "Tbody", { enumerable: true, get: function () { return builder_js_25.Tbody; } });
 var htmx_js_1 = require("./htmx.js");
 Object.defineProperty(exports, "hx", { enumerable: true, get: function () { return htmx_js_1.hx; } });
-Object.defineProperty(exports, "div", { enumerable: true, get: function () { return htmx_js_1.div; } });
+Object.defineProperty(exports, "id", { enumerable: true, get: function () { return htmx_js_1.id; } });
 Object.defineProperty(exports, "clss", { enumerable: true, get: function () { return htmx_js_1.clss; } });
 var builder_js_26 = require("./builder.js");
 Object.defineProperty(exports, "El1", { enumerable: true, get: function () { return builder_js_26.El1; } });
@@ -91,3 +91,5 @@ Object.defineProperty(exports, "Th1", { enumerable: true, get: function () { ret
 Object.defineProperty(exports, "Tr1", { enumerable: true, get: function () { return builder_js_26.Tr1; } });
 Object.defineProperty(exports, "Tbody1", { enumerable: true, get: function () { return builder_js_26.Tbody1; } });
 Object.defineProperty(exports, "Hr1", { enumerable: true, get: function () { return builder_js_26.Hr1; } });
+Object.defineProperty(exports, "Button1", { enumerable: true, get: function () { return builder_js_26.Button1; } });
+//# sourceMappingURL=index.js.map

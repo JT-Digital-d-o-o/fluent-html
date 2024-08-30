@@ -504,3 +504,4 @@ function Hr1(child = Empty()) {
     return new Tag("hr", child);
 }
 exports.Hr1 = Hr1;
+//# sourceMappingURL=builder.js.map
