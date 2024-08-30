@@ -25,4 +25,4 @@ export { Hr } from './builder.js';
 export { Overlay, OverlayPosition } from './builder.js';
 export { Table, Thead, Td, Th, Tr, Tbody } from './builder.js';
 export { hx, HTMX, HxSwap, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, id, clss } from './htmx.js';
-export { El1, Div1, Form1, H11, H21, H31, H41, Label1, Input1, P1, A1, Img1, Ul1, Li1, Select1, Textarea1, Table1, Thead1, Td1, Th1, Tr1, Tbody1, Hr1, Button1 } from './builder.js';
+export { El1, Div1, Form1, H11, H21, H31, H41, Label1, Input1, P1, A1, Img1, Ul1, Li1, Select1, Textarea1, Table1, Thead1, Td1, Th1, Tr1, Tbody1, Hr1, Button1, Span1 } from './builder.js';
