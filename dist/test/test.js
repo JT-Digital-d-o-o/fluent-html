@@ -137,4 +137,26 @@ runTestHTML((0, builder_1.Input1)()
     .setName("name")
     .setPlaceholder("placeholder")
     .setType("type"), `<input name="name" placeholder="placeholder" type="type"  ></input>`, "Input new syntax");
+// client-side rendering
+// const view = [
+//   Div1([
+//     Button1("Click")
+//       .addClick("data.count = data.count + 1")
+//       .addClick("data.toggle = !data.toggle"),
+//     `Count: `,
+//     Span1()
+//       .setId("span1")
+//       .bindTextContent("data.count % 2 === 0 ? '😄' : '😅'"),
+//     Div1("Dropdown")
+//       .setId("dropdown1")
+//       .bindShow("data.toggle")
+//   ])
+//   .bindState({ count: 1, toggle: false }),
+// ];
+// const compileError = compile(view);
+// if (compileError) {
+//   console.log(compileError);
+// } else {
+//   console.log(render(view));
+// }
 //# sourceMappingURL=test.js.map

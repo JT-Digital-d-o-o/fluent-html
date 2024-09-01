@@ -14,14 +14,15 @@ class Tag {
 
   id?: string;
   class?: string;
-  attributes?: Record<string, string>;
-  htmx?: HTMX;
   style?: string;
+  attributes: Record<string, string>;
+  htmx?: HTMX;
   toggles?: string[];
 
   constructor(element: string, child: View = Empty()) {
     this.el = element;
     this.child = child;
+    this.attributes = {};
   }
 
   setId(id?: string): Tag {
@@ -34,13 +35,13 @@ class Tag {
     return this;
   }
 
-  setAttributes(attributes?: Record<string, string>): Tag {
-    this.attributes = attributes;
+  setStyle(style?: string): Tag {
+    this.attributes.style = style;
     return this;
   }
 
-  setStyle(style?: string): Tag {
-    this.style = style;
+  addAttribute(key: string, value: string): Tag {
+    this.attributes[key] = value;
     return this;
   }
 
@@ -209,6 +210,19 @@ export function Overlay(
   });
 }
 
+export function Overlay1(
+  content: View,
+  overlay: View,
+  position: OverlayPosition = 'center'
+): Tag {
+  return Div1([
+    content,
+    Div1(overlay)
+      .setStyle(`position: absolute; ${positionStyles[position]}`),
+  ])
+  .setStyle("position: relative");
+}
+
 const positionStyles: Record<OverlayPosition, string> = {
   'top': 'top: 0; left: 50%; transform: translateX(-50%);',
   'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
@@ -368,6 +382,7 @@ function renderImpl(view: View): string {
 
   return "";
 }
+
 
 // new syntax
 
@@ -584,3 +599,9 @@ export function Td1(child: View = Empty()): Tag {
 export function Hr1(child: View = Empty()): Tag {
   return new Tag("hr", child);
 }
+
+// export function HStack1(children: View = Empty()): View {
+//   const flex = `flex ${(props.class === undefined) ? "" : props.class}`;
+//   return Div1(children)
+//     .setClass(flex);
+// }

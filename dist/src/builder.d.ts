@@ -6,15 +6,15 @@ declare class Tag {
     child: View;
     id?: string;
     class?: string;
-    attributes?: Record<string, string>;
-    htmx?: HTMX;
     style?: string;
+    attributes: Record<string, string>;
+    htmx?: HTMX;
     toggles?: string[];
     constructor(element: string, child?: View);
     setId(id?: string): Tag;
     setClass(className?: string): Tag;
-    setAttributes(attributes?: Record<string, string>): Tag;
     setStyle(style?: string): Tag;
+    addAttribute(key: string, value: string): Tag;
     setHtmx(htmx?: HTMX): Tag;
 }
 export declare function El(el: string, props?: Partial<Tag>): View;
@@ -92,6 +92,7 @@ export declare function Td(props?: Partial<Tag>): View;
 export declare function Hr(props?: Partial<Tag>): View;
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 export declare function Overlay(content: View, overlay: View, position?: OverlayPosition): View;
+export declare function Overlay1(content: View, overlay: View, position?: OverlayPosition): Tag;
 export declare function IfThenElse(condition: boolean, thenBranch: Thunk<View>, elseBranch: Thunk<View>): View;
 export declare function IfThen(condition: boolean, then: Thunk<View>): View;
 type Case = {

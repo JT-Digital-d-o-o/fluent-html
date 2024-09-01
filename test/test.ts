@@ -1,4 +1,4 @@
-import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img, Div1, P1, Input1 } from "../src/builder";
+import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img, Div1, P1, Input1, Button1, Span1 } from "../src/builder";
 import { clss, id, hx, HxSwap, HxTrigger } from "../src/htmx";
 
 function runTest<T>(got: T, expected: T, test: string) {
@@ -298,3 +298,29 @@ runTestHTML(
   `<input name="name" placeholder="placeholder" type="type"  ></input>`,
   "Input new syntax",
 )
+
+// client-side rendering
+
+
+// const view = [
+//   Div1([
+//     Button1("Click")
+//       .addClick("data.count = data.count + 1")
+//       .addClick("data.toggle = !data.toggle"),
+//     `Count: `,
+//     Span1()
+//       .setId("span1")
+//       .bindTextContent("data.count % 2 === 0 ? '😄' : '😅'"),
+//     Div1("Dropdown")
+//       .setId("dropdown1")
+//       .bindShow("data.toggle")
+//   ])
+//   .bindState({ count: 1, toggle: false }),
+// ];
+
+// const compileError = compile(view);
+// if (compileError) {
+//   console.log(compileError);
+// } else {
+//   console.log(render(view));
+// }

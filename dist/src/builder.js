@@ -3,12 +3,13 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Select1 = exports.Img1 = exports.Form1 = exports.A1 = exports.Label1 = exports.Button1 = exports.Textarea1 = exports.Input1 = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = void 0;
-exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = void 0;
+exports.Img1 = exports.Form1 = exports.A1 = exports.Label1 = exports.Button1 = exports.Textarea1 = exports.Input1 = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay1 = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = void 0;
+exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Select1 = void 0;
 class Tag {
     constructor(element, child = Empty()) {
         this.el = element;
         this.child = child;
+        this.attributes = {};
     }
     setId(id) {
         this.id = id;
@@ -18,12 +19,12 @@ class Tag {
         this.class = className;
         return this;
     }
-    setAttributes(attributes) {
-        this.attributes = attributes;
+    setStyle(style) {
+        this.attributes.style = style;
         return this;
     }
-    setStyle(style) {
-        this.style = style;
+    addAttribute(key, value) {
+        this.attributes[key] = value;
         return this;
     }
     setHtmx(htmx) {
@@ -181,6 +182,15 @@ function Overlay(content, overlay, position = 'center') {
     });
 }
 exports.Overlay = Overlay;
+function Overlay1(content, overlay, position = 'center') {
+    return Div1([
+        content,
+        Div1(overlay)
+            .setStyle(`position: absolute; ${positionStyles[position]}`),
+    ])
+        .setStyle("position: relative");
+}
+exports.Overlay1 = Overlay1;
 const positionStyles = {
     'top': 'top: 0; left: 50%; transform: translateX(-50%);',
     'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
@@ -504,4 +514,9 @@ function Hr1(child = Empty()) {
     return new Tag("hr", child);
 }
 exports.Hr1 = Hr1;
+// export function HStack1(children: View = Empty()): View {
+//   const flex = `flex ${(props.class === undefined) ? "" : props.class}`;
+//   return Div1(children)
+//     .setClass(flex);
+// }
 //# sourceMappingURL=builder.js.map
