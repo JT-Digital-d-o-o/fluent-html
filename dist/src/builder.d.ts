@@ -16,6 +16,7 @@ declare class Tag {
     setStyle(style?: string): Tag;
     addAttribute(key: string, value: string): Tag;
     setHtmx(htmx?: HTMX): Tag;
+    setToggles(toggles?: [string]): Tag;
 }
 export declare function El(el: string, props?: Partial<Tag>): View;
 export declare function Div(props?: Partial<Tag>): View;

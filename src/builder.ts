@@ -49,6 +49,11 @@ class Tag {
     this.htmx = htmx;
     return this;
   }
+
+  setToggles(toggles?: [string]): Tag {
+    this.toggles = toggles;
+    return this;
+  }
 }
 
 export function El(el: string, props?: Partial<Tag>): View {

@@ -31,6 +31,10 @@ class Tag {
         this.htmx = htmx;
         return this;
     }
+    setToggles(toggles) {
+        this.toggles = toggles;
+        return this;
+    }
 }
 function El(el, props) {
     const element = new Tag(el);
