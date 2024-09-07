@@ -113,9 +113,11 @@ export declare class InputTag extends Tag {
     type?: string;
     placeholder?: string;
     name?: string;
+    value?: string;
     setType(type?: string): InputTag;
     setPlaceholder(placeholder?: string): InputTag;
     setName(name?: string): InputTag;
+    setValue(value?: string): InputTag;
 }
 export declare function Input1(child?: View): InputTag;
 export declare class TextareaTag extends Tag {

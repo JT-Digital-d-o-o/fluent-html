@@ -407,6 +407,7 @@ export class InputTag extends Tag {
   type?: string; 
   placeholder?: string;
   name?: string;
+  value?: string;
 
   setType(type?: string): InputTag {
     this.type = type;
@@ -420,6 +421,11 @@ export class InputTag extends Tag {
 
   setName(name?: string): InputTag {
     this.name = name;
+    return this;
+  }
+  
+  setValue(value?: string): InputTag {
+    this.value = value;
     return this;
   }
 };

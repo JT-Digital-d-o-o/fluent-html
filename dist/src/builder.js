@@ -343,6 +343,10 @@ class InputTag extends Tag {
         this.name = name;
         return this;
     }
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
 }
 exports.InputTag = InputTag;
 ;
