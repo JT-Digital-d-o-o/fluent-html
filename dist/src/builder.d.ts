@@ -108,7 +108,7 @@ export declare function render(view: View): string;
 export declare function El1(el: string, child?: View): Tag;
 export declare function Div1(child?: View): Tag;
 export declare function P1(child?: View): Tag;
-declare class InputTag extends Tag {
+export declare class InputTag extends Tag {
     type?: string;
     placeholder?: string;
     name?: string;
@@ -117,7 +117,7 @@ declare class InputTag extends Tag {
     setName(name?: string): InputTag;
 }
 export declare function Input1(child?: View): InputTag;
-declare class TextareaTag extends Tag {
+export declare class TextareaTag extends Tag {
     placeholder?: string;
     name?: string;
     rows?: number;
@@ -128,29 +128,29 @@ declare class TextareaTag extends Tag {
     setCols(cols?: number): TextareaTag;
 }
 export declare function Textarea1(child?: View): TextareaTag;
-declare class ButtonTag extends Tag {
+export declare class ButtonTag extends Tag {
     type?: string;
     setType(type?: string): ButtonTag;
 }
 export declare function Button1(child?: View): ButtonTag;
-declare class LabelTag extends Tag {
+export declare class LabelTag extends Tag {
     for?: string;
     setFor(forId?: string): LabelTag;
 }
 export declare function Label1(child?: View): LabelTag;
-declare class AnchorTag extends Tag {
+export declare class AnchorTag extends Tag {
     href?: string;
     setHref(href?: string): AnchorTag;
 }
 export declare function A1(child?: View): AnchorTag;
-declare class FormTag extends Tag {
+export declare class FormTag extends Tag {
     action?: string;
     method?: string;
     setAction(action?: string): FormTag;
     setMethod(method?: string): FormTag;
 }
 export declare function Form1(child?: View): FormTag;
-declare class ImgTag extends Tag {
+export declare class ImgTag extends Tag {
     src?: string;
     alt?: string;
     width?: string;
@@ -161,7 +161,7 @@ declare class ImgTag extends Tag {
     setHeight(height?: string): ImgTag;
 }
 export declare function Img1(child?: View): ImgTag;
-declare class SelectTag extends Tag {
+export declare class SelectTag extends Tag {
     name?: string;
     options?: Option[];
     setName(name?: string): SelectTag;

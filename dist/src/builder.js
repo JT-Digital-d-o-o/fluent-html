@@ -3,8 +3,8 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Img1 = exports.Form1 = exports.A1 = exports.Label1 = exports.Button1 = exports.Textarea1 = exports.Input1 = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay1 = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = void 0;
-exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Select1 = void 0;
+exports.LabelTag = exports.Button1 = exports.ButtonTag = exports.Textarea1 = exports.TextareaTag = exports.Input1 = exports.InputTag = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay1 = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = void 0;
+exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Select1 = exports.SelectTag = exports.Img1 = exports.ImgTag = exports.Form1 = exports.FormTag = exports.A1 = exports.AnchorTag = exports.Label1 = void 0;
 class Tag {
     constructor(element, child = Empty()) {
         this.el = element;
@@ -340,6 +340,7 @@ class InputTag extends Tag {
         return this;
     }
 }
+exports.InputTag = InputTag;
 ;
 function Input1(child = Empty()) {
     return new InputTag("input", child);
@@ -363,6 +364,7 @@ class TextareaTag extends Tag {
         return this;
     }
 }
+exports.TextareaTag = TextareaTag;
 ;
 function Textarea1(child = Empty()) {
     return new TextareaTag("textarea", child);
@@ -374,6 +376,7 @@ class ButtonTag extends Tag {
         return this;
     }
 }
+exports.ButtonTag = ButtonTag;
 ;
 function Button1(child = Empty()) {
     return new ButtonTag("button", child);
@@ -385,6 +388,7 @@ class LabelTag extends Tag {
         return this;
     }
 }
+exports.LabelTag = LabelTag;
 ;
 function Label1(child = Empty()) {
     return new LabelTag("label", child);
@@ -396,6 +400,7 @@ class AnchorTag extends Tag {
         return this;
     }
 }
+exports.AnchorTag = AnchorTag;
 ;
 function A1(child = Empty()) {
     return new AnchorTag("a", child);
@@ -411,6 +416,7 @@ class FormTag extends Tag {
         return this;
     }
 }
+exports.FormTag = FormTag;
 ;
 function Form1(child = Empty()) {
     return new FormTag("form", child);
@@ -434,6 +440,7 @@ class ImgTag extends Tag {
         return this;
     }
 }
+exports.ImgTag = ImgTag;
 ;
 function Img1(child = Empty()) {
     return new ImgTag("img", child);
@@ -449,6 +456,7 @@ class SelectTag extends Tag {
         return this;
     }
 }
+exports.SelectTag = SelectTag;
 ;
 function Select1(child = Empty()) {
     return new SelectTag("select", child);

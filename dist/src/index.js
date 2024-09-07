@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.A1 = exports.P1 = exports.Input1 = exports.Label1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Form1 = exports.Div1 = exports.El1 = exports.clss = exports.id = exports.hx = exports.Tbody = exports.Tr = exports.Th = exports.Td = exports.Thead = exports.Table = exports.Overlay = exports.Hr = exports.Textarea = exports.Select = exports.Li = exports.Ul = exports.Img = exports.HStack = exports.Empty = exports.A = exports.VStack = exports.Text = exports.P = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.Button = exports.Label = exports.Input = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Div = exports.render = void 0;
-exports.Overlay1 = exports.Span1 = exports.Button1 = exports.Hr1 = exports.Tbody1 = exports.Tr1 = exports.Th1 = exports.Td1 = exports.Thead1 = exports.Table1 = exports.Textarea1 = exports.Select1 = exports.Li1 = exports.Ul1 = exports.Img1 = void 0;
+exports.FormTag = exports.SelectTag = exports.LabelTag = exports.AnchorTag = exports.ImgTag = exports.TextareaTag = exports.InputTag = exports.ButtonTag = exports.Overlay1 = exports.Span1 = exports.Button1 = exports.Hr1 = exports.Tbody1 = exports.Tr1 = exports.Th1 = exports.Td1 = exports.Thead1 = exports.Table1 = exports.Textarea1 = exports.Select1 = exports.Li1 = exports.Ul1 = exports.Img1 = void 0;
 var builder_js_1 = require("./builder.js");
 Object.defineProperty(exports, "render", { enumerable: true, get: function () { return builder_js_1.render; } });
 var builder_js_2 = require("./builder.js");
@@ -94,4 +94,13 @@ Object.defineProperty(exports, "Hr1", { enumerable: true, get: function () { ret
 Object.defineProperty(exports, "Button1", { enumerable: true, get: function () { return builder_js_26.Button1; } });
 Object.defineProperty(exports, "Span1", { enumerable: true, get: function () { return builder_js_26.Span1; } });
 Object.defineProperty(exports, "Overlay1", { enumerable: true, get: function () { return builder_js_26.Overlay1; } });
+var builder_js_27 = require("./builder.js");
+Object.defineProperty(exports, "ButtonTag", { enumerable: true, get: function () { return builder_js_27.ButtonTag; } });
+Object.defineProperty(exports, "InputTag", { enumerable: true, get: function () { return builder_js_27.InputTag; } });
+Object.defineProperty(exports, "TextareaTag", { enumerable: true, get: function () { return builder_js_27.TextareaTag; } });
+Object.defineProperty(exports, "ImgTag", { enumerable: true, get: function () { return builder_js_27.ImgTag; } });
+Object.defineProperty(exports, "AnchorTag", { enumerable: true, get: function () { return builder_js_27.AnchorTag; } });
+Object.defineProperty(exports, "LabelTag", { enumerable: true, get: function () { return builder_js_27.LabelTag; } });
+Object.defineProperty(exports, "SelectTag", { enumerable: true, get: function () { return builder_js_27.SelectTag; } });
+Object.defineProperty(exports, "FormTag", { enumerable: true, get: function () { return builder_js_27.FormTag; } });
 //# sourceMappingURL=index.js.map

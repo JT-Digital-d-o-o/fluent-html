@@ -398,7 +398,7 @@ export function P1(child: View = Empty()): Tag {
   return El1("p", child);
 }
 
-class InputTag extends Tag { 
+export class InputTag extends Tag { 
   type?: string; 
   placeholder?: string;
   name?: string;
@@ -422,7 +422,7 @@ export function Input1(child: View = Empty()): InputTag {
   return new InputTag("input", child);
 }
 
-class TextareaTag extends Tag {
+export class TextareaTag extends Tag {
   placeholder?: string;
   name?: string;
   rows?: number;
@@ -452,7 +452,7 @@ export function Textarea1(child: View = Empty()): TextareaTag {
   return new TextareaTag("textarea", child);
 }
 
-class ButtonTag extends Tag {
+export class ButtonTag extends Tag {
   type?: string;
 
   setType(type?: string): ButtonTag {
@@ -464,7 +464,7 @@ export function Button1(child: View = Empty()): ButtonTag {
   return new ButtonTag("button", child);
 }
 
-class LabelTag extends Tag {
+export class LabelTag extends Tag {
   for?: string;
 
   setFor(forId?: string): LabelTag {
@@ -476,7 +476,7 @@ export function Label1(child: View = Empty()): LabelTag {
   return new LabelTag("label", child);
 }
 
-class AnchorTag extends Tag {
+export class AnchorTag extends Tag {
   href?: string;
 
   setHref(href?: string): AnchorTag {
@@ -488,7 +488,7 @@ export function A1(child: View = Empty()): AnchorTag {
   return new AnchorTag("a", child);
 }
 
-class FormTag extends Tag {
+export class FormTag extends Tag {
   action?: string;
   method?: string;
 
@@ -506,7 +506,7 @@ export function Form1(child: View = Empty()): FormTag {
   return new FormTag("form", child);
 }
 
-class ImgTag extends Tag {
+export class ImgTag extends Tag {
   src?: string;
   alt?: string;
   width?: string;
@@ -536,7 +536,7 @@ export function Img1(child: View = Empty()): ImgTag {
   return new ImgTag("img", child);
 }
 
-class SelectTag extends Tag {
+export class SelectTag extends Tag {
   name?: string;
   options?: Option[];
 
