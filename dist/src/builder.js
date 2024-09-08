@@ -3,8 +3,8 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LabelTag = exports.Button1 = exports.ButtonTag = exports.Textarea1 = exports.TextareaTag = exports.Input1 = exports.InputTag = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay1 = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = void 0;
-exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Select1 = exports.SelectTag = exports.Img1 = exports.ImgTag = exports.Form1 = exports.FormTag = exports.A1 = exports.AnchorTag = exports.Label1 = void 0;
+exports.Button1 = exports.ButtonTag = exports.Textarea1 = exports.TextareaTag = exports.Input1 = exports.InputTag = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay1 = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.Tag = void 0;
+exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Select1 = exports.SelectTag = exports.Img1 = exports.ImgTag = exports.Form1 = exports.FormTag = exports.A1 = exports.AnchorTag = exports.Label1 = exports.LabelTag = void 0;
 class Tag {
     constructor(element, child = Empty()) {
         this.el = element;
@@ -36,6 +36,7 @@ class Tag {
         return this;
     }
 }
+exports.Tag = Tag;
 function El(el, props) {
     const element = new Tag(el);
     if (props) {

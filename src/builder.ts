@@ -8,7 +8,7 @@ export type Thunk<T> = () => T;
 
 export type View = Tag | string | View[];
 
-class Tag {
+export class Tag {
   el: string;
   child: View;
 

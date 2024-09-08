@@ -1,7 +1,7 @@
 import { HTMX } from "./htmx.js";
 export type Thunk<T> = () => T;
 export type View = Tag | string | View[];
-declare class Tag {
+export declare class Tag {
     el: string;
     child: View;
     id?: string;
