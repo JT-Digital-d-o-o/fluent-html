@@ -1,4 +1,4 @@
-import { Div, IfThen, render, View, Text, IfThenElse, VStack, HStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img, Div1, P1, Input1, Button1, Span1 } from "../src/builder";
+import { Div, IfThen, render, View, Text, IfThenElse, VStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img, Empty, HStack } from "../src/builder";
 import { clss, id, hx, HxSwap, HxTrigger } from "../src/htmx";
 
 function runTest<T>(got: T, expected: T, test: string) {
@@ -27,10 +27,16 @@ const swap2: HxSwap = "innerHTML show:window:top";
 const swap3: HxSwap = "innerHTML show:#another-div:top";
 const swap4: HxSwap = "beforeend scroll:bottom";
 
-runTest("#my-target", id("my-target"), "htmx target - div");
+runTest("#my-target", id("my-target"), "htmx target - id");
 runTest(".my-target", clss("my-target"), "htmx target - class");
 
 // @TODO: - there is currently some redundant whitespace rendered. fix in future!
+
+runTestHTML(
+  Empty(),
+  ``,
+  "Empty()"
+);
 
 runTestHTML(
   Div(),
@@ -39,54 +45,43 @@ runTestHTML(
 );
 
 runTestHTML(
-  Div({
-    id: "my-div",
-  }),
-  `<div id="my-div"  ></div>`,
-  "Div with id"
-);
-runTestHTML(
-  Div({
-    id: "my-div",
-  }),
+  Div()
+    .setId("my-div"),
   `<div id="my-div"  ></div>`,
   "Div with id"
 );
 
 runTestHTML(
-  Div({
-    id: "my-div",
-    class: "my-style",
-  }),
+  Div()
+    .setId("my-div")
+    .setClass("my-style"),
   `<div id="my-div" class="my-style"  ></div>`,
   "Div with id and class"
 );
 
 runTestHTML(
-  Div({
-    htmx: hx("/home"),
-  }),
+  Div()
+    .setHtmx(hx("/home")),
   `<div  hx-get="/home"      ></div>`,
-  "Div with htmx [endpoint]"
+  "Div with htmx"
 );
 
 runTestHTML(
-  Div({
-    htmx: hx("/home", {
+  Div()
+    .setHtmx(hx("/home", {
       method: "post",
       swap: "innerHTML",
       target: "#my-id",
       trigger: "load delay:1s"
-    }),
-  }),
+    })),
   `<div  hx-post="/home" hx-target="#my-id" hx-trigger="load delay:1s" hx-swap="innerHTML"   ></div>`,
-  "Div with htmx"
+  "Div with htmx 2"
 );
 
 runTestHTML(
   IfThen(
     true,
-    () => Text("true"),
+    () => "true",
   ),
   "true",
   "IfThen true"
@@ -138,12 +133,12 @@ runTestHTML(
   ];
 
   function TaskView(task: string, index: number): View {
-    return Div({
-      child: [
-        Input({ type: "checkbox", id: `task-${index + 1}` }),
-        `${index + 1}. ${task}`,
-      ],
-    });
+    return Div([
+      Input()
+        .setType("checkbox")
+        .setId(`task-${index + 1}`),
+      `${index + 1}. ${task}`,
+    ]);
   }
 
   // Do we care about indentation, etc. ?
@@ -160,67 +155,54 @@ runTestHTML(
 }
 
 runTestHTML(
-  HStack({
-    child: [Text("a"), Text("b")]
-  }),
-  `<div class="flex "  >a
+  HStack(["a", "b"]),
+  `<div style="flex"  >a
 b</div>`,
   "HStack"
 );
 
 runTestHTML(
-  HStack({
-    child: ["a", "b"]
-  }),
-  `<div class="flex "  >a
-b</div>`,
-  "HStack"
-);
-
-runTestHTML(
-  Textarea({ id: "dodatno", name: "dodatno" }),
-  `<textarea id="dodatno" name="dodatno"  ></textarea>`,
+  Textarea()
+    .setName("summary")
+    .setId("my-id"),
+  `<textarea name="summary" id="my-id"  ></textarea>`,
   "Textarea"
 );
 
 runTestHTML(
-  Input({ toggles: ["required"] }),
+  Input()
+    .setToggles(["required"]),
   `<input  required></input>`,
   "Required",
 );
 
 runTestHTML(
-  P({
-    child: "Text text text"
-  }),
+  P("Text text text"),
   "<p   >Text text text</p>",
   "Paragraph"
 );
 
 runTestHTML(
-  Button({
-    child: "Click",
-    type: "input",
-    toggles: ["enabled"]
-  }),
+  Button("Click")
+    .setType("input")
+    .setToggles(["enabled"]),
   `<button type="input" enabled>Click</button>`,
   "Button"
 );
 
 runTestHTML(
-  Label({
-    for: "password"
-  }),
+  Label()
+    .setFor("password"),
   `<label for="password"  ></label>`,
   "Label",
 );
 
 runTestHTML(
   [
-    H1({ child: "h1" }),
-    H2({ child: "h2" }),
-    H3({ child: "h3" }),
-    H4({ child: "h4" }),
+    H1("h1"),
+    H2("h2"),
+    H3("h3"),
+    H4("h4"),
   ],
   `<h1   >h1</h1>
 <h2   >h2</h2>
@@ -230,55 +212,40 @@ runTestHTML(
 );
 
 runTestHTML(
-  A({
-    href: "mailto:aa@aa.si",
-    child: "Send email",
-  }),
+  A("Send email")
+    .setHref("mailto:aa@aa.si"),
   `<a href="mailto:aa@aa.si"  >Send email</a>`,
   "A href",
 );
 
 runTestHTML(
-  Ol({
-    child: [
-      Li({ child: "Item 1" }),
-      Li({ child: "Item 2" }),
-    ]
-  }),
+  Ol([
+    Li("Item 1"),
+    Li("Item 2"),
+  ]),
   `<ol   ><li   >Item 1</li>
 <li   >Item 2</li></ol>`,
   "Ordered list",
 );
 
 runTestHTML(
-  Img({
-    src: "img.png",
-    alt: "alt"
-  }),
+  Img()
+    .setSrc("img.png")
+    .setAlt("alt"),
   `<img src="img.png" alt="alt"  ></img>`,
   "Img",
 );
 
 runTestHTML(
-  Div({
-    attributes: { "width": "1000" }
-  }),
+  Div()
+    .addAttribute("width", "1000"),
   `<div width="1000"  ></div>`,
   "Div with attributes",
 );
 
 runTestHTML(
-  Div1()
-    .setId("id"),
-  `<div id="id"  ></div>`,
-  "Div",
-)
-
-// 2.0 syntax
-
-runTestHTML(
-  Div1(
-    P1(
+  Div(
+    P(
       "Danes je lep dan"
     )
     .setClass("text-main-cl text-center")
@@ -291,7 +258,7 @@ runTestHTML(
 )
 
 runTestHTML(
-  Input1()
+  Input()
     .setName("name")
     .setPlaceholder("placeholder")
     .setType("type"),

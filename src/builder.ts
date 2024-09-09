@@ -56,173 +56,262 @@ export class Tag {
   }
 }
 
-export function El(el: string, props?: Partial<Tag>): View {
-  const element = new Tag(el);
-  if (props) {
-    Object.assign(element, props);
-  }
-  return element;
-}
-
-export function Div(props?: Partial<Tag>): View {
-  return El("div", props);
-}
-
-/**
- * @deprecated Use strings directly instead.
- */
-export function Text(text: string = ""): View {
-  return text;
-}
+// Lambda.html building blocks
 
 export function Empty(): View {
   return "";
 }
 
-
-/**
- * @deprecated Use an array directly instead.
- */
-export function VStack(views: View[]): View {
-  return views;
+export function El(el: string, child: View = Empty()): Tag {
+  return new Tag(el, child);
 }
 
-export function HStack(props?: Partial<Tag>): View {
-  const flex = `flex ${(props.class === undefined) ? "" : props.class}`;
-  if (props) {
-    props.class = flex;
-  } else {
-    props = { class: flex };
+export function Div(child: View = Empty()): Tag {
+  return El("div", child);
+}
+
+export function HStack(children: View[] = []): Tag {
+  return Div(children)
+    .setStyle("flex");
+}
+
+export function Main(child: View = Empty()): Tag {
+  return El("main", child);
+}
+
+export function Header(child: View = Empty()): Tag {
+  return El("header", child);
+}
+
+export function Footer(child: View = Empty()): Tag {
+  return El("footer", child);
+}
+
+export function Article(child: View = Empty()): Tag {
+  return El("article", child);
+}
+
+export function P(child: View = Empty()): Tag {
+  return El("p", child);
+}
+
+export class InputTag extends Tag { 
+  type?: string; 
+  placeholder?: string;
+  name?: string;
+  value?: string;
+
+  setType(type?: string): InputTag {
+    this.type = type;
+    return this;
   }
-  return Div(props);
+
+  setPlaceholder(placeholder?: string): InputTag {
+    this.placeholder = placeholder;
+    return this;
+  }
+
+  setName(name?: string): InputTag {
+    this.name = name;
+    return this;
+  }
+  
+  setValue(value?: string): InputTag {
+    this.value = value;
+    return this;
+  }
+};
+export function Input(child: View = Empty()): InputTag {
+  return new InputTag("input", child);
 }
 
-type InputParams = { type?: string, placeholder?: string, name?: string };
-export function Input(props?: Partial<Tag & InputParams>): View {
-  return El("input", props);
+export class TextareaTag extends Tag {
+  placeholder?: string;
+  name?: string;
+  rows?: number;
+  cols?: number;
+
+  setPlaceholder(placeholder?: string): TextareaTag {
+    this.placeholder = placeholder;
+    return this;
+  }
+
+  setName(name?: string): TextareaTag {
+    this.name = name;
+    return this;
+  }
+
+  setRows(rows?: number): TextareaTag {
+    this.rows = rows;
+    return this;
+  }
+
+  setCols(cols?: number): TextareaTag {
+    this.cols = cols;
+    return this;
+  }
+};
+export function Textarea(child: View = Empty()): TextareaTag {
+  return new TextareaTag("textarea", child);
 }
 
-type TextareaParams = { placeholder?: string, name?: string, rows?: number, cols?: number };
-export function Textarea(props?: Partial<Tag & TextareaParams>): View {
-  return El("textarea", props);
+export class ButtonTag extends Tag {
+  type?: string;
+
+  setType(type?: string): ButtonTag {
+    this.type = type;
+    return this;
+  }
+};
+export function Button(child: View = Empty()): ButtonTag {
+  return new ButtonTag("button", child);
 }
 
-export function P(props?: Partial<Tag>): View {
-  return El("p", props);
+export class LabelTag extends Tag {
+  for?: string;
+
+  setFor(forId?: string): LabelTag {
+    this.for = forId;
+    return this;
+  }
+};
+export function Label(child: View = Empty()): LabelTag {
+  return new LabelTag("label", child);
 }
 
-export function Button(props: Partial<Tag & { type?: string }>): View {
-  return El("button", props);
+export class AnchorTag extends Tag {
+  href?: string;
+
+  setHref(href?: string): AnchorTag {
+    this.href = href;
+    return this;
+  }
+};
+export function A(child: View = Empty()): AnchorTag {
+  return new AnchorTag("a", child);
 }
 
-type LabelParams = { for?: string };
-export function Label(props: Partial<Tag & LabelParams>): View {
-  return El("label", props);
+export class FormTag extends Tag {
+  action?: string;
+  method?: string;
+
+  setAction(action?: string): FormTag {
+    this.action = action;
+    return this;
+  }
+
+  setMethod(method?: string): FormTag {
+    this.method = method;
+    return this;
+  }
+};
+export function Form(child: View = Empty()): FormTag {
+  return new FormTag("form", child);
 }
 
-export function H1(props?: Partial<Tag>): View {
-  return El("h1", props);
-}
-export function H2(props?: Partial<Tag>): View {
-  return El("h2", props);
+export class ImgTag extends Tag {
+  src?: string;
+  alt?: string;
+  width?: string;
+  height?: string;
+
+  setSrc(src?: string): ImgTag {
+    this.src = src;
+    return this;
+  }
+
+  setAlt(alt?: string): ImgTag {
+    this.alt = alt;
+    return this;
+  }
+
+  setWidth(width?: string): ImgTag {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height?: string): ImgTag {
+    this.height = height;
+    return this;
+  }
+};
+export function Img(child: View = Empty()): ImgTag {
+  return new ImgTag("img", child);
 }
 
-export function H3(props?: Partial<Tag>): View {
-  return El("h3", props);
+export class SelectTag extends Tag {
+  name?: string;
+  options?: Option[];
+
+  setName(name?: string): SelectTag {
+    this.name = name;
+    return this;
+  }
+
+  setOptions(options?: Option[]): SelectTag {
+    this.options = options;
+    return this;
+  }
+};
+export function Select(child: View = Empty()): SelectTag {
+  return new SelectTag("select", child);
 }
 
-export function H4(props?: Partial<Tag>): View {
-  return El("h4", props);
+export function H1(child: View = Empty()): Tag {
+  return new Tag("h1", child);
 }
-
-export function Span(props?: Partial<Tag>): View {
-  return El("span", props);
+export function H2(child: View = Empty()): Tag {
+  return new Tag("h2", child);
 }
-
-export function A(props: Partial<Tag & { href?: string }>): View {
-  return El("a", props);
+export function H3(child: View = Empty()): Tag {
+  return new Tag("h3", child);
 }
-
-export function Ul(props?: Partial<Tag>): View {
-  return El("ul", props);
+export function H4(child: View = Empty()): Tag {
+  return new Tag("h4", child);
 }
-
-export function Ol(props?: Partial<Tag>): View {
-  return El("ol", props);
+export function Span(child: View = Empty()): Tag {
+  return new Tag("span", child);
 }
-
-export function Li(props?: Partial<Tag>): View {
-  return El("li", props);
+export function Ul(child: View = Empty()): Tag {
+  return new Tag("ul", child);
 }
-
-type FormParams = { action?: string, method?: string };
-export function Form(props: Partial<Tag & FormParams>): View {
-  return El("form", props);
+export function Ol(child: View = Empty()): Tag {
+  return new Tag("ol", child);
 }
-
-type ImgParams = { src?: string, alt?: string, width?: string, height?: string };
-export function Img(props: Partial<Tag & ImgParams>): View {
-  return El("img", props);
+export function Li(child: View = Empty()): Tag {
+  return new Tag("li", child);
 }
-
-interface Option {
-  value: string, text: string, selected: boolean
+export function Table(child: View = Empty()): Tag {
+  return new Tag("table", child);
 }
-type OptionParams = { name?: string, options?: Option[] };
-export function Select(props: Partial<Tag & OptionParams>): View {
-  return El("select", props);
+export function Thead(child: View = Empty()): Tag {
+  return new Tag("thead", child);
 }
-
-export function Table(props?: Partial<Tag>): View {
-  return El("table", props);
+export function Tbody(child: View = Empty()): Tag {
+  return new Tag("tbody", child);
 }
-export function Thead(props?: Partial<Tag>): View {
-  return El("thead", props);
+export function Tr(child: View = Empty()): Tag {
+  return new Tag("tr", child);
 }
-export function Tbody(props?: Partial<Tag>): View {
-  return El("tbody", props);
+export function Th(child: View = Empty()): Tag {
+  return new Tag("th", child);
 }
-export function Tr(props?: Partial<Tag>): View {
-  return El("tr", props);
+export function Td(child: View = Empty()): Tag {
+  return new Tag("td", child);
 }
-export function Th(props?: Partial<Tag>): View {
-  return El("th", props);
-}
-export function Td(props?: Partial<Tag>): View {
-  return El("td", props);
-}
-
-export function Hr(props?: Partial<Tag>): View {
-  return El("hr", props);
+export function Hr(child: View = Empty()): Tag {
+  return new Tag("hr", child);
 }
 
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
-
 export function Overlay(
   content: View,
   overlay: View,
   position: OverlayPosition = 'center'
-): View {
-  return Div({
-    style: "position: relative",
-    child: [
-      content,
-      Div({
-        style: `position: absolute; ${positionStyles[position]}`,
-        child: overlay
-      })
-    ]
-  });
-}
-
-export function Overlay1(
-  content: View,
-  overlay: View,
-  position: OverlayPosition = 'center'
 ): Tag {
-  return Div1([
+  return Div([
     content,
-    Div1(overlay)
+    Div(overlay)
       .setStyle(`position: absolute; ${positionStyles[position]}`),
   ])
   .setStyle("position: relative");
@@ -389,230 +478,154 @@ function renderImpl(view: View): string {
 }
 
 
-// new syntax
-
-export function El1(el: string, child: View = Empty()): Tag {
-  return new Tag(el, child);
-}
-
-export function Div1(child: View = Empty()): Tag {
-  return El1("div", child);
-}
-
-export function P1(child: View = Empty()): Tag {
-  return El1("p", child);
-}
-
-export class InputTag extends Tag { 
-  type?: string; 
-  placeholder?: string;
-  name?: string;
-  value?: string;
-
-  setType(type?: string): InputTag {
-    this.type = type;
-    return this;
+export function ElOld(el: string, props?: Partial<Tag>): View {
+  const element = new Tag(el);
+  if (props) {
+    Object.assign(element, props);
   }
-
-  setPlaceholder(placeholder?: string): InputTag {
-    this.placeholder = placeholder;
-    return this;
-  }
-
-  setName(name?: string): InputTag {
-    this.name = name;
-    return this;
-  }
-  
-  setValue(value?: string): InputTag {
-    this.value = value;
-    return this;
-  }
-};
-export function Input1(child: View = Empty()): InputTag {
-  return new InputTag("input", child);
+  return element;
 }
 
-export class TextareaTag extends Tag {
-  placeholder?: string;
-  name?: string;
-  rows?: number;
-  cols?: number;
-
-  setPlaceholder(placeholder?: string): TextareaTag {
-    this.placeholder = placeholder;
-    return this;
-  }
-
-  setName(name?: string): TextareaTag {
-    this.name = name;
-    return this;
-  }
-
-  setRows(rows?: number): TextareaTag {
-    this.rows = rows;
-    return this;
-  }
-
-  setCols(cols?: number): TextareaTag {
-    this.cols = cols;
-    return this;
-  }
-};
-export function Textarea1(child: View = Empty()): TextareaTag {
-  return new TextareaTag("textarea", child);
+export function DivOld(props?: Partial<Tag>): View {
+  return ElOld("div", props);
 }
 
-export class ButtonTag extends Tag {
-  type?: string;
-
-  setType(type?: string): ButtonTag {
-    this.type = type;
-    return this;
-  }
-};
-export function Button1(child: View = Empty()): ButtonTag {
-  return new ButtonTag("button", child);
+/**
+ * @deprecated Use strings directly instead.
+ */
+export function Text(text: string = ""): View {
+  return text;
 }
 
-export class LabelTag extends Tag {
-  for?: string;
-
-  setFor(forId?: string): LabelTag {
-    this.for = forId;
-    return this;
-  }
-};
-export function Label1(child: View = Empty()): LabelTag {
-  return new LabelTag("label", child);
+/**
+ * @deprecated Use an array directly instead.
+ */
+export function VStack(views: View[]): View {
+  return views;
 }
 
-export class AnchorTag extends Tag {
-  href?: string;
-
-  setHref(href?: string): AnchorTag {
-    this.href = href;
-    return this;
-  }
-};
-export function A1(child: View = Empty()): AnchorTag {
-  return new AnchorTag("a", child);
-}
-
-export class FormTag extends Tag {
-  action?: string;
-  method?: string;
-
-  setAction(action?: string): FormTag {
-    this.action = action;
-    return this;
-  }
-
-  setMethod(method?: string): FormTag {
-    this.method = method;
-    return this;
-  }
-};
-export function Form1(child: View = Empty()): FormTag {
-  return new FormTag("form", child);
-}
-
-export class ImgTag extends Tag {
-  src?: string;
-  alt?: string;
-  width?: string;
-  height?: string;
-
-  setSrc(src?: string): Tag {
-    this.src = src;
-    return this;
-  }
-
-  set(alt?: string): ImgTag {
-    this.alt = alt;
-    return this;
-  }
-
-  setWidth(width?: string): ImgTag {
-    this.width = width;
-    return this;
-  }
-
-  setHeight(height?: string): ImgTag {
-    this.height = height;
-    return this;
-  }
-};
-export function Img1(child: View = Empty()): ImgTag {
-  return new ImgTag("img", child);
-}
-
-export class SelectTag extends Tag {
-  name?: string;
-  options?: Option[];
-
-  setName(name?: string): SelectTag {
-    this.name = name;
-    return this;
-  }
-
-  setOptions(options?: Option[]): SelectTag {
-    this.options = options;
-    return this;
-  }
-};
-export function Select1(child: View = Empty()): SelectTag {
-  return new SelectTag("select", child);
-}
-
-export function H11(child: View = Empty()): Tag {
-  return new Tag("h1", child);
-}
-export function H21(child: View = Empty()): Tag {
-  return new Tag("h2", child);
-}
-export function H31(child: View = Empty()): Tag {
-  return new Tag("h3", child);
-}
-export function H41(child: View = Empty()): Tag {
-  return new Tag("h4", child);
-}
-export function Span1(child: View = Empty()): Tag {
-  return new Tag("span", child);
-}
-export function Ul1(child: View = Empty()): Tag {
-  return new Tag("ul", child);
-}
-export function Ol1(child: View = Empty()): Tag {
-  return new Tag("ol", child);
-}
-export function Li1(child: View = Empty()): Tag {
-  return new Tag("li", child);
-}
-export function Table1(child: View = Empty()): Tag {
-  return new Tag("table", child);
-}
-export function Thead1(child: View = Empty()): Tag {
-  return new Tag("thead", child);
-}
-export function Tbody1(child: View = Empty()): Tag {
-  return new Tag("tbody", child);
-}
-export function Tr1(child: View = Empty()): Tag {
-  return new Tag("tr", child);
-}
-export function Th1(child: View = Empty()): Tag {
-  return new Tag("th", child);
-}
-export function Td1(child: View = Empty()): Tag {
-  return new Tag("td", child);
-}
-export function Hr1(child: View = Empty()): Tag {
-  return new Tag("hr", child);
-}
-
-// export function HStack1(children: View = Empty()): View {
+// export function HStack(props?: Partial<Tag>): View {
 //   const flex = `flex ${(props.class === undefined) ? "" : props.class}`;
-//   return Div1(children)
-//     .setClass(flex);
+//   if (props) {
+//     props.class = flex;
+//   } else {
+//     props = { class: flex };
+//   }
+//   return Div(props);
 // }
+
+type InputParams = { type?: string, placeholder?: string, name?: string };
+export function InputOld(props?: Partial<Tag & InputParams>): View {
+  return ElOld("input", props);
+}
+
+type TextareaParams = { placeholder?: string, name?: string, rows?: number, cols?: number };
+export function TextareaOld(props?: Partial<Tag & TextareaParams>): View {
+  return ElOld("textarea", props);
+}
+
+export function POld(props?: Partial<Tag>): View {
+  return ElOld("p", props);
+}
+
+export function ButtonOld(props: Partial<Tag & { type?: string }>): View {
+  return ElOld("button", props);
+}
+
+type LabelParams = { for?: string };
+export function LabelOld(props: Partial<Tag & LabelParams>): View {
+  return ElOld("label", props);
+}
+
+export function H1Old(props?: Partial<Tag>): View {
+  return ElOld("h1", props);
+}
+export function H2Old(props?: Partial<Tag>): View {
+  return ElOld("h2", props);
+}
+
+export function H3Old(props?: Partial<Tag>): View {
+  return ElOld("h3", props);
+}
+
+export function H4Old(props?: Partial<Tag>): View {
+  return ElOld("h4", props);
+}
+
+export function SpanOld(props?: Partial<Tag>): View {
+  return ElOld("span", props);
+}
+
+export function AOld(props: Partial<Tag & { href?: string }>): View {
+  return ElOld("a", props);
+}
+
+export function UlOld(props?: Partial<Tag>): View {
+  return ElOld("ul", props);
+}
+
+export function OlOld(props?: Partial<Tag>): View {
+  return ElOld("ol", props);
+}
+
+export function LiOld(props?: Partial<Tag>): View {
+  return ElOld("li", props);
+}
+
+type FormParams = { action?: string, method?: string };
+export function FormOld(props: Partial<Tag & FormParams>): View {
+  return ElOld("form", props);
+}
+
+type ImgParams = { src?: string, alt?: string, width?: string, height?: string };
+export function ImgOld(props: Partial<Tag & ImgParams>): View {
+  return ElOld("img", props);
+}
+
+interface Option {
+  value: string, text: string, selected: boolean
+}
+type OptionParams = { name?: string, options?: Option[] };
+export function SelectOld(props: Partial<Tag & OptionParams>): View {
+  return ElOld("select", props);
+}
+
+export function TableOld(props?: Partial<Tag>): View {
+  return ElOld("table", props);
+}
+export function TheadOld(props?: Partial<Tag>): View {
+  return ElOld("thead", props);
+}
+export function TbodyOld(props?: Partial<Tag>): View {
+  return ElOld("tbody", props);
+}
+export function TrOld(props?: Partial<Tag>): View {
+  return ElOld("tr", props);
+}
+export function ThOld(props?: Partial<Tag>): View {
+  return ElOld("th", props);
+}
+export function TdOld(props?: Partial<Tag>): View {
+  return ElOld("td", props);
+}
+
+export function HrOld(props?: Partial<Tag>): View {
+  return ElOld("hr", props);
+}
+
+export function OverlayOld(
+  content: View,
+  overlay: View,
+  position: OverlayPosition = 'center'
+): View {
+  return DivOld({
+    style: "position: relative",
+    child: [
+      content,
+      DivOld({
+        style: `position: absolute; ${positionStyles[position]}`,
+        child: overlay
+      })
+    ]
+  });
+}

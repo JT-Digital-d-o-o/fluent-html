@@ -3,8 +3,8 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Button1 = exports.ButtonTag = exports.Textarea1 = exports.TextareaTag = exports.Input1 = exports.InputTag = exports.P1 = exports.Div1 = exports.El1 = exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay1 = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Select = exports.Img = exports.Form = exports.Li = exports.Ol = exports.Ul = exports.A = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Label = exports.Button = exports.P = exports.Textarea = exports.Input = exports.HStack = exports.VStack = exports.Empty = exports.Text = exports.Div = exports.El = exports.Tag = void 0;
-exports.Hr1 = exports.Td1 = exports.Th1 = exports.Tr1 = exports.Tbody1 = exports.Thead1 = exports.Table1 = exports.Li1 = exports.Ol1 = exports.Ul1 = exports.Span1 = exports.H41 = exports.H31 = exports.H21 = exports.H11 = exports.Select1 = exports.SelectTag = exports.Img1 = exports.ImgTag = exports.Form1 = exports.FormTag = exports.A1 = exports.AnchorTag = exports.Label1 = exports.LabelTag = void 0;
+exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Li = exports.Ol = exports.Ul = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Select = exports.SelectTag = exports.Img = exports.ImgTag = exports.Form = exports.FormTag = exports.A = exports.AnchorTag = exports.Label = exports.LabelTag = exports.Button = exports.ButtonTag = exports.Textarea = exports.TextareaTag = exports.Input = exports.InputTag = exports.P = exports.Article = exports.Footer = exports.Header = exports.Main = exports.HStack = exports.Div = exports.El = exports.Empty = exports.Tag = void 0;
+exports.OverlayOld = exports.HrOld = exports.TdOld = exports.ThOld = exports.TrOld = exports.TbodyOld = exports.TheadOld = exports.TableOld = exports.SelectOld = exports.ImgOld = exports.FormOld = exports.LiOld = exports.OlOld = exports.UlOld = exports.AOld = exports.SpanOld = exports.H4Old = exports.H3Old = exports.H2Old = exports.H1Old = exports.LabelOld = exports.ButtonOld = exports.POld = exports.TextareaOld = exports.InputOld = exports.VStack = exports.Text = exports.DivOld = exports.ElOld = void 0;
 class Tag {
     constructor(element, child = Empty()) {
         this.el = element;
@@ -37,165 +37,253 @@ class Tag {
     }
 }
 exports.Tag = Tag;
-function El(el, props) {
-    const element = new Tag(el);
-    if (props) {
-        Object.assign(element, props);
-    }
-    return element;
-}
-exports.El = El;
-function Div(props) {
-    return El("div", props);
-}
-exports.Div = Div;
-/**
- * @deprecated Use strings directly instead.
- */
-function Text(text = "") {
-    return text;
-}
-exports.Text = Text;
+// Lambda.html building blocks
 function Empty() {
     return "";
 }
 exports.Empty = Empty;
-/**
- * @deprecated Use an array directly instead.
- */
-function VStack(views) {
-    return views;
+function El(el, child = Empty()) {
+    return new Tag(el, child);
 }
-exports.VStack = VStack;
-function HStack(props) {
-    const flex = `flex ${(props.class === undefined) ? "" : props.class}`;
-    if (props) {
-        props.class = flex;
-    }
-    else {
-        props = { class: flex };
-    }
-    return Div(props);
+exports.El = El;
+function Div(child = Empty()) {
+    return El("div", child);
+}
+exports.Div = Div;
+function HStack(children = []) {
+    return Div(children)
+        .setStyle("flex");
 }
 exports.HStack = HStack;
-function Input(props) {
-    return El("input", props);
+function Main(child = Empty()) {
+    return El("main", child);
 }
-exports.Input = Input;
-function Textarea(props) {
-    return El("textarea", props);
+exports.Main = Main;
+function Header(child = Empty()) {
+    return El("header", child);
 }
-exports.Textarea = Textarea;
-function P(props) {
-    return El("p", props);
+exports.Header = Header;
+function Footer(child = Empty()) {
+    return El("footer", child);
+}
+exports.Footer = Footer;
+function Article(child = Empty()) {
+    return El("article", child);
+}
+exports.Article = Article;
+function P(child = Empty()) {
+    return El("p", child);
 }
 exports.P = P;
-function Button(props) {
-    return El("button", props);
+class InputTag extends Tag {
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setPlaceholder(placeholder) {
+        this.placeholder = placeholder;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
+}
+exports.InputTag = InputTag;
+;
+function Input(child = Empty()) {
+    return new InputTag("input", child);
+}
+exports.Input = Input;
+class TextareaTag extends Tag {
+    setPlaceholder(placeholder) {
+        this.placeholder = placeholder;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setRows(rows) {
+        this.rows = rows;
+        return this;
+    }
+    setCols(cols) {
+        this.cols = cols;
+        return this;
+    }
+}
+exports.TextareaTag = TextareaTag;
+;
+function Textarea(child = Empty()) {
+    return new TextareaTag("textarea", child);
+}
+exports.Textarea = Textarea;
+class ButtonTag extends Tag {
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+}
+exports.ButtonTag = ButtonTag;
+;
+function Button(child = Empty()) {
+    return new ButtonTag("button", child);
 }
 exports.Button = Button;
-function Label(props) {
-    return El("label", props);
+class LabelTag extends Tag {
+    setFor(forId) {
+        this.for = forId;
+        return this;
+    }
+}
+exports.LabelTag = LabelTag;
+;
+function Label(child = Empty()) {
+    return new LabelTag("label", child);
 }
 exports.Label = Label;
-function H1(props) {
-    return El("h1", props);
+class AnchorTag extends Tag {
+    setHref(href) {
+        this.href = href;
+        return this;
+    }
 }
-exports.H1 = H1;
-function H2(props) {
-    return El("h2", props);
-}
-exports.H2 = H2;
-function H3(props) {
-    return El("h3", props);
-}
-exports.H3 = H3;
-function H4(props) {
-    return El("h4", props);
-}
-exports.H4 = H4;
-function Span(props) {
-    return El("span", props);
-}
-exports.Span = Span;
-function A(props) {
-    return El("a", props);
+exports.AnchorTag = AnchorTag;
+;
+function A(child = Empty()) {
+    return new AnchorTag("a", child);
 }
 exports.A = A;
-function Ul(props) {
-    return El("ul", props);
+class FormTag extends Tag {
+    setAction(action) {
+        this.action = action;
+        return this;
+    }
+    setMethod(method) {
+        this.method = method;
+        return this;
+    }
 }
-exports.Ul = Ul;
-function Ol(props) {
-    return El("ol", props);
-}
-exports.Ol = Ol;
-function Li(props) {
-    return El("li", props);
-}
-exports.Li = Li;
-function Form(props) {
-    return El("form", props);
+exports.FormTag = FormTag;
+;
+function Form(child = Empty()) {
+    return new FormTag("form", child);
 }
 exports.Form = Form;
-function Img(props) {
-    return El("img", props);
+class ImgTag extends Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setAlt(alt) {
+        this.alt = alt;
+        return this;
+    }
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+}
+exports.ImgTag = ImgTag;
+;
+function Img(child = Empty()) {
+    return new ImgTag("img", child);
 }
 exports.Img = Img;
-function Select(props) {
-    return El("select", props);
+class SelectTag extends Tag {
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setOptions(options) {
+        this.options = options;
+        return this;
+    }
+}
+exports.SelectTag = SelectTag;
+;
+function Select(child = Empty()) {
+    return new SelectTag("select", child);
 }
 exports.Select = Select;
-function Table(props) {
-    return El("table", props);
+function H1(child = Empty()) {
+    return new Tag("h1", child);
+}
+exports.H1 = H1;
+function H2(child = Empty()) {
+    return new Tag("h2", child);
+}
+exports.H2 = H2;
+function H3(child = Empty()) {
+    return new Tag("h3", child);
+}
+exports.H3 = H3;
+function H4(child = Empty()) {
+    return new Tag("h4", child);
+}
+exports.H4 = H4;
+function Span(child = Empty()) {
+    return new Tag("span", child);
+}
+exports.Span = Span;
+function Ul(child = Empty()) {
+    return new Tag("ul", child);
+}
+exports.Ul = Ul;
+function Ol(child = Empty()) {
+    return new Tag("ol", child);
+}
+exports.Ol = Ol;
+function Li(child = Empty()) {
+    return new Tag("li", child);
+}
+exports.Li = Li;
+function Table(child = Empty()) {
+    return new Tag("table", child);
 }
 exports.Table = Table;
-function Thead(props) {
-    return El("thead", props);
+function Thead(child = Empty()) {
+    return new Tag("thead", child);
 }
 exports.Thead = Thead;
-function Tbody(props) {
-    return El("tbody", props);
+function Tbody(child = Empty()) {
+    return new Tag("tbody", child);
 }
 exports.Tbody = Tbody;
-function Tr(props) {
-    return El("tr", props);
+function Tr(child = Empty()) {
+    return new Tag("tr", child);
 }
 exports.Tr = Tr;
-function Th(props) {
-    return El("th", props);
+function Th(child = Empty()) {
+    return new Tag("th", child);
 }
 exports.Th = Th;
-function Td(props) {
-    return El("td", props);
+function Td(child = Empty()) {
+    return new Tag("td", child);
 }
 exports.Td = Td;
-function Hr(props) {
-    return El("hr", props);
+function Hr(child = Empty()) {
+    return new Tag("hr", child);
 }
 exports.Hr = Hr;
 function Overlay(content, overlay, position = 'center') {
-    return Div({
-        style: "position: relative",
-        child: [
-            content,
-            Div({
-                style: `position: absolute; ${positionStyles[position]}`,
-                child: overlay
-            })
-        ]
-    });
-}
-exports.Overlay = Overlay;
-function Overlay1(content, overlay, position = 'center') {
-    return Div1([
+    return Div([
         content,
-        Div1(overlay)
+        Div(overlay)
             .setStyle(`position: absolute; ${positionStyles[position]}`),
     ])
         .setStyle("position: relative");
 }
-exports.Overlay1 = Overlay1;
+exports.Overlay = Overlay;
 const positionStyles = {
     'top': 'top: 0; left: 50%; transform: translateX(-50%);',
     'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
@@ -318,222 +406,139 @@ function renderImpl(view) {
     }
     return "";
 }
-// new syntax
-function El1(el, child = Empty()) {
-    return new Tag(el, child);
-}
-exports.El1 = El1;
-function Div1(child = Empty()) {
-    return El1("div", child);
-}
-exports.Div1 = Div1;
-function P1(child = Empty()) {
-    return El1("p", child);
-}
-exports.P1 = P1;
-class InputTag extends Tag {
-    setType(type) {
-        this.type = type;
-        return this;
+function ElOld(el, props) {
+    const element = new Tag(el);
+    if (props) {
+        Object.assign(element, props);
     }
-    setPlaceholder(placeholder) {
-        this.placeholder = placeholder;
-        return this;
-    }
-    setName(name) {
-        this.name = name;
-        return this;
-    }
-    setValue(value) {
-        this.value = value;
-        return this;
-    }
+    return element;
 }
-exports.InputTag = InputTag;
-;
-function Input1(child = Empty()) {
-    return new InputTag("input", child);
+exports.ElOld = ElOld;
+function DivOld(props) {
+    return ElOld("div", props);
 }
-exports.Input1 = Input1;
-class TextareaTag extends Tag {
-    setPlaceholder(placeholder) {
-        this.placeholder = placeholder;
-        return this;
-    }
-    setName(name) {
-        this.name = name;
-        return this;
-    }
-    setRows(rows) {
-        this.rows = rows;
-        return this;
-    }
-    setCols(cols) {
-        this.cols = cols;
-        return this;
-    }
+exports.DivOld = DivOld;
+/**
+ * @deprecated Use strings directly instead.
+ */
+function Text(text = "") {
+    return text;
 }
-exports.TextareaTag = TextareaTag;
-;
-function Textarea1(child = Empty()) {
-    return new TextareaTag("textarea", child);
+exports.Text = Text;
+/**
+ * @deprecated Use an array directly instead.
+ */
+function VStack(views) {
+    return views;
 }
-exports.Textarea1 = Textarea1;
-class ButtonTag extends Tag {
-    setType(type) {
-        this.type = type;
-        return this;
-    }
+exports.VStack = VStack;
+function InputOld(props) {
+    return ElOld("input", props);
 }
-exports.ButtonTag = ButtonTag;
-;
-function Button1(child = Empty()) {
-    return new ButtonTag("button", child);
+exports.InputOld = InputOld;
+function TextareaOld(props) {
+    return ElOld("textarea", props);
 }
-exports.Button1 = Button1;
-class LabelTag extends Tag {
-    setFor(forId) {
-        this.for = forId;
-        return this;
-    }
+exports.TextareaOld = TextareaOld;
+function POld(props) {
+    return ElOld("p", props);
 }
-exports.LabelTag = LabelTag;
-;
-function Label1(child = Empty()) {
-    return new LabelTag("label", child);
+exports.POld = POld;
+function ButtonOld(props) {
+    return ElOld("button", props);
 }
-exports.Label1 = Label1;
-class AnchorTag extends Tag {
-    setHref(href) {
-        this.href = href;
-        return this;
-    }
+exports.ButtonOld = ButtonOld;
+function LabelOld(props) {
+    return ElOld("label", props);
 }
-exports.AnchorTag = AnchorTag;
-;
-function A1(child = Empty()) {
-    return new AnchorTag("a", child);
+exports.LabelOld = LabelOld;
+function H1Old(props) {
+    return ElOld("h1", props);
 }
-exports.A1 = A1;
-class FormTag extends Tag {
-    setAction(action) {
-        this.action = action;
-        return this;
-    }
-    setMethod(method) {
-        this.method = method;
-        return this;
-    }
+exports.H1Old = H1Old;
+function H2Old(props) {
+    return ElOld("h2", props);
 }
-exports.FormTag = FormTag;
-;
-function Form1(child = Empty()) {
-    return new FormTag("form", child);
+exports.H2Old = H2Old;
+function H3Old(props) {
+    return ElOld("h3", props);
 }
-exports.Form1 = Form1;
-class ImgTag extends Tag {
-    setSrc(src) {
-        this.src = src;
-        return this;
-    }
-    set(alt) {
-        this.alt = alt;
-        return this;
-    }
-    setWidth(width) {
-        this.width = width;
-        return this;
-    }
-    setHeight(height) {
-        this.height = height;
-        return this;
-    }
+exports.H3Old = H3Old;
+function H4Old(props) {
+    return ElOld("h4", props);
 }
-exports.ImgTag = ImgTag;
-;
-function Img1(child = Empty()) {
-    return new ImgTag("img", child);
+exports.H4Old = H4Old;
+function SpanOld(props) {
+    return ElOld("span", props);
 }
-exports.Img1 = Img1;
-class SelectTag extends Tag {
-    setName(name) {
-        this.name = name;
-        return this;
-    }
-    setOptions(options) {
-        this.options = options;
-        return this;
-    }
+exports.SpanOld = SpanOld;
+function AOld(props) {
+    return ElOld("a", props);
 }
-exports.SelectTag = SelectTag;
-;
-function Select1(child = Empty()) {
-    return new SelectTag("select", child);
+exports.AOld = AOld;
+function UlOld(props) {
+    return ElOld("ul", props);
 }
-exports.Select1 = Select1;
-function H11(child = Empty()) {
-    return new Tag("h1", child);
+exports.UlOld = UlOld;
+function OlOld(props) {
+    return ElOld("ol", props);
 }
-exports.H11 = H11;
-function H21(child = Empty()) {
-    return new Tag("h2", child);
+exports.OlOld = OlOld;
+function LiOld(props) {
+    return ElOld("li", props);
 }
-exports.H21 = H21;
-function H31(child = Empty()) {
-    return new Tag("h3", child);
+exports.LiOld = LiOld;
+function FormOld(props) {
+    return ElOld("form", props);
 }
-exports.H31 = H31;
-function H41(child = Empty()) {
-    return new Tag("h4", child);
+exports.FormOld = FormOld;
+function ImgOld(props) {
+    return ElOld("img", props);
 }
-exports.H41 = H41;
-function Span1(child = Empty()) {
-    return new Tag("span", child);
+exports.ImgOld = ImgOld;
+function SelectOld(props) {
+    return ElOld("select", props);
 }
-exports.Span1 = Span1;
-function Ul1(child = Empty()) {
-    return new Tag("ul", child);
+exports.SelectOld = SelectOld;
+function TableOld(props) {
+    return ElOld("table", props);
 }
-exports.Ul1 = Ul1;
-function Ol1(child = Empty()) {
-    return new Tag("ol", child);
+exports.TableOld = TableOld;
+function TheadOld(props) {
+    return ElOld("thead", props);
 }
-exports.Ol1 = Ol1;
-function Li1(child = Empty()) {
-    return new Tag("li", child);
+exports.TheadOld = TheadOld;
+function TbodyOld(props) {
+    return ElOld("tbody", props);
 }
-exports.Li1 = Li1;
-function Table1(child = Empty()) {
-    return new Tag("table", child);
+exports.TbodyOld = TbodyOld;
+function TrOld(props) {
+    return ElOld("tr", props);
 }
-exports.Table1 = Table1;
-function Thead1(child = Empty()) {
-    return new Tag("thead", child);
+exports.TrOld = TrOld;
+function ThOld(props) {
+    return ElOld("th", props);
 }
-exports.Thead1 = Thead1;
-function Tbody1(child = Empty()) {
-    return new Tag("tbody", child);
+exports.ThOld = ThOld;
+function TdOld(props) {
+    return ElOld("td", props);
 }
-exports.Tbody1 = Tbody1;
-function Tr1(child = Empty()) {
-    return new Tag("tr", child);
+exports.TdOld = TdOld;
+function HrOld(props) {
+    return ElOld("hr", props);
 }
-exports.Tr1 = Tr1;
-function Th1(child = Empty()) {
-    return new Tag("th", child);
+exports.HrOld = HrOld;
+function OverlayOld(content, overlay, position = 'center') {
+    return DivOld({
+        style: "position: relative",
+        child: [
+            content,
+            DivOld({
+                style: `position: absolute; ${positionStyles[position]}`,
+                child: overlay
+            })
+        ]
+    });
 }
-exports.Th1 = Th1;
-function Td1(child = Empty()) {
-    return new Tag("td", child);
-}
-exports.Td1 = Td1;
-function Hr1(child = Empty()) {
-    return new Tag("hr", child);
-}
-exports.Hr1 = Hr1;
-// export function HStack1(children: View = Empty()): View {
-//   const flex = `flex ${(props.class === undefined) ? "" : props.class}`;
-//   return Div1(children)
-//     .setClass(flex);
-// }
+exports.OverlayOld = OverlayOld;
 //# sourceMappingURL=builder.js.map
