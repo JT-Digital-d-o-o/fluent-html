@@ -61,6 +61,21 @@ runTestHTML(
 
 runTestHTML(
   Div()
+    .addClass("c1"),
+  `<div class="c1"  ></div>`,
+  "Add class first"
+);
+
+runTestHTML(
+  Div()
+    .setClass("c1")
+    .addClass("c2"),
+  `<div class="c1 c2"  ></div>`,
+  "Add class append"
+);
+
+runTestHTML(
+  Div()
     .setHtmx(hx("/home")),
   `<div  hx-get="/home"      ></div>`,
   "Div with htmx"

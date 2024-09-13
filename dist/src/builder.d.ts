@@ -12,7 +12,8 @@ export declare class Tag {
     toggles?: string[];
     constructor(element: string, child?: View);
     setId(id?: string): Tag;
-    setClass(className?: string): Tag;
+    setClass(c?: string): Tag;
+    addClass(c: string): Tag;
     setStyle(style?: string): Tag;
     addAttribute(key: string, value: string): Tag;
     setHtmx(htmx?: HTMX): Tag;
@@ -115,7 +116,8 @@ type Case = {
 export declare function SwitchCase(cases: Case[], defaultView?: Thunk<View>): View;
 export declare function ForEach<T>(views: Iterable<T>, renderItem: (item: T) => View): View;
 export declare function ForEach1<T>(views: Iterable<T>, renderItem: (item: T, index: number) => View): View;
-export declare function ForEach2(n: number, renderItem: (index: number) => View): View;
+export declare function ForEach2(high: number, renderItem: (index: number) => View): View;
+export declare function ForEach3(low: number, high: number, renderItem: (index: number) => View): View;
 export declare function Repeat(times: number, content: Thunk<View>): View;
 export declare function render(view: View): string;
 export declare function ElOld(el: string, props?: Partial<Tag>): View;

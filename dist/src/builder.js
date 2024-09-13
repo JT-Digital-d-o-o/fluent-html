@@ -3,8 +3,8 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.render = exports.Repeat = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Li = exports.Ol = exports.Ul = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Select = exports.SelectTag = exports.Img = exports.ImgTag = exports.Form = exports.FormTag = exports.A = exports.AnchorTag = exports.Label = exports.LabelTag = exports.Button = exports.ButtonTag = exports.Textarea = exports.TextareaTag = exports.Input = exports.InputTag = exports.P = exports.Article = exports.Footer = exports.Header = exports.Main = exports.HStack = exports.Div = exports.El = exports.Empty = exports.Tag = void 0;
-exports.OverlayOld = exports.HrOld = exports.TdOld = exports.ThOld = exports.TrOld = exports.TbodyOld = exports.TheadOld = exports.TableOld = exports.SelectOld = exports.ImgOld = exports.FormOld = exports.LiOld = exports.OlOld = exports.UlOld = exports.AOld = exports.SpanOld = exports.H4Old = exports.H3Old = exports.H2Old = exports.H1Old = exports.LabelOld = exports.ButtonOld = exports.POld = exports.TextareaOld = exports.InputOld = exports.VStack = exports.Text = exports.DivOld = exports.ElOld = void 0;
+exports.Repeat = exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThen = exports.IfThenElse = exports.Overlay = exports.Hr = exports.Td = exports.Th = exports.Tr = exports.Tbody = exports.Thead = exports.Table = exports.Li = exports.Ol = exports.Ul = exports.Span = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Select = exports.SelectTag = exports.Img = exports.ImgTag = exports.Form = exports.FormTag = exports.A = exports.AnchorTag = exports.Label = exports.LabelTag = exports.Button = exports.ButtonTag = exports.Textarea = exports.TextareaTag = exports.Input = exports.InputTag = exports.P = exports.Article = exports.Footer = exports.Header = exports.Main = exports.HStack = exports.Div = exports.El = exports.Empty = exports.Tag = void 0;
+exports.OverlayOld = exports.HrOld = exports.TdOld = exports.ThOld = exports.TrOld = exports.TbodyOld = exports.TheadOld = exports.TableOld = exports.SelectOld = exports.ImgOld = exports.FormOld = exports.LiOld = exports.OlOld = exports.UlOld = exports.AOld = exports.SpanOld = exports.H4Old = exports.H3Old = exports.H2Old = exports.H1Old = exports.LabelOld = exports.ButtonOld = exports.POld = exports.TextareaOld = exports.InputOld = exports.VStack = exports.Text = exports.DivOld = exports.ElOld = exports.render = void 0;
 class Tag {
     constructor(element, child = Empty()) {
         this.el = element;
@@ -15,8 +15,17 @@ class Tag {
         this.id = id;
         return this;
     }
-    setClass(className) {
-        this.class = className;
+    setClass(c) {
+        this.class = c;
+        return this;
+    }
+    addClass(c) {
+        if (this.class) {
+            this.class += ` ${c}`;
+        }
+        else {
+            this.class = c;
+        }
         return this;
     }
     setStyle(style) {
@@ -215,6 +224,7 @@ function Select(child = Empty()) {
     return new SelectTag("select", child);
 }
 exports.Select = Select;
+// @TODO: - Implement `Option`
 function H1(child = Empty()) {
     return new Tag("h1", child);
 }
@@ -325,11 +335,14 @@ function ForEach1(views, renderItem) {
     //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 exports.ForEach1 = ForEach1;
-function ForEach2(n, renderItem) {
-    return Array.from(range(0, n)).map((index) => renderItem(index));
-    //           ^^^^^^^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+function ForEach2(high, renderItem) {
+    return Array.from(range(0, high)).map((index) => renderItem(index));
 }
 exports.ForEach2 = ForEach2;
+function ForEach3(low, high, renderItem) {
+    return Array.from(range(low, high)).map((index) => renderItem(index));
+}
+exports.ForEach3 = ForEach3;
 function* range(low, high) {
     for (var i = low; i < high; i++) {
         yield i;

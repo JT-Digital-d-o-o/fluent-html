@@ -36,6 +36,11 @@ runTestHTML((0, builder_1.Div)()
     .setId("my-div")
     .setClass("my-style"), `<div id="my-div" class="my-style"  ></div>`, "Div with id and class");
 runTestHTML((0, builder_1.Div)()
+    .addClass("c1"), `<div class="c1"  ></div>`, "Add class first");
+runTestHTML((0, builder_1.Div)()
+    .setClass("c1")
+    .addClass("c2"), `<div class="c1 c2"  ></div>`, "Add class append");
+runTestHTML((0, builder_1.Div)()
     .setHtmx((0, htmx_1.hx)("/home")), `<div  hx-get="/home"      ></div>`, "Div with htmx");
 runTestHTML((0, builder_1.Div)()
     .setHtmx((0, htmx_1.hx)("/home", {

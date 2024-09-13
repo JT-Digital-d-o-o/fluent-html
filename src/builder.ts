@@ -30,8 +30,17 @@ export class Tag {
     return this;
   }
 
-  setClass(className?: string): Tag {
-    this.class = className;
+  setClass(c?: string): Tag {
+    this.class = c;
+    return this;
+  }
+
+  addClass(c: string): Tag {
+    if (this.class) {
+      this.class += ` ${c}`;
+    } else {
+      this.class = c;
+    }
     return this;
   }
 
@@ -256,6 +265,7 @@ export class SelectTag extends Tag {
 export function Select(child: View = Empty()): SelectTag {
   return new SelectTag("select", child);
 }
+// @TODO: - Implement `Option`
 
 export function H1(child: View = Empty()): Tag {
   return new Tag("h1", child);
@@ -382,11 +392,18 @@ export function ForEach1<T>(
 }
 
 export function ForEach2(
-  n: number,
+  high: number,
   renderItem: (index: number) => View
 ): View {
-  return Array.from(range(0, n)).map((index) => renderItem(index));
-  //           ^^^^^^^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
+  return Array.from(range(0, high)).map((index) => renderItem(index));
+}
+
+export function ForEach3(
+  low: number,
+  high: number,
+  renderItem: (index: number) => View
+): View {
+  return Array.from(range(low, high)).map((index) => renderItem(index));
 }
 
 function* range(low: number, high: number) {
