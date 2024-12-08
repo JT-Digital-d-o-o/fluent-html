@@ -59,7 +59,7 @@ export class Tag {
     return this;
   }
 
-  setToggles(toggles?: [string]): Tag {
+  setToggles(toggles?: string[]): Tag {
     this.toggles = toggles;
     return this;
   }

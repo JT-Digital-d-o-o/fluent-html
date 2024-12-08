@@ -17,7 +17,7 @@ export declare class Tag {
     setStyle(style?: string): Tag;
     addAttribute(key: string, value: string): Tag;
     setHtmx(htmx?: HTMX): Tag;
-    setToggles(toggles?: [string]): Tag;
+    setToggles(toggles?: string[]): Tag;
 }
 export declare function Empty(): View;
 export declare function El(el: string, child?: View): Tag;
