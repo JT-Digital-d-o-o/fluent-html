@@ -26,6 +26,7 @@ export declare function HStack(children?: View[]): Tag;
 export declare function Main(child?: View): Tag;
 export declare function Header(child?: View): Tag;
 export declare function Footer(child?: View): Tag;
+export declare function Section(child?: View): Tag;
 export declare function Article(child?: View): Tag;
 export declare function P(child?: View): Tag;
 export declare class InputTag extends Tag {
@@ -90,6 +91,7 @@ export declare class SelectTag extends Tag {
     setOptions(options?: Option[]): SelectTag;
 }
 export declare function Select(child?: View): SelectTag;
+export declare function Option(child?: View): Tag;
 export declare function H1(child?: View): Tag;
 export declare function H2(child?: View): Tag;
 export declare function H3(child?: View): Tag;

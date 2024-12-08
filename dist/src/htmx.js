@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clss = exports.id = exports.hx = void 0;
+exports.hx = hx;
+exports.id = id;
+exports.clss = clss;
 function hx(endpoint, options = {}) {
     var _a;
     return {
@@ -14,13 +16,10 @@ function hx(endpoint, options = {}) {
         validate: options.validate,
     };
 }
-exports.hx = hx;
 function id(id) {
     return `#${id}`;
 }
-exports.id = id;
 function clss(clss) {
     return `.${clss}`;
 }
-exports.clss = clss;
 //# sourceMappingURL=htmx.js.map

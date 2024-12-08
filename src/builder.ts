@@ -96,6 +96,10 @@ export function Footer(child: View = Empty()): Tag {
   return El("footer", child);
 }
 
+export function Section(child: View = Empty()): Tag {
+  return El("section", child);
+}
+
 export function Article(child: View = Empty()): Tag {
   return El("article", child);
 }
@@ -265,7 +269,9 @@ export class SelectTag extends Tag {
 export function Select(child: View = Empty()): SelectTag {
   return new SelectTag("select", child);
 }
-// @TODO: - Implement `Option`
+export function Option(child: View = Empty()): Tag {
+  return new Tag("option", child);
+}
 
 export function H1(child: View = Empty()): Tag {
   return new Tag("h1", child);
@@ -446,6 +452,7 @@ function renderImpl(view: View): string {
     const swap = htmx.swap ? `hx-swap="${htmx.swap}"` : null;
     const replaceUrl = htmx.replaceUrl ? `hx-replace-url="${htmx.replaceUrl}"` : null;
     const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
+    const push = htmx.pushUrl ? `hx-push-url="${htmx.pushUrl}"` : null;
     return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''}`;
   }
 

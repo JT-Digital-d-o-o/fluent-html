@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.hx = exports.VStack = exports.Text = exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Overlay = exports.Hr = exports.Textarea = exports.Select = exports.Tbody = exports.Tr = exports.Th = exports.Td = exports.Thead = exports.Table = exports.Li = exports.Ul = exports.Img = exports.Empty = exports.A = exports.P = exports.Button = exports.Label = exports.Input = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Footer = exports.Header = exports.Main = exports.HStack = exports.Div = exports.FormTag = exports.SelectTag = exports.LabelTag = exports.AnchorTag = exports.ImgTag = exports.TextareaTag = exports.InputTag = exports.ButtonTag = exports.Tag = exports.render = void 0;
-exports.OverlayOld = exports.SpanOld = exports.ButtonOld = exports.HrOld = exports.TbodyOld = exports.TrOld = exports.ThOld = exports.TdOld = exports.TheadOld = exports.TableOld = exports.TextareaOld = exports.SelectOld = exports.LiOld = exports.UlOld = exports.ImgOld = exports.AOld = exports.POld = exports.InputOld = exports.LabelOld = exports.H4Old = exports.H3Old = exports.H2Old = exports.H1Old = exports.FormOld = exports.DivOld = exports.ElOld = exports.clss = exports.id = void 0;
+exports.Text = exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Overlay = exports.Hr = exports.Textarea = exports.Option = exports.Select = exports.Tbody = exports.Tr = exports.Th = exports.Td = exports.Thead = exports.Table = exports.Li = exports.Ul = exports.Img = exports.Empty = exports.A = exports.P = exports.Button = exports.Label = exports.Input = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.Form = exports.El = exports.Section = exports.Footer = exports.Header = exports.Main = exports.HStack = exports.Div = exports.FormTag = exports.SelectTag = exports.LabelTag = exports.AnchorTag = exports.ImgTag = exports.TextareaTag = exports.InputTag = exports.ButtonTag = exports.Tag = exports.render = void 0;
+exports.OverlayOld = exports.SpanOld = exports.ButtonOld = exports.HrOld = exports.TbodyOld = exports.TrOld = exports.ThOld = exports.TdOld = exports.TheadOld = exports.TableOld = exports.TextareaOld = exports.SelectOld = exports.LiOld = exports.UlOld = exports.ImgOld = exports.AOld = exports.POld = exports.InputOld = exports.LabelOld = exports.H4Old = exports.H3Old = exports.H2Old = exports.H1Old = exports.FormOld = exports.DivOld = exports.ElOld = exports.clss = exports.id = exports.hx = exports.VStack = void 0;
 var builder_js_1 = require("./builder.js");
 Object.defineProperty(exports, "render", { enumerable: true, get: function () { return builder_js_1.render; } });
 var builder_js_2 = require("./builder.js");
@@ -20,6 +20,7 @@ Object.defineProperty(exports, "HStack", { enumerable: true, get: function () { 
 Object.defineProperty(exports, "Main", { enumerable: true, get: function () { return builder_js_3.Main; } });
 Object.defineProperty(exports, "Header", { enumerable: true, get: function () { return builder_js_3.Header; } });
 Object.defineProperty(exports, "Footer", { enumerable: true, get: function () { return builder_js_3.Footer; } });
+Object.defineProperty(exports, "Section", { enumerable: true, get: function () { return builder_js_3.Section; } });
 Object.defineProperty(exports, "El", { enumerable: true, get: function () { return builder_js_3.El; } });
 Object.defineProperty(exports, "Form", { enumerable: true, get: function () { return builder_js_3.Form; } });
 Object.defineProperty(exports, "H1", { enumerable: true, get: function () { return builder_js_3.H1; } });
@@ -42,6 +43,7 @@ Object.defineProperty(exports, "Th", { enumerable: true, get: function () { retu
 Object.defineProperty(exports, "Tr", { enumerable: true, get: function () { return builder_js_3.Tr; } });
 Object.defineProperty(exports, "Tbody", { enumerable: true, get: function () { return builder_js_3.Tbody; } });
 Object.defineProperty(exports, "Select", { enumerable: true, get: function () { return builder_js_3.Select; } });
+Object.defineProperty(exports, "Option", { enumerable: true, get: function () { return builder_js_3.Option; } });
 Object.defineProperty(exports, "Textarea", { enumerable: true, get: function () { return builder_js_3.Textarea; } });
 Object.defineProperty(exports, "Hr", { enumerable: true, get: function () { return builder_js_3.Hr; } });
 Object.defineProperty(exports, "Overlay", { enumerable: true, get: function () { return builder_js_3.Overlay; } });
