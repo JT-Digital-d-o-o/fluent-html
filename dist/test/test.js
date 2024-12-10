@@ -114,7 +114,7 @@ runTestHTML((0, builder_1.Div)((0, builder_1.P)("Danes je lep dan")
     .setClass("text-main-cl text-center"))
     .setId("id")
     .setClass("cursor-pointer")
-    .setHtmx((0, htmx_1.hx)("/get")), `<div id="id" class="cursor-pointer" hx-get="/get"      ><p class="text-main-cl text-center"  >Danes je lep dan</p></div>`, "lambda.html new syntax");
+    .setHtmx((0, htmx_1.hx)("/get")), `<div id="id" class="cursor-pointer" hx-get="/get"        ><p class="text-main-cl text-center"  >Danes je lep dan</p></div>`, "lambda.html new syntax");
 runTestHTML((0, builder_1.Input)()
     .setName("name")
     .setPlaceholder("placeholder")

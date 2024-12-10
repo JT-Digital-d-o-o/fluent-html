@@ -268,7 +268,7 @@ runTestHTML(
   .setId("id")
   .setClass("cursor-pointer")
   .setHtmx(hx("/get")),
-  `<div id="id" class="cursor-pointer" hx-get="/get"      ><p class="text-main-cl text-center"  >Danes je lep dan</p></div>`,
+  `<div id="id" class="cursor-pointer" hx-get="/get"        ><p class="text-main-cl text-center"  >Danes je lep dan</p></div>`,
   "lambda.html new syntax",
 )
 

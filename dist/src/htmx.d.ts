@@ -22,6 +22,7 @@ export declare function hx(endpoint: string, options?: {
     encoding?: HxEncoding;
     replaceUrl?: boolean;
     validate?: boolean;
+    pushUrl?: boolean;
 }): HTMX;
 export declare function id(id: string): HxTarget;
 export declare function clss(clss: string): HxTarget;

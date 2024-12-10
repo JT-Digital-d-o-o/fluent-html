@@ -26,6 +26,7 @@ export function hx(
     encoding?: HxEncoding,
     replaceUrl?: boolean,
     validate?: boolean,
+    pushUrl?: boolean,
   } = {}
 ): HTMX {
   return {
@@ -37,6 +38,7 @@ export function hx(
     replaceUrl: options.replaceUrl,
     encoding: options.encoding,
     validate: options.validate,
+    pushUrl: options.pushUrl,
   };
 }
 

@@ -452,8 +452,9 @@ function renderImpl(view: View): string {
     const swap = htmx.swap ? `hx-swap="${htmx.swap}"` : null;
     const replaceUrl = htmx.replaceUrl ? `hx-replace-url="${htmx.replaceUrl}"` : null;
     const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
+    const validate = htmx.validate ? `hx-validate="${htmx.validate}"` : null;
     const push = htmx.pushUrl ? `hx-push-url="${htmx.pushUrl}"` : null;
-    return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''}`;
+    return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''} ${validate ? validate : ''} ${push ? push : ''}`;
   }
 
   if (typeof view === "string") {
