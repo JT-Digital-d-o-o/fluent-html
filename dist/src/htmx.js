@@ -15,6 +15,7 @@ function hx(endpoint, options = {}) {
         encoding: options.encoding,
         validate: options.validate,
         pushUrl: options.pushUrl,
+        val: options.val,
     };
 }
 function id(id) {

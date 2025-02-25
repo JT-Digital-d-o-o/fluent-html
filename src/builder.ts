@@ -109,7 +109,7 @@ export function P(child: View = Empty()): Tag {
 }
 
 export class InputTag extends Tag { 
-  type?: string; 
+  type?: string;
   placeholder?: string;
   name?: string;
   value?: string;
@@ -454,7 +454,8 @@ function renderImpl(view: View): string {
     const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
     const validate = htmx.validate ? `hx-validate="${htmx.validate}"` : null;
     const push = htmx.pushUrl ? `hx-push-url="${htmx.pushUrl}"` : null;
-    return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''} ${validate ? validate : ''} ${push ? push : ''}`;
+    const val = htmx.val ? `hx-val="${JSON.stringify(htmx.val)}"` : null;
+    return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''} ${validate ? validate : ''} ${push ? push : ''} ${val ? val : ''}`;
   }
 
   if (typeof view === "string") {
