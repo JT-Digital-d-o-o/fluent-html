@@ -334,7 +334,7 @@ function Overlay(content, overlay, position = 'center') {
     return Div([
         content,
         Div(overlay)
-            .setStyle(`position: absolute; ${positionStyles[position]}`),
+            .setStyle(`position: absolute; ${positionStyles[position]} z-index: 10`),
     ])
         .setStyle("position: relative");
 }
