@@ -13,7 +13,7 @@ export interface HTMX {
     encoding?: HxEncoding;
     validate?: boolean;
     pushUrl?: boolean;
-    val?: any;
+    vals?: any;
 }
 export declare function hx(endpoint: string, options?: {
     method?: HxHttpMethod;
@@ -24,7 +24,7 @@ export declare function hx(endpoint: string, options?: {
     replaceUrl?: boolean;
     validate?: boolean;
     pushUrl?: boolean;
-    val?: any;
+    vals?: any;
 }): HTMX;
 export declare function id(id: string): HxTarget;
 export declare function clss(clss: string): HxTarget;

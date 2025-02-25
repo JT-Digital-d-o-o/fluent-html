@@ -454,7 +454,7 @@ function renderImpl(view: View): string {
     const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
     const validate = htmx.validate ? `hx-validate="${htmx.validate}"` : null;
     const push = htmx.pushUrl ? `hx-push-url="${htmx.pushUrl}"` : null;
-    const val = htmx.val ? `hx-val="${JSON.stringify(htmx.val)}"` : null;
+    const val = htmx.vals ? `hx-vals='${JSON.stringify(htmx.vals)}'` : null;
     return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''} ${validate ? validate : ''} ${push ? push : ''} ${val ? val : ''}`;
   }
 

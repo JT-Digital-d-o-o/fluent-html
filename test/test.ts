@@ -281,6 +281,15 @@ runTestHTML(
   "Input new syntax",
 )
 
+runTestHTML(
+  Div()
+    .setHtmx(hx("/endpoint", {
+      vals: { abc: 10 }
+    })),
+  `<div  hx-get="/endpoint"        hx-vals='{"abc":10}' ></div>`,
+  "hx-val",
+)
+
 // client-side rendering
 
 

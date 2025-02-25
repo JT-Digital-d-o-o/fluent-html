@@ -119,6 +119,10 @@ runTestHTML((0, builder_1.Input)()
     .setName("name")
     .setPlaceholder("placeholder")
     .setType("type"), `<input name="name" placeholder="placeholder" type="type"  ></input>`, "Input new syntax");
+runTestHTML((0, builder_1.Div)()
+    .setHtmx((0, htmx_1.hx)("/endpoint", {
+    vals: { abc: 10 }
+})), `<div  hx-get="/endpoint"        hx-vals='{"abc":10}' ></div>`, "hx-val");
 // client-side rendering
 // const view = [
 //   Div1([

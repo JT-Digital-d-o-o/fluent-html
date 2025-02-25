@@ -14,7 +14,7 @@ export interface HTMX {
   encoding?: HxEncoding;
   validate?: boolean;
   pushUrl?: boolean;
-  val?: any;
+  vals?: any;
 }
 
 export function hx(
@@ -28,7 +28,7 @@ export function hx(
     replaceUrl?: boolean,
     validate?: boolean,
     pushUrl?: boolean,
-    val?: any,
+    vals?: any,
   } = {}
 ): HTMX {
   return {
@@ -41,7 +41,7 @@ export function hx(
     encoding: options.encoding,
     validate: options.validate,
     pushUrl: options.pushUrl,
-    val: options.val,
+    vals: options.vals,
   };
 }
 
