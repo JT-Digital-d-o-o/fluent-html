@@ -113,6 +113,7 @@ export class InputTag extends Tag {
   placeholder?: string;
   name?: string;
   value?: string;
+  accept?: string;
 
   setType(type?: string): InputTag {
     this.type = type;
@@ -131,6 +132,11 @@ export class InputTag extends Tag {
   
   setValue(value?: string): InputTag {
     this.value = value;
+    return this;
+  }
+  
+  setAccept(accept?: string): InputTag {
+    this.accept = accept;
     return this;
   }
 };

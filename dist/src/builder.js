@@ -167,6 +167,10 @@ class InputTag extends Tag {
         this.value = value;
         return this;
     }
+    setAccept(accept) {
+        this.accept = accept;
+        return this;
+    }
 }
 exports.InputTag = InputTag;
 ;

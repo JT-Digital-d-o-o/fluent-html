@@ -34,10 +34,12 @@ export declare class InputTag extends Tag {
     placeholder?: string;
     name?: string;
     value?: string;
+    accept?: string;
     setType(type?: string): InputTag;
     setPlaceholder(placeholder?: string): InputTag;
     setName(name?: string): InputTag;
     setValue(value?: string): InputTag;
+    setAccept(accept?: string): InputTag;
 }
 export declare function Input(child?: View): InputTag;
 export declare class TextareaTag extends Tag {
