@@ -94,6 +94,17 @@ export declare class SelectTag extends Tag {
 }
 export declare function Select(child?: View): SelectTag;
 export declare function Option(child?: View): Tag;
+export declare class VideoTag extends Tag {
+    width?: number;
+    height?: number;
+    controls?: boolean;
+    src?: string;
+    setWidth(width: number): VideoTag;
+    setHeight(height: number): VideoTag;
+    setControls(enabled?: boolean): VideoTag;
+    setSrc(src: string): VideoTag;
+}
+export declare function Video(child?: View): VideoTag;
 export declare function H1(child?: View): Tag;
 export declare function H2(child?: View): Tag;
 export declare function H3(child?: View): Tag;

@@ -279,6 +279,36 @@ export function Option(child: View = Empty()): Tag {
   return new Tag("option", child);
 }
 
+export class VideoTag extends Tag {
+  width?: number;
+  height?: number;
+  controls?: boolean;
+  src?: string;
+
+  setWidth(width: number): VideoTag {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height: number): VideoTag {
+    this.height = height;
+    return this;
+  }
+
+  setControls(enabled: boolean = true): VideoTag {
+    this.controls = enabled;
+    return this;
+  }
+
+  setSrc(src: string): VideoTag {
+    this.src = src;
+    return this;
+  }
+}
+export function Video(child: View = Empty()): VideoTag {
+  return new VideoTag("video", child);
+}
+
 export function H1(child: View = Empty()): Tag {
   return new Tag("h1", child);
 }

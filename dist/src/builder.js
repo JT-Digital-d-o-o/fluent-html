@@ -3,7 +3,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SelectTag = exports.ImgTag = exports.FormTag = exports.AnchorTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.Tag = void 0;
+exports.VideoTag = exports.SelectTag = exports.ImgTag = exports.FormTag = exports.AnchorTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.Tag = void 0;
 exports.Empty = Empty;
 exports.El = El;
 exports.Div = Div;
@@ -23,6 +23,7 @@ exports.Form = Form;
 exports.Img = Img;
 exports.Select = Select;
 exports.Option = Option;
+exports.Video = Video;
 exports.H1 = H1;
 exports.H2 = H2;
 exports.H3 = H3;
@@ -288,6 +289,28 @@ function Select(child = Empty()) {
 }
 function Option(child = Empty()) {
     return new Tag("option", child);
+}
+class VideoTag extends Tag {
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+    setControls(enabled = true) {
+        this.controls = enabled;
+        return this;
+    }
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+}
+exports.VideoTag = VideoTag;
+function Video(child = Empty()) {
+    return new VideoTag("video", child);
 }
 function H1(child = Empty()) {
     return new Tag("h1", child);
