@@ -3,7 +3,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VideoTag = exports.SelectTag = exports.ImgTag = exports.FormTag = exports.AnchorTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.Tag = void 0;
+exports.VideoTag = exports.OptionTag = exports.SelectTag = exports.ImgTag = exports.FormTag = exports.AnchorTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.Tag = void 0;
 exports.Empty = Empty;
 exports.El = El;
 exports.Div = Div;
@@ -24,6 +24,11 @@ exports.Img = Img;
 exports.Select = Select;
 exports.Option = Option;
 exports.Video = Video;
+exports.HTML = HTML;
+exports.Head = Head;
+exports.Body = Body;
+exports.Template = Template;
+exports.Script = Script;
 exports.H1 = H1;
 exports.H2 = H2;
 exports.H3 = H3;
@@ -172,6 +177,14 @@ class InputTag extends Tag {
         this.accept = accept;
         return this;
     }
+    setMin(min) {
+        this.min = min;
+        return this;
+    }
+    setMax(max) {
+        this.max = max;
+        return this;
+    }
 }
 exports.InputTag = InputTag;
 ;
@@ -226,6 +239,10 @@ function Label(child = Empty()) {
 class AnchorTag extends Tag {
     setHref(href) {
         this.href = href;
+        return this;
+    }
+    setTarget(target) {
+        this.target = target;
         return this;
     }
 }
@@ -287,8 +304,23 @@ exports.SelectTag = SelectTag;
 function Select(child = Empty()) {
     return new SelectTag("select", child);
 }
+class OptionTag extends Tag {
+    constructor() {
+        super(...arguments);
+        this.selected = false;
+    }
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
+    setSelected(selected = true) {
+        this.selected = selected;
+        return this;
+    }
+}
+exports.OptionTag = OptionTag;
 function Option(child = Empty()) {
-    return new Tag("option", child);
+    return new OptionTag("option", child);
 }
 class VideoTag extends Tag {
     setWidth(width) {
@@ -311,6 +343,21 @@ class VideoTag extends Tag {
 exports.VideoTag = VideoTag;
 function Video(child = Empty()) {
     return new VideoTag("video", child);
+}
+function HTML(child) {
+    return El("html", child);
+}
+function Head(child) {
+    return El("head", child);
+}
+function Body(child) {
+    return El("body", child);
+}
+function Template() {
+    return El("template");
+}
+function Script(js) {
+    return El("script", js);
 }
 function H1(child = Empty()) {
     return new Tag("h1", child);

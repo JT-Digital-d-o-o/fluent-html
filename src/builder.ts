@@ -114,6 +114,8 @@ export class InputTag extends Tag {
   name?: string;
   value?: string;
   accept?: string;
+  min?: number;
+  max?: number;
 
   setType(type?: string): InputTag {
     this.type = type;
@@ -137,6 +139,16 @@ export class InputTag extends Tag {
   
   setAccept(accept?: string): InputTag {
     this.accept = accept;
+    return this;
+  }
+  
+  setMin(min?: number): InputTag {
+    this.min = min;
+    return this;
+  }
+  
+  setMax(max?: number): InputTag {
+    this.max = max;
     return this;
   }
 };
@@ -200,9 +212,15 @@ export function Label(child: View = Empty()): LabelTag {
 
 export class AnchorTag extends Tag {
   href?: string;
+  target?: string;
 
   setHref(href?: string): AnchorTag {
     this.href = href;
+    return this;
+  }
+
+  setTarget(target?: string): AnchorTag {
+    this.target = target;
     return this;
   }
 };
@@ -275,8 +293,22 @@ export class SelectTag extends Tag {
 export function Select(child: View = Empty()): SelectTag {
   return new SelectTag("select", child);
 }
-export function Option(child: View = Empty()): Tag {
-  return new Tag("option", child);
+export class OptionTag extends Tag {
+  value?: string;
+  selected: boolean = false;
+
+  setValue(value: string): this {
+    this.value = value;
+    return this;
+  }
+
+  setSelected(selected: boolean = true): this {
+    this.selected = selected;
+    return this;
+  }
+}
+export function Option(child: View = Empty()): OptionTag {
+  return new OptionTag("option", child);
 }
 
 export class VideoTag extends Tag {
@@ -307,6 +339,26 @@ export class VideoTag extends Tag {
 }
 export function Video(child: View = Empty()): VideoTag {
   return new VideoTag("video", child);
+}
+
+export function HTML(child?: View): Tag {
+  return El("html", child);
+}
+
+export function Head(child?: View): Tag {
+  return El("head", child);
+}
+
+export function Body(child?: View): Tag {
+  return El("body", child);
+}
+
+export function Template(): Tag {
+  return El("template");
+}
+
+export function Script(js: string): Tag {
+  return El("script", js);
 }
 
 export function H1(child: View = Empty()): Tag {

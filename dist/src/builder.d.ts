@@ -35,11 +35,15 @@ export declare class InputTag extends Tag {
     name?: string;
     value?: string;
     accept?: string;
+    min?: number;
+    max?: number;
     setType(type?: string): InputTag;
     setPlaceholder(placeholder?: string): InputTag;
     setName(name?: string): InputTag;
     setValue(value?: string): InputTag;
     setAccept(accept?: string): InputTag;
+    setMin(min?: number): InputTag;
+    setMax(max?: number): InputTag;
 }
 export declare function Input(child?: View): InputTag;
 export declare class TextareaTag extends Tag {
@@ -65,7 +69,9 @@ export declare class LabelTag extends Tag {
 export declare function Label(child?: View): LabelTag;
 export declare class AnchorTag extends Tag {
     href?: string;
+    target?: string;
     setHref(href?: string): AnchorTag;
+    setTarget(target?: string): AnchorTag;
 }
 export declare function A(child?: View): AnchorTag;
 export declare class FormTag extends Tag {
@@ -93,7 +99,13 @@ export declare class SelectTag extends Tag {
     setOptions(options?: Option[]): SelectTag;
 }
 export declare function Select(child?: View): SelectTag;
-export declare function Option(child?: View): Tag;
+export declare class OptionTag extends Tag {
+    value?: string;
+    selected: boolean;
+    setValue(value: string): this;
+    setSelected(selected?: boolean): this;
+}
+export declare function Option(child?: View): OptionTag;
 export declare class VideoTag extends Tag {
     width?: number;
     height?: number;
@@ -105,6 +117,11 @@ export declare class VideoTag extends Tag {
     setSrc(src: string): VideoTag;
 }
 export declare function Video(child?: View): VideoTag;
+export declare function HTML(child?: View): Tag;
+export declare function Head(child?: View): Tag;
+export declare function Body(child?: View): Tag;
+export declare function Template(): Tag;
+export declare function Script(js: string): Tag;
 export declare function H1(child?: View): Tag;
 export declare function H2(child?: View): Tag;
 export declare function H3(child?: View): Tag;
