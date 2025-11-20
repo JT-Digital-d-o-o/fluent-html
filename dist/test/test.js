@@ -76,8 +76,6 @@ runTestHTML((0, builder_1.IfThenElse)(false, () => "true", () => "false"), "fals
 <div   ><input type="checkbox" id="task-3"  ></input>
 3. Prepare meeting agenda</div>`, "ForEach");
 }
-runTestHTML((0, builder_1.HStack)(["a", "b"]), `<div style="flex"  >a
-b</div>`, "HStack");
 runTestHTML((0, builder_1.Textarea)()
     .setName("summary")
     .setId("my-id"), `<textarea name="summary" id="my-id"  ></textarea>`, "Textarea");

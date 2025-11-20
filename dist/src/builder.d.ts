@@ -22,7 +22,6 @@ export declare class Tag {
 export declare function Empty(): View;
 export declare function El(el: string, child?: View): Tag;
 export declare function Div(child?: View): Tag;
-export declare function HStack(children?: View[]): Tag;
 export declare function Main(child?: View): Tag;
 export declare function Header(child?: View): Tag;
 export declare function Footer(child?: View): Tag;
@@ -92,6 +91,11 @@ export declare class ImgTag extends Tag {
     setHeight(height?: string): ImgTag;
 }
 export declare function Img(child?: View): ImgTag;
+interface Option {
+    value: string;
+    text: string;
+    selected: boolean;
+}
 export declare class SelectTag extends Tag {
     name?: string;
     options?: Option[];
@@ -152,76 +156,4 @@ export declare function ForEach2(high: number, renderItem: (index: number) => Vi
 export declare function ForEach3(low: number, high: number, renderItem: (index: number) => View): View;
 export declare function Repeat(times: number, content: Thunk<View>): View;
 export declare function render(view: View): string;
-export declare function ElOld(el: string, props?: Partial<Tag>): View;
-export declare function DivOld(props?: Partial<Tag>): View;
-/**
- * @deprecated Use strings directly instead.
- */
-export declare function Text(text?: string): View;
-/**
- * @deprecated Use an array directly instead.
- */
-export declare function VStack(views: View[]): View;
-type InputParams = {
-    type?: string;
-    placeholder?: string;
-    name?: string;
-};
-export declare function InputOld(props?: Partial<Tag & InputParams>): View;
-type TextareaParams = {
-    placeholder?: string;
-    name?: string;
-    rows?: number;
-    cols?: number;
-};
-export declare function TextareaOld(props?: Partial<Tag & TextareaParams>): View;
-export declare function POld(props?: Partial<Tag>): View;
-export declare function ButtonOld(props: Partial<Tag & {
-    type?: string;
-}>): View;
-type LabelParams = {
-    for?: string;
-};
-export declare function LabelOld(props: Partial<Tag & LabelParams>): View;
-export declare function H1Old(props?: Partial<Tag>): View;
-export declare function H2Old(props?: Partial<Tag>): View;
-export declare function H3Old(props?: Partial<Tag>): View;
-export declare function H4Old(props?: Partial<Tag>): View;
-export declare function SpanOld(props?: Partial<Tag>): View;
-export declare function AOld(props: Partial<Tag & {
-    href?: string;
-}>): View;
-export declare function UlOld(props?: Partial<Tag>): View;
-export declare function OlOld(props?: Partial<Tag>): View;
-export declare function LiOld(props?: Partial<Tag>): View;
-type FormParams = {
-    action?: string;
-    method?: string;
-};
-export declare function FormOld(props: Partial<Tag & FormParams>): View;
-type ImgParams = {
-    src?: string;
-    alt?: string;
-    width?: string;
-    height?: string;
-};
-export declare function ImgOld(props: Partial<Tag & ImgParams>): View;
-interface Option {
-    value: string;
-    text: string;
-    selected: boolean;
-}
-type OptionParams = {
-    name?: string;
-    options?: Option[];
-};
-export declare function SelectOld(props: Partial<Tag & OptionParams>): View;
-export declare function TableOld(props?: Partial<Tag>): View;
-export declare function TheadOld(props?: Partial<Tag>): View;
-export declare function TbodyOld(props?: Partial<Tag>): View;
-export declare function TrOld(props?: Partial<Tag>): View;
-export declare function ThOld(props?: Partial<Tag>): View;
-export declare function TdOld(props?: Partial<Tag>): View;
-export declare function HrOld(props?: Partial<Tag>): View;
-export declare function OverlayOld(content: View, overlay: View, position?: OverlayPosition): View;
 export {};

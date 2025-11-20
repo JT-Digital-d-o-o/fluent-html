@@ -79,11 +79,6 @@ export function Div(child: View = Empty()): Tag {
   return El("div", child);
 }
 
-export function HStack(children: View[] = []): Tag {
-  return Div(children)
-    .setStyle("flex");
-}
-
 export function Main(child: View = Empty()): Tag {
   return El("main", child);
 }

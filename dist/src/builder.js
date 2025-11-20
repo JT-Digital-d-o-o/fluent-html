@@ -7,7 +7,6 @@ exports.VideoTag = exports.OptionTag = exports.SelectTag = exports.ImgTag = expo
 exports.Empty = Empty;
 exports.El = El;
 exports.Div = Div;
-exports.HStack = HStack;
 exports.Main = Main;
 exports.Header = Header;
 exports.Footer = Footer;
@@ -54,35 +53,6 @@ exports.ForEach2 = ForEach2;
 exports.ForEach3 = ForEach3;
 exports.Repeat = Repeat;
 exports.render = render;
-exports.ElOld = ElOld;
-exports.DivOld = DivOld;
-exports.Text = Text;
-exports.VStack = VStack;
-exports.InputOld = InputOld;
-exports.TextareaOld = TextareaOld;
-exports.POld = POld;
-exports.ButtonOld = ButtonOld;
-exports.LabelOld = LabelOld;
-exports.H1Old = H1Old;
-exports.H2Old = H2Old;
-exports.H3Old = H3Old;
-exports.H4Old = H4Old;
-exports.SpanOld = SpanOld;
-exports.AOld = AOld;
-exports.UlOld = UlOld;
-exports.OlOld = OlOld;
-exports.LiOld = LiOld;
-exports.FormOld = FormOld;
-exports.ImgOld = ImgOld;
-exports.SelectOld = SelectOld;
-exports.TableOld = TableOld;
-exports.TheadOld = TheadOld;
-exports.TbodyOld = TbodyOld;
-exports.TrOld = TrOld;
-exports.ThOld = ThOld;
-exports.TdOld = TdOld;
-exports.HrOld = HrOld;
-exports.OverlayOld = OverlayOld;
 class Tag {
     constructor(element, child = Empty()) {
         this.el = element;
@@ -133,10 +103,6 @@ function El(el, child = Empty()) {
 }
 function Div(child = Empty()) {
     return El("div", child);
-}
-function HStack(children = []) {
-    return Div(children)
-        .setStyle("flex");
 }
 function Main(child = Empty()) {
     return El("main", child);
@@ -530,111 +496,5 @@ function renderImpl(view) {
         return view.map(innerView => render(innerView)).join("\n");
     }
     return "";
-}
-function ElOld(el, props) {
-    const element = new Tag(el);
-    if (props) {
-        Object.assign(element, props);
-    }
-    return element;
-}
-function DivOld(props) {
-    return ElOld("div", props);
-}
-/**
- * @deprecated Use strings directly instead.
- */
-function Text(text = "") {
-    return text;
-}
-/**
- * @deprecated Use an array directly instead.
- */
-function VStack(views) {
-    return views;
-}
-function InputOld(props) {
-    return ElOld("input", props);
-}
-function TextareaOld(props) {
-    return ElOld("textarea", props);
-}
-function POld(props) {
-    return ElOld("p", props);
-}
-function ButtonOld(props) {
-    return ElOld("button", props);
-}
-function LabelOld(props) {
-    return ElOld("label", props);
-}
-function H1Old(props) {
-    return ElOld("h1", props);
-}
-function H2Old(props) {
-    return ElOld("h2", props);
-}
-function H3Old(props) {
-    return ElOld("h3", props);
-}
-function H4Old(props) {
-    return ElOld("h4", props);
-}
-function SpanOld(props) {
-    return ElOld("span", props);
-}
-function AOld(props) {
-    return ElOld("a", props);
-}
-function UlOld(props) {
-    return ElOld("ul", props);
-}
-function OlOld(props) {
-    return ElOld("ol", props);
-}
-function LiOld(props) {
-    return ElOld("li", props);
-}
-function FormOld(props) {
-    return ElOld("form", props);
-}
-function ImgOld(props) {
-    return ElOld("img", props);
-}
-function SelectOld(props) {
-    return ElOld("select", props);
-}
-function TableOld(props) {
-    return ElOld("table", props);
-}
-function TheadOld(props) {
-    return ElOld("thead", props);
-}
-function TbodyOld(props) {
-    return ElOld("tbody", props);
-}
-function TrOld(props) {
-    return ElOld("tr", props);
-}
-function ThOld(props) {
-    return ElOld("th", props);
-}
-function TdOld(props) {
-    return ElOld("td", props);
-}
-function HrOld(props) {
-    return ElOld("hr", props);
-}
-function OverlayOld(content, overlay, position = 'center') {
-    return DivOld({
-        style: "position: relative",
-        child: [
-            content,
-            DivOld({
-                style: `position: absolute; ${positionStyles[position]}`,
-                child: overlay
-            })
-        ]
-    });
 }
 //# sourceMappingURL=builder.js.map

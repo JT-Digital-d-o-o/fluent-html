@@ -1,5 +1,5 @@
-import { Div, IfThen, render, View, Text, IfThenElse, VStack, Input, ForEach1, Textarea, P, Button, Label, H1, H2, H3, H4, A, Ol, Li, Img, Empty, HStack } from "../src/builder";
-import { clss, id, hx, HxSwap, HxTrigger } from "../src/htmx";
+import { A, Button, Div, Empty, ForEach1, H1, H2, H3, H4, IfThen, IfThenElse, Img, Input, Label, Li, Ol, P, render, Textarea, View } from "../src/builder";
+import { clss, hx, HxSwap, HxTrigger, id } from "../src/htmx";
 
 function runTest<T>(got: T, expected: T, test: string) {
   if (expected === got) {
@@ -168,13 +168,6 @@ runTestHTML(
     "ForEach"
   );
 }
-
-runTestHTML(
-  HStack(["a", "b"]),
-  `<div style="flex"  >a
-b</div>`,
-  "HStack"
-);
 
 runTestHTML(
   Textarea()
