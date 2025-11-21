@@ -14,6 +14,15 @@ export interface HTMX {
     validate?: boolean;
     pushUrl?: boolean;
     vals?: any;
+    headers?: Record<string, string>;
+    confirm?: string;
+    ext?: string;
+    include?: string;
+    indicator?: string;
+    params?: string;
+    select?: string;
+    selectOob?: string;
+    sync?: string;
 }
 export declare function hx(endpoint: string, options?: {
     method?: HxHttpMethod;
@@ -25,6 +34,15 @@ export declare function hx(endpoint: string, options?: {
     validate?: boolean;
     pushUrl?: boolean;
     vals?: any;
+    headers?: Record<string, string>;
+    confirm?: string;
+    ext?: string;
+    include?: string;
+    indicator?: string;
+    params?: string;
+    select?: string;
+    selectOob?: string;
+    sync?: string;
 }): HTMX;
 export declare function id(id: string): HxTarget;
 export declare function clss(clss: string): HxTarget;

@@ -527,21 +527,36 @@ function renderImpl(view: View): string {
       .filter(s => s.length > 0)
       .join(" ");
   }
-
   function buildHtmx(htmx?: HTMX): string {
     if (!htmx) {
       return '';
     }
-    const methodAndEndpoint = `hx-${htmx.method}="${htmx.endpoint}"`;
-    const target = htmx.target ? `hx-target="${htmx.target}"` : null;
-    const trigger = htmx.trigger ? `hx-trigger="${htmx.trigger}"` : null;
-    const swap = htmx.swap ? `hx-swap="${htmx.swap}"` : null;
-    const replaceUrl = htmx.replaceUrl ? `hx-replace-url="${htmx.replaceUrl}"` : null;
-    const encoding = htmx.encoding ? `hx-encoding="${htmx.encoding}"` : null;
-    const validate = htmx.validate ? `hx-validate="${htmx.validate}"` : null;
-    const push = htmx.pushUrl ? `hx-push-url="${htmx.pushUrl}"` : null;
-    const val = htmx.vals ? `hx-vals='${JSON.stringify(htmx.vals)}'` : null;
-    return `${methodAndEndpoint} ${target ? target : ''} ${trigger ? trigger : ''} ${swap ? swap : ''} ${replaceUrl ? replaceUrl : ''} ${encoding ? encoding : ''} ${validate ? validate : ''} ${push ? push : ''} ${val ? val : ''}`;
+
+    const attributes: string[] = [];
+
+    // Method and endpoint (required)
+    attributes.push(`hx-${htmx.method}="${htmx.endpoint}"`);
+
+    // Optional attributes
+    if (htmx.target) attributes.push(`hx-target="${htmx.target}"`);
+    if (htmx.trigger) attributes.push(`hx-trigger="${htmx.trigger}"`);
+    if (htmx.swap) attributes.push(`hx-swap="${htmx.swap}"`);
+    if (htmx.replaceUrl !== undefined) attributes.push(`hx-replace-url="${htmx.replaceUrl}"`);
+    if (htmx.pushUrl !== undefined) attributes.push(`hx-push-url="${htmx.pushUrl}"`);
+    if (htmx.encoding) attributes.push(`hx-encoding="${htmx.encoding}"`);
+    if (htmx.validate !== undefined) attributes.push(`hx-validate="${htmx.validate}"`);
+    if (htmx.vals) attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)}'`);
+    if (htmx.headers) attributes.push(`hx-headers='${JSON.stringify(htmx.headers)}'`);
+    if (htmx.confirm) attributes.push(`hx-confirm="${htmx.confirm}"`);
+    if (htmx.ext) attributes.push(`hx-ext="${htmx.ext}"`);
+    if (htmx.include) attributes.push(`hx-include="${htmx.include}"`);
+    if (htmx.indicator) attributes.push(`hx-indicator="${htmx.indicator}"`);
+    if (htmx.params) attributes.push(`hx-params="${htmx.params}"`);
+    if (htmx.select) attributes.push(`hx-select="${htmx.select}"`);
+    if (htmx.selectOob) attributes.push(`hx-select-oob="${htmx.selectOob}"`);
+    if (htmx.sync) attributes.push(`hx-sync="${htmx.sync}"`);
+
+    return attributes.join(' ');
   }
 
   if (typeof view === "string") {

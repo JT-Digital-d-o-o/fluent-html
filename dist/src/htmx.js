@@ -16,6 +16,15 @@ function hx(endpoint, options = {}) {
         validate: options.validate,
         pushUrl: options.pushUrl,
         vals: options.vals,
+        headers: options.headers,
+        confirm: options.confirm,
+        ext: options.ext,
+        include: options.include,
+        indicator: options.indicator,
+        params: options.params,
+        select: options.select,
+        selectOob: options.selectOob,
+        sync: options.sync,
     };
 }
 function id(id) {

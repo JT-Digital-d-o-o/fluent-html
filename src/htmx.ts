@@ -15,6 +15,15 @@ export interface HTMX {
   validate?: boolean;
   pushUrl?: boolean;
   vals?: any;
+  headers?: Record<string, string>;
+  confirm?: string;
+  ext?: string;
+  include?: string;
+  indicator?: string;
+  params?: string;
+  select?: string;
+  selectOob?: string;
+  sync?: string;
 }
 
 export function hx(
@@ -22,13 +31,22 @@ export function hx(
   options: {
     method?: HxHttpMethod,
     target?: HxTarget,
-    trigger?: HxTrigger, 
+    trigger?: HxTrigger,
     swap?: HxSwap,
     encoding?: HxEncoding,
     replaceUrl?: boolean,
     validate?: boolean,
     pushUrl?: boolean,
     vals?: any,
+    headers?: Record<string, string>,
+    confirm?: string,
+    ext?: string,
+    include?: string,
+    indicator?: string,
+    params?: string,
+    select?: string,
+    selectOob?: string,
+    sync?: string,
   } = {}
 ): HTMX {
   return {
@@ -42,6 +60,15 @@ export function hx(
     validate: options.validate,
     pushUrl: options.pushUrl,
     vals: options.vals,
+    headers: options.headers,
+    confirm: options.confirm,
+    ext: options.ext,
+    include: options.include,
+    indicator: options.indicator,
+    params: options.params,
+    select: options.select,
+    selectOob: options.selectOob,
+    sync: options.sync,
   };
 }
 
