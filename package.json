@@ -1,6 +1,6 @@
 {
   "name": "lambda.html",
-  "version": "2.4.1",
+  "version": "3.0.0",
   "description": "Lambda.html is a TypeScript-based HTML builder framework that leverages functional programming principles to provide a declarative, composable, and extensible approach for building dynamic web interfaces. Designed for robustness and maintainability, it integrates seamlessly with CSS frameworks like Tailwind CSS and supports HTMX for enhanced interactivity without the need for JavaScript. Ideal for developers seeking to create clean, maintainable, and scalable web applications.",
   "type": "commonjs",
   "main": "dist/src/index.js",
@@ -32,5 +32,8 @@
   "bugs": {
     "url": "https://gitlab.com/seckmaster/lambda.html/issues"
   },
-  "homepage": "https://gitlab.com/seckmaster/lambda.html#readme"
+  "homepage": "https://gitlab.com/seckmaster/lambda.html#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1"
+  }
 }

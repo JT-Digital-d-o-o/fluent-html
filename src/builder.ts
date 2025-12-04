@@ -75,6 +75,10 @@ export function El(el: string, child: View = Empty()): Tag {
   return new Tag(el, child);
 }
 
+// ------------------------------------
+// Structural / Semantic Elements
+// ------------------------------------
+
 export function Div(child: View = Empty()): Tag {
   return El("div", child);
 }
@@ -99,11 +103,321 @@ export function Article(child: View = Empty()): Tag {
   return El("article", child);
 }
 
+export function Nav(child: View = Empty()): Tag {
+  return El("nav", child);
+}
+
+export function Aside(child: View = Empty()): Tag {
+  return El("aside", child);
+}
+
+export function Figure(child: View = Empty()): Tag {
+  return El("figure", child);
+}
+
+export function Figcaption(child: View = Empty()): Tag {
+  return El("figcaption", child);
+}
+
+export function Address(child: View = Empty()): Tag {
+  return El("address", child);
+}
+
+export function Hgroup(child: View = Empty()): Tag {
+  return El("hgroup", child);
+}
+
+export function Search(child: View = Empty()): Tag {
+  return El("search", child);
+}
+
+// ------------------------------------
+// Text Content
+// ------------------------------------
+
 export function P(child: View = Empty()): Tag {
   return El("p", child);
 }
 
-export class InputTag extends Tag { 
+export function H1(child: View = Empty()): Tag {
+  return El("h1", child);
+}
+
+export function H2(child: View = Empty()): Tag {
+  return El("h2", child);
+}
+
+export function H3(child: View = Empty()): Tag {
+  return El("h3", child);
+}
+
+export function H4(child: View = Empty()): Tag {
+  return El("h4", child);
+}
+
+export function H5(child: View = Empty()): Tag {
+  return El("h5", child);
+}
+
+export function H6(child: View = Empty()): Tag {
+  return El("h6", child);
+}
+
+export function Span(child: View = Empty()): Tag {
+  return El("span", child);
+}
+
+export function Blockquote(child: View = Empty()): Tag {
+  return El("blockquote", child);
+}
+
+export function Pre(child: View = Empty()): Tag {
+  return El("pre", child);
+}
+
+export function Code(child: View = Empty()): Tag {
+  return El("code", child);
+}
+
+export function Hr(child: View = Empty()): Tag {
+  return El("hr", child);
+}
+
+export function Br(): Tag {
+  return El("br");
+}
+
+export function Wbr(): Tag {
+  return El("wbr");
+}
+
+// ------------------------------------
+// Inline Text Semantics
+// ------------------------------------
+
+export function Strong(child: View = Empty()): Tag {
+  return El("strong", child);
+}
+
+export function Em(child: View = Empty()): Tag {
+  return El("em", child);
+}
+
+export function B(child: View = Empty()): Tag {
+  return El("b", child);
+}
+
+export function I(child: View = Empty()): Tag {
+  return El("i", child);
+}
+
+export function U(child: View = Empty()): Tag {
+  return El("u", child);
+}
+
+export function S(child: View = Empty()): Tag {
+  return El("s", child);
+}
+
+export function Mark(child: View = Empty()): Tag {
+  return El("mark", child);
+}
+
+export function Small(child: View = Empty()): Tag {
+  return El("small", child);
+}
+
+export function Sub(child: View = Empty()): Tag {
+  return El("sub", child);
+}
+
+export function Sup(child: View = Empty()): Tag {
+  return El("sup", child);
+}
+
+export function Abbr(child: View = Empty()): Tag {
+  return El("abbr", child);
+}
+
+export function Cite(child: View = Empty()): Tag {
+  return El("cite", child);
+}
+
+export function Q(child: View = Empty()): Tag {
+  return El("q", child);
+}
+
+export function Dfn(child: View = Empty()): Tag {
+  return El("dfn", child);
+}
+
+export function Kbd(child: View = Empty()): Tag {
+  return El("kbd", child);
+}
+
+export function Samp(child: View = Empty()): Tag {
+  return El("samp", child);
+}
+
+export function Var(child: View = Empty()): Tag {
+  return El("var", child);
+}
+
+export function Bdi(child: View = Empty()): Tag {
+  return El("bdi", child);
+}
+
+export function Bdo(child: View = Empty()): Tag {
+  return El("bdo", child);
+}
+
+export function Ruby(child: View = Empty()): Tag {
+  return El("ruby", child);
+}
+
+export function Rt(child: View = Empty()): Tag {
+  return El("rt", child);
+}
+
+export function Rp(child: View = Empty()): Tag {
+  return El("rp", child);
+}
+
+// ------------------------------------
+// Lists
+// ------------------------------------
+
+export function Ul(child: View = Empty()): Tag {
+  return El("ul", child);
+}
+
+export function Ol(child: View = Empty()): Tag {
+  return El("ol", child);
+}
+
+export function Li(child: View = Empty()): Tag {
+  return El("li", child);
+}
+
+export function Dl(child: View = Empty()): Tag {
+  return El("dl", child);
+}
+
+export function Dt(child: View = Empty()): Tag {
+  return El("dt", child);
+}
+
+export function Dd(child: View = Empty()): Tag {
+  return El("dd", child);
+}
+
+export function Menu(child: View = Empty()): Tag {
+  return El("menu", child);
+}
+
+// ------------------------------------
+// Tables
+// ------------------------------------
+
+export function Table(child: View = Empty()): Tag {
+  return El("table", child);
+}
+
+export function Thead(child: View = Empty()): Tag {
+  return El("thead", child);
+}
+
+export function Tbody(child: View = Empty()): Tag {
+  return El("tbody", child);
+}
+
+export function Tfoot(child: View = Empty()): Tag {
+  return El("tfoot", child);
+}
+
+export function Tr(child: View = Empty()): Tag {
+  return El("tr", child);
+}
+
+export class ThTag extends Tag {
+  colspan?: number;
+  rowspan?: number;
+  scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
+
+  setColspan(colspan: number): this {
+    this.colspan = colspan;
+    return this;
+  }
+
+  setRowspan(rowspan: number): this {
+    this.rowspan = rowspan;
+    return this;
+  }
+
+  setScope(scope: 'row' | 'col' | 'rowgroup' | 'colgroup'): this {
+    this.scope = scope;
+    return this;
+  }
+}
+
+export function Th(child: View = Empty()): ThTag {
+  return new ThTag("th", child);
+}
+
+export class TdTag extends Tag {
+  colspan?: number;
+  rowspan?: number;
+
+  setColspan(colspan: number): this {
+    this.colspan = colspan;
+    return this;
+  }
+
+  setRowspan(rowspan: number): this {
+    this.rowspan = rowspan;
+    return this;
+  }
+}
+
+export function Td(child: View = Empty()): TdTag {
+  return new TdTag("td", child);
+}
+
+export function Caption(child: View = Empty()): Tag {
+  return El("caption", child);
+}
+
+export class ColgroupTag extends Tag {
+  span?: number;
+
+  setSpan(span: number): this {
+    this.span = span;
+    return this;
+  }
+}
+
+export function Colgroup(child: View = Empty()): ColgroupTag {
+  return new ColgroupTag("colgroup", child);
+}
+
+export class ColTag extends Tag {
+  span?: number;
+
+  setSpan(span: number): this {
+    this.span = span;
+    return this;
+  }
+}
+
+export function Col(child: View = Empty()): ColTag {
+  return new ColTag("col", child);
+}
+
+// ------------------------------------
+// Forms
+// ------------------------------------
+
+export class InputTag extends Tag {
   type?: string;
   placeholder?: string;
   name?: string;
@@ -111,42 +425,109 @@ export class InputTag extends Tag {
   accept?: string;
   min?: number;
   max?: number;
+  step?: number | 'any';
+  pattern?: string;
+  minlength?: number;
+  maxlength?: number;
+  autocomplete?: string;
+  autofocus?: boolean;
+  checked?: boolean;
+  disabled?: boolean;
+  readonly?: boolean;
+  multiple?: boolean;
+  list?: string;
 
-  setType(type?: string): InputTag {
+  setType(type?: string): this {
     this.type = type;
     return this;
   }
 
-  setPlaceholder(placeholder?: string): InputTag {
+  setPlaceholder(placeholder?: string): this {
     this.placeholder = placeholder;
     return this;
   }
 
-  setName(name?: string): InputTag {
+  setName(name?: string): this {
     this.name = name;
     return this;
   }
-  
-  setValue(value?: string): InputTag {
+
+  setValue(value?: string): this {
     this.value = value;
     return this;
   }
-  
-  setAccept(accept?: string): InputTag {
+
+  setAccept(accept?: string): this {
     this.accept = accept;
     return this;
   }
-  
-  setMin(min?: number): InputTag {
+
+  setMin(min?: number): this {
     this.min = min;
     return this;
   }
-  
-  setMax(max?: number): InputTag {
+
+  setMax(max?: number): this {
     this.max = max;
     return this;
   }
-};
+
+  setStep(step?: number | 'any'): this {
+    this.step = step;
+    return this;
+  }
+
+  setPattern(pattern?: string): this {
+    this.pattern = pattern;
+    return this;
+  }
+
+  setMinlength(minlength?: number): this {
+    this.minlength = minlength;
+    return this;
+  }
+
+  setMaxlength(maxlength?: number): this {
+    this.maxlength = maxlength;
+    return this;
+  }
+
+  setAutocomplete(autocomplete?: string): this {
+    this.autocomplete = autocomplete;
+    return this;
+  }
+
+  setAutofocus(autofocus: boolean = true): this {
+    this.autofocus = autofocus;
+    return this;
+  }
+
+  setChecked(checked: boolean = true): this {
+    this.checked = checked;
+    return this;
+  }
+
+  setDisabled(disabled: boolean = true): this {
+    this.disabled = disabled;
+    return this;
+  }
+
+  setReadonly(readonly: boolean = true): this {
+    this.readonly = readonly;
+    return this;
+  }
+
+  setMultiple(multiple: boolean = true): this {
+    this.multiple = multiple;
+    return this;
+  }
+
+  setList(list?: string): this {
+    this.list = list;
+    return this;
+  }
+}
+
 export function Input(child: View = Empty()): InputTag {
   return new InputTag("input", child);
 }
@@ -156,39 +537,113 @@ export class TextareaTag extends Tag {
   name?: string;
   rows?: number;
   cols?: number;
+  minlength?: number;
+  maxlength?: number;
+  wrap?: 'hard' | 'soft' | 'off';
+  autocomplete?: string;
+  autofocus?: boolean;
+  disabled?: boolean;
+  readonly?: boolean;
 
-  setPlaceholder(placeholder?: string): TextareaTag {
+  setPlaceholder(placeholder?: string): this {
     this.placeholder = placeholder;
     return this;
   }
 
-  setName(name?: string): TextareaTag {
+  setName(name?: string): this {
     this.name = name;
     return this;
   }
 
-  setRows(rows?: number): TextareaTag {
+  setRows(rows?: number): this {
     this.rows = rows;
     return this;
   }
 
-  setCols(cols?: number): TextareaTag {
+  setCols(cols?: number): this {
     this.cols = cols;
     return this;
   }
-};
+
+  setMinlength(minlength?: number): this {
+    this.minlength = minlength;
+    return this;
+  }
+
+  setMaxlength(maxlength?: number): this {
+    this.maxlength = maxlength;
+    return this;
+  }
+
+  setWrap(wrap?: 'hard' | 'soft' | 'off'): this {
+    this.wrap = wrap;
+    return this;
+  }
+
+  setAutocomplete(autocomplete?: string): this {
+    this.autocomplete = autocomplete;
+    return this;
+  }
+
+  setAutofocus(autofocus: boolean = true): this {
+    this.autofocus = autofocus;
+    return this;
+  }
+
+  setDisabled(disabled: boolean = true): this {
+    this.disabled = disabled;
+    return this;
+  }
+
+  setReadonly(readonly: boolean = true): this {
+    this.readonly = readonly;
+    return this;
+  }
+}
+
 export function Textarea(child: View = Empty()): TextareaTag {
   return new TextareaTag("textarea", child);
 }
 
 export class ButtonTag extends Tag {
-  type?: string;
+  type?: 'submit' | 'reset' | 'button';
+  name?: string;
+  value?: string;
+  disabled?: boolean;
+  formaction?: string;
+  formmethod?: string;
 
-  setType(type?: string): ButtonTag {
+  setType(type?: 'submit' | 'reset' | 'button'): this {
     this.type = type;
     return this;
   }
-};
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+
+  setValue(value?: string): this {
+    this.value = value;
+    return this;
+  }
+
+  setDisabled(disabled: boolean = true): this {
+    this.disabled = disabled;
+    return this;
+  }
+
+  setFormaction(formaction?: string): this {
+    this.formaction = formaction;
+    return this;
+  }
+
+  setFormmethod(formmethod?: string): this {
+    this.formmethod = formmethod;
+    return this;
+  }
+}
+
 export function Button(child: View = Empty()): ButtonTag {
   return new ButtonTag("button", child);
 }
@@ -196,104 +651,101 @@ export function Button(child: View = Empty()): ButtonTag {
 export class LabelTag extends Tag {
   for?: string;
 
-  setFor(forId?: string): LabelTag {
+  setFor(forId?: string): this {
     this.for = forId;
     return this;
   }
-};
-export function Label(child: View = Empty()): LabelTag {
-  return new LabelTag("label", child);
 }
 
-export class AnchorTag extends Tag {
-  href?: string;
-  target?: string;
-
-  setHref(href?: string): AnchorTag {
-    this.href = href;
-    return this;
-  }
-
-  setTarget(target?: string): AnchorTag {
-    this.target = target;
-    return this;
-  }
-};
-export function A(child: View = Empty()): AnchorTag {
-  return new AnchorTag("a", child);
+export function Label(child: View = Empty()): LabelTag {
+  return new LabelTag("label", child);
 }
 
 export class FormTag extends Tag {
   action?: string;
   method?: string;
+  enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
+  target?: string;
+  novalidate?: boolean;
+  autocomplete?: 'on' | 'off';
 
-  setAction(action?: string): FormTag {
+  setAction(action?: string): this {
     this.action = action;
     return this;
   }
 
-  setMethod(method?: string): FormTag {
+  setMethod(method?: string): this {
     this.method = method;
     return this;
   }
-};
+
+  setEnctype(enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'): this {
+    this.enctype = enctype;
+    return this;
+  }
+
+  setTarget(target?: string): this {
+    this.target = target;
+    return this;
+  }
+
+  setNovalidate(novalidate: boolean = true): this {
+    this.novalidate = novalidate;
+    return this;
+  }
+
+  setAutocomplete(autocomplete?: 'on' | 'off'): this {
+    this.autocomplete = autocomplete;
+    return this;
+  }
+}
+
 export function Form(child: View = Empty()): FormTag {
   return new FormTag("form", child);
 }
 
-export class ImgTag extends Tag {
-  src?: string;
-  alt?: string;
-  width?: string;
-  height?: string;
-
-  setSrc(src?: string): ImgTag {
-    this.src = src;
-    return this;
-  }
-
-  setAlt(alt?: string): ImgTag {
-    this.alt = alt;
-    return this;
-  }
-
-  setWidth(width?: string): ImgTag {
-    this.width = width;
-    return this;
-  }
-
-  setHeight(height?: string): ImgTag {
-    this.height = height;
-    return this;
-  }
-};
-export function Img(child: View = Empty()): ImgTag {
-  return new ImgTag("img", child);
-}
-
-interface Option {
-  value: string, text: string, selected: boolean
-}
 export class SelectTag extends Tag {
   name?: string;
-  options?: Option[];
+  multiple?: boolean;
+  size?: number;
+  disabled?: boolean;
+  autofocus?: boolean;
 
-  setName(name?: string): SelectTag {
+  setName(name?: string): this {
     this.name = name;
     return this;
   }
 
-  setOptions(options?: Option[]): SelectTag {
-    this.options = options;
+  setMultiple(multiple: boolean = true): this {
+    this.multiple = multiple;
     return this;
   }
-};
+
+  setSize(size?: number): this {
+    this.size = size;
+    return this;
+  }
+
+  setDisabled(disabled: boolean = true): this {
+    this.disabled = disabled;
+    return this;
+  }
+
+  setAutofocus(autofocus: boolean = true): this {
+    this.autofocus = autofocus;
+    return this;
+  }
+}
+
 export function Select(child: View = Empty()): SelectTag {
   return new SelectTag("select", child);
 }
+
 export class OptionTag extends Tag {
   value?: string;
-  selected: boolean = false;
+  selected?: boolean;
+  disabled?: boolean;
+  label?: string;
 
   setValue(value: string): this {
     this.value = value;
@@ -304,9 +756,231 @@ export class OptionTag extends Tag {
     this.selected = selected;
     return this;
   }
+
+  setDisabled(disabled: boolean = true): this {
+    this.disabled = disabled;
+    return this;
+  }
+
+  setLabel(label?: string): this {
+    this.label = label;
+    return this;
+  }
 }
+
 export function Option(child: View = Empty()): OptionTag {
   return new OptionTag("option", child);
+}
+
+export class OptgroupTag extends Tag {
+  label?: string;
+  disabled?: boolean;
+
+  setLabel(label?: string): this {
+    this.label = label;
+    return this;
+  }
+
+  setDisabled(disabled: boolean = true): this {
+    this.disabled = disabled;
+    return this;
+  }
+}
+
+export function Optgroup(child: View = Empty()): OptgroupTag {
+  return new OptgroupTag("optgroup", child);
+}
+
+export function Datalist(child: View = Empty()): Tag {
+  return El("datalist", child);
+}
+
+export class FieldsetTag extends Tag {
+  name?: string;
+  disabled?: boolean;
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+
+  setDisabled(disabled: boolean = true): this {
+    this.disabled = disabled;
+    return this;
+  }
+}
+
+export function Fieldset(child: View = Empty()): FieldsetTag {
+  return new FieldsetTag("fieldset", child);
+}
+
+export function Legend(child: View = Empty()): Tag {
+  return El("legend", child);
+}
+
+export class OutputTag extends Tag {
+  for?: string;
+  name?: string;
+
+  setFor(forId?: string): this {
+    this.for = forId;
+    return this;
+  }
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+}
+
+export function Output(child: View = Empty()): OutputTag {
+  return new OutputTag("output", child);
+}
+
+// ------------------------------------
+// Interactive Elements
+// ------------------------------------
+
+export class DetailsTag extends Tag {
+  open?: boolean;
+  name?: string;
+
+  setOpen(open: boolean = true): this {
+    this.open = open;
+    return this;
+  }
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+}
+
+export function Details(child: View = Empty()): DetailsTag {
+  return new DetailsTag("details", child);
+}
+
+export function Summary(child: View = Empty()): Tag {
+  return El("summary", child);
+}
+
+export class DialogTag extends Tag {
+  open?: boolean;
+
+  setOpen(open: boolean = true): this {
+    this.open = open;
+    return this;
+  }
+}
+
+export function Dialog(child: View = Empty()): DialogTag {
+  return new DialogTag("dialog", child);
+}
+
+// ------------------------------------
+// Media Elements
+// ------------------------------------
+
+export class ImgTag extends Tag {
+  src?: string;
+  alt?: string;
+  width?: string;
+  height?: string;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'sync' | 'async' | 'auto';
+  srcset?: string;
+  sizes?: string;
+  crossorigin?: 'anonymous' | 'use-credentials';
+
+  setSrc(src?: string): this {
+    this.src = src;
+    return this;
+  }
+
+  setAlt(alt?: string): this {
+    this.alt = alt;
+    return this;
+  }
+
+  setWidth(width?: string): this {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height?: string): this {
+    this.height = height;
+    return this;
+  }
+
+  setLoading(loading?: 'lazy' | 'eager'): this {
+    this.loading = loading;
+    return this;
+  }
+
+  setDecoding(decoding?: 'sync' | 'async' | 'auto'): this {
+    this.decoding = decoding;
+    return this;
+  }
+
+  setSrcset(srcset?: string): this {
+    this.srcset = srcset;
+    return this;
+  }
+
+  setSizes(sizes?: string): this {
+    this.sizes = sizes;
+    return this;
+  }
+
+  setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this {
+    this.crossorigin = crossorigin;
+    return this;
+  }
+}
+
+export function Img(child: View = Empty()): ImgTag {
+  return new ImgTag("img", child);
+}
+
+export function Picture(child: View = Empty()): Tag {
+  return El("picture", child);
+}
+
+export class SourceTag extends Tag {
+  src?: string;
+  srcset?: string;
+  sizes?: string;
+  type?: string;
+  media?: string;
+
+  setSrc(src?: string): this {
+    this.src = src;
+    return this;
+  }
+
+  setSrcset(srcset?: string): this {
+    this.srcset = srcset;
+    return this;
+  }
+
+  setSizes(sizes?: string): this {
+    this.sizes = sizes;
+    return this;
+  }
+
+  setType(type?: string): this {
+    this.type = type;
+    return this;
+  }
+
+  setMedia(media?: string): this {
+    this.media = media;
+    return this;
+  }
+}
+
+export function Source(child: View = Empty()): SourceTag {
+  return new SourceTag("source", child);
 }
 
 export class VideoTag extends Tag {
@@ -314,30 +988,510 @@ export class VideoTag extends Tag {
   height?: number;
   controls?: boolean;
   src?: string;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  preload?: 'none' | 'metadata' | 'auto';
+  poster?: string;
+  playsinline?: boolean;
 
-  setWidth(width: number): VideoTag {
+  setWidth(width: number): this {
     this.width = width;
     return this;
   }
 
-  setHeight(height: number): VideoTag {
+  setHeight(height: number): this {
     this.height = height;
     return this;
   }
 
-  setControls(enabled: boolean = true): VideoTag {
+  setControls(enabled: boolean = true): this {
     this.controls = enabled;
     return this;
   }
 
-  setSrc(src: string): VideoTag {
+  setSrc(src: string): this {
     this.src = src;
     return this;
   }
+
+  setAutoplay(autoplay: boolean = true): this {
+    this.autoplay = autoplay;
+    return this;
+  }
+
+  setLoop(loop: boolean = true): this {
+    this.loop = loop;
+    return this;
+  }
+
+  setMuted(muted: boolean = true): this {
+    this.muted = muted;
+    return this;
+  }
+
+  setPreload(preload?: 'none' | 'metadata' | 'auto'): this {
+    this.preload = preload;
+    return this;
+  }
+
+  setPoster(poster?: string): this {
+    this.poster = poster;
+    return this;
+  }
+
+  setPlaysinline(playsinline: boolean = true): this {
+    this.playsinline = playsinline;
+    return this;
+  }
 }
+
 export function Video(child: View = Empty()): VideoTag {
   return new VideoTag("video", child);
 }
+
+export class AudioTag extends Tag {
+  src?: string;
+  controls?: boolean;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  preload?: 'none' | 'metadata' | 'auto';
+
+  setSrc(src?: string): this {
+    this.src = src;
+    return this;
+  }
+
+  setControls(controls: boolean = true): this {
+    this.controls = controls;
+    return this;
+  }
+
+  setAutoplay(autoplay: boolean = true): this {
+    this.autoplay = autoplay;
+    return this;
+  }
+
+  setLoop(loop: boolean = true): this {
+    this.loop = loop;
+    return this;
+  }
+
+  setMuted(muted: boolean = true): this {
+    this.muted = muted;
+    return this;
+  }
+
+  setPreload(preload?: 'none' | 'metadata' | 'auto'): this {
+    this.preload = preload;
+    return this;
+  }
+}
+
+export function Audio(child: View = Empty()): AudioTag {
+  return new AudioTag("audio", child);
+}
+
+export class TrackTag extends Tag {
+  src?: string;
+  kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
+  srclang?: string;
+  label?: string;
+  default?: boolean;
+
+  setSrc(src?: string): this {
+    this.src = src;
+    return this;
+  }
+
+  setKind(kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata'): this {
+    this.kind = kind;
+    return this;
+  }
+
+  setSrclang(srclang?: string): this {
+    this.srclang = srclang;
+    return this;
+  }
+
+  setLabel(label?: string): this {
+    this.label = label;
+    return this;
+  }
+
+  setDefault(isDefault: boolean = true): this {
+    this.default = isDefault;
+    return this;
+  }
+}
+
+export function Track(child: View = Empty()): TrackTag {
+  return new TrackTag("track", child);
+}
+
+export class CanvasTag extends Tag {
+  width?: number;
+  height?: number;
+
+  setWidth(width: number): this {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height: number): this {
+    this.height = height;
+    return this;
+  }
+}
+
+export function Canvas(child: View = Empty()): CanvasTag {
+  return new CanvasTag("canvas", child);
+}
+
+export class SvgTag extends Tag {
+  width?: string;
+  height?: string;
+  viewBox?: string;
+  xmlns?: string;
+  fill?: string;
+  stroke?: string;
+
+  setWidth(width: string): this {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height: string): this {
+    this.height = height;
+    return this;
+  }
+
+  setViewBox(viewBox: string): this {
+    this.viewBox = viewBox;
+    return this;
+  }
+
+  setXmlns(xmlns: string = "http://www.w3.org/2000/svg"): this {
+    this.xmlns = xmlns;
+    return this;
+  }
+
+  setFill(fill: string): this {
+    this.fill = fill;
+    return this;
+  }
+
+  setStroke(stroke: string): this {
+    this.stroke = stroke;
+    return this;
+  }
+}
+
+export function Svg(child: View = Empty()): SvgTag {
+  return new SvgTag("svg", child);
+}
+
+// SVG Elements
+export function Path(child: View = Empty()): Tag {
+  return El("path", child);
+}
+
+export function Circle(child: View = Empty()): Tag {
+  return El("circle", child);
+}
+
+export function Rect(child: View = Empty()): Tag {
+  return El("rect", child);
+}
+
+export function Line(child: View = Empty()): Tag {
+  return El("line", child);
+}
+
+export function Polygon(child: View = Empty()): Tag {
+  return El("polygon", child);
+}
+
+export function Polyline(child: View = Empty()): Tag {
+  return El("polyline", child);
+}
+
+export function Ellipse(child: View = Empty()): Tag {
+  return El("ellipse", child);
+}
+
+export function G(child: View = Empty()): Tag {
+  return El("g", child);
+}
+
+export function Defs(child: View = Empty()): Tag {
+  return El("defs", child);
+}
+
+export function Use(child: View = Empty()): Tag {
+  return El("use", child);
+}
+
+export function Text(child: View = Empty()): Tag {
+  return El("text", child);
+}
+
+export function Tspan(child: View = Empty()): Tag {
+  return El("tspan", child);
+}
+
+// ------------------------------------
+// Embedded Content
+// ------------------------------------
+
+export class IframeTag extends Tag {
+  src?: string;
+  srcdoc?: string;
+  width?: string;
+  height?: string;
+  allow?: string;
+  allowfullscreen?: boolean;
+  loading?: 'lazy' | 'eager';
+  sandbox?: string;
+  name?: string;
+  referrerpolicy?: string;
+
+  setSrc(src?: string): this {
+    this.src = src;
+    return this;
+  }
+
+  setSrcdoc(srcdoc?: string): this {
+    this.srcdoc = srcdoc;
+    return this;
+  }
+
+  setWidth(width?: string): this {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height?: string): this {
+    this.height = height;
+    return this;
+  }
+
+  setAllow(allow?: string): this {
+    this.allow = allow;
+    return this;
+  }
+
+  setAllowfullscreen(allowfullscreen: boolean = true): this {
+    this.allowfullscreen = allowfullscreen;
+    return this;
+  }
+
+  setLoading(loading?: 'lazy' | 'eager'): this {
+    this.loading = loading;
+    return this;
+  }
+
+  setSandbox(sandbox?: string): this {
+    this.sandbox = sandbox;
+    return this;
+  }
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+
+  setReferrerpolicy(referrerpolicy?: string): this {
+    this.referrerpolicy = referrerpolicy;
+    return this;
+  }
+}
+
+export function Iframe(child: View = Empty()): IframeTag {
+  return new IframeTag("iframe", child);
+}
+
+export class ObjectTag extends Tag {
+  data?: string;
+  type?: string;
+  width?: string;
+  height?: string;
+  name?: string;
+
+  setData(data?: string): this {
+    this.data = data;
+    return this;
+  }
+
+  setType(type?: string): this {
+    this.type = type;
+    return this;
+  }
+
+  setWidth(width?: string): this {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height?: string): this {
+    this.height = height;
+    return this;
+  }
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+}
+
+export function ObjectEl(child: View = Empty()): ObjectTag {
+  return new ObjectTag("object", child);
+}
+
+export class EmbedTag extends Tag {
+  src?: string;
+  type?: string;
+  width?: string;
+  height?: string;
+
+  setSrc(src?: string): this {
+    this.src = src;
+    return this;
+  }
+
+  setType(type?: string): this {
+    this.type = type;
+    return this;
+  }
+
+  setWidth(width?: string): this {
+    this.width = width;
+    return this;
+  }
+
+  setHeight(height?: string): this {
+    this.height = height;
+    return this;
+  }
+}
+
+export function Embed(child: View = Empty()): EmbedTag {
+  return new EmbedTag("embed", child);
+}
+
+// ------------------------------------
+// Links and Anchors
+// ------------------------------------
+
+export class AnchorTag extends Tag {
+  href?: string;
+  target?: '_self' | '_blank' | '_parent' | '_top' | string;
+  rel?: string;
+  download?: string | boolean;
+  type?: string;
+  referrerpolicy?: string;
+
+  setHref(href?: string): this {
+    this.href = href;
+    return this;
+  }
+
+  setTarget(target?: '_self' | '_blank' | '_parent' | '_top' | string): this {
+    this.target = target;
+    return this;
+  }
+
+  setRel(rel?: string): this {
+    this.rel = rel;
+    return this;
+  }
+
+  setDownload(download?: string | boolean): this {
+    this.download = download;
+    return this;
+  }
+
+  setType(type?: string): this {
+    this.type = type;
+    return this;
+  }
+
+  setReferrerpolicy(referrerpolicy?: string): this {
+    this.referrerpolicy = referrerpolicy;
+    return this;
+  }
+}
+
+export function A(child: View = Empty()): AnchorTag {
+  return new AnchorTag("a", child);
+}
+
+export class MapTag extends Tag {
+  name?: string;
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+}
+
+export function MapEl(child: View = Empty()): MapTag {
+  return new MapTag("map", child);
+}
+
+export class AreaTag extends Tag {
+  shape?: 'rect' | 'circle' | 'poly' | 'default';
+  coords?: string;
+  href?: string;
+  alt?: string;
+  target?: string;
+  rel?: string;
+  download?: string;
+
+  setShape(shape?: 'rect' | 'circle' | 'poly' | 'default'): this {
+    this.shape = shape;
+    return this;
+  }
+
+  setCoords(coords?: string): this {
+    this.coords = coords;
+    return this;
+  }
+
+  setHref(href?: string): this {
+    this.href = href;
+    return this;
+  }
+
+  setAlt(alt?: string): this {
+    this.alt = alt;
+    return this;
+  }
+
+  setTarget(target?: string): this {
+    this.target = target;
+    return this;
+  }
+
+  setRel(rel?: string): this {
+    this.rel = rel;
+    return this;
+  }
+
+  setDownload(download?: string): this {
+    this.download = download;
+    return this;
+  }
+}
+
+export function Area(child: View = Empty()): AreaTag {
+  return new AreaTag("area", child);
+}
+
+// ------------------------------------
+// Document Metadata / Head Elements
+// ------------------------------------
 
 export function HTML(child?: View): Tag {
   return El("html", child);
@@ -351,59 +1505,313 @@ export function Body(child?: View): Tag {
   return El("body", child);
 }
 
-export function Template(): Tag {
-  return El("template");
+export function Title(child?: View): Tag {
+  return El("title", child);
 }
 
-export function Script(js: string): Tag {
-  return El("script", js);
+export class MetaTag extends Tag {
+  name?: string;
+  content?: string;
+  charset?: string;
+  httpEquiv?: string;
+  property?: string;
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+
+  setContent(content?: string): this {
+    this.content = content;
+    return this;
+  }
+
+  setCharset(charset?: string): this {
+    this.charset = charset;
+    return this;
+  }
+
+  setHttpEquiv(httpEquiv?: string): this {
+    this.httpEquiv = httpEquiv;
+    return this;
+  }
+
+  setProperty(property?: string): this {
+    this.property = property;
+    return this;
+  }
 }
 
-export function H1(child: View = Empty()): Tag {
-  return new Tag("h1", child);
+export function Meta(): MetaTag {
+  return new MetaTag("meta");
 }
-export function H2(child: View = Empty()): Tag {
-  return new Tag("h2", child);
+
+export class LinkTag extends Tag {
+  rel?: string;
+  href?: string;
+  type?: string;
+  media?: string;
+  sizes?: string;
+  crossorigin?: 'anonymous' | 'use-credentials';
+  integrity?: string;
+  as?: string;
+
+  setRel(rel?: string): this {
+    this.rel = rel;
+    return this;
+  }
+
+  setHref(href?: string): this {
+    this.href = href;
+    return this;
+  }
+
+  setType(type?: string): this {
+    this.type = type;
+    return this;
+  }
+
+  setMedia(media?: string): this {
+    this.media = media;
+    return this;
+  }
+
+  setSizes(sizes?: string): this {
+    this.sizes = sizes;
+    return this;
+  }
+
+  setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this {
+    this.crossorigin = crossorigin;
+    return this;
+  }
+
+  setIntegrity(integrity?: string): this {
+    this.integrity = integrity;
+    return this;
+  }
+
+  setAs(as?: string): this {
+    this.as = as;
+    return this;
+  }
 }
-export function H3(child: View = Empty()): Tag {
-  return new Tag("h3", child);
+
+export function Link(): LinkTag {
+  return new LinkTag("link");
 }
-export function H4(child: View = Empty()): Tag {
-  return new Tag("h4", child);
+
+export class StyleTag extends Tag {
+  media?: string;
+  type?: string;
+
+  setMedia(media?: string): this {
+    this.media = media;
+    return this;
+  }
+
+  setType(type?: string): this {
+    this.type = type;
+    return this;
+  }
 }
-export function Span(child: View = Empty()): Tag {
-  return new Tag("span", child);
+
+export function Style(css: string): StyleTag {
+  return new StyleTag("style", css);
 }
-export function Ul(child: View = Empty()): Tag {
-  return new Tag("ul", child);
+
+export class BaseTag extends Tag {
+  href?: string;
+  target?: string;
+
+  setHref(href?: string): this {
+    this.href = href;
+    return this;
+  }
+
+  setTarget(target?: string): this {
+    this.target = target;
+    return this;
+  }
 }
-export function Ol(child: View = Empty()): Tag {
-  return new Tag("ol", child);
+
+export function Base(): BaseTag {
+  return new BaseTag("base");
 }
-export function Li(child: View = Empty()): Tag {
-  return new Tag("li", child);
+
+export function Noscript(child: View = Empty()): Tag {
+  return El("noscript", child);
 }
-export function Table(child: View = Empty()): Tag {
-  return new Tag("table", child);
+
+export function Template(child: View = Empty()): Tag {
+  return El("template", child);
 }
-export function Thead(child: View = Empty()): Tag {
-  return new Tag("thead", child);
+
+export class ScriptTag extends Tag {
+  src?: string;
+  type?: string;
+  async?: boolean;
+  defer?: boolean;
+  crossorigin?: 'anonymous' | 'use-credentials';
+  integrity?: string;
+  nomodule?: boolean;
+
+  setSrc(src?: string): this {
+    this.src = src;
+    return this;
+  }
+
+  setType(type?: string): this {
+    this.type = type;
+    return this;
+  }
+
+  setAsync(async: boolean = true): this {
+    this.async = async;
+    return this;
+  }
+
+  setDefer(defer: boolean = true): this {
+    this.defer = defer;
+    return this;
+  }
+
+  setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this {
+    this.crossorigin = crossorigin;
+    return this;
+  }
+
+  setIntegrity(integrity?: string): this {
+    this.integrity = integrity;
+    return this;
+  }
+
+  setNomodule(nomodule: boolean = true): this {
+    this.nomodule = nomodule;
+    return this;
+  }
 }
-export function Tbody(child: View = Empty()): Tag {
-  return new Tag("tbody", child);
+
+export function Script(js: string = ""): ScriptTag {
+  return new ScriptTag("script", js);
 }
-export function Tr(child: View = Empty()): Tag {
-  return new Tag("tr", child);
+
+// ------------------------------------
+// Data / Time Elements
+// ------------------------------------
+
+export class TimeTag extends Tag {
+  datetime?: string;
+
+  setDatetime(datetime?: string): this {
+    this.datetime = datetime;
+    return this;
+  }
 }
-export function Th(child: View = Empty()): Tag {
-  return new Tag("th", child);
+
+export function Time(child: View = Empty()): TimeTag {
+  return new TimeTag("time", child);
 }
-export function Td(child: View = Empty()): Tag {
-  return new Tag("td", child);
+
+export class DataTag extends Tag {
+  value?: string;
+
+  setValue(value?: string): this {
+    this.value = value;
+    return this;
+  }
 }
-export function Hr(child: View = Empty()): Tag {
-  return new Tag("hr", child);
+
+export function Data(child: View = Empty()): DataTag {
+  return new DataTag("data", child);
 }
+
+// ------------------------------------
+// Progress / Meter
+// ------------------------------------
+
+export class ProgressTag extends Tag {
+  value?: number;
+  max?: number;
+
+  setValue(value?: number): this {
+    this.value = value;
+    return this;
+  }
+
+  setMax(max?: number): this {
+    this.max = max;
+    return this;
+  }
+}
+
+export function Progress(child: View = Empty()): ProgressTag {
+  return new ProgressTag("progress", child);
+}
+
+export class MeterTag extends Tag {
+  value?: number;
+  min?: number;
+  max?: number;
+  low?: number;
+  high?: number;
+  optimum?: number;
+
+  setValue(value?: number): this {
+    this.value = value;
+    return this;
+  }
+
+  setMin(min?: number): this {
+    this.min = min;
+    return this;
+  }
+
+  setMax(max?: number): this {
+    this.max = max;
+    return this;
+  }
+
+  setLow(low?: number): this {
+    this.low = low;
+    return this;
+  }
+
+  setHigh(high?: number): this {
+    this.high = high;
+    return this;
+  }
+
+  setOptimum(optimum?: number): this {
+    this.optimum = optimum;
+    return this;
+  }
+}
+
+export function Meter(child: View = Empty()): MeterTag {
+  return new MeterTag("meter", child);
+}
+
+// ------------------------------------
+// Slot / Template (Web Components)
+// ------------------------------------
+
+export class SlotTag extends Tag {
+  name?: string;
+
+  setName(name?: string): this {
+    this.name = name;
+    return this;
+  }
+}
+
+export function Slot(child: View = Empty()): SlotTag {
+  return new SlotTag("slot", child);
+}
+
+// ------------------------------------
+// Overlay Utility
+// ------------------------------------
 
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 export function Overlay(
@@ -416,7 +1824,7 @@ export function Overlay(
     Div(overlay)
       .setStyle(`position: absolute; ${positionStyles[position]} z-index: 10`),
   ])
-  .setStyle("position: relative");
+    .setStyle("position: relative");
 }
 
 const positionStyles: Record<OverlayPosition, string> = {
@@ -431,16 +1839,18 @@ const positionStyles: Record<OverlayPosition, string> = {
   'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
 };
 
-// Control flow:
+// ------------------------------------
+// Control Flow
+// ------------------------------------
 
 export function IfThenElse(
   condition: boolean,
   thenBranch: Thunk<View>,
   elseBranch: Thunk<View>,
 ): View {
-  return condition 
-  ? thenBranch()
-  : elseBranch();
+  return condition
+    ? thenBranch()
+    : elseBranch();
 }
 
 export function IfThen(
@@ -472,7 +1882,6 @@ export function ForEach<T>(
   renderItem: (item: T) => View
 ): View {
   return Array.from(views).map(renderItem);
-  //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function ForEach1<T>(
@@ -480,7 +1889,6 @@ export function ForEach1<T>(
   renderItem: (item: T, index: number) => View
 ): View {
   return Array.from(views).map(renderItem);
-  //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 
 export function ForEach2(
@@ -505,24 +1913,45 @@ function* range(low: number, high: number) {
 }
 
 export function Repeat(
-  times: number, 
+  times: number,
   content: Thunk<View>
 ): View {
   return ForEach(range(0, times), content);
 }
 
-// render
+// ------------------------------------
+// Render
+// ------------------------------------
 
 export function render(view: View): string {
-  return renderImpl(view);
+  return renderImpl(view, false);
 }
 
-function renderImpl(view: View): string {
-  function buildAttributes(attributes: Record<string, string | undefined> | undefined): string {
+// HTML escape to prevent XSS
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// For attribute values
+function escapeAttr(unsafe: string): string {
+  return escapeHtml(unsafe);
+}
+
+// Elements whose content should NOT be escaped (they contain code, not text)
+const RAW_TEXT_ELEMENTS = new Set(['script', 'style']);
+
+function renderImpl(view: View, isRawContext: boolean): string {
+  function buildAttributes(attributes: Record<string, string | number | boolean | undefined> | undefined): string {
     if (!attributes) { return ""; }
     return Object.entries(attributes)
       .map(([key, value]) => {
-        return value ? `${key}="${value}"` : "";
+        if (value === undefined || value === null) return "";
+        return `${key}="${escapeAttr(String(value))}"`;
       })
       .filter(s => s.length > 0)
       .join(" ");
@@ -535,32 +1964,32 @@ function renderImpl(view: View): string {
     const attributes: string[] = [];
 
     // Method and endpoint (required)
-    attributes.push(`hx-${htmx.method}="${htmx.endpoint}"`);
+    attributes.push(`hx-${htmx.method}="${escapeAttr(htmx.endpoint)}"`);
 
     // Optional attributes
-    if (htmx.target) attributes.push(`hx-target="${htmx.target}"`);
-    if (htmx.trigger) attributes.push(`hx-trigger="${htmx.trigger}"`);
-    if (htmx.swap) attributes.push(`hx-swap="${htmx.swap}"`);
+    if (htmx.target) attributes.push(`hx-target="${escapeAttr(htmx.target)}"`);
+    if (htmx.trigger) attributes.push(`hx-trigger="${escapeAttr(htmx.trigger)}"`);
+    if (htmx.swap) attributes.push(`hx-swap="${escapeAttr(htmx.swap)}"`);
     if (htmx.replaceUrl !== undefined) attributes.push(`hx-replace-url="${htmx.replaceUrl}"`);
     if (htmx.pushUrl !== undefined) attributes.push(`hx-push-url="${htmx.pushUrl}"`);
-    if (htmx.encoding) attributes.push(`hx-encoding="${htmx.encoding}"`);
+    if (htmx.encoding) attributes.push(`hx-encoding="${escapeAttr(htmx.encoding)}"`);
     if (htmx.validate !== undefined) attributes.push(`hx-validate="${htmx.validate}"`);
-    if (htmx.vals) attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)}'`);
+    if (htmx.vals) attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)}'`);
     if (htmx.headers) attributes.push(`hx-headers='${JSON.stringify(htmx.headers)}'`);
-    if (htmx.confirm) attributes.push(`hx-confirm="${htmx.confirm}"`);
-    if (htmx.ext) attributes.push(`hx-ext="${htmx.ext}"`);
-    if (htmx.include) attributes.push(`hx-include="${htmx.include}"`);
-    if (htmx.indicator) attributes.push(`hx-indicator="${htmx.indicator}"`);
-    if (htmx.params) attributes.push(`hx-params="${htmx.params}"`);
-    if (htmx.select) attributes.push(`hx-select="${htmx.select}"`);
-    if (htmx.selectOob) attributes.push(`hx-select-oob="${htmx.selectOob}"`);
-    if (htmx.sync) attributes.push(`hx-sync="${htmx.sync}"`);
+    if (htmx.confirm) attributes.push(`hx-confirm="${escapeAttr(htmx.confirm)}"`);
+    if (htmx.ext) attributes.push(`hx-ext="${escapeAttr(htmx.ext)}"`);
+    if (htmx.include) attributes.push(`hx-include="${escapeAttr(htmx.include)}"`);
+    if (htmx.indicator) attributes.push(`hx-indicator="${escapeAttr(htmx.indicator)}"`);
+    if (htmx.params) attributes.push(`hx-params="${escapeAttr(htmx.params)}"`);
+    if (htmx.select) attributes.push(`hx-select="${escapeAttr(htmx.select)}"`);
+    if (htmx.selectOob) attributes.push(`hx-select-oob="${escapeAttr(htmx.selectOob)}"`);
+    if (htmx.sync) attributes.push(`hx-sync="${escapeAttr(htmx.sync)}"`);
 
     return attributes.join(' ');
   }
 
   if (typeof view === "string") {
-    return view;
+    return isRawContext ? view : escapeHtml(view);
   }
 
   if (view instanceof Tag) {
@@ -573,32 +2002,30 @@ function renderImpl(view: View): string {
     baseAttrs.toggles = undefined;
     baseAttrs.attributes = undefined;
 
-    const renderedChild = render(view.child);
-    const renderedAttributes = buildAttributes(baseAttrs);
-    const renderedHtmx = buildHtmx(view.htmx);
-    const renderedToggles = view.toggles ? view.toggles.join(" ") : " ";
-    const renderedStyle = view.style ? 'style="'+view.style+'" ' : " ";
-    
-    var renderedAttributesAndToggles = "";
-    renderedAttributesAndToggles += renderedAttributes;
-    renderedAttributesAndToggles += renderedStyle;
-    renderedAttributesAndToggles += renderedHtmx;
-    renderedAttributesAndToggles += renderedToggles;
+    const childIsRaw = RAW_TEXT_ELEMENTS.has(view.el);
+    const renderedChild = renderImpl(view.child, childIsRaw);
 
-    var renderedEl = "<";
-    renderedEl += view.el;
-    renderedEl += " ";
-    renderedEl += renderedAttributesAndToggles;
-    renderedEl += ">";
-    renderedEl += renderedChild;
-    renderedEl += "</";
-    renderedEl += view.el;
-    renderedEl += ">";
-    return renderedEl;
+    const parts: string[] = [];
+
+    const renderedAttributes = buildAttributes(baseAttrs);
+    if (renderedAttributes) parts.push(renderedAttributes);
+
+    if (view.style) parts.push(`style="${escapeAttr(view.style)}"`);
+
+    const renderedHtmx = buildHtmx(view.htmx);
+    if (renderedHtmx) parts.push(renderedHtmx);
+
+    if (view.toggles && view.toggles.length > 0) {
+      parts.push(view.toggles.join(" "));
+    }
+
+    const attrsString = parts.length > 0 ? " " + parts.join(" ") : "";
+
+    return `<${view.el}${attrsString}>${renderedChild}</${view.el}>`;
   }
 
   if (Array.isArray(view)) {
-    return view.map(innerView => render(innerView)).join("\n");
+    return view.map(innerView => renderImpl(innerView, isRawContext)).join("\n");
   }
 
   return "";

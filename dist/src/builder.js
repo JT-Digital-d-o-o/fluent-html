@@ -3,7 +3,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VideoTag = exports.OptionTag = exports.SelectTag = exports.ImgTag = exports.FormTag = exports.AnchorTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.Tag = void 0;
+exports.SlotTag = exports.MeterTag = exports.ProgressTag = exports.DataTag = exports.TimeTag = exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.AreaTag = exports.MapTag = exports.AnchorTag = exports.EmbedTag = exports.ObjectTag = exports.IframeTag = exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.AudioTag = exports.VideoTag = exports.SourceTag = exports.ImgTag = exports.DialogTag = exports.DetailsTag = exports.OutputTag = exports.FieldsetTag = exports.OptgroupTag = exports.OptionTag = exports.SelectTag = exports.FormTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.ColTag = exports.ColgroupTag = exports.TdTag = exports.ThTag = exports.Tag = void 0;
 exports.Empty = Empty;
 exports.El = El;
 exports.Div = Div;
@@ -12,37 +12,123 @@ exports.Header = Header;
 exports.Footer = Footer;
 exports.Section = Section;
 exports.Article = Article;
+exports.Nav = Nav;
+exports.Aside = Aside;
+exports.Figure = Figure;
+exports.Figcaption = Figcaption;
+exports.Address = Address;
+exports.Hgroup = Hgroup;
+exports.Search = Search;
 exports.P = P;
-exports.Input = Input;
-exports.Textarea = Textarea;
-exports.Button = Button;
-exports.Label = Label;
-exports.A = A;
-exports.Form = Form;
-exports.Img = Img;
-exports.Select = Select;
-exports.Option = Option;
-exports.Video = Video;
-exports.HTML = HTML;
-exports.Head = Head;
-exports.Body = Body;
-exports.Template = Template;
-exports.Script = Script;
 exports.H1 = H1;
 exports.H2 = H2;
 exports.H3 = H3;
 exports.H4 = H4;
+exports.H5 = H5;
+exports.H6 = H6;
 exports.Span = Span;
+exports.Blockquote = Blockquote;
+exports.Pre = Pre;
+exports.Code = Code;
+exports.Hr = Hr;
+exports.Br = Br;
+exports.Wbr = Wbr;
+exports.Strong = Strong;
+exports.Em = Em;
+exports.B = B;
+exports.I = I;
+exports.U = U;
+exports.S = S;
+exports.Mark = Mark;
+exports.Small = Small;
+exports.Sub = Sub;
+exports.Sup = Sup;
+exports.Abbr = Abbr;
+exports.Cite = Cite;
+exports.Q = Q;
+exports.Dfn = Dfn;
+exports.Kbd = Kbd;
+exports.Samp = Samp;
+exports.Var = Var;
+exports.Bdi = Bdi;
+exports.Bdo = Bdo;
+exports.Ruby = Ruby;
+exports.Rt = Rt;
+exports.Rp = Rp;
 exports.Ul = Ul;
 exports.Ol = Ol;
 exports.Li = Li;
+exports.Dl = Dl;
+exports.Dt = Dt;
+exports.Dd = Dd;
+exports.Menu = Menu;
 exports.Table = Table;
 exports.Thead = Thead;
 exports.Tbody = Tbody;
+exports.Tfoot = Tfoot;
 exports.Tr = Tr;
 exports.Th = Th;
 exports.Td = Td;
-exports.Hr = Hr;
+exports.Caption = Caption;
+exports.Colgroup = Colgroup;
+exports.Col = Col;
+exports.Input = Input;
+exports.Textarea = Textarea;
+exports.Button = Button;
+exports.Label = Label;
+exports.Form = Form;
+exports.Select = Select;
+exports.Option = Option;
+exports.Optgroup = Optgroup;
+exports.Datalist = Datalist;
+exports.Fieldset = Fieldset;
+exports.Legend = Legend;
+exports.Output = Output;
+exports.Details = Details;
+exports.Summary = Summary;
+exports.Dialog = Dialog;
+exports.Img = Img;
+exports.Picture = Picture;
+exports.Source = Source;
+exports.Video = Video;
+exports.Audio = Audio;
+exports.Track = Track;
+exports.Canvas = Canvas;
+exports.Svg = Svg;
+exports.Path = Path;
+exports.Circle = Circle;
+exports.Rect = Rect;
+exports.Line = Line;
+exports.Polygon = Polygon;
+exports.Polyline = Polyline;
+exports.Ellipse = Ellipse;
+exports.G = G;
+exports.Defs = Defs;
+exports.Use = Use;
+exports.Text = Text;
+exports.Tspan = Tspan;
+exports.Iframe = Iframe;
+exports.ObjectEl = ObjectEl;
+exports.Embed = Embed;
+exports.A = A;
+exports.MapEl = MapEl;
+exports.Area = Area;
+exports.HTML = HTML;
+exports.Head = Head;
+exports.Body = Body;
+exports.Title = Title;
+exports.Meta = Meta;
+exports.Link = Link;
+exports.Style = Style;
+exports.Base = Base;
+exports.Noscript = Noscript;
+exports.Template = Template;
+exports.Script = Script;
+exports.Time = Time;
+exports.Data = Data;
+exports.Progress = Progress;
+exports.Meter = Meter;
+exports.Slot = Slot;
 exports.Overlay = Overlay;
 exports.IfThenElse = IfThenElse;
 exports.IfThen = IfThen;
@@ -101,6 +187,9 @@ function Empty() {
 function El(el, child = Empty()) {
     return new Tag(el, child);
 }
+// ------------------------------------
+// Structural / Semantic Elements
+// ------------------------------------
 function Div(child = Empty()) {
     return El("div", child);
 }
@@ -119,9 +208,241 @@ function Section(child = Empty()) {
 function Article(child = Empty()) {
     return El("article", child);
 }
+function Nav(child = Empty()) {
+    return El("nav", child);
+}
+function Aside(child = Empty()) {
+    return El("aside", child);
+}
+function Figure(child = Empty()) {
+    return El("figure", child);
+}
+function Figcaption(child = Empty()) {
+    return El("figcaption", child);
+}
+function Address(child = Empty()) {
+    return El("address", child);
+}
+function Hgroup(child = Empty()) {
+    return El("hgroup", child);
+}
+function Search(child = Empty()) {
+    return El("search", child);
+}
+// ------------------------------------
+// Text Content
+// ------------------------------------
 function P(child = Empty()) {
     return El("p", child);
 }
+function H1(child = Empty()) {
+    return El("h1", child);
+}
+function H2(child = Empty()) {
+    return El("h2", child);
+}
+function H3(child = Empty()) {
+    return El("h3", child);
+}
+function H4(child = Empty()) {
+    return El("h4", child);
+}
+function H5(child = Empty()) {
+    return El("h5", child);
+}
+function H6(child = Empty()) {
+    return El("h6", child);
+}
+function Span(child = Empty()) {
+    return El("span", child);
+}
+function Blockquote(child = Empty()) {
+    return El("blockquote", child);
+}
+function Pre(child = Empty()) {
+    return El("pre", child);
+}
+function Code(child = Empty()) {
+    return El("code", child);
+}
+function Hr(child = Empty()) {
+    return El("hr", child);
+}
+function Br() {
+    return El("br");
+}
+function Wbr() {
+    return El("wbr");
+}
+// ------------------------------------
+// Inline Text Semantics
+// ------------------------------------
+function Strong(child = Empty()) {
+    return El("strong", child);
+}
+function Em(child = Empty()) {
+    return El("em", child);
+}
+function B(child = Empty()) {
+    return El("b", child);
+}
+function I(child = Empty()) {
+    return El("i", child);
+}
+function U(child = Empty()) {
+    return El("u", child);
+}
+function S(child = Empty()) {
+    return El("s", child);
+}
+function Mark(child = Empty()) {
+    return El("mark", child);
+}
+function Small(child = Empty()) {
+    return El("small", child);
+}
+function Sub(child = Empty()) {
+    return El("sub", child);
+}
+function Sup(child = Empty()) {
+    return El("sup", child);
+}
+function Abbr(child = Empty()) {
+    return El("abbr", child);
+}
+function Cite(child = Empty()) {
+    return El("cite", child);
+}
+function Q(child = Empty()) {
+    return El("q", child);
+}
+function Dfn(child = Empty()) {
+    return El("dfn", child);
+}
+function Kbd(child = Empty()) {
+    return El("kbd", child);
+}
+function Samp(child = Empty()) {
+    return El("samp", child);
+}
+function Var(child = Empty()) {
+    return El("var", child);
+}
+function Bdi(child = Empty()) {
+    return El("bdi", child);
+}
+function Bdo(child = Empty()) {
+    return El("bdo", child);
+}
+function Ruby(child = Empty()) {
+    return El("ruby", child);
+}
+function Rt(child = Empty()) {
+    return El("rt", child);
+}
+function Rp(child = Empty()) {
+    return El("rp", child);
+}
+// ------------------------------------
+// Lists
+// ------------------------------------
+function Ul(child = Empty()) {
+    return El("ul", child);
+}
+function Ol(child = Empty()) {
+    return El("ol", child);
+}
+function Li(child = Empty()) {
+    return El("li", child);
+}
+function Dl(child = Empty()) {
+    return El("dl", child);
+}
+function Dt(child = Empty()) {
+    return El("dt", child);
+}
+function Dd(child = Empty()) {
+    return El("dd", child);
+}
+function Menu(child = Empty()) {
+    return El("menu", child);
+}
+// ------------------------------------
+// Tables
+// ------------------------------------
+function Table(child = Empty()) {
+    return El("table", child);
+}
+function Thead(child = Empty()) {
+    return El("thead", child);
+}
+function Tbody(child = Empty()) {
+    return El("tbody", child);
+}
+function Tfoot(child = Empty()) {
+    return El("tfoot", child);
+}
+function Tr(child = Empty()) {
+    return El("tr", child);
+}
+class ThTag extends Tag {
+    setColspan(colspan) {
+        this.colspan = colspan;
+        return this;
+    }
+    setRowspan(rowspan) {
+        this.rowspan = rowspan;
+        return this;
+    }
+    setScope(scope) {
+        this.scope = scope;
+        return this;
+    }
+}
+exports.ThTag = ThTag;
+function Th(child = Empty()) {
+    return new ThTag("th", child);
+}
+class TdTag extends Tag {
+    setColspan(colspan) {
+        this.colspan = colspan;
+        return this;
+    }
+    setRowspan(rowspan) {
+        this.rowspan = rowspan;
+        return this;
+    }
+}
+exports.TdTag = TdTag;
+function Td(child = Empty()) {
+    return new TdTag("td", child);
+}
+function Caption(child = Empty()) {
+    return El("caption", child);
+}
+class ColgroupTag extends Tag {
+    setSpan(span) {
+        this.span = span;
+        return this;
+    }
+}
+exports.ColgroupTag = ColgroupTag;
+function Colgroup(child = Empty()) {
+    return new ColgroupTag("colgroup", child);
+}
+class ColTag extends Tag {
+    setSpan(span) {
+        this.span = span;
+        return this;
+    }
+}
+exports.ColTag = ColTag;
+function Col(child = Empty()) {
+    return new ColTag("col", child);
+}
+// ------------------------------------
+// Forms
+// ------------------------------------
 class InputTag extends Tag {
     setType(type) {
         this.type = type;
@@ -151,9 +472,52 @@ class InputTag extends Tag {
         this.max = max;
         return this;
     }
+    setStep(step) {
+        this.step = step;
+        return this;
+    }
+    setPattern(pattern) {
+        this.pattern = pattern;
+        return this;
+    }
+    setMinlength(minlength) {
+        this.minlength = minlength;
+        return this;
+    }
+    setMaxlength(maxlength) {
+        this.maxlength = maxlength;
+        return this;
+    }
+    setAutocomplete(autocomplete) {
+        this.autocomplete = autocomplete;
+        return this;
+    }
+    setAutofocus(autofocus = true) {
+        this.autofocus = autofocus;
+        return this;
+    }
+    setChecked(checked = true) {
+        this.checked = checked;
+        return this;
+    }
+    setDisabled(disabled = true) {
+        this.disabled = disabled;
+        return this;
+    }
+    setReadonly(readonly = true) {
+        this.readonly = readonly;
+        return this;
+    }
+    setMultiple(multiple = true) {
+        this.multiple = multiple;
+        return this;
+    }
+    setList(list) {
+        this.list = list;
+        return this;
+    }
 }
 exports.InputTag = InputTag;
-;
 function Input(child = Empty()) {
     return new InputTag("input", child);
 }
@@ -174,9 +538,36 @@ class TextareaTag extends Tag {
         this.cols = cols;
         return this;
     }
+    setMinlength(minlength) {
+        this.minlength = minlength;
+        return this;
+    }
+    setMaxlength(maxlength) {
+        this.maxlength = maxlength;
+        return this;
+    }
+    setWrap(wrap) {
+        this.wrap = wrap;
+        return this;
+    }
+    setAutocomplete(autocomplete) {
+        this.autocomplete = autocomplete;
+        return this;
+    }
+    setAutofocus(autofocus = true) {
+        this.autofocus = autofocus;
+        return this;
+    }
+    setDisabled(disabled = true) {
+        this.disabled = disabled;
+        return this;
+    }
+    setReadonly(readonly = true) {
+        this.readonly = readonly;
+        return this;
+    }
 }
 exports.TextareaTag = TextareaTag;
-;
 function Textarea(child = Empty()) {
     return new TextareaTag("textarea", child);
 }
@@ -185,9 +576,28 @@ class ButtonTag extends Tag {
         this.type = type;
         return this;
     }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
+    setDisabled(disabled = true) {
+        this.disabled = disabled;
+        return this;
+    }
+    setFormaction(formaction) {
+        this.formaction = formaction;
+        return this;
+    }
+    setFormmethod(formmethod) {
+        this.formmethod = formmethod;
+        return this;
+    }
 }
 exports.ButtonTag = ButtonTag;
-;
 function Button(child = Empty()) {
     return new ButtonTag("button", child);
 }
@@ -198,24 +608,8 @@ class LabelTag extends Tag {
     }
 }
 exports.LabelTag = LabelTag;
-;
 function Label(child = Empty()) {
     return new LabelTag("label", child);
-}
-class AnchorTag extends Tag {
-    setHref(href) {
-        this.href = href;
-        return this;
-    }
-    setTarget(target) {
-        this.target = target;
-        return this;
-    }
-}
-exports.AnchorTag = AnchorTag;
-;
-function A(child = Empty()) {
-    return new AnchorTag("a", child);
 }
 class FormTag extends Tag {
     setAction(action) {
@@ -226,12 +620,156 @@ class FormTag extends Tag {
         this.method = method;
         return this;
     }
+    setEnctype(enctype) {
+        this.enctype = enctype;
+        return this;
+    }
+    setTarget(target) {
+        this.target = target;
+        return this;
+    }
+    setNovalidate(novalidate = true) {
+        this.novalidate = novalidate;
+        return this;
+    }
+    setAutocomplete(autocomplete) {
+        this.autocomplete = autocomplete;
+        return this;
+    }
 }
 exports.FormTag = FormTag;
-;
 function Form(child = Empty()) {
     return new FormTag("form", child);
 }
+class SelectTag extends Tag {
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setMultiple(multiple = true) {
+        this.multiple = multiple;
+        return this;
+    }
+    setSize(size) {
+        this.size = size;
+        return this;
+    }
+    setDisabled(disabled = true) {
+        this.disabled = disabled;
+        return this;
+    }
+    setAutofocus(autofocus = true) {
+        this.autofocus = autofocus;
+        return this;
+    }
+}
+exports.SelectTag = SelectTag;
+function Select(child = Empty()) {
+    return new SelectTag("select", child);
+}
+class OptionTag extends Tag {
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
+    setSelected(selected = true) {
+        this.selected = selected;
+        return this;
+    }
+    setDisabled(disabled = true) {
+        this.disabled = disabled;
+        return this;
+    }
+    setLabel(label) {
+        this.label = label;
+        return this;
+    }
+}
+exports.OptionTag = OptionTag;
+function Option(child = Empty()) {
+    return new OptionTag("option", child);
+}
+class OptgroupTag extends Tag {
+    setLabel(label) {
+        this.label = label;
+        return this;
+    }
+    setDisabled(disabled = true) {
+        this.disabled = disabled;
+        return this;
+    }
+}
+exports.OptgroupTag = OptgroupTag;
+function Optgroup(child = Empty()) {
+    return new OptgroupTag("optgroup", child);
+}
+function Datalist(child = Empty()) {
+    return El("datalist", child);
+}
+class FieldsetTag extends Tag {
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setDisabled(disabled = true) {
+        this.disabled = disabled;
+        return this;
+    }
+}
+exports.FieldsetTag = FieldsetTag;
+function Fieldset(child = Empty()) {
+    return new FieldsetTag("fieldset", child);
+}
+function Legend(child = Empty()) {
+    return El("legend", child);
+}
+class OutputTag extends Tag {
+    setFor(forId) {
+        this.for = forId;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+}
+exports.OutputTag = OutputTag;
+function Output(child = Empty()) {
+    return new OutputTag("output", child);
+}
+// ------------------------------------
+// Interactive Elements
+// ------------------------------------
+class DetailsTag extends Tag {
+    setOpen(open = true) {
+        this.open = open;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+}
+exports.DetailsTag = DetailsTag;
+function Details(child = Empty()) {
+    return new DetailsTag("details", child);
+}
+function Summary(child = Empty()) {
+    return El("summary", child);
+}
+class DialogTag extends Tag {
+    setOpen(open = true) {
+        this.open = open;
+        return this;
+    }
+}
+exports.DialogTag = DialogTag;
+function Dialog(child = Empty()) {
+    return new DialogTag("dialog", child);
+}
+// ------------------------------------
+// Media Elements
+// ------------------------------------
 class ImgTag extends Tag {
     setSrc(src) {
         this.src = src;
@@ -249,44 +787,59 @@ class ImgTag extends Tag {
         this.height = height;
         return this;
     }
+    setLoading(loading) {
+        this.loading = loading;
+        return this;
+    }
+    setDecoding(decoding) {
+        this.decoding = decoding;
+        return this;
+    }
+    setSrcset(srcset) {
+        this.srcset = srcset;
+        return this;
+    }
+    setSizes(sizes) {
+        this.sizes = sizes;
+        return this;
+    }
+    setCrossorigin(crossorigin) {
+        this.crossorigin = crossorigin;
+        return this;
+    }
 }
 exports.ImgTag = ImgTag;
-;
 function Img(child = Empty()) {
     return new ImgTag("img", child);
 }
-class SelectTag extends Tag {
-    setName(name) {
-        this.name = name;
+function Picture(child = Empty()) {
+    return El("picture", child);
+}
+class SourceTag extends Tag {
+    setSrc(src) {
+        this.src = src;
         return this;
     }
-    setOptions(options) {
-        this.options = options;
+    setSrcset(srcset) {
+        this.srcset = srcset;
+        return this;
+    }
+    setSizes(sizes) {
+        this.sizes = sizes;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setMedia(media) {
+        this.media = media;
         return this;
     }
 }
-exports.SelectTag = SelectTag;
-;
-function Select(child = Empty()) {
-    return new SelectTag("select", child);
-}
-class OptionTag extends Tag {
-    constructor() {
-        super(...arguments);
-        this.selected = false;
-    }
-    setValue(value) {
-        this.value = value;
-        return this;
-    }
-    setSelected(selected = true) {
-        this.selected = selected;
-        return this;
-    }
-}
-exports.OptionTag = OptionTag;
-function Option(child = Empty()) {
-    return new OptionTag("option", child);
+exports.SourceTag = SourceTag;
+function Source(child = Empty()) {
+    return new SourceTag("source", child);
 }
 class VideoTag extends Tag {
     setWidth(width) {
@@ -305,11 +858,349 @@ class VideoTag extends Tag {
         this.src = src;
         return this;
     }
+    setAutoplay(autoplay = true) {
+        this.autoplay = autoplay;
+        return this;
+    }
+    setLoop(loop = true) {
+        this.loop = loop;
+        return this;
+    }
+    setMuted(muted = true) {
+        this.muted = muted;
+        return this;
+    }
+    setPreload(preload) {
+        this.preload = preload;
+        return this;
+    }
+    setPoster(poster) {
+        this.poster = poster;
+        return this;
+    }
+    setPlaysinline(playsinline = true) {
+        this.playsinline = playsinline;
+        return this;
+    }
 }
 exports.VideoTag = VideoTag;
 function Video(child = Empty()) {
     return new VideoTag("video", child);
 }
+class AudioTag extends Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setControls(controls = true) {
+        this.controls = controls;
+        return this;
+    }
+    setAutoplay(autoplay = true) {
+        this.autoplay = autoplay;
+        return this;
+    }
+    setLoop(loop = true) {
+        this.loop = loop;
+        return this;
+    }
+    setMuted(muted = true) {
+        this.muted = muted;
+        return this;
+    }
+    setPreload(preload) {
+        this.preload = preload;
+        return this;
+    }
+}
+exports.AudioTag = AudioTag;
+function Audio(child = Empty()) {
+    return new AudioTag("audio", child);
+}
+class TrackTag extends Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setKind(kind) {
+        this.kind = kind;
+        return this;
+    }
+    setSrclang(srclang) {
+        this.srclang = srclang;
+        return this;
+    }
+    setLabel(label) {
+        this.label = label;
+        return this;
+    }
+    setDefault(isDefault = true) {
+        this.default = isDefault;
+        return this;
+    }
+}
+exports.TrackTag = TrackTag;
+function Track(child = Empty()) {
+    return new TrackTag("track", child);
+}
+class CanvasTag extends Tag {
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+}
+exports.CanvasTag = CanvasTag;
+function Canvas(child = Empty()) {
+    return new CanvasTag("canvas", child);
+}
+class SvgTag extends Tag {
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+    setViewBox(viewBox) {
+        this.viewBox = viewBox;
+        return this;
+    }
+    setXmlns(xmlns = "http://www.w3.org/2000/svg") {
+        this.xmlns = xmlns;
+        return this;
+    }
+    setFill(fill) {
+        this.fill = fill;
+        return this;
+    }
+    setStroke(stroke) {
+        this.stroke = stroke;
+        return this;
+    }
+}
+exports.SvgTag = SvgTag;
+function Svg(child = Empty()) {
+    return new SvgTag("svg", child);
+}
+// SVG Elements
+function Path(child = Empty()) {
+    return El("path", child);
+}
+function Circle(child = Empty()) {
+    return El("circle", child);
+}
+function Rect(child = Empty()) {
+    return El("rect", child);
+}
+function Line(child = Empty()) {
+    return El("line", child);
+}
+function Polygon(child = Empty()) {
+    return El("polygon", child);
+}
+function Polyline(child = Empty()) {
+    return El("polyline", child);
+}
+function Ellipse(child = Empty()) {
+    return El("ellipse", child);
+}
+function G(child = Empty()) {
+    return El("g", child);
+}
+function Defs(child = Empty()) {
+    return El("defs", child);
+}
+function Use(child = Empty()) {
+    return El("use", child);
+}
+function Text(child = Empty()) {
+    return El("text", child);
+}
+function Tspan(child = Empty()) {
+    return El("tspan", child);
+}
+// ------------------------------------
+// Embedded Content
+// ------------------------------------
+class IframeTag extends Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setSrcdoc(srcdoc) {
+        this.srcdoc = srcdoc;
+        return this;
+    }
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+    setAllow(allow) {
+        this.allow = allow;
+        return this;
+    }
+    setAllowfullscreen(allowfullscreen = true) {
+        this.allowfullscreen = allowfullscreen;
+        return this;
+    }
+    setLoading(loading) {
+        this.loading = loading;
+        return this;
+    }
+    setSandbox(sandbox) {
+        this.sandbox = sandbox;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setReferrerpolicy(referrerpolicy) {
+        this.referrerpolicy = referrerpolicy;
+        return this;
+    }
+}
+exports.IframeTag = IframeTag;
+function Iframe(child = Empty()) {
+    return new IframeTag("iframe", child);
+}
+class ObjectTag extends Tag {
+    setData(data) {
+        this.data = data;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+}
+exports.ObjectTag = ObjectTag;
+function ObjectEl(child = Empty()) {
+    return new ObjectTag("object", child);
+}
+class EmbedTag extends Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+}
+exports.EmbedTag = EmbedTag;
+function Embed(child = Empty()) {
+    return new EmbedTag("embed", child);
+}
+// ------------------------------------
+// Links and Anchors
+// ------------------------------------
+class AnchorTag extends Tag {
+    setHref(href) {
+        this.href = href;
+        return this;
+    }
+    setTarget(target) {
+        this.target = target;
+        return this;
+    }
+    setRel(rel) {
+        this.rel = rel;
+        return this;
+    }
+    setDownload(download) {
+        this.download = download;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setReferrerpolicy(referrerpolicy) {
+        this.referrerpolicy = referrerpolicy;
+        return this;
+    }
+}
+exports.AnchorTag = AnchorTag;
+function A(child = Empty()) {
+    return new AnchorTag("a", child);
+}
+class MapTag extends Tag {
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+}
+exports.MapTag = MapTag;
+function MapEl(child = Empty()) {
+    return new MapTag("map", child);
+}
+class AreaTag extends Tag {
+    setShape(shape) {
+        this.shape = shape;
+        return this;
+    }
+    setCoords(coords) {
+        this.coords = coords;
+        return this;
+    }
+    setHref(href) {
+        this.href = href;
+        return this;
+    }
+    setAlt(alt) {
+        this.alt = alt;
+        return this;
+    }
+    setTarget(target) {
+        this.target = target;
+        return this;
+    }
+    setRel(rel) {
+        this.rel = rel;
+        return this;
+    }
+    setDownload(download) {
+        this.download = download;
+        return this;
+    }
+}
+exports.AreaTag = AreaTag;
+function Area(child = Empty()) {
+    return new AreaTag("area", child);
+}
+// ------------------------------------
+// Document Metadata / Head Elements
+// ------------------------------------
 function HTML(child) {
     return El("html", child);
 }
@@ -319,56 +1210,223 @@ function Head(child) {
 function Body(child) {
     return El("body", child);
 }
-function Template() {
-    return El("template");
+function Title(child) {
+    return El("title", child);
 }
-function Script(js) {
-    return El("script", js);
+class MetaTag extends Tag {
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+    setContent(content) {
+        this.content = content;
+        return this;
+    }
+    setCharset(charset) {
+        this.charset = charset;
+        return this;
+    }
+    setHttpEquiv(httpEquiv) {
+        this.httpEquiv = httpEquiv;
+        return this;
+    }
+    setProperty(property) {
+        this.property = property;
+        return this;
+    }
 }
-function H1(child = Empty()) {
-    return new Tag("h1", child);
+exports.MetaTag = MetaTag;
+function Meta() {
+    return new MetaTag("meta");
 }
-function H2(child = Empty()) {
-    return new Tag("h2", child);
+class LinkTag extends Tag {
+    setRel(rel) {
+        this.rel = rel;
+        return this;
+    }
+    setHref(href) {
+        this.href = href;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setMedia(media) {
+        this.media = media;
+        return this;
+    }
+    setSizes(sizes) {
+        this.sizes = sizes;
+        return this;
+    }
+    setCrossorigin(crossorigin) {
+        this.crossorigin = crossorigin;
+        return this;
+    }
+    setIntegrity(integrity) {
+        this.integrity = integrity;
+        return this;
+    }
+    setAs(as) {
+        this.as = as;
+        return this;
+    }
 }
-function H3(child = Empty()) {
-    return new Tag("h3", child);
+exports.LinkTag = LinkTag;
+function Link() {
+    return new LinkTag("link");
 }
-function H4(child = Empty()) {
-    return new Tag("h4", child);
+class StyleTag extends Tag {
+    setMedia(media) {
+        this.media = media;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
 }
-function Span(child = Empty()) {
-    return new Tag("span", child);
+exports.StyleTag = StyleTag;
+function Style(css) {
+    return new StyleTag("style", css);
 }
-function Ul(child = Empty()) {
-    return new Tag("ul", child);
+class BaseTag extends Tag {
+    setHref(href) {
+        this.href = href;
+        return this;
+    }
+    setTarget(target) {
+        this.target = target;
+        return this;
+    }
 }
-function Ol(child = Empty()) {
-    return new Tag("ol", child);
+exports.BaseTag = BaseTag;
+function Base() {
+    return new BaseTag("base");
 }
-function Li(child = Empty()) {
-    return new Tag("li", child);
+function Noscript(child = Empty()) {
+    return El("noscript", child);
 }
-function Table(child = Empty()) {
-    return new Tag("table", child);
+function Template(child = Empty()) {
+    return El("template", child);
 }
-function Thead(child = Empty()) {
-    return new Tag("thead", child);
+class ScriptTag extends Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setAsync(async = true) {
+        this.async = async;
+        return this;
+    }
+    setDefer(defer = true) {
+        this.defer = defer;
+        return this;
+    }
+    setCrossorigin(crossorigin) {
+        this.crossorigin = crossorigin;
+        return this;
+    }
+    setIntegrity(integrity) {
+        this.integrity = integrity;
+        return this;
+    }
+    setNomodule(nomodule = true) {
+        this.nomodule = nomodule;
+        return this;
+    }
 }
-function Tbody(child = Empty()) {
-    return new Tag("tbody", child);
+exports.ScriptTag = ScriptTag;
+function Script(js = "") {
+    return new ScriptTag("script", js);
 }
-function Tr(child = Empty()) {
-    return new Tag("tr", child);
+// ------------------------------------
+// Data / Time Elements
+// ------------------------------------
+class TimeTag extends Tag {
+    setDatetime(datetime) {
+        this.datetime = datetime;
+        return this;
+    }
 }
-function Th(child = Empty()) {
-    return new Tag("th", child);
+exports.TimeTag = TimeTag;
+function Time(child = Empty()) {
+    return new TimeTag("time", child);
 }
-function Td(child = Empty()) {
-    return new Tag("td", child);
+class DataTag extends Tag {
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
 }
-function Hr(child = Empty()) {
-    return new Tag("hr", child);
+exports.DataTag = DataTag;
+function Data(child = Empty()) {
+    return new DataTag("data", child);
+}
+// ------------------------------------
+// Progress / Meter
+// ------------------------------------
+class ProgressTag extends Tag {
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
+    setMax(max) {
+        this.max = max;
+        return this;
+    }
+}
+exports.ProgressTag = ProgressTag;
+function Progress(child = Empty()) {
+    return new ProgressTag("progress", child);
+}
+class MeterTag extends Tag {
+    setValue(value) {
+        this.value = value;
+        return this;
+    }
+    setMin(min) {
+        this.min = min;
+        return this;
+    }
+    setMax(max) {
+        this.max = max;
+        return this;
+    }
+    setLow(low) {
+        this.low = low;
+        return this;
+    }
+    setHigh(high) {
+        this.high = high;
+        return this;
+    }
+    setOptimum(optimum) {
+        this.optimum = optimum;
+        return this;
+    }
+}
+exports.MeterTag = MeterTag;
+function Meter(child = Empty()) {
+    return new MeterTag("meter", child);
+}
+// ------------------------------------
+// Slot / Template (Web Components)
+// ------------------------------------
+class SlotTag extends Tag {
+    setName(name) {
+        this.name = name;
+        return this;
+    }
+}
+exports.SlotTag = SlotTag;
+function Slot(child = Empty()) {
+    return new SlotTag("slot", child);
 }
 function Overlay(content, overlay, position = 'center') {
     return Div([
@@ -389,7 +1447,9 @@ const positionStyles = {
     'right': 'top: 50%; right: 0; transform: translateY(-50%);',
     'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
 };
-// Control flow:
+// ------------------------------------
+// Control Flow
+// ------------------------------------
 function IfThenElse(condition, thenBranch, elseBranch) {
     return condition
         ? thenBranch()
@@ -408,11 +1468,9 @@ function SwitchCase(cases, defaultView = Empty) {
 }
 function ForEach(views, renderItem) {
     return Array.from(views).map(renderItem);
-    //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 function ForEach1(views, renderItem) {
     return Array.from(views).map(renderItem);
-    //           ^^^^^^^^^^^ NOTE: - This creates a shallow copy even when the argument is already an array
 }
 function ForEach2(high, renderItem) {
     return Array.from(range(0, high)).map((index) => renderItem(index));
@@ -428,18 +1486,37 @@ function* range(low, high) {
 function Repeat(times, content) {
     return ForEach(range(0, times), content);
 }
-// render
+// ------------------------------------
+// Render
+// ------------------------------------
 function render(view) {
-    return renderImpl(view);
+    return renderImpl(view, false);
 }
-function renderImpl(view) {
+// HTML escape to prevent XSS
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+// For attribute values
+function escapeAttr(unsafe) {
+    return escapeHtml(unsafe);
+}
+// Elements whose content should NOT be escaped (they contain code, not text)
+const RAW_TEXT_ELEMENTS = new Set(['script', 'style']);
+function renderImpl(view, isRawContext) {
     function buildAttributes(attributes) {
         if (!attributes) {
             return "";
         }
         return Object.entries(attributes)
             .map(([key, value]) => {
-            return value ? `${key}="${value}"` : "";
+            if (value === undefined || value === null)
+                return "";
+            return `${key}="${escapeAttr(String(value))}"`;
         })
             .filter(s => s.length > 0)
             .join(" ");
@@ -450,46 +1527,46 @@ function renderImpl(view) {
         }
         const attributes = [];
         // Method and endpoint (required)
-        attributes.push(`hx-${htmx.method}="${htmx.endpoint}"`);
+        attributes.push(`hx-${htmx.method}="${escapeAttr(htmx.endpoint)}"`);
         // Optional attributes
         if (htmx.target)
-            attributes.push(`hx-target="${htmx.target}"`);
+            attributes.push(`hx-target="${escapeAttr(htmx.target)}"`);
         if (htmx.trigger)
-            attributes.push(`hx-trigger="${htmx.trigger}"`);
+            attributes.push(`hx-trigger="${escapeAttr(htmx.trigger)}"`);
         if (htmx.swap)
-            attributes.push(`hx-swap="${htmx.swap}"`);
+            attributes.push(`hx-swap="${escapeAttr(htmx.swap)}"`);
         if (htmx.replaceUrl !== undefined)
             attributes.push(`hx-replace-url="${htmx.replaceUrl}"`);
         if (htmx.pushUrl !== undefined)
             attributes.push(`hx-push-url="${htmx.pushUrl}"`);
         if (htmx.encoding)
-            attributes.push(`hx-encoding="${htmx.encoding}"`);
+            attributes.push(`hx-encoding="${escapeAttr(htmx.encoding)}"`);
         if (htmx.validate !== undefined)
             attributes.push(`hx-validate="${htmx.validate}"`);
         if (htmx.vals)
-            attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)}'`);
+            attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)}'`);
         if (htmx.headers)
             attributes.push(`hx-headers='${JSON.stringify(htmx.headers)}'`);
         if (htmx.confirm)
-            attributes.push(`hx-confirm="${htmx.confirm}"`);
+            attributes.push(`hx-confirm="${escapeAttr(htmx.confirm)}"`);
         if (htmx.ext)
-            attributes.push(`hx-ext="${htmx.ext}"`);
+            attributes.push(`hx-ext="${escapeAttr(htmx.ext)}"`);
         if (htmx.include)
-            attributes.push(`hx-include="${htmx.include}"`);
+            attributes.push(`hx-include="${escapeAttr(htmx.include)}"`);
         if (htmx.indicator)
-            attributes.push(`hx-indicator="${htmx.indicator}"`);
+            attributes.push(`hx-indicator="${escapeAttr(htmx.indicator)}"`);
         if (htmx.params)
-            attributes.push(`hx-params="${htmx.params}"`);
+            attributes.push(`hx-params="${escapeAttr(htmx.params)}"`);
         if (htmx.select)
-            attributes.push(`hx-select="${htmx.select}"`);
+            attributes.push(`hx-select="${escapeAttr(htmx.select)}"`);
         if (htmx.selectOob)
-            attributes.push(`hx-select-oob="${htmx.selectOob}"`);
+            attributes.push(`hx-select-oob="${escapeAttr(htmx.selectOob)}"`);
         if (htmx.sync)
-            attributes.push(`hx-sync="${htmx.sync}"`);
+            attributes.push(`hx-sync="${escapeAttr(htmx.sync)}"`);
         return attributes.join(' ');
     }
     if (typeof view === "string") {
-        return view;
+        return isRawContext ? view : escapeHtml(view);
     }
     if (view instanceof Tag) {
         const baseAttrs = {};
@@ -500,29 +1577,25 @@ function renderImpl(view) {
         baseAttrs.child = undefined;
         baseAttrs.toggles = undefined;
         baseAttrs.attributes = undefined;
-        const renderedChild = render(view.child);
+        const childIsRaw = RAW_TEXT_ELEMENTS.has(view.el);
+        const renderedChild = renderImpl(view.child, childIsRaw);
+        const parts = [];
         const renderedAttributes = buildAttributes(baseAttrs);
+        if (renderedAttributes)
+            parts.push(renderedAttributes);
+        if (view.style)
+            parts.push(`style="${escapeAttr(view.style)}"`);
         const renderedHtmx = buildHtmx(view.htmx);
-        const renderedToggles = view.toggles ? view.toggles.join(" ") : " ";
-        const renderedStyle = view.style ? 'style="' + view.style + '" ' : " ";
-        var renderedAttributesAndToggles = "";
-        renderedAttributesAndToggles += renderedAttributes;
-        renderedAttributesAndToggles += renderedStyle;
-        renderedAttributesAndToggles += renderedHtmx;
-        renderedAttributesAndToggles += renderedToggles;
-        var renderedEl = "<";
-        renderedEl += view.el;
-        renderedEl += " ";
-        renderedEl += renderedAttributesAndToggles;
-        renderedEl += ">";
-        renderedEl += renderedChild;
-        renderedEl += "</";
-        renderedEl += view.el;
-        renderedEl += ">";
-        return renderedEl;
+        if (renderedHtmx)
+            parts.push(renderedHtmx);
+        if (view.toggles && view.toggles.length > 0) {
+            parts.push(view.toggles.join(" "));
+        }
+        const attrsString = parts.length > 0 ? " " + parts.join(" ") : "";
+        return `<${view.el}${attrsString}>${renderedChild}</${view.el}>`;
     }
     if (Array.isArray(view)) {
-        return view.map(innerView => render(innerView)).join("\n");
+        return view.map(innerView => renderImpl(innerView, isRawContext)).join("\n");
     }
     return "";
 }
