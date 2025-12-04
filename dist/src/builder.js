@@ -1528,41 +1528,80 @@ function renderImpl(view, isRawContext) {
         const attributes = [];
         // Method and endpoint (required)
         attributes.push(`hx-${htmx.method}="${escapeAttr(htmx.endpoint)}"`);
-        // Optional attributes
+        // Targeting & Swapping
         if (htmx.target)
             attributes.push(`hx-target="${escapeAttr(htmx.target)}"`);
-        if (htmx.trigger)
-            attributes.push(`hx-trigger="${escapeAttr(htmx.trigger)}"`);
         if (htmx.swap)
             attributes.push(`hx-swap="${escapeAttr(htmx.swap)}"`);
-        if (htmx.replaceUrl !== undefined)
-            attributes.push(`hx-replace-url="${htmx.replaceUrl}"`);
-        if (htmx.pushUrl !== undefined)
-            attributes.push(`hx-push-url="${htmx.pushUrl}"`);
-        if (htmx.encoding)
-            attributes.push(`hx-encoding="${escapeAttr(htmx.encoding)}"`);
-        if (htmx.validate !== undefined)
-            attributes.push(`hx-validate="${htmx.validate}"`);
-        if (htmx.vals)
-            attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)}'`);
-        if (htmx.headers)
-            attributes.push(`hx-headers='${JSON.stringify(htmx.headers)}'`);
-        if (htmx.confirm)
-            attributes.push(`hx-confirm="${escapeAttr(htmx.confirm)}"`);
-        if (htmx.ext)
-            attributes.push(`hx-ext="${escapeAttr(htmx.ext)}"`);
-        if (htmx.include)
-            attributes.push(`hx-include="${escapeAttr(htmx.include)}"`);
-        if (htmx.indicator)
-            attributes.push(`hx-indicator="${escapeAttr(htmx.indicator)}"`);
-        if (htmx.params)
-            attributes.push(`hx-params="${escapeAttr(htmx.params)}"`);
+        if (htmx.swapOob !== undefined) {
+            attributes.push(`hx-swap-oob="${typeof htmx.swapOob === 'string' ? escapeAttr(htmx.swapOob) : htmx.swapOob}"`);
+        }
         if (htmx.select)
             attributes.push(`hx-select="${escapeAttr(htmx.select)}"`);
         if (htmx.selectOob)
             attributes.push(`hx-select-oob="${escapeAttr(htmx.selectOob)}"`);
+        // Triggering
+        if (htmx.trigger)
+            attributes.push(`hx-trigger="${escapeAttr(htmx.trigger)}"`);
+        // URL manipulation
+        if (htmx.pushUrl !== undefined) {
+            attributes.push(`hx-push-url="${typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl}"`);
+        }
+        if (htmx.replaceUrl !== undefined) {
+            attributes.push(`hx-replace-url="${typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl}"`);
+        }
+        // Data
+        if (htmx.vals) {
+            attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)}'`);
+        }
+        if (htmx.headers)
+            attributes.push(`hx-headers='${JSON.stringify(htmx.headers)}'`);
+        if (htmx.include)
+            attributes.push(`hx-include="${escapeAttr(htmx.include)}"`);
+        if (htmx.params)
+            attributes.push(`hx-params="${escapeAttr(htmx.params)}"`);
+        if (htmx.encoding)
+            attributes.push(`hx-encoding="${escapeAttr(htmx.encoding)}"`);
+        // Validation & Confirmation
+        if (htmx.validate !== undefined)
+            attributes.push(`hx-validate="${htmx.validate}"`);
+        if (htmx.confirm)
+            attributes.push(`hx-confirm="${escapeAttr(htmx.confirm)}"`);
+        if (htmx.prompt)
+            attributes.push(`hx-prompt="${escapeAttr(htmx.prompt)}"`);
+        // Loading states
+        if (htmx.indicator)
+            attributes.push(`hx-indicator="${escapeAttr(htmx.indicator)}"`);
+        if (htmx.disabledElt)
+            attributes.push(`hx-disabled-elt="${escapeAttr(htmx.disabledElt)}"`);
+        // Synchronization
         if (htmx.sync)
             attributes.push(`hx-sync="${escapeAttr(htmx.sync)}"`);
+        // Extensions
+        if (htmx.ext)
+            attributes.push(`hx-ext="${escapeAttr(htmx.ext)}"`);
+        // Inheritance control
+        if (htmx.disinherit)
+            attributes.push(`hx-disinherit="${escapeAttr(htmx.disinherit)}"`);
+        if (htmx.inherit)
+            attributes.push(`hx-inherit="${escapeAttr(htmx.inherit)}"`);
+        // History
+        if (htmx.history !== undefined)
+            attributes.push(`hx-history="${htmx.history}"`);
+        if (htmx.historyElt !== undefined)
+            attributes.push(`hx-history-elt="${htmx.historyElt}"`);
+        // Preservation
+        if (htmx.preserve !== undefined)
+            attributes.push(`hx-preserve="${htmx.preserve}"`);
+        // Request configuration
+        if (htmx.request)
+            attributes.push(`hx-request="${escapeAttr(htmx.request)}"`);
+        // Boosting
+        if (htmx.boost !== undefined)
+            attributes.push(`hx-boost="${htmx.boost}"`);
+        // Disable htmx processing
+        if (htmx.disable !== undefined)
+            attributes.push(`hx-disable="${htmx.disable}"`);
         return attributes.join(' ');
     }
     if (typeof view === "string") {

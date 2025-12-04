@@ -1,64 +1,139 @@
-export type HxHttpMethod = "get" | "post" | "put" | "delete";
-export type HxTrigger = HxTriggerValue | `${HxTriggerValue}, ${HxTriggerValue}`;
+export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type HxEncoding = "multipart/form-data";
-export type HxSwap = SwapType | `${SwapType} ${TransitionModifier | TimingModifier | TitleModifier | ScrollModifier | FocusScrollModifier}`;
+export type HxSwapStyle = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
+/**
+ * HTMX Swap type
+ *
+ * Supports:
+ * - Basic: "innerHTML", "outerHTML", "beforeend", etc.
+ * - With modifiers: "innerHTML scroll:top", "outerHTML transition:true"
+ * - Multiple modifiers: "innerHTML swap:500ms settle:100ms"
+ *
+ * Uses string type with union for common cases to enable autocomplete
+ * while allowing any valid swap string with modifiers.
+ */
+export type HxSwap = HxSwapStyle | (string & {});
+type StandardCSSSelector = string;
+type ExtendedCSSSelector = 'this' | 'body' | 'window' | 'document' | `closest ${string}` | `next` | `next ${string}` | `previous` | `previous ${string}` | `find ${string}`;
 export type HxTarget = StandardCSSSelector | ExtendedCSSSelector;
+type DOMEvent = 'click' | 'dblclick' | 'mouseenter' | 'mouseleave' | 'mouseover' | 'mouseout' | 'mousedown' | 'mouseup' | 'keydown' | 'keyup' | 'keypress' | 'change' | 'input' | 'submit' | 'focus' | 'blur' | 'focusin' | 'focusout' | 'scroll' | 'resize' | 'touchstart' | 'touchend' | 'touchmove';
+type HtmxEvent = 'load' | 'revealed' | 'intersect';
+type BasicTrigger = DOMEvent | HtmxEvent;
+/**
+ * HTMX Trigger type
+ *
+ * Supports:
+ * - Basic events: "click", "load", "revealed", etc.
+ * - With modifiers: "click once", "keyup changed delay:300ms"
+ * - Polling: "every 1s", "every 500ms"
+ * - Filters: "click[ctrlKey]", "keyup[key=='Enter']"
+ * - SSE/WS: "sse:message", "ws:message"
+ * - Multiple: "click, keyup"
+ *
+ * Uses string type with union for common cases to enable autocomplete
+ * while allowing any valid trigger string.
+ */
+export type HxTrigger = BasicTrigger | (string & {});
+/**
+ * HTMX Sync type
+ *
+ * Supports:
+ * - Basic: "drop", "abort", "replace", "queue"
+ * - Queue variants: "queue first", "queue last", "queue all"
+ * - With selector: "closest form:abort", "#other-form:drop"
+ */
+export type HxSync = 'drop' | 'abort' | 'replace' | 'queue' | 'queue first' | 'queue last' | 'queue all' | (string & {});
 export interface HTMX {
     endpoint: string;
     method: HxHttpMethod;
     target?: HxTarget;
-    trigger?: HxTrigger;
     swap?: HxSwap;
-    replaceUrl?: boolean;
-    encoding?: HxEncoding;
-    validate?: boolean;
-    pushUrl?: boolean;
-    vals?: any;
-    headers?: Record<string, string>;
-    confirm?: string;
-    ext?: string;
-    include?: string;
-    indicator?: string;
-    params?: string;
+    swapOob?: boolean | string;
     select?: string;
     selectOob?: string;
-    sync?: string;
+    trigger?: HxTrigger;
+    pushUrl?: boolean | string;
+    replaceUrl?: boolean | string;
+    vals?: Record<string, any> | string;
+    headers?: Record<string, string>;
+    include?: string;
+    params?: string;
+    encoding?: HxEncoding;
+    validate?: boolean;
+    confirm?: string;
+    prompt?: string;
+    indicator?: string;
+    disabledElt?: string;
+    sync?: HxSync;
+    ext?: string;
+    disinherit?: string;
+    inherit?: string;
+    history?: boolean;
+    historyElt?: boolean;
+    preserve?: boolean;
+    request?: string;
+    boost?: boolean;
+    disable?: boolean;
 }
 export declare function hx(endpoint: string, options?: {
     method?: HxHttpMethod;
     target?: HxTarget;
-    trigger?: HxTrigger;
     swap?: HxSwap;
-    encoding?: HxEncoding;
-    replaceUrl?: boolean;
-    validate?: boolean;
-    pushUrl?: boolean;
-    vals?: any;
-    headers?: Record<string, string>;
-    confirm?: string;
-    ext?: string;
-    include?: string;
-    indicator?: string;
-    params?: string;
+    swapOob?: boolean | string;
     select?: string;
     selectOob?: string;
-    sync?: string;
+    trigger?: HxTrigger;
+    pushUrl?: boolean | string;
+    replaceUrl?: boolean | string;
+    vals?: Record<string, any> | string;
+    headers?: Record<string, string>;
+    include?: string;
+    params?: string;
+    encoding?: HxEncoding;
+    validate?: boolean;
+    confirm?: string;
+    prompt?: string;
+    indicator?: string;
+    disabledElt?: string;
+    sync?: HxSync;
+    ext?: string;
+    disinherit?: string;
+    inherit?: string;
+    history?: boolean;
+    historyElt?: boolean;
+    preserve?: boolean;
+    request?: string;
+    boost?: boolean;
+    disable?: boolean;
 }): HTMX;
-export declare function id(id: string): HxTarget;
-export declare function clss(clss: string): HxTarget;
-type SwapType = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
-type TransitionModifier = `transition:${boolean}`;
-type TimingModifier = `swap:${string}` | `settle:${string}`;
-type TitleModifier = `ignoreTitle:${boolean}`;
-type ScrollModifier = `scroll:${'top' | 'bottom'}` | `show:${'top' | 'bottom' | `window:${'' | 'bottom'}` | `${string}:${'top' | 'bottom'}`}`;
-type FocusScrollModifier = `focus-scroll:${boolean}`;
-type StandardCSSSelector = string;
-type ExtendedCSSSelector = 'this' | `closest ${string}` | `next ${string}` | `previous ${string}` | `find ${string}`;
-type HxTriggerTimingDeclaration = `${number}s` | `${number}ms`;
-type HXTriggerStandardEvent = 'click' | 'keyup' | 'load' | 'change';
-type HxTriggerNonStandardEvent = 'load' | 'revealed' | 'intersect';
-type HxTriggerEventModifier = 'once' | 'changed' | `delay:${HxTriggerTimingDeclaration}` | `throttle:${HxTriggerTimingDeclaration}` | `from:${string}` | `target:${string}` | 'consume' | `queue:${'first' | 'last' | 'all' | 'none'}`;
-type HxTriggerPolling = `every ${HxTriggerTimingDeclaration}`;
-type HxTriggerEventWithModifiers = `${HXTriggerStandardEvent}[${string}]` | `${HXTriggerStandardEvent} ${HxTriggerEventModifier}`;
-type HxTriggerValue = HXTriggerStandardEvent | HxTriggerNonStandardEvent | HxTriggerEventWithModifiers | HxTriggerPolling | `${HxTriggerNonStandardEvent} ${HxTriggerEventModifier}`;
+/**
+ * Create an ID selector for hx-target
+ * @example hx("/api", { target: id("content") }) // hx-target="#content"
+ */
+export declare function id(elementId: string): HxTarget;
+/**
+ * Create a class selector for hx-target
+ * @example hx("/api", { target: clss("items") }) // hx-target=".items"
+ */
+export declare function clss(className: string): HxTarget;
+/**
+ * Create a 'closest' selector for hx-target
+ * @example hx("/api", { target: closest("tr") }) // hx-target="closest tr"
+ */
+export declare function closest(selector: string): HxTarget;
+/**
+ * Create a 'find' selector for hx-target
+ * @example hx("/api", { target: find(".content") }) // hx-target="find .content"
+ */
+export declare function find(selector: string): HxTarget;
+/**
+ * Create a 'next' selector for hx-target
+ * @example hx("/api", { target: next("div") }) // hx-target="next div"
+ */
+export declare function next(selector?: string): HxTarget;
+/**
+ * Create a 'previous' selector for hx-target
+ * @example hx("/api", { target: previous("div") }) // hx-target="previous div"
+ */
+export declare function previous(selector?: string): HxTarget;
 export {};

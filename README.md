@@ -1,18 +1,82 @@
 # Lambda.html
 
-A **type-safe**, **zero-dependency** HTML builder for TypeScript with built-in **XSS protection** and **HTMX integration**.
+A **type-safe**, **zero-dependency** HTML builder for TypeScript with built-in **XSS protection** and **first-class HTMX support**.
 
 [![npm version](https://img.shields.io/npm/v/lambda.html.svg)](https://www.npmjs.com/package/lambda.html)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-green.svg)](https://www.npmjs.com/package/lambda.html)
+
+```typescript
+const page = Div([
+  H1("Welcome").setClass("text-3xl font-bold"),
+  Button("Load More")
+    .setHtmx(hx("/api/items", {
+      trigger: "click",           // ← IDE suggests: "click" | "load" | "revealed" | ...
+      swap: "beforeend",          // ← IDE suggests: "innerHTML" | "outerHTML" | ...
+      target: closest("ul"),      // ← Type-safe selector helper
+    }))
+]).setClass("container mx-auto p-8");
+```
+
+---
 
 ## Why Lambda.html?
 
-- **🔒 Type-Safe by Design** — Compile-time errors for invalid HTML structures, attributes, and HTMX configurations
-- **🛡️ Built-in XSS Protection** — All text content and attributes are automatically escaped
-- **⚡ Zero Dependencies** — Pure TypeScript, no runtime overhead
-- **🔗 First-Class HTMX Support** — Type-safe HTMX attributes with autocomplete
-- **🎨 CSS Framework Agnostic** — Works seamlessly with Tailwind CSS, Bootstrap, or any CSS
-- **📦 Tiny Bundle** — Minimal footprint for server-side rendering
+### 🎯 **IDE-Powered Development**
+
+Lambda.html's type system provides **intelligent autocomplete** for everything—HTML attributes, HTMX configurations, CSS classes, and more. Your IDE becomes your documentation.
+
+```typescript
+// Your IDE suggests all valid trigger options as you type:
+Button("Save").setHtmx(hx("/api/save", {
+  trigger: "cl"  // IDE shows: click | change | load | revealed | intersect | ...
+  //        ↑ Autocomplete appears here!
+}))
+
+// Complex triggers with modifiers? Also fully typed:
+Input().setHtmx(hx("/api/search", {
+  trigger: "keyup changed delay:300ms"  // ← Valid typed trigger
+  //              ↑ IDE validates modifier syntax
+}))
+```
+
+### 🔒 **Compile-Time Safety**
+
+Catch errors before they reach production:
+
+```typescript
+// ✅ Compiles - valid swap strategy
+Div().setHtmx(hx("/api", { swap: "innerHTML" }))
+
+// ❌ Type Error - "inner" is not a valid swap strategy
+Div().setHtmx(hx("/api", { swap: "inner" }))
+//                              ~~~~~~~ 
+// Type '"inner"' is not assignable to type 'HxSwap'
+
+// ✅ Compiles - valid input type
+Input().setType("email").setPattern("[a-z]+@[a-z]+\\.[a-z]+")
+
+// ❌ Type Error - setPattern doesn't exist on Div
+Div().setPattern("[a-z]+")  
+//    ~~~~~~~~~~ Property 'setPattern' does not exist on type 'Tag'
+```
+
+### 🛡️ **Built-in XSS Protection**
+
+All content is automatically escaped—no configuration needed:
+
+```typescript
+const userInput = '<script>alert("xss")</script>';
+render(Div(userInput));
+// Output: <div>&lt;script&gt;alert("xss")&lt;/script&gt;</div>
+```
+
+### ⚡ **Zero Dependencies, Tiny Footprint**
+
+Pure TypeScript. No runtime overhead. Perfect for server-side rendering.
+
+---
 
 ## Installation
 
@@ -52,32 +116,371 @@ console.log(render(page));
 
 ## Table of Contents
 
-- [Core Concepts](#core-concepts)
-- [Type-Safe HTML Elements](#type-safe-html-elements)
+- [IDE Autocomplete in Action](#ide-autocomplete-in-action)
+- [Type-Safe HTMX](#type-safe-htmx)
 - [XSS Protection](#xss-protection)
-- [HTMX Integration](#htmx-integration)
+- [HTML Elements](#html-elements)
 - [Control Flow](#control-flow)
 - [Composable Components](#composable-components)
-- [Complete API Reference](#complete-api-reference)
+- [API Reference](#api-reference)
 
 ---
 
-## Core Concepts
+## IDE Autocomplete in Action
 
-### The `View` Type
+Lambda.html transforms your IDE into a powerful documentation tool. Here's what you get:
 
-Everything in Lambda.html is a `View`:
+### HTMX Triggers
 
 ```typescript
-type View = Tag | string | View[];
+// As you type, your IDE suggests all valid triggers:
+.setHtmx(hx("/api", { 
+  trigger: "|"  // Cursor here shows:
+}))
+// Suggestions:
+//   click      - Standard click event
+//   change     - Input change event  
+//   submit     - Form submission
+//   load       - Page load
+//   revealed   - Element scrolled into view
+//   intersect  - Intersection observer
+//   keyup      - Key release
+//   mouseenter - Mouse enters element
+//   every 1s   - Polling every second
+//   sse:event  - Server-sent event
+//   ...and 20+ more!
 ```
 
-This means you can:
-- Return a single element: `Div("Hello")`
-- Return plain text: `"Hello"`
-- Return arrays: `[H1("Title"), P("Content")]`
+### HTMX Swap Strategies
 
-### Method Chaining
+```typescript
+.setHtmx(hx("/api", { 
+  swap: "|"  // Cursor here shows:
+}))
+// Suggestions:
+//   innerHTML   - Replace inner content (default)
+//   outerHTML   - Replace entire element
+//   beforebegin - Insert before element
+//   afterbegin  - Insert at start of children
+//   beforeend   - Insert at end of children
+//   afterend    - Insert after element
+//   delete      - Remove element
+//   none        - No swap
+//
+// With modifiers:
+//   innerHTML scroll:top
+//   outerHTML transition:true
+//   beforeend show:window:top
+```
+
+### HTMX Sync Strategies
+
+```typescript
+.setHtmx(hx("/api", { 
+  sync: "|"  // Cursor here shows:
+}))
+// Suggestions:
+//   drop        - Drop new request if one in flight
+//   abort       - Abort current request
+//   replace     - Same as abort
+//   queue       - Queue requests
+//   queue first - Queue, process first only
+//   queue last  - Queue, process last only
+//   queue all   - Queue all requests
+```
+
+### Input Types & Attributes
+
+```typescript
+Input()
+  .setType("|")  // IDE suggests: text | email | password | number | tel | url | ...
+  .setAutocomplete("|")  // IDE suggests: on | off | email | username | current-password | ...
+```
+
+### Element-Specific Methods
+
+```typescript
+// Only Th and Td have colspan/rowspan:
+Th("Header").setColspan(2).setScope("col")
+//           ~~~~~~~~~~~ ✓ Available on ThTag
+//                       ~~~~~~~~~ ✓ Available on ThTag
+
+Div("Content").setColspan(2)
+//             ~~~~~~~~~~ ✗ Error: Property 'setColspan' does not exist
+
+// Only Form has action/method:
+Form().setAction("/submit").setMethod("post")
+//     ~~~~~~~~~ ✓ Available    ~~~~~~~~~ ✓ Available
+
+// Only Input has min/max/step:
+Input().setType("number").setMin(0).setMax(100).setStep(5)
+//                        ~~~~~~ ✓  ~~~~~~ ✓   ~~~~~~~ ✓
+```
+
+---
+
+## Type-Safe HTMX
+
+Lambda.html provides **complete HTMX 2.0 support** with full type safety.
+
+### Basic Requests
+
+```typescript
+import { hx } from 'lambda.html';
+
+// GET request (default)
+Button("Load").setHtmx(hx("/api/items"))
+
+// POST request
+Button("Submit").setHtmx(hx("/api/submit", { method: "post" }))
+
+// PUT request
+Button("Update").setHtmx(hx("/api/update/123", { method: "put" }))
+
+// PATCH request (new in HTMX 2.0)
+Button("Patch").setHtmx(hx("/api/resource", { method: "patch" }))
+
+// DELETE request
+Button("Delete").setHtmx(hx("/api/delete/123", { method: "delete" }))
+```
+
+### Type-Safe Target Selectors
+
+```typescript
+import { id, clss, closest, find, next, previous } from 'lambda.html';
+
+// ID selector → "#content"
+Button("Load").setHtmx(hx("/api", { target: id("content") }))
+
+// Class selector → ".items"
+Button("Update").setHtmx(hx("/api", { target: clss("items") }))
+
+// Closest ancestor → "closest tr"
+Button("Delete Row").setHtmx(hx("/api/delete", { 
+  method: "delete",
+  target: closest("tr") 
+}))
+
+// Find descendant → "find .content"
+Div().setHtmx(hx("/api", { target: find(".content") }))
+
+// Next sibling → "next div"
+Button("Next").setHtmx(hx("/api", { target: next("div") }))
+
+// Previous sibling → "previous li"  
+Button("Prev").setHtmx(hx("/api", { target: previous("li") }))
+```
+
+### Triggers with Modifiers
+
+```typescript
+// Debounced search input
+Input()
+  .setType("search")
+  .setName("q")
+  .setHtmx(hx("/api/search", {
+    trigger: "keyup changed delay:300ms",  // ← Fully typed!
+    target: "#search-results"
+  }))
+
+// Throttled scroll
+Div().setHtmx(hx("/api/more", {
+  trigger: "scroll throttle:500ms",
+  swap: "beforeend"
+}))
+
+// Load on reveal (lazy loading)
+Div().setHtmx(hx("/api/content", { trigger: "revealed" }))
+
+// Polling every 30 seconds
+Div().setHtmx(hx("/api/notifications", { trigger: "every 30s" }))
+
+// Multiple triggers
+Button("Action").setHtmx(hx("/api/action", {
+  trigger: "click, keyup[key=='Enter']"
+}))
+```
+
+### Swap Strategies with Modifiers
+
+```typescript
+// Basic swaps
+Div().setHtmx(hx("/api", { swap: "innerHTML" }))    // Replace inner content
+Div().setHtmx(hx("/api", { swap: "outerHTML" }))    // Replace entire element
+Div().setHtmx(hx("/api", { swap: "beforeend" }))    // Append to children
+
+// With scroll modifier
+Div().setHtmx(hx("/api", { swap: "innerHTML scroll:top" }))
+
+// With show modifier (scroll into view)
+Div().setHtmx(hx("/api", { swap: "innerHTML show:window:top" }))
+
+// With transition
+Div().setHtmx(hx("/api", { swap: "outerHTML transition:true" }))
+
+// With timing
+Div().setHtmx(hx("/api", { swap: "innerHTML swap:500ms settle:100ms" }))
+```
+
+### HTMX 2.0 Features
+
+```typescript
+// Prompt dialog before request
+Button("Rename").setHtmx(hx("/api/rename", {
+  method: "post",
+  prompt: "Enter new name:"
+}))
+
+// Disable elements during request
+Button("Submit").setHtmx(hx("/api/submit", {
+  method: "post",
+  disabledElt: "this"  // or "#submit-btn" or "closest form"
+}))
+
+// Out-of-band swaps
+Div().setHtmx(hx("/api/data", { swapOob: true }))
+Div().setHtmx(hx("/api/data", { swapOob: "true:#sidebar" }))
+
+// Control attribute inheritance
+Div().setHtmx(hx("/api", { disinherit: "*" }))           // Disable all
+Div().setHtmx(hx("/api", { inherit: "hx-target hx-swap" })) // Force specific
+
+// Prevent history snapshot
+Div().setHtmx(hx("/api/modal", { history: false }))
+
+// Preserve element during swap (e.g., video player)
+Video().setId("player").setHtmx(hx("/api/page", { preserve: true }))
+
+// Request configuration
+Div().setHtmx(hx("/api/slow", { request: "timeout:5000" }))
+
+// Boost links/forms to use AJAX
+A("Page").setHref("/page").setHtmx(hx("/page", { boost: true }))
+
+// Sync strategies
+Button("Save").setHtmx(hx("/api/save", { 
+  method: "post",
+  sync: "abort"        // Abort previous request
+}))
+Input().setHtmx(hx("/api/search", { 
+  sync: "queue last"   // Queue, process last
+}))
+```
+
+### Complete Form Example
+
+```typescript
+Form([
+  Fieldset([
+    Legend("User Registration"),
+    
+    Label("Email").setFor("email"),
+    Input()
+      .setType("email")
+      .setId("email")
+      .setName("email")
+      .setPlaceholder("you@example.com")
+      .setAutocomplete("email")
+      .setToggles(["required"]),
+    
+    Label("Password").setFor("password"),
+    Input()
+      .setType("password")
+      .setId("password")
+      .setName("password")
+      .setMinlength(8)
+      .setAutocomplete("new-password")
+      .setToggles(["required"]),
+    
+    Button("Register")
+      .setType("submit")
+      .setClass("bg-blue-500 text-white px-4 py-2 rounded")
+  ]).setClass("space-y-4")
+])
+  .setHtmx(hx("/api/register", {
+    method: "post",
+    swap: "outerHTML",
+    indicator: "#loading",
+    disabledElt: "find button"
+  }))
+```
+
+---
+
+## XSS Protection
+
+Lambda.html **automatically escapes** all text content and attributes. No configuration needed.
+
+### Automatic Text Escaping
+
+```typescript
+// User input is automatically escaped
+const userInput = '<script>alert("xss")</script>';
+const element = Div(userInput);
+
+console.log(render(element));
+// Output: <div>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</div>
+```
+
+### Automatic Attribute Escaping
+
+```typescript
+// Malicious class names are escaped
+const malicious = '"><script>alert(1)</script>';
+const element = Div().setClass(malicious);
+
+console.log(render(element));
+// Output: <div class="&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;"></div>
+```
+
+### Raw Content for Scripts & Styles
+
+Script and Style elements are intentionally **not escaped** (they contain code, not user content):
+
+```typescript
+// Script content preserved for valid JavaScript
+Script(`
+  if (count < 10 && count > 0) {
+    console.log('valid');
+  }
+`)
+// Output: <script>if (count < 10 && count > 0) { console.log('valid'); }</script>
+
+// Style content preserved for valid CSS
+Style(`
+  .card > .title { content: "a & b"; }
+`)
+// Output: <style>.card > .title { content: "a & b"; }</style>
+```
+
+### Safe Dynamic Content
+
+```typescript
+// Building HTML from user data is always safe
+function UserCard(user: { name: string; bio: string }): View {
+  return Div([
+    H2(user.name),      // ← Escaped automatically
+    P(user.bio),        // ← Escaped automatically
+  ]).setClass("user-card");
+}
+
+// Even malicious data is safely rendered
+const user = {
+  name: '<script>steal(cookies)</script>',
+  bio: '"><img src=x onerror=alert(1)>'
+};
+
+render(UserCard(user));
+// All content properly escaped - XSS prevented!
+```
+
+---
+
+## HTML Elements
+
+Lambda.html provides **60+ HTML elements** with typed attribute methods.
+
+### Element Chaining
 
 All elements support fluent method chaining:
 
@@ -87,12 +490,11 @@ const card = Div("Content")
   .setClass("card shadow-lg")
   .addClass("hover:shadow-xl")
   .setStyle("max-width: 400px")
-  .addAttribute("data-testid", "card-component");
+  .addAttribute("data-testid", "card-component")
+  .setHtmx(hx("/api/card", { trigger: "click" }));
 ```
 
 ### Nested Elements
-
-Pass children as the first argument:
 
 ```typescript
 // Single child
@@ -113,13 +515,7 @@ Div([
 ])
 ```
 
----
-
-## Type-Safe HTML Elements
-
-Lambda.html provides **typed element functions** with attribute-specific methods.
-
-### Input Elements
+### Form Elements
 
 ```typescript
 // Text input with validation
@@ -128,6 +524,7 @@ Input()
   .setName("email")
   .setPlaceholder("Enter your email")
   .setPattern("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$")
+  .setAutocomplete("email")
   .setToggles(["required"])
 
 // Number input with constraints
@@ -138,44 +535,14 @@ Input()
   .setMax(100)
   .setStep(5)
 
-// File input
-Input()
-  .setType("file")
-  .setName("documents")
-  .setAccept(".pdf,.doc,.docx")
-  .setMultiple()
-```
+// Textarea
+Textarea()
+  .setName("message")
+  .setPlaceholder("Enter your message")
+  .setRows(5)
+  .setMaxlength(500)
 
-### Form Elements
-
-```typescript
-// Complete form
-Form([
-  Label("Username").setFor("username"),
-  Input()
-    .setType("text")
-    .setId("username")
-    .setName("username")
-    .setAutocomplete("username")
-    .setToggles(["required"]),
-  
-  Label("Password").setFor("password"),
-  Input()
-    .setType("password")
-    .setId("password")
-    .setName("password")
-    .setMinlength(8),
-  
-  Button("Sign In").setType("submit")
-])
-  .setAction("/login")
-  .setMethod("post")
-  .setAutocomplete("on")
-```
-
-### Select with Options
-
-```typescript
+// Select with optgroups
 Select([
   Option("Select a country...").setValue(""),
   Optgroup([
@@ -186,12 +553,10 @@ Select([
     Option("United Kingdom").setValue("uk"),
     Option("Germany").setValue("de"),
   ]).setLabel("Europe"),
-])
-  .setName("country")
-  .setToggles(["required"])
+]).setName("country").setToggles(["required"])
 ```
 
-### Table with Typed Cells
+### Table Elements
 
 ```typescript
 Table([
@@ -211,13 +576,13 @@ Table([
       Td("$1,500"),
       Td("$2,500").setColspan(2),
     ]),
-    Tr([
-      Th("Widget B").setScope("row"),
-      Td("$2,000").setRowspan(2),
-      Td("$2,200"),
-      Td("$4,200").setColspan(2),
-    ]),
   ]),
+  Tfoot(
+    Tr([
+      Th("Total").setScope("row"),
+      Td("$3,000").setColspan(3),
+    ])
+  ),
 ]).setClass("w-full border-collapse")
 ```
 
@@ -228,17 +593,17 @@ Table([
 Img()
   .setSrc("hero.jpg")
   .setAlt("Hero image")
-  .setSrcset("hero-400.jpg 400w, hero-800.jpg 800w, hero-1200.jpg 1200w")
-  .setSizes("(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px")
+  .setSrcset("hero-400.jpg 400w, hero-800.jpg 800w")
+  .setSizes("(max-width: 600px) 400px, 800px")
   .setLoading("lazy")
   .setDecoding("async")
 
-// Video with multiple sources and captions
+// Video with multiple sources
 Video([
   Source().setSrc("video.webm").setType("video/webm"),
   Source().setSrc("video.mp4").setType("video/mp4"),
   Track()
-    .setSrc("captions-en.vtt")
+    .setSrc("captions.vtt")
     .setKind("subtitles")
     .setSrclang("en")
     .setLabel("English")
@@ -248,291 +613,46 @@ Video([
   .setControls()
   .setPoster("poster.jpg")
   .setPreload("metadata")
-```
 
----
-
-## XSS Protection
-
-Lambda.html **automatically escapes** all text content and attribute values to prevent Cross-Site Scripting (XSS) attacks.
-
-### Automatic Escaping
-
-```typescript
-// User input is automatically escaped
-const userInput = '<script>alert("xss")</script>';
-const safe = Div(userInput);
-
-console.log(render(safe));
-// Output: <div>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;</div>
-```
-
-### Attribute Escaping
-
-```typescript
-// Attributes are also escaped
-const malicious = '"><script>alert(1)</script>';
-const element = Div().setClass(malicious);
-
-console.log(render(element));
-// Output: <div class="&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;"></div>
-```
-
-### Raw Content for Scripts and Styles
-
-Script and Style elements are **not escaped** (as they contain code, not user content):
-
-```typescript
-// Script content is NOT escaped (intentional)
-Script(`
-  if (count < 10 && count > 0) {
-    console.log('<valid>');
-  }
-`)
-// Output: <script>if (count < 10 && count > 0) { console.log('<valid>'); }</script>
-
-// Style content is NOT escaped (intentional)
-Style(`
-  .card > .title { content: "a & b"; }
-`)
-// Output: <style>.card > .title { content: "a & b"; }</style>
-```
-
-### Safe Dynamic Content
-
-```typescript
-// Building HTML from user data is always safe
-function UserCard(user: { name: string; bio: string }): View {
-  return Div([
-    H2(user.name),      // Escaped automatically
-    P(user.bio),        // Escaped automatically
-  ]).setClass("user-card");
-}
-
-// Even malicious data is safely rendered
-const user = {
-  name: '<script>steal(cookies)</script>',
-  bio: '"><img src=x onerror=alert(1)>'
-};
-
-render(UserCard(user));
-// All content is properly escaped, XSS prevented
-```
-
----
-
-## HTMX Integration
-
-Lambda.html provides **complete type-safe HTMX support** with the `hx()` helper function.
-
-### Basic HTMX Requests
-
-```typescript
-import { hx } from 'lambda.html';
-
-// GET request (default)
-Button("Load More")
-  .setHtmx(hx("/api/items"))
-
-// POST request
-Button("Submit")
-  .setHtmx(hx("/api/submit", { method: "post" }))
-
-// PUT request
-Button("Update")
-  .setHtmx(hx("/api/update/123", { method: "put" }))
-
-// DELETE request
-Button("Delete")
-  .setHtmx(hx("/api/delete/123", { method: "delete" }))
-```
-
-### Target and Swap
-
-```typescript
-// Target specific element
-Button("Load Content")
-  .setHtmx(hx("/api/content", {
-    target: "#content-area",
-    swap: "innerHTML"
-  }))
-
-// Swap strategies
-Div()
-  .setHtmx(hx("/api/item", { swap: "outerHTML" }))      // Replace entire element
-  .setHtmx(hx("/api/item", { swap: "beforeend" }))     // Append to children
-  .setHtmx(hx("/api/item", { swap: "afterbegin" }))    // Prepend to children
-  .setHtmx(hx("/api/item", { swap: "beforebegin" }))   // Insert before element
-  .setHtmx(hx("/api/item", { swap: "afterend" }))      // Insert after element
-```
-
-### Triggers
-
-```typescript
-// Click trigger (default for buttons)
-Button("Click Me")
-  .setHtmx(hx("/api/click", { trigger: "click" }))
-
-// Load trigger (fires on page load)
-Div()
-  .setId("stats")
-  .setHtmx(hx("/api/stats", { trigger: "load" }))
-
-// Revealed trigger (lazy loading)
-Div()
-  .setClass("lazy-section")
-  .setHtmx(hx("/api/content", { trigger: "revealed" }))
-
-// Debounced input
-Input()
-  .setType("search")
-  .setName("q")
-  .setHtmx(hx("/api/search", {
-    trigger: "keyup changed delay:300ms",
-    target: "#search-results"
-  }))
-
-// Polling
-Div()
-  .setId("notifications")
-  .setHtmx(hx("/api/notifications", {
-    trigger: "every 30s"
-  }))
-```
-
-### Form Handling
-
-```typescript
-// Form with HTMX
-Form([
-  Input().setType("text").setName("title"),
-  Textarea().setName("content").setRows(5),
-  Button("Save").setType("submit")
+// Picture element for art direction
+Picture([
+  Source()
+    .setSrcset("hero-mobile.jpg")
+    .setMedia("(max-width: 600px)"),
+  Source()
+    .setSrcset("hero-desktop.jpg")
+    .setMedia("(min-width: 601px)"),
+  Img().setSrc("hero-fallback.jpg").setAlt("Hero"),
 ])
-  .setHtmx(hx("/api/posts", {
-    method: "post",
-    trigger: "submit",
-    swap: "outerHTML",
-    indicator: "#loading"
-  }))
-
-// File upload with encoding
-Form([
-  Input().setType("file").setName("avatar").setAccept("image/*"),
-  Button("Upload").setType("submit")
-])
-  .setHtmx(hx("/api/upload", {
-    method: "post",
-    encoding: "multipart/form-data"
-  }))
 ```
 
-### Advanced HTMX Features
+### Interactive Elements
 
 ```typescript
-// Confirmation dialog
-Button("Delete Account")
-  .setClass("bg-red-500 text-white px-4 py-2")
-  .setHtmx(hx("/api/account", {
-    method: "delete",
-    confirm: "Are you sure you want to delete your account? This cannot be undone."
-  }))
+// Details/Summary (accordion)
+Details([
+  Summary("Click to expand"),
+  P("Hidden content revealed when opened."),
+]).setOpen()
 
-// Loading indicator
-Button("Save")
-  .setHtmx(hx("/api/save", {
-    method: "post",
-    indicator: "#save-spinner"
-  }))
+// Dialog (modal)
+Dialog([
+  H2("Confirm Action"),
+  P("Are you sure you want to proceed?"),
+  Button("Cancel").addAttribute("onclick", "this.closest('dialog').close()"),
+  Button("Confirm").setClass("bg-blue-500 text-white"),
+]).setId("confirm-modal")
 
-// Custom headers
-Div()
-  .setHtmx(hx("/api/data", {
-    headers: { "X-Custom-Header": "value" }
-  }))
-
-// Include additional elements
-Button("Submit")
-  .setHtmx(hx("/api/submit", {
-    method: "post",
-    include: "#extra-fields"
-  }))
-
-// Send additional values
-Button("Action")
-  .setHtmx(hx("/api/action", {
-    vals: { timestamp: Date.now(), source: "button" }
-  }))
-
-// URL manipulation
-A("View Details")
-  .setHref("/details/123")
-  .setHtmx(hx("/api/details/123", {
-    pushUrl: true,
-    target: "#main"
-  }))
-
-// Sync requests
-Button("Save")
-  .setHtmx(hx("/api/save", {
-    method: "post",
-    sync: "closest form:abort"  // Abort previous request
-  }))
-
-// Select specific content from response
-Div()
-  .setHtmx(hx("/api/page", {
-    select: "#main-content",
-    selectOob: "#sidebar"
-  }))
-```
-
-### Type-Safe Target Helpers
-
-```typescript
-import { id, clss } from 'lambda.html';
-
-// Type-safe target selectors
-Button("Load")
-  .setHtmx(hx("/api/data", {
-    target: id("content"),    // Returns "#content"
-  }))
-
-Button("Update All")
-  .setHtmx(hx("/api/update", {
-    target: clss("item"),     // Returns ".item"
-  }))
-```
-
-### Complete HTMX Example: Infinite Scroll
-
-```typescript
-function InfiniteScrollList(items: Item[], page: number): View {
-  return Div([
-    Ul(
-      ForEach(items, item => 
-        Li(item.title).setClass("p-4 border-b")
-      )
-    ).setId("item-list"),
-    
-    // Load more trigger
-    Div()
-      .setId("load-more")
-      .setClass("h-20")
-      .setHtmx(hx(`/api/items?page=${page + 1}`, {
-        trigger: "revealed",
-        swap: "outerHTML",
-        select: "#load-more-content"
-      }))
-  ]);
-}
+// Progress and Meter
+Progress().setValue(70).setMax(100)
+Meter().setValue(0.7).setMin(0).setMax(1).setLow(0.3).setHigh(0.8).setOptimum(0.5)
 ```
 
 ---
 
 ## Control Flow
 
-Lambda.html provides functional control flow constructs for conditional and iterative rendering.
+Lambda.html provides functional control flow for conditional and iterative rendering.
 
 ### IfThen / IfThenElse
 
@@ -555,14 +675,8 @@ function UserBadge(user: { isAdmin: boolean; isPremium: boolean }): View {
 function LoginStatus(user: User | null): View {
   return IfThenElse(
     user !== null,
-    () => Div([
-      Span(`Welcome, ${user!.name}`),
-      A("Logout").setHref("/logout")
-    ]),
-    () => Div([
-      A("Login").setHref("/login"),
-      A("Sign Up").setHref("/signup")
-    ])
+    () => Span(`Welcome, ${user!.name}`),
+    () => A("Login").setHref("/login")
   );
 }
 ```
@@ -576,19 +690,10 @@ type Status = 'pending' | 'approved' | 'rejected';
 
 function StatusBadge(status: Status): View {
   return SwitchCase([
-    {
-      condition: status === 'pending',
-      component: () => Span("Pending").setClass("badge-yellow")
-    },
-    {
-      condition: status === 'approved',
-      component: () => Span("Approved").setClass("badge-green")
-    },
-    {
-      condition: status === 'rejected',
-      component: () => Span("Rejected").setClass("badge-red")
-    },
-  ], () => Span("Unknown").setClass("badge-gray"));
+    { condition: status === 'pending',  component: () => Span("⏳ Pending").setClass("text-yellow-600") },
+    { condition: status === 'approved', component: () => Span("✅ Approved").setClass("text-green-600") },
+    { condition: status === 'rejected', component: () => Span("❌ Rejected").setClass("text-red-600") },
+  ], () => Span("Unknown").setClass("text-gray-600"));
 }
 ```
 
@@ -597,8 +702,9 @@ function StatusBadge(status: Status): View {
 ```typescript
 import { ForEach, ForEach1, ForEach2, ForEach3, Repeat } from 'lambda.html';
 
-// Basic iteration
 const items = ["Apple", "Banana", "Cherry"];
+
+// Basic iteration
 Ul(ForEach(items, item => Li(item)))
 
 // With index
@@ -617,9 +723,7 @@ Div(ForEach3(1, 6, i =>
 ))
 
 // Repeat n times
-Div(Repeat(3, () => 
-  Span("⭐")
-))
+Div(Repeat(5, () => Span("⭐")))
 ```
 
 ---
@@ -628,7 +732,7 @@ Div(Repeat(3, () =>
 
 Build reusable, type-safe components as pure functions.
 
-### Basic Component Pattern
+### Button Component
 
 ```typescript
 interface ButtonProps {
@@ -636,7 +740,7 @@ interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
-  onClick?: string;
+  htmx?: HTMX;
 }
 
 function StyledButton(props: ButtonProps): View {
@@ -657,23 +761,18 @@ function StyledButton(props: ButtonProps): View {
       ${variants[props.variant ?? 'primary']}
       ${sizes[props.size ?? 'md']}
       ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-    `.trim());
+    `.replace(/\s+/g, ' ').trim());
   
-  if (props.disabled) {
-    button.setDisabled();
-  }
-  
-  if (props.onClick) {
-    button.setHtmx(hx(props.onClick, { method: 'post' }));
-  }
+  if (props.disabled) button.setDisabled();
+  if (props.htmx) button.setHtmx(props.htmx);
   
   return button;
 }
 
 // Usage
-StyledButton({ text: "Save", variant: "primary", onClick: "/api/save" })
+StyledButton({ text: "Save", variant: "primary", htmx: hx("/api/save", { method: "post" }) })
 StyledButton({ text: "Cancel", variant: "secondary" })
-StyledButton({ text: "Delete", variant: "danger", onClick: "/api/delete" })
+StyledButton({ text: "Delete", variant: "danger", disabled: true })
 ```
 
 ### Card Component
@@ -693,6 +792,7 @@ function Card(props: CardProps): View {
         .setSrc(props.image!)
         .setAlt(props.title)
         .setClass("w-full h-48 object-cover")
+        .setLoading("lazy")
     ),
     Div([
       H3(props.title).setClass("text-xl font-semibold mb-2"),
@@ -703,14 +803,6 @@ function Card(props: CardProps): View {
     ),
   ]).setClass("bg-white rounded-lg shadow-md overflow-hidden");
 }
-
-// Usage
-Card({
-  title: "Getting Started",
-  content: P("Learn how to build type-safe HTML with Lambda.html"),
-  image: "/images/tutorial.jpg",
-  footer: A("Read More →").setHref("/docs/getting-started")
-})
 ```
 
 ### Data Table Component
@@ -727,32 +819,20 @@ function DataTable<T extends Record<string, any>>(
   data: T[],
   options?: { striped?: boolean; hoverable?: boolean }
 ): View {
-  const rowClass = [
-    options?.hoverable ? 'hover:bg-gray-50' : '',
-  ].filter(Boolean).join(' ');
-
   return Table([
     Thead(
-      Tr(
-        ForEach(columns, col =>
-          Th(col.header)
-            .setScope("col")
-            .setClass("px-4 py-3 text-left font-semibold")
-        )
-      ).setClass("bg-gray-100")
+      Tr(ForEach(columns, col =>
+        Th(col.header).setScope("col").setClass("px-4 py-3 text-left font-semibold")
+      )).setClass("bg-gray-100")
     ),
     Tbody(
       ForEach1(data, (row, index) =>
-        Tr(
-          ForEach(columns, col => {
-            const value = row[col.key];
-            const content = col.render 
-              ? col.render(value, row) 
-              : String(value);
-            return Td(content).setClass("px-4 py-3");
-          })
-        )
-          .setClass(rowClass)
+        Tr(ForEach(columns, col => {
+          const value = row[col.key];
+          const content = col.render ? col.render(value, row) : String(value);
+          return Td(content).setClass("px-4 py-3");
+        }))
+          .addClass(options?.hoverable ? 'hover:bg-gray-50' : '')
           .addClass(options?.striped && index % 2 ? 'bg-gray-50' : '')
       )
     ),
@@ -760,17 +840,7 @@ function DataTable<T extends Record<string, any>>(
 }
 
 // Usage
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-}
-
-const users: User[] = [
-  { id: 1, name: "Alice", email: "alice@example.com", role: "Admin" },
-  { id: 2, name: "Bob", email: "bob@example.com", role: "User" },
-];
+interface User { id: number; name: string; email: string; role: string; }
 
 DataTable<User>(
   [
@@ -788,159 +858,160 @@ DataTable<User>(
 )
 ```
 
-### Modal Component
+### Infinite Scroll Component
 
 ```typescript
-interface ModalProps {
-  id: string;
-  title: string;
-  content: View;
-  actions?: View;
+function InfiniteScrollList(items: Item[], page: number): View {
+  return Div([
+    Ul(
+      ForEach(items, item => 
+        Li([
+          H3(item.title).setClass("font-medium"),
+          P(item.description).setClass("text-gray-600 text-sm"),
+        ]).setClass("p-4 border-b")
+      )
+    ).setId("item-list"),
+    
+    // Load more trigger - fires when scrolled into view
+    Div("Loading...")
+      .setId("load-more")
+      .setClass("p-4 text-center text-gray-500")
+      .setHtmx(hx(`/api/items?page=${page + 1}`, {
+        trigger: "revealed",
+        swap: "outerHTML",
+      }))
+  ]);
 }
-
-function Modal(props: ModalProps): View {
-  return Dialog([
-    Div([
-      // Header
-      Div([
-        H2(props.title).setClass("text-xl font-semibold"),
-        Button("✕")
-          .setClass("text-gray-400 hover:text-gray-600")
-          .addAttribute("onclick", `document.getElementById('${props.id}').close()`)
-      ]).setClass("flex justify-between items-center pb-4 border-b"),
-      
-      // Content
-      Div(props.content).setClass("py-4"),
-      
-      // Actions
-      IfThen(!!props.actions, () =>
-        Div(props.actions!).setClass("pt-4 border-t flex justify-end gap-2")
-      ),
-    ]).setClass("p-6")
-  ])
-    .setId(props.id)
-    .setClass("rounded-lg shadow-xl max-w-md w-full backdrop:bg-black/50");
-}
-
-// Usage
-Modal({
-  id: "confirm-modal",
-  title: "Confirm Action",
-  content: P("Are you sure you want to proceed?"),
-  actions: [
-    Button("Cancel")
-      .setClass("px-4 py-2 border rounded")
-      .addAttribute("onclick", "document.getElementById('confirm-modal').close()"),
-    Button("Confirm")
-      .setClass("px-4 py-2 bg-blue-500 text-white rounded")
-      .setHtmx(hx("/api/confirm", { method: "post" }))
-  ]
-})
 ```
 
 ---
 
-## Complete API Reference
+## API Reference
 
 ### Element Functions
 
-#### Structural Elements
-`Div`, `Main`, `Header`, `Footer`, `Section`, `Article`, `Nav`, `Aside`, `Figure`, `Figcaption`, `Address`, `Hgroup`, `Search`
-
-#### Text Content
-`P`, `H1`-`H6`, `Span`, `Blockquote`, `Pre`, `Code`, `Hr`, `Br`, `Wbr`
-
-#### Inline Semantics
-`Strong`, `Em`, `B`, `I`, `U`, `S`, `Mark`, `Small`, `Sub`, `Sup`, `Abbr`, `Cite`, `Q`, `Dfn`, `Kbd`, `Samp`, `Var`, `Bdi`, `Bdo`, `Ruby`, `Rt`, `Rp`
-
-#### Lists
-`Ul`, `Ol`, `Li`, `Dl`, `Dt`, `Dd`, `Menu`
-
-#### Tables
-`Table`, `Thead`, `Tbody`, `Tfoot`, `Tr`, `Th`, `Td`, `Caption`, `Colgroup`, `Col`
-
-#### Forms
-`Form`, `Input`, `Textarea`, `Button`, `Label`, `Select`, `Option`, `Optgroup`, `Datalist`, `Fieldset`, `Legend`, `Output`
-
-#### Interactive
-`Details`, `Summary`, `Dialog`
-
-#### Media
-`Img`, `Picture`, `Source`, `Video`, `Audio`, `Track`, `Canvas`, `Svg`, `Path`, `Circle`, `Rect`, `Line`, `Polygon`, `Polyline`, `Ellipse`, `G`, `Defs`, `Use`, `Text`, `Tspan`
-
-#### Embedded
-`Iframe`, `ObjectEl`, `Embed`
-
-#### Links
-`A`, `MapEl`, `Area`
-
-#### Document
-`HTML`, `Head`, `Body`, `Title`, `Meta`, `Link`, `Style`, `Script`, `Base`, `Noscript`, `Template`
-
-#### Data/Time
-`Time`, `Data`, `Progress`, `Meter`, `Slot`
-
-#### Utilities
-`El` (custom elements), `Empty`, `Overlay`
+| Category        | Elements                                                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Structure**   | `Div`, `Main`, `Header`, `Footer`, `Section`, `Article`, `Nav`, `Aside`, `Figure`, `Figcaption`, `Address`, `Hgroup`, `Search`                                |
+| **Headings**    | `H1`, `H2`, `H3`, `H4`, `H5`, `H6`                                                                                                                            |
+| **Text**        | `P`, `Span`, `Strong`, `Em`, `B`, `I`, `U`, `S`, `Mark`, `Small`, `Sub`, `Sup`, `Blockquote`, `Pre`, `Code`, `Abbr`, `Cite`, `Q`, `Dfn`, `Kbd`, `Samp`, `Var` |
+| **Breaks**      | `Br`, `Hr`, `Wbr`                                                                                                                                             |
+| **Lists**       | `Ul`, `Ol`, `Li`, `Dl`, `Dt`, `Dd`, `Menu`                                                                                                                    |
+| **Tables**      | `Table`, `Thead`, `Tbody`, `Tfoot`, `Tr`, `Th`, `Td`, `Caption`, `Colgroup`, `Col`                                                                            |
+| **Forms**       | `Form`, `Input`, `Textarea`, `Button`, `Label`, `Select`, `Option`, `Optgroup`, `Datalist`, `Fieldset`, `Legend`, `Output`                                    |
+| **Interactive** | `Details`, `Summary`, `Dialog`                                                                                                                                |
+| **Media**       | `Img`, `Picture`, `Source`, `Video`, `Audio`, `Track`, `Canvas`                                                                                               |
+| **SVG**         | `Svg`, `Path`, `Circle`, `Rect`, `Line`, `Polygon`, `Polyline`, `Ellipse`, `G`, `Defs`, `Use`, `Text`, `Tspan`                                                |
+| **Embedded**    | `Iframe`, `ObjectEl`, `Embed`, `MapEl`, `Area`                                                                                                                |
+| **Links**       | `A`                                                                                                                                                           |
+| **Document**    | `HTML`, `Head`, `Body`, `Title`, `Meta`, `Link`, `Style`, `Script`, `Base`, `Noscript`, `Template`                                                            |
+| **Data**        | `Time`, `Data`, `Progress`, `Meter`, `Slot`                                                                                                                   |
+| **Utility**     | `El` (custom), `Empty`, `Overlay`                                                                                                                             |
 
 ### Common Methods (All Tags)
 
-| Method                      | Description            |
-| --------------------------- | ---------------------- |
-| `.setId(id)`                | Set element ID         |
-| `.setClass(classes)`        | Set CSS classes        |
-| `.addClass(class)`          | Append CSS class       |
-| `.setStyle(css)`            | Set inline styles      |
-| `.addAttribute(key, value)` | Add custom attribute   |
-| `.setHtmx(hx(...))`         | Add HTMX behavior      |
-| `.setToggles([...])`        | Add boolean attributes |
+| Method                      | Description                                           |
+| --------------------------- | ----------------------------------------------------- |
+| `.setId(id)`                | Set element ID                                        |
+| `.setClass(classes)`        | Set CSS classes                                       |
+| `.addClass(class)`          | Append CSS class                                      |
+| `.setStyle(css)`            | Set inline styles                                     |
+| `.addAttribute(key, value)` | Add custom attribute                                  |
+| `.setHtmx(hx(...))`         | Add HTMX behavior                                     |
+| `.setToggles([...])`        | Add boolean attributes (`required`, `disabled`, etc.) |
 
-### Control Flow Functions
+### Control Flow
 
-| Function                       | Description                 |
-| ------------------------------ | --------------------------- |
-| `IfThen(cond, then)`           | Render if condition is true |
-| `IfThenElse(cond, then, else)` | Conditional rendering       |
-| `SwitchCase(cases, default)`   | Multi-branch conditional    |
-| `ForEach(items, render)`       | Iterate over items          |
-| `ForEach1(items, render)`      | Iterate with index          |
-| `ForEach2(n, render)`          | Iterate 0 to n-1            |
-| `ForEach3(start, end, render)` | Iterate start to end-1      |
-| `Repeat(n, render)`            | Repeat n times              |
+| Function                                | Description                 |
+| --------------------------------------- | --------------------------- |
+| `IfThen(condition, thenFn)`             | Render if condition is true |
+| `IfThenElse(condition, thenFn, elseFn)` | Conditional rendering       |
+| `SwitchCase(cases, defaultFn)`          | Multi-branch conditional    |
+| `ForEach(items, renderFn)`              | Iterate over items          |
+| `ForEach1(items, renderFn)`             | Iterate with index          |
+| `ForEach2(n, renderFn)`                 | Range 0 to n-1              |
+| `ForEach3(start, end, renderFn)`        | Range start to end-1        |
+| `Repeat(n, renderFn)`                   | Repeat n times              |
 
 ### HTMX Helper
 
 ```typescript
 hx(endpoint: string, options?: {
-  method?: 'get' | 'post' | 'put' | 'delete';
-  target?: string;
-  trigger?: string;
-  swap?: 'innerHTML' | 'outerHTML' | 'beforeend' | 'afterbegin' | ...;
-  pushUrl?: boolean;
-  replaceUrl?: boolean;
-  confirm?: string;
-  indicator?: string;
-  include?: string;
-  vals?: object;
-  headers?: object;
+  // HTTP Method
+  method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
+  
+  // Targeting
+  target?: string;              // CSS selector or extended selector
+  swap?: HxSwap;                // Swap strategy
+  swapOob?: boolean | string;   // Out-of-band swap
+  select?: string;              // Select from response
+  selectOob?: string;           // Select OOB content
+  
+  // Triggering  
+  trigger?: HxTrigger;          // Event trigger
+  
+  // URL
+  pushUrl?: boolean | string;   // Push to history
+  replaceUrl?: boolean | string; // Replace in history
+  
+  // Data
+  vals?: object | string;       // Additional values
+  headers?: object;             // Custom headers
+  include?: string;             // Include elements
+  params?: string;              // Filter params
   encoding?: 'multipart/form-data';
+  
+  // Validation
   validate?: boolean;
-  ext?: string;
-  params?: string;
-  select?: string;
-  selectOob?: string;
-  sync?: string;
+  confirm?: string;             // Confirmation dialog
+  prompt?: string;              // Prompt dialog
+  
+  // Loading
+  indicator?: string;           // Loading indicator
+  disabledElt?: string;         // Disable during request
+  
+  // Sync
+  sync?: HxSync;                // Request synchronization
+  
+  // Other
+  ext?: string;                 // Extensions
+  disinherit?: string;          // Disable inheritance
+  inherit?: string;             // Force inheritance
+  history?: boolean;            // History snapshot
+  historyElt?: boolean;
+  preserve?: boolean;           // Preserve element
+  request?: string;             // Request config
+  boost?: boolean;              // Boost links/forms
+  disable?: boolean;            // Disable htmx
 })
+```
+
+### Selector Helpers
+
+```typescript
+import { id, clss, closest, find, next, previous } from 'lambda.html';
+
+id("content")        // → "#content"
+clss("items")        // → ".items"
+closest("tr")        // → "closest tr"
+find(".content")     // → "find .content"
+next("div")          // → "next div"
+next()               // → "next"
+previous("li")       // → "previous li"
+previous()           // → "previous"
 ```
 
 ---
 
 ## License
 
-ISC © Toni K. Turk (director of TSS Digital Studios d.o.o.)
+ISC © Toni K. Turk
 
 ---
 
-## Contributing
+## Links
 
-Contributions are welcome! Please visit the [GitLab repository](https://gitlab.com/seckmaster/lambda.html) to report issues or submit merge requests.
+- [npm Package](https://www.npmjs.com/package/lambda.html)
+- [GitLab Repository](https://gitlab.com/seckmaster/lambda.html)
+- [Report Issues](https://gitlab.com/seckmaster/lambda.html/issues)
+- [HTMX Documentation](https://htmx.org/docs/)

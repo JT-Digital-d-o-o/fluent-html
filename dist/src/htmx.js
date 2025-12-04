@@ -1,36 +1,94 @@
 "use strict";
+// ------------------------------------
+// HTMX Type Definitions for Lambda.html
+// Compatible with HTMX 2.0+
+// ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hx = hx;
 exports.id = id;
 exports.clss = clss;
+exports.closest = closest;
+exports.find = find;
+exports.next = next;
+exports.previous = previous;
+// ------------------------------------
+// Helper Functions
+// ------------------------------------
 function hx(endpoint, options = {}) {
     var _a;
     return {
-        method: (_a = options.method) !== null && _a !== void 0 ? _a : "get",
         endpoint,
+        method: (_a = options.method) !== null && _a !== void 0 ? _a : "get",
         target: options.target,
-        trigger: options.trigger,
         swap: options.swap,
-        replaceUrl: options.replaceUrl,
-        encoding: options.encoding,
-        validate: options.validate,
-        pushUrl: options.pushUrl,
-        vals: options.vals,
-        headers: options.headers,
-        confirm: options.confirm,
-        ext: options.ext,
-        include: options.include,
-        indicator: options.indicator,
-        params: options.params,
+        swapOob: options.swapOob,
         select: options.select,
         selectOob: options.selectOob,
+        trigger: options.trigger,
+        pushUrl: options.pushUrl,
+        replaceUrl: options.replaceUrl,
+        vals: options.vals,
+        headers: options.headers,
+        include: options.include,
+        params: options.params,
+        encoding: options.encoding,
+        validate: options.validate,
+        confirm: options.confirm,
+        prompt: options.prompt,
+        indicator: options.indicator,
+        disabledElt: options.disabledElt,
         sync: options.sync,
+        ext: options.ext,
+        disinherit: options.disinherit,
+        inherit: options.inherit,
+        history: options.history,
+        historyElt: options.historyElt,
+        preserve: options.preserve,
+        request: options.request,
+        boost: options.boost,
+        disable: options.disable,
     };
 }
-function id(id) {
-    return `#${id}`;
+/**
+ * Create an ID selector for hx-target
+ * @example hx("/api", { target: id("content") }) // hx-target="#content"
+ */
+function id(elementId) {
+    return `#${elementId}`;
 }
-function clss(clss) {
-    return `.${clss}`;
+/**
+ * Create a class selector for hx-target
+ * @example hx("/api", { target: clss("items") }) // hx-target=".items"
+ */
+function clss(className) {
+    return `.${className}`;
+}
+/**
+ * Create a 'closest' selector for hx-target
+ * @example hx("/api", { target: closest("tr") }) // hx-target="closest tr"
+ */
+function closest(selector) {
+    return `closest ${selector}`;
+}
+/**
+ * Create a 'find' selector for hx-target
+ * @example hx("/api", { target: find(".content") }) // hx-target="find .content"
+ */
+function find(selector) {
+    return `find ${selector}`;
+}
+/**
+ * Create a 'next' selector for hx-target
+ * @example hx("/api", { target: next("div") }) // hx-target="next div"
+ */
+function next(selector) {
+    return selector ? `next ${selector}` : 'next';
+}
+/**
+ * Create a 'previous' selector for hx-target
+ * @example hx("/api", { target: previous("div") }) // hx-target="previous div"
+ */
+function previous(selector) {
+    return selector ? `previous ${selector}` : 'previous';
 }
 //# sourceMappingURL=htmx.js.map
