@@ -87,7 +87,7 @@ type ScrollModifier = `scroll:${'top' | 'bottom'}` | `show:${'top' | 'bottom' | 
 type FocusScrollModifier = `focus-scroll:${boolean}`;
 
 type StandardCSSSelector = string;
-type ExtendedCSSSelector = 
+type ExtendedCSSSelector =
   | 'this'
   | `closest ${string}`
   | `next ${string}`
@@ -97,7 +97,7 @@ type ExtendedCSSSelector =
 type HxTriggerTimingDeclaration = `${number}s` | `${number}ms`;
 type HXTriggerStandardEvent = 'click' | 'keyup' | 'load' | 'change';
 type HxTriggerNonStandardEvent = 'load' | 'revealed' | 'intersect';
-type HxTriggerEventModifier = 
+type HxTriggerEventModifier =
   | 'once'
   | 'changed'
   | `delay:${HxTriggerTimingDeclaration}`
@@ -108,9 +108,10 @@ type HxTriggerEventModifier =
   | `queue:${'first' | 'last' | 'all' | 'none'}`;
 type HxTriggerPolling = `every ${HxTriggerTimingDeclaration}`;
 type HxTriggerEventWithModifiers = `${HXTriggerStandardEvent}[${string}]` | `${HXTriggerStandardEvent} ${HxTriggerEventModifier}`;
-type HxTriggerValue = 
+type HxTriggerValue =
   | HXTriggerStandardEvent
   | HxTriggerNonStandardEvent
   | HxTriggerEventWithModifiers
   | HxTriggerPolling
   | `${HxTriggerNonStandardEvent} ${HxTriggerEventModifier}`;
+  
