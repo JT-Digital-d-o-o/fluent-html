@@ -594,3 +594,4 @@ export declare function ForEach3(low: number, high: number, renderItem: (index: 
 export declare function Repeat(times: number, content: Thunk<View>): View;
 export declare function render(view: View): string;
 export {};
+//# sourceMappingURL=builder.d.ts.map

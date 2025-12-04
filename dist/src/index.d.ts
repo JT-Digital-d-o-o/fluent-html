@@ -17,4 +17,5 @@ export { Progress, Meter, } from './builder.js';
 export { Slot, } from './builder.js';
 export { El, Empty, Overlay, OverlayPosition, } from './builder.js';
 export { IfThen, IfThenElse, SwitchCase, ForEach, ForEach1, ForEach2, ForEach3, Repeat, } from './builder.js';
-export { hx, HTMX, HxSwap, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, id, clss } from './htmx.js';
+export { hx, HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, id, clss, closest, find, next, previous, } from './htmx.js';
+//# sourceMappingURL=index.d.ts.map

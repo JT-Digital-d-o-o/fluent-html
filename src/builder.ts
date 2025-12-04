@@ -45,7 +45,7 @@ export class Tag {
   }
 
   setStyle(style?: string): Tag {
-    this.attributes.style = style;
+    this.style = style;
     return this;
   }
 
@@ -2054,8 +2054,6 @@ function renderImpl(view: View, isRawContext: boolean): string {
 
     const renderedAttributes = buildAttributes(baseAttrs);
     if (renderedAttributes) parts.push(renderedAttributes);
-
-    if (view.style) parts.push(`style="${escapeAttr(view.style)}"`);
 
     const renderedHtmx = buildHtmx(view.htmx);
     if (renderedHtmx) parts.push(renderedHtmx);

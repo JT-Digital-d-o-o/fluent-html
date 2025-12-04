@@ -137,3 +137,4 @@ export declare function next(selector?: string): HxTarget;
  */
 export declare function previous(selector?: string): HxTarget;
 export {};
+//# sourceMappingURL=htmx.d.ts.map

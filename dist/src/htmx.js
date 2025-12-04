@@ -15,10 +15,9 @@ exports.previous = previous;
 // Helper Functions
 // ------------------------------------
 function hx(endpoint, options = {}) {
-    var _a;
     return {
         endpoint,
-        method: (_a = options.method) !== null && _a !== void 0 ? _a : "get",
+        method: options.method ?? "get",
         target: options.target,
         swap: options.swap,
         swapOob: options.swapOob,

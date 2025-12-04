@@ -163,7 +163,7 @@ class Tag {
         return this;
     }
     setStyle(style) {
-        this.attributes.style = style;
+        this.style = style;
         return this;
     }
     addAttribute(key, value) {
@@ -1622,8 +1622,6 @@ function renderImpl(view, isRawContext) {
         const renderedAttributes = buildAttributes(baseAttrs);
         if (renderedAttributes)
             parts.push(renderedAttributes);
-        if (view.style)
-            parts.push(`style="${escapeAttr(view.style)}"`);
         const renderedHtmx = buildHtmx(view.htmx);
         if (renderedHtmx)
             parts.push(renderedHtmx);

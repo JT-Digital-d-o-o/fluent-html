@@ -239,4 +239,21 @@ export {
 } from './builder.js';
 
 // HTMX
-export { hx, HTMX, HxSwap, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, id, clss } from './htmx.js';
+export {
+  hx,
+  HTMX,
+  HxSwap,
+  HxSwapStyle,
+  HxTrigger,
+  HxEncoding,
+  HxTarget,
+  HxHttpMethod,
+  HxSync,
+  // Selector helpers
+  id,
+  clss,
+  closest,
+  find,
+  next,
+  previous,
+} from './htmx.js';
