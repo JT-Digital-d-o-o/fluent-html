@@ -3,6 +3,7 @@
 // ------------------------------------
 
 import { HTMX } from "./htmx.js";
+import { ReactiveProps, createReactiveProps } from "./reactive.js";
 
 export type Thunk<T> = () => T;
 
@@ -19,23 +20,30 @@ export class Tag {
   htmx?: HTMX;
   toggles?: string[];
 
+  /** Reactive bindings. Created lazily on first reactive method call. */
+  reactive?: ReactiveProps;
+
   constructor(element: string, child: View = Empty()) {
     this.el = element;
     this.child = child;
     this.attributes = {};
   }
 
-  setId(id?: string): Tag {
+  // ------------------------------------
+  // Existing methods (unchanged)
+  // ------------------------------------
+
+  setId(id?: string): this {
     this.id = id;
     return this;
   }
 
-  setClass(c?: string): Tag {
+  setClass(c?: string): this {
     this.class = c;
     return this;
   }
 
-  addClass(c: string): Tag {
+  addClass(c: string): this {
     if (this.class) {
       this.class += ` ${c}`;
     } else {
@@ -44,23 +52,347 @@ export class Tag {
     return this;
   }
 
-  setStyle(style?: string): Tag {
+  setStyle(style?: string): this {
     this.style = style;
     return this;
   }
 
-  addAttribute(key: string, value: string): Tag {
+  addAttribute(key: string, value: string): this {
     this.attributes[key] = value;
     return this;
   }
 
-  setHtmx(htmx?: HTMX): Tag {
+  setHtmx(htmx?: HTMX): this {
     this.htmx = htmx;
     return this;
   }
 
-  setToggles(toggles?: string[]): Tag {
+  setToggles(toggles?: string[]): this {
     this.toggles = toggles;
+    return this;
+  }
+
+  // ------------------------------------
+  // Reactive Methods
+  // ------------------------------------
+  //
+  // API PATTERN:
+  //   bind*  → Data flows TO the DOM (reactive binding)
+  //   on*    → DOM events flow FROM the DOM (event handlers)
+  //
+  // EXPRESSIONS (for bind* methods):
+  //   Reference state via `data.propertyName`
+  //   Example: "data.count + 1" or "data.items.length > 0"
+  //
+  // STATEMENTS (for on* methods):
+  //   Mutate state via `data.propertyName = value`
+  //   Example: "data.count++" or "data.name = event.target.value"
+  //   Use `this` to reference the DOM element
+  //   Use `event` to reference the event object
+  //
+
+  /**
+   * Initialize reactive state on this element.
+   * This element becomes the "reactive root" for all descendant bindings.
+   *
+   * @param state - Initial state object
+   * @returns this (for chaining)
+   *
+   * @example
+   * Div([
+   *   Span().bindText("data.message"),
+   *   Button("Click").onClick("data.count++")
+   * ]).bindState({ message: "Hello", count: 0 })
+   */
+  bindState(state: Record<string, any>): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.state = state;
+    return this;
+  }
+
+  /**
+   * Bind the element's textContent to an expression.
+   *
+   * @param expr - JavaScript expression referencing `data.*`
+   * @returns this (for chaining)
+   *
+   * @example
+   * Span().bindText("data.count")
+   * Span().bindText("'Total: ' + data.items.length")
+   * Span().bindText("data.score >= 100 ? 'Winner!' : 'Keep going'")
+   */
+  bindText(expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.textExpr = expr;
+    return this;
+  }
+
+  /**
+   * Bind the element's innerHTML to an expression.
+   *
+   * ⚠️ WARNING: This can create XSS vulnerabilities if the expression
+   * includes user-provided content. Only use with trusted data.
+   *
+   * @param expr - JavaScript expression referencing `data.*`
+   * @returns this (for chaining)
+   *
+   * @example
+   * Div().bindHtml("data.richContent")
+   */
+  bindHtml(expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.htmlExpr = expr;
+    return this;
+  }
+
+  /**
+   * Show/hide the element based on an expression.
+   * When false, sets `display: none`. When true, removes the style.
+   *
+   * @param expr - JavaScript expression that evaluates to boolean
+   * @returns this (for chaining)
+   *
+   * @example
+   * Div("Loading...").bindShow("data.isLoading")
+   * Div("Error!").bindShow("data.error !== null")
+   */
+  bindShow(expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.showExpr = expr;
+    return this;
+  }
+
+  /**
+   * Hide/show the element based on an expression (inverse of bindShow).
+   * When true, sets `display: none`. When false, removes the style.
+   *
+   * @param expr - JavaScript expression that evaluates to boolean
+   * @returns this (for chaining)
+   *
+   * @example
+   * Div("Content").bindHide("data.isLoading")
+   */
+  bindHide(expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.hideExpr = expr;
+    return this;
+  }
+
+  /**
+   * Toggle a CSS class based on an expression.
+   *
+   * @param className - CSS class name to toggle
+   * @param expr - JavaScript expression that evaluates to boolean
+   * @returns this (for chaining)
+   *
+   * @example
+   * Button("Submit").bindClass("loading", "data.isSubmitting")
+   * Li("Item").bindClass("selected", "data.selectedId === item.id")
+   * Div().bindClass("error", "data.hasError").bindClass("success", "data.isValid")
+   */
+  bindClass(className: string, expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.classExprs ??= {};
+    this.reactive.classExprs[className] = expr;
+    return this;
+  }
+
+  /**
+   * Bind an attribute to an expression.
+   * If expression evaluates to null/undefined, the attribute is removed.
+   *
+   * @param attr - Attribute name
+   * @param expr - JavaScript expression referencing `data.*`
+   * @returns this (for chaining)
+   *
+   * @example
+   * Button("Submit").bindAttr("disabled", "data.isSubmitting")
+   * A("Link").bindAttr("href", "data.url")
+   * Input().bindAttr("placeholder", "data.placeholderText")
+   */
+  bindAttr(attr: string, expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.attrExprs ??= {};
+    this.reactive.attrExprs[attr] = expr;
+    return this;
+  }
+
+  /**
+   * Bind a CSS style property to an expression.
+   *
+   * @param property - CSS property name (camelCase or kebab-case)
+   * @param expr - JavaScript expression referencing `data.*`
+   * @returns this (for chaining)
+   *
+   * @example
+   * Div().bindStyle("color", "data.textColor")
+   * Div().bindStyle("backgroundColor", "data.isActive ? 'green' : 'gray'")
+   * Div().bindStyle("width", "data.progress + '%'")
+   */
+  bindStyle(property: string, expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.styleExprs ??= {};
+    this.reactive.styleExprs[property] = expr;
+    return this;
+  }
+
+  /**
+   * Bind an input's value to an expression (one-way: data → input).
+   * For two-way binding, combine with onInput().
+   *
+   * @param expr - JavaScript expression referencing `data.*`
+   * @returns this (for chaining)
+   *
+   * @example
+   * // One-way binding
+   * Input().bindValue("data.searchQuery")
+   *
+   * // Two-way binding
+   * Input()
+   *   .bindValue("data.name")
+   *   .onInput("data.name = this.value")
+   */
+  bindValue(expr: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.valueExpr = expr;
+    return this;
+  }
+
+  /**
+   * Add a click event handler.
+   * Call multiple times to add multiple handlers.
+   *
+   * Available variables:
+   * - `data` - The reactive state object
+   * - `this` - The DOM element
+   * - `event` - The click event
+   *
+   * @param statement - JavaScript statement(s) to execute
+   * @returns this (for chaining)
+   *
+   * @example
+   * Button("Increment").onClick("data.count++")
+   * Button("Reset").onClick("data.count = 0")
+   * Button("Toggle").onClick("data.visible = !data.visible")
+   *
+   * // Multiple handlers
+   * Button("Do Both")
+   *   .onClick("data.count++")
+   *   .onClick("data.lastClicked = Date.now()")
+   */
+  onClick(statement: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.clickHandlers.push(statement);
+    return this;
+  }
+
+  /**
+   * Add an input event handler (fires on every keystroke/change).
+   *
+   * Available variables:
+   * - `data` - The reactive state object
+   * - `this` - The DOM element (has `this.value`)
+   * - `event` - The input event
+   *
+   * @param statement - JavaScript statement(s) to execute
+   * @returns this (for chaining)
+   *
+   * @example
+   * Input().onInput("data.searchQuery = this.value")
+   * Textarea().onInput("data.content = this.value")
+   *
+   * // Two-way binding pattern
+   * Input()
+   *   .bindValue("data.name")
+   *   .onInput("data.name = this.value")
+   */
+  onInput(statement: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.inputHandlers.push(statement);
+    return this;
+  }
+
+  /**
+   * Add a change event handler (fires when input loses focus or on select change).
+   *
+   * @param statement - JavaScript statement(s) to execute
+   * @returns this (for chaining)
+   *
+   * @example
+   * Select().onChange("data.selectedOption = this.value")
+   * Input().setType("checkbox").onChange("data.agreed = this.checked")
+   */
+  onChange(statement: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.changeHandlers.push(statement);
+    return this;
+  }
+
+  /**
+   * Add a submit event handler (for forms).
+   * Automatically calls event.preventDefault().
+   *
+   * @param statement - JavaScript statement(s) to execute
+   * @returns this (for chaining)
+   *
+   * @example
+   * Form([
+   *   Input().bindValue("data.email").onInput("data.email = this.value"),
+   *   Button("Submit").setType("submit")
+   * ])
+   *   .onSubmit("data.submitted = true")
+   *   .bindState({ email: "", submitted: false })
+   */
+  onSubmit(statement: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.submitHandlers.push(statement);
+    return this;
+  }
+
+  /**
+   * Add a keydown event handler.
+   *
+   * @param statement - JavaScript statement(s) to execute
+   * @returns this (for chaining)
+   *
+   * @example
+   * Input().onKeydown("if (event.key === 'Enter') data.submit()")
+   * Input().onKeydown("if (event.key === 'Escape') data.query = ''")
+   */
+  onKeydown(statement: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.keydownHandlers.push(statement);
+    return this;
+  }
+
+  /**
+   * Add a focus event handler.
+   *
+   * @param statement - JavaScript statement(s) to execute
+   * @returns this (for chaining)
+   *
+   * @example
+   * Input().onFocus("data.isFocused = true")
+   */
+  onFocus(statement: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.focusHandlers.push(statement);
+    return this;
+  }
+
+  /**
+   * Add a blur event handler.
+   *
+   * @param statement - JavaScript statement(s) to execute
+   * @returns this (for chaining)
+   *
+   * @example
+   * Input().onBlur("data.isFocused = false")
+   * Input().onBlur("data.touched = true")
+   */
+  onBlur(statement: string): this {
+    this.reactive ??= createReactiveProps();
+    this.reactive.blurHandlers.push(statement);
     return this;
   }
 }
@@ -2038,14 +2370,23 @@ function renderImpl(view: View, isRawContext: boolean): string {
   }
 
   if (view instanceof Tag) {
+    // Build base attributes, excluding internal properties
     const baseAttrs: any = {};
     Object.assign(baseAttrs, view);
     Object.assign(baseAttrs, view.attributes);
+
+    // Exclude internal properties from rendering
     baseAttrs.el = undefined;
     baseAttrs.htmx = undefined;
     baseAttrs.child = undefined;
     baseAttrs.toggles = undefined;
     baseAttrs.attributes = undefined;
+    baseAttrs.reactive = undefined;  // <-- ADD THIS LINE
+
+    // Use reactive ID if present, otherwise use regular ID
+    if (view.reactive?.id) {
+      baseAttrs.id = view.reactive.id;
+    }
 
     const childIsRaw = RAW_TEXT_ELEMENTS.has(view.el);
     const renderedChild = renderImpl(view.child, childIsRaw);

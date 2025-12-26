@@ -1,4 +1,5 @@
 import { HTMX } from "./htmx.js";
+import { ReactiveProps } from "./reactive.js";
 export type Thunk<T> = () => T;
 export type View = Tag | string | View[];
 export declare class Tag {
@@ -10,14 +11,238 @@ export declare class Tag {
     attributes: Record<string, string>;
     htmx?: HTMX;
     toggles?: string[];
+    /** Reactive bindings. Created lazily on first reactive method call. */
+    reactive?: ReactiveProps;
     constructor(element: string, child?: View);
-    setId(id?: string): Tag;
-    setClass(c?: string): Tag;
-    addClass(c: string): Tag;
-    setStyle(style?: string): Tag;
-    addAttribute(key: string, value: string): Tag;
-    setHtmx(htmx?: HTMX): Tag;
-    setToggles(toggles?: string[]): Tag;
+    setId(id?: string): this;
+    setClass(c?: string): this;
+    addClass(c: string): this;
+    setStyle(style?: string): this;
+    addAttribute(key: string, value: string): this;
+    setHtmx(htmx?: HTMX): this;
+    setToggles(toggles?: string[]): this;
+    /**
+     * Initialize reactive state on this element.
+     * This element becomes the "reactive root" for all descendant bindings.
+     *
+     * @param state - Initial state object
+     * @returns this (for chaining)
+     *
+     * @example
+     * Div([
+     *   Span().bindText("data.message"),
+     *   Button("Click").onClick("data.count++")
+     * ]).bindState({ message: "Hello", count: 0 })
+     */
+    bindState(state: Record<string, any>): this;
+    /**
+     * Bind the element's textContent to an expression.
+     *
+     * @param expr - JavaScript expression referencing `data.*`
+     * @returns this (for chaining)
+     *
+     * @example
+     * Span().bindText("data.count")
+     * Span().bindText("'Total: ' + data.items.length")
+     * Span().bindText("data.score >= 100 ? 'Winner!' : 'Keep going'")
+     */
+    bindText(expr: string): this;
+    /**
+     * Bind the element's innerHTML to an expression.
+     *
+     * ⚠️ WARNING: This can create XSS vulnerabilities if the expression
+     * includes user-provided content. Only use with trusted data.
+     *
+     * @param expr - JavaScript expression referencing `data.*`
+     * @returns this (for chaining)
+     *
+     * @example
+     * Div().bindHtml("data.richContent")
+     */
+    bindHtml(expr: string): this;
+    /**
+     * Show/hide the element based on an expression.
+     * When false, sets `display: none`. When true, removes the style.
+     *
+     * @param expr - JavaScript expression that evaluates to boolean
+     * @returns this (for chaining)
+     *
+     * @example
+     * Div("Loading...").bindShow("data.isLoading")
+     * Div("Error!").bindShow("data.error !== null")
+     */
+    bindShow(expr: string): this;
+    /**
+     * Hide/show the element based on an expression (inverse of bindShow).
+     * When true, sets `display: none`. When false, removes the style.
+     *
+     * @param expr - JavaScript expression that evaluates to boolean
+     * @returns this (for chaining)
+     *
+     * @example
+     * Div("Content").bindHide("data.isLoading")
+     */
+    bindHide(expr: string): this;
+    /**
+     * Toggle a CSS class based on an expression.
+     *
+     * @param className - CSS class name to toggle
+     * @param expr - JavaScript expression that evaluates to boolean
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Submit").bindClass("loading", "data.isSubmitting")
+     * Li("Item").bindClass("selected", "data.selectedId === item.id")
+     * Div().bindClass("error", "data.hasError").bindClass("success", "data.isValid")
+     */
+    bindClass(className: string, expr: string): this;
+    /**
+     * Bind an attribute to an expression.
+     * If expression evaluates to null/undefined, the attribute is removed.
+     *
+     * @param attr - Attribute name
+     * @param expr - JavaScript expression referencing `data.*`
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Submit").bindAttr("disabled", "data.isSubmitting")
+     * A("Link").bindAttr("href", "data.url")
+     * Input().bindAttr("placeholder", "data.placeholderText")
+     */
+    bindAttr(attr: string, expr: string): this;
+    /**
+     * Bind a CSS style property to an expression.
+     *
+     * @param property - CSS property name (camelCase or kebab-case)
+     * @param expr - JavaScript expression referencing `data.*`
+     * @returns this (for chaining)
+     *
+     * @example
+     * Div().bindStyle("color", "data.textColor")
+     * Div().bindStyle("backgroundColor", "data.isActive ? 'green' : 'gray'")
+     * Div().bindStyle("width", "data.progress + '%'")
+     */
+    bindStyle(property: string, expr: string): this;
+    /**
+     * Bind an input's value to an expression (one-way: data → input).
+     * For two-way binding, combine with onInput().
+     *
+     * @param expr - JavaScript expression referencing `data.*`
+     * @returns this (for chaining)
+     *
+     * @example
+     * // One-way binding
+     * Input().bindValue("data.searchQuery")
+     *
+     * // Two-way binding
+     * Input()
+     *   .bindValue("data.name")
+     *   .onInput("data.name = this.value")
+     */
+    bindValue(expr: string): this;
+    /**
+     * Add a click event handler.
+     * Call multiple times to add multiple handlers.
+     *
+     * Available variables:
+     * - `data` - The reactive state object
+     * - `this` - The DOM element
+     * - `event` - The click event
+     *
+     * @param statement - JavaScript statement(s) to execute
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Increment").onClick("data.count++")
+     * Button("Reset").onClick("data.count = 0")
+     * Button("Toggle").onClick("data.visible = !data.visible")
+     *
+     * // Multiple handlers
+     * Button("Do Both")
+     *   .onClick("data.count++")
+     *   .onClick("data.lastClicked = Date.now()")
+     */
+    onClick(statement: string): this;
+    /**
+     * Add an input event handler (fires on every keystroke/change).
+     *
+     * Available variables:
+     * - `data` - The reactive state object
+     * - `this` - The DOM element (has `this.value`)
+     * - `event` - The input event
+     *
+     * @param statement - JavaScript statement(s) to execute
+     * @returns this (for chaining)
+     *
+     * @example
+     * Input().onInput("data.searchQuery = this.value")
+     * Textarea().onInput("data.content = this.value")
+     *
+     * // Two-way binding pattern
+     * Input()
+     *   .bindValue("data.name")
+     *   .onInput("data.name = this.value")
+     */
+    onInput(statement: string): this;
+    /**
+     * Add a change event handler (fires when input loses focus or on select change).
+     *
+     * @param statement - JavaScript statement(s) to execute
+     * @returns this (for chaining)
+     *
+     * @example
+     * Select().onChange("data.selectedOption = this.value")
+     * Input().setType("checkbox").onChange("data.agreed = this.checked")
+     */
+    onChange(statement: string): this;
+    /**
+     * Add a submit event handler (for forms).
+     * Automatically calls event.preventDefault().
+     *
+     * @param statement - JavaScript statement(s) to execute
+     * @returns this (for chaining)
+     *
+     * @example
+     * Form([
+     *   Input().bindValue("data.email").onInput("data.email = this.value"),
+     *   Button("Submit").setType("submit")
+     * ])
+     *   .onSubmit("data.submitted = true")
+     *   .bindState({ email: "", submitted: false })
+     */
+    onSubmit(statement: string): this;
+    /**
+     * Add a keydown event handler.
+     *
+     * @param statement - JavaScript statement(s) to execute
+     * @returns this (for chaining)
+     *
+     * @example
+     * Input().onKeydown("if (event.key === 'Enter') data.submit()")
+     * Input().onKeydown("if (event.key === 'Escape') data.query = ''")
+     */
+    onKeydown(statement: string): this;
+    /**
+     * Add a focus event handler.
+     *
+     * @param statement - JavaScript statement(s) to execute
+     * @returns this (for chaining)
+     *
+     * @example
+     * Input().onFocus("data.isFocused = true")
+     */
+    onFocus(statement: string): this;
+    /**
+     * Add a blur event handler.
+     *
+     * @param statement - JavaScript statement(s) to execute
+     * @returns this (for chaining)
+     *
+     * @example
+     * Input().onBlur("data.isFocused = false")
+     * Input().onBlur("data.touched = true")
+     */
+    onBlur(statement: string): this;
 }
 export declare function Empty(): View;
 export declare function El(el: string, child?: View): Tag;

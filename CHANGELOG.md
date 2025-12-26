@@ -2,6 +2,87 @@
 
 All notable changes to Lambda.html will be documented in this file.
 
+## [4.0.0-beta.1] - 2025-01
+
+### 🎉 New Feature: Reactive System
+
+Lambda.html now includes a **minimal, compile-time-checked reactive system** for client-side rendering with automatic state management and DOM updates.
+
+#### ✨ Key Features
+
+**Declarative Reactive Bindings:**
+- `.bindText(expr)` - Bind expression to textContent
+- `.bindHtml(expr)` - Bind expression to innerHTML (⚠️ XSS risk)
+- `.bindShow(expr)` / `.bindHide(expr)` - Conditional visibility
+- `.bindClass(className, expr)` - Dynamic CSS classes
+- `.bindAttr(attrName, expr)` - Dynamic attributes
+- `.bindStyle(propName, expr)` - Dynamic inline styles
+- `.bindValue(expr)` - Two-way input binding
+
+**Event Handlers:**
+- `.onClick(statement)` - Click event handler
+- `.onInput(statement)` - Input event handler
+- `.onChange(statement)` - Change event handler
+- `.onSubmit(statement)` - Form submit handler (with automatic preventDefault)
+- `.onKeydown(statement)` - Keyboard event handler
+- `.onFocus(statement)` / `.onBlur(statement)` - Focus event handlers
+
+**Compile-Time Validation:**
+- `compile(view)` validates all reactive bindings before runtime
+- Checks that all `data.xxx` references are bound by `bindState()`
+- Prevents variable shadowing in nested state
+- Provides helpful error messages for unbound variables
+
+**Simple API Pattern:**
+- `bind*` methods for reactive data → DOM
+- `on*` methods for DOM events → data mutations
+- All expressions reference state via `data.propertyName`
+
+#### 📝 Usage Example
+
+```typescript
+import { Div, Button, Span, compile, renderWithScript } from 'lambda.html';
+
+const counter = Div([
+  Button("Increment").onClick("data.count++"),
+  Span().bindText("'Count: ' + data.count"),
+  Div("High count!").bindShow("data.count > 5")
+]).bindState({ count: 0 });
+
+const error = compile(counter);
+if (error) throw new Error(error.message);
+
+console.log(renderWithScript(counter));
+// Outputs HTML + <script> with reactive behavior
+```
+
+#### 🔧 New API Functions
+
+- `compile(view)` - Validate reactive bindings and assign unique IDs
+- `generateScript(view)` - Generate JavaScript for reactive behavior
+- `renderWithScript(view, renderFn?)` - Convenience function combining render() and generateScript()
+- `resetIdCounter()` - Reset global ID counter (useful for testing)
+
+#### 🏗️ Implementation Details
+
+- Zero runtime dependencies - generates vanilla JavaScript
+- Automatic ID assignment for reactive elements
+- Efficient DOM updates via `update()` function
+- Event handlers automatically call `update()` after mutations
+- IIFE wrapper for state isolation
+- Support for nested `bindState()` for component composition
+
+#### 📚 Documentation
+
+See the new **Reactive System** section in README.md for:
+- Complete API documentation
+- Reactive binding examples
+- Event handler patterns
+- Compile-time validation guide
+- Complete working examples (counter, todo list, forms, tabs)
+
+---
+
 ## [3.0.0] - 2025-01
 
 ### 🚀 Breaking Changes

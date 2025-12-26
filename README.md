@@ -1,6 +1,6 @@
 # Lambda.html
 
-A **type-safe**, **zero-dependency** HTML builder for TypeScript with built-in **XSS protection** and **first-class HTMX support**.
+A **type-safe**, **zero-dependency** HTML builder for TypeScript with built-in **XSS protection**, **first-class HTMX support**, and a **minimal reactive system** for client-side state management.
 
 [![npm version](https://img.shields.io/npm/v/lambda.html.svg)](https://www.npmjs.com/package/lambda.html)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
@@ -118,6 +118,7 @@ console.log(render(page));
 
 - [IDE Autocomplete in Action](#ide-autocomplete-in-action)
 - [Type-Safe HTMX](#type-safe-htmx)
+- [Reactive System](#reactive-system)
 - [XSS Protection](#xss-protection)
 - [HTML Elements](#html-elements)
 - [Control Flow](#control-flow)
@@ -404,6 +405,346 @@ Form([
     disabledElt: "find button"
   }))
 ```
+
+---
+
+## Reactive System
+
+Lambda.html includes a **minimal, compile-time-checked reactive system** for client-side rendering with automatic state management and DOM updates.
+
+### Quick Start
+
+```typescript
+import { Div, Button, Span, render, compile, renderWithScript } from 'lambda.html';
+
+const view = Div([
+  Button("Increment").onClick("data.count++"),
+  Span().bindText("'Count: ' + data.count"),
+  Div("Details").bindShow("data.count > 5")
+]).bindState({ count: 0 });
+
+// Compile and validate
+const error = compile(view);
+if (error) throw new Error(error.message);
+
+// Render with reactive script
+console.log(renderWithScript(view));
+```
+
+**Output:**
+```html
+<div>
+  <button id="r0">Increment</button>
+  <span id="r1"></span>
+  <div id="r2">Details</div>
+</div>
+<script>
+(function() {
+  const data = {"count":0};
+  const r1 = document.getElementById("r1");
+  const r2 = document.getElementById("r2");
+
+  function update() {
+    r1.textContent = 'Count: ' + data.count;
+    r2.style.display = (data.count > 5) ? "" : "none";
+  }
+
+  const r0 = document.getElementById("r0");
+  r0.addEventListener("click", function(event) {
+    data.count++;
+    update();
+  });
+
+  update();
+})();
+</script>
+```
+
+### API Pattern
+
+The reactive system follows two simple patterns:
+
+- **`bind*`** - Reactive binding (data flows to DOM)
+- **`on*`** - Event handler (DOM events mutate data)
+
+All expressions reference state via `data.propertyName`.
+
+### State Binding
+
+Define component state using `.bindState()`:
+
+```typescript
+Div([
+  // Child elements can access data.count, data.message, etc.
+  Span().bindText("data.message"),
+  Button("Click").onClick("data.count++")
+]).bindState({
+  count: 0,
+  message: "Hello"
+});
+```
+
+### Reactive Bindings
+
+**Text Content:**
+```typescript
+Span().bindText("'Count: ' + data.count")
+Span().bindText("data.user.name")
+```
+
+**Visibility:**
+```typescript
+Div("Visible when true").bindShow("data.isVisible")
+Div("Hidden when true").bindHide("data.isHidden")
+```
+
+**CSS Classes:**
+```typescript
+Button("Toggle")
+  .bindClass("active", "data.isActive")
+  .bindClass("disabled", "data.isLoading")
+```
+
+**Attributes:**
+```typescript
+Button("Submit")
+  .bindAttr("disabled", "data.isLoading ? 'disabled' : null")
+
+Input()
+  .bindAttr("placeholder", "'Enter ' + data.fieldName")
+```
+
+**Styles:**
+```typescript
+Div("Colored box")
+  .bindStyle("color", "data.textColor")
+  .bindStyle("background", "data.bgColor")
+```
+
+**Input Values (Two-way Binding):**
+```typescript
+Input()
+  .bindValue("data.username")
+  .onInput("data.username = this.value")
+```
+
+**HTML Content (⚠️ XSS Risk):**
+```typescript
+// Only use with trusted content
+Div().bindHtml("data.trustedHtmlContent")
+```
+
+### Event Handlers
+
+**Click Events:**
+```typescript
+Button("Increment").onClick("data.count++")
+Button("Reset").onClick("data.count = 0")
+
+// Multiple statements - call onClick() multiple times
+Button("Multi")
+  .onClick("data.count++")
+  .onClick("data.lastAction = 'increment'")
+```
+
+**Input Events:**
+```typescript
+Input()
+  .onInput("data.query = this.value")
+  .onInput("data.searchTime = Date.now()")
+```
+
+**Change Events:**
+```typescript
+Select([/* options */])
+  .onChange("data.selectedValue = this.value")
+```
+
+**Form Submit:**
+```typescript
+Form([
+  Input().bindValue("data.email"),
+  Button("Submit")
+])
+  .onSubmit("data.submitted = true")  // preventDefault() called automatically
+```
+
+**Keyboard Events:**
+```typescript
+Input()
+  .onKeydown("if (event.key === 'Enter') data.submit()")
+  .onKeydown("data.lastKey = event.key")
+```
+
+**Focus Events:**
+```typescript
+Input()
+  .onFocus("data.isFocused = true")
+  .onBlur("data.isFocused = false")
+```
+
+### Compile-Time Validation
+
+The `compile()` function validates your reactive code **before runtime**:
+
+```typescript
+// ❌ Compile Error - variable not bound
+const view = Div([
+  Span().bindText("data.missing")
+]).bindState({ count: 0 });
+
+compile(view);
+// Returns: CompileError: Variable "data.missing" in bindText("data.missing")
+// is not bound. Add it to bindState({ missing: ... })
+```
+
+**What compile() checks:**
+- All `data.xxx` references are bound by `bindState()`
+- No variable shadowing between nested `bindState()` calls
+- Assigns unique IDs to reactive elements
+
+### Nested State
+
+You can nest `bindState()` calls for component composition:
+
+```typescript
+Div([
+  Span().bindText("data.outer"),
+  Div([
+    Span().bindText("data.inner"),  // Only accessible here
+  ]).bindState({ inner: "nested" }),
+]).bindState({ outer: "parent" });
+```
+
+**Note:** Variable shadowing is prevented - child state cannot redefine parent variables.
+
+### Complete Examples
+
+**Counter:**
+```typescript
+const counter = Div([
+  H1().bindText("'Count: ' + data.count"),
+  Button("Increment").onClick("data.count++"),
+  Button("Decrement").onClick("data.count--"),
+  Button("Reset").onClick("data.count = 0"),
+]).bindState({ count: 0 });
+
+compile(counter);
+console.log(renderWithScript(counter));
+```
+
+**Todo List:**
+```typescript
+const todoApp = Div([
+  H1("My Todos"),
+  Input()
+    .setPlaceholder("What needs to be done?")
+    .bindValue("data.newTodo")
+    .onInput("data.newTodo = this.value")
+    .onKeydown(`
+      if (event.key === 'Enter' && data.newTodo.trim()) {
+        data.todos.push(data.newTodo);
+        data.newTodo = '';
+      }
+    `),
+  Div("No todos yet").bindShow("data.todos.length === 0"),
+  Ul().bindHtml("data.todos.map(t => '<li>' + t + '</li>').join('')"),
+]).bindState({ todos: [], newTodo: "" });
+
+compile(todoApp);
+console.log(renderWithScript(todoApp));
+```
+
+**Form Validation:**
+```typescript
+const loginForm = Form([
+  Input()
+    .setType("email")
+    .bindValue("data.email")
+    .onInput("data.email = this.value")
+    .bindClass("error", "data.touched && !data.email.includes('@')"),
+
+  Span("Invalid email")
+    .setClass("error-message")
+    .bindShow("data.touched && !data.email.includes('@')"),
+
+  Button("Submit")
+    .bindAttr("disabled", "data.submitting ? 'disabled' : null")
+    .bindText("data.submitting ? 'Submitting...' : 'Submit'"),
+])
+  .onSubmit("data.submitting = true")
+  .onBlur("data.touched = true")
+  .bindState({
+    email: "",
+    touched: false,
+    submitting: false
+  });
+
+compile(loginForm);
+console.log(renderWithScript(loginForm));
+```
+
+**Tab Component:**
+```typescript
+const tabs = Div([
+  Div([
+    Button("Tab 1")
+      .onClick("data.activeTab = 0")
+      .bindClass("active", "data.activeTab === 0"),
+    Button("Tab 2")
+      .onClick("data.activeTab = 1")
+      .bindClass("active", "data.activeTab === 1"),
+    Button("Tab 3")
+      .onClick("data.activeTab = 2")
+      .bindClass("active", "data.activeTab === 2"),
+  ]).setClass("tab-buttons"),
+
+  Div("Content 1").bindShow("data.activeTab === 0"),
+  Div("Content 2").bindShow("data.activeTab === 1"),
+  Div("Content 3").bindShow("data.activeTab === 2"),
+]).bindState({ activeTab: 0 });
+
+compile(tabs);
+console.log(renderWithScript(tabs));
+```
+
+### API Functions
+
+**`compile(view: View): CompileError | null`**
+
+Validates reactive bindings and assigns IDs. Returns `null` on success or a `CompileError` on failure.
+
+```typescript
+const error = compile(view);
+if (error) {
+  console.error(error.message);
+  return;
+}
+```
+
+**`generateScript(view: View): string`**
+
+Generates JavaScript code for reactive behavior. Must call `compile()` first.
+
+```typescript
+compile(view);
+const script = generateScript(view);
+console.log(`<script>${script}</script>`);
+```
+
+**`renderWithScript(view: View, renderFn?): string`**
+
+Convenience function combining `render()` and `generateScript()`.
+
+```typescript
+compile(view);
+const html = renderWithScript(view);
+// Returns: HTML + <script>...</script>
+```
+
+**`resetIdCounter(): void`**
+
+Resets the global reactive ID counter (useful for testing).
 
 ---
 
@@ -919,6 +1260,36 @@ function InfiniteScrollList(items: Item[], page: number): View {
 | `.addAttribute(key, value)` | Add custom attribute                                  |
 | `.setHtmx(hx(...))`         | Add HTMX behavior                                     |
 | `.setToggles([...])`        | Add boolean attributes (`required`, `disabled`, etc.) |
+
+### Reactive Methods (All Tags)
+
+| Method                           | Description                                         |
+| -------------------------------- | --------------------------------------------------- |
+| `.bindState(state)`              | Define reactive state for this element and children |
+| `.bindText(expr)`                | Bind expression to textContent                      |
+| `.bindHtml(expr)`                | Bind expression to innerHTML (⚠️ XSS risk)          |
+| `.bindShow(expr)`                | Show element when expression is truthy              |
+| `.bindHide(expr)`                | Hide element when expression is truthy              |
+| `.bindClass(className, expr)`    | Toggle CSS class based on expression                |
+| `.bindAttr(attrName, expr)`      | Bind expression to attribute                        |
+| `.bindStyle(propName, expr)`     | Bind expression to style property                   |
+| `.bindValue(expr)`               | Bind expression to input value                      |
+| `.onClick(statement)`            | Execute statement on click event                    |
+| `.onInput(statement)`            | Execute statement on input event                    |
+| `.onChange(statement)`           | Execute statement on change event                   |
+| `.onSubmit(statement)`           | Execute statement on submit event                   |
+| `.onKeydown(statement)`          | Execute statement on keydown event                  |
+| `.onFocus(statement)`            | Execute statement on focus event                    |
+| `.onBlur(statement)`             | Execute statement on blur event                     |
+
+### Reactive Functions
+
+| Function                                | Description                                      |
+| --------------------------------------- | ------------------------------------------------ |
+| `compile(view)`                         | Validate reactive bindings and assign IDs        |
+| `generateScript(view)`                  | Generate JavaScript for reactive behavior        |
+| `renderWithScript(view, renderFn?)`     | Render HTML with embedded reactive script        |
+| `resetIdCounter()`                      | Reset global ID counter (useful for testing)     |
 
 ### Control Flow
 
