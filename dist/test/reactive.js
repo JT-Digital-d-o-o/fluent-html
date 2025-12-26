@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const builder_1 = require("../src/builder");
 const reactive_1 = require("../src/reactive");
 const view = (0, builder_1.Div)([
-    (0, builder_1.Input)().onInput("data.text = this.value"),
-    (0, builder_1.Div)((0, builder_1.Span)().bindClass("highlight", "data.flag"))
+    (0, builder_1.Input)().onInput("text = this.value"),
+    (0, builder_1.Div)((0, builder_1.Span)().bindClass("highlight", "flag"))
         .bindState({ flag: false }),
 ]).bindState({ text: "" });
 console.log((0, reactive_1.compile)(view));
@@ -64,25 +64,25 @@ function section(name) {
 section("Compile - Success Cases");
 test("Simple state binding compiles", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.count"),
+        (0, builder_1.Span)().bindText("count"),
     ]).bindState({ count: 0 });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
 });
 test("Multiple bindings compile", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.message"),
-        (0, builder_1.Button)("Click").onClick("data.count++"),
-        (0, builder_1.Div)("Hidden").bindShow("data.visible"),
+        (0, builder_1.Span)().bindText("message"),
+        (0, builder_1.Button)("Click").onClick("count++"),
+        (0, builder_1.Div)("Hidden").bindShow("visible"),
     ]).bindState({ message: "Hello", count: 0, visible: true });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
 });
 test("Nested state compiles", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.outer"),
+        (0, builder_1.Span)().bindText("outer"),
         (0, builder_1.Div)([
-            (0, builder_1.Span)().bindText("data.inner"),
+            (0, builder_1.Span)().bindText("inner"),
         ]).bindState({ inner: "nested" }),
     ]).bindState({ outer: "parent" });
     const error = (0, reactive_1.compile)(view);
@@ -90,22 +90,22 @@ test("Nested state compiles", () => {
 });
 test("Complex expression compiles", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.count > 0 ? 'positive' : 'zero'"),
-        (0, builder_1.Span)().bindText("'Total: ' + data.items.length"),
+        (0, builder_1.Span)().bindText("count > 0 ? 'positive' : 'zero'"),
+        (0, builder_1.Span)().bindText("'Total: ' + items.length"),
     ]).bindState({ count: 1, items: [] });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
 });
 test("All binding types compile", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.text"),
-        (0, builder_1.Div)().bindHtml("data.html"),
-        (0, builder_1.Div)().bindShow("data.visible"),
-        (0, builder_1.Div)().bindHide("data.hidden"),
-        (0, builder_1.Div)().bindClass("active", "data.isActive"),
-        (0, builder_1.Div)().bindAttr("title", "data.title"),
-        (0, builder_1.Div)().bindStyle("color", "data.color"),
-        (0, builder_1.Input)().bindValue("data.value"),
+        (0, builder_1.Span)().bindText("text"),
+        (0, builder_1.Div)().bindHtml("html"),
+        (0, builder_1.Div)().bindShow("visible"),
+        (0, builder_1.Div)().bindHide("hidden"),
+        (0, builder_1.Div)().bindClass("active", "isActive"),
+        (0, builder_1.Div)().bindAttr("title", "title"),
+        (0, builder_1.Div)().bindStyle("color", "color"),
+        (0, builder_1.Input)().bindValue("value"),
     ]).bindState({
         text: "",
         html: "",
@@ -121,13 +121,13 @@ test("All binding types compile", () => {
 });
 test("All event handlers compile", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Button)("Click").onClick("data.count++"),
-        (0, builder_1.Input)().onInput("data.text = this.value"),
-        (0, builder_1.Input)().onChange("data.selected = this.value"),
-        (0, builder_1.Form)().onSubmit("data.submitted = true"),
-        (0, builder_1.Input)().onKeydown("data.key = event.key"),
-        (0, builder_1.Input)().onFocus("data.focused = true"),
-        (0, builder_1.Input)().onBlur("data.focused = false"),
+        (0, builder_1.Button)("Click").onClick("count++"),
+        (0, builder_1.Input)().onInput("text = this.value"),
+        (0, builder_1.Input)().onChange("selected = this.value"),
+        (0, builder_1.Form)().onSubmit("submitted = true"),
+        (0, builder_1.Input)().onKeydown("key = event.key"),
+        (0, builder_1.Input)().onFocus("focused = true"),
+        (0, builder_1.Input)().onBlur("focused = false"),
     ]).bindState({
         count: 0,
         text: "",
@@ -145,7 +145,7 @@ test("All event handlers compile", () => {
 section("Compile - Error Cases");
 test("Unbound variable in bindText", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.unknown"),
+        (0, builder_1.Span)().bindText("unknown"),
     ]).bindState({ count: 0 });
     const error = (0, reactive_1.compile)(view);
     assertNotNull(error);
@@ -154,7 +154,7 @@ test("Unbound variable in bindText", () => {
 });
 test("Unbound variable in onClick", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Button)("Click").onClick("data.missing++"),
+        (0, builder_1.Button)("Click").onClick("missing++"),
     ]).bindState({ count: 0 });
     const error = (0, reactive_1.compile)(view);
     assertNotNull(error);
@@ -162,7 +162,7 @@ test("Unbound variable in onClick", () => {
 });
 test("Unbound variable in bindShow", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Div)("Test").bindShow("data.notDefined"),
+        (0, builder_1.Div)("Test").bindShow("notDefined"),
     ]).bindState({ visible: true });
     const error = (0, reactive_1.compile)(view);
     assertNotNull(error);
@@ -171,7 +171,7 @@ test("Unbound variable in bindShow", () => {
 test("Variable shadowing error", () => {
     const view = (0, builder_1.Div)([
         (0, builder_1.Div)([
-            (0, builder_1.Span)().bindText("data.count"),
+            (0, builder_1.Span)().bindText("count"),
         ]).bindState({ count: 0 }), // shadows parent
     ]).bindState({ count: 0 });
     const error = (0, reactive_1.compile)(view);
@@ -181,7 +181,7 @@ test("Variable shadowing error", () => {
 });
 test("No state ancestor error", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.orphan"),
+        (0, builder_1.Span)().bindText("orphan"),
     ]); // No bindState!
     const error = (0, reactive_1.compile)(view);
     assertNotNull(error);
@@ -193,16 +193,16 @@ test("No state ancestor error", () => {
 // ------------------------------------
 section("ID Assignment");
 test("Reactive IDs are assigned after compile", () => {
-    const span = (0, builder_1.Span)().bindText("data.text");
+    const span = (0, builder_1.Span)().bindText("text");
     const view = (0, builder_1.Div)([span]).bindState({ text: "hello" });
     (0, reactive_1.compile)(view);
     assertNotNull(span.reactive?.id);
     assertEqual(span.reactive?.id, "r0");
 });
 test("Multiple elements get unique IDs", () => {
-    const span1 = (0, builder_1.Span)().bindText("data.a");
-    const span2 = (0, builder_1.Span)().bindText("data.b");
-    const btn = (0, builder_1.Button)("Click").onClick("data.a++");
+    const span1 = (0, builder_1.Span)().bindText("a");
+    const span2 = (0, builder_1.Span)().bindText("b");
+    const btn = (0, builder_1.Button)("Click").onClick("a++");
     const view = (0, builder_1.Div)([span1, span2, btn]).bindState({ a: 0, b: 0 });
     (0, reactive_1.compile)(view);
     assertEqual(span1.reactive?.id, "r0");
@@ -215,7 +215,7 @@ test("Multiple elements get unique IDs", () => {
 section("Render");
 test("Reactive ID appears in rendered HTML", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.count"),
+        (0, builder_1.Span)().bindText("count"),
     ]).bindState({ count: 0 });
     (0, reactive_1.compile)(view);
     const html = (0, builder_1.render)(view);
@@ -224,7 +224,7 @@ test("Reactive ID appears in rendered HTML", () => {
 test("Non-reactive elements have no ID", () => {
     const view = (0, builder_1.Div)([
         (0, builder_1.Span)("Static"),
-        (0, builder_1.Span)().bindText("data.count"),
+        (0, builder_1.Span)().bindText("count"),
     ]).bindState({ count: 0 });
     (0, reactive_1.compile)(view);
     const html = (0, builder_1.render)(view);
@@ -238,44 +238,43 @@ test("Non-reactive elements have no ID", () => {
 section("Script Generation");
 test("Basic script structure", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.count"),
+        (0, builder_1.Span)().bindText("count"),
     ]).bindState({ count: 0 });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
     assertContains(script, "(function()");
-    assertContains(script, "const data =");
-    assertContains(script, '{"count":0}');
+    assertContains(script, "let count =");
     assertContains(script, "function update()");
     assertContains(script, "update();");
     assertContains(script, "})();");
 });
 test("Script includes textContent binding", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.message"),
+        (0, builder_1.Span)().bindText("message"),
     ]).bindState({ message: "hello" });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
-    assertContains(script, "textContent = data.message");
+    assertContains(script, "textContent = message");
 });
 test("Script includes show binding", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Div)("Test").bindShow("data.visible"),
+        (0, builder_1.Div)("Test").bindShow("visible"),
     ]).bindState({ visible: true });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
-    assertContains(script, 'style.display = (data.visible) ? "" : "none"');
+    assertContains(script, 'style.display = (visible) ? "" : "none"');
 });
 test("Script includes hide binding", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Div)("Test").bindHide("data.hidden"),
+        (0, builder_1.Div)("Test").bindHide("hidden"),
     ]).bindState({ hidden: false });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
-    assertContains(script, 'style.display = (data.hidden) ? "none" : ""');
+    assertContains(script, 'style.display = (hidden) ? "none" : ""');
 });
 test("Script includes class binding", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Button)("Test").bindClass("active", "data.isActive"),
+        (0, builder_1.Button)("Test").bindClass("active", "isActive"),
     ]).bindState({ isActive: false });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
@@ -283,40 +282,40 @@ test("Script includes class binding", () => {
 });
 test("Script includes click handler", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Button)("Click").onClick("data.count++"),
+        (0, builder_1.Button)("Click").onClick("count++"),
     ]).bindState({ count: 0 });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
     assertContains(script, 'addEventListener("click"');
-    assertContains(script, "data.count++");
+    assertContains(script, "count++");
     assertContains(script, "update();"); // Must call update after handler
 });
 test("Script includes input handler", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Input)().onInput("data.text = this.value"),
+        (0, builder_1.Input)().onInput("text = this.value"),
     ]).bindState({ text: "" });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
     assertContains(script, 'addEventListener("input"');
-    assertContains(script, "data.text = this.value");
+    assertContains(script, "text = this.value");
 });
 test("Submit handler includes preventDefault", () => {
     const view = (0, builder_1.Form)([
         (0, builder_1.Button)("Submit"),
-    ]).onSubmit("data.done = true").bindState({ done: false });
+    ]).onSubmit("done = true").bindState({ done: false });
     (0, reactive_1.compile)(view);
     const script = (0, reactive_1.generateScript)(view);
     assertContains(script, "event.preventDefault()");
 });
 test("renderWithScript combines HTML and script", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("data.msg"),
+        (0, builder_1.Span)().bindText("msg"),
     ]).bindState({ msg: "hi" });
     (0, reactive_1.compile)(view);
     const output = (0, reactive_1.renderWithScript)(view, builder_1.render);
     assertContains(output, "<div");
     assertContains(output, "<script>");
-    assertContains(output, "const data =");
+    assertContains(output, "let msg =");
     assertContains(output, "</script>");
 });
 // ------------------------------------
@@ -325,48 +324,48 @@ test("renderWithScript combines HTML and script", () => {
 section("Integration");
 test("Counter example", () => {
     const view = (0, builder_1.Div)([
-        (0, builder_1.Span)().bindText("'Count: ' + data.count"),
-        (0, builder_1.Button)("Increment").onClick("data.count++"),
-        (0, builder_1.Button)("Decrement").onClick("data.count--"),
-        (0, builder_1.Button)("Reset").onClick("data.count = 0"),
+        (0, builder_1.Span)().bindText("'Count: ' + count"),
+        (0, builder_1.Button)("Increment").onClick("count++"),
+        (0, builder_1.Button)("Decrement").onClick("count--"),
+        (0, builder_1.Button)("Reset").onClick("count = 0"),
     ]).bindState({ count: 0 });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
     const script = (0, reactive_1.generateScript)(view);
-    assertContains(script, "data.count++");
-    assertContains(script, "data.count--");
-    assertContains(script, "data.count = 0");
+    assertContains(script, "count++");
+    assertContains(script, "count--");
+    assertContains(script, "count = 0");
 });
 test("Todo list example", () => {
     const view = (0, builder_1.Div)([
         (0, builder_1.H1)("Todos"),
         (0, builder_1.Input)()
-            .bindValue("data.newTodo")
-            .onInput("data.newTodo = this.value")
-            .onKeydown("if (event.key === 'Enter') { data.todos.push(data.newTodo); data.newTodo = '' }"),
-        (0, builder_1.Div)().bindShow("data.todos.length === 0").bindText("'No todos yet'"),
-        (0, builder_1.Ul)().bindHtml("data.todos.map(t => '<li>' + t + '</li>').join('')"),
+            .bindValue("newTodo")
+            .onInput("newTodo = this.value")
+            .onKeydown("if (event.key === 'Enter') { todos.push(newTodo); newTodo = '' }"),
+        (0, builder_1.Div)().bindShow("todos.length === 0").bindText("'No todos yet'"),
+        (0, builder_1.Ul)().bindHtml("todos.map(t => '<li>' + t + '</li>').join('')"),
     ]).bindState({ todos: [], newTodo: "" });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
     const script = (0, reactive_1.generateScript)(view);
     assertContains(script, "keydown");
-    assertContains(script, "data.newTodo = this.value");
+    assertContains(script, "newTodo = this.value");
 });
 test("Form with validation", () => {
     const view = (0, builder_1.Form)([
         (0, builder_1.Input)()
-            .bindValue("data.email")
-            .onInput("data.email = this.value")
-            .bindClass("error", "data.touched && !data.email.includes('@')"),
+            .bindValue("email")
+            .onInput("email = this.value")
+            .bindClass("error", "touched && !email.includes('@')"),
         (0, builder_1.Span)()
             .bindText("'Invalid email'")
-            .bindShow("data.touched && !data.email.includes('@')"),
+            .bindShow("touched && !email.includes('@')"),
         (0, builder_1.Button)("Submit")
-            .bindAttr("disabled", "data.submitting ? 'disabled' : null"),
+            .bindAttr("disabled", "submitting ? 'disabled' : null"),
     ])
-        .onSubmit("data.submitting = true")
-        .onBlur("data.touched = true")
+        .onSubmit("submitting = true")
+        .onBlur("touched = true")
         .bindState({ email: "", touched: false, submitting: false });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
@@ -374,13 +373,13 @@ test("Form with validation", () => {
 test("Tabs component", () => {
     const view = (0, builder_1.Div)([
         (0, builder_1.Div)([
-            (0, builder_1.Button)("Tab 1").onClick("data.activeTab = 0").bindClass("active", "data.activeTab === 0"),
-            (0, builder_1.Button)("Tab 2").onClick("data.activeTab = 1").bindClass("active", "data.activeTab === 1"),
-            (0, builder_1.Button)("Tab 3").onClick("data.activeTab = 2").bindClass("active", "data.activeTab === 2"),
+            (0, builder_1.Button)("Tab 1").onClick("activeTab = 0").bindClass("active", "activeTab === 0"),
+            (0, builder_1.Button)("Tab 2").onClick("activeTab = 1").bindClass("active", "activeTab === 1"),
+            (0, builder_1.Button)("Tab 3").onClick("activeTab = 2").bindClass("active", "activeTab === 2"),
         ]),
-        (0, builder_1.Div)("Content 1").bindShow("data.activeTab === 0"),
-        (0, builder_1.Div)("Content 2").bindShow("data.activeTab === 1"),
-        (0, builder_1.Div)("Content 3").bindShow("data.activeTab === 2"),
+        (0, builder_1.Div)("Content 1").bindShow("activeTab === 0"),
+        (0, builder_1.Div)("Content 2").bindShow("activeTab === 1"),
+        (0, builder_1.Div)("Content 3").bindShow("activeTab === 2"),
     ]).bindState({ activeTab: 0 });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
@@ -405,23 +404,23 @@ test("No reactive elements produces no script", () => {
 test("Multiple handlers on same element", () => {
     const view = (0, builder_1.Div)([
         (0, builder_1.Button)("Multi")
-            .onClick("data.a++")
-            .onClick("data.b++")
-            .onClick("data.c = data.a + data.b"),
+            .onClick("a++")
+            .onClick("b++")
+            .onClick("c = a + b"),
     ]).bindState({ a: 0, b: 0, c: 0 });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
     const script = (0, reactive_1.generateScript)(view);
-    assertContains(script, "data.a++");
-    assertContains(script, "data.b++");
-    assertContains(script, "data.c = data.a + data.b");
+    assertContains(script, "a++");
+    assertContains(script, "b++");
+    assertContains(script, "c = a + b");
 });
 test("Deeply nested bindings", () => {
     const view = (0, builder_1.Div)([
         (0, builder_1.Div)([
             (0, builder_1.Div)([
                 (0, builder_1.Div)([
-                    (0, builder_1.Span)().bindText("data.deep"),
+                    (0, builder_1.Span)().bindText("deep"),
                 ]),
             ]),
         ]),
@@ -429,7 +428,7 @@ test("Deeply nested bindings", () => {
     const error = (0, reactive_1.compile)(view);
     assertNull(error);
     const script = (0, reactive_1.generateScript)(view);
-    assertContains(script, "data.deep");
+    assertContains(script, "deep");
 });
 // ------------------------------------
 // API Usability (LLM-friendliness) Tests
@@ -439,10 +438,10 @@ test("Chaining works naturally", () => {
     const input = (0, builder_1.Input)()
         .setType("text")
         .setClass("input")
-        .bindValue("data.text")
-        .onInput("data.text = this.value")
-        .onBlur("data.touched = true")
-        .bindClass("error", "data.touched && !data.text");
+        .bindValue("text")
+        .onInput("text = this.value")
+        .onBlur("touched = true")
+        .bindClass("error", "touched && !text");
     // Should not throw
     assertNotNull(input.reactive);
 });
@@ -451,9 +450,9 @@ test("Mixed static and reactive attributes", () => {
         (0, builder_1.Button)("Submit")
             .setClass("btn btn-primary")
             .setType("submit")
-            .bindClass("loading", "data.isLoading")
-            .bindAttr("disabled", "data.isLoading")
-            .onClick("data.isLoading = true"),
+            .bindClass("loading", "isLoading")
+            .bindAttr("disabled", "isLoading")
+            .onClick("isLoading = true"),
     ]).bindState({ isLoading: false });
     const error = (0, reactive_1.compile)(view);
     assertNull(error);

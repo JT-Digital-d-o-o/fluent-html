@@ -8,9 +8,9 @@
 // QUICK START:
 // ```typescript
 // const view = Div([
-//   Button("Increment").onClick("data.count++"),
-//   Span().bindText("'Count: ' + data.count"),
-//   Div("Details").bindShow("data.count > 5")
+//   Button("Increment").onClick("count++"),
+//   Span().bindText("'Count: ' + count"),
+//   Div("Details").bindShow("count > 5")
 // ]).bindState({ count: 0 });
 //
 // const error = compile(view);
@@ -23,12 +23,12 @@
 // - on*    → Event handler (DOM events mutate data)
 //
 // EXPRESSIONS:
-// - All expressions reference state via `data.propertyName`
-// - Example: "data.count + 1" or "data.visible && data.ready"
+// - All expressions reference state variables directly
+// - Example: "count + 1" or "visible && ready"
 //
 // STATEMENTS (for event handlers):
-// - Mutate state via `data.propertyName = value`
-// - Example: "data.count++" or "data.name = 'Alice'"
+// - Mutate state variables directly
+// - Example: "count++" or "name = 'Alice'"
 // - Multiple statements: call onClick() multiple times
 //
 // ------------------------------------
@@ -100,19 +100,64 @@ class CompileEnv {
     }
 }
 /**
- * Extract all `data.xxx` variable references from an expression.
+ * Extract all variable references from an expression.
+ * Filters out JavaScript keywords, common globals, string literals, property accesses,
+ * and arrow function parameters.
  *
  * @example
- * findDataVariables("data.count + data.total")
+ * findVariables("count + total")
  * // Returns: ["count", "total"]
+ *
+ * findVariables("items.length")
+ * // Returns: ["items"]
+ *
+ * findVariables("event.key")
+ * // Returns: [] (event is excluded)
+ *
+ * findVariables("todos.map(t => t + 1)")
+ * // Returns: ["todos"] (t is an arrow function parameter)
  */
-function findDataVariables(expression) {
-    const pattern = /data\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g;
+function findVariables(expression) {
+    // JavaScript keywords and common globals to exclude
+    const excludeWords = new Set([
+        'true', 'false', 'null', 'undefined', 'this', 'event', 'value',
+        'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue',
+        'function', 'return', 'new', 'typeof', 'instanceof', 'in', 'of',
+        'var', 'let', 'const', 'class', 'extends', 'import', 'export',
+        'try', 'catch', 'finally', 'throw',
+        'console', 'window', 'document', 'Array', 'Object', 'String', 'Number', 'Boolean',
+        'Math', 'Date', 'JSON', 'Promise', 'Error'
+    ]);
+    // Extract arrow function parameters to exclude them
+    // Matches patterns like: (x, y) =>, x =>, ({a, b}) =>
+    const arrowParamPattern = /\(([^)]+)\)\s*=>|([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=>/g;
+    let arrowMatch;
+    while ((arrowMatch = arrowParamPattern.exec(expression)) !== null) {
+        const params = arrowMatch[1] || arrowMatch[2];
+        if (params) {
+            // Extract individual parameter names (handles destructuring roughly)
+            const paramNames = params.split(',').map(p => p.trim().replace(/[{}[\]]/g, ' ').split(/\s+/)[0]);
+            paramNames.forEach(p => {
+                if (p && /^[a-zA-Z_$]/.test(p)) {
+                    excludeWords.add(p);
+                }
+            });
+        }
+    }
+    // Remove string literals (both single and double quotes) from the expression
+    // This prevents variables inside strings from being detected
+    let cleaned = expression
+        .replace(/'(?:[^'\\]|\\.)*'/g, '""') // Replace single-quoted strings with ""
+        .replace(/"(?:[^"\\]|\\.)*"/g, '""'); // Replace double-quoted strings with ""
+    // Match valid JavaScript identifiers, but only capture the root identifier
+    // This regex matches identifiers that are NOT preceded by a dot (to exclude property names)
+    const pattern = /(?<!\.)(?<!\w)([a-zA-Z_$][a-zA-Z0-9_$]*)(?:\.[a-zA-Z_$][a-zA-Z0-9_$]*|\[[^\]]+\])*(?![a-zA-Z0-9_$])/g;
     const results = [];
     let match;
-    while ((match = pattern.exec(expression)) !== null) {
-        if (!results.includes(match[1])) {
-            results.push(match[1]);
+    while ((match = pattern.exec(cleaned)) !== null) {
+        const variable = match[1];
+        if (!excludeWords.has(variable) && !results.includes(variable)) {
+            results.push(variable);
         }
     }
     return results;
@@ -174,10 +219,10 @@ function validateExpressions(tag, env) {
     }
     // Validate each expression
     for (const { expr, context } of expressions) {
-        const variables = findDataVariables(expr);
+        const variables = findVariables(expr);
         for (const variable of variables) {
             if (!env.contains(variable)) {
-                return new CompileError(`Variable "data.${variable}" in ${context}("${expr}") is not bound. ` +
+                return new CompileError(`Variable "${variable}" in ${context}("${expr}") is not bound. ` +
                     `Add it to bindState({ ${variable}: ... }) on this element or an ancestor.`);
             }
         }
@@ -189,25 +234,33 @@ function validateExpressions(tag, env) {
  */
 function compileTag(tag, env) {
     const reactive = tag.reactive;
-    // Validate expressions use bound variables (check BEFORE pushing new state)
-    const exprError = validateExpressions(tag, env);
-    if (exprError)
-        return exprError;
-    // If this tag defines state, validate and push for children
+    // If this tag defines state, we need to include it when validating this tag's expressions
     if (reactive?.state) {
         const newVariables = Object.keys(reactive.state);
         // Check for variable shadowing
         for (const variable of newVariables) {
             if (env.contains(variable)) {
-                return new CompileError(`Variable "data.${variable}" in bindState() shadows a variable from an ancestor. ` +
+                return new CompileError(`Variable "${variable}" in bindState() shadows a variable from an ancestor. ` +
                     `Rename one of them to avoid conflicts.`);
             }
         }
+        // Push state for validating THIS tag's expressions
         env.push(newVariables);
+        // Validate expressions on this tag (now with its own state available)
+        const exprError = validateExpressions(tag, env);
+        if (exprError) {
+            env.pop();
+            return exprError;
+        }
+        // Validate children (state remains available)
         const childError = compileView(tag.child, env);
         env.pop();
         return childError;
     }
+    // No state on this tag - validate with current environment
+    const exprError = validateExpressions(tag, env);
+    if (exprError)
+        return exprError;
     return compileView(tag.child, env);
 }
 /**
@@ -231,12 +284,13 @@ function compileView(view, env) {
     return null;
 }
 /**
- * Assign unique IDs to all reactive elements.
+ * Assign unique IDs to all reactive elements that have bindings.
+ * Elements with only state (no bindings) don't need IDs.
  */
 let globalIdCounter = 0;
 function assignReactiveIds(view) {
     if (view instanceof builder_js_1.Tag) {
-        if (view.reactive) {
+        if (view.reactive && hasBindings(view.reactive)) {
             view.reactive.id = `r${globalIdCounter++}`;
         }
         assignReactiveIds(view.child);
@@ -257,7 +311,7 @@ function resetIdCounter() {
  * Compile a reactive view tree.
  *
  * Validates that:
- * - All `data.xxx` references in expressions are bound by an ancestor's bindState()
+ * - All variable references in expressions are bound by an ancestor's bindState()
  * - No variable shadowing between nested bindState() calls
  *
  * If successful, assigns unique IDs to reactive elements.
@@ -344,10 +398,14 @@ function hasBindings(r) {
  */
 function generateRootScript(root) {
     const state = root.tag.reactive.state;
+    const stateKeys = Object.keys(state);
     const lines = [];
-    // Opening IIFE
+    // Opening IIFE (https://developer.mozilla.org/en-US/docs/Glossary/IIFE)
     lines.push("(function() {");
-    lines.push(`  const data = ${JSON.stringify(state)};`);
+    // Declare state variables individually
+    for (const key of stateKeys) {
+        lines.push(`  let ${key} = ${JSON.stringify(state[key])};`);
+    }
     lines.push("");
     // Cache DOM elements
     const elementsWithBindings = root.bindings.filter((t) => t.reactive.textExpr ||

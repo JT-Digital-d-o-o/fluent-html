@@ -8,31 +8,31 @@ export interface ReactiveProps {
     id: string;
     /** Reactive state object. Only valid on root reactive element. */
     state?: Record<string, any>;
-    /** Expression for textContent binding. Example: "data.count" */
+    /** Expression for textContent binding. Example: "count" */
     textExpr?: string;
-    /** Expression for visibility (display: block/none). Example: "data.visible" */
+    /** Expression for visibility (display: block/none). Example: "visible" */
     showExpr?: string;
-    /** Expression for visibility (display: none/block). Example: "data.hidden" */
+    /** Expression for visibility (display: none/block). Example: "hidden" */
     hideExpr?: string;
-    /** Class name → expression mapping. Example: { "active": "data.isActive" } */
+    /** Class name → expression mapping. Example: { "active": "isActive" } */
     classExprs?: Record<string, string>;
-    /** Attribute → expression mapping. Example: { "disabled": "data.isLoading" } */
+    /** Attribute → expression mapping. Example: { "disabled": "isLoading" } */
     attrExprs?: Record<string, string>;
-    /** Style property → expression mapping. Example: { "color": "data.textColor" } */
+    /** Style property → expression mapping. Example: { "color": "textColor" } */
     styleExprs?: Record<string, string>;
-    /** Expression for input value (two-way binding). Example: "data.username" */
+    /** Expression for input value (two-way binding). Example: "username" */
     valueExpr?: string;
-    /** Expression for innerHTML binding (⚠️ XSS risk). Example: "data.htmlContent" */
+    /** Expression for innerHTML binding (⚠️ XSS risk). Example: "htmlContent" */
     htmlExpr?: string;
-    /** Click handler statements. Example: ["data.count++"] */
+    /** Click handler statements. Example: ["count++"] */
     clickHandlers: string[];
-    /** Input handler statements. Example: ["data.query = this.value"] */
+    /** Input handler statements. Example: ["query = this.value"] */
     inputHandlers: string[];
-    /** Change handler statements. Example: ["data.selected = this.value"] */
+    /** Change handler statements. Example: ["selected = this.value"] */
     changeHandlers: string[];
-    /** Submit handler statements. Example: ["data.submitted = true"] */
+    /** Submit handler statements. Example: ["submitted = true"] */
     submitHandlers: string[];
-    /** Keydown handler statements. Example: ["if (event.key === 'Enter') data.submit()"] */
+    /** Keydown handler statements. Example: ["if (event.key === 'Enter') submit()"] */
     keydownHandlers: string[];
     /** Focus handler statements */
     focusHandlers: string[];
@@ -59,7 +59,7 @@ export declare function resetIdCounter(): void;
  * Compile a reactive view tree.
  *
  * Validates that:
- * - All `data.xxx` references in expressions are bound by an ancestor's bindState()
+ * - All variable references in expressions are bound by an ancestor's bindState()
  * - No variable shadowing between nested bindState() calls
  *
  * If successful, assigns unique IDs to reactive elements.

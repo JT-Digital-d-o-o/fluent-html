@@ -21,9 +21,9 @@ import {
 } from "../src/reactive";
 
 const view = Div([
-  Input().onInput("data.text = this.value"),
+  Input().onInput("text = this.value"),
   Div(
-    Span().bindClass("highlight", "data.flag")
+    Span().bindClass("highlight", "flag")
   )
     .bindState({ flag: false }),
 ]).bindState({ text: "" });
@@ -97,7 +97,7 @@ section("Compile - Success Cases");
 
 test("Simple state binding compiles", () => {
   const view = Div([
-    Span().bindText("data.count"),
+    Span().bindText("count"),
   ]).bindState({ count: 0 });
 
   const error = compile(view);
@@ -106,9 +106,9 @@ test("Simple state binding compiles", () => {
 
 test("Multiple bindings compile", () => {
   const view = Div([
-    Span().bindText("data.message"),
-    Button("Click").onClick("data.count++"),
-    Div("Hidden").bindShow("data.visible"),
+    Span().bindText("message"),
+    Button("Click").onClick("count++"),
+    Div("Hidden").bindShow("visible"),
   ]).bindState({ message: "Hello", count: 0, visible: true });
 
   const error = compile(view);
@@ -117,9 +117,9 @@ test("Multiple bindings compile", () => {
 
 test("Nested state compiles", () => {
   const view = Div([
-    Span().bindText("data.outer"),
+    Span().bindText("outer"),
     Div([
-      Span().bindText("data.inner"),
+      Span().bindText("inner"),
     ]).bindState({ inner: "nested" }),
   ]).bindState({ outer: "parent" });
 
@@ -129,8 +129,8 @@ test("Nested state compiles", () => {
 
 test("Complex expression compiles", () => {
   const view = Div([
-    Span().bindText("data.count > 0 ? 'positive' : 'zero'"),
-    Span().bindText("'Total: ' + data.items.length"),
+    Span().bindText("count > 0 ? 'positive' : 'zero'"),
+    Span().bindText("'Total: ' + items.length"),
   ]).bindState({ count: 1, items: [] });
 
   const error = compile(view);
@@ -139,14 +139,14 @@ test("Complex expression compiles", () => {
 
 test("All binding types compile", () => {
   const view = Div([
-    Span().bindText("data.text"),
-    Div().bindHtml("data.html"),
-    Div().bindShow("data.visible"),
-    Div().bindHide("data.hidden"),
-    Div().bindClass("active", "data.isActive"),
-    Div().bindAttr("title", "data.title"),
-    Div().bindStyle("color", "data.color"),
-    Input().bindValue("data.value"),
+    Span().bindText("text"),
+    Div().bindHtml("html"),
+    Div().bindShow("visible"),
+    Div().bindHide("hidden"),
+    Div().bindClass("active", "isActive"),
+    Div().bindAttr("title", "title"),
+    Div().bindStyle("color", "color"),
+    Input().bindValue("value"),
   ]).bindState({
     text: "",
     html: "",
@@ -164,13 +164,13 @@ test("All binding types compile", () => {
 
 test("All event handlers compile", () => {
   const view = Div([
-    Button("Click").onClick("data.count++"),
-    Input().onInput("data.text = this.value"),
-    Input().onChange("data.selected = this.value"),
-    Form().onSubmit("data.submitted = true"),
-    Input().onKeydown("data.key = event.key"),
-    Input().onFocus("data.focused = true"),
-    Input().onBlur("data.focused = false"),
+    Button("Click").onClick("count++"),
+    Input().onInput("text = this.value"),
+    Input().onChange("selected = this.value"),
+    Form().onSubmit("submitted = true"),
+    Input().onKeydown("key = event.key"),
+    Input().onFocus("focused = true"),
+    Input().onBlur("focused = false"),
   ]).bindState({
     count: 0,
     text: "",
@@ -192,7 +192,7 @@ section("Compile - Error Cases");
 
 test("Unbound variable in bindText", () => {
   const view = Div([
-    Span().bindText("data.unknown"),
+    Span().bindText("unknown"),
   ]).bindState({ count: 0 });
 
   const error = compile(view);
@@ -203,7 +203,7 @@ test("Unbound variable in bindText", () => {
 
 test("Unbound variable in onClick", () => {
   const view = Div([
-    Button("Click").onClick("data.missing++"),
+    Button("Click").onClick("missing++"),
   ]).bindState({ count: 0 });
 
   const error = compile(view);
@@ -213,7 +213,7 @@ test("Unbound variable in onClick", () => {
 
 test("Unbound variable in bindShow", () => {
   const view = Div([
-    Div("Test").bindShow("data.notDefined"),
+    Div("Test").bindShow("notDefined"),
   ]).bindState({ visible: true });
 
   const error = compile(view);
@@ -224,7 +224,7 @@ test("Unbound variable in bindShow", () => {
 test("Variable shadowing error", () => {
   const view = Div([
     Div([
-      Span().bindText("data.count"),
+      Span().bindText("count"),
     ]).bindState({ count: 0 }),  // shadows parent
   ]).bindState({ count: 0 });
 
@@ -236,7 +236,7 @@ test("Variable shadowing error", () => {
 
 test("No state ancestor error", () => {
   const view = Div([
-    Span().bindText("data.orphan"),
+    Span().bindText("orphan"),
   ]);  // No bindState!
 
   const error = compile(view);
@@ -252,7 +252,7 @@ test("No state ancestor error", () => {
 section("ID Assignment");
 
 test("Reactive IDs are assigned after compile", () => {
-  const span = Span().bindText("data.text");
+  const span = Span().bindText("text");
   const view = Div([span]).bindState({ text: "hello" });
 
   compile(view);
@@ -262,9 +262,9 @@ test("Reactive IDs are assigned after compile", () => {
 });
 
 test("Multiple elements get unique IDs", () => {
-  const span1 = Span().bindText("data.a");
-  const span2 = Span().bindText("data.b");
-  const btn = Button("Click").onClick("data.a++");
+  const span1 = Span().bindText("a");
+  const span2 = Span().bindText("b");
+  const btn = Button("Click").onClick("a++");
 
   const view = Div([span1, span2, btn]).bindState({ a: 0, b: 0 });
   compile(view);
@@ -282,7 +282,7 @@ section("Render");
 
 test("Reactive ID appears in rendered HTML", () => {
   const view = Div([
-    Span().bindText("data.count"),
+    Span().bindText("count"),
   ]).bindState({ count: 0 });
 
   compile(view);
@@ -294,7 +294,7 @@ test("Reactive ID appears in rendered HTML", () => {
 test("Non-reactive elements have no ID", () => {
   const view = Div([
     Span("Static"),
-    Span().bindText("data.count"),
+    Span().bindText("count"),
   ]).bindState({ count: 0 });
 
   compile(view);
@@ -313,15 +313,14 @@ section("Script Generation");
 
 test("Basic script structure", () => {
   const view = Div([
-    Span().bindText("data.count"),
+    Span().bindText("count"),
   ]).bindState({ count: 0 });
 
   compile(view);
   const script = generateScript(view);
 
   assertContains(script, "(function()");
-  assertContains(script, "const data =");
-  assertContains(script, '{"count":0}');
+  assertContains(script, "let count =");
   assertContains(script, "function update()");
   assertContains(script, "update();");
   assertContains(script, "})();");
@@ -329,40 +328,40 @@ test("Basic script structure", () => {
 
 test("Script includes textContent binding", () => {
   const view = Div([
-    Span().bindText("data.message"),
+    Span().bindText("message"),
   ]).bindState({ message: "hello" });
 
   compile(view);
   const script = generateScript(view);
 
-  assertContains(script, "textContent = data.message");
+  assertContains(script, "textContent = message");
 });
 
 test("Script includes show binding", () => {
   const view = Div([
-    Div("Test").bindShow("data.visible"),
+    Div("Test").bindShow("visible"),
   ]).bindState({ visible: true });
 
   compile(view);
   const script = generateScript(view);
 
-  assertContains(script, 'style.display = (data.visible) ? "" : "none"');
+  assertContains(script, 'style.display = (visible) ? "" : "none"');
 });
 
 test("Script includes hide binding", () => {
   const view = Div([
-    Div("Test").bindHide("data.hidden"),
+    Div("Test").bindHide("hidden"),
   ]).bindState({ hidden: false });
 
   compile(view);
   const script = generateScript(view);
 
-  assertContains(script, 'style.display = (data.hidden) ? "none" : ""');
+  assertContains(script, 'style.display = (hidden) ? "none" : ""');
 });
 
 test("Script includes class binding", () => {
   const view = Div([
-    Button("Test").bindClass("active", "data.isActive"),
+    Button("Test").bindClass("active", "isActive"),
   ]).bindState({ isActive: false });
 
   compile(view);
@@ -373,33 +372,33 @@ test("Script includes class binding", () => {
 
 test("Script includes click handler", () => {
   const view = Div([
-    Button("Click").onClick("data.count++"),
+    Button("Click").onClick("count++"),
   ]).bindState({ count: 0 });
 
   compile(view);
   const script = generateScript(view);
 
   assertContains(script, 'addEventListener("click"');
-  assertContains(script, "data.count++");
+  assertContains(script, "count++");
   assertContains(script, "update();");  // Must call update after handler
 });
 
 test("Script includes input handler", () => {
   const view = Div([
-    Input().onInput("data.text = this.value"),
+    Input().onInput("text = this.value"),
   ]).bindState({ text: "" });
 
   compile(view);
   const script = generateScript(view);
 
   assertContains(script, 'addEventListener("input"');
-  assertContains(script, "data.text = this.value");
+  assertContains(script, "text = this.value");
 });
 
 test("Submit handler includes preventDefault", () => {
   const view = Form([
     Button("Submit"),
-  ]).onSubmit("data.done = true").bindState({ done: false });
+  ]).onSubmit("done = true").bindState({ done: false });
 
   compile(view);
   const script = generateScript(view);
@@ -409,7 +408,7 @@ test("Submit handler includes preventDefault", () => {
 
 test("renderWithScript combines HTML and script", () => {
   const view = Div([
-    Span().bindText("data.msg"),
+    Span().bindText("msg"),
   ]).bindState({ msg: "hi" });
 
   compile(view);
@@ -417,7 +416,7 @@ test("renderWithScript combines HTML and script", () => {
 
   assertContains(output, "<div");
   assertContains(output, "<script>");
-  assertContains(output, "const data =");
+  assertContains(output, "let msg =");
   assertContains(output, "</script>");
 });
 
@@ -429,30 +428,30 @@ section("Integration");
 
 test("Counter example", () => {
   const view = Div([
-    Span().bindText("'Count: ' + data.count"),
-    Button("Increment").onClick("data.count++"),
-    Button("Decrement").onClick("data.count--"),
-    Button("Reset").onClick("data.count = 0"),
+    Span().bindText("'Count: ' + count"),
+    Button("Increment").onClick("count++"),
+    Button("Decrement").onClick("count--"),
+    Button("Reset").onClick("count = 0"),
   ]).bindState({ count: 0 });
 
   const error = compile(view);
   assertNull(error);
 
   const script = generateScript(view);
-  assertContains(script, "data.count++");
-  assertContains(script, "data.count--");
-  assertContains(script, "data.count = 0");
+  assertContains(script, "count++");
+  assertContains(script, "count--");
+  assertContains(script, "count = 0");
 });
 
 test("Todo list example", () => {
   const view = Div([
     H1("Todos"),
     Input()
-      .bindValue("data.newTodo")
-      .onInput("data.newTodo = this.value")
-      .onKeydown("if (event.key === 'Enter') { data.todos.push(data.newTodo); data.newTodo = '' }"),
-    Div().bindShow("data.todos.length === 0").bindText("'No todos yet'"),
-    Ul().bindHtml("data.todos.map(t => '<li>' + t + '</li>').join('')"),
+      .bindValue("newTodo")
+      .onInput("newTodo = this.value")
+      .onKeydown("if (event.key === 'Enter') { todos.push(newTodo); newTodo = '' }"),
+    Div().bindShow("todos.length === 0").bindText("'No todos yet'"),
+    Ul().bindHtml("todos.map(t => '<li>' + t + '</li>').join('')"),
   ]).bindState({ todos: [], newTodo: "" });
 
   const error = compile(view);
@@ -460,23 +459,23 @@ test("Todo list example", () => {
 
   const script = generateScript(view);
   assertContains(script, "keydown");
-  assertContains(script, "data.newTodo = this.value");
+  assertContains(script, "newTodo = this.value");
 });
 
 test("Form with validation", () => {
   const view = Form([
     Input()
-      .bindValue("data.email")
-      .onInput("data.email = this.value")
-      .bindClass("error", "data.touched && !data.email.includes('@')"),
+      .bindValue("email")
+      .onInput("email = this.value")
+      .bindClass("error", "touched && !email.includes('@')"),
     Span()
       .bindText("'Invalid email'")
-      .bindShow("data.touched && !data.email.includes('@')"),
+      .bindShow("touched && !email.includes('@')"),
     Button("Submit")
-      .bindAttr("disabled", "data.submitting ? 'disabled' : null"),
+      .bindAttr("disabled", "submitting ? 'disabled' : null"),
   ])
-    .onSubmit("data.submitting = true")
-    .onBlur("data.touched = true")
+    .onSubmit("submitting = true")
+    .onBlur("touched = true")
     .bindState({ email: "", touched: false, submitting: false });
 
   const error = compile(view);
@@ -486,13 +485,13 @@ test("Form with validation", () => {
 test("Tabs component", () => {
   const view = Div([
     Div([
-      Button("Tab 1").onClick("data.activeTab = 0").bindClass("active", "data.activeTab === 0"),
-      Button("Tab 2").onClick("data.activeTab = 1").bindClass("active", "data.activeTab === 1"),
-      Button("Tab 3").onClick("data.activeTab = 2").bindClass("active", "data.activeTab === 2"),
+      Button("Tab 1").onClick("activeTab = 0").bindClass("active", "activeTab === 0"),
+      Button("Tab 2").onClick("activeTab = 1").bindClass("active", "activeTab === 1"),
+      Button("Tab 3").onClick("activeTab = 2").bindClass("active", "activeTab === 2"),
     ]),
-    Div("Content 1").bindShow("data.activeTab === 0"),
-    Div("Content 2").bindShow("data.activeTab === 1"),
-    Div("Content 3").bindShow("data.activeTab === 2"),
+    Div("Content 1").bindShow("activeTab === 0"),
+    Div("Content 2").bindShow("activeTab === 1"),
+    Div("Content 3").bindShow("activeTab === 2"),
   ]).bindState({ activeTab: 0 });
 
   const error = compile(view);
@@ -524,18 +523,18 @@ test("No reactive elements produces no script", () => {
 test("Multiple handlers on same element", () => {
   const view = Div([
     Button("Multi")
-      .onClick("data.a++")
-      .onClick("data.b++")
-      .onClick("data.c = data.a + data.b"),
+      .onClick("a++")
+      .onClick("b++")
+      .onClick("c = a + b"),
   ]).bindState({ a: 0, b: 0, c: 0 });
 
   const error = compile(view);
   assertNull(error);
 
   const script = generateScript(view);
-  assertContains(script, "data.a++");
-  assertContains(script, "data.b++");
-  assertContains(script, "data.c = data.a + data.b");
+  assertContains(script, "a++");
+  assertContains(script, "b++");
+  assertContains(script, "c = a + b");
 });
 
 test("Deeply nested bindings", () => {
@@ -543,7 +542,7 @@ test("Deeply nested bindings", () => {
     Div([
       Div([
         Div([
-          Span().bindText("data.deep"),
+          Span().bindText("deep"),
         ]),
       ]),
     ]),
@@ -553,7 +552,7 @@ test("Deeply nested bindings", () => {
   assertNull(error);
 
   const script = generateScript(view);
-  assertContains(script, "data.deep");
+  assertContains(script, "deep");
 });
 
 // ------------------------------------
@@ -566,10 +565,10 @@ test("Chaining works naturally", () => {
   const input = Input()
     .setType("text")
     .setClass("input")
-    .bindValue("data.text")
-    .onInput("data.text = this.value")
-    .onBlur("data.touched = true")
-    .bindClass("error", "data.touched && !data.text");
+    .bindValue("text")
+    .onInput("text = this.value")
+    .onBlur("touched = true")
+    .bindClass("error", "touched && !text");
 
   // Should not throw
   assertNotNull(input.reactive);
@@ -580,9 +579,9 @@ test("Mixed static and reactive attributes", () => {
     Button("Submit")
       .setClass("btn btn-primary")
       .setType("submit")
-      .bindClass("loading", "data.isLoading")
-      .bindAttr("disabled", "data.isLoading")
-      .onClick("data.isLoading = true"),
+      .bindClass("loading", "isLoading")
+      .bindAttr("disabled", "isLoading")
+      .onClick("isLoading = true"),
   ]).bindState({ isLoading: false });
 
   const error = compile(view);
