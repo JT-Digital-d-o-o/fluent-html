@@ -2,7 +2,7 @@ import { HTMX } from "./htmx.js";
 import { ReactiveProps } from "./reactive.js";
 export type Thunk<T> = () => T;
 export type View = Tag | string | View[];
-export declare class Tag {
+export declare class Tag<TSelf = any> {
     el: string;
     child: View;
     id?: string;
@@ -14,13 +14,70 @@ export declare class Tag {
     /** Reactive bindings. Created lazily on first reactive method call. */
     reactive?: ReactiveProps;
     constructor(element: string, child?: View);
-    setId(id?: string): this;
-    setClass(c?: string): this;
-    addClass(c: string): this;
-    setStyle(style?: string): this;
-    addAttribute(key: string, value: string): this;
-    setHtmx(htmx?: HTMX): this;
-    setToggles(toggles?: string[]): this;
+    setId(id?: string): TSelf;
+    setClass(c?: string): TSelf;
+    addClass(c: string): TSelf;
+    setStyle(style?: string): TSelf;
+    addAttribute(key: string, value: string): TSelf;
+    setHtmx(htmx?: HTMX): TSelf;
+    setToggles(toggles?: string[]): TSelf;
+    /**
+     * Set multiple CSS classes, filtering out falsy values.
+     *
+     * @param classes - Array of class names (falsy values are filtered out)
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Save").setClasses([
+     *   "btn",
+     *   props.disabled && "btn-disabled",
+     *   props.variant === "primary" ? "btn-primary" : "btn-secondary"
+     * ])
+     */
+    setClasses(classes: (string | false | null | undefined)[]): TSelf;
+    /**
+     * Set multiple inline styles from an object.
+     *
+     * @param styles - Object mapping CSS property names to values
+     * @returns this (for chaining)
+     *
+     * @example
+     * Div().setStyles({
+     *   width: "100px",
+     *   height: "50px",
+     *   backgroundColor: "blue"
+     * })
+     */
+    setStyles(styles: Record<string, string | number>): TSelf;
+    /**
+     * Set multiple data-* attributes at once.
+     *
+     * @param attrs - Object mapping data attribute names (without 'data-' prefix) to values
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Click").setDataAttrs({
+     *   testid: "submit-btn",
+     *   action: "save",
+     *   userId: "123"
+     * })
+     * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
+     */
+    setDataAttrs(attrs: Record<string, string>): TSelf;
+    /**
+     * Set ARIA attributes for accessibility.
+     *
+     * @param attrs - Object with ARIA attribute names (without 'aria-' prefix)
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Menu").setAria({
+     *   label: "Open menu",
+     *   expanded: "false",
+     *   controls: "menu-panel"
+     * })
+     */
+    setAria(attrs: Record<string, string | boolean>): TSelf;
     /**
      * Initialize reactive state on this element.
      * This element becomes the "reactive root" for all descendant bindings.
@@ -30,36 +87,36 @@ export declare class Tag {
      *
      * @example
      * Div([
-     *   Span().bindText("data.message"),
-     *   Button("Click").onClick("data.count++")
+     *   Span().bindText("message"),
+     *   Button("Click").onClick("count++")
      * ]).bindState({ message: "Hello", count: 0 })
      */
-    bindState(state: Record<string, any>): this;
+    bindState(state: Record<string, any>): TSelf;
     /**
      * Bind the element's textContent to an expression.
      *
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Span().bindText("data.count")
-     * Span().bindText("'Total: ' + data.items.length")
-     * Span().bindText("data.score >= 100 ? 'Winner!' : 'Keep going'")
+     * Span().bindText("count")
+     * Span().bindText("'Total: ' + items.length")
+     * Span().bindText("score >= 100 ? 'Winner!' : 'Keep going'")
      */
-    bindText(expr: string): this;
+    bindText(expr: string): TSelf;
     /**
      * Bind the element's innerHTML to an expression.
      *
      * ⚠️ WARNING: This can create XSS vulnerabilities if the expression
      * includes user-provided content. Only use with trusted data.
      *
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Div().bindHtml("data.richContent")
+     * Div().bindHtml("richContent")
      */
-    bindHtml(expr: string): this;
+    bindHtml(expr: string): TSelf;
     /**
      * Show/hide the element based on an expression.
      * When false, sets `display: none`. When true, removes the style.
@@ -68,10 +125,10 @@ export declare class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Div("Loading...").bindShow("data.isLoading")
-     * Div("Error!").bindShow("data.error !== null")
+     * Div("Loading...").bindShow("isLoading")
+     * Div("Error!").bindShow("error !== null")
      */
-    bindShow(expr: string): this;
+    bindShow(expr: string): TSelf;
     /**
      * Hide/show the element based on an expression (inverse of bindShow).
      * When true, sets `display: none`. When false, removes the style.
@@ -80,9 +137,9 @@ export declare class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Div("Content").bindHide("data.isLoading")
+     * Div("Content").bindHide("isLoading")
      */
-    bindHide(expr: string): this;
+    bindHide(expr: string): TSelf;
     /**
      * Toggle a CSS class based on an expression.
      *
@@ -91,55 +148,55 @@ export declare class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Button("Submit").bindClass("loading", "data.isSubmitting")
-     * Li("Item").bindClass("selected", "data.selectedId === item.id")
-     * Div().bindClass("error", "data.hasError").bindClass("success", "data.isValid")
+     * Button("Submit").bindClass("loading", "isSubmitting")
+     * Li("Item").bindClass("selected", "selectedId === item.id")
+     * Div().bindClass("error", "hasError").bindClass("success", "isValid")
      */
-    bindClass(className: string, expr: string): this;
+    bindClass(className: string, expr: string): TSelf;
     /**
      * Bind an attribute to an expression.
      * If expression evaluates to null/undefined, the attribute is removed.
      *
      * @param attr - Attribute name
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Button("Submit").bindAttr("disabled", "data.isSubmitting")
-     * A("Link").bindAttr("href", "data.url")
-     * Input().bindAttr("placeholder", "data.placeholderText")
+     * Button("Submit").bindAttr("disabled", "isSubmitting")
+     * A("Link").bindAttr("href", "url")
+     * Input().bindAttr("placeholder", "placeholderText")
      */
-    bindAttr(attr: string, expr: string): this;
+    bindAttr(attr: string, expr: string): TSelf;
     /**
      * Bind a CSS style property to an expression.
      *
      * @param property - CSS property name (camelCase or kebab-case)
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Div().bindStyle("color", "data.textColor")
-     * Div().bindStyle("backgroundColor", "data.isActive ? 'green' : 'gray'")
-     * Div().bindStyle("width", "data.progress + '%'")
+     * Div().bindStyle("color", "textColor")
+     * Div().bindStyle("backgroundColor", "isActive ? 'green' : 'gray'")
+     * Div().bindStyle("width", "progress + '%'")
      */
-    bindStyle(property: string, expr: string): this;
+    bindStyle(property: string, expr: string): TSelf;
     /**
      * Bind an input's value to an expression (one-way: data → input).
      * For two-way binding, combine with onInput().
      *
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
      * // One-way binding
-     * Input().bindValue("data.searchQuery")
+     * Input().bindValue("searchQuery")
      *
      * // Two-way binding
      * Input()
-     *   .bindValue("data.name")
-     *   .onInput("data.name = this.value")
+     *   .bindValue("name")
+     *   .onInput("name = this.value")
      */
-    bindValue(expr: string): this;
+    bindValue(expr: string): TSelf;
     /**
      * Add a click event handler.
      * Call multiple times to add multiple handlers.
@@ -153,16 +210,16 @@ export declare class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Button("Increment").onClick("data.count++")
-     * Button("Reset").onClick("data.count = 0")
-     * Button("Toggle").onClick("data.visible = !data.visible")
+     * Button("Increment").onClick("count++")
+     * Button("Reset").onClick("count = 0")
+     * Button("Toggle").onClick("visible = !visible")
      *
      * // Multiple handlers
      * Button("Do Both")
-     *   .onClick("data.count++")
-     *   .onClick("data.lastClicked = Date.now()")
+     *   .onClick("count++")
+     *   .onClick("lastClicked = Date.now()")
      */
-    onClick(statement: string): this;
+    onClick(statement: string): TSelf;
     /**
      * Add an input event handler (fires on every keystroke/change).
      *
@@ -175,15 +232,15 @@ export declare class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Input().onInput("data.searchQuery = this.value")
+     * Input().onInput("searchQuery = this.value")
      * Textarea().onInput("data.content = this.value")
      *
      * // Two-way binding pattern
      * Input()
-     *   .bindValue("data.name")
-     *   .onInput("data.name = this.value")
+     *   .bindValue("name")
+     *   .onInput("name = this.value")
      */
-    onInput(statement: string): this;
+    onInput(statement: string): TSelf;
     /**
      * Add a change event handler (fires when input loses focus or on select change).
      *
@@ -191,10 +248,10 @@ export declare class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Select().onChange("data.selectedOption = this.value")
+     * Select().onChange("selectedOption = this.value")
      * Input().setType("checkbox").onChange("data.agreed = this.checked")
      */
-    onChange(statement: string): this;
+    onChange(statement: string): TSelf;
     /**
      * Add a submit event handler (for forms).
      * Automatically calls event.preventDefault().
@@ -210,7 +267,7 @@ export declare class Tag {
      *   .onSubmit("data.submitted = true")
      *   .bindState({ email: "", submitted: false })
      */
-    onSubmit(statement: string): this;
+    onSubmit(statement: string): TSelf;
     /**
      * Add a keydown event handler.
      *
@@ -219,9 +276,9 @@ export declare class Tag {
      *
      * @example
      * Input().onKeydown("if (event.key === 'Enter') data.submit()")
-     * Input().onKeydown("if (event.key === 'Escape') data.query = ''")
+     * Input().onKeydown("if (event.key === 'Escape') query = ''")
      */
-    onKeydown(statement: string): this;
+    onKeydown(statement: string): TSelf;
     /**
      * Add a focus event handler.
      *
@@ -231,7 +288,7 @@ export declare class Tag {
      * @example
      * Input().onFocus("data.isFocused = true")
      */
-    onFocus(statement: string): this;
+    onFocus(statement: string): TSelf;
     /**
      * Add a blur event handler.
      *
@@ -242,7 +299,7 @@ export declare class Tag {
      * Input().onBlur("data.isFocused = false")
      * Input().onBlur("data.touched = true")
      */
-    onBlur(statement: string): this;
+    onBlur(statement: string): TSelf;
 }
 export declare function Empty(): View;
 export declare function El(el: string, child?: View): Tag;
@@ -307,7 +364,7 @@ export declare function Thead(child?: View): Tag;
 export declare function Tbody(child?: View): Tag;
 export declare function Tfoot(child?: View): Tag;
 export declare function Tr(child?: View): Tag;
-export declare class ThTag extends Tag {
+export declare class ThTag extends Tag<ThTag> {
     colspan?: number;
     rowspan?: number;
     scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
@@ -316,7 +373,7 @@ export declare class ThTag extends Tag {
     setScope(scope: 'row' | 'col' | 'rowgroup' | 'colgroup'): this;
 }
 export declare function Th(child?: View): ThTag;
-export declare class TdTag extends Tag {
+export declare class TdTag extends Tag<TdTag> {
     colspan?: number;
     rowspan?: number;
     setColspan(colspan: number): this;
@@ -324,17 +381,17 @@ export declare class TdTag extends Tag {
 }
 export declare function Td(child?: View): TdTag;
 export declare function Caption(child?: View): Tag;
-export declare class ColgroupTag extends Tag {
+export declare class ColgroupTag extends Tag<ColgroupTag> {
     span?: number;
     setSpan(span: number): this;
 }
 export declare function Colgroup(child?: View): ColgroupTag;
-export declare class ColTag extends Tag {
+export declare class ColTag extends Tag<ColTag> {
     span?: number;
     setSpan(span: number): this;
 }
 export declare function Col(child?: View): ColTag;
-export declare class InputTag extends Tag {
+export declare class InputTag extends Tag<InputTag> {
     type?: string;
     placeholder?: string;
     name?: string;
@@ -373,7 +430,7 @@ export declare class InputTag extends Tag {
     setList(list?: string): this;
 }
 export declare function Input(child?: View): InputTag;
-export declare class TextareaTag extends Tag {
+export declare class TextareaTag extends Tag<TextareaTag> {
     placeholder?: string;
     name?: string;
     rows?: number;
@@ -398,7 +455,7 @@ export declare class TextareaTag extends Tag {
     setReadonly(readonly?: boolean): this;
 }
 export declare function Textarea(child?: View): TextareaTag;
-export declare class ButtonTag extends Tag {
+export declare class ButtonTag extends Tag<ButtonTag> {
     type?: 'submit' | 'reset' | 'button';
     name?: string;
     value?: string;
@@ -413,12 +470,12 @@ export declare class ButtonTag extends Tag {
     setFormmethod(formmethod?: string): this;
 }
 export declare function Button(child?: View): ButtonTag;
-export declare class LabelTag extends Tag {
+export declare class LabelTag extends Tag<LabelTag> {
     for?: string;
     setFor(forId?: string): this;
 }
 export declare function Label(child?: View): LabelTag;
-export declare class FormTag extends Tag {
+export declare class FormTag extends Tag<FormTag> {
     action?: string;
     method?: string;
     enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
@@ -433,7 +490,7 @@ export declare class FormTag extends Tag {
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
 }
 export declare function Form(child?: View): FormTag;
-export declare class SelectTag extends Tag {
+export declare class SelectTag extends Tag<SelectTag> {
     name?: string;
     multiple?: boolean;
     size?: number;
@@ -446,7 +503,7 @@ export declare class SelectTag extends Tag {
     setAutofocus(autofocus?: boolean): this;
 }
 export declare function Select(child?: View): SelectTag;
-export declare class OptionTag extends Tag {
+export declare class OptionTag extends Tag<OptionTag> {
     value?: string;
     selected?: boolean;
     disabled?: boolean;
@@ -457,7 +514,7 @@ export declare class OptionTag extends Tag {
     setLabel(label?: string): this;
 }
 export declare function Option(child?: View): OptionTag;
-export declare class OptgroupTag extends Tag {
+export declare class OptgroupTag extends Tag<OptgroupTag> {
     label?: string;
     disabled?: boolean;
     setLabel(label?: string): this;
@@ -465,7 +522,7 @@ export declare class OptgroupTag extends Tag {
 }
 export declare function Optgroup(child?: View): OptgroupTag;
 export declare function Datalist(child?: View): Tag;
-export declare class FieldsetTag extends Tag {
+export declare class FieldsetTag extends Tag<FieldsetTag> {
     name?: string;
     disabled?: boolean;
     setName(name?: string): this;
@@ -473,14 +530,14 @@ export declare class FieldsetTag extends Tag {
 }
 export declare function Fieldset(child?: View): FieldsetTag;
 export declare function Legend(child?: View): Tag;
-export declare class OutputTag extends Tag {
+export declare class OutputTag extends Tag<OutputTag> {
     for?: string;
     name?: string;
     setFor(forId?: string): this;
     setName(name?: string): this;
 }
 export declare function Output(child?: View): OutputTag;
-export declare class DetailsTag extends Tag {
+export declare class DetailsTag extends Tag<DetailsTag> {
     open?: boolean;
     name?: string;
     setOpen(open?: boolean): this;
@@ -488,12 +545,12 @@ export declare class DetailsTag extends Tag {
 }
 export declare function Details(child?: View): DetailsTag;
 export declare function Summary(child?: View): Tag;
-export declare class DialogTag extends Tag {
+export declare class DialogTag extends Tag<DialogTag> {
     open?: boolean;
     setOpen(open?: boolean): this;
 }
 export declare function Dialog(child?: View): DialogTag;
-export declare class ImgTag extends Tag {
+export declare class ImgTag extends Tag<ImgTag> {
     src?: string;
     alt?: string;
     width?: string;
@@ -515,7 +572,7 @@ export declare class ImgTag extends Tag {
 }
 export declare function Img(child?: View): ImgTag;
 export declare function Picture(child?: View): Tag;
-export declare class SourceTag extends Tag {
+export declare class SourceTag extends Tag<SourceTag> {
     src?: string;
     srcset?: string;
     sizes?: string;
@@ -528,7 +585,7 @@ export declare class SourceTag extends Tag {
     setMedia(media?: string): this;
 }
 export declare function Source(child?: View): SourceTag;
-export declare class VideoTag extends Tag {
+export declare class VideoTag extends Tag<VideoTag> {
     width?: number;
     height?: number;
     controls?: boolean;
@@ -551,7 +608,7 @@ export declare class VideoTag extends Tag {
     setPlaysinline(playsinline?: boolean): this;
 }
 export declare function Video(child?: View): VideoTag;
-export declare class AudioTag extends Tag {
+export declare class AudioTag extends Tag<AudioTag> {
     src?: string;
     controls?: boolean;
     autoplay?: boolean;
@@ -566,7 +623,7 @@ export declare class AudioTag extends Tag {
     setPreload(preload?: 'none' | 'metadata' | 'auto'): this;
 }
 export declare function Audio(child?: View): AudioTag;
-export declare class TrackTag extends Tag {
+export declare class TrackTag extends Tag<TrackTag> {
     src?: string;
     kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
     srclang?: string;
@@ -579,14 +636,14 @@ export declare class TrackTag extends Tag {
     setDefault(isDefault?: boolean): this;
 }
 export declare function Track(child?: View): TrackTag;
-export declare class CanvasTag extends Tag {
+export declare class CanvasTag extends Tag<CanvasTag> {
     width?: number;
     height?: number;
     setWidth(width: number): this;
     setHeight(height: number): this;
 }
 export declare function Canvas(child?: View): CanvasTag;
-export declare class SvgTag extends Tag {
+export declare class SvgTag extends Tag<SvgTag> {
     width?: string;
     height?: string;
     viewBox?: string;
@@ -613,7 +670,7 @@ export declare function Defs(child?: View): Tag;
 export declare function Use(child?: View): Tag;
 export declare function Text(child?: View): Tag;
 export declare function Tspan(child?: View): Tag;
-export declare class IframeTag extends Tag {
+export declare class IframeTag extends Tag<IframeTag> {
     src?: string;
     srcdoc?: string;
     width?: string;
@@ -636,7 +693,7 @@ export declare class IframeTag extends Tag {
     setReferrerpolicy(referrerpolicy?: string): this;
 }
 export declare function Iframe(child?: View): IframeTag;
-export declare class ObjectTag extends Tag {
+export declare class ObjectTag extends Tag<ObjectTag> {
     data?: string;
     type?: string;
     width?: string;
@@ -649,7 +706,7 @@ export declare class ObjectTag extends Tag {
     setName(name?: string): this;
 }
 export declare function ObjectEl(child?: View): ObjectTag;
-export declare class EmbedTag extends Tag {
+export declare class EmbedTag extends Tag<EmbedTag> {
     src?: string;
     type?: string;
     width?: string;
@@ -660,7 +717,7 @@ export declare class EmbedTag extends Tag {
     setHeight(height?: string): this;
 }
 export declare function Embed(child?: View): EmbedTag;
-export declare class AnchorTag extends Tag {
+export declare class AnchorTag extends Tag<AnchorTag> {
     href?: string;
     target?: '_self' | '_blank' | '_parent' | '_top' | string;
     rel?: string;
@@ -675,12 +732,12 @@ export declare class AnchorTag extends Tag {
     setReferrerpolicy(referrerpolicy?: string): this;
 }
 export declare function A(child?: View): AnchorTag;
-export declare class MapTag extends Tag {
+export declare class MapTag extends Tag<MapTag> {
     name?: string;
     setName(name?: string): this;
 }
 export declare function MapEl(child?: View): MapTag;
-export declare class AreaTag extends Tag {
+export declare class AreaTag extends Tag<AreaTag> {
     shape?: 'rect' | 'circle' | 'poly' | 'default';
     coords?: string;
     href?: string;
@@ -701,7 +758,7 @@ export declare function HTML(child?: View): Tag;
 export declare function Head(child?: View): Tag;
 export declare function Body(child?: View): Tag;
 export declare function Title(child?: View): Tag;
-export declare class MetaTag extends Tag {
+export declare class MetaTag extends Tag<MetaTag> {
     name?: string;
     content?: string;
     charset?: string;
@@ -714,7 +771,7 @@ export declare class MetaTag extends Tag {
     setProperty(property?: string): this;
 }
 export declare function Meta(): MetaTag;
-export declare class LinkTag extends Tag {
+export declare class LinkTag extends Tag<LinkTag> {
     rel?: string;
     href?: string;
     type?: string;
@@ -733,14 +790,14 @@ export declare class LinkTag extends Tag {
     setAs(as?: string): this;
 }
 export declare function Link(): LinkTag;
-export declare class StyleTag extends Tag {
+export declare class StyleTag extends Tag<StyleTag> {
     media?: string;
     type?: string;
     setMedia(media?: string): this;
     setType(type?: string): this;
 }
 export declare function Style(css: string): StyleTag;
-export declare class BaseTag extends Tag {
+export declare class BaseTag extends Tag<BaseTag> {
     href?: string;
     target?: string;
     setHref(href?: string): this;
@@ -749,7 +806,7 @@ export declare class BaseTag extends Tag {
 export declare function Base(): BaseTag;
 export declare function Noscript(child?: View): Tag;
 export declare function Template(child?: View): Tag;
-export declare class ScriptTag extends Tag {
+export declare class ScriptTag extends Tag<ScriptTag> {
     src?: string;
     type?: string;
     async?: boolean;
@@ -766,24 +823,24 @@ export declare class ScriptTag extends Tag {
     setNomodule(nomodule?: boolean): this;
 }
 export declare function Script(js?: string): ScriptTag;
-export declare class TimeTag extends Tag {
+export declare class TimeTag extends Tag<TimeTag> {
     datetime?: string;
     setDatetime(datetime?: string): this;
 }
 export declare function Time(child?: View): TimeTag;
-export declare class DataTag extends Tag {
+export declare class DataTag extends Tag<DataTag> {
     value?: string;
     setValue(value?: string): this;
 }
 export declare function Data(child?: View): DataTag;
-export declare class ProgressTag extends Tag {
+export declare class ProgressTag extends Tag<ProgressTag> {
     value?: number;
     max?: number;
     setValue(value?: number): this;
     setMax(max?: number): this;
 }
 export declare function Progress(child?: View): ProgressTag;
-export declare class MeterTag extends Tag {
+export declare class MeterTag extends Tag<MeterTag> {
     value?: number;
     min?: number;
     max?: number;
@@ -798,7 +855,7 @@ export declare class MeterTag extends Tag {
     setOptimum(optimum?: number): this;
 }
 export declare function Meter(child?: View): MeterTag;
-export declare class SlotTag extends Tag {
+export declare class SlotTag extends Tag<SlotTag> {
     name?: string;
     setName(name?: string): this;
 }

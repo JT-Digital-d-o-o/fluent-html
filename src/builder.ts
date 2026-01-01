@@ -9,7 +9,7 @@ export type Thunk<T> = () => T;
 
 export type View = Tag | string | View[];
 
-export class Tag {
+export class Tag<TSelf = any> {
   el: string;
   child: View;
 
@@ -29,47 +29,131 @@ export class Tag {
     this.attributes = {};
   }
 
-  // ------------------------------------
-  // Existing methods (unchanged)
-  // ------------------------------------
-
-  setId(id?: string): this {
+  setId(id?: string): TSelf {
     this.id = id;
-    return this;
+    return this as any as TSelf;
   }
 
-  setClass(c?: string): this {
+  setClass(c?: string): TSelf {
     this.class = c;
-    return this;
+    return this as any as TSelf;
   }
 
-  addClass(c: string): this {
+  addClass(c: string): TSelf {
     if (this.class) {
       this.class += ` ${c}`;
     } else {
       this.class = c;
     }
-    return this;
+    return this as any as TSelf;
   }
 
-  setStyle(style?: string): this {
+  setStyle(style?: string): TSelf {
     this.style = style;
-    return this;
+    return this as any as TSelf;
   }
 
-  addAttribute(key: string, value: string): this {
+  addAttribute(key: string, value: string): TSelf {
     this.attributes[key] = value;
-    return this;
+    return this as any as TSelf;
   }
 
-  setHtmx(htmx?: HTMX): this {
+  setHtmx(htmx?: HTMX): TSelf {
     this.htmx = htmx;
-    return this;
+    return this as any as TSelf;
   }
 
-  setToggles(toggles?: string[]): this {
+  setToggles(toggles?: string[]): TSelf {
     this.toggles = toggles;
-    return this;
+    return this as any as TSelf;
+  }
+
+  /**
+   * Set multiple CSS classes, filtering out falsy values.
+   *
+   * @param classes - Array of class names (falsy values are filtered out)
+   * @returns this (for chaining)
+   *
+   * @example
+   * Button("Save").setClasses([
+   *   "btn",
+   *   props.disabled && "btn-disabled",
+   *   props.variant === "primary" ? "btn-primary" : "btn-secondary"
+   * ])
+   */
+  setClasses(classes: (string | false | null | undefined)[]): TSelf {
+    this.class = classes.filter(Boolean).join(" ");
+    return this as any as TSelf;
+  }
+
+  /**
+   * Set multiple inline styles from an object.
+   *
+   * @param styles - Object mapping CSS property names to values
+   * @returns this (for chaining)
+   *
+   * @example
+   * Div().setStyles({
+   *   width: "100px",
+   *   height: "50px",
+   *   backgroundColor: "blue"
+   * })
+   */
+  setStyles(styles: Record<string, string | number>): TSelf {
+    const styleString = Object.entries(styles)
+      .map(([key, value]) => {
+        // Convert camelCase to kebab-case
+        const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+        return `${kebabKey}: ${value}`;
+      })
+      .join("; ");
+    this.style = styleString;
+    return this as any as TSelf;
+  }
+
+  /**
+   * Set multiple data-* attributes at once.
+   *
+   * @param attrs - Object mapping data attribute names (without 'data-' prefix) to values
+   * @returns this (for chaining)
+   *
+   * @example
+   * Button("Click").setDataAttrs({
+   *   testid: "submit-btn",
+   *   action: "save",
+   *   userId: "123"
+   * })
+   * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
+   */
+  setDataAttrs(attrs: Record<string, string>): TSelf {
+    for (const [key, value] of Object.entries(attrs)) {
+      // Convert camelCase to kebab-case
+      const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+      this.attributes[`data-${kebabKey}`] = value;
+    }
+    return this as any as TSelf;
+  }
+
+  /**
+   * Set ARIA attributes for accessibility.
+   *
+   * @param attrs - Object with ARIA attribute names (without 'aria-' prefix)
+   * @returns this (for chaining)
+   *
+   * @example
+   * Button("Menu").setAria({
+   *   label: "Open menu",
+   *   expanded: "false",
+   *   controls: "menu-panel"
+   * })
+   */
+  setAria(attrs: Record<string, string | boolean>): TSelf {
+    for (const [key, value] of Object.entries(attrs)) {
+      // Convert camelCase to kebab-case
+      const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+      this.attributes[`aria-${kebabKey}`] = String(value);
+    }
+    return this as any as TSelf;
   }
 
   // ------------------------------------
@@ -81,12 +165,12 @@ export class Tag {
   //   on*    → DOM events flow FROM the DOM (event handlers)
   //
   // EXPRESSIONS (for bind* methods):
-  //   Reference state via `data.propertyName`
-  //   Example: "data.count + 1" or "data.items.length > 0"
+  //   Reference state variables directly
+  //   Example: "count + 1" or "items.length > 0"
   //
   // STATEMENTS (for on* methods):
-  //   Mutate state via `data.propertyName = value`
-  //   Example: "data.count++" or "data.name = event.target.value"
+  //   Mutate state variables directly
+  //   Example: "count++" or "name = event.target.value"
   //   Use `this` to reference the DOM element
   //   Use `event` to reference the event object
   //
@@ -100,31 +184,31 @@ export class Tag {
    *
    * @example
    * Div([
-   *   Span().bindText("data.message"),
-   *   Button("Click").onClick("data.count++")
+   *   Span().bindText("message"),
+   *   Button("Click").onClick("count++")
    * ]).bindState({ message: "Hello", count: 0 })
    */
-  bindState(state: Record<string, any>): this {
+  bindState(state: Record<string, any>): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.state = state;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
    * Bind the element's textContent to an expression.
    *
-   * @param expr - JavaScript expression referencing `data.*`
+   * @param expr - JavaScript expression referencing ``
    * @returns this (for chaining)
    *
    * @example
-   * Span().bindText("data.count")
-   * Span().bindText("'Total: ' + data.items.length")
-   * Span().bindText("data.score >= 100 ? 'Winner!' : 'Keep going'")
+   * Span().bindText("count")
+   * Span().bindText("'Total: ' + items.length")
+   * Span().bindText("score >= 100 ? 'Winner!' : 'Keep going'")
    */
-  bindText(expr: string): this {
+  bindText(expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.textExpr = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -133,16 +217,16 @@ export class Tag {
    * ⚠️ WARNING: This can create XSS vulnerabilities if the expression
    * includes user-provided content. Only use with trusted data.
    *
-   * @param expr - JavaScript expression referencing `data.*`
+   * @param expr - JavaScript expression referencing ``
    * @returns this (for chaining)
    *
    * @example
-   * Div().bindHtml("data.richContent")
+   * Div().bindHtml("richContent")
    */
-  bindHtml(expr: string): this {
+  bindHtml(expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.htmlExpr = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -153,13 +237,13 @@ export class Tag {
    * @returns this (for chaining)
    *
    * @example
-   * Div("Loading...").bindShow("data.isLoading")
-   * Div("Error!").bindShow("data.error !== null")
+   * Div("Loading...").bindShow("isLoading")
+   * Div("Error!").bindShow("error !== null")
    */
-  bindShow(expr: string): this {
+  bindShow(expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.showExpr = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -170,12 +254,12 @@ export class Tag {
    * @returns this (for chaining)
    *
    * @example
-   * Div("Content").bindHide("data.isLoading")
+   * Div("Content").bindHide("isLoading")
    */
-  bindHide(expr: string): this {
+  bindHide(expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.hideExpr = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -186,15 +270,15 @@ export class Tag {
    * @returns this (for chaining)
    *
    * @example
-   * Button("Submit").bindClass("loading", "data.isSubmitting")
-   * Li("Item").bindClass("selected", "data.selectedId === item.id")
-   * Div().bindClass("error", "data.hasError").bindClass("success", "data.isValid")
+   * Button("Submit").bindClass("loading", "isSubmitting")
+   * Li("Item").bindClass("selected", "selectedId === item.id")
+   * Div().bindClass("error", "hasError").bindClass("success", "isValid")
    */
-  bindClass(className: string, expr: string): this {
+  bindClass(className: string, expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.classExprs ??= {};
     this.reactive.classExprs[className] = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -202,60 +286,60 @@ export class Tag {
    * If expression evaluates to null/undefined, the attribute is removed.
    *
    * @param attr - Attribute name
-   * @param expr - JavaScript expression referencing `data.*`
+   * @param expr - JavaScript expression referencing ``
    * @returns this (for chaining)
    *
    * @example
-   * Button("Submit").bindAttr("disabled", "data.isSubmitting")
-   * A("Link").bindAttr("href", "data.url")
-   * Input().bindAttr("placeholder", "data.placeholderText")
+   * Button("Submit").bindAttr("disabled", "isSubmitting")
+   * A("Link").bindAttr("href", "url")
+   * Input().bindAttr("placeholder", "placeholderText")
    */
-  bindAttr(attr: string, expr: string): this {
+  bindAttr(attr: string, expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.attrExprs ??= {};
     this.reactive.attrExprs[attr] = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
    * Bind a CSS style property to an expression.
    *
    * @param property - CSS property name (camelCase or kebab-case)
-   * @param expr - JavaScript expression referencing `data.*`
+   * @param expr - JavaScript expression referencing ``
    * @returns this (for chaining)
    *
    * @example
-   * Div().bindStyle("color", "data.textColor")
-   * Div().bindStyle("backgroundColor", "data.isActive ? 'green' : 'gray'")
-   * Div().bindStyle("width", "data.progress + '%'")
+   * Div().bindStyle("color", "textColor")
+   * Div().bindStyle("backgroundColor", "isActive ? 'green' : 'gray'")
+   * Div().bindStyle("width", "progress + '%'")
    */
-  bindStyle(property: string, expr: string): this {
+  bindStyle(property: string, expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.styleExprs ??= {};
     this.reactive.styleExprs[property] = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
    * Bind an input's value to an expression (one-way: data → input).
    * For two-way binding, combine with onInput().
    *
-   * @param expr - JavaScript expression referencing `data.*`
+   * @param expr - JavaScript expression referencing ``
    * @returns this (for chaining)
    *
    * @example
    * // One-way binding
-   * Input().bindValue("data.searchQuery")
+   * Input().bindValue("searchQuery")
    *
    * // Two-way binding
    * Input()
-   *   .bindValue("data.name")
-   *   .onInput("data.name = this.value")
+   *   .bindValue("name")
+   *   .onInput("name = this.value")
    */
-  bindValue(expr: string): this {
+  bindValue(expr: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.valueExpr = expr;
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -271,19 +355,19 @@ export class Tag {
    * @returns this (for chaining)
    *
    * @example
-   * Button("Increment").onClick("data.count++")
-   * Button("Reset").onClick("data.count = 0")
-   * Button("Toggle").onClick("data.visible = !data.visible")
+   * Button("Increment").onClick("count++")
+   * Button("Reset").onClick("count = 0")
+   * Button("Toggle").onClick("visible = !visible")
    *
    * // Multiple handlers
    * Button("Do Both")
-   *   .onClick("data.count++")
-   *   .onClick("data.lastClicked = Date.now()")
+   *   .onClick("count++")
+   *   .onClick("lastClicked = Date.now()")
    */
-  onClick(statement: string): this {
+  onClick(statement: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.clickHandlers.push(statement);
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -298,18 +382,18 @@ export class Tag {
    * @returns this (for chaining)
    *
    * @example
-   * Input().onInput("data.searchQuery = this.value")
+   * Input().onInput("searchQuery = this.value")
    * Textarea().onInput("data.content = this.value")
    *
    * // Two-way binding pattern
    * Input()
-   *   .bindValue("data.name")
-   *   .onInput("data.name = this.value")
+   *   .bindValue("name")
+   *   .onInput("name = this.value")
    */
-  onInput(statement: string): this {
+  onInput(statement: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.inputHandlers.push(statement);
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -319,13 +403,13 @@ export class Tag {
    * @returns this (for chaining)
    *
    * @example
-   * Select().onChange("data.selectedOption = this.value")
+   * Select().onChange("selectedOption = this.value")
    * Input().setType("checkbox").onChange("data.agreed = this.checked")
    */
-  onChange(statement: string): this {
+  onChange(statement: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.changeHandlers.push(statement);
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -343,10 +427,10 @@ export class Tag {
    *   .onSubmit("data.submitted = true")
    *   .bindState({ email: "", submitted: false })
    */
-  onSubmit(statement: string): this {
+  onSubmit(statement: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.submitHandlers.push(statement);
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -357,12 +441,12 @@ export class Tag {
    *
    * @example
    * Input().onKeydown("if (event.key === 'Enter') data.submit()")
-   * Input().onKeydown("if (event.key === 'Escape') data.query = ''")
+   * Input().onKeydown("if (event.key === 'Escape') query = ''")
    */
-  onKeydown(statement: string): this {
+  onKeydown(statement: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.keydownHandlers.push(statement);
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -374,10 +458,10 @@ export class Tag {
    * @example
    * Input().onFocus("data.isFocused = true")
    */
-  onFocus(statement: string): this {
+  onFocus(statement: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.focusHandlers.push(statement);
-    return this;
+    return this as any as TSelf;
   }
 
   /**
@@ -390,10 +474,10 @@ export class Tag {
    * Input().onBlur("data.isFocused = false")
    * Input().onBlur("data.touched = true")
    */
-  onBlur(statement: string): this {
+  onBlur(statement: string): TSelf {
     this.reactive ??= createReactiveProps();
     this.reactive.blurHandlers.push(statement);
-    return this;
+    return this as any as TSelf;
   }
 }
 
@@ -671,7 +755,7 @@ export function Tr(child: View = Empty()): Tag {
   return El("tr", child);
 }
 
-export class ThTag extends Tag {
+export class ThTag extends Tag<ThTag> {
   colspan?: number;
   rowspan?: number;
   scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
@@ -696,7 +780,7 @@ export function Th(child: View = Empty()): ThTag {
   return new ThTag("th", child);
 }
 
-export class TdTag extends Tag {
+export class TdTag extends Tag<TdTag> {
   colspan?: number;
   rowspan?: number;
 
@@ -719,7 +803,7 @@ export function Caption(child: View = Empty()): Tag {
   return El("caption", child);
 }
 
-export class ColgroupTag extends Tag {
+export class ColgroupTag extends Tag<ColgroupTag> {
   span?: number;
 
   setSpan(span: number): this {
@@ -732,7 +816,7 @@ export function Colgroup(child: View = Empty()): ColgroupTag {
   return new ColgroupTag("colgroup", child);
 }
 
-export class ColTag extends Tag {
+export class ColTag extends Tag<ColTag> {
   span?: number;
 
   setSpan(span: number): this {
@@ -749,7 +833,7 @@ export function Col(child: View = Empty()): ColTag {
 // Forms
 // ------------------------------------
 
-export class InputTag extends Tag {
+export class InputTag extends Tag<InputTag> {
   type?: string;
   placeholder?: string;
   name?: string;
@@ -864,7 +948,7 @@ export function Input(child: View = Empty()): InputTag {
   return new InputTag("input", child);
 }
 
-export class TextareaTag extends Tag {
+export class TextareaTag extends Tag<TextareaTag> {
   placeholder?: string;
   name?: string;
   rows?: number;
@@ -937,7 +1021,7 @@ export function Textarea(child: View = Empty()): TextareaTag {
   return new TextareaTag("textarea", child);
 }
 
-export class ButtonTag extends Tag {
+export class ButtonTag extends Tag<ButtonTag> {
   type?: 'submit' | 'reset' | 'button';
   name?: string;
   value?: string;
@@ -980,7 +1064,7 @@ export function Button(child: View = Empty()): ButtonTag {
   return new ButtonTag("button", child);
 }
 
-export class LabelTag extends Tag {
+export class LabelTag extends Tag<LabelTag> {
   for?: string;
 
   setFor(forId?: string): this {
@@ -993,7 +1077,7 @@ export function Label(child: View = Empty()): LabelTag {
   return new LabelTag("label", child);
 }
 
-export class FormTag extends Tag {
+export class FormTag extends Tag<FormTag> {
   action?: string;
   method?: string;
   enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
@@ -1036,7 +1120,7 @@ export function Form(child: View = Empty()): FormTag {
   return new FormTag("form", child);
 }
 
-export class SelectTag extends Tag {
+export class SelectTag extends Tag<SelectTag> {
   name?: string;
   multiple?: boolean;
   size?: number;
@@ -1073,7 +1157,7 @@ export function Select(child: View = Empty()): SelectTag {
   return new SelectTag("select", child);
 }
 
-export class OptionTag extends Tag {
+export class OptionTag extends Tag<OptionTag> {
   value?: string;
   selected?: boolean;
   disabled?: boolean;
@@ -1104,7 +1188,7 @@ export function Option(child: View = Empty()): OptionTag {
   return new OptionTag("option", child);
 }
 
-export class OptgroupTag extends Tag {
+export class OptgroupTag extends Tag<OptgroupTag> {
   label?: string;
   disabled?: boolean;
 
@@ -1127,7 +1211,7 @@ export function Datalist(child: View = Empty()): Tag {
   return El("datalist", child);
 }
 
-export class FieldsetTag extends Tag {
+export class FieldsetTag extends Tag<FieldsetTag> {
   name?: string;
   disabled?: boolean;
 
@@ -1150,7 +1234,7 @@ export function Legend(child: View = Empty()): Tag {
   return El("legend", child);
 }
 
-export class OutputTag extends Tag {
+export class OutputTag extends Tag<OutputTag> {
   for?: string;
   name?: string;
 
@@ -1173,7 +1257,7 @@ export function Output(child: View = Empty()): OutputTag {
 // Interactive Elements
 // ------------------------------------
 
-export class DetailsTag extends Tag {
+export class DetailsTag extends Tag<DetailsTag> {
   open?: boolean;
   name?: string;
 
@@ -1196,7 +1280,7 @@ export function Summary(child: View = Empty()): Tag {
   return El("summary", child);
 }
 
-export class DialogTag extends Tag {
+export class DialogTag extends Tag<DialogTag> {
   open?: boolean;
 
   setOpen(open: boolean = true): this {
@@ -1213,7 +1297,7 @@ export function Dialog(child: View = Empty()): DialogTag {
 // Media Elements
 // ------------------------------------
 
-export class ImgTag extends Tag {
+export class ImgTag extends Tag<ImgTag> {
   src?: string;
   alt?: string;
   width?: string;
@@ -1278,7 +1362,7 @@ export function Picture(child: View = Empty()): Tag {
   return El("picture", child);
 }
 
-export class SourceTag extends Tag {
+export class SourceTag extends Tag<SourceTag> {
   src?: string;
   srcset?: string;
   sizes?: string;
@@ -1315,7 +1399,7 @@ export function Source(child: View = Empty()): SourceTag {
   return new SourceTag("source", child);
 }
 
-export class VideoTag extends Tag {
+export class VideoTag extends Tag<VideoTag> {
   width?: number;
   height?: number;
   controls?: boolean;
@@ -1382,7 +1466,7 @@ export function Video(child: View = Empty()): VideoTag {
   return new VideoTag("video", child);
 }
 
-export class AudioTag extends Tag {
+export class AudioTag extends Tag<AudioTag> {
   src?: string;
   controls?: boolean;
   autoplay?: boolean;
@@ -1425,7 +1509,7 @@ export function Audio(child: View = Empty()): AudioTag {
   return new AudioTag("audio", child);
 }
 
-export class TrackTag extends Tag {
+export class TrackTag extends Tag<TrackTag> {
   src?: string;
   kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
   srclang?: string;
@@ -1462,7 +1546,7 @@ export function Track(child: View = Empty()): TrackTag {
   return new TrackTag("track", child);
 }
 
-export class CanvasTag extends Tag {
+export class CanvasTag extends Tag<CanvasTag> {
   width?: number;
   height?: number;
 
@@ -1481,7 +1565,7 @@ export function Canvas(child: View = Empty()): CanvasTag {
   return new CanvasTag("canvas", child);
 }
 
-export class SvgTag extends Tag {
+export class SvgTag extends Tag<SvgTag> {
   width?: string;
   height?: string;
   viewBox?: string;
@@ -1577,7 +1661,7 @@ export function Tspan(child: View = Empty()): Tag {
 // Embedded Content
 // ------------------------------------
 
-export class IframeTag extends Tag {
+export class IframeTag extends Tag<IframeTag> {
   src?: string;
   srcdoc?: string;
   width?: string;
@@ -1644,7 +1728,7 @@ export function Iframe(child: View = Empty()): IframeTag {
   return new IframeTag("iframe", child);
 }
 
-export class ObjectTag extends Tag {
+export class ObjectTag extends Tag<ObjectTag> {
   data?: string;
   type?: string;
   width?: string;
@@ -1681,7 +1765,7 @@ export function ObjectEl(child: View = Empty()): ObjectTag {
   return new ObjectTag("object", child);
 }
 
-export class EmbedTag extends Tag {
+export class EmbedTag extends Tag<EmbedTag> {
   src?: string;
   type?: string;
   width?: string;
@@ -1716,7 +1800,7 @@ export function Embed(child: View = Empty()): EmbedTag {
 // Links and Anchors
 // ------------------------------------
 
-export class AnchorTag extends Tag {
+export class AnchorTag extends Tag<AnchorTag> {
   href?: string;
   target?: '_self' | '_blank' | '_parent' | '_top' | string;
   rel?: string;
@@ -1759,7 +1843,7 @@ export function A(child: View = Empty()): AnchorTag {
   return new AnchorTag("a", child);
 }
 
-export class MapTag extends Tag {
+export class MapTag extends Tag<MapTag> {
   name?: string;
 
   setName(name?: string): this {
@@ -1772,7 +1856,7 @@ export function MapEl(child: View = Empty()): MapTag {
   return new MapTag("map", child);
 }
 
-export class AreaTag extends Tag {
+export class AreaTag extends Tag<AreaTag> {
   shape?: 'rect' | 'circle' | 'poly' | 'default';
   coords?: string;
   href?: string;
@@ -1841,7 +1925,7 @@ export function Title(child?: View): Tag {
   return El("title", child);
 }
 
-export class MetaTag extends Tag {
+export class MetaTag extends Tag<MetaTag> {
   name?: string;
   content?: string;
   charset?: string;
@@ -1878,7 +1962,7 @@ export function Meta(): MetaTag {
   return new MetaTag("meta");
 }
 
-export class LinkTag extends Tag {
+export class LinkTag extends Tag<LinkTag> {
   rel?: string;
   href?: string;
   type?: string;
@@ -1933,7 +2017,7 @@ export function Link(): LinkTag {
   return new LinkTag("link");
 }
 
-export class StyleTag extends Tag {
+export class StyleTag extends Tag<StyleTag> {
   media?: string;
   type?: string;
 
@@ -1952,7 +2036,7 @@ export function Style(css: string): StyleTag {
   return new StyleTag("style", css);
 }
 
-export class BaseTag extends Tag {
+export class BaseTag extends Tag<BaseTag> {
   href?: string;
   target?: string;
 
@@ -1979,7 +2063,7 @@ export function Template(child: View = Empty()): Tag {
   return El("template", child);
 }
 
-export class ScriptTag extends Tag {
+export class ScriptTag extends Tag<ScriptTag> {
   src?: string;
   type?: string;
   async?: boolean;
@@ -2032,7 +2116,7 @@ export function Script(js: string = ""): ScriptTag {
 // Data / Time Elements
 // ------------------------------------
 
-export class TimeTag extends Tag {
+export class TimeTag extends Tag<TimeTag> {
   datetime?: string;
 
   setDatetime(datetime?: string): this {
@@ -2045,7 +2129,7 @@ export function Time(child: View = Empty()): TimeTag {
   return new TimeTag("time", child);
 }
 
-export class DataTag extends Tag {
+export class DataTag extends Tag<DataTag> {
   value?: string;
 
   setValue(value?: string): this {
@@ -2062,7 +2146,7 @@ export function Data(child: View = Empty()): DataTag {
 // Progress / Meter
 // ------------------------------------
 
-export class ProgressTag extends Tag {
+export class ProgressTag extends Tag<ProgressTag> {
   value?: number;
   max?: number;
 
@@ -2081,7 +2165,7 @@ export function Progress(child: View = Empty()): ProgressTag {
   return new ProgressTag("progress", child);
 }
 
-export class MeterTag extends Tag {
+export class MeterTag extends Tag<MeterTag> {
   value?: number;
   min?: number;
   max?: number;
@@ -2128,7 +2212,7 @@ export function Meter(child: View = Empty()): MeterTag {
 // Slot / Template (Web Components)
 // ------------------------------------
 
-export class SlotTag extends Tag {
+export class SlotTag extends Tag<SlotTag> {
   name?: string;
 
   setName(name?: string): this {

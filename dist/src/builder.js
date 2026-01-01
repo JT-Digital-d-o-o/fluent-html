@@ -146,9 +146,6 @@ class Tag {
         this.child = child;
         this.attributes = {};
     }
-    // ------------------------------------
-    // Existing methods (unchanged)
-    // ------------------------------------
     setId(id) {
         this.id = id;
         return this;
@@ -182,6 +179,90 @@ class Tag {
         this.toggles = toggles;
         return this;
     }
+    /**
+     * Set multiple CSS classes, filtering out falsy values.
+     *
+     * @param classes - Array of class names (falsy values are filtered out)
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Save").setClasses([
+     *   "btn",
+     *   props.disabled && "btn-disabled",
+     *   props.variant === "primary" ? "btn-primary" : "btn-secondary"
+     * ])
+     */
+    setClasses(classes) {
+        this.class = classes.filter(Boolean).join(" ");
+        return this;
+    }
+    /**
+     * Set multiple inline styles from an object.
+     *
+     * @param styles - Object mapping CSS property names to values
+     * @returns this (for chaining)
+     *
+     * @example
+     * Div().setStyles({
+     *   width: "100px",
+     *   height: "50px",
+     *   backgroundColor: "blue"
+     * })
+     */
+    setStyles(styles) {
+        const styleString = Object.entries(styles)
+            .map(([key, value]) => {
+            // Convert camelCase to kebab-case
+            const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+            return `${kebabKey}: ${value}`;
+        })
+            .join("; ");
+        this.style = styleString;
+        return this;
+    }
+    /**
+     * Set multiple data-* attributes at once.
+     *
+     * @param attrs - Object mapping data attribute names (without 'data-' prefix) to values
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Click").setDataAttrs({
+     *   testid: "submit-btn",
+     *   action: "save",
+     *   userId: "123"
+     * })
+     * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
+     */
+    setDataAttrs(attrs) {
+        for (const [key, value] of Object.entries(attrs)) {
+            // Convert camelCase to kebab-case
+            const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+            this.attributes[`data-${kebabKey}`] = value;
+        }
+        return this;
+    }
+    /**
+     * Set ARIA attributes for accessibility.
+     *
+     * @param attrs - Object with ARIA attribute names (without 'aria-' prefix)
+     * @returns this (for chaining)
+     *
+     * @example
+     * Button("Menu").setAria({
+     *   label: "Open menu",
+     *   expanded: "false",
+     *   controls: "menu-panel"
+     * })
+     */
+    setAria(attrs) {
+        for (const [key, value] of Object.entries(attrs)) {
+            // Convert camelCase to kebab-case
+            const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+            this.attributes[`aria-${kebabKey}`] = String(value);
+        }
+        return this;
+    }
     // ------------------------------------
     // Reactive Methods
     // ------------------------------------
@@ -191,12 +272,12 @@ class Tag {
     //   on*    → DOM events flow FROM the DOM (event handlers)
     //
     // EXPRESSIONS (for bind* methods):
-    //   Reference state via `data.propertyName`
-    //   Example: "data.count + 1" or "data.items.length > 0"
+    //   Reference state variables directly
+    //   Example: "count + 1" or "items.length > 0"
     //
     // STATEMENTS (for on* methods):
-    //   Mutate state via `data.propertyName = value`
-    //   Example: "data.count++" or "data.name = event.target.value"
+    //   Mutate state variables directly
+    //   Example: "count++" or "name = event.target.value"
     //   Use `this` to reference the DOM element
     //   Use `event` to reference the event object
     //
@@ -209,8 +290,8 @@ class Tag {
      *
      * @example
      * Div([
-     *   Span().bindText("data.message"),
-     *   Button("Click").onClick("data.count++")
+     *   Span().bindText("message"),
+     *   Button("Click").onClick("count++")
      * ]).bindState({ message: "Hello", count: 0 })
      */
     bindState(state) {
@@ -221,13 +302,13 @@ class Tag {
     /**
      * Bind the element's textContent to an expression.
      *
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Span().bindText("data.count")
-     * Span().bindText("'Total: ' + data.items.length")
-     * Span().bindText("data.score >= 100 ? 'Winner!' : 'Keep going'")
+     * Span().bindText("count")
+     * Span().bindText("'Total: ' + items.length")
+     * Span().bindText("score >= 100 ? 'Winner!' : 'Keep going'")
      */
     bindText(expr) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());
@@ -240,11 +321,11 @@ class Tag {
      * ⚠️ WARNING: This can create XSS vulnerabilities if the expression
      * includes user-provided content. Only use with trusted data.
      *
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Div().bindHtml("data.richContent")
+     * Div().bindHtml("richContent")
      */
     bindHtml(expr) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());
@@ -259,8 +340,8 @@ class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Div("Loading...").bindShow("data.isLoading")
-     * Div("Error!").bindShow("data.error !== null")
+     * Div("Loading...").bindShow("isLoading")
+     * Div("Error!").bindShow("error !== null")
      */
     bindShow(expr) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());
@@ -275,7 +356,7 @@ class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Div("Content").bindHide("data.isLoading")
+     * Div("Content").bindHide("isLoading")
      */
     bindHide(expr) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());
@@ -290,9 +371,9 @@ class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Button("Submit").bindClass("loading", "data.isSubmitting")
-     * Li("Item").bindClass("selected", "data.selectedId === item.id")
-     * Div().bindClass("error", "data.hasError").bindClass("success", "data.isValid")
+     * Button("Submit").bindClass("loading", "isSubmitting")
+     * Li("Item").bindClass("selected", "selectedId === item.id")
+     * Div().bindClass("error", "hasError").bindClass("success", "isValid")
      */
     bindClass(className, expr) {
         var _a;
@@ -306,13 +387,13 @@ class Tag {
      * If expression evaluates to null/undefined, the attribute is removed.
      *
      * @param attr - Attribute name
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Button("Submit").bindAttr("disabled", "data.isSubmitting")
-     * A("Link").bindAttr("href", "data.url")
-     * Input().bindAttr("placeholder", "data.placeholderText")
+     * Button("Submit").bindAttr("disabled", "isSubmitting")
+     * A("Link").bindAttr("href", "url")
+     * Input().bindAttr("placeholder", "placeholderText")
      */
     bindAttr(attr, expr) {
         var _a;
@@ -325,13 +406,13 @@ class Tag {
      * Bind a CSS style property to an expression.
      *
      * @param property - CSS property name (camelCase or kebab-case)
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
-     * Div().bindStyle("color", "data.textColor")
-     * Div().bindStyle("backgroundColor", "data.isActive ? 'green' : 'gray'")
-     * Div().bindStyle("width", "data.progress + '%'")
+     * Div().bindStyle("color", "textColor")
+     * Div().bindStyle("backgroundColor", "isActive ? 'green' : 'gray'")
+     * Div().bindStyle("width", "progress + '%'")
      */
     bindStyle(property, expr) {
         var _a;
@@ -344,17 +425,17 @@ class Tag {
      * Bind an input's value to an expression (one-way: data → input).
      * For two-way binding, combine with onInput().
      *
-     * @param expr - JavaScript expression referencing `data.*`
+     * @param expr - JavaScript expression referencing ``
      * @returns this (for chaining)
      *
      * @example
      * // One-way binding
-     * Input().bindValue("data.searchQuery")
+     * Input().bindValue("searchQuery")
      *
      * // Two-way binding
      * Input()
-     *   .bindValue("data.name")
-     *   .onInput("data.name = this.value")
+     *   .bindValue("name")
+     *   .onInput("name = this.value")
      */
     bindValue(expr) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());
@@ -374,14 +455,14 @@ class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Button("Increment").onClick("data.count++")
-     * Button("Reset").onClick("data.count = 0")
-     * Button("Toggle").onClick("data.visible = !data.visible")
+     * Button("Increment").onClick("count++")
+     * Button("Reset").onClick("count = 0")
+     * Button("Toggle").onClick("visible = !visible")
      *
      * // Multiple handlers
      * Button("Do Both")
-     *   .onClick("data.count++")
-     *   .onClick("data.lastClicked = Date.now()")
+     *   .onClick("count++")
+     *   .onClick("lastClicked = Date.now()")
      */
     onClick(statement) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());
@@ -400,13 +481,13 @@ class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Input().onInput("data.searchQuery = this.value")
+     * Input().onInput("searchQuery = this.value")
      * Textarea().onInput("data.content = this.value")
      *
      * // Two-way binding pattern
      * Input()
-     *   .bindValue("data.name")
-     *   .onInput("data.name = this.value")
+     *   .bindValue("name")
+     *   .onInput("name = this.value")
      */
     onInput(statement) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());
@@ -420,7 +501,7 @@ class Tag {
      * @returns this (for chaining)
      *
      * @example
-     * Select().onChange("data.selectedOption = this.value")
+     * Select().onChange("selectedOption = this.value")
      * Input().setType("checkbox").onChange("data.agreed = this.checked")
      */
     onChange(statement) {
@@ -456,7 +537,7 @@ class Tag {
      *
      * @example
      * Input().onKeydown("if (event.key === 'Enter') data.submit()")
-     * Input().onKeydown("if (event.key === 'Escape') data.query = ''")
+     * Input().onKeydown("if (event.key === 'Escape') query = ''")
      */
     onKeydown(statement) {
         this.reactive ?? (this.reactive = (0, reactive_js_1.createReactiveProps)());

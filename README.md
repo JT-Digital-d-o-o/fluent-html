@@ -418,9 +418,9 @@ Lambda.html includes a **minimal, compile-time-checked reactive system** for cli
 import { Div, Button, Span, render, compile, renderWithScript } from 'lambda.html';
 
 const view = Div([
-  Button("Increment").onClick("data.count++"),
-  Span().bindText("'Count: ' + data.count"),
-  Div("Details").bindShow("data.count > 5")
+  Button("Increment").onClick(""count++"),
+  Span().bindText("'Count: ' + count"),
+  Div("Details").bindShow(""count > 5")
 ]).bindState({ count: 0 });
 
 // Compile and validate
@@ -445,13 +445,13 @@ console.log(renderWithScript(view));
   const r2 = document.getElementById("r2");
 
   function update() {
-    r1.textContent = 'Count: ' + data.count;
-    r2.style.display = (data.count > 5) ? "" : "none";
+    r1.textContent = 'Count: ' + count;
+    r2.style.display = (count > 5) ? "" : "none";
   }
 
   const r0 = document.getElementById("r0");
   r0.addEventListener("click", function(event) {
-    data.count++;
+    count++;
     update();
   });
 
@@ -475,9 +475,9 @@ Define component state using `.bindState()`:
 
 ```typescript
 Div([
-  // Child elements can access data.count, data.message, etc.
-  Span().bindText("data.message"),
-  Button("Click").onClick("data.count++")
+  // Child elements can access count, message, etc.
+  Span().bindText(""message"),
+  Button("Click").onClick(""count++")
 ]).bindState({
   count: 0,
   message: "Hello"
@@ -488,27 +488,27 @@ Div([
 
 **Text Content:**
 ```typescript
-Span().bindText("'Count: ' + data.count")
-Span().bindText("data.user.name")
+Span().bindText("'Count: ' + count")
+Span().bindText(""user.name")
 ```
 
 **Visibility:**
 ```typescript
-Div("Visible when true").bindShow("data.isVisible")
-Div("Hidden when true").bindHide("data.isHidden")
+Div("Visible when true").bindShow(""isVisible")
+Div("Hidden when true").bindHide(""isHidden")
 ```
 
 **CSS Classes:**
 ```typescript
 Button("Toggle")
-  .bindClass("active", "data.isActive")
-  .bindClass("disabled", "data.isLoading")
+  .bindClass("active", ""isActive")
+  .bindClass("disabled", ""isLoading")
 ```
 
 **Attributes:**
 ```typescript
 Button("Submit")
-  .bindAttr("disabled", "data.isLoading ? 'disabled' : null")
+  .bindAttr("disabled", ""isLoading ? 'disabled' : null")
 
 Input()
   .bindAttr("placeholder", "'Enter ' + data.fieldName")
@@ -517,70 +517,70 @@ Input()
 **Styles:**
 ```typescript
 Div("Colored box")
-  .bindStyle("color", "data.textColor")
-  .bindStyle("background", "data.bgColor")
+  .bindStyle("color", ""textColor")
+  .bindStyle("background", ""bgColor")
 ```
 
 **Input Values (Two-way Binding):**
 ```typescript
 Input()
-  .bindValue("data.username")
-  .onInput("data.username = this.value")
+  .bindValue(""username")
+  .onInput(""username = this.value")
 ```
 
 **HTML Content (⚠️ XSS Risk):**
 ```typescript
 // Only use with trusted content
-Div().bindHtml("data.trustedHtmlContent")
+Div().bindHtml(""trustedHtmlContent")
 ```
 
 ### Event Handlers
 
 **Click Events:**
 ```typescript
-Button("Increment").onClick("data.count++")
-Button("Reset").onClick("data.count = 0")
+Button("Increment").onClick(""count++")
+Button("Reset").onClick(""count = 0")
 
 // Multiple statements - call onClick() multiple times
 Button("Multi")
-  .onClick("data.count++")
-  .onClick("data.lastAction = 'increment'")
+  .onClick(""count++")
+  .onClick(""lastAction = 'increment'")
 ```
 
 **Input Events:**
 ```typescript
 Input()
-  .onInput("data.query = this.value")
-  .onInput("data.searchTime = Date.now()")
+  .onInput(""query = this.value")
+  .onInput(""searchTime = Date.now()")
 ```
 
 **Change Events:**
 ```typescript
 Select([/* options */])
-  .onChange("data.selectedValue = this.value")
+  .onChange(""selectedValue = this.value")
 ```
 
 **Form Submit:**
 ```typescript
 Form([
-  Input().bindValue("data.email"),
+  Input().bindValue(""email"),
   Button("Submit")
 ])
-  .onSubmit("data.submitted = true")  // preventDefault() called automatically
+  .onSubmit(""submitted = true")  // preventDefault() called automatically
 ```
 
 **Keyboard Events:**
 ```typescript
 Input()
   .onKeydown("if (event.key === 'Enter') data.submit()")
-  .onKeydown("data.lastKey = event.key")
+  .onKeydown(""lastKey = event.key")
 ```
 
 **Focus Events:**
 ```typescript
 Input()
-  .onFocus("data.isFocused = true")
-  .onBlur("data.isFocused = false")
+  .onFocus(""isFocused = true")
+  .onBlur(""isFocused = false")
 ```
 
 ### Compile-Time Validation
@@ -590,11 +590,11 @@ The `compile()` function validates your reactive code **before runtime**:
 ```typescript
 // ❌ Compile Error - variable not bound
 const view = Div([
-  Span().bindText("data.missing")
+  Span().bindText(""missing")
 ]).bindState({ count: 0 });
 
 compile(view);
-// Returns: CompileError: Variable "data.missing" in bindText("data.missing")
+// Returns: CompileError: Variable ""missing" in bindText(""missing")
 // is not bound. Add it to bindState({ missing: ... })
 ```
 
@@ -609,9 +609,9 @@ You can nest `bindState()` calls for component composition:
 
 ```typescript
 Div([
-  Span().bindText("data.outer"),
+  Span().bindText(""outer"),
   Div([
-    Span().bindText("data.inner"),  // Only accessible here
+    Span().bindText(""inner"),  // Only accessible here
   ]).bindState({ inner: "nested" }),
 ]).bindState({ outer: "parent" });
 ```
@@ -623,10 +623,10 @@ Div([
 **Counter:**
 ```typescript
 const counter = Div([
-  H1().bindText("'Count: ' + data.count"),
-  Button("Increment").onClick("data.count++"),
-  Button("Decrement").onClick("data.count--"),
-  Button("Reset").onClick("data.count = 0"),
+  H1().bindText("'Count: ' + count"),
+  Button("Increment").onClick(""count++"),
+  Button("Decrement").onClick(""count--"),
+  Button("Reset").onClick(""count = 0"),
 ]).bindState({ count: 0 });
 
 compile(counter);
@@ -639,16 +639,16 @@ const todoApp = Div([
   H1("My Todos"),
   Input()
     .setPlaceholder("What needs to be done?")
-    .bindValue("data.newTodo")
-    .onInput("data.newTodo = this.value")
+    .bindValue(""newTodo")
+    .onInput(""newTodo = this.value")
     .onKeydown(`
       if (event.key === 'Enter' && data.newTodo.trim()) {
         data.todos.push(data.newTodo);
         data.newTodo = '';
       }
     `),
-  Div("No todos yet").bindShow("data.todos.length === 0"),
-  Ul().bindHtml("data.todos.map(t => '<li>' + t + '</li>').join('')"),
+  Div("No todos yet").bindShow(""todos.length === 0"),
+  Ul().bindHtml(""todos.map(t => '<li>' + t + '</li>').join('')"),
 ]).bindState({ todos: [], newTodo: "" });
 
 compile(todoApp);
@@ -660,20 +660,20 @@ console.log(renderWithScript(todoApp));
 const loginForm = Form([
   Input()
     .setType("email")
-    .bindValue("data.email")
-    .onInput("data.email = this.value")
-    .bindClass("error", "data.touched && !data.email.includes('@')"),
+    .bindValue(""email")
+    .onInput(""email = this.value")
+    .bindClass("error", ""touched && !data.email.includes('@')"),
 
   Span("Invalid email")
     .setClass("error-message")
-    .bindShow("data.touched && !data.email.includes('@')"),
+    .bindShow(""touched && !data.email.includes('@')"),
 
   Button("Submit")
-    .bindAttr("disabled", "data.submitting ? 'disabled' : null")
-    .bindText("data.submitting ? 'Submitting...' : 'Submit'"),
+    .bindAttr("disabled", ""submitting ? 'disabled' : null")
+    .bindText(""submitting ? 'Submitting...' : 'Submit'"),
 ])
-  .onSubmit("data.submitting = true")
-  .onBlur("data.touched = true")
+  .onSubmit(""submitting = true")
+  .onBlur(""touched = true")
   .bindState({
     email: "",
     touched: false,
@@ -689,19 +689,19 @@ console.log(renderWithScript(loginForm));
 const tabs = Div([
   Div([
     Button("Tab 1")
-      .onClick("data.activeTab = 0")
-      .bindClass("active", "data.activeTab === 0"),
+      .onClick(""activeTab = 0")
+      .bindClass("active", ""activeTab === 0"),
     Button("Tab 2")
-      .onClick("data.activeTab = 1")
-      .bindClass("active", "data.activeTab === 1"),
+      .onClick(""activeTab = 1")
+      .bindClass("active", ""activeTab === 1"),
     Button("Tab 3")
-      .onClick("data.activeTab = 2")
-      .bindClass("active", "data.activeTab === 2"),
+      .onClick(""activeTab = 2")
+      .bindClass("active", ""activeTab === 2"),
   ]).setClass("tab-buttons"),
 
-  Div("Content 1").bindShow("data.activeTab === 0"),
-  Div("Content 2").bindShow("data.activeTab === 1"),
-  Div("Content 3").bindShow("data.activeTab === 2"),
+  Div("Content 1").bindShow(""activeTab === 0"),
+  Div("Content 2").bindShow(""activeTab === 1"),
+  Div("Content 3").bindShow(""activeTab === 2"),
 ]).bindState({ activeTab: 0 });
 
 compile(tabs);
@@ -1227,6 +1227,245 @@ function InfiniteScrollList(items: Item[], page: number): View {
 
 ---
 
+## Common Patterns
+
+Lambda.html includes built-in helpers for common UI patterns and layouts.
+
+### Utility Methods
+
+**Array-based Class Management:**
+```typescript
+// Automatically filters out falsy values
+Button("Save").setClasses([
+  "btn",
+  props.disabled && "btn-disabled",
+  props.variant === "primary" ? "btn-primary" : "btn-secondary"
+])
+// Output: class="btn btn-primary"
+```
+
+**Object-based Styles:**
+```typescript
+// Supports camelCase → kebab-case conversion
+Div("Box").setStyles({
+  width: "100px",
+  height: "50px",
+  backgroundColor: "blue",  // → background-color
+  fontSize: "16px"          // → font-size
+})
+```
+
+**Batch Data Attributes:**
+```typescript
+Button("Click").setDataAttrs({
+  testid: "submit-btn",     // → data-testid
+  userId: "123",            // → data-user-id
+  actionType: "save"        // → data-action-type
+})
+```
+
+**Accessibility Attributes:**
+```typescript
+Button("Menu").setAria({
+  label: "Open menu",
+  expanded: false,          // Converts boolean to string
+  controls: "menu-panel",
+  hasPopup: true            // → aria-has-popup
+})
+```
+
+### Layout Helpers
+
+**Vertical Stack (Flexbox Column):**
+```typescript
+import { VStack } from 'lambda.html';
+
+VStack([
+  H1("Title"),
+  P("Content"),
+  Button("Action")
+], {
+  spacing: "1rem",
+  align: "center",
+  justify: "flex-start",
+  className: "my-stack"
+})
+// Creates flex column with gap
+```
+
+**Horizontal Stack (Flexbox Row):**
+```typescript
+import { HStack } from 'lambda.html';
+
+HStack([
+  Button("Cancel"),
+  Button("Save")
+], {
+  spacing: "0.5rem",
+  justify: "flex-end"
+})
+// Creates flex row with gap
+```
+
+**Grid Layout:**
+```typescript
+import { Grid } from 'lambda.html';
+
+// With column count
+Grid([Card1, Card2, Card3, Card4], {
+  columns: 2,
+  gap: "1rem"
+})
+// → grid-template-columns: repeat(2, 1fr)
+
+// With custom template
+Grid([Item1, Item2, Item3], {
+  columns: "1fr 2fr 1fr",
+  rows: "auto 1fr auto",
+  gap: "1rem"
+})
+```
+
+### HTMX Patterns
+
+**Debounced Search:**
+```typescript
+import { SearchInput } from 'lambda.html';
+
+SearchInput({
+  endpoint: "/api/search",
+  target: "#results",
+  delay: 300,                    // milliseconds
+  placeholder: "Search products...",
+  name: "q"
+})
+// Automatically debounces keystrokes
+```
+
+**Infinite Scroll:**
+```typescript
+import { InfiniteScroll } from 'lambda.html';
+
+// In your list view
+Ul(
+  ForEach(items, item => Li(item.name))
+).setId("items"),
+
+// Add at the bottom
+InfiniteScroll({
+  endpoint: `/api/items?page=${nextPage}`,
+  loadingText: "Loading more items...",
+  threshold: "100px"  // Trigger 100px before visible
+})
+// Loads when scrolled into view
+```
+
+### Form Patterns
+
+**Form Field with Label and Error:**
+```typescript
+import { FormField } from 'lambda.html';
+
+FormField({
+  label: "Email Address",
+  name: "email",
+  type: "email",
+  placeholder: "you@example.com",
+  required: true,
+  error: "Please enter a valid email"
+})
+// Includes label, input, and error message
+```
+
+### Interactive Components
+
+**Toggle/Disclosure:**
+```typescript
+import { Toggle } from 'lambda.html';
+
+Toggle({
+  label: "Show Details",
+  content: Div([
+    P("Hidden content revealed on click."),
+    P("More details...")
+  ]),
+  defaultOpen: false
+})
+// Reactive toggle with state management
+```
+
+**Tabs:**
+```typescript
+import { Tabs } from 'lambda.html';
+
+Tabs([
+  { label: "Profile", content: ProfileView() },
+  { label: "Settings", content: SettingsView() },
+  { label: "History", content: HistoryView() }
+], {
+  defaultTab: 0
+})
+// Reactive tabs with ARIA attributes
+```
+
+**Accordion:**
+```typescript
+import { Accordion } from 'lambda.html';
+
+Accordion([
+  { title: "Section 1", content: Content1() },
+  { title: "Section 2", content: Content2() },
+  { title: "Section 3", content: Content3() }
+], {
+  allowMultiple: false,  // Only one section open at a time
+  defaultOpen: [0]       // First section open by default
+})
+```
+
+### List Patterns
+
+**Keyed Lists:**
+```typescript
+import { KeyedList } from 'lambda.html';
+
+KeyedList(
+  users,
+  (user) => user.id,  // Key function
+  (user, index) => Div([
+    H3(user.name),
+    P(user.email)
+  ])
+)
+// Adds data-key attribute for stability
+```
+
+### Combining Patterns
+
+```typescript
+// Form with layout helpers
+VStack([
+  H1("Contact Us"),
+  FormField({
+    label: "Name",
+    name: "name",
+    type: "text",
+    required: true
+  }),
+  FormField({
+    label: "Email",
+    name: "email",
+    type: "email",
+    required: true
+  }),
+  HStack([
+    Button("Cancel").setClasses(["btn", "btn-secondary"]),
+    Button("Submit").setClasses(["btn", "btn-primary"])
+  ], { justify: "flex-end" })
+], { spacing: "1.5rem" })
+```
+
+---
+
 ## API Reference
 
 ### Element Functions
@@ -1251,15 +1490,19 @@ function InfiniteScrollList(items: Item[], page: number): View {
 
 ### Common Methods (All Tags)
 
-| Method                      | Description                                           |
-| --------------------------- | ----------------------------------------------------- |
-| `.setId(id)`                | Set element ID                                        |
-| `.setClass(classes)`        | Set CSS classes                                       |
-| `.addClass(class)`          | Append CSS class                                      |
-| `.setStyle(css)`            | Set inline styles                                     |
-| `.addAttribute(key, value)` | Add custom attribute                                  |
-| `.setHtmx(hx(...))`         | Add HTMX behavior                                     |
-| `.setToggles([...])`        | Add boolean attributes (`required`, `disabled`, etc.) |
+| Method                       | Description                                           |
+| ---------------------------- | ----------------------------------------------------- |
+| `.setId(id)`                 | Set element ID                                        |
+| `.setClass(classes)`         | Set CSS classes                                       |
+| `.addClass(class)`           | Append CSS class                                      |
+| `.setClasses([...])`         | Set classes from array (filters falsy values)         |
+| `.setStyle(css)`             | Set inline styles as string                           |
+| `.setStyles({})`             | Set inline styles as object (camelCase support)       |
+| `.addAttribute(key, value)`  | Add custom attribute                                  |
+| `.setDataAttrs({})`          | Set multiple data-* attributes                        |
+| `.setAria({})`               | Set multiple aria-* attributes                        |
+| `.setHtmx(hx(...))`          | Add HTMX behavior                                     |
+| `.setToggles([...])`         | Add boolean attributes (`required`, `disabled`, etc.) |
 
 ### Reactive Methods (All Tags)
 
@@ -1371,6 +1614,31 @@ next()               // → "next"
 previous("li")       // → "previous li"
 previous()           // → "previous"
 ```
+
+### Pattern Helpers
+
+```typescript
+import {
+  VStack, HStack, Grid,
+  SearchInput, InfiniteScroll,
+  FormField,
+  Toggle, Tabs, Accordion,
+  KeyedList
+} from 'lambda.html';
+```
+
+| Function | Description |
+| -------- | ----------- |
+| `VStack(children, options)` | Vertical flex layout (column) |
+| `HStack(children, options)` | Horizontal flex layout (row) |
+| `Grid(children, options)` | CSS Grid layout |
+| `SearchInput(options)` | Debounced search input with HTMX |
+| `InfiniteScroll(options)` | Infinite scroll trigger element |
+| `FormField(options)` | Form field with label and error |
+| `Toggle(options)` | Reactive toggle/disclosure component |
+| `Tabs(tabs, options)` | Reactive tabs component |
+| `Accordion(sections, options)` | Reactive accordion component |
+| `KeyedList(items, getKey, render)` | List with keyed items |
 
 ---
 

@@ -1,13 +1,13 @@
 {
   "name": "lambda.html",
-  "version": "4.0.0-beta.1",
+  "version": "4.0.0",
   "description": "Type-safe, zero-dependency HTML builder for TypeScript with built-in XSS protection, first-class HTMX support, and a minimal compile-time-checked reactive system. Build robust, maintainable web interfaces using functional composition.",
   "type": "commonjs",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node dist/test/test.js",
+    "test": "npm run build && node dist/test/test.js && node dist/test/patterns.js && node dist/test/reactive.js",
     "prepublishOnly": "npm run build && npm test"
   },
   "files": [

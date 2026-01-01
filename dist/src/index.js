@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Figure = exports.Aside = exports.Nav = exports.Article = exports.Section = exports.Footer = exports.Header = exports.Main = exports.Div = exports.ColgroupTag = exports.ColTag = exports.TdTag = exports.ThTag = exports.SlotTag = exports.OutputTag = exports.FieldsetTag = exports.DialogTag = exports.DetailsTag = exports.MeterTag = exports.ProgressTag = exports.DataTag = exports.TimeTag = exports.BaseTag = exports.ScriptTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.AreaTag = exports.MapTag = exports.EmbedTag = exports.ObjectTag = exports.IframeTag = exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.SourceTag = exports.AudioTag = exports.VideoTag = exports.FormTag = exports.OptgroupTag = exports.OptionTag = exports.SelectTag = exports.LabelTag = exports.AnchorTag = exports.ImgTag = exports.TextareaTag = exports.InputTag = exports.ButtonTag = exports.Tag = exports.render = void 0;
 exports.Tbody = exports.Thead = exports.Table = exports.Menu = exports.Dd = exports.Dt = exports.Dl = exports.Li = exports.Ol = exports.Ul = exports.Rp = exports.Rt = exports.Ruby = exports.Bdo = exports.Bdi = exports.Var = exports.Samp = exports.Kbd = exports.Dfn = exports.Q = exports.Cite = exports.Abbr = exports.Sup = exports.Sub = exports.Small = exports.Mark = exports.S = exports.U = exports.I = exports.B = exports.Em = exports.Strong = exports.Wbr = exports.Br = exports.Hr = exports.Code = exports.Pre = exports.Blockquote = exports.Span = exports.H6 = exports.H5 = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.P = exports.Search = exports.Hgroup = exports.Address = exports.Figcaption = void 0;
 exports.Head = exports.HTML = exports.Area = exports.MapEl = exports.A = exports.Embed = exports.ObjectEl = exports.Iframe = exports.Tspan = exports.Text = exports.Use = exports.Defs = exports.G = exports.Ellipse = exports.Polyline = exports.Polygon = exports.Line = exports.Rect = exports.Circle = exports.Path = exports.Svg = exports.Canvas = exports.Track = exports.Audio = exports.Video = exports.Source = exports.Picture = exports.Img = exports.Dialog = exports.Summary = exports.Details = exports.Output = exports.Legend = exports.Fieldset = exports.Datalist = exports.Optgroup = exports.Option = exports.Select = exports.Label = exports.Button = exports.Textarea = exports.Input = exports.Form = exports.Col = exports.Colgroup = exports.Caption = exports.Td = exports.Th = exports.Tr = exports.Tfoot = void 0;
-exports.previous = exports.next = exports.find = exports.closest = exports.clss = exports.id = exports.hx = exports.Repeat = exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Overlay = exports.Empty = exports.El = exports.Slot = exports.Meter = exports.Progress = exports.Data = exports.Time = exports.Template = exports.Noscript = exports.Base = exports.Script = exports.Style = exports.Link = exports.Meta = exports.Title = exports.Body = void 0;
+exports.KeyedList = exports.Accordion = exports.Tabs = exports.Toggle = exports.FormField = exports.InfiniteScroll = exports.SearchInput = exports.Grid = exports.HStack = exports.VStack = exports.CompileError = exports.resetIdCounter = exports.renderWithScript = exports.generateScript = exports.compile = exports.previous = exports.next = exports.find = exports.closest = exports.clss = exports.id = exports.hx = exports.Repeat = exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = exports.Overlay = exports.Empty = exports.El = exports.Slot = exports.Meter = exports.Progress = exports.Data = exports.Time = exports.Template = exports.Noscript = exports.Base = exports.Script = exports.Style = exports.Link = exports.Meta = exports.Title = exports.Body = void 0;
 var builder_js_1 = require("./builder.js");
 Object.defineProperty(exports, "render", { enumerable: true, get: function () { return builder_js_1.render; } });
 // Core types
@@ -227,4 +227,28 @@ Object.defineProperty(exports, "closest", { enumerable: true, get: function () {
 Object.defineProperty(exports, "find", { enumerable: true, get: function () { return htmx_js_1.find; } });
 Object.defineProperty(exports, "next", { enumerable: true, get: function () { return htmx_js_1.next; } });
 Object.defineProperty(exports, "previous", { enumerable: true, get: function () { return htmx_js_1.previous; } });
+// Reactive System
+var reactive_js_1 = require("./reactive.js");
+Object.defineProperty(exports, "compile", { enumerable: true, get: function () { return reactive_js_1.compile; } });
+Object.defineProperty(exports, "generateScript", { enumerable: true, get: function () { return reactive_js_1.generateScript; } });
+Object.defineProperty(exports, "renderWithScript", { enumerable: true, get: function () { return reactive_js_1.renderWithScript; } });
+Object.defineProperty(exports, "resetIdCounter", { enumerable: true, get: function () { return reactive_js_1.resetIdCounter; } });
+Object.defineProperty(exports, "CompileError", { enumerable: true, get: function () { return reactive_js_1.CompileError; } });
+// Common Patterns
+var patterns_js_1 = require("./patterns.js");
+// Layout helpers
+Object.defineProperty(exports, "VStack", { enumerable: true, get: function () { return patterns_js_1.VStack; } });
+Object.defineProperty(exports, "HStack", { enumerable: true, get: function () { return patterns_js_1.HStack; } });
+Object.defineProperty(exports, "Grid", { enumerable: true, get: function () { return patterns_js_1.Grid; } });
+// HTMX patterns
+Object.defineProperty(exports, "SearchInput", { enumerable: true, get: function () { return patterns_js_1.SearchInput; } });
+Object.defineProperty(exports, "InfiniteScroll", { enumerable: true, get: function () { return patterns_js_1.InfiniteScroll; } });
+// Form patterns
+Object.defineProperty(exports, "FormField", { enumerable: true, get: function () { return patterns_js_1.FormField; } });
+// Interactive components
+Object.defineProperty(exports, "Toggle", { enumerable: true, get: function () { return patterns_js_1.Toggle; } });
+Object.defineProperty(exports, "Tabs", { enumerable: true, get: function () { return patterns_js_1.Tabs; } });
+Object.defineProperty(exports, "Accordion", { enumerable: true, get: function () { return patterns_js_1.Accordion; } });
+// List patterns
+Object.defineProperty(exports, "KeyedList", { enumerable: true, get: function () { return patterns_js_1.KeyedList; } });
 //# sourceMappingURL=index.js.map
