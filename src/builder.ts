@@ -9,7 +9,7 @@ export type Thunk<T> = () => T;
 
 export type View = Tag | string | View[];
 
-export class Tag<TSelf = any> {
+export class Tag<TSelf extends Tag<any> = Tag<any>> {
   el: string;
   child: View;
 

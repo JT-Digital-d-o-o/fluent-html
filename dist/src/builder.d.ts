@@ -2,7 +2,7 @@ import { HTMX } from "./htmx.js";
 import { ReactiveProps } from "./reactive.js";
 export type Thunk<T> = () => T;
 export type View = Tag | string | View[];
-export declare class Tag<TSelf = any> {
+export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
     el: string;
     child: View;
     id?: string;
