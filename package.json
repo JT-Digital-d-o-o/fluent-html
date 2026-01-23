@@ -1,6 +1,6 @@
 {
   "name": "lambda.html",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "Type-safe, zero-dependency HTML builder for TypeScript with built-in XSS protection and first-class HTMX support. Build robust, maintainable web interfaces using functional composition for server-side rendering.",
   "type": "commonjs",
   "main": "dist/src/index.js",
