@@ -10,13 +10,9 @@ import {
   SearchInput,
   InfiniteScroll,
   FormField,
-  Toggle,
-  Tabs,
-  Accordion,
   KeyedList,
 } from "../src/patterns.js";
 import { Div, H1, P, Button, Span } from "../src/builder.js";
-import { compile, renderWithScript } from "../src/reactive.js";
 
 console.log("Running pattern tests...\n");
 
@@ -278,84 +274,6 @@ console.assert(
   "FormField should show error when provided"
 );
 console.log("✓ FormField shows error message");
-
-console.log();
-
-// ------------------------------------
-// Interactive Component Tests
-// ------------------------------------
-
-console.log("=== Interactive Component Tests ===");
-
-// Test Toggle
-const toggle = Toggle({
-  label: "Show Details",
-  content: Div("Hidden content"),
-  defaultOpen: false,
-});
-const toggleError = compile(toggle);
-console.assert(!toggleError, "Toggle should compile without errors");
-const toggleHtml = renderWithScript(toggle);
-console.assert(
-  toggleHtml.includes("Show Details"),
-  "Toggle should show button label"
-);
-console.assert(
-  toggleHtml.includes("Hidden content"),
-  "Toggle should include content"
-);
-console.assert(
-  toggleHtml.includes('aria-expanded="'),
-  "Toggle should have aria-expanded"
-);
-console.assert(
-  toggleHtml.includes("isOpen = !isOpen"),
-  "Toggle should toggle state"
-);
-console.log("✓ Toggle creates disclosure component");
-
-// Test Tabs
-const tabs = Tabs([
-  { label: "Tab 1", content: Div("Content 1") },
-  { label: "Tab 2", content: Div("Content 2") },
-  { label: "Tab 3", content: Div("Content 3") },
-]);
-const tabsError = compile(tabs);
-console.assert(!tabsError, "Tabs should compile without errors");
-const tabsHtml = renderWithScript(tabs);
-console.assert(tabsHtml.includes("Tab 1"), "Tabs should show first tab");
-console.assert(tabsHtml.includes("Tab 2"), "Tabs should show second tab");
-console.assert(tabsHtml.includes("Content 1"), "Tabs should include content");
-console.assert(
-  tabsHtml.includes("activeTab"),
-  "Tabs should track active tab"
-);
-console.log("✓ Tabs creates tabbed interface");
-
-// Test Accordion
-const accordion = Accordion(
-  [
-    { title: "Section 1", content: Div("Content 1") },
-    { title: "Section 2", content: Div("Content 2") },
-  ],
-  { defaultOpen: [0] }
-);
-const accordionError = compile(accordion);
-console.assert(!accordionError, "Accordion should compile without errors");
-const accordionHtml = renderWithScript(accordion);
-console.assert(
-  accordionHtml.includes("Section 1"),
-  "Accordion should show section titles"
-);
-console.assert(
-  accordionHtml.includes("Content 1"),
-  "Accordion should include content"
-);
-console.assert(
-  accordionHtml.includes("open_0"),
-  "Accordion should track section state"
-);
-console.log("✓ Accordion creates collapsible sections");
 
 console.log();
 

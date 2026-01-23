@@ -1,6 +1,6 @@
 # Lambda.html
 
-A **type-safe**, **zero-dependency** HTML builder for TypeScript with built-in **XSS protection**, **first-class HTMX support**, and a **minimal reactive system** for client-side state management.
+A **type-safe**, **zero-dependency** HTML builder for TypeScript with built-in **XSS protection**, **first-class HTMX support**, and a **fluent styling API** for server-side rendering.
 
 [![npm version](https://img.shields.io/npm/v/lambda.html.svg)](https://www.npmjs.com/package/lambda.html)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
@@ -118,11 +118,12 @@ console.log(render(page));
 
 - [IDE Autocomplete in Action](#ide-autocomplete-in-action)
 - [Type-Safe HTMX](#type-safe-htmx)
-- [Reactive System](#reactive-system)
+- [Fluent Styling API](#fluent-styling-api)
 - [XSS Protection](#xss-protection)
 - [HTML Elements](#html-elements)
 - [Control Flow](#control-flow)
 - [Composable Components](#composable-components)
+- [Common Patterns](#common-patterns)
 - [API Reference](#api-reference)
 
 ---
@@ -408,343 +409,181 @@ Form([
 
 ---
 
-## Reactive System
+## Fluent Styling API
 
-Lambda.html includes a **minimal, compile-time-checked reactive system** for client-side rendering with automatic state management and DOM updates.
+Lambda.html provides a **fluent, chainable API** for Tailwind CSS classes, making your styling code more expressive and maintainable.
 
 ### Quick Start
 
 ```typescript
-import { Div, Button, Span, render, compile, renderWithScript } from 'lambda.html';
+import { Div, Button } from 'lambda.html';
 
-const view = Div([
-  Button("Increment").onClick(""count++"),
-  Span().bindText("'Count: ' + count"),
-  Div("Details").bindShow(""count > 5")
-]).bindState({ count: 0 });
+// Instead of:
+Div("Content").setClass("p-4 bg-red-500 mx-8 text-white rounded-lg shadow-md")
 
-// Compile and validate
-const error = compile(view);
-if (error) throw new Error(error.message);
-
-// Render with reactive script
-console.log(renderWithScript(view));
+// Write this:
+Div("Content")
+  .padding("4")
+  .background("red-500")
+  .margin("x", "8")
+  .textColor("white")
+  .rounded("lg")
+  .shadow("md")
 ```
 
-**Output:**
-```html
-<div>
-  <button id="r0">Increment</button>
-  <span id="r1"></span>
-  <div id="r2">Details</div>
-</div>
-<script>
-(function() {
-  const data = {"count":0};
-  const r1 = document.getElementById("r1");
-  const r2 = document.getElementById("r2");
+Both approaches produce identical HTML, but the fluent API offers better readability and IDE support.
 
-  function update() {
-    r1.textContent = 'Count: ' + count;
-    r2.style.display = (count > 5) ? "" : "none";
-  }
+### Spacing Methods
 
-  const r0 = document.getElementById("r0");
-  r0.addEventListener("click", function(event) {
-    count++;
-    update();
-  });
-
-  update();
-})();
-</script>
+**Padding:**
+```typescript
+.padding("4")                    // p-4 (all sides)
+.padding("x", "4")               // px-4 (horizontal)
+.padding("y", "4")               // py-4 (vertical)
+.padding("top", "4")             // pt-4
+.padding("bottom", "4")          // pb-4
+.padding("left", "4")            // pl-4
+.padding("right", "4")           // pr-4
 ```
 
-### API Pattern
+**Margin:**
+```typescript
+.margin("4")                     // m-4 (all sides)
+.margin("x", "auto")             // mx-auto (center horizontally)
+.margin("y", "4")                // my-4 (vertical)
+.margin("top", "8")              // mt-8
+```
 
-The reactive system follows two simple patterns:
+### Color & Typography
 
-- **`bind*`** - Reactive binding (data flows to DOM)
-- **`on*`** - Event handler (DOM events mutate data)
+**Colors:**
+```typescript
+.background("red-500")           // bg-red-500
+.textColor("gray-700")           // text-gray-700
+.borderColor("gray-300")         // border-gray-300
+```
 
-All expressions reference state via `data.propertyName`.
+**Typography:**
+```typescript
+.textSize("xl")                  // text-xl
+.textAlign("center")             // text-center
+.fontWeight("bold")              // font-bold
+```
 
-### State Binding
+### Layout Methods
 
-Define component state using `.bindState()`:
+**Sizing:**
+```typescript
+.w("full")                       // w-full
+.w("1/2")                        // w-1/2
+.h("screen")                     // h-screen
+.maxW("md")                      // max-w-md
+```
+
+**Flexbox:**
+```typescript
+.flex()                          // flex
+.flexDirection("col")            // flex-col
+.justifyContent("center")        // justify-center
+.alignItems("center")            // items-center
+.gap("4")                        // gap-4
+```
+
+**Grid:**
+```typescript
+.grid()                          // grid
+.gridCols("3")                   // grid-cols-3
+.gridRows("2")                   // grid-rows-2
+```
+
+### Visual Effects
+
+**Borders & Radius:**
+```typescript
+.border()                        // border
+.border("2")                     // border-2
+.rounded()                       // rounded
+.rounded("full")                 // rounded-full
+.shadow()                        // shadow
+.shadow("lg")                    // shadow-lg
+```
+
+**Position & Display:**
+```typescript
+.position("relative")            // relative
+.position("absolute")            // absolute
+.zIndex("10")                    // z-10
+.opacity("50")                   // opacity-50
+.cursor("pointer")               // cursor-pointer
+.overflow("hidden")              // overflow-hidden
+```
+
+### Real-World Example
 
 ```typescript
-Div([
-  // Child elements can access count, message, etc.
-  Span().bindText(""message"),
-  Button("Click").onClick(""count++")
-]).bindState({
-  count: 0,
-  message: "Hello"
-});
-```
+const card = Div([
+  H2("Card Title")
+    .textSize("2xl")
+    .fontWeight("bold")
+    .margin("bottom", "4"),
 
-### Reactive Bindings
+  P("Card content goes here...")
+    .textColor("gray-600")
+    .margin("bottom", "6"),
 
-**Text Content:**
-```typescript
-Span().bindText("'Count: ' + count")
-Span().bindText(""user.name")
-```
-
-**Visibility:**
-```typescript
-Div("Visible when true").bindShow(""isVisible")
-Div("Hidden when true").bindHide(""isHidden")
-```
-
-**CSS Classes:**
-```typescript
-Button("Toggle")
-  .bindClass("active", ""isActive")
-  .bindClass("disabled", ""isLoading")
-```
-
-**Attributes:**
-```typescript
-Button("Submit")
-  .bindAttr("disabled", ""isLoading ? 'disabled' : null")
-
-Input()
-  .bindAttr("placeholder", "'Enter ' + data.fieldName")
-```
-
-**Styles:**
-```typescript
-Div("Colored box")
-  .bindStyle("color", ""textColor")
-  .bindStyle("background", ""bgColor")
-```
-
-**Input Values (Two-way Binding):**
-```typescript
-Input()
-  .bindValue(""username")
-  .onInput(""username = this.value")
-```
-
-**HTML Content (⚠️ XSS Risk):**
-```typescript
-// Only use with trusted content
-Div().bindHtml(""trustedHtmlContent")
-```
-
-### Event Handlers
-
-**Click Events:**
-```typescript
-Button("Increment").onClick(""count++")
-Button("Reset").onClick(""count = 0")
-
-// Multiple statements - call onClick() multiple times
-Button("Multi")
-  .onClick(""count++")
-  .onClick(""lastAction = 'increment'")
-```
-
-**Input Events:**
-```typescript
-Input()
-  .onInput(""query = this.value")
-  .onInput(""searchTime = Date.now()")
-```
-
-**Change Events:**
-```typescript
-Select([/* options */])
-  .onChange(""selectedValue = this.value")
-```
-
-**Form Submit:**
-```typescript
-Form([
-  Input().bindValue(""email"),
-  Button("Submit")
-])
-  .onSubmit(""submitted = true")  // preventDefault() called automatically
-```
-
-**Keyboard Events:**
-```typescript
-Input()
-  .onKeydown("if (event.key === 'Enter') data.submit()")
-  .onKeydown(""lastKey = event.key")
-```
-
-**Focus Events:**
-```typescript
-Input()
-  .onFocus(""isFocused = true")
-  .onBlur(""isFocused = false")
-```
-
-### Compile-Time Validation
-
-The `compile()` function validates your reactive code **before runtime**:
-
-```typescript
-// ❌ Compile Error - variable not bound
-const view = Div([
-  Span().bindText(""missing")
-]).bindState({ count: 0 });
-
-compile(view);
-// Returns: CompileError: Variable ""missing" in bindText(""missing")
-// is not bound. Add it to bindState({ missing: ... })
-```
-
-**What compile() checks:**
-- All `data.xxx` references are bound by `bindState()`
-- No variable shadowing between nested `bindState()` calls
-- Assigns unique IDs to reactive elements
-
-### Nested State
-
-You can nest `bindState()` calls for component composition:
-
-```typescript
-Div([
-  Span().bindText(""outer"),
   Div([
-    Span().bindText(""inner"),  // Only accessible here
-  ]).bindState({ inner: "nested" }),
-]).bindState({ outer: "parent" });
-```
+    Button("Cancel")
+      .padding("x", "4")
+      .padding("y", "2")
+      .border()
+      .borderColor("gray-300")
+      .rounded(),
 
-**Note:** Variable shadowing is prevented - child state cannot redefine parent variables.
-
-### Complete Examples
-
-**Counter:**
-```typescript
-const counter = Div([
-  H1().bindText("'Count: ' + count"),
-  Button("Increment").onClick(""count++"),
-  Button("Decrement").onClick(""count--"),
-  Button("Reset").onClick(""count = 0"),
-]).bindState({ count: 0 });
-
-compile(counter);
-console.log(renderWithScript(counter));
-```
-
-**Todo List:**
-```typescript
-const todoApp = Div([
-  H1("My Todos"),
-  Input()
-    .setPlaceholder("What needs to be done?")
-    .bindValue(""newTodo")
-    .onInput(""newTodo = this.value")
-    .onKeydown(`
-      if (event.key === 'Enter' && data.newTodo.trim()) {
-        data.todos.push(data.newTodo);
-        data.newTodo = '';
-      }
-    `),
-  Div("No todos yet").bindShow(""todos.length === 0"),
-  Ul().bindHtml(""todos.map(t => '<li>' + t + '</li>').join('')"),
-]).bindState({ todos: [], newTodo: "" });
-
-compile(todoApp);
-console.log(renderWithScript(todoApp));
-```
-
-**Form Validation:**
-```typescript
-const loginForm = Form([
-  Input()
-    .setType("email")
-    .bindValue(""email")
-    .onInput(""email = this.value")
-    .bindClass("error", ""touched && !data.email.includes('@')"),
-
-  Span("Invalid email")
-    .setClass("error-message")
-    .bindShow(""touched && !data.email.includes('@')"),
-
-  Button("Submit")
-    .bindAttr("disabled", ""submitting ? 'disabled' : null")
-    .bindText(""submitting ? 'Submitting...' : 'Submit'"),
+    Button("Submit")
+      .padding("x", "4")
+      .padding("y", "2")
+      .background("blue-500")
+      .textColor("white")
+      .rounded()
+      .shadow()
+  ])
+    .flex()
+    .gap("4")
+    .justifyContent("end")
 ])
-  .onSubmit(""submitting = true")
-  .onBlur(""touched = true")
-  .bindState({
-    email: "",
-    touched: false,
-    submitting: false
-  });
-
-compile(loginForm);
-console.log(renderWithScript(loginForm));
+  .background("white")
+  .padding("6")
+  .rounded("xl")
+  .shadow("lg")
+  .w("full")
+  .maxW("md");
 ```
 
-**Tab Component:**
-```typescript
-const tabs = Div([
-  Div([
-    Button("Tab 1")
-      .onClick(""activeTab = 0")
-      .bindClass("active", ""activeTab === 0"),
-    Button("Tab 2")
-      .onClick(""activeTab = 1")
-      .bindClass("active", ""activeTab === 1"),
-    Button("Tab 3")
-      .onClick(""activeTab = 2")
-      .bindClass("active", ""activeTab === 2"),
-  ]).setClass("tab-buttons"),
+### Mixing with Traditional Styles
 
-  Div("Content 1").bindShow(""activeTab === 0"),
-  Div("Content 2").bindShow(""activeTab === 1"),
-  Div("Content 3").bindShow(""activeTab === 2"),
-]).bindState({ activeTab: 0 });
-
-compile(tabs);
-console.log(renderWithScript(tabs));
-```
-
-### API Functions
-
-**`compile(view: View): CompileError | null`**
-
-Validates reactive bindings and assigns IDs. Returns `null` on success or a `CompileError` on failure.
+You can freely mix fluent methods with traditional class names:
 
 ```typescript
-const error = compile(view);
-if (error) {
-  console.error(error.message);
-  return;
-}
+Div()
+  .padding("4")                  // Fluent API
+  .background("red-500")         // Fluent API
+  .addClass("hover:bg-red-600")  // Traditional Tailwind
+  .setClass("custom-class");     // Replace all classes
 ```
 
-**`generateScript(view: View): string`**
+### Type Safety
 
-Generates JavaScript code for reactive behavior. Must call `compile()` first.
+All methods return the correct type for full IDE autocomplete:
 
 ```typescript
-compile(view);
-const script = generateScript(view);
-console.log(`<script>${script}</script>`);
+Button("Click")
+  .padding("4")                  // Available on all Tags
+  .setType("submit")             // Button-specific method
+  .background("blue-500")        // Available on all Tags
+  .setDisabled(false);           // Button-specific method
 ```
 
-**`renderWithScript(view: View, renderFn?): string`**
-
-Convenience function combining `render()` and `generateScript()`.
-
-```typescript
-compile(view);
-const html = renderWithScript(view);
-// Returns: HTML + <script>...</script>
-```
-
-**`resetIdCounter(): void`**
-
-Resets the global reactive ID counter (useful for testing).
+The fluent API generates standard Tailwind CSS classes. Make sure Tailwind is included in your project. For a complete API reference, see the [styling documentation](https://github.com/your-repo/lambda.html/blob/main/STYLING.md).
 
 ---
 
@@ -1377,51 +1216,6 @@ FormField({
 // Includes label, input, and error message
 ```
 
-### Interactive Components
-
-**Toggle/Disclosure:**
-```typescript
-import { Toggle } from 'lambda.html';
-
-Toggle({
-  label: "Show Details",
-  content: Div([
-    P("Hidden content revealed on click."),
-    P("More details...")
-  ]),
-  defaultOpen: false
-})
-// Reactive toggle with state management
-```
-
-**Tabs:**
-```typescript
-import { Tabs } from 'lambda.html';
-
-Tabs([
-  { label: "Profile", content: ProfileView() },
-  { label: "Settings", content: SettingsView() },
-  { label: "History", content: HistoryView() }
-], {
-  defaultTab: 0
-})
-// Reactive tabs with ARIA attributes
-```
-
-**Accordion:**
-```typescript
-import { Accordion } from 'lambda.html';
-
-Accordion([
-  { title: "Section 1", content: Content1() },
-  { title: "Section 2", content: Content2() },
-  { title: "Section 3", content: Content3() }
-], {
-  allowMultiple: false,  // Only one section open at a time
-  defaultOpen: [0]       // First section open by default
-})
-```
-
 ### List Patterns
 
 **Keyed Lists:**
@@ -1442,24 +1236,38 @@ KeyedList(
 ### Combining Patterns
 
 ```typescript
-// Form with layout helpers
+// Form with layout helpers and fluent styling
 VStack([
-  H1("Contact Us"),
+  H1("Contact Us")
+    .textSize("3xl")
+    .fontWeight("bold"),
+
   FormField({
     label: "Name",
     name: "name",
     type: "text",
     required: true
   }),
+
   FormField({
     label: "Email",
     name: "email",
     type: "email",
     required: true
   }),
+
   HStack([
-    Button("Cancel").setClasses(["btn", "btn-secondary"]),
-    Button("Submit").setClasses(["btn", "btn-primary"])
+    Button("Cancel")
+      .padding("x", "4")
+      .padding("y", "2")
+      .border()
+      .rounded(),
+    Button("Submit")
+      .padding("x", "4")
+      .padding("y", "2")
+      .background("blue-500")
+      .textColor("white")
+      .rounded()
   ], { justify: "flex-end" })
 ], { spacing: "1.5rem" })
 ```
@@ -1504,35 +1312,36 @@ VStack([
 | `.setHtmx(hx(...))`          | Add HTMX behavior                                     |
 | `.setToggles([...])`         | Add boolean attributes (`required`, `disabled`, etc.) |
 
-### Reactive Methods (All Tags)
+### Fluent Styling Methods (All Tags)
 
 | Method                           | Description                                         |
 | -------------------------------- | --------------------------------------------------- |
-| `.bindState(state)`              | Define reactive state for this element and children |
-| `.bindText(expr)`                | Bind expression to textContent                      |
-| `.bindHtml(expr)`                | Bind expression to innerHTML (⚠️ XSS risk)          |
-| `.bindShow(expr)`                | Show element when expression is truthy              |
-| `.bindHide(expr)`                | Hide element when expression is truthy              |
-| `.bindClass(className, expr)`    | Toggle CSS class based on expression                |
-| `.bindAttr(attrName, expr)`      | Bind expression to attribute                        |
-| `.bindStyle(propName, expr)`     | Bind expression to style property                   |
-| `.bindValue(expr)`               | Bind expression to input value                      |
-| `.onClick(statement)`            | Execute statement on click event                    |
-| `.onInput(statement)`            | Execute statement on input event                    |
-| `.onChange(statement)`           | Execute statement on change event                   |
-| `.onSubmit(statement)`           | Execute statement on submit event                   |
-| `.onKeydown(statement)`          | Execute statement on keydown event                  |
-| `.onFocus(statement)`            | Execute statement on focus event                    |
-| `.onBlur(statement)`             | Execute statement on blur event                     |
-
-### Reactive Functions
-
-| Function                                | Description                                      |
-| --------------------------------------- | ------------------------------------------------ |
-| `compile(view)`                         | Validate reactive bindings and assign IDs        |
-| `generateScript(view)`                  | Generate JavaScript for reactive behavior        |
-| `renderWithScript(view, renderFn?)`     | Render HTML with embedded reactive script        |
-| `resetIdCounter()`                      | Reset global ID counter (useful for testing)     |
+| `.padding(value)` / `.padding(side, value)` | Add padding classes (`p-4`, `px-4`, `pt-4`) |
+| `.margin(value)` / `.margin(side, value)` | Add margin classes (`m-4`, `mx-auto`, `mt-8`) |
+| `.background(color)`             | Add background color (`bg-red-500`)                 |
+| `.textColor(color)`              | Add text color (`text-gray-700`)                    |
+| `.borderColor(color)`            | Add border color (`border-gray-300`)                |
+| `.textSize(size)`                | Add text size (`text-xl`, `text-sm`)                |
+| `.textAlign(align)`              | Add text alignment (`text-center`)                  |
+| `.fontWeight(weight)`            | Add font weight (`font-bold`)                       |
+| `.w(width)`                      | Add width (`w-full`, `w-1/2`)                       |
+| `.h(height)`                     | Add height (`h-screen`, `h-64`)                     |
+| `.maxW(width)` / `.minW(width)` / `.maxH(height)` / `.minH(height)` | Size constraints |
+| `.flex()` / `.flex(value)`       | Flexbox (`flex`, `flex-1`)                          |
+| `.flexDirection(dir)`            | Flex direction (`flex-col`, `flex-row`)             |
+| `.justifyContent(value)`         | Justify content (`justify-center`)                  |
+| `.alignItems(value)`             | Align items (`items-center`)                        |
+| `.gap(value)` / `.gap(axis, value)` | Gap (`gap-4`, `gap-x-2`)                        |
+| `.grid()`                        | Grid display (`grid`)                               |
+| `.gridCols(cols)` / `.gridRows(rows)` | Grid template (`grid-cols-3`)              |
+| `.border()` / `.border(width)`   | Border (`border`, `border-2`)                       |
+| `.rounded()` / `.rounded(size)`  | Border radius (`rounded`, `rounded-lg`)             |
+| `.shadow()` / `.shadow(size)`    | Box shadow (`shadow`, `shadow-lg`)                  |
+| `.position(pos)`                 | Position (`relative`, `absolute`, `fixed`)          |
+| `.zIndex(value)`                 | Z-index (`z-10`, `z-50`)                            |
+| `.opacity(value)`                | Opacity (`opacity-50`)                              |
+| `.cursor(value)`                 | Cursor (`cursor-pointer`)                           |
+| `.overflow(value)` / `.overflow(axis, value)` | Overflow (`overflow-hidden`, `overflow-x-auto`) |
 
 ### Control Flow
 
@@ -1622,7 +1431,6 @@ import {
   VStack, HStack, Grid,
   SearchInput, InfiniteScroll,
   FormField,
-  Toggle, Tabs, Accordion,
   KeyedList
 } from 'lambda.html';
 ```
@@ -1635,9 +1443,6 @@ import {
 | `SearchInput(options)` | Debounced search input with HTMX |
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
 | `FormField(options)` | Form field with label and error |
-| `Toggle(options)` | Reactive toggle/disclosure component |
-| `Tabs(tabs, options)` | Reactive tabs component |
-| `Accordion(sections, options)` | Reactive accordion component |
 | `KeyedList(items, getKey, render)` | List with keyed items |
 
 ---

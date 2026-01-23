@@ -258,16 +258,6 @@ export {
   previous,
 } from './htmx.js';
 
-// Reactive System
-export {
-  compile,
-  generateScript,
-  renderWithScript,
-  resetIdCounter,
-  CompileError,
-  ReactiveProps,
-} from './reactive.js';
-
 // Common Patterns
 export {
   // Layout helpers
@@ -279,10 +269,6 @@ export {
   InfiniteScroll,
   // Form patterns
   FormField,
-  // Interactive components
-  Toggle,
-  Tabs,
-  Accordion,
   // List patterns
   KeyedList,
 } from './patterns.js';

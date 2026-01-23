@@ -12,9 +12,6 @@ exports.Grid = Grid;
 exports.SearchInput = SearchInput;
 exports.InfiniteScroll = InfiniteScroll;
 exports.FormField = FormField;
-exports.Toggle = Toggle;
-exports.Tabs = Tabs;
-exports.Accordion = Accordion;
 exports.KeyedList = KeyedList;
 const builder_js_1 = require("./builder.js");
 const htmx_js_1 = require("./htmx.js");
@@ -193,106 +190,6 @@ function FormField(options) {
             .addClass("form-input"),
         (0, builder_js_2.IfThen)(!!options.error, () => (0, builder_js_1.Span)(options.error).addClass("form-error")),
     ]).addClass(options.className ?? "form-field");
-}
-// ------------------------------------
-// Interactive Components
-// ------------------------------------
-/**
- * Create a toggle/disclosure component with reactive state.
- *
- * @param options - Toggle configuration
- * @returns Div with toggle button and collapsible content
- *
- * @example
- * Toggle({
- *   label: "Show Details",
- *   content: Div([P("Hidden content"), P("More details...")]),
- *   defaultOpen: false
- * })
- */
-function Toggle(options) {
-    return (0, builder_js_1.Div)([
-        (0, builder_js_1.Button)(options.label)
-            .onClick("isOpen = !isOpen")
-            .bindClass("open", "isOpen")
-            .setAria({ expanded: "isOpen" })
-            .addClass("toggle-button"),
-        (0, builder_js_1.Div)(options.content)
-            .bindShow("isOpen")
-            .addClass("toggle-content"),
-    ])
-        .bindState({ isOpen: options.defaultOpen ?? false })
-        .addClass(options.className ?? "toggle");
-}
-/**
- * Create a tabs component with reactive state.
- *
- * @param tabs - Array of tab definitions
- * @param options - Tabs configuration
- * @returns Div with tab buttons and content panels
- *
- * @example
- * Tabs([
- *   { label: "Profile", content: Div("Profile content") },
- *   { label: "Settings", content: Div("Settings content") },
- *   { label: "History", content: Div("History content") }
- * ])
- */
-function Tabs(tabs, options = {}) {
-    return (0, builder_js_1.Div)([
-        (0, builder_js_1.Div)((0, builder_js_2.ForEach1)(tabs, (tab, i) => (0, builder_js_1.Button)(tab.label)
-            .onClick(`activeTab = ${i}`)
-            .bindClass("active", `activeTab === ${i}`)
-            .setAria({
-            selected: `activeTab === ${i}`,
-            controls: `tab-panel-${i}`,
-        })
-            .setDataAttrs({ index: String(i) })
-            .addClass("tab-button"))).addClass("tab-buttons"),
-        (0, builder_js_2.ForEach1)(tabs, (tab, i) => (0, builder_js_1.Div)(tab.content)
-            .bindShow(`activeTab === ${i}`)
-            .setId(`tab-panel-${i}`)
-            .setAria({ hidden: `activeTab !== ${i}` })
-            .addClass("tab-panel")),
-    ])
-        .bindState({ activeTab: options.defaultTab ?? 0 })
-        .addClass(options.className ?? "tabs");
-}
-/**
- * Create an accordion component with multiple collapsible sections.
- *
- * @param sections - Array of accordion sections
- * @param options - Accordion configuration
- * @returns Div with accordion sections
- *
- * @example
- * Accordion([
- *   { title: "Section 1", content: Div("Content 1") },
- *   { title: "Section 2", content: Div("Content 2") }
- * ], { allowMultiple: false })
- */
-function Accordion(sections, options = {}) {
-    const initialState = {};
-    sections.forEach((_, i) => {
-        initialState[`open_${i}`] = options.defaultOpen?.includes(i) ?? false;
-    });
-    return (0, builder_js_1.Div)((0, builder_js_2.ForEach1)(sections, (section, i) => {
-        const toggleStatement = options.allowMultiple
-            ? `open_${i} = !open_${i}`
-            : sections.map((_, j) => `open_${j} = ${i === j ? `!open_${i}` : 'false'}`).join('; ');
-        return (0, builder_js_1.Div)([
-            (0, builder_js_1.Button)(section.title)
-                .onClick(toggleStatement)
-                .bindClass("open", `open_${i}`)
-                .setAria({ expanded: `open_${i}` })
-                .addClass("accordion-header"),
-            (0, builder_js_1.Div)(section.content)
-                .bindShow(`open_${i}`)
-                .addClass("accordion-content"),
-        ]).addClass("accordion-section");
-    }))
-        .bindState(initialState)
-        .addClass(options.className ?? "accordion");
 }
 // ------------------------------------
 // List Patterns

@@ -132,67 +132,6 @@ export declare function FormField(options: {
     className?: string;
 }): View;
 /**
- * Create a toggle/disclosure component with reactive state.
- *
- * @param options - Toggle configuration
- * @returns Div with toggle button and collapsible content
- *
- * @example
- * Toggle({
- *   label: "Show Details",
- *   content: Div([P("Hidden content"), P("More details...")]),
- *   defaultOpen: false
- * })
- */
-export declare function Toggle(options: {
-    label: string;
-    content: View;
-    defaultOpen?: boolean;
-    className?: string;
-}): View;
-/**
- * Create a tabs component with reactive state.
- *
- * @param tabs - Array of tab definitions
- * @param options - Tabs configuration
- * @returns Div with tab buttons and content panels
- *
- * @example
- * Tabs([
- *   { label: "Profile", content: Div("Profile content") },
- *   { label: "Settings", content: Div("Settings content") },
- *   { label: "History", content: Div("History content") }
- * ])
- */
-export declare function Tabs(tabs: {
-    label: string;
-    content: View;
-}[], options?: {
-    defaultTab?: number;
-    className?: string;
-}): View;
-/**
- * Create an accordion component with multiple collapsible sections.
- *
- * @param sections - Array of accordion sections
- * @param options - Accordion configuration
- * @returns Div with accordion sections
- *
- * @example
- * Accordion([
- *   { title: "Section 1", content: Div("Content 1") },
- *   { title: "Section 2", content: Div("Content 2") }
- * ], { allowMultiple: false })
- */
-export declare function Accordion(sections: {
-    title: string;
-    content: View;
-}[], options?: {
-    allowMultiple?: boolean;
-    defaultOpen?: number[];
-    className?: string;
-}): View;
-/**
  * Create a list with unique keys for each item.
  *
  * @param items - Array of items to render
