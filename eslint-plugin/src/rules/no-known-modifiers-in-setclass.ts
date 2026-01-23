@@ -141,12 +141,12 @@ const MODIFIER_MAP: Record<string, string> = {
   "overflow-y-": "overflow('y', ...)",
 };
 
-function checkClassForKnownModifiers(className: string): string[] {
-  const violations: string[] = [];
+function checkClassForKnownModifiers(className: string): Array<{ className: string; method: string }> {
+  const violations: Array<{ className: string; method: string }> = [];
 
   for (const [prefix, method] of Object.entries(MODIFIER_MAP)) {
     if (className === prefix.replace(/-$/, "") || className.startsWith(prefix)) {
-      violations.push(`'${className}' should use .${method}`);
+      violations.push({ className, method });
     }
   }
 
@@ -198,14 +198,12 @@ const rule: Rule.RuleModule = {
             const violations = checkClassForKnownModifiers(className);
 
             for (const violation of violations) {
-              const [, cls, method] = violation.match(/'([^']+)'.*\.(.+)$/) || [];
-
               context.report({
                 node: arg as any,
                 messageId: "useKnownModifier",
                 data: {
-                  className: cls,
-                  method: method,
+                  className: violation.className,
+                  method: violation.method,
                 },
               });
             }
@@ -223,14 +221,12 @@ const rule: Rule.RuleModule = {
                 const violations = checkClassForKnownModifiers(className);
 
                 for (const violation of violations) {
-                  const [, cls, method] = violation.match(/'([^']+)'.*\.(.+)$/) || [];
-
                   context.report({
                     node: arg as any,
                     messageId: "useKnownModifier",
                     data: {
-                      className: cls,
-                      method: method,
+                      className: violation.className,
+                      method: violation.method,
                     },
                   });
                 }
