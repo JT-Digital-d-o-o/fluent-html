@@ -79,6 +79,248 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      */
     setAria(attrs: Record<string, string | boolean>): TSelf;
     /**
+     * Add padding with Tailwind classes.
+     *
+     * @example
+     * Div().padding("4")                 // p-4
+     * Div().padding("x", "4")            // px-4
+     * Div().padding("top", "4")          // pt-4
+     */
+    padding(value: string): TSelf;
+    padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: string): TSelf;
+    /**
+     * Add margin with Tailwind classes.
+     *
+     * @example
+     * Div().margin("4")                  // m-4
+     * Div().margin("x", "auto")          // mx-auto
+     * Div().margin("top", "8")           // mt-8
+     */
+    margin(value: string): TSelf;
+    margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: string): TSelf;
+    /**
+     * Add background color with Tailwind classes.
+     *
+     * @example
+     * Div().background("red-500")        // bg-red-500
+     * Div().background("blue-100")       // bg-blue-100
+     */
+    background(color: string): TSelf;
+    /**
+     * Add text color with Tailwind classes.
+     *
+     * @example
+     * Span().textColor("gray-700")       // text-gray-700
+     * Span().textColor("white")          // text-white
+     */
+    textColor(color: string): TSelf;
+    /**
+     * Add text size with Tailwind classes.
+     *
+     * @example
+     * Span().textSize("xl")              // text-xl
+     * Span().textSize("sm")              // text-sm
+     */
+    textSize(size: string): TSelf;
+    /**
+     * Add text alignment with Tailwind classes.
+     *
+     * @example
+     * P().textAlign("center")            // text-center
+     * P().textAlign("right")             // text-right
+     */
+    textAlign(align: "left" | "center" | "right" | "justify"): TSelf;
+    /**
+     * Add font weight with Tailwind classes.
+     *
+     * @example
+     * Span().fontWeight("bold")          // font-bold
+     * Span().fontWeight("semibold")      // font-semibold
+     */
+    fontWeight(weight: string): TSelf;
+    /**
+     * Add width with Tailwind classes.
+     *
+     * @example
+     * Div().w("full")                    // w-full
+     * Div().w("1/2")                     // w-1/2
+     * Div().w("64")                      // w-64
+     */
+    w(value: string): TSelf;
+    /**
+     * Add height with Tailwind classes.
+     *
+     * @example
+     * Div().h("screen")                  // h-screen
+     * Div().h("64")                      // h-64
+     */
+    h(value: string): TSelf;
+    /**
+     * Add max-width with Tailwind classes.
+     *
+     * @example
+     * Div().maxW("md")                   // max-w-md
+     * Div().maxW("prose")                // max-w-prose
+     */
+    maxW(value: string): TSelf;
+    /**
+     * Add min-width with Tailwind classes.
+     *
+     * @example
+     * Div().minW("0")                    // min-w-0
+     * Div().minW("full")                 // min-w-full
+     */
+    minW(value: string): TSelf;
+    /**
+     * Add max-height with Tailwind classes.
+     *
+     * @example
+     * Div().maxH("screen")               // max-h-screen
+     * Div().maxH("96")                   // max-h-96
+     */
+    maxH(value: string): TSelf;
+    /**
+     * Add min-height with Tailwind classes.
+     *
+     * @example
+     * Div().minH("screen")               // min-h-screen
+     * Div().minH("0")                    // min-h-0
+     */
+    minH(value: string): TSelf;
+    /**
+     * Add flex display with Tailwind classes.
+     *
+     * @example
+     * Div().flex()                       // flex
+     * Div().flex("1")                    // flex-1
+     */
+    flex(value?: string): TSelf;
+    /**
+     * Add flex direction with Tailwind classes.
+     *
+     * @example
+     * Div().flexDirection("col")         // flex-col
+     * Div().flexDirection("row-reverse") // flex-row-reverse
+     */
+    flexDirection(direction: "row" | "col" | "row-reverse" | "col-reverse"): TSelf;
+    /**
+     * Add justify-content with Tailwind classes.
+     *
+     * @example
+     * Div().justifyContent("center")     // justify-center
+     * Div().justifyContent("between")    // justify-between
+     */
+    justifyContent(justify: "start" | "end" | "center" | "between" | "around" | "evenly"): TSelf;
+    /**
+     * Add align-items with Tailwind classes.
+     *
+     * @example
+     * Div().alignItems("center")         // items-center
+     * Div().alignItems("start")          // items-start
+     */
+    alignItems(align: "start" | "end" | "center" | "baseline" | "stretch"): TSelf;
+    /**
+     * Add gap with Tailwind classes.
+     *
+     * @example
+     * Div().gap("4")                     // gap-4
+     * Div().gap("x", "2")                // gap-x-2
+     */
+    gap(value: string): TSelf;
+    gap(direction: "x" | "y", value: string): TSelf;
+    /**
+     * Add grid display with Tailwind classes.
+     *
+     * @example
+     * Div().grid()                       // grid
+     */
+    grid(): TSelf;
+    /**
+     * Add grid columns with Tailwind classes.
+     *
+     * @example
+     * Div().gridCols("3")                // grid-cols-3
+     * Div().gridCols("1fr-2fr")          // grid-cols-1fr-2fr
+     */
+    gridCols(cols: string): TSelf;
+    /**
+     * Add grid rows with Tailwind classes.
+     *
+     * @example
+     * Div().gridRows("2")                // grid-rows-2
+     */
+    gridRows(rows: string): TSelf;
+    /**
+     * Add border with Tailwind classes.
+     *
+     * @example
+     * Div().border()                     // border
+     * Div().border("2")                  // border-2
+     */
+    border(value?: string): TSelf;
+    /**
+     * Add border color with Tailwind classes.
+     *
+     * @example
+     * Div().borderColor("gray-300")      // border-gray-300
+     */
+    borderColor(color: string): TSelf;
+    /**
+     * Add border radius with Tailwind classes.
+     *
+     * @example
+     * Div().rounded()                    // rounded
+     * Div().rounded("full")              // rounded-full
+     * Div().rounded("lg")                // rounded-lg
+     */
+    rounded(value?: string): TSelf;
+    /**
+     * Add shadow with Tailwind classes.
+     *
+     * @example
+     * Div().shadow()                     // shadow
+     * Div().shadow("lg")                 // shadow-lg
+     */
+    shadow(value?: string): TSelf;
+    /**
+     * Add opacity with Tailwind classes.
+     *
+     * @example
+     * Div().opacity("50")                // opacity-50
+     */
+    opacity(value: string): TSelf;
+    /**
+     * Add cursor with Tailwind classes.
+     *
+     * @example
+     * Button().cursor("pointer")         // cursor-pointer
+     */
+    cursor(value: string): TSelf;
+    /**
+     * Add position with Tailwind classes.
+     *
+     * @example
+     * Div().position("relative")         // relative
+     * Div().position("absolute")         // absolute
+     */
+    position(value: "static" | "fixed" | "absolute" | "relative" | "sticky"): TSelf;
+    /**
+     * Add z-index with Tailwind classes.
+     *
+     * @example
+     * Div().zIndex("10")                 // z-10
+     */
+    zIndex(value: string): TSelf;
+    /**
+     * Add overflow with Tailwind classes.
+     *
+     * @example
+     * Div().overflow("hidden")           // overflow-hidden
+     * Div().overflow("x", "auto")        // overflow-x-auto
+     */
+    overflow(value: string): TSelf;
+    overflow(direction: "x" | "y", value: string): TSelf;
+    /**
      * Initialize reactive state on this element.
      * This element becomes the "reactive root" for all descendant bindings.
      *
