@@ -1,0 +1,45 @@
+{
+  "name": "lambda-html-tailwind-extractor",
+  "version": "1.0.0",
+  "description": "Tailwind CSS content extractor for lambda.html SwiftUI-style methods",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/seckmaster/lambda.html.git",
+    "directory": "tailwind-extractor"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/seckmaster/lambda.html/issues"
+  },
+  "homepage": "https://gitlab.com/seckmaster/lambda.html/tree/main/tailwind-extractor#readme",
+  "keywords": [
+    "tailwind",
+    "tailwindcss",
+    "lambda.html",
+    "extractor",
+    "content",
+    "purge"
+  ],
+  "author": "Toni K. Turk",
+  "license": "ISC",
+  "peerDependencies": {
+    "tailwindcss": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

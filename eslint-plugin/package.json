@@ -1,19 +1,39 @@
 {
   "name": "eslint-plugin-lambda-html",
-  "version": "1.0.0",
-  "description": "ESLint plugin for lambda.html - warns about setClass usage with known SwiftUI-style modifiers",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "1.1.0",
+  "description": "ESLint plugin for lambda.html - lint rules for setClass() including known modifiers, spacing, duplicates, conflicts, and empty calls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "USAGE.md"
+  ],
   "scripts": {
     "build": "tsc",
-    "test": "node test/rule.test.js"
+    "test": "node test/rule.test.js",
+    "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/seckmaster/lambda.html.git",
+    "directory": "eslint-plugin"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/seckmaster/lambda.html/issues"
+  },
+  "homepage": "https://gitlab.com/seckmaster/lambda.html/tree/main/eslint-plugin#readme",
   "keywords": [
     "eslint",
     "eslintplugin",
     "eslint-plugin",
     "lambda.html",
-    "tailwind"
+    "tailwind",
+    "linter",
+    "code-quality"
   ],
   "author": "Toni K. Turk",
   "license": "ISC",

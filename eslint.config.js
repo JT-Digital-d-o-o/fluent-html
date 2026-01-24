@@ -25,7 +25,11 @@ export default [
       "lambda-html": lambdaHtml
     },
     rules: {
-      "lambda-html/no-known-modifiers-in-setclass": "warn"
+      "lambda-html/no-known-modifiers-in-setclass": "warn",
+      "lambda-html/no-unnecessary-spaces-in-setclass": "warn",
+      "lambda-html/no-duplicate-classes-in-setclass": "warn",
+      "lambda-html/no-conflicting-classes-in-setclass": "warn",
+      "lambda-html/no-empty-setclass": "warn"
     }
   }
 ];
