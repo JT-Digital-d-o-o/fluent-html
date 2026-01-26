@@ -5,8 +5,8 @@
 // This module provides reusable component patterns and layout helpers
 // built on top of the core lambda.html API.
 
-import { View, Tag, Div, Button, Input, Span, Label, Ul, Li } from "./builder.js";
-import { hx, HxTarget } from "./htmx.js";
+import { View, Tag, Div, Button, Input, Span, Label, Ul, Li, render } from "./builder.js";
+import { hx, HxTarget, HxSwapStyle } from "./htmx.js";
 import { IfThen, ForEach1 } from "./builder.js";
 
 // ------------------------------------
@@ -161,13 +161,11 @@ export function SearchInput(options: {
     .setName(options.name ?? "q")
     .setPlaceholder(options.placeholder ?? "Search...")
     .addClass(options.className ?? "")
-    .setHtmx(
-      hx(options.endpoint, {
-        trigger: `keyup changed delay:${options.delay ?? 300}ms`,
-        target: options.target,
-        swap: "innerHTML",
-      })
-    );
+    .setHtmx(hx(options.endpoint, {
+      trigger: `keyup changed delay:${options.delay ?? 300}ms`,
+      target: options.target,
+      swap: "innerHTML",
+    }));
 }
 
 /**
@@ -282,4 +280,381 @@ export function KeyedList<T>(
         .addClass("list-item")
     )
   ).addClass(options.className ?? "keyed-list");
+}
+
+// ------------------------------------
+// HTMX Out-of-Band (OOB) Helpers
+// ------------------------------------
+
+/**
+ * Create an out-of-band swap element.
+ *
+ * OOB swaps allow updating multiple parts of the page in a single response.
+ * The element will be swapped into the target location regardless of the
+ * main response's target.
+ *
+ * @param target - CSS selector (with #) or element ID (without #)
+ * @param content - Content to swap in
+ * @param swap - Optional swap strategy (default: "true" which uses innerHTML)
+ * @returns Tag with hx-swap-oob attribute
+ *
+ * @example
+ * // Update a toast notification along with main content
+ * render([
+ *   Div("Main content"),
+ *   OOB("toast", Div("Item saved!").addClass("toast-success"))
+ * ])
+ *
+ * @example
+ * // Update multiple elements with different strategies
+ * render([
+ *   Div("New item").setId("item-123"),
+ *   OOB("item-count", Span("5 items")),
+ *   OOB("notifications", Div("New notification"), "beforeend")
+ * ])
+ */
+export function OOB(
+  target: string,
+  content: View,
+  swap?: HxSwapStyle
+): Tag {
+  // Normalize target: remove # if present to get the ID
+  const elementId = target.startsWith('#') ? target.slice(1) : target;
+
+  // Build OOB value: "true" for default innerHTML, or "strategy:#id" for specific strategy
+  const oobValue = swap ? `${swap}:#${elementId}` : "true";
+
+  // If content is already a Tag, add the OOB attributes directly
+  if (content instanceof Tag) {
+    return content.setId(elementId).addAttribute("hx-swap-oob", oobValue);
+  }
+
+  // Otherwise wrap in a div
+  return Div(content).setId(elementId).addAttribute("hx-swap-oob", oobValue);
+}
+
+/**
+ * Combine main response content with out-of-band swap elements.
+ *
+ * This is a semantic helper that makes it clear you're building
+ * an HTMX response with OOB swaps. It simply returns an array
+ * that can be passed to render().
+ *
+ * @param main - The main response content
+ * @param oob - Out-of-band elements (typically created with OOB())
+ * @returns Array of views to be rendered
+ *
+ * @example
+ * render(withOOB(
+ *   // Main content that replaces the target
+ *   Tr([Td("John"), Td("john@example.com")]).setId("row-1"),
+ *
+ *   // OOB updates
+ *   OOB("user-count", Span("42 users")),
+ *   OOB("last-updated", Span("Just now"))
+ * ))
+ */
+export function withOOB(main: View, ...oob: View[]): View[] {
+  return [main, ...oob];
+}
+
+// ------------------------------------
+// HTMX Response Helpers
+// ------------------------------------
+
+/**
+ * Location header configuration for HX-Location
+ */
+export interface HxLocationConfig {
+  path: string;
+  target?: string;
+  swap?: HxSwapStyle;
+  select?: string;
+  source?: string;
+  event?: string;
+  handler?: string;
+  values?: Record<string, any>;
+  headers?: Record<string, string>;
+}
+
+/**
+ * Result from building an HxResponse
+ */
+export interface HxResponseResult {
+  html: string;
+  headers: Record<string, string>;
+}
+
+/**
+ * Builder for HTMX responses with response headers.
+ *
+ * HTMX responses can include special headers that control client-side behavior
+ * like triggering events, redirecting, updating the URL, etc.
+ *
+ * @example
+ * // Express.js example
+ * app.post('/api/items', (req, res) => {
+ *   const response = hxResponse(Div("Item created!"))
+ *     .trigger("itemCreated")
+ *     .pushUrl("/items/123")
+ *     .build();
+ *
+ *   Object.entries(response.headers).forEach(([key, value]) => {
+ *     res.setHeader(key, value);
+ *   });
+ *   res.send(response.html);
+ * });
+ */
+export class HxResponse {
+  private _content: View;
+  private _headers: Record<string, string> = {};
+
+  constructor(content: View) {
+    this._content = content;
+  }
+
+  /**
+   * Trigger a client-side event after the response is processed.
+   *
+   * @param event - Event name to trigger
+   * @param detail - Optional event detail data
+   *
+   * @example
+   * hxResponse(content).trigger("itemAdded")
+   * hxResponse(content).trigger("showMessage", { text: "Saved!", type: "success" })
+   */
+  trigger(event: string, detail?: Record<string, any>): this {
+    const existing = this._headers["HX-Trigger"];
+    if (existing) {
+      // If we already have triggers, merge them
+      try {
+        const parsed = JSON.parse(existing);
+        if (detail) {
+          parsed[event] = detail;
+        } else {
+          parsed[event] = {};
+        }
+        this._headers["HX-Trigger"] = JSON.stringify(parsed);
+      } catch {
+        // Was a simple string, convert to object
+        const obj: Record<string, any> = { [existing]: {} };
+        obj[event] = detail ?? {};
+        this._headers["HX-Trigger"] = JSON.stringify(obj);
+      }
+    } else {
+      if (detail) {
+        this._headers["HX-Trigger"] = JSON.stringify({ [event]: detail });
+      } else {
+        this._headers["HX-Trigger"] = event;
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Trigger a client-side event after the swap is complete.
+   *
+   * @param event - Event name to trigger
+   * @param detail - Optional event detail data
+   */
+  triggerAfterSwap(event: string, detail?: Record<string, any>): this {
+    if (detail) {
+      this._headers["HX-Trigger-After-Swap"] = JSON.stringify({ [event]: detail });
+    } else {
+      this._headers["HX-Trigger-After-Swap"] = event;
+    }
+    return this;
+  }
+
+  /**
+   * Trigger a client-side event after the settle step (after CSS transitions).
+   *
+   * @param event - Event name to trigger
+   * @param detail - Optional event detail data
+   */
+  triggerAfterSettle(event: string, detail?: Record<string, any>): this {
+    if (detail) {
+      this._headers["HX-Trigger-After-Settle"] = JSON.stringify({ [event]: detail });
+    } else {
+      this._headers["HX-Trigger-After-Settle"] = event;
+    }
+    return this;
+  }
+
+  /**
+   * Push a URL onto the browser history stack.
+   *
+   * @param url - URL to push (use "false" to prevent any push)
+   *
+   * @example
+   * hxResponse(content).pushUrl("/items/123")
+   */
+  pushUrl(url: string): this {
+    this._headers["HX-Push-Url"] = url;
+    return this;
+  }
+
+  /**
+   * Replace the current URL in the browser history.
+   *
+   * @param url - URL to replace with (use "false" to prevent)
+   */
+  replaceUrl(url: string): this {
+    this._headers["HX-Replace-Url"] = url;
+    return this;
+  }
+
+  /**
+   * Redirect the browser to a new URL.
+   *
+   * @param url - URL to redirect to
+   *
+   * @example
+   * hxResponse(Empty()).redirect("/login")
+   */
+  redirect(url: string): this {
+    this._headers["HX-Redirect"] = url;
+    return this;
+  }
+
+  /**
+   * Refresh the current page.
+   */
+  refresh(): this {
+    this._headers["HX-Refresh"] = "true";
+    return this;
+  }
+
+  /**
+   * Override the target element for the swap.
+   *
+   * @param selector - CSS selector for the new target
+   */
+  retarget(selector: string): this {
+    this._headers["HX-Retarget"] = selector;
+    return this;
+  }
+
+  /**
+   * Override the swap strategy.
+   *
+   * @param strategy - New swap strategy
+   */
+  reswap(strategy: HxSwapStyle | string): this {
+    this._headers["HX-Reswap"] = strategy;
+    return this;
+  }
+
+  /**
+   * Override the content selection from the response.
+   *
+   * @param selector - CSS selector to select content
+   */
+  reselect(selector: string): this {
+    this._headers["HX-Reselect"] = selector;
+    return this;
+  }
+
+  /**
+   * Navigate to a URL with HTMX (AJAX-style navigation).
+   *
+   * @param config - URL string or location configuration object
+   *
+   * @example
+   * // Simple navigation
+   * hxResponse(Empty()).location("/dashboard")
+   *
+   * // With options
+   * hxResponse(Empty()).location({
+   *   path: "/dashboard",
+   *   target: "#main",
+   *   swap: "innerHTML"
+   * })
+   */
+  location(config: string | HxLocationConfig): this {
+    if (typeof config === 'string') {
+      this._headers["HX-Location"] = config;
+    } else {
+      this._headers["HX-Location"] = JSON.stringify(config);
+    }
+    return this;
+  }
+
+  /**
+   * Build the final response with rendered HTML and headers.
+   *
+   * @returns Object with html string and headers object
+   *
+   * @example
+   * const { html, headers } = hxResponse(content)
+   *   .trigger("saved")
+   *   .pushUrl("/items/123")
+   *   .build();
+   */
+  build(): HxResponseResult {
+    return {
+      html: render(this._content),
+      headers: { ...this._headers },
+    };
+  }
+
+  /**
+   * Get just the headers without rendering.
+   * Useful when you want to render the content separately.
+   */
+  getHeaders(): Record<string, string> {
+    return { ...this._headers };
+  }
+}
+
+/**
+ * Create an HTMX response builder with headers.
+ *
+ * This helper makes it easy to build HTMX responses with the appropriate
+ * response headers for client-side behavior like triggering events,
+ * URL manipulation, redirects, etc.
+ *
+ * @param content - The HTML content to render
+ * @returns HxResponse builder
+ *
+ * @example
+ * // Basic usage - trigger an event after update
+ * const response = hxResponse(
+ *   Div("Item saved successfully!")
+ * )
+ *   .trigger("itemSaved")
+ *   .build();
+ *
+ * @example
+ * // Complex response with multiple headers
+ * const response = hxResponse(
+ *   Div([
+ *     H2("Order #123"),
+ *     P("Your order has been placed.")
+ *   ])
+ * )
+ *   .trigger("orderPlaced", { orderId: 123 })
+ *   .pushUrl("/orders/123")
+ *   .triggerAfterSwap("scrollToTop")
+ *   .build();
+ *
+ * @example
+ * // Redirect after action
+ * const response = hxResponse(Empty())
+ *   .redirect("/login?expired=true")
+ *   .build();
+ *
+ * @example
+ * // Express.js integration
+ * app.post('/api/task', (req, res) => {
+ *   const { html, headers } = hxResponse(Div("Done!"))
+ *     .trigger("taskCompleted")
+ *     .build();
+ *
+ *   res.set(headers);
+ *   res.send(html);
+ * });
+ */
+export function hxResponse(content: View): HxResponse {
+  return new HxResponse(content);
 }

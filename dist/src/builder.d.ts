@@ -886,10 +886,15 @@ type Case = {
     component: Thunk<View>;
 };
 export declare function SwitchCase(cases: Case[], defaultView?: Thunk<View>): View;
-export declare function ForEach<T>(views: Iterable<T>, renderItem: (item: T) => View): View;
-export declare function ForEach1<T>(views: Iterable<T>, renderItem: (item: T, index: number) => View): View;
-export declare function ForEach2(high: number, renderItem: (index: number) => View): View;
-export declare function ForEach3(low: number, high: number, renderItem: (index: number) => View): View;
+export declare function ForEach<T>(views: Iterable<T>, renderItem: (item: T, index: number) => View): View;
+export declare function ForEach(high: number, renderItem: (index: number) => View): View;
+export declare function ForEach(low: number, high: number, renderItem: (index: number) => View): View;
+/** @deprecated Use ForEach instead */
+export declare const ForEach1: typeof ForEach;
+/** @deprecated Use ForEach instead */
+export declare const ForEach2: typeof ForEach;
+/** @deprecated Use ForEach instead */
+export declare const ForEach3: typeof ForEach;
 export declare function Repeat(times: number, content: Thunk<View>): View;
 export declare function render(view: View): string;
 export {};

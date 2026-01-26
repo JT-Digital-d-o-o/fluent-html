@@ -3,7 +3,7 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SlotTag = exports.MeterTag = exports.ProgressTag = exports.DataTag = exports.TimeTag = exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.AreaTag = exports.MapTag = exports.AnchorTag = exports.EmbedTag = exports.ObjectTag = exports.IframeTag = exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.AudioTag = exports.VideoTag = exports.SourceTag = exports.ImgTag = exports.DialogTag = exports.DetailsTag = exports.OutputTag = exports.FieldsetTag = exports.OptgroupTag = exports.OptionTag = exports.SelectTag = exports.FormTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.ColTag = exports.ColgroupTag = exports.TdTag = exports.ThTag = exports.Tag = void 0;
+exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.SlotTag = exports.MeterTag = exports.ProgressTag = exports.DataTag = exports.TimeTag = exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.AreaTag = exports.MapTag = exports.AnchorTag = exports.EmbedTag = exports.ObjectTag = exports.IframeTag = exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.AudioTag = exports.VideoTag = exports.SourceTag = exports.ImgTag = exports.DialogTag = exports.DetailsTag = exports.OutputTag = exports.FieldsetTag = exports.OptgroupTag = exports.OptionTag = exports.SelectTag = exports.FormTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.ColTag = exports.ColgroupTag = exports.TdTag = exports.ThTag = exports.Tag = void 0;
 exports.Empty = Empty;
 exports.El = El;
 exports.Div = Div;
@@ -134,9 +134,6 @@ exports.IfThenElse = IfThenElse;
 exports.IfThen = IfThen;
 exports.SwitchCase = SwitchCase;
 exports.ForEach = ForEach;
-exports.ForEach1 = ForEach1;
-exports.ForEach2 = ForEach2;
-exports.ForEach3 = ForEach3;
 exports.Repeat = Repeat;
 exports.render = render;
 class Tag {
@@ -1860,18 +1857,25 @@ function SwitchCase(cases, defaultView = Empty) {
     }
     return defaultView();
 }
-function ForEach(views, renderItem) {
-    return Array.from(views).map(renderItem);
+// Implementation
+function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
+    // ForEach(low, high, renderItem)
+    if (typeof viewsOrLowOrHigh === "number" && typeof renderItemOrHigh === "number") {
+        return Array.from(range(viewsOrLowOrHigh, renderItemOrHigh)).map((i) => renderItem(i));
+    }
+    // ForEach(high, renderItem)
+    if (typeof viewsOrLowOrHigh === "number") {
+        return Array.from(range(0, viewsOrLowOrHigh)).map((i) => renderItemOrHigh(i));
+    }
+    // ForEach(views, renderItem)
+    return Array.from(viewsOrLowOrHigh).map(renderItemOrHigh);
 }
-function ForEach1(views, renderItem) {
-    return Array.from(views).map(renderItem);
-}
-function ForEach2(high, renderItem) {
-    return Array.from(range(0, high)).map((index) => renderItem(index));
-}
-function ForEach3(low, high, renderItem) {
-    return Array.from(range(low, high)).map((index) => renderItem(index));
-}
+/** @deprecated Use ForEach instead */
+exports.ForEach1 = ForEach;
+/** @deprecated Use ForEach instead */
+exports.ForEach2 = ForEach;
+/** @deprecated Use ForEach instead */
+exports.ForEach3 = ForEach;
 function* range(low, high) {
     for (var i = low; i < high; i++) {
         yield i;

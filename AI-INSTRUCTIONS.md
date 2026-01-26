@@ -194,35 +194,27 @@ SwitchCase([
 
 ### Loops
 
-**ForEach** - Map over array:
+**ForEach** - Unified iteration (3 overloads):
 ```typescript
-ForEach(users, user => 
-  Div(user.name)
+// Iterate over items (callback receives item and index)
+ForEach(users, (user, index) =>
+  Div(`${index + 1}. ${user.name}`)
 )
-```
 
-**ForEach1** - With index:
-```typescript
-ForEach1(items, (item, index) => 
-  Div(`${index + 1}. ${item}`)
-)
-```
-
-**ForEach2** - Range from 0 to n:
-```typescript
-ForEach2(5, i => 
+// Range from 0 to n
+ForEach(5, i =>
   Div(`Item ${i}`)
 )
 // Renders: Item 0, Item 1, Item 2, Item 3, Item 4
-```
 
-**ForEach3** - Range from low to high:
-```typescript
-ForEach3(1, 6, 
-  i => Div(`Item ${i}`)
+// Range from low to high
+ForEach(1, 6, i =>
+  Div(`Item ${i}`)
 )
 // Renders: Item 1, Item 2, Item 3, Item 4, Item 5
 ```
+
+> **Note:** `ForEach1`, `ForEach2`, `ForEach3` are deprecated aliases. Use `ForEach` instead.
 
 **Repeat** - Repeat element n times:
 ```typescript
@@ -264,7 +256,7 @@ SwitchCase([
 **Numbered list:**
 ```typescript
 Ol(
-  ForEach1(items, (item, index) =>
+  ForEach(items, (item, index) =>
     Li(`${index + 1}. ${item.title}`)
   )
 )
@@ -298,30 +290,30 @@ HTML([
 Lambda.html has first-class HTMX support through the `setHtmx()` method:
 
 ```typescript
-import { HTMX } from "lambda.html";
+import { hx } from "lambda.html";
 
-// Simple HTMX request
+// Simple HTMX request (defaults to GET)
 Button("Load More")
-  .setHtmx(HTMX.get("/api/items"))
+  .setHtmx(hx("/api/items"))
 
 // With target and swap
 Div("Click to update")
-  .setHtmx(
-    HTMX.post("/api/update")
-      .target("#result")
-      .swap("innerHTML")
-  )
+  .setHtmx(hx("/api/update", {
+    method: "post",
+    target: "#result",
+    swap: "innerHTML"
+  }))
 
 // Form with HTMX
 Form([
   Input().setName("query").setPlaceholder("Search..."),
   Button("Search").setType("submit")
 ])
-  .setHtmx(
-    HTMX.post("/search")
-      .target("#results")
-      .swap("innerHTML")
-  )
+  .setHtmx(hx("/search", {
+    method: "post",
+    target: "#results",
+    swap: "innerHTML"
+  }))
 ```
 
 ## Rendering
@@ -334,6 +326,63 @@ import { render } from "lambda.html";
 const view = Div("Hello, world!");
 const html = render(view);
 // Returns: <div>Hello, world!</div>
+
+// Arrays render without wrappers (useful for HTMX partials):
+render([Li("One"), Li("Two"), Li("Three")])
+// Returns: <li>One</li>\n<li>Two</li>\n<li>Three</li>
+```
+
+## Out-of-Band (OOB) Swaps
+
+Update multiple parts of the page in a single HTMX response:
+
+```typescript
+import { OOB, withOOB, render } from "lambda.html";
+
+// OOB creates an element with hx-swap-oob attribute
+render(withOOB(
+  // Main content (replaces the target)
+  Tr([Td("John"), Td("john@example.com")]).setId("row-1"),
+
+  // OOB updates (swap into their respective targets)
+  OOB("user-count", Span("42 users")),
+  OOB("last-updated", Span("Just now")),
+  OOB("notifications", Div("New item!"), "beforeend")  // Append
+))
+```
+
+## HTMX Response Headers
+
+Build HTMX responses with server-side headers:
+
+```typescript
+import { hxResponse, Div, Empty } from "lambda.html";
+
+// Trigger events and update URL
+const { html, headers } = hxResponse(Div("Saved!"))
+  .trigger("itemSaved")
+  .trigger("showToast", { message: "Success!" })
+  .pushUrl("/items/123")
+  .build();
+
+// Use with your server framework (Express example):
+res.set(headers);
+res.send(html);
+
+// Available methods:
+hxResponse(content)
+  .trigger(event, detail?)       // HX-Trigger
+  .triggerAfterSwap(event)       // HX-Trigger-After-Swap
+  .triggerAfterSettle(event)     // HX-Trigger-After-Settle
+  .pushUrl(url)                  // HX-Push-Url
+  .replaceUrl(url)               // HX-Replace-Url
+  .redirect(url)                 // HX-Redirect
+  .refresh()                     // HX-Refresh
+  .retarget(selector)            // HX-Retarget
+  .reswap(strategy)              // HX-Reswap
+  .reselect(selector)            // HX-Reselect
+  .location(config)              // HX-Location
+  .build()                       // Returns { html, headers }
 ```
 
 ## XSS Protection

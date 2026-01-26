@@ -267,6 +267,14 @@ export {
   // HTMX patterns
   SearchInput,
   InfiniteScroll,
+  // OOB helpers
+  OOB,
+  withOOB,
+  // Response helpers
+  hxResponse,
+  HxResponse,
+  HxResponseResult,
+  HxLocationConfig,
   // Form patterns
   FormField,
   // List patterns

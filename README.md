@@ -877,34 +877,35 @@ function StatusBadge(status: Status): View {
 }
 ```
 
-### ForEach Variants
+### ForEach
+
+`ForEach` is a unified iteration helper with three overloads:
 
 ```typescript
-import { ForEach, ForEach1, ForEach2, ForEach3, Repeat } from 'lambda.html';
+import { ForEach, Repeat } from 'lambda.html';
 
 const items = ["Apple", "Banana", "Cherry"];
 
-// Basic iteration
-Ul(ForEach(items, item => Li(item)))
-
-// With index
-Ol(ForEach1(items, (item, index) => 
+// Iterate over items (callback receives item and index)
+Ul(ForEach(items, (item, index) =>
   Li(`${index + 1}. ${item}`)
 ))
 
 // Range iteration (0 to n-1)
-Div(ForEach2(5, i => 
+Div(ForEach(5, i =>
   Span(`Item ${i}`).setClass("inline-block p-2")
 ))
 
 // Range iteration (start to end-1)
-Div(ForEach3(1, 6, i => 
+Div(ForEach(1, 6, i =>
   Button(`Page ${i}`).setClass("px-3 py-1")
 ))
 
 // Repeat n times
 Div(Repeat(5, () => Span("⭐")))
 ```
+
+> **Note:** `ForEach1`, `ForEach2`, `ForEach3` are deprecated aliases kept for backwards compatibility.
 
 ---
 
@@ -1006,7 +1007,7 @@ function DataTable<T extends Record<string, any>>(
       )).setClass("bg-gray-100")
     ),
     Tbody(
-      ForEach1(data, (row, index) =>
+      ForEach(data, (row, index) =>
         Tr(ForEach(columns, col => {
           const value = row[col.key];
           const content = col.render ? col.render(value, row) : String(value);
@@ -1199,6 +1200,58 @@ InfiniteScroll({
 // Loads when scrolled into view
 ```
 
+**Out-of-Band (OOB) Swaps:**
+```typescript
+import { OOB, withOOB, render } from 'lambda.html';
+
+// Update multiple parts of the page in one response
+render(withOOB(
+  // Main content (replaces the target)
+  Tr([Td("John"), Td("john@example.com")]).setId("row-1"),
+
+  // OOB updates (swap into their respective targets)
+  OOB("user-count", Span("42 users")),
+  OOB("last-updated", Span("Just now")),
+  OOB("notifications", Div("New item added!"), "beforeend")  // Append to notifications
+))
+```
+
+**HTMX Response Headers:**
+```typescript
+import { hxResponse, Div, Empty } from 'lambda.html';
+
+// Build responses with HTMX headers
+app.post('/api/item', (req, res) => {
+  const { html, headers } = hxResponse(
+    Div("Item saved!")
+  )
+    .trigger("itemSaved")              // HX-Trigger
+    .trigger("showToast", { message: "Success!" })
+    .pushUrl("/items/123")             // HX-Push-Url
+    .build();
+
+  res.set(headers);
+  res.send(html);
+});
+
+// Redirect after action
+app.post('/api/logout', (req, res) => {
+  const { html, headers } = hxResponse(Empty())
+    .redirect("/login")
+    .build();
+
+  res.set(headers);
+  res.send(html);
+});
+
+// Override target and swap from server
+const response = hxResponse(content)
+  .retarget("#other-element")          // HX-Retarget
+  .reswap("outerHTML")                 // HX-Reswap
+  .triggerAfterSwap("highlight")       // HX-Trigger-After-Swap
+  .build();
+```
+
 ### Form Patterns
 
 **Form Field with Label and Error:**
@@ -1350,10 +1403,9 @@ VStack([
 | `IfThen(condition, thenFn)`             | Render if condition is true |
 | `IfThenElse(condition, thenFn, elseFn)` | Conditional rendering       |
 | `SwitchCase(cases, defaultFn)`          | Multi-branch conditional    |
-| `ForEach(items, renderFn)`              | Iterate over items          |
-| `ForEach1(items, renderFn)`             | Iterate with index          |
-| `ForEach2(n, renderFn)`                 | Range 0 to n-1              |
-| `ForEach3(start, end, renderFn)`        | Range start to end-1        |
+| `ForEach(items, renderFn)`              | Iterate over items (with index) |
+| `ForEach(n, renderFn)`                  | Range 0 to n-1              |
+| `ForEach(start, end, renderFn)`         | Range start to end-1        |
 | `Repeat(n, renderFn)`                   | Repeat n times              |
 
 ### HTMX Helper
@@ -1430,6 +1482,8 @@ previous()           // → "previous"
 import {
   VStack, HStack, Grid,
   SearchInput, InfiniteScroll,
+  OOB, withOOB,
+  hxResponse,
   FormField,
   KeyedList
 } from 'lambda.html';
@@ -1442,6 +1496,9 @@ import {
 | `Grid(children, options)` | CSS Grid layout |
 | `SearchInput(options)` | Debounced search input with HTMX |
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
+| `OOB(target, content, swap?)` | Out-of-band swap element for HTMX |
+| `withOOB(main, ...oob)` | Combine main content with OOB swaps |
+| `hxResponse(content)` | Build HTMX response with headers |
 | `FormField(options)` | Form field with label and error |
 | `KeyedList(items, getKey, render)` | List with keyed items |
 

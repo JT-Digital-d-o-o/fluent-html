@@ -2345,34 +2345,44 @@ export function SwitchCase(
   return defaultView();
 }
 
+// Overload signatures
 export function ForEach<T>(
   views: Iterable<T>,
-  renderItem: (item: T) => View
-): View {
-  return Array.from(views).map(renderItem);
-}
-
-export function ForEach1<T>(
-  views: Iterable<T>,
   renderItem: (item: T, index: number) => View
-): View {
-  return Array.from(views).map(renderItem);
-}
-
-export function ForEach2(
+): View;
+export function ForEach(
   high: number,
   renderItem: (index: number) => View
-): View {
-  return Array.from(range(0, high)).map((index) => renderItem(index));
-}
-
-export function ForEach3(
+): View;
+export function ForEach(
   low: number,
   high: number,
   renderItem: (index: number) => View
+): View;
+// Implementation
+export function ForEach<T>(
+  viewsOrLowOrHigh: Iterable<T> | number,
+  renderItemOrHigh: ((item: T, index: number) => View) | ((index: number) => View) | number,
+  renderItem?: (index: number) => View
 ): View {
-  return Array.from(range(low, high)).map((index) => renderItem(index));
+  // ForEach(low, high, renderItem)
+  if (typeof viewsOrLowOrHigh === "number" && typeof renderItemOrHigh === "number") {
+    return Array.from(range(viewsOrLowOrHigh, renderItemOrHigh)).map((i) => renderItem!(i));
+  }
+  // ForEach(high, renderItem)
+  if (typeof viewsOrLowOrHigh === "number") {
+    return Array.from(range(0, viewsOrLowOrHigh)).map((i) => (renderItemOrHigh as (i: number) => View)(i));
+  }
+  // ForEach(views, renderItem)
+  return Array.from(viewsOrLowOrHigh).map(renderItemOrHigh as (item: T, index: number) => View);
 }
+
+/** @deprecated Use ForEach instead */
+export const ForEach1 = ForEach;
+/** @deprecated Use ForEach instead */
+export const ForEach2 = ForEach;
+/** @deprecated Use ForEach instead */
+export const ForEach3 = ForEach;
 
 function* range(low: number, high: number) {
   for (var i = low; i < high; i++) {

@@ -18,22 +18,51 @@ The `.setClass()` method **replaces** all classes, while dedicated methods like 
 
 ## The Solution
 
-This ESLint plugin warns you when `.setClass()` contains classes that have dedicated methods:
+This ESLint plugin warns you when `.setClass()` contains classes that have dedicated methods, and can **automatically fix** them:
 
 ```typescript
 // ❌ Warning: Use .background() instead
 Div().setClass("bg-red-500 p-4")
 
-// ✅ Correct: Use dedicated methods
-Div()
-  .background("red-500")
-  .padding("4")
+// ✅ Auto-fixed to:
+Div().background("red-500").padding("4")
 
 // ✅ Also correct: Use .addClass() for additional classes
 Div()
   .background("red-500")
   .padding("4")
   .addClass("hover:bg-red-600")  // For pseudo-classes, this is fine
+```
+
+### Auto-Fix
+
+Run ESLint with `--fix` to automatically convert `.setClass()` calls to SwiftUI-style methods:
+
+```bash
+# Fix all files
+npx eslint --fix src/
+
+# Preview fixes without applying
+npx eslint src/
+```
+
+**Before:**
+```typescript
+Div().setClass("bg-red-500 p-4 flex justify-center items-center rounded-lg shadow-md")
+```
+
+**After `--fix`:**
+```typescript
+Div().background("red-500").padding("4").flex().justifyContent("center").alignItems("center").rounded("lg").shadow("md")
+```
+
+Mixed classes (some convertible, some not) are also handled:
+```typescript
+// Before
+Div().setClass("bg-red-500 my-custom-class p-4")
+
+// After --fix
+Div().background("red-500").padding("4").setClass("my-custom-class")
 ```
 
 ## Installation
@@ -86,7 +115,7 @@ module.exports = {
 
 ## Rule: `no-known-modifiers-in-setclass`
 
-Warns when `.setClass()` is called with Tailwind classes that have dedicated SwiftUI-style methods.
+Warns when `.setClass()` is called with Tailwind classes that have dedicated SwiftUI-style methods. **This rule is auto-fixable.**
 
 ### Detected Patterns
 

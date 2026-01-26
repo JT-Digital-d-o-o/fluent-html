@@ -1,4 +1,4 @@
-# SwiftUI-Style Tailwind Methods - AI Instructions
+# Fluent Tailwind Methods - AI Instructions
 
 ## Overview
 Lambda.html provides SwiftUI-inspired methods for applying Tailwind CSS classes in a type-safe, chainable way. These methods make styling feel native and intuitive.

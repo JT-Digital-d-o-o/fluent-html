@@ -124,6 +124,94 @@ console.assert(infiniteHtml.includes("Loading more..."), "InfiniteScroll should 
 console.assert(infiniteHtml.includes('hx-get="/api/items?page=2"'), "InfiniteScroll should set endpoint");
 console.assert(infiniteHtml.includes("hx-trigger=\"revealed threshold:100px\""), "InfiniteScroll should set threshold");
 console.log("✓ InfiniteScroll creates reveal trigger");
+// Test OOB
+const oobElement = (0, patterns_js_1.OOB)("toast", (0, builder_js_2.Div)("Message"));
+const oobHtml = (0, builder_js_1.render)(oobElement);
+console.assert(oobHtml.includes('id="toast"'), "OOB should set id from target");
+console.assert(oobHtml.includes('hx-swap-oob="true"'), "OOB should set hx-swap-oob");
+console.log("✓ OOB creates out-of-band swap element");
+// Test OOB with # prefix
+const oobWithHash = (0, patterns_js_1.OOB)("#notification", (0, builder_js_2.Span)("Alert"));
+const oobHashHtml = (0, builder_js_1.render)(oobWithHash);
+console.assert(oobHashHtml.includes('id="notification"'), "OOB should strip # from target");
+console.log("✓ OOB handles # prefix in target");
+// Test OOB with swap strategy
+const oobWithSwap = (0, patterns_js_1.OOB)("list", (0, builder_js_2.Div)("New item"), "beforeend");
+const oobSwapHtml = (0, builder_js_1.render)(oobWithSwap);
+console.assert(oobSwapHtml.includes('hx-swap-oob="beforeend:#list"'), "OOB should include swap strategy");
+console.log("✓ OOB supports custom swap strategies");
+// Test withOOB
+const combined = (0, patterns_js_1.withOOB)((0, builder_js_2.Div)("Main").setId("main"), (0, patterns_js_1.OOB)("sidebar", (0, builder_js_2.Span)("Updated")), (0, patterns_js_1.OOB)("footer", (0, builder_js_2.Span)("Footer")));
+console.assert(Array.isArray(combined), "withOOB should return array");
+console.assert(combined.length === 3, "withOOB should include main + OOB elements");
+const combinedHtml = (0, builder_js_1.render)(combined);
+console.assert(combinedHtml.includes('id="main"') &&
+    combinedHtml.includes('id="sidebar"') &&
+    combinedHtml.includes('id="footer"'), "withOOB should render all elements");
+console.log("✓ withOOB combines main content with OOB elements");
+// Test hxResponse basic
+const basicResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)("Content")).build();
+console.assert(basicResponse.html.includes("<div>Content</div>"), "hxResponse should render content");
+console.assert(typeof basicResponse.headers === "object", "hxResponse should return headers object");
+console.log("✓ hxResponse builds response with html and headers");
+// Test hxResponse with trigger
+const triggerResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)("Saved"))
+    .trigger("itemSaved")
+    .build();
+console.assert(triggerResponse.headers["HX-Trigger"] === "itemSaved", "hxResponse.trigger should set HX-Trigger header");
+console.log("✓ hxResponse.trigger sets HX-Trigger header");
+// Test hxResponse with trigger and detail
+const triggerDetailResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)("Saved"))
+    .trigger("showMessage", { text: "Success" })
+    .build();
+console.assert(triggerDetailResponse.headers["HX-Trigger"].includes("showMessage"), "hxResponse.trigger should handle detail object");
+console.log("✓ hxResponse.trigger handles event detail");
+// Test hxResponse with pushUrl
+const pushUrlResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)("Content"))
+    .pushUrl("/items/123")
+    .build();
+console.assert(pushUrlResponse.headers["HX-Push-Url"] === "/items/123", "hxResponse.pushUrl should set HX-Push-Url header");
+console.log("✓ hxResponse.pushUrl sets HX-Push-Url header");
+// Test hxResponse with redirect
+const redirectResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)(""))
+    .redirect("/login")
+    .build();
+console.assert(redirectResponse.headers["HX-Redirect"] === "/login", "hxResponse.redirect should set HX-Redirect header");
+console.log("✓ hxResponse.redirect sets HX-Redirect header");
+// Test hxResponse with multiple headers
+const multiHeaderResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)("Done"))
+    .trigger("completed")
+    .pushUrl("/done")
+    .retarget("#result")
+    .reswap("outerHTML")
+    .build();
+console.assert(multiHeaderResponse.headers["HX-Trigger"] === "completed", "Multi-header response should have trigger");
+console.assert(multiHeaderResponse.headers["HX-Push-Url"] === "/done", "Multi-header response should have push-url");
+console.assert(multiHeaderResponse.headers["HX-Retarget"] === "#result", "Multi-header response should have retarget");
+console.assert(multiHeaderResponse.headers["HX-Reswap"] === "outerHTML", "Multi-header response should have reswap");
+console.log("✓ hxResponse supports chaining multiple headers");
+// Test hxResponse.refresh
+const refreshResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)("")).refresh().build();
+console.assert(refreshResponse.headers["HX-Refresh"] === "true", "hxResponse.refresh should set HX-Refresh header");
+console.log("✓ hxResponse.refresh sets HX-Refresh header");
+// Test hxResponse.replaceUrl
+const replaceUrlResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)(""))
+    .replaceUrl("/new-path")
+    .build();
+console.assert(replaceUrlResponse.headers["HX-Replace-Url"] === "/new-path", "hxResponse.replaceUrl should set HX-Replace-Url header");
+console.log("✓ hxResponse.replaceUrl sets HX-Replace-Url header");
+// Test hxResponse.location with string
+const locationResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)(""))
+    .location("/dashboard")
+    .build();
+console.assert(locationResponse.headers["HX-Location"] === "/dashboard", "hxResponse.location should set HX-Location header");
+console.log("✓ hxResponse.location sets HX-Location header");
+// Test hxResponse.location with object
+const locationObjResponse = (0, patterns_js_1.hxResponse)((0, builder_js_2.Div)(""))
+    .location({ path: "/dashboard", target: "#main" })
+    .build();
+console.assert(locationObjResponse.headers["HX-Location"].includes("dashboard"), "hxResponse.location should handle config object");
+console.log("✓ hxResponse.location handles config object");
 console.log();
 // ------------------------------------
 // Form Pattern Tests

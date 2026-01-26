@@ -1,6 +1,6 @@
-# SwiftUI-Like Styling API
+# Fluent Styling API
 
-Lambda.html now supports SwiftUI-inspired method chaining for Tailwind CSS classes, making your code more readable and native-feeling.
+Lambda.html now supports fluent method chaining for Tailwind CSS classes, making your code more readable and native-feeling.
 
 ## Before & After
 
@@ -241,7 +241,7 @@ const gallery = Div([
 
 ## Mixing with Traditional Methods
 
-You can freely mix the new SwiftUI-style methods with existing methods:
+You can freely mix the new fluent-style methods with existing methods:
 
 ```typescript
 Div()
