@@ -20,6 +20,7 @@ exports.hxResponse = hxResponse;
 const builder_js_1 = require("./builder.js");
 const htmx_js_1 = require("./htmx.js");
 const builder_js_2 = require("./builder.js");
+const ids_js_1 = require("./ids.js");
 // ------------------------------------
 // Layout Helpers
 // ------------------------------------
@@ -250,8 +251,8 @@ function KeyedList(items, getKey, renderItem, options = {}) {
  * ])
  */
 function OOB(target, content, swap) {
-    // Normalize target: remove # if present to get the ID
-    const elementId = target.startsWith('#') ? target.slice(1) : target;
+    // Normalize target: extract ID from Id object or string
+    const elementId = (0, ids_js_1.isId)(target) ? target.id : (target.startsWith('#') ? target.slice(1) : target);
     // Build OOB value: "true" for default innerHTML, or "strategy:#id" for specific strategy
     const oobValue = swap ? `${swap}:#${elementId}` : "true";
     // If content is already a Tag, add the OOB attributes directly

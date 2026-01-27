@@ -316,6 +316,70 @@ Form([
   }))
 ```
 
+## Type-Safe HTMX Targets
+
+**IMPORTANT:** Lambda.html provides compile-time safety for HTMX targets. Use `defineIds()` to ensure your `hx-target` selectors always reference valid element IDs.
+
+### The Problem
+```typescript
+// page.ts
+Div().setId("user-list")
+
+// controller.ts
+hx("/api", { target: "#userList" })  // Typo! Silent failure at runtime
+```
+
+### The Solution
+```typescript
+import { defineIds } from "lambda.html";
+
+// Define IDs once - use everywhere with type safety
+export const ids = defineIds([
+  "user-list",
+  "user-count",
+  "modal",
+] as const);
+
+// In page layout
+Div().setId(ids.userList)           // id="user-list"
+
+// In controller (same typed reference)
+Button("Load").setHtmx(hx("/api", {
+  target: ids.userList              // hx-target="#user-list"
+}))
+
+// OOB swaps also work
+OOB(ids.userCount, Span("42"))      // id="user-count" hx-swap-oob="true"
+
+// Typos caught at compile time:
+ids.userLits                        // ❌ TypeScript Error!
+```
+
+### Recommended Pattern
+Each `*.view.ts` file exports both its view and its IDs:
+
+```typescript
+// users.view.ts
+export const UserIds = defineIds(["user-list", "user-count"] as const);
+
+export function UsersPage() {
+  return Div([
+    Div().setId(UserIds.userList),
+    Span("0").setId(UserIds.userCount),
+    Button("Refresh").setHtmx(hx("/api/users", { target: UserIds.userList }))
+  ]);
+}
+```
+
+```typescript
+// users.controller.ts
+import { UserIds } from "./users.view";
+
+function handleUpdate() {
+  return OOB(UserIds.userCount, Span("42"));  // Same typed reference!
+}
+```
+
 ## Rendering
 
 Convert your View to HTML string:
@@ -481,6 +545,7 @@ Nav(
 4. **Chain methods** for clean, readable code
 5. **Use TypeScript** for full type safety and IDE autocomplete
 6. **Prefer `addClass()`** over `setClass()` when adding classes incrementally
+7. **Use `defineIds()` for HTMX targets** - ensures type-safe references between views and controllers
 
 ## Complete Example
 

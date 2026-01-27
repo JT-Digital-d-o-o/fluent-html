@@ -224,6 +224,9 @@ export {
   Empty,
   Overlay,
   OverlayPosition,
+  // Raw HTML (bypasses XSS escaping - use with caution)
+  Raw,
+  RawString,
 } from './builder.js';
 
 // Control flow
@@ -280,3 +283,13 @@ export {
   // List patterns
   KeyedList,
 } from './patterns.js';
+
+// Type-safe IDs
+export {
+  Id,
+  createId,
+  defineIds,
+  isId,
+  extractId,
+  extractSelector,
+} from './ids.js';

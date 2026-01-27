@@ -1,130 +1,153 @@
 # Lambda.html
 
-A **type-safe**, **zero-dependency** HTML builder for TypeScript with built-in **XSS protection**, **first-class HTMX support**, and a **fluent styling API** for server-side rendering.
+**A fluent, type-safe HTML builder for TypeScript.**
 
 [![npm version](https://img.shields.io/npm/v/lambda.html.svg)](https://www.npmjs.com/package/lambda.html)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-green.svg)](https://www.npmjs.com/package/lambda.html)
-
-```typescript
-const page = Div([
-  H1("Welcome").setClass("text-3xl font-bold"),
-  Button("Load More")
-    .setHtmx(hx("/api/items", {
-      trigger: "click",           // ← IDE suggests: "click" | "load" | "revealed" | ...
-      swap: "beforeend",          // ← IDE suggests: "innerHTML" | "outerHTML" | ...
-      target: closest("ul"),      // ← Type-safe selector helper
-    }))
-]).setClass("container mx-auto p-8");
-```
-
----
-
-## Why Lambda.html?
-
-### 🎯 **IDE-Powered Development**
-
-Lambda.html's type system provides **intelligent autocomplete** for everything—HTML attributes, HTMX configurations, CSS classes, and more. Your IDE becomes your documentation.
-
-```typescript
-// Your IDE suggests all valid trigger options as you type:
-Button("Save").setHtmx(hx("/api/save", {
-  trigger: "cl"  // IDE shows: click | change | load | revealed | intersect | ...
-  //        ↑ Autocomplete appears here!
-}))
-
-// Complex triggers with modifiers? Also fully typed:
-Input().setHtmx(hx("/api/search", {
-  trigger: "keyup changed delay:300ms"  // ← Valid typed trigger
-  //              ↑ IDE validates modifier syntax
-}))
-```
-
-### 🔒 **Compile-Time Safety**
-
-Catch errors before they reach production:
-
-```typescript
-// ✅ Compiles - valid swap strategy
-Div().setHtmx(hx("/api", { swap: "innerHTML" }))
-
-// ❌ Type Error - "inner" is not a valid swap strategy
-Div().setHtmx(hx("/api", { swap: "inner" }))
-//                              ~~~~~~~ 
-// Type '"inner"' is not assignable to type 'HxSwap'
-
-// ✅ Compiles - valid input type
-Input().setType("email").setPattern("[a-z]+@[a-z]+\\.[a-z]+")
-
-// ❌ Type Error - setPattern doesn't exist on Div
-Div().setPattern("[a-z]+")  
-//    ~~~~~~~~~~ Property 'setPattern' does not exist on type 'Tag'
-```
-
-### 🛡️ **Built-in XSS Protection**
-
-All content is automatically escaped—no configuration needed:
-
-```typescript
-const userInput = '<script>alert("xss")</script>';
-render(Div(userInput));
-// Output: <div>&lt;script&gt;alert("xss")&lt;/script&gt;</div>
-```
-
-### ⚡ **Zero Dependencies, Tiny Footprint**
-
-Pure TypeScript. No runtime overhead. Perfect for server-side rendering.
-
----
-
-## Installation
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 ```bash
 npm install lambda.html
 ```
 
-## Quick Start
+Build HTML with chainable methods, full IDE autocomplete, and zero dependencies:
 
 ```typescript
-import { Div, H1, P, Button, render, hx } from 'lambda.html';
+import { Div, H1, Button, render } from 'lambda.html';
 
 const page = Div([
-  H1("Welcome to Lambda.html")
-    .setClass("text-3xl font-bold"),
-  P("Build type-safe HTML with confidence.")
-    .setClass("text-gray-600 mt-2"),
-  Button("Get Started")
-    .setClass("bg-blue-500 text-white px-4 py-2 rounded mt-4")
-    .setHtmx(hx("/api/start", { method: "post" }))
-]).setClass("container mx-auto p-8");
+  H1("Welcome")
+    .textSize("3xl")
+    .fontWeight("bold"),
 
-console.log(render(page));
+  Button("Get Started")
+    .padding("x", "6")
+    .padding("y", "3")
+    .background("blue-500")
+    .textColor("white")
+    .rounded("lg")
+    .shadow()
+]).padding("8").maxW("4xl").margin("x", "auto");
+
+render(page);
 ```
 
-**Output:**
 ```html
-<div class="container mx-auto p-8">
-  <h1 class="text-3xl font-bold">Welcome to Lambda.html</h1>
-  <p class="text-gray-600 mt-2">Build type-safe HTML with confidence.</p>
-  <button class="bg-blue-500 text-white px-4 py-2 rounded mt-4" 
-          hx-post="/api/start">Get Started</button>
+<div class="p-8 max-w-4xl mx-auto">
+  <h1 class="text-3xl font-bold">Welcome</h1>
+  <button class="px-6 py-3 bg-blue-500 text-white rounded-lg shadow">Get Started</button>
 </div>
 ```
 
 ---
 
-## Table of Contents
+## Features
 
-- [IDE Autocomplete in Action](#ide-autocomplete-in-action)
-- [Type-Safe HTMX](#type-safe-htmx)
-- [Fluent Styling API](#fluent-styling-api)
-- [XSS Protection](#xss-protection)
-- [HTML Elements](#html-elements)
-- [Control Flow](#control-flow)
-- [Composable Components](#composable-components)
-- [Common Patterns](#common-patterns)
-- [API Reference](#api-reference)
+- **Fluent API** - Chainable methods for styling, attributes, and structure
+- **Full autocomplete** - Every method, attribute, and value suggested by your IDE
+- **First-class HTMX** - Type-safe triggers, swaps, targets, and more
+- **XSS protection** - All content escaped automatically
+- **Zero dependencies** - Pure TypeScript, ~15KB minified
+- **SSR-ready** - Built for server-side rendering
+
+---
+
+## Quick Examples
+
+### Fluent Styling
+
+```typescript
+// Chainable Tailwind-friendly methods
+Card([
+  H2("Dashboard").textSize("xl").fontWeight("semibold"),
+  P("Welcome back!").textColor("gray-600")
+])
+  .background("white")
+  .padding("6")
+  .rounded("xl")
+  .shadow("lg")
+
+// Or use traditional classes
+Div("Content").setClass("p-4 bg-white rounded-lg shadow")
+```
+
+### HTMX with Full Type Safety
+
+```typescript
+// IDE autocomplete for all HTMX attributes
+Button("Load More").setHtmx(hx("/api/items", {
+  trigger: "click",      // ✅ IDE suggests: "click" | "load" | "revealed" | ...
+  swap: "beforeend",     // ✅ IDE suggests: "innerHTML" | "outerHTML" | ...
+  target: "#item-list"
+}))
+
+// Typos caught at compile time
+hx("/api", { swap: "innerHtml" })
+//                  ^^^^^^^^^^ ❌ Error: Did you mean "innerHTML"?
+```
+
+### Forms with Validation
+
+```typescript
+Form([
+  Input()
+    .setType("email")
+    .setName("email")
+    .setPlaceholder("you@example.com")
+    .setAutocomplete("email")
+    .setToggles(["required"]),
+
+  Button("Subscribe").setType("submit")
+])
+  .setHtmx(hx("/api/subscribe", { method: "post", swap: "outerHTML" }))
+```
+
+### Control Flow
+
+```typescript
+// Conditionals
+IfThen(user.isAdmin, () => AdminBadge())
+IfThenElse(loggedIn, () => Dashboard(), () => LoginForm())
+
+// Iteration
+Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
+Div(ForEach(5, i => Star()))  // Repeat 5 times
+```
+
+### Layout Helpers
+
+```typescript
+// Flex layouts
+VStack([Header(), Content(), Footer()], { spacing: "1rem" })
+HStack([Logo(), Nav(), UserMenu()], { justify: "space-between" })
+
+// Grid
+Grid(products.map(ProductCard), { columns: 3, gap: "1rem" })
+```
+
+### Out-of-Band Updates (HTMX)
+
+```typescript
+// Update multiple page sections in one response
+render(withOOB(
+  UserRow(user),                              // Main content
+  OOB("#user-count", Span(`${count} users`)), // Update counter
+  OOB("#toast", Toast("User created!"))       // Show notification
+))
+```
+
+---
+
+## Full Documentation
+
+- [Fluent Styling API](#fluent-styling-api) - Chainable Tailwind-friendly methods
+- [HTMX Integration](#type-safe-htmx) - Requests, triggers, swaps, all typed
+- [HTML Elements](#html-elements) - 60+ typed elements
+- [Control Flow](#control-flow-1) - IfThen, ForEach, SwitchCase
+- [Common Patterns](#common-patterns) - Layouts, OOB swaps, response helpers
+- [ESLint Plugin](#eslint-plugin) - Additional compile-time checks
+- [API Reference](#api-reference) - Complete method reference
 
 ---
 
@@ -409,6 +432,123 @@ Form([
 
 ---
 
+## Type-Safe HTMX Targets
+
+One of the most common issues with HTMX is **broken selectors**. A typo in `hx-target="#userList"` when the element has `id="user-list"` causes silent failures at runtime.
+
+Lambda.html solves this with **compile-time validated HTMX targets**.
+
+### The Problem
+
+```typescript
+// page.ts
+Div().setId("user-list")
+
+// controller.ts (different file)
+Button("Load").setHtmx(hx("/api", { target: "#userList" }))
+//                                         ~~~~~~~~~~
+// Typo! "userList" vs "user-list" - silent failure at runtime
+```
+
+### The Solution: Type-Safe IDs
+
+```typescript
+import { defineIds } from 'lambda.html';
+
+// Define IDs once - shared across your app
+export const ids = defineIds([
+  "user-list",
+  "user-count",
+  "notification-area",
+  "modal-container",
+] as const);
+
+// TypeScript infers camelCase keys from kebab-case IDs:
+// ids.userList           → Id for "user-list"
+// ids.userCount          → Id for "user-count"
+// ids.notificationArea   → Id for "notification-area"
+// ids.modalContainer     → Id for "modal-container"
+```
+
+### Usage
+
+**In page layouts:**
+```typescript
+// pages/users.view.ts
+import { ids } from './ids';
+
+export function UsersPage() {
+  return Div([
+    Div().setId(ids.userList),           // id="user-list"
+    Span("0").setId(ids.userCount),      // id="user-count"
+
+    Button("Refresh")
+      .setHtmx(hx("/api/users", {
+        target: ids.userList              // hx-target="#user-list"
+      }))
+  ]);
+}
+```
+
+**In controllers (different file, same safety):**
+```typescript
+// controllers/users.ts
+import { ids } from '../ids';
+import { OOB, withOOB, Span } from 'lambda.html';
+
+export function handleUserCreated(users: User[]) {
+  return withOOB(
+    renderUserTable(users),
+    OOB(ids.userCount, Span(`${users.length} users`))  // Same typed reference!
+  );
+}
+```
+
+**Typos caught at compile time:**
+```typescript
+ids.userLits              // ❌ TypeScript Error: Property 'userLits' does not exist
+ids.userCount.selector    // ✓ Returns "#user-count"
+ids.userCount.id          // ✓ Returns "user-count"
+```
+
+### Recommended File Structure
+
+```
+src/
+  views/
+    layout.view.ts        # exports LayoutIds (header, sidebar, toast, etc.)
+    users.view.ts         # exports UserIds
+    products.view.ts      # exports ProductIds
+  controllers/
+    users.controller.ts   # imports UserIds, LayoutIds
+    products.controller.ts
+```
+
+Each `*.view.ts` file exports both its view components and its IDs. Controllers import the IDs they need to target.
+
+### API
+
+```typescript
+import { defineIds, createId, Id } from 'lambda.html';
+
+// Create a registry of IDs (recommended)
+const ids = defineIds(["user-list", "modal"] as const);
+
+// Or create single IDs ad-hoc
+const customId = createId("custom-element");
+
+// Id object properties
+ids.userList.id         // "user-list" - for setId()
+ids.userList.selector   // "#user-list" - for CSS/HTMX selectors
+
+// Works with all HTMX-related APIs
+Div().setId(ids.userList)                    // ✓
+hx("/api", { target: ids.userList })         // ✓
+OOB(ids.userList, content)                   // ✓
+```
+
+---
+
 ## Fluent Styling API
 
 Lambda.html provides a **fluent, chainable API** for Tailwind CSS classes, making your styling code more expressive and maintainable.
@@ -652,6 +792,47 @@ const user = {
 
 render(UserCard(user));
 // All content properly escaped - XSS prevented!
+```
+
+### Raw HTML (Bypass Escaping)
+
+For cases where you need to render **trusted** HTML content (e.g., pre-sanitized markdown, trusted SVG, CMS content), use the `Raw` helper:
+
+```typescript
+import { Raw, Div, render } from 'lambda.html';
+
+// Render pre-sanitized HTML from a markdown library
+const htmlFromMarkdown = markdownToHtml(trustedContent);
+Div(Raw(htmlFromMarkdown))
+
+// Render trusted SVG
+Div(Raw('<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'))
+
+// Mix raw and safe content
+Div([
+  P(userInput),                    // ← Escaped (safe)
+  Raw(trustedHtml),                // ← Not escaped (trusted)
+  Span(moreUserInput)              // ← Escaped (safe)
+])
+```
+
+**⚠️ Warning:** `Raw` bypasses XSS protection. **Never use it with user-provided input.** Only use it when:
+- Content comes from a trusted source (your own CMS, database with pre-sanitized HTML)
+- Content has been sanitized by a trusted library (e.g., DOMPurify)
+- Content is hardcoded in your codebase
+
+```typescript
+// ❌ DANGEROUS - Never do this!
+const userComment = req.body.comment;
+Div(Raw(userComment))  // XSS vulnerability!
+
+// ✅ SAFE - Sanitize first
+import DOMPurify from 'dompurify';
+const sanitized = DOMPurify.sanitize(userComment);
+Div(Raw(sanitized))
+
+// ✅ SAFE - Or just use normal rendering
+Div(userComment)  // Automatically escaped
 ```
 
 ---
@@ -1327,6 +1508,44 @@ VStack([
 
 ---
 
+## ESLint Plugin
+
+Lambda.html has an optional ESLint plugin for additional compile-time checks.
+
+```bash
+npm install eslint-plugin-lambda-html --save-dev
+```
+
+```javascript
+// eslint.config.js
+import lambdaHtml from 'eslint-plugin-lambda-html';
+
+export default [
+  lambdaHtml.configs.recommended,
+];
+```
+
+The plugin catches common mistakes:
+
+```typescript
+// ❌ Empty element that should have content
+Div()  // Warning: Empty Div - did you forget children?
+
+// ❌ Redundant nesting
+Div(Div(content))  // Warning: Unnecessary nested Div
+
+// ❌ Missing required attributes
+Img().setSrc("/image.png")  // Warning: Img missing alt attribute
+
+// ❌ Invalid attribute combinations
+Input().setType("checkbox").setPlaceholder("...")
+// Warning: placeholder not supported on checkbox inputs
+```
+
+See [eslint-plugin-lambda-html](https://www.npmjs.com/package/eslint-plugin-lambda-html) for all rules.
+
+---
+
 ## API Reference
 
 ### Element Functions
@@ -1347,7 +1566,7 @@ VStack([
 | **Links**       | `A`                                                                                                                                                           |
 | **Document**    | `HTML`, `Head`, `Body`, `Title`, `Meta`, `Link`, `Style`, `Script`, `Base`, `Noscript`, `Template`                                                            |
 | **Data**        | `Time`, `Data`, `Progress`, `Meter`, `Slot`                                                                                                                   |
-| **Utility**     | `El` (custom), `Empty`, `Overlay`                                                                                                                             |
+| **Utility**     | `El` (custom), `Empty`, `Overlay`, `Raw`                                                                                                                      |
 
 ### Common Methods (All Tags)
 
@@ -1501,6 +1720,40 @@ import {
 | `hxResponse(content)` | Build HTMX response with headers |
 | `FormField(options)` | Form field with label and error |
 | `KeyedList(items, getKey, render)` | List with keyed items |
+
+### Raw HTML
+
+```typescript
+import { Raw, RawString } from 'lambda.html';
+
+Raw(html: string): RawString  // Create unescaped HTML content
+```
+
+| Function | Description |
+| -------- | ----------- |
+| `Raw(html)` | Wrap HTML string to bypass XSS escaping. **Use only with trusted content.** |
+
+### Type-Safe IDs
+
+```typescript
+import { defineIds, createId, Id, isId, extractId, extractSelector } from 'lambda.html';
+```
+
+| Function | Description |
+| -------- | ----------- |
+| `defineIds(names)` | Create a typed ID registry from array of strings |
+| `createId(name)` | Create a single Id object |
+| `isId(value)` | Type guard to check if value is an Id |
+| `extractId(value)` | Extract ID string from string or Id |
+| `extractSelector(value)` | Extract selector string from string or Id |
+
+**Id Object:**
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| `.id` | `string` | The raw ID (`"user-list"`) |
+| `.selector` | `string` | CSS selector (`"#user-list"`) |
+| `.toString()` | `string` | Returns the selector |
 
 ---
 

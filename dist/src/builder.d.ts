@@ -1,6 +1,28 @@
 import { HTMX } from "./htmx.js";
+import { Id } from "./ids.js";
 export type Thunk<T> = () => T;
-export type View = Tag | string | View[];
+/**
+ * Wrapper for raw HTML strings that bypass XSS escaping.
+ * WARNING: Only use with trusted content. Never use with user input.
+ */
+export declare class RawString {
+    readonly html: string;
+    constructor(html: string);
+}
+/**
+ * Creates a raw HTML string that will NOT be escaped during rendering.
+ * WARNING: This bypasses XSS protection. Only use with trusted content.
+ * Never use with user-provided input.
+ *
+ * @example
+ * // Render pre-sanitized markdown HTML
+ * Div(Raw(markdownToHtml(trustedContent)))
+ *
+ * // Render trusted SVG
+ * Div(Raw('<svg>...</svg>'))
+ */
+export declare function Raw(html: string): RawString;
+export type View = Tag | string | RawString | View[];
 export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
     el: string;
     child: View;
@@ -11,7 +33,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
     htmx?: HTMX;
     toggles?: string[];
     constructor(element: string, child?: View);
-    setId(id?: string): TSelf;
+    setId(id?: string | Id): TSelf;
     setClass(c?: string): TSelf;
     addClass(c: string): TSelf;
     setStyle(style?: string): TSelf;

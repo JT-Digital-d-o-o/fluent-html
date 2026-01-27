@@ -3,7 +3,8 @@
 // Html Builder "Framework"
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.SlotTag = exports.MeterTag = exports.ProgressTag = exports.DataTag = exports.TimeTag = exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.AreaTag = exports.MapTag = exports.AnchorTag = exports.EmbedTag = exports.ObjectTag = exports.IframeTag = exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.AudioTag = exports.VideoTag = exports.SourceTag = exports.ImgTag = exports.DialogTag = exports.DetailsTag = exports.OutputTag = exports.FieldsetTag = exports.OptgroupTag = exports.OptionTag = exports.SelectTag = exports.FormTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.ColTag = exports.ColgroupTag = exports.TdTag = exports.ThTag = exports.Tag = void 0;
+exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.SlotTag = exports.MeterTag = exports.ProgressTag = exports.DataTag = exports.TimeTag = exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.AreaTag = exports.MapTag = exports.AnchorTag = exports.EmbedTag = exports.ObjectTag = exports.IframeTag = exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.AudioTag = exports.VideoTag = exports.SourceTag = exports.ImgTag = exports.DialogTag = exports.DetailsTag = exports.OutputTag = exports.FieldsetTag = exports.OptgroupTag = exports.OptionTag = exports.SelectTag = exports.FormTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = exports.ColTag = exports.ColgroupTag = exports.TdTag = exports.ThTag = exports.Tag = exports.RawString = void 0;
+exports.Raw = Raw;
 exports.Empty = Empty;
 exports.El = El;
 exports.Div = Div;
@@ -136,6 +137,32 @@ exports.SwitchCase = SwitchCase;
 exports.ForEach = ForEach;
 exports.Repeat = Repeat;
 exports.render = render;
+const ids_js_1 = require("./ids.js");
+/**
+ * Wrapper for raw HTML strings that bypass XSS escaping.
+ * WARNING: Only use with trusted content. Never use with user input.
+ */
+class RawString {
+    constructor(html) {
+        this.html = html;
+    }
+}
+exports.RawString = RawString;
+/**
+ * Creates a raw HTML string that will NOT be escaped during rendering.
+ * WARNING: This bypasses XSS protection. Only use with trusted content.
+ * Never use with user-provided input.
+ *
+ * @example
+ * // Render pre-sanitized markdown HTML
+ * Div(Raw(markdownToHtml(trustedContent)))
+ *
+ * // Render trusted SVG
+ * Div(Raw('<svg>...</svg>'))
+ */
+function Raw(html) {
+    return new RawString(html);
+}
 class Tag {
     constructor(element, child = Empty()) {
         this.el = element;
@@ -143,7 +170,7 @@ class Tag {
         this.attributes = {};
     }
     setId(id) {
-        this.id = id;
+        this.id = id ? ((0, ids_js_1.isId)(id) ? id.id : id) : undefined;
         return this;
     }
     setClass(c) {
@@ -2001,6 +2028,10 @@ function renderImpl(view, isRawContext) {
         if (htmx.disable !== undefined)
             attributes.push(`hx-disable="${htmx.disable}"`);
         return attributes.join(' ');
+    }
+    // RawString bypasses escaping - used for trusted HTML content
+    if (view instanceof RawString) {
+        return view.html;
     }
     if (typeof view === "string") {
         return isRawContext ? view : escapeHtml(view);

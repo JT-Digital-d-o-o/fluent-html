@@ -3,10 +3,35 @@
 // ------------------------------------
 
 import { HTMX } from "./htmx.js";
+import { Id, isId } from "./ids.js";
 
 export type Thunk<T> = () => T;
 
-export type View = Tag | string | View[];
+/**
+ * Wrapper for raw HTML strings that bypass XSS escaping.
+ * WARNING: Only use with trusted content. Never use with user input.
+ */
+export class RawString {
+  constructor(public readonly html: string) {}
+}
+
+/**
+ * Creates a raw HTML string that will NOT be escaped during rendering.
+ * WARNING: This bypasses XSS protection. Only use with trusted content.
+ * Never use with user-provided input.
+ *
+ * @example
+ * // Render pre-sanitized markdown HTML
+ * Div(Raw(markdownToHtml(trustedContent)))
+ *
+ * // Render trusted SVG
+ * Div(Raw('<svg>...</svg>'))
+ */
+export function Raw(html: string): RawString {
+  return new RawString(html);
+}
+
+export type View = Tag | string | RawString | View[];
 
 export class Tag<TSelf extends Tag<any> = Tag<any>> {
   el: string;
@@ -25,8 +50,8 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
     this.attributes = {};
   }
 
-  setId(id?: string): TSelf {
-    this.id = id;
+  setId(id?: string | Id): TSelf {
+    this.id = id ? (isId(id) ? id.id : id) : undefined;
     return this as any as TSelf;
   }
 
@@ -2509,6 +2534,11 @@ function renderImpl(view: View, isRawContext: boolean): string {
     if (htmx.disable !== undefined) attributes.push(`hx-disable="${htmx.disable}"`);
 
     return attributes.join(' ');
+  }
+
+  // RawString bypasses escaping - used for trusted HTML content
+  if (view instanceof RawString) {
+    return view.html;
   }
 
   if (typeof view === "string") {

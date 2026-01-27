@@ -11,6 +11,7 @@ exports.closest = closest;
 exports.find = find;
 exports.next = next;
 exports.previous = previous;
+const ids_js_1 = require("./ids.js");
 // ------------------------------------
 // Helper Functions
 // ------------------------------------
@@ -18,7 +19,7 @@ function hx(endpoint, options = {}) {
     return {
         endpoint,
         method: options.method ?? "get",
-        target: options.target,
+        target: options.target ? ((0, ids_js_1.isId)(options.target) ? options.target.selector : options.target) : undefined,
         swap: options.swap,
         swapOob: options.swapOob,
         select: options.select,

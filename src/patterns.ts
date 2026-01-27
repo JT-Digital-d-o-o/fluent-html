@@ -8,6 +8,7 @@
 import { View, Tag, Div, Button, Input, Span, Label, Ul, Li, render } from "./builder.js";
 import { hx, HxTarget, HxSwapStyle } from "./htmx.js";
 import { IfThen, ForEach1 } from "./builder.js";
+import { Id, isId } from "./ids.js";
 
 // ------------------------------------
 // Layout Helpers
@@ -314,12 +315,12 @@ export function KeyedList<T>(
  * ])
  */
 export function OOB(
-  target: string,
+  target: string | Id,
   content: View,
   swap?: HxSwapStyle
 ): Tag {
-  // Normalize target: remove # if present to get the ID
-  const elementId = target.startsWith('#') ? target.slice(1) : target;
+  // Normalize target: extract ID from Id object or string
+  const elementId = isId(target) ? target.id : (target.startsWith('#') ? target.slice(1) : target);
 
   // Build OOB value: "true" for default innerHTML, or "strategy:#id" for specific strategy
   const oobValue = swap ? `${swap}:#${elementId}` : "true";

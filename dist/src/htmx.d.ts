@@ -1,3 +1,4 @@
+import { Id } from "./ids.js";
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type HxEncoding = "multipart/form-data";
 export type HxSwapStyle = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
@@ -77,7 +78,7 @@ export interface HTMX {
 }
 export declare function hx(endpoint: string, options?: {
     method?: HxHttpMethod;
-    target?: HxTarget;
+    target?: HxTarget | Id;
     swap?: HxSwap;
     swapOob?: boolean | string;
     select?: string;

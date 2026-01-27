@@ -3,6 +3,8 @@
 // Compatible with HTMX 2.0+
 // ------------------------------------
 
+import { Id, isId } from "./ids.js";
+
 // HTTP Methods
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
@@ -193,7 +195,7 @@ export function hx(
   endpoint: string,
   options: {
     method?: HxHttpMethod;
-    target?: HxTarget;
+    target?: HxTarget | Id;
     swap?: HxSwap;
     swapOob?: boolean | string;
     select?: string;
@@ -226,7 +228,7 @@ export function hx(
   return {
     endpoint,
     method: options.method ?? "get",
-    target: options.target,
+    target: options.target ? (isId(options.target) ? options.target.selector : options.target) : undefined,
     swap: options.swap,
     swapOob: options.swapOob,
     select: options.select,

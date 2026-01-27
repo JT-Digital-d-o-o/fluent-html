@@ -1,5 +1,6 @@
 import { View, Tag } from "./builder.js";
 import { HxTarget, HxSwapStyle } from "./htmx.js";
+import { Id } from "./ids.js";
 /**
  * Create a vertical stack layout (flex column).
  *
@@ -177,7 +178,7 @@ export declare function KeyedList<T>(items: T[], getKey: (item: T) => string, re
  *   OOB("notifications", Div("New notification"), "beforeend")
  * ])
  */
-export declare function OOB(target: string, content: View, swap?: HxSwapStyle): Tag;
+export declare function OOB(target: string | Id, content: View, swap?: HxSwapStyle): Tag;
 /**
  * Combine main response content with out-of-band swap elements.
  *
