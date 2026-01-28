@@ -11,6 +11,9 @@ export class SlotTag extends Tag<SlotTag> {
   }
 }
 
+/** @internal */
+(SlotTag.prototype as any)._sk = ['name'];
+
 export function Slot(child: View = Empty()): SlotTag {
   return new SlotTag("slot", child);
 }

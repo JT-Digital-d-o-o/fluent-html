@@ -688,7 +688,7 @@ test(
 
 test(
   "works with existing Button methods",
-  '<button type="submit" class="px-4 py-2 bg-blue-500"></button>',
+  '<button class="px-4 py-2 bg-blue-500" type="submit"></button>',
   render(Button().setType("submit").padding("x", "4").padding("y", "2").background("blue-500"))
 );
 

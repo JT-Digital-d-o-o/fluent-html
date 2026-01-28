@@ -17,6 +17,9 @@ export class DetailsTag extends Tag<DetailsTag> {
   }
 }
 
+/** @internal */
+(DetailsTag.prototype as any)._sk = ['open', 'name'];
+
 export function Details(child: View = Empty()): DetailsTag {
   return new DetailsTag("details", child);
 }
@@ -33,6 +36,9 @@ export class DialogTag extends Tag<DialogTag> {
     return this;
   }
 }
+
+/** @internal */
+(DialogTag.prototype as any)._sk = ['open'];
 
 export function Dialog(child: View = Empty()): DialogTag {
   return new DialogTag("dialog", child);

@@ -37,17 +37,16 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
   id?: string;
   class?: string;
   style?: string;
-  attributes: Record<string, string>;
+  declare attributes: Record<string, string>;
   htmx?: HTMX;
   toggles?: string[];
 
   /** @internal type discriminant for fast render checks */
-  readonly _t = 1;
+  declare readonly _t: 1;
 
   constructor(element: string, child: View = "") {
     this.el = element;
     this.child = child;
-    this.attributes = EMPTY_ATTRS;
   }
 
   setId(id?: string | Id): TSelf {
@@ -62,7 +61,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
 
   addClass(c: string): TSelf {
     if (this.class) {
-      this.class += ` ${c}`;
+      this.class += ' ' + c;
     } else {
       this.class = c;
     }
@@ -665,3 +664,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
     return this.addClass(`overflow-${directionOrValue}-${value}`);
   }
 }
+
+/** @internal */
+(Tag.prototype as any)._t = 1;
+Tag.prototype.attributes = EMPTY_ATTRS;

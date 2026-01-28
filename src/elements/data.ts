@@ -11,6 +11,9 @@ export class TimeTag extends Tag<TimeTag> {
   }
 }
 
+/** @internal */
+(TimeTag.prototype as any)._sk = ['datetime'];
+
 export function Time(child: View = Empty()): TimeTag {
   return new TimeTag("time", child);
 }
@@ -23,6 +26,9 @@ export class DataTag extends Tag<DataTag> {
     return this;
   }
 }
+
+/** @internal */
+(DataTag.prototype as any)._sk = ['value'];
 
 export function Data(child: View = Empty()): DataTag {
   return new DataTag("data", child);
@@ -42,6 +48,9 @@ export class ProgressTag extends Tag<ProgressTag> {
     return this;
   }
 }
+
+/** @internal */
+(ProgressTag.prototype as any)._sk = ['value', 'max'];
 
 export function Progress(child: View = Empty()): ProgressTag {
   return new ProgressTag("progress", child);
@@ -85,6 +94,9 @@ export class MeterTag extends Tag<MeterTag> {
     return this;
   }
 }
+
+/** @internal */
+(MeterTag.prototype as any)._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
 
 export function Meter(child: View = Empty()): MeterTag {
   return new MeterTag("meter", child);

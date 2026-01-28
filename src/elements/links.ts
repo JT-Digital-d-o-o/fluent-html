@@ -41,6 +41,9 @@ export class AnchorTag extends Tag<AnchorTag> {
   }
 }
 
+/** @internal */
+(AnchorTag.prototype as any)._sk = ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy'];
+
 export function A(child: View = Empty()): AnchorTag {
   return new AnchorTag("a", child);
 }
@@ -53,6 +56,9 @@ export class MapTag extends Tag<MapTag> {
     return this;
   }
 }
+
+/** @internal */
+(MapTag.prototype as any)._sk = ['name'];
 
 export function MapEl(child: View = Empty()): MapTag {
   return new MapTag("map", child);
@@ -102,6 +108,9 @@ export class AreaTag extends Tag<AreaTag> {
     return this;
   }
 }
+
+/** @internal */
+(AreaTag.prototype as any)._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
 
 export function Area(child: View = Empty()): AreaTag {
   return new AreaTag("area", child);

@@ -43,6 +43,9 @@ export class ThTag extends Tag<ThTag> {
   }
 }
 
+/** @internal */
+(ThTag.prototype as any)._sk = ['colspan', 'rowspan', 'scope'];
+
 export function Th(child: View = Empty()): ThTag {
   return new ThTag("th", child);
 }
@@ -62,6 +65,9 @@ export class TdTag extends Tag<TdTag> {
   }
 }
 
+/** @internal */
+(TdTag.prototype as any)._sk = ['colspan', 'rowspan'];
+
 export function Td(child: View = Empty()): TdTag {
   return new TdTag("td", child);
 }
@@ -79,6 +85,9 @@ export class ColgroupTag extends Tag<ColgroupTag> {
   }
 }
 
+/** @internal */
+(ColgroupTag.prototype as any)._sk = ['span'];
+
 export function Colgroup(child: View = Empty()): ColgroupTag {
   return new ColgroupTag("colgroup", child);
 }
@@ -91,6 +100,9 @@ export class ColTag extends Tag<ColTag> {
     return this;
   }
 }
+
+/** @internal */
+(ColTag.prototype as any)._sk = ['span'];
 
 export function Col(child: View = Empty()): ColTag {
   return new ColTag("col", child);

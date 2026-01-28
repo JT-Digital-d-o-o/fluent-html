@@ -4,9 +4,12 @@
  */
 export class RawString {
   /** @internal type discriminant for fast render checks */
-  readonly _t = 2;
+  declare readonly _t: 2;
   constructor(public readonly html: string) {}
 }
+
+/** @internal */
+(RawString.prototype as any)._t = 2;
 
 /**
  * Creates a raw HTML string that will NOT be escaped during rendering.

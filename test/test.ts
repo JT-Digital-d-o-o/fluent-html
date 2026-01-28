@@ -421,7 +421,7 @@ testView("Colgroup and Col",
     ]),
     Tr([Td("A"), Td("B"), Td("C")]),
   ]),
-  `<table><colgroup><col span="2" class="highlight">\n<col></colgroup>\n<tr><td>A</td>\n<td>B</td>\n<td>C</td></tr></table>`);
+  `<table><colgroup><col class="highlight" span="2">\n<col></colgroup>\n<tr><td>A</td>\n<td>B</td>\n<td>C</td></tr></table>`);
 
 // ------------------------------------
 // Forms - Input
@@ -439,7 +439,7 @@ testView("Email input with validation",
     .setType("email")
     .setName("email")
     .setToggles(["required"]),
-  `<input autocomplete="email" type="email" name="email" required>`);
+  `<input type="email" name="email" autocomplete="email" required>`);
 
 testView("Number input with min/max/step",
   Input()
@@ -634,7 +634,7 @@ testView("Fieldset with Legend",
     Label("Name").setFor("name"),
     Input().setType("text").setName("name").setId("name"),
   ]).setName("personal"),
-  `<fieldset name="personal"><legend>Personal Info</legend>\n<label for="name">Name</label>\n<input type="text" name="name" id="name"></fieldset>`);
+  `<fieldset name="personal"><legend>Personal Info</legend>\n<label for="name">Name</label>\n<input id="name" type="text" name="name"></fieldset>`);
 
 testView("Disabled fieldset",
   Fieldset([
@@ -814,7 +814,7 @@ testView("Video with Track",
 
 testView("Canvas",
   Canvas().setWidth(800).setHeight(600).setId("myCanvas"),
-  `<canvas width="800" height="600" id="myCanvas"></canvas>`);
+  `<canvas id="myCanvas" width="800" height="600"></canvas>`);
 
 // ------------------------------------
 // SVG

@@ -51,6 +51,9 @@ export class MetaTag extends Tag<MetaTag> {
   }
 }
 
+/** @internal */
+(MetaTag.prototype as any)._sk = ['name', 'charset', 'httpEquiv', 'property', 'content'];
+
 export function Meta(): MetaTag {
   return new MetaTag("meta");
 }
@@ -106,6 +109,9 @@ export class LinkTag extends Tag<LinkTag> {
   }
 }
 
+/** @internal */
+(LinkTag.prototype as any)._sk = ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity'];
+
 export function Link(): LinkTag {
   return new LinkTag("link");
 }
@@ -125,6 +131,9 @@ export class StyleTag extends Tag<StyleTag> {
   }
 }
 
+/** @internal */
+(StyleTag.prototype as any)._sk = ['media', 'type'];
+
 export function Style(css: string): StyleTag {
   return new StyleTag("style", css);
 }
@@ -143,6 +152,9 @@ export class BaseTag extends Tag<BaseTag> {
     return this;
   }
 }
+
+/** @internal */
+(BaseTag.prototype as any)._sk = ['href', 'target'];
 
 export function Base(): BaseTag {
   return new BaseTag("base");
@@ -200,6 +212,9 @@ export class ScriptTag extends Tag<ScriptTag> {
     return this;
   }
 }
+
+/** @internal */
+(ScriptTag.prototype as any)._sk = ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule'];
 
 export function Script(js: string = ""): ScriptTag {
   return new ScriptTag("script", js);

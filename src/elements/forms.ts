@@ -113,6 +113,9 @@ export class InputTag extends Tag<InputTag> {
   }
 }
 
+/** @internal */
+(InputTag.prototype as any)._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
+
 export function Input(child: View = Empty()): InputTag {
   return new InputTag("input", child);
 }
@@ -186,6 +189,9 @@ export class TextareaTag extends Tag<TextareaTag> {
   }
 }
 
+/** @internal */
+(TextareaTag.prototype as any)._sk = ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly'];
+
 export function Textarea(child: View = Empty()): TextareaTag {
   return new TextareaTag("textarea", child);
 }
@@ -229,6 +235,9 @@ export class ButtonTag extends Tag<ButtonTag> {
   }
 }
 
+/** @internal */
+(ButtonTag.prototype as any)._sk = ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod'];
+
 export function Button(child: View = Empty()): ButtonTag {
   return new ButtonTag("button", child);
 }
@@ -241,6 +250,9 @@ export class LabelTag extends Tag<LabelTag> {
     return this;
   }
 }
+
+/** @internal */
+(LabelTag.prototype as any)._sk = ['for'];
 
 export function Label(child: View = Empty()): LabelTag {
   return new LabelTag("label", child);
@@ -285,6 +297,9 @@ export class FormTag extends Tag<FormTag> {
   }
 }
 
+/** @internal */
+(FormTag.prototype as any)._sk = ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete'];
+
 export function Form(child: View = Empty()): FormTag {
   return new FormTag("form", child);
 }
@@ -322,6 +337,9 @@ export class SelectTag extends Tag<SelectTag> {
   }
 }
 
+/** @internal */
+(SelectTag.prototype as any)._sk = ['name', 'multiple', 'size', 'disabled', 'autofocus'];
+
 export function Select(child: View = Empty()): SelectTag {
   return new SelectTag("select", child);
 }
@@ -353,6 +371,9 @@ export class OptionTag extends Tag<OptionTag> {
   }
 }
 
+/** @internal */
+(OptionTag.prototype as any)._sk = ['value', 'selected', 'disabled', 'label'];
+
 export function Option(child: View = Empty()): OptionTag {
   return new OptionTag("option", child);
 }
@@ -371,6 +392,9 @@ export class OptgroupTag extends Tag<OptgroupTag> {
     return this;
   }
 }
+
+/** @internal */
+(OptgroupTag.prototype as any)._sk = ['label', 'disabled'];
 
 export function Optgroup(child: View = Empty()): OptgroupTag {
   return new OptgroupTag("optgroup", child);
@@ -395,6 +419,9 @@ export class FieldsetTag extends Tag<FieldsetTag> {
   }
 }
 
+/** @internal */
+(FieldsetTag.prototype as any)._sk = ['name', 'disabled'];
+
 export function Fieldset(child: View = Empty()): FieldsetTag {
   return new FieldsetTag("fieldset", child);
 }
@@ -417,6 +444,9 @@ export class OutputTag extends Tag<OutputTag> {
     return this;
   }
 }
+
+/** @internal */
+(OutputTag.prototype as any)._sk = ['for', 'name'];
 
 export function Output(child: View = Empty()): OutputTag {
   return new OutputTag("output", child);

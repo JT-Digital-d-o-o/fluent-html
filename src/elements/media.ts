@@ -59,6 +59,9 @@ export class ImgTag extends Tag<ImgTag> {
   }
 }
 
+/** @internal */
+(ImgTag.prototype as any)._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
+
 export function Img(child: View = Empty()): ImgTag {
   return new ImgTag("img", child);
 }
@@ -99,6 +102,9 @@ export class SourceTag extends Tag<SourceTag> {
     return this;
   }
 }
+
+/** @internal */
+(SourceTag.prototype as any)._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
 
 export function Source(child: View = Empty()): SourceTag {
   return new SourceTag("source", child);
@@ -167,6 +173,9 @@ export class VideoTag extends Tag<VideoTag> {
   }
 }
 
+/** @internal */
+(VideoTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
+
 export function Video(child: View = Empty()): VideoTag {
   return new VideoTag("video", child);
 }
@@ -210,6 +219,9 @@ export class AudioTag extends Tag<AudioTag> {
   }
 }
 
+/** @internal */
+(AudioTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
+
 export function Audio(child: View = Empty()): AudioTag {
   return new AudioTag("audio", child);
 }
@@ -247,6 +259,9 @@ export class TrackTag extends Tag<TrackTag> {
   }
 }
 
+/** @internal */
+(TrackTag.prototype as any)._sk = ['src', 'kind', 'srclang', 'label', 'default'];
+
 export function Track(child: View = Empty()): TrackTag {
   return new TrackTag("track", child);
 }
@@ -265,6 +280,9 @@ export class CanvasTag extends Tag<CanvasTag> {
     return this;
   }
 }
+
+/** @internal */
+(CanvasTag.prototype as any)._sk = ['width', 'height'];
 
 export function Canvas(child: View = Empty()): CanvasTag {
   return new CanvasTag("canvas", child);
@@ -308,6 +326,9 @@ export class SvgTag extends Tag<SvgTag> {
     return this;
   }
 }
+
+/** @internal */
+(SvgTag.prototype as any)._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke'];
 
 export function Svg(child: View = Empty()): SvgTag {
   return new SvgTag("svg", child);
