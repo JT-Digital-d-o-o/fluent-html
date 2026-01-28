@@ -2,6 +2,22 @@
 
 Lambda.html now supports fluent method chaining for Tailwind CSS classes, making your code more readable and native-feeling.
 
+## Type-Safe Autocomplete
+
+All fluent methods have **type-safe parameters** with IDE autocomplete for Tailwind values:
+
+```typescript
+Div()
+  .w("full")              // IDE suggests: "full", "1/2", "screen", "64", etc.
+  .h("screen")            // IDE suggests: "screen", "svh", "dvh", "full", etc.
+  .background("red-500")  // IDE suggests: all color-shade combinations
+  .padding("4")           // IDE suggests: "0", "1", "2", "4", "8", etc.
+  .rounded("lg")          // IDE suggests: "sm", "md", "lg", "xl", "full", etc.
+  .tracking("wide")       // IDE suggests: "tighter", "tight", "normal", "wide", etc.
+```
+
+The type system suggests valid Tailwind values while still allowing custom/arbitrary values when needed.
+
 ## Before & After
 
 ### Old Way (still works!)
@@ -68,6 +84,35 @@ Both produce identical HTML output!
 .textAlign("right")              // text-right
 .fontWeight("bold")              // font-bold
 .fontWeight("semibold")          // font-semibold
+.bold()                          // font-bold (shorthand)
+.italic()                        // italic
+```
+
+### Text Transform & Decoration
+
+```typescript
+.uppercase()                     // uppercase
+.lowercase()                     // lowercase
+.capitalize()                    // capitalize
+.underline()                     // underline
+.lineThrough()                   // line-through
+.truncate()                      // truncate (ellipsis)
+```
+
+### Line Height & Letter Spacing
+
+```typescript
+.leading("tight")                // leading-tight
+.leading("normal")               // leading-normal
+.leading("relaxed")              // leading-relaxed
+.leading("loose")                // leading-loose
+
+.tracking("tighter")             // tracking-tighter
+.tracking("tight")               // tracking-tight
+.tracking("normal")              // tracking-normal
+.tracking("wide")                // tracking-wide
+.tracking("wider")               // tracking-wider
+.tracking("widest")              // tracking-widest
 ```
 
 ### Sizing

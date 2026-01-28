@@ -573,6 +573,20 @@ Div("Content")
 
 Both approaches produce identical HTML, but the fluent API offers better readability and IDE support.
 
+### Type-Safe Autocomplete
+
+All fluent methods have **type-safe parameters** with IDE autocomplete for Tailwind values:
+
+```typescript
+Div()
+  .w("full")              // IDE suggests: "full", "1/2", "screen", "64", etc.
+  .background("red-500")  // IDE suggests: all color-shade combinations
+  .rounded("lg")          // IDE suggests: "sm", "md", "lg", "xl", "full", etc.
+  .tracking("wide")       // IDE suggests: "tighter", "tight", "normal", "wide", etc.
+```
+
+The type system suggests valid Tailwind values while still allowing custom/arbitrary values when needed.
+
 ### Spacing Methods
 
 **Padding:**
@@ -608,6 +622,26 @@ Both approaches produce identical HTML, but the fluent API offers better readabi
 .textSize("xl")                  // text-xl
 .textAlign("center")             // text-center
 .fontWeight("bold")              // font-bold
+.bold()                          // font-bold (shorthand)
+.italic()                        // italic
+```
+
+**Text Transform & Decoration:**
+```typescript
+.uppercase()                     // uppercase
+.lowercase()                     // lowercase
+.capitalize()                    // capitalize
+.underline()                     // underline
+.lineThrough()                   // line-through
+.truncate()                      // truncate (ellipsis)
+```
+
+**Line Height & Letter Spacing:**
+```typescript
+.leading("tight")                // leading-tight
+.leading("relaxed")              // leading-relaxed
+.tracking("wide")                // tracking-wide
+.tracking("tight")               // tracking-tight
 ```
 
 ### Layout Methods
@@ -1586,6 +1620,8 @@ See [eslint-plugin-lambda-html](https://www.npmjs.com/package/eslint-plugin-lamb
 
 ### Fluent Styling Methods (All Tags)
 
+All fluent methods have **type-safe autocomplete** for Tailwind values.
+
 | Method                           | Description                                         |
 | -------------------------------- | --------------------------------------------------- |
 | `.padding(value)` / `.padding(side, value)` | Add padding classes (`p-4`, `px-4`, `pt-4`) |
@@ -1596,6 +1632,13 @@ See [eslint-plugin-lambda-html](https://www.npmjs.com/package/eslint-plugin-lamb
 | `.textSize(size)`                | Add text size (`text-xl`, `text-sm`)                |
 | `.textAlign(align)`              | Add text alignment (`text-center`)                  |
 | `.fontWeight(weight)`            | Add font weight (`font-bold`)                       |
+| `.bold()`                        | Shorthand for `font-bold`                           |
+| `.italic()`                      | Add italic style (`italic`)                         |
+| `.uppercase()` / `.lowercase()` / `.capitalize()` | Text transform                    |
+| `.underline()` / `.lineThrough()` | Text decoration                                    |
+| `.truncate()`                    | Truncate with ellipsis (`truncate`)                 |
+| `.leading(value)`                | Line height (`leading-tight`, `leading-relaxed`)    |
+| `.tracking(value)`               | Letter spacing (`tracking-wide`, `tracking-tight`)  |
 | `.w(width)`                      | Add width (`w-full`, `w-1/2`)                       |
 | `.h(height)`                     | Add height (`h-screen`, `h-64`)                     |
 | `.maxW(width)` / `.minW(width)` / `.maxH(height)` / `.minH(height)` | Size constraints |

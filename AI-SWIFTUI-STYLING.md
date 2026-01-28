@@ -3,6 +3,22 @@
 ## Overview
 Lambda.html provides SwiftUI-inspired methods for applying Tailwind CSS classes in a type-safe, chainable way. These methods make styling feel native and intuitive.
 
+## Type-Safe Autocomplete
+
+All fluent methods have **type-safe parameters** with IDE autocomplete for Tailwind values:
+
+```typescript
+Div()
+  .w("full")              // Autocomplete: "full", "1/2", "screen", "64", etc.
+  .h("screen")            // Autocomplete: "screen", "svh", "dvh", "full", etc.
+  .background("red-500")  // Autocomplete: all color-shade combinations
+  .padding("4")           // Autocomplete: "0", "1", "2", "4", "8", etc.
+  .rounded("lg")          // Autocomplete: "sm", "md", "lg", "xl", "full", etc.
+  .shadow("md")           // Autocomplete: "sm", "md", "lg", "xl", "2xl", etc.
+```
+
+The type system suggests valid Tailwind values while still allowing custom/arbitrary values when needed.
+
 ## Why Use These Methods?
 
 Instead of writing long class strings:
@@ -109,6 +125,34 @@ Both produce identical HTML, but the second is more discoverable and type-safe.
 .fontWeight("semibold")          // font-semibold
 .fontWeight("medium")            // font-medium
 .fontWeight("light")             // font-light
+
+// Text style shortcuts
+.bold()                          // font-bold (shorthand)
+.italic()                        // italic
+
+// Text transform
+.uppercase()                     // uppercase
+.lowercase()                     // lowercase
+.capitalize()                    // capitalize
+
+// Text decoration
+.underline()                     // underline
+.lineThrough()                   // line-through
+
+// Text overflow
+.truncate()                      // truncate (ellipsis)
+
+// Line height (leading)
+.leading("tight")                // leading-tight
+.leading("normal")               // leading-normal
+.leading("relaxed")              // leading-relaxed
+.leading("loose")                // leading-loose
+
+// Letter spacing (tracking)
+.tracking("tight")               // tracking-tight
+.tracking("normal")              // tracking-normal
+.tracking("wide")                // tracking-wide
+.tracking("wider")               // tracking-wider
 ```
 
 ### Sizing
@@ -640,4 +684,16 @@ Button("Hover me")
 
 // Sticky header
 .position("sticky").zIndex("50").background("white").shadow()
+
+// Text styling
+.bold().uppercase().tracking("wide")
+
+// Truncated text
+.truncate().w("48")
+
+// Muted text
+.textColor("gray-500").textSize("sm").italic()
+
+// Badge/label text
+.uppercase().textSize("xs").fontWeight("semibold").tracking("wider")
 ```

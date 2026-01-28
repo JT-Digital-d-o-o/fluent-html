@@ -2,6 +2,53 @@
 
 All notable changes to Lambda.html will be documented in this file.
 
+## [5.1.0] - 2025-01
+
+### ✨ New Features
+
+#### Type-Safe Fluent Styling
+
+All fluent styling methods now have **type-safe parameters** with IDE autocomplete for Tailwind values:
+
+```typescript
+Div()
+  .w("full")              // IDE suggests: "full", "1/2", "screen", "64", etc.
+  .background("red-500")  // IDE suggests: all color-shade combinations
+  .rounded("lg")          // IDE suggests: "sm", "md", "lg", "xl", "full", etc.
+```
+
+The type system suggests valid Tailwind values while still allowing custom/arbitrary values when needed via the `Autocomplete<T>` helper type.
+
+#### New Text Styling Methods
+
+Added 10 new fluent methods for common text styling:
+
+- `.bold()` - Shorthand for `font-bold`
+- `.italic()` - Add `italic` class
+- `.uppercase()` - Text transform to uppercase
+- `.lowercase()` - Text transform to lowercase
+- `.capitalize()` - Capitalize first letter of each word
+- `.underline()` - Add underline decoration
+- `.lineThrough()` - Add line-through decoration
+- `.truncate()` - Truncate with ellipsis
+- `.leading(value)` - Line height (`leading-tight`, `leading-relaxed`, etc.)
+- `.tracking(value)` - Letter spacing (`tracking-wide`, `tracking-tight`, etc.)
+
+**Example:**
+```typescript
+Span("IMPORTANT")
+  .bold()
+  .uppercase()
+  .tracking("wide")
+  .textColor("red-500")
+
+P("Long text that might overflow...")
+  .truncate()
+  .w("48")
+```
+
+---
+
 ## [4.0.0-beta.1] - 2025-01
 
 ### 🎉 New Feature: Reactive System

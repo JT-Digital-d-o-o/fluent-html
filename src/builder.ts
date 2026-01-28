@@ -7,6 +7,103 @@ import { Id, isId } from "./ids.js";
 
 export type Thunk<T> = () => T;
 
+// ------------------------------------
+// Tailwind Type Definitions
+// ------------------------------------
+
+// Spacing scale (used for padding, margin, gap, width, height)
+type TailwindSpacing =
+  | "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
+  | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96";
+
+// Width values
+type TailwindWidth =
+  | TailwindSpacing | "auto" | "full" | "screen" | "svw" | "lvw" | "dvw" | "min" | "max" | "fit"
+  | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5"
+  | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | "1/12" | "2/12" | "3/12" | "4/12" | "5/12" | "6/12" | "7/12" | "8/12" | "9/12" | "10/12" | "11/12";
+
+// Height values
+type TailwindHeight =
+  | TailwindSpacing | "auto" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit"
+  | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6";
+
+// Max-width values
+type TailwindMaxWidth =
+  | "0" | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"
+  | "full" | "min" | "max" | "fit" | "prose" | "screen-sm" | "screen-md" | "screen-lg" | "screen-xl" | "screen-2xl";
+
+// Min-width values
+type TailwindMinWidth = "0" | "full" | "min" | "max" | "fit";
+
+// Max-height values
+type TailwindMaxHeight = TailwindSpacing | "none" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit";
+
+// Min-height values
+type TailwindMinHeight = "0" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit";
+
+// Color shades
+type TailwindShade = "50" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "950";
+
+// Color names
+type TailwindColorName =
+  | "slate" | "gray" | "zinc" | "neutral" | "stone"
+  | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose";
+
+// Full color type
+type TailwindColor =
+  | "inherit" | "current" | "transparent" | "black" | "white"
+  | `${TailwindColorName}-${TailwindShade}`;
+
+// Text size
+type TailwindTextSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl";
+
+// Font weight
+type TailwindFontWeight = "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black";
+
+// Leading (line-height)
+type TailwindLeading = "none" | "tight" | "snug" | "normal" | "relaxed" | "loose" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10";
+
+// Tracking (letter-spacing)
+type TailwindTracking = "tighter" | "tight" | "normal" | "wide" | "wider" | "widest";
+
+// Border radius
+type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+
+// Shadow
+type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none";
+
+// Border width
+type TailwindBorderWidth = "0" | "2" | "4" | "8";
+
+// Opacity
+type TailwindOpacity =
+  | "0" | "5" | "10" | "15" | "20" | "25" | "30" | "35" | "40" | "45"
+  | "50" | "55" | "60" | "65" | "70" | "75" | "80" | "85" | "90" | "95" | "100";
+
+// Cursor
+type TailwindCursor =
+  | "auto" | "default" | "pointer" | "wait" | "text" | "move" | "help" | "not-allowed" | "none"
+  | "context-menu" | "progress" | "cell" | "crosshair" | "vertical-text" | "alias" | "copy" | "no-drop"
+  | "grab" | "grabbing" | "all-scroll" | "col-resize" | "row-resize"
+  | "n-resize" | "e-resize" | "s-resize" | "w-resize" | "ne-resize" | "nw-resize" | "se-resize" | "sw-resize"
+  | "ew-resize" | "ns-resize" | "nesw-resize" | "nwse-resize" | "zoom-in" | "zoom-out";
+
+// Z-index
+type TailwindZIndex = "0" | "10" | "20" | "30" | "40" | "50" | "auto";
+
+// Grid columns/rows
+type TailwindGridCols = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "none" | "subgrid";
+type TailwindGridRows = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "none" | "subgrid";
+
+// Flex
+type TailwindFlex = "1" | "auto" | "initial" | "none";
+
+// Overflow
+type TailwindOverflow = "auto" | "hidden" | "clip" | "visible" | "scroll";
+
+// Helper type to allow autocomplete while accepting any string
+type Autocomplete<T extends string> = T | (string & {});
+
 /**
  * Wrapper for raw HTML strings that bypass XSS escaping.
  * WARNING: Only use with trusted content. Never use with user input.
@@ -189,9 +286,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().padding("x", "4")            // px-4
    * Div().padding("top", "4")          // pt-4
    */
-  padding(value: string): TSelf;
-  padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: string): TSelf;
-  padding(directionOrValue: string, value?: string): TSelf {
+  padding(value: Autocomplete<TailwindSpacing>): TSelf;
+  padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing>): TSelf;
+  padding(directionOrValue: string, value?: Autocomplete<TailwindSpacing>): TSelf {
     if (value === undefined) {
       // Single parameter: all sides
       return this.addClass(`p-${directionOrValue}`);
@@ -215,9 +312,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().margin("x", "auto")          // mx-auto
    * Div().margin("top", "8")           // mt-8
    */
-  margin(value: string): TSelf;
-  margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: string): TSelf;
-  margin(directionOrValue: string, value?: string): TSelf {
+  margin(value: Autocomplete<TailwindSpacing | "auto">): TSelf;
+  margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing | "auto">): TSelf;
+  margin(directionOrValue: string, value?: Autocomplete<TailwindSpacing | "auto">): TSelf {
     if (value === undefined) {
       return this.addClass(`m-${directionOrValue}`);
     } else {
@@ -238,7 +335,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().background("red-500")        // bg-red-500
    * Div().background("blue-100")       // bg-blue-100
    */
-  background(color: string): TSelf {
+  background(color: Autocomplete<TailwindColor>): TSelf {
     return this.addClass(`bg-${color}`);
   }
 
@@ -249,7 +346,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Span().textColor("gray-700")       // text-gray-700
    * Span().textColor("white")          // text-white
    */
-  textColor(color: string): TSelf {
+  textColor(color: Autocomplete<TailwindColor>): TSelf {
     return this.addClass(`text-${color}`);
   }
 
@@ -260,7 +357,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Span().textSize("xl")              // text-xl
    * Span().textSize("sm")              // text-sm
    */
-  textSize(size: string): TSelf {
+  textSize(size: Autocomplete<TailwindTextSize>): TSelf {
     return this.addClass(`text-${size}`);
   }
 
@@ -282,8 +379,110 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Span().fontWeight("bold")          // font-bold
    * Span().fontWeight("semibold")      // font-semibold
    */
-  fontWeight(weight: string): TSelf {
+  fontWeight(weight: Autocomplete<TailwindFontWeight>): TSelf {
     return this.addClass(`font-${weight}`);
+  }
+
+  /**
+   * Make text bold (shorthand for fontWeight("bold")).
+   *
+   * @example
+   * Span("Important").bold()           // font-bold
+   */
+  bold(): TSelf {
+    return this.addClass("font-bold");
+  }
+
+  /**
+   * Make text italic with Tailwind classes.
+   *
+   * @example
+   * Span("Emphasis").italic()          // italic
+   */
+  italic(): TSelf {
+    return this.addClass("italic");
+  }
+
+  /**
+   * Transform text to uppercase with Tailwind classes.
+   *
+   * @example
+   * Span("hello").uppercase()          // uppercase
+   */
+  uppercase(): TSelf {
+    return this.addClass("uppercase");
+  }
+
+  /**
+   * Transform text to lowercase with Tailwind classes.
+   *
+   * @example
+   * Span("HELLO").lowercase()          // lowercase
+   */
+  lowercase(): TSelf {
+    return this.addClass("lowercase");
+  }
+
+  /**
+   * Capitalize first letter of each word with Tailwind classes.
+   *
+   * @example
+   * Span("hello world").capitalize()   // capitalize
+   */
+  capitalize(): TSelf {
+    return this.addClass("capitalize");
+  }
+
+  /**
+   * Add underline to text with Tailwind classes.
+   *
+   * @example
+   * Span("Link").underline()           // underline
+   */
+  underline(): TSelf {
+    return this.addClass("underline");
+  }
+
+  /**
+   * Add line-through to text with Tailwind classes.
+   *
+   * @example
+   * Span("Deleted").lineThrough()      // line-through
+   */
+  lineThrough(): TSelf {
+    return this.addClass("line-through");
+  }
+
+  /**
+   * Truncate text with ellipsis using Tailwind classes.
+   *
+   * @example
+   * P("Very long text...").truncate()  // truncate
+   */
+  truncate(): TSelf {
+    return this.addClass("truncate");
+  }
+
+  /**
+   * Add line height with Tailwind classes.
+   *
+   * @example
+   * P().leading("tight")               // leading-tight
+   * P().leading("relaxed")             // leading-relaxed
+   */
+  leading(value: Autocomplete<TailwindLeading>): TSelf {
+    return this.addClass(`leading-${value}`);
+  }
+
+  /**
+   * Add letter spacing with Tailwind classes.
+   *
+   * @example
+   * Span().tracking("wide")            // tracking-wide
+   * Span().tracking("tight")           // tracking-tight
+   */
+  tracking(value: Autocomplete<TailwindTracking>): TSelf {
+    return this.addClass(`tracking-${value}`);
   }
 
   /**
@@ -294,7 +493,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().w("1/2")                     // w-1/2
    * Div().w("64")                      // w-64
    */
-  w(value: string): TSelf {
+  w(value: Autocomplete<TailwindWidth>): TSelf {
     return this.addClass(`w-${value}`);
   }
 
@@ -305,7 +504,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().h("screen")                  // h-screen
    * Div().h("64")                      // h-64
    */
-  h(value: string): TSelf {
+  h(value: Autocomplete<TailwindHeight>): TSelf {
     return this.addClass(`h-${value}`);
   }
 
@@ -316,7 +515,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().maxW("md")                   // max-w-md
    * Div().maxW("prose")                // max-w-prose
    */
-  maxW(value: string): TSelf {
+  maxW(value: Autocomplete<TailwindMaxWidth>): TSelf {
     return this.addClass(`max-w-${value}`);
   }
 
@@ -327,7 +526,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().minW("0")                    // min-w-0
    * Div().minW("full")                 // min-w-full
    */
-  minW(value: string): TSelf {
+  minW(value: Autocomplete<TailwindMinWidth>): TSelf {
     return this.addClass(`min-w-${value}`);
   }
 
@@ -338,7 +537,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().maxH("screen")               // max-h-screen
    * Div().maxH("96")                   // max-h-96
    */
-  maxH(value: string): TSelf {
+  maxH(value: Autocomplete<TailwindMaxHeight>): TSelf {
     return this.addClass(`max-h-${value}`);
   }
 
@@ -349,7 +548,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().minH("screen")               // min-h-screen
    * Div().minH("0")                    // min-h-0
    */
-  minH(value: string): TSelf {
+  minH(value: Autocomplete<TailwindMinHeight>): TSelf {
     return this.addClass(`min-h-${value}`);
   }
 
@@ -360,7 +559,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().flex()                       // flex
    * Div().flex("1")                    // flex-1
    */
-  flex(value?: string): TSelf {
+  flex(value?: Autocomplete<TailwindFlex>): TSelf {
     if (value === undefined) {
       return this.addClass("flex");
     }
@@ -407,9 +606,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().gap("4")                     // gap-4
    * Div().gap("x", "2")                // gap-x-2
    */
-  gap(value: string): TSelf;
-  gap(direction: "x" | "y", value: string): TSelf;
-  gap(directionOrValue: string, value?: string): TSelf {
+  gap(value: Autocomplete<TailwindSpacing>): TSelf;
+  gap(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): TSelf;
+  gap(directionOrValue: string, value?: Autocomplete<TailwindSpacing>): TSelf {
     if (value === undefined) {
       return this.addClass(`gap-${directionOrValue}`);
     }
@@ -433,7 +632,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().gridCols("3")                // grid-cols-3
    * Div().gridCols("1fr-2fr")          // grid-cols-1fr-2fr
    */
-  gridCols(cols: string): TSelf {
+  gridCols(cols: Autocomplete<TailwindGridCols>): TSelf {
     return this.addClass(`grid-cols-${cols}`);
   }
 
@@ -443,7 +642,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().gridRows("2")                // grid-rows-2
    */
-  gridRows(rows: string): TSelf {
+  gridRows(rows: Autocomplete<TailwindGridRows>): TSelf {
     return this.addClass(`grid-rows-${rows}`);
   }
 
@@ -454,7 +653,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().border()                     // border
    * Div().border("2")                  // border-2
    */
-  border(value?: string): TSelf {
+  border(value?: Autocomplete<TailwindBorderWidth>): TSelf {
     if (value === undefined) {
       return this.addClass("border");
     }
@@ -467,7 +666,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().borderColor("gray-300")      // border-gray-300
    */
-  borderColor(color: string): TSelf {
+  borderColor(color: Autocomplete<TailwindColor>): TSelf {
     return this.addClass(`border-${color}`);
   }
 
@@ -479,7 +678,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().rounded("full")              // rounded-full
    * Div().rounded("lg")                // rounded-lg
    */
-  rounded(value?: string): TSelf {
+  rounded(value?: Autocomplete<TailwindRounded>): TSelf {
     if (value === undefined) {
       return this.addClass("rounded");
     }
@@ -493,7 +692,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().shadow()                     // shadow
    * Div().shadow("lg")                 // shadow-lg
    */
-  shadow(value?: string): TSelf {
+  shadow(value?: Autocomplete<TailwindShadow>): TSelf {
     if (value === undefined) {
       return this.addClass("shadow");
     }
@@ -506,7 +705,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().opacity("50")                // opacity-50
    */
-  opacity(value: string): TSelf {
+  opacity(value: Autocomplete<TailwindOpacity>): TSelf {
     return this.addClass(`opacity-${value}`);
   }
 
@@ -516,7 +715,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Button().cursor("pointer")         // cursor-pointer
    */
-  cursor(value: string): TSelf {
+  cursor(value: Autocomplete<TailwindCursor>): TSelf {
     return this.addClass(`cursor-${value}`);
   }
 
@@ -537,7 +736,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().zIndex("10")                 // z-10
    */
-  zIndex(value: string): TSelf {
+  zIndex(value: Autocomplete<TailwindZIndex>): TSelf {
     return this.addClass(`z-${value}`);
   }
 
@@ -548,9 +747,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().overflow("hidden")           // overflow-hidden
    * Div().overflow("x", "auto")        // overflow-x-auto
    */
-  overflow(value: string): TSelf;
-  overflow(direction: "x" | "y", value: string): TSelf;
-  overflow(directionOrValue: string, value?: string): TSelf {
+  overflow(value: Autocomplete<TailwindOverflow>): TSelf;
+  overflow(direction: "x" | "y", value: Autocomplete<TailwindOverflow>): TSelf;
+  overflow(directionOrValue: string, value?: Autocomplete<TailwindOverflow>): TSelf {
     if (value === undefined) {
       return this.addClass(`overflow-${directionOrValue}`);
     }

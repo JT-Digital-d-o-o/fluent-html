@@ -118,6 +118,31 @@ Div()
   .setAria({ label: "Close", expanded: "false" })
 ```
 
+### 4. Fluent Tailwind Styling (SwiftUI-like)
+
+Lambda.html provides **type-safe, chainable methods** for Tailwind CSS with IDE autocomplete:
+
+```typescript
+Div()
+  .padding("4")                    // p-4
+  .margin("x", "auto")             // mx-auto
+  .background("blue-500")          // bg-blue-500
+  .textColor("white")              // text-white
+  .rounded("lg")                   // rounded-lg
+  .shadow("md")                    // shadow-md
+  .w("full")                       // w-full
+  .h("screen")                     // h-screen
+  .flex()                          // flex
+  .justifyContent("center")        // justify-center
+  .alignItems("center")            // items-center
+  .gap("4")                        // gap-4
+  .bold()                          // font-bold
+  .uppercase()                     // uppercase
+  .truncate()                      // truncate
+```
+
+**See `AI-SWIFTUI-STYLING.md` for the complete reference of all fluent styling methods.**
+
 ### 4. Children and Nesting
 
 **Single child (string):**

@@ -367,6 +367,98 @@ class Tag {
         return this.addClass(`font-${weight}`);
     }
     /**
+     * Make text bold (shorthand for fontWeight("bold")).
+     *
+     * @example
+     * Span("Important").bold()           // font-bold
+     */
+    bold() {
+        return this.addClass("font-bold");
+    }
+    /**
+     * Make text italic with Tailwind classes.
+     *
+     * @example
+     * Span("Emphasis").italic()          // italic
+     */
+    italic() {
+        return this.addClass("italic");
+    }
+    /**
+     * Transform text to uppercase with Tailwind classes.
+     *
+     * @example
+     * Span("hello").uppercase()          // uppercase
+     */
+    uppercase() {
+        return this.addClass("uppercase");
+    }
+    /**
+     * Transform text to lowercase with Tailwind classes.
+     *
+     * @example
+     * Span("HELLO").lowercase()          // lowercase
+     */
+    lowercase() {
+        return this.addClass("lowercase");
+    }
+    /**
+     * Capitalize first letter of each word with Tailwind classes.
+     *
+     * @example
+     * Span("hello world").capitalize()   // capitalize
+     */
+    capitalize() {
+        return this.addClass("capitalize");
+    }
+    /**
+     * Add underline to text with Tailwind classes.
+     *
+     * @example
+     * Span("Link").underline()           // underline
+     */
+    underline() {
+        return this.addClass("underline");
+    }
+    /**
+     * Add line-through to text with Tailwind classes.
+     *
+     * @example
+     * Span("Deleted").lineThrough()      // line-through
+     */
+    lineThrough() {
+        return this.addClass("line-through");
+    }
+    /**
+     * Truncate text with ellipsis using Tailwind classes.
+     *
+     * @example
+     * P("Very long text...").truncate()  // truncate
+     */
+    truncate() {
+        return this.addClass("truncate");
+    }
+    /**
+     * Add line height with Tailwind classes.
+     *
+     * @example
+     * P().leading("tight")               // leading-tight
+     * P().leading("relaxed")             // leading-relaxed
+     */
+    leading(value) {
+        return this.addClass(`leading-${value}`);
+    }
+    /**
+     * Add letter spacing with Tailwind classes.
+     *
+     * @example
+     * Span().tracking("wide")            // tracking-wide
+     * Span().tracking("tight")           // tracking-tight
+     */
+    tracking(value) {
+        return this.addClass(`tracking-${value}`);
+    }
+    /**
      * Add width with Tailwind classes.
      *
      * @example
