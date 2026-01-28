@@ -7,98 +7,57 @@ import { escapeHtml, escapeAttr } from "./escape.js";
 // Elements whose content should NOT be escaped (they contain code, not text)
 const RAW_TEXT_ELEMENTS = new Set(['script', 'style']);
 
+// Known internal Tag properties that should NOT be rendered as attributes
+const INTERNAL_KEYS = new Set(['el', 'child', 'htmx', 'toggles', 'attributes']);
+
 export function render(view: View): string {
   return renderImpl(view, false);
 }
 
+function buildHtmx(htmx: HTMX): string {
+  let result = `hx-${htmx.method}="${escapeAttr(htmx.endpoint)}"`;
+
+  if (htmx.target) result += ` hx-target="${escapeAttr(htmx.target)}"`;
+  if (htmx.swap) result += ` hx-swap="${escapeAttr(htmx.swap)}"`;
+  if (htmx.swapOob !== undefined) {
+    result += ` hx-swap-oob="${typeof htmx.swapOob === 'string' ? escapeAttr(htmx.swapOob) : htmx.swapOob}"`;
+  }
+  if (htmx.select) result += ` hx-select="${escapeAttr(htmx.select)}"`;
+  if (htmx.selectOob) result += ` hx-select-oob="${escapeAttr(htmx.selectOob)}"`;
+  if (htmx.trigger) result += ` hx-trigger="${escapeAttr(htmx.trigger)}"`;
+  if (htmx.pushUrl !== undefined) {
+    result += ` hx-push-url="${typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl}"`;
+  }
+  if (htmx.replaceUrl !== undefined) {
+    result += ` hx-replace-url="${typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl}"`;
+  }
+  if (htmx.vals) {
+    result += ` hx-vals='${typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)}'`;
+  }
+  if (htmx.headers) result += ` hx-headers='${JSON.stringify(htmx.headers)}'`;
+  if (htmx.include) result += ` hx-include="${escapeAttr(htmx.include)}"`;
+  if (htmx.params) result += ` hx-params="${escapeAttr(htmx.params)}"`;
+  if (htmx.encoding) result += ` hx-encoding="${escapeAttr(htmx.encoding)}"`;
+  if (htmx.validate !== undefined) result += ` hx-validate="${htmx.validate}"`;
+  if (htmx.confirm) result += ` hx-confirm="${escapeAttr(htmx.confirm)}"`;
+  if (htmx.prompt) result += ` hx-prompt="${escapeAttr(htmx.prompt)}"`;
+  if (htmx.indicator) result += ` hx-indicator="${escapeAttr(htmx.indicator)}"`;
+  if (htmx.disabledElt) result += ` hx-disabled-elt="${escapeAttr(htmx.disabledElt)}"`;
+  if (htmx.sync) result += ` hx-sync="${escapeAttr(htmx.sync)}"`;
+  if (htmx.ext) result += ` hx-ext="${escapeAttr(htmx.ext)}"`;
+  if (htmx.disinherit) result += ` hx-disinherit="${escapeAttr(htmx.disinherit)}"`;
+  if (htmx.inherit) result += ` hx-inherit="${escapeAttr(htmx.inherit)}"`;
+  if (htmx.history !== undefined) result += ` hx-history="${htmx.history}"`;
+  if (htmx.historyElt !== undefined) result += ` hx-history-elt="${htmx.historyElt}"`;
+  if (htmx.preserve !== undefined) result += ` hx-preserve="${htmx.preserve}"`;
+  if (htmx.request) result += ` hx-request="${escapeAttr(htmx.request)}"`;
+  if (htmx.boost !== undefined) result += ` hx-boost="${htmx.boost}"`;
+  if (htmx.disable !== undefined) result += ` hx-disable="${htmx.disable}"`;
+
+  return result;
+}
+
 function renderImpl(view: View, isRawContext: boolean): string {
-  function buildAttributes(attributes: Record<string, string | number | boolean | undefined> | undefined): string {
-    if (!attributes) { return ""; }
-    return Object.entries(attributes)
-      .map(([key, value]) => {
-        if (value === undefined || value === null) return "";
-        return `${key}="${escapeAttr(String(value))}"`;
-      })
-      .filter(s => s.length > 0)
-      .join(" ");
-  }
-  function buildHtmx(htmx?: HTMX): string {
-    if (!htmx) {
-      return '';
-    }
-
-    const attributes: string[] = [];
-
-    // Method and endpoint (required)
-    attributes.push(`hx-${htmx.method}="${escapeAttr(htmx.endpoint)}"`);
-
-    // Targeting & Swapping
-    if (htmx.target) attributes.push(`hx-target="${escapeAttr(htmx.target)}"`);
-    if (htmx.swap) attributes.push(`hx-swap="${escapeAttr(htmx.swap)}"`);
-    if (htmx.swapOob !== undefined) {
-      attributes.push(`hx-swap-oob="${typeof htmx.swapOob === 'string' ? escapeAttr(htmx.swapOob) : htmx.swapOob}"`);
-    }
-    if (htmx.select) attributes.push(`hx-select="${escapeAttr(htmx.select)}"`);
-    if (htmx.selectOob) attributes.push(`hx-select-oob="${escapeAttr(htmx.selectOob)}"`);
-
-    // Triggering
-    if (htmx.trigger) attributes.push(`hx-trigger="${escapeAttr(htmx.trigger)}"`);
-
-    // URL manipulation
-    if (htmx.pushUrl !== undefined) {
-      attributes.push(`hx-push-url="${typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl}"`);
-    }
-    if (htmx.replaceUrl !== undefined) {
-      attributes.push(`hx-replace-url="${typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl}"`);
-    }
-
-    // Data
-    if (htmx.vals) {
-      attributes.push(`hx-vals='${typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)}'`);
-    }
-    if (htmx.headers) attributes.push(`hx-headers='${JSON.stringify(htmx.headers)}'`);
-    if (htmx.include) attributes.push(`hx-include="${escapeAttr(htmx.include)}"`);
-    if (htmx.params) attributes.push(`hx-params="${escapeAttr(htmx.params)}"`);
-    if (htmx.encoding) attributes.push(`hx-encoding="${escapeAttr(htmx.encoding)}"`);
-
-    // Validation & Confirmation
-    if (htmx.validate !== undefined) attributes.push(`hx-validate="${htmx.validate}"`);
-    if (htmx.confirm) attributes.push(`hx-confirm="${escapeAttr(htmx.confirm)}"`);
-    if (htmx.prompt) attributes.push(`hx-prompt="${escapeAttr(htmx.prompt)}"`);
-
-    // Loading states
-    if (htmx.indicator) attributes.push(`hx-indicator="${escapeAttr(htmx.indicator)}"`);
-    if (htmx.disabledElt) attributes.push(`hx-disabled-elt="${escapeAttr(htmx.disabledElt)}"`);
-
-    // Synchronization
-    if (htmx.sync) attributes.push(`hx-sync="${escapeAttr(htmx.sync)}"`);
-
-    // Extensions
-    if (htmx.ext) attributes.push(`hx-ext="${escapeAttr(htmx.ext)}"`);
-
-    // Inheritance control
-    if (htmx.disinherit) attributes.push(`hx-disinherit="${escapeAttr(htmx.disinherit)}"`);
-    if (htmx.inherit) attributes.push(`hx-inherit="${escapeAttr(htmx.inherit)}"`);
-
-    // History
-    if (htmx.history !== undefined) attributes.push(`hx-history="${htmx.history}"`);
-    if (htmx.historyElt !== undefined) attributes.push(`hx-history-elt="${htmx.historyElt}"`);
-
-    // Preservation
-    if (htmx.preserve !== undefined) attributes.push(`hx-preserve="${htmx.preserve}"`);
-
-    // Request configuration
-    if (htmx.request) attributes.push(`hx-request="${escapeAttr(htmx.request)}"`);
-
-    // Boosting
-    if (htmx.boost !== undefined) attributes.push(`hx-boost="${htmx.boost}"`);
-
-    // Disable htmx processing
-    if (htmx.disable !== undefined) attributes.push(`hx-disable="${htmx.disable}"`);
-
-    return attributes.join(' ');
-  }
-
   // RawString bypasses escaping - used for trusted HTML content
   if (view instanceof RawString) {
     return view.html;
@@ -109,40 +68,53 @@ function renderImpl(view: View, isRawContext: boolean): string {
   }
 
   if (view instanceof Tag) {
-    // Build base attributes, excluding internal properties
-    const baseAttrs: any = {};
-    Object.assign(baseAttrs, view);
-    Object.assign(baseAttrs, view.attributes);
-
-    // Exclude internal properties from rendering
-    baseAttrs.el = undefined;
-    baseAttrs.htmx = undefined;
-    baseAttrs.child = undefined;
-    baseAttrs.toggles = undefined;
-    baseAttrs.attributes = undefined;
-
     const childIsRaw = RAW_TEXT_ELEMENTS.has(view.el);
     const renderedChild = renderImpl(view.child, childIsRaw);
 
-    const parts: string[] = [];
+    // Build attribute string directly — avoid object copy + Object.entries
+    let attrs = "";
 
-    const renderedAttributes = buildAttributes(baseAttrs);
-    if (renderedAttributes) parts.push(renderedAttributes);
-
-    const renderedHtmx = buildHtmx(view.htmx);
-    if (renderedHtmx) parts.push(renderedHtmx);
-
-    if (view.toggles && view.toggles.length > 0) {
-      parts.push(view.toggles.join(" "));
+    // Render own properties of the Tag (id, class, style, etc.)
+    const keys = Object.keys(view);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      if (INTERNAL_KEYS.has(key)) continue;
+      const value = (view as any)[key];
+      if (value === undefined || value === null) continue;
+      attrs += ` ${key}="${escapeAttr(String(value))}"`;
     }
 
-    const attrsString = parts.length > 0 ? " " + parts.join(" ") : "";
+    // Render extra attributes from .attributes record
+    const extraAttrs = view.attributes;
+    const extraKeys = Object.keys(extraAttrs);
+    for (let i = 0; i < extraKeys.length; i++) {
+      const key = extraKeys[i];
+      const value = extraAttrs[key];
+      if (value === undefined || value === null) continue;
+      attrs += ` ${key}="${escapeAttr(String(value))}"`;
+    }
 
-    return `<${view.el}${attrsString}>${renderedChild}</${view.el}>`;
+    // HTMX attributes
+    if (view.htmx) {
+      attrs += " " + buildHtmx(view.htmx);
+    }
+
+    // Boolean toggle attributes
+    if (view.toggles && view.toggles.length > 0) {
+      attrs += " " + view.toggles.join(" ");
+    }
+
+    return `<${view.el}${attrs}>${renderedChild}</${view.el}>`;
   }
 
   if (Array.isArray(view)) {
-    return view.map(innerView => renderImpl(innerView, isRawContext)).join("\n");
+    const len = view.length;
+    if (len === 0) return "";
+    let result = renderImpl(view[0], isRawContext);
+    for (let i = 1; i < len; i++) {
+      result += "\n" + renderImpl(view[i], isRawContext);
+    }
+    return result;
   }
 
   return "";
