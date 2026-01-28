@@ -47,6 +47,7 @@ render(page);
 - **Fluent API** - Chainable methods for styling, attributes, and structure
 - **Full autocomplete** - Every method, attribute, and value suggested by your IDE
 - **First-class HTMX** - Type-safe triggers, swaps, targets, and more
+- **Fold / Catamorphism** - Generic View traversals via `foldView` with pre-built and custom algebras ([docs](FOLD.md))
 - **XSS protection** - All content escaped automatically
 - **Zero dependencies** - Pure TypeScript, ~15KB minified
 - **SSR-ready** - Built for server-side rendering
@@ -145,6 +146,7 @@ render(withOOB(
 - [HTMX Integration](#type-safe-htmx) - Requests, triggers, swaps, all typed
 - [HTML Elements](#html-elements) - 60+ typed elements
 - [Control Flow](#control-flow-1) - IfThen, ForEach, SwitchCase
+- [Fold / Catamorphism](FOLD.md) - Generic View traversals, pre-built algebras, custom folds
 - [Common Patterns](#common-patterns) - Layouts, OOB swaps, response helpers
 - [ESLint Plugin](#eslint-plugin) - Additional compile-time checks
 - [API Reference](#api-reference) - Complete method reference
@@ -1539,6 +1541,30 @@ VStack([
   ], { justify: "flex-end" })
 ], { spacing: "1.5rem" })
 ```
+
+---
+
+## Fold / Catamorphism
+
+Lambda.html includes a generic **fold** (`foldView`) that recursively collapses any `View` tree into a value of your choice. Supply a `ViewAlgebra<A>` — four functions that handle text, raw HTML, tags, and lists — and `foldView` does the rest.
+
+```typescript
+import { foldView, countAlgebra, textAlgebra, linksAlgebra } from 'lambda.html';
+
+// Count elements
+foldView(countAlgebra, Div([P("Hello"), P("World")]));  // 3
+
+// Extract plain text
+foldView(textAlgebra, H1("Welcome"));  // "Welcome\n"
+
+// Collect all links
+foldView(linksAlgebra, Div([A("Home").setHref("/"), A("About").setHref("/about")]));
+// [{ href: "/" }, { href: "/about" }]
+```
+
+Pre-built algebras: `countAlgebra`, `textAlgebra`, `linksAlgebra`, `renderAlgebra`. Transform helpers: `createTransformAlgebra`, `addClassToMatching`.
+
+Writing your own algebra is straightforward — see the **[full Fold documentation](FOLD.md)** for in-depth explanations and examples.
 
 ---
 
