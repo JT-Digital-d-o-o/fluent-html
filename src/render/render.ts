@@ -1,5 +1,5 @@
 import { HTMX } from "../htmx.js";
-import { Tag } from "../core/tag.js";
+import { Tag, EMPTY_ATTRS } from "../core/tag.js";
 import { RawString } from "../core/raw-string.js";
 import type { View } from "../core/types.js";
 import { escapeHtml, escapeAttr } from "./escape.js";
@@ -7,8 +7,11 @@ import { escapeHtml, escapeAttr } from "./escape.js";
 // Elements whose content should NOT be escaped (they contain code, not text)
 const RAW_TEXT_ELEMENTS = new Set(['script', 'style']);
 
-// Known internal Tag properties that should NOT be rendered as attributes
-const INTERNAL_KEYS = new Set(['el', 'child', 'htmx', 'toggles', 'attributes']);
+// HTML void elements — no closing tag, no children
+const VOID_ELEMENTS = new Set([
+  'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+  'link', 'meta', 'source', 'track', 'wbr'
+]);
 
 export function render(view: View): string {
   return renderImpl(view, false);
@@ -58,53 +61,64 @@ function buildHtmx(htmx: HTMX): string {
 }
 
 function renderImpl(view: View, isRawContext: boolean): string {
-  // RawString bypasses escaping - used for trusted HTML content
-  if (view instanceof RawString) {
-    return view.html;
-  }
-
   if (typeof view === "string") {
     return isRawContext ? view : escapeHtml(view);
   }
 
-  if (view instanceof Tag) {
-    const childIsRaw = RAW_TEXT_ELEMENTS.has(view.el);
-    const renderedChild = renderImpl(view.child, childIsRaw);
+  // Type discriminant check — faster than instanceof prototype walk
+  const vt = (view as any)._t;
+
+  if (vt === 2) { // RawString
+    return (view as RawString).html;
+  }
+
+  if (vt === 1) { // Tag
+    const tag = view as Tag;
+    const el = tag.el;
+    const isVoid = VOID_ELEMENTS.has(el);
 
     // Build attribute string directly — avoid object copy + Object.entries
     let attrs = "";
 
     // Render own properties of the Tag (id, class, style, etc.)
-    const keys = Object.keys(view);
+    // Inline key checks instead of Set.has() — V8 interns short strings
+    const keys = Object.keys(tag);
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
-      if (INTERNAL_KEYS.has(key)) continue;
-      const value = (view as any)[key];
+      if (key === '_t' || key === 'el' || key === 'child' || key === 'htmx' || key === 'toggles' || key === 'attributes') continue;
+      const value = (tag as any)[key];
       if (value === undefined || value === null) continue;
       attrs += ` ${key}="${escapeAttr(String(value))}"`;
     }
 
-    // Render extra attributes from .attributes record
-    const extraAttrs = view.attributes;
-    const extraKeys = Object.keys(extraAttrs);
-    for (let i = 0; i < extraKeys.length; i++) {
-      const key = extraKeys[i];
-      const value = extraAttrs[key];
-      if (value === undefined || value === null) continue;
-      attrs += ` ${key}="${escapeAttr(String(value))}"`;
+    // Render extra attributes from .attributes record (skip if empty sentinel)
+    const extraAttrs = tag.attributes;
+    if (extraAttrs !== EMPTY_ATTRS) {
+      const extraKeys = Object.keys(extraAttrs);
+      for (let i = 0; i < extraKeys.length; i++) {
+        const key = extraKeys[i];
+        const value = extraAttrs[key];
+        if (value === undefined || value === null) continue;
+        attrs += ` ${key}="${escapeAttr(String(value))}"`;
+      }
     }
 
     // HTMX attributes
-    if (view.htmx) {
-      attrs += " " + buildHtmx(view.htmx);
+    if (tag.htmx) {
+      attrs += " " + buildHtmx(tag.htmx);
     }
 
     // Boolean toggle attributes
-    if (view.toggles && view.toggles.length > 0) {
-      attrs += " " + view.toggles.join(" ");
+    if (tag.toggles && tag.toggles.length > 0) {
+      attrs += " " + tag.toggles.join(" ");
     }
 
-    return `<${view.el}${attrs}>${renderedChild}</${view.el}>`;
+    if (isVoid) {
+      return `<${el}${attrs}>`;
+    }
+
+    const renderedChild = renderImpl(tag.child, RAW_TEXT_ELEMENTS.has(el));
+    return `<${el}${attrs}>${renderedChild}</${el}>`;
   }
 
   if (Array.isArray(view)) {

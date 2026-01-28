@@ -3,6 +3,8 @@
  * WARNING: Only use with trusted content. Never use with user input.
  */
 export class RawString {
+  /** @internal type discriminant for fast render checks */
+  readonly _t = 2;
   constructor(public readonly html: string) {}
 }
 

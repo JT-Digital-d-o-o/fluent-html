@@ -27,6 +27,9 @@ import type {
   TailwindOverflow,
 } from "./tailwind-types.js";
 
+/** @internal Shared empty attributes object — never mutate */
+export const EMPTY_ATTRS: Record<string, string> = Object.freeze({}) as Record<string, string>;
+
 export class Tag<TSelf extends Tag<any> = Tag<any>> {
   el: string;
   child: View;
@@ -38,10 +41,13 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
   htmx?: HTMX;
   toggles?: string[];
 
+  /** @internal type discriminant for fast render checks */
+  readonly _t = 1;
+
   constructor(element: string, child: View = "") {
     this.el = element;
     this.child = child;
-    this.attributes = {};
+    this.attributes = EMPTY_ATTRS;
   }
 
   setId(id?: string | Id): TSelf {
@@ -69,7 +75,11 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
   }
 
   addAttribute(key: string, value: string): TSelf {
-    this.attributes[key] = value;
+    if (this.attributes === EMPTY_ATTRS) {
+      this.attributes = { [key]: value };
+    } else {
+      this.attributes[key] = value;
+    }
     return this as any as TSelf;
   }
 
@@ -141,6 +151,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
    */
   setDataAttrs(attrs: Record<string, string>): TSelf {
+    if (this.attributes === EMPTY_ATTRS) this.attributes = {};
     for (const [key, value] of Object.entries(attrs)) {
       // Convert camelCase to kebab-case
       const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
@@ -163,6 +174,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * })
    */
   setAria(attrs: Record<string, string | boolean>): TSelf {
+    if (this.attributes === EMPTY_ATTRS) this.attributes = {};
     for (const [key, value] of Object.entries(attrs)) {
       // Convert camelCase to kebab-case
       const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);

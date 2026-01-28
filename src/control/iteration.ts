@@ -28,14 +28,36 @@ export function ForEach<T>(
 ): View {
   // ForEach(low, high, renderItem)
   if (typeof viewsOrLowOrHigh === "number" && typeof renderItemOrHigh === "number") {
-    return Array.from(range(viewsOrLowOrHigh, renderItemOrHigh)).map((i) => renderItem!(i));
+    const low = viewsOrLowOrHigh;
+    const high = renderItemOrHigh;
+    const len = high - low;
+    const result: View[] = new Array(len);
+    for (let i = 0; i < len; i++) {
+      result[i] = renderItem!(low + i);
+    }
+    return result;
   }
   // ForEach(high, renderItem)
   if (typeof viewsOrLowOrHigh === "number") {
-    return Array.from(range(0, viewsOrLowOrHigh)).map((i) => (renderItemOrHigh as (i: number) => View)(i));
+    const len = viewsOrLowOrHigh;
+    const fn = renderItemOrHigh as (i: number) => View;
+    const result: View[] = new Array(len);
+    for (let i = 0; i < len; i++) {
+      result[i] = fn(i);
+    }
+    return result;
   }
   // ForEach(views, renderItem)
-  return Array.from(viewsOrLowOrHigh).map(renderItemOrHigh as (item: T, index: number) => View);
+  const fn = renderItemOrHigh as (item: T, index: number) => View;
+  if (Array.isArray(viewsOrLowOrHigh)) {
+    const arr = viewsOrLowOrHigh;
+    const result: View[] = new Array(arr.length);
+    for (let i = 0; i < arr.length; i++) {
+      result[i] = fn(arr[i], i);
+    }
+    return result;
+  }
+  return Array.from(viewsOrLowOrHigh).map(fn);
 }
 
 /** @deprecated Use ForEach instead */

@@ -115,15 +115,15 @@ testView("All heading levels",
 
 testView("Br element",
   Br(),
-  `<br></br>`);
+  `<br>`);
 
 testView("Hr element",
   Hr(),
-  `<hr></hr>`);
+  `<hr>`);
 
 testView("Wbr element",
   Wbr(),
-  `<wbr></wbr>`);
+  `<wbr>`);
 
 
 // ------------------------------------
@@ -165,7 +165,7 @@ testView("Figure with Figcaption",
     Img().setSrc("photo.jpg").setAlt("A photo"),
     Figcaption("Photo caption")
   ]),
-  `<figure><img src="photo.jpg" alt="A photo"></img>\n<figcaption>Photo caption</figcaption></figure>`);
+  `<figure><img src="photo.jpg" alt="A photo">\n<figcaption>Photo caption</figcaption></figure>`);
 
 testView("Address",
   Address("123 Main St"),
@@ -177,7 +177,7 @@ testView("Hgroup",
 
 testView("Search",
   Search(Input().setType("search")),
-  `<search><input type="search"></input></search>`);
+  `<search><input type="search"></search>`);
 
 // ------------------------------------
 // Text Formatting Elements
@@ -307,18 +307,18 @@ section("Toggles (Boolean Attributes)");
 
 testView("Single toggle",
   Input().setToggles(["required"]),
-  `<input required></input>`);
+  `<input required>`);
 
 testView("Multiple toggles",
   Input().setToggles(["required", "disabled", "readonly"]),
-  `<input required disabled readonly></input>`);
+  `<input required disabled readonly>`);
 
 testView("Toggle with other attributes",
   Input()
     .setType("text")
     .setName("email")
     .setToggles(["required"]),
-  `<input type="text" name="email" required></input>`);
+  `<input type="text" name="email" required>`);
 
 // ------------------------------------
 // Lists
@@ -421,7 +421,7 @@ testView("Colgroup and Col",
     ]),
     Tr([Td("A"), Td("B"), Td("C")]),
   ]),
-  `<table><colgroup><col class="highlight" span="2"></col>\n<col></col></colgroup>\n<tr><td>A</td>\n<td>B</td>\n<td>C</td></tr></table>`);
+  `<table><colgroup><col span="2" class="highlight">\n<col></colgroup>\n<tr><td>A</td>\n<td>B</td>\n<td>C</td></tr></table>`);
 
 // ------------------------------------
 // Forms - Input
@@ -431,7 +431,7 @@ section("Forms - Input");
 
 testView("Text input",
   Input().setType("text").setName("username").setPlaceholder("Enter username"),
-  `<input type="text" placeholder="Enter username" name="username"></input>`);
+  `<input type="text" name="username" placeholder="Enter username">`);
 
 testView("Email input with validation",
   Input()
@@ -439,7 +439,7 @@ testView("Email input with validation",
     .setType("email")
     .setName("email")
     .setToggles(["required"]),
-  `<input type="email" name="email" autocomplete="email" required></input>`);
+  `<input autocomplete="email" type="email" name="email" required>`);
 
 testView("Number input with min/max/step",
   Input()
@@ -448,7 +448,7 @@ testView("Number input with min/max/step",
     .setMin(1)
     .setMax(100)
     .setStep(5),
-  `<input type="number" name="quantity" min="1" max="100" step="5"></input>`);
+  `<input type="number" name="quantity" min="1" max="100" step="5">`);
 
 testView("Password input",
   Input()
@@ -456,14 +456,14 @@ testView("Password input",
     .setName("password")
     .setMinlength(8)
     .setMaxlength(64),
-  `<input type="password" name="password" minlength="8" maxlength="64"></input>`);
+  `<input type="password" name="password" minlength="8" maxlength="64">`);
 
 testView("Input with pattern",
   Input()
     .setType("text")
     .setName("zipcode")
     .setPattern("[0-9]{5}"),
-  `<input type="text" name="zipcode" pattern="[0-9]{5}"></input>`);
+  `<input type="text" name="zipcode" pattern="[0-9]{5}">`);
 
 testView("Checkbox input",
   Input()
@@ -471,14 +471,14 @@ testView("Checkbox input",
     .setName("agree")
     .setValue("yes")
     .setChecked(),
-  `<input type="checkbox" name="agree" value="yes" checked="true"></input>`);
+  `<input type="checkbox" name="agree" value="yes" checked="true">`);
 
 testView("Radio input",
   Input()
     .setType("radio")
     .setName("color")
     .setValue("red"),
-  `<input type="radio" name="color" value="red"></input>`);
+  `<input type="radio" name="color" value="red">`);
 
 testView("File input",
   Input()
@@ -486,7 +486,7 @@ testView("File input",
     .setName("document")
     .setAccept(".pdf,.doc")
     .setMultiple(),
-  `<input type="file" name="document" accept=".pdf,.doc" multiple="true"></input>`);
+  `<input type="file" name="document" accept=".pdf,.doc" multiple="true">`);
 
 testView("Disabled input",
   Input()
@@ -494,7 +494,7 @@ testView("Disabled input",
     .setName("locked")
     .setValue("Cannot edit")
     .setDisabled(),
-  `<input type="text" name="locked" value="Cannot edit" disabled="true"></input>`);
+  `<input type="text" name="locked" value="Cannot edit" disabled="true">`);
 
 testView("Readonly input",
   Input()
@@ -502,7 +502,7 @@ testView("Readonly input",
     .setName("readonly")
     .setValue("Read only")
     .setReadonly(),
-  `<input type="text" name="readonly" value="Read only" readonly="true"></input>`);
+  `<input type="text" name="readonly" value="Read only" readonly="true">`);
 
 testView("Input with datalist",
   [
@@ -512,7 +512,7 @@ testView("Input with datalist",
       Option("Firefox").setValue("firefox"),
     ]).setId("browsers"),
   ],
-  `<input type="text" name="browser" list="browsers"></input>\n<datalist id="browsers"><option value="chrome">Chrome</option>\n<option value="firefox">Firefox</option></datalist>`);
+  `<input type="text" name="browser" list="browsers">\n<datalist id="browsers"><option value="chrome">Chrome</option>\n<option value="firefox">Firefox</option></datalist>`);
 
 // ------------------------------------
 // Forms - Textarea
@@ -522,7 +522,7 @@ section("Forms - Textarea");
 
 testView("Basic textarea",
   Textarea().setName("message").setPlaceholder("Enter message"),
-  `<textarea placeholder="Enter message" name="message"></textarea>`);
+  `<textarea name="message" placeholder="Enter message"></textarea>`);
 
 testView("Textarea with rows/cols",
   Textarea()
@@ -634,33 +634,33 @@ testView("Fieldset with Legend",
     Label("Name").setFor("name"),
     Input().setType("text").setName("name").setId("name"),
   ]).setName("personal"),
-  `<fieldset name="personal"><legend>Personal Info</legend>\n<label for="name">Name</label>\n<input id="name" type="text" name="name"></input></fieldset>`);
+  `<fieldset name="personal"><legend>Personal Info</legend>\n<label for="name">Name</label>\n<input type="text" name="name" id="name"></fieldset>`);
 
 testView("Disabled fieldset",
   Fieldset([
     Legend("Disabled Section"),
     Input().setType("text"),
   ]).setDisabled(),
-  `<fieldset disabled="true"><legend>Disabled Section</legend>\n<input type="text"></input></fieldset>`);
+  `<fieldset disabled="true"><legend>Disabled Section</legend>\n<input type="text"></fieldset>`);
 
 testView("Form with method and action",
   Form([
     Input().setType("text").setName("q"),
     Button("Search").setType("submit"),
   ]).setAction("/search").setMethod("get"),
-  `<form action="/search" method="get"><input type="text" name="q"></input>\n<button type="submit">Search</button></form>`);
+  `<form action="/search" method="get"><input type="text" name="q">\n<button type="submit">Search</button></form>`);
 
 testView("Form with enctype",
   Form([
     Input().setType("file").setName("upload"),
   ]).setAction("/upload").setMethod("post").setEnctype("multipart/form-data"),
-  `<form action="/upload" method="post" enctype="multipart/form-data"><input type="file" name="upload"></input></form>`);
+  `<form action="/upload" method="post" enctype="multipart/form-data"><input type="file" name="upload"></form>`);
 
 testView("Form with novalidate",
   Form([
     Input().setType("email").setName("email"),
   ]).setNovalidate(),
-  `<form novalidate="true"><input type="email" name="email"></input></form>`);
+  `<form novalidate="true"><input type="email" name="email"></form>`);
 
 testView("Output element",
   Output("100").setFor("a b").setName("result"),
@@ -739,15 +739,15 @@ section("Media Elements");
 
 testView("Basic image",
   Img().setSrc("photo.jpg").setAlt("A photo"),
-  `<img src="photo.jpg" alt="A photo"></img>`);
+  `<img src="photo.jpg" alt="A photo">`);
 
 testView("Image with dimensions",
   Img().setSrc("photo.jpg").setAlt("Photo").setWidth("640").setHeight("480"),
-  `<img src="photo.jpg" alt="Photo" width="640" height="480"></img>`);
+  `<img src="photo.jpg" alt="Photo" width="640" height="480">`);
 
 testView("Lazy loaded image",
   Img().setSrc("photo.jpg").setAlt("Lazy").setLoading("lazy"),
-  `<img src="photo.jpg" alt="Lazy" loading="lazy"></img>`);
+  `<img src="photo.jpg" alt="Lazy" loading="lazy">`);
 
 testView("Image with srcset",
   Img()
@@ -755,7 +755,7 @@ testView("Image with srcset",
     .setAlt("Responsive")
     .setSrcset("small.jpg 480w, medium.jpg 800w, large.jpg 1200w")
     .setSizes("(max-width: 600px) 480px, 800px"),
-  `<img src="small.jpg" alt="Responsive" srcset="small.jpg 480w, medium.jpg 800w, large.jpg 1200w" sizes="(max-width: 600px) 480px, 800px"></img>`);
+  `<img src="small.jpg" alt="Responsive" srcset="small.jpg 480w, medium.jpg 800w, large.jpg 1200w" sizes="(max-width: 600px) 480px, 800px">`);
 
 testView("Picture element",
   Picture([
@@ -763,11 +763,11 @@ testView("Picture element",
     Source().setSrcset("small.webp").setType("image/webp"),
     Img().setSrc("fallback.jpg").setAlt("Picture"),
   ]),
-  `<picture><source srcset="large.webp" type="image/webp" media="(min-width: 800px)"></source>\n<source srcset="small.webp" type="image/webp"></source>\n<img src="fallback.jpg" alt="Picture"></img></picture>`);
+  `<picture><source srcset="large.webp" media="(min-width: 800px)" type="image/webp">\n<source srcset="small.webp" type="image/webp">\n<img src="fallback.jpg" alt="Picture"></picture>`);
 
 testView("Video with controls",
   Video().setSrc("video.mp4").setControls().setWidth(640).setHeight(360),
-  `<video width="640" height="360" controls="true" src="video.mp4"></video>`);
+  `<video src="video.mp4" controls="true" width="640" height="360"></video>`);
 
 testView("Video with multiple sources",
   Video([
@@ -775,7 +775,7 @@ testView("Video with multiple sources",
     Source().setSrc("video.mp4").setType("video/mp4"),
     "Your browser does not support video.",
   ]).setControls(),
-  `<video controls="true"><source src="video.webm" type="video/webm"></source>\n<source src="video.mp4" type="video/mp4"></source>\nYour browser does not support video.</video>`);
+  `<video controls="true"><source src="video.webm" type="video/webm">\n<source src="video.mp4" type="video/mp4">\nYour browser does not support video.</video>`);
 
 testView("Video with all options",
   Video()
@@ -787,7 +787,7 @@ testView("Video with all options",
     .setPoster("poster.jpg")
     .setPreload("metadata")
     .setPlaysinline(),
-  `<video controls="true" src="video.mp4" autoplay="true" loop="true" muted="true" preload="metadata" poster="poster.jpg" playsinline="true"></video>`);
+  `<video src="video.mp4" controls="true" autoplay="true" loop="true" muted="true" poster="poster.jpg" preload="metadata" playsinline="true"></video>`);
 
 testView("Audio",
   Audio().setSrc("audio.mp3").setControls(),
@@ -810,11 +810,11 @@ testView("Video with Track",
       .setLabel("English")
       .setDefault(),
   ]).setControls(),
-  `<video controls="true"><source src="video.mp4" type="video/mp4"></source>\n<track src="captions.vtt" kind="subtitles" srclang="en" label="English" default="true"></track></video>`);
+  `<video controls="true"><source src="video.mp4" type="video/mp4">\n<track src="captions.vtt" kind="subtitles" srclang="en" label="English" default="true"></video>`);
 
 testView("Canvas",
   Canvas().setWidth(800).setHeight(600).setId("myCanvas"),
-  `<canvas id="myCanvas" width="800" height="600"></canvas>`);
+  `<canvas width="800" height="600" id="myCanvas"></canvas>`);
 
 // ------------------------------------
 // SVG
@@ -858,7 +858,7 @@ testView("Iframe with sandbox",
     .setSrc("https://example.com")
     .setSandbox("allow-scripts allow-same-origin")
     .setLoading("lazy"),
-  `<iframe src="https://example.com" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>`);
+  `<iframe src="https://example.com" sandbox="allow-scripts allow-same-origin" loading="lazy"></iframe>`);
 
 testView("Iframe with allow",
   Iframe()
@@ -869,7 +869,7 @@ testView("Iframe with allow",
 
 testView("Embed",
   Embed().setSrc("game.swf").setType("application/x-shockwave-flash").setWidth("400").setHeight("300"),
-  `<embed src="game.swf" type="application/x-shockwave-flash" width="400" height="300"></embed>`);
+  `<embed src="game.swf" type="application/x-shockwave-flash" width="400" height="300">`);
 
 // ------------------------------------
 // Document Structure
@@ -886,31 +886,31 @@ testView("HTML element",
 
 testView("Meta charset",
   Meta().setCharset("UTF-8"),
-  `<meta charset="UTF-8"></meta>`);
+  `<meta charset="UTF-8">`);
 
 testView("Meta viewport",
   Meta().setName("viewport").setContent("width=device-width, initial-scale=1"),
-  `<meta name="viewport" content="width=device-width, initial-scale=1"></meta>`);
+  `<meta name="viewport" content="width=device-width, initial-scale=1">`);
 
 testView("Meta og:title",
   Meta().setProperty("og:title").setContent("My Page"),
-  `<meta content="My Page" property="og:title"></meta>`);
+  `<meta property="og:title" content="My Page">`);
 
 testView("Link stylesheet",
   Link().setRel("stylesheet").setHref("styles.css"),
-  `<link rel="stylesheet" href="styles.css"></link>`);
+  `<link rel="stylesheet" href="styles.css">`);
 
 testView("Link favicon",
   Link().setRel("icon").setHref("favicon.ico").setType("image/x-icon"),
-  `<link rel="icon" href="favicon.ico" type="image/x-icon"></link>`);
+  `<link rel="icon" href="favicon.ico" type="image/x-icon">`);
 
 testView("Link preload",
   Link().setRel("preload").setHref("font.woff2").setAs("font").setCrossorigin("anonymous"),
-  `<link rel="preload" href="font.woff2" crossorigin="anonymous" as="font"></link>`);
+  `<link rel="preload" href="font.woff2" as="font" crossorigin="anonymous">`);
 
 testView("Base",
   Base().setHref("https://example.com/").setTarget("_blank"),
-  `<base href="https://example.com/" target="_blank"></base>`);
+  `<base href="https://example.com/" target="_blank">`);
 
 testView("Noscript",
   Noscript(P("JavaScript is required")),
@@ -947,7 +947,7 @@ testView("Script with integrity",
     .setSrc("https://cdn.example.com/lib.js")
     .setIntegrity("sha384-abc123")
     .setCrossorigin("anonymous"),
-  `<script src="https://cdn.example.com/lib.js" crossorigin="anonymous" integrity="sha384-abc123"></script>`);
+  `<script src="https://cdn.example.com/lib.js" integrity="sha384-abc123" crossorigin="anonymous"></script>`);
 
 testView("Style inline",
   Style(`.red { color: red; }`),
@@ -1113,7 +1113,7 @@ testView("hx-trigger revealed",
 
 testView("hx-trigger with delay",
   Input().setHtmx(hx("/search", { trigger: "keyup delay:500ms" })),
-  `<input hx-get="/search" hx-trigger="keyup delay:500ms"></input>`);
+  `<input hx-get="/search" hx-trigger="keyup delay:500ms">`);
 
 // testView("hx-trigger with throttle",
 //   Div().setHtmx(hx("/scroll", { trigger: "scroll throttle:1s" })),
@@ -1214,7 +1214,7 @@ testView("Full HTMX form",
     trigger: "click",
     indicator: "#loading",
   })),
-  `<form hx-post="/search" hx-target="#results" hx-trigger="click" hx-swap="innerHTML" hx-indicator="#loading"><input type="text" placeholder="Search..." name="search"></input>\n<button type="submit">Search</button></form>`);
+  `<form hx-post="/search" hx-target="#results" hx-swap="innerHTML" hx-trigger="click" hx-indicator="#loading"><input type="text" name="search" placeholder="Search...">\n<button type="submit">Search</button></form>`);
 
 testView("Infinite scroll",
   Div()
@@ -1223,7 +1223,7 @@ testView("Infinite scroll",
       trigger: "revealed",
       swap: "beforeend",
     })),
-  `<div id="feed" hx-get="/feed?page=2" hx-trigger="revealed" hx-swap="beforeend"></div>`);
+  `<div id="feed" hx-get="/feed?page=2" hx-swap="beforeend" hx-trigger="revealed"></div>`);
 
 testView("Live search",
   Input()
@@ -1234,7 +1234,7 @@ testView("Live search",
       trigger: "keyup delay:300ms",
       target: "#results",
     })),
-  `<input type="search" placeholder="Search..." name="q" hx-get="/search" hx-target="#results" hx-trigger="keyup delay:300ms"></input>`);
+  `<input type="search" name="q" placeholder="Search..." hx-get="/search" hx-target="#results" hx-trigger="keyup delay:300ms">`);
 
 // ------------------------------------
 // HTMX Helper Functions
@@ -1391,7 +1391,7 @@ testView("Overlay center",
     Img().setSrc("bg.jpg").setAlt("Background"),
     Span("Centered text")
   ),
-  `<div style="position: relative"><img src="bg.jpg" alt="Background"></img>\n<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10"><span>Centered text</span></div></div>`);
+  `<div style="position: relative"><img src="bg.jpg" alt="Background">\n<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10"><span>Centered text</span></div></div>`);
 
 testView("Overlay top-right",
   Overlay(
