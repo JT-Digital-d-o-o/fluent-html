@@ -50,7 +50,7 @@ import {
 
   // Control flow
   IfThen, IfThenElse, SwitchCase, ForEach, ForEach1, ForEach2, ForEach3, Repeat,
-} from "../src/builder";
+} from "../src/index.js";
 
 import { hx, id, clss, HxSwap, HxTrigger } from "../src/htmx.js";
 

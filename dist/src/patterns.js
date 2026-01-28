@@ -17,9 +17,14 @@ exports.KeyedList = KeyedList;
 exports.OOB = OOB;
 exports.withOOB = withOOB;
 exports.hxResponse = hxResponse;
-const builder_js_1 = require("./builder.js");
+const tag_js_1 = require("./core/tag.js");
+const structural_js_1 = require("./elements/structural.js");
+const text_js_1 = require("./elements/text.js");
+const lists_js_1 = require("./elements/lists.js");
+const forms_js_1 = require("./elements/forms.js");
+const render_js_1 = require("./render/render.js");
+const index_js_1 = require("./control/index.js");
 const htmx_js_1 = require("./htmx.js");
-const builder_js_2 = require("./builder.js");
 const ids_js_1 = require("./ids.js");
 // ------------------------------------
 // Layout Helpers
@@ -39,7 +44,7 @@ const ids_js_1 = require("./ids.js");
  * ], { spacing: "1rem", align: "center" })
  */
 function VStack(children, options = {}) {
-    return (0, builder_js_1.Div)(children)
+    return (0, structural_js_1.Div)(children)
         .setStyles({
         display: "flex",
         flexDirection: "column",
@@ -63,7 +68,7 @@ function VStack(children, options = {}) {
  * ], { spacing: "0.5rem", justify: "flex-end" })
  */
 function HStack(children, options = {}) {
-    return (0, builder_js_1.Div)(children)
+    return (0, structural_js_1.Div)(children)
         .setStyles({
         display: "flex",
         flexDirection: "row",
@@ -108,7 +113,7 @@ function Grid(children, options = {}) {
         styles.columnGap = options.columnGap;
     if (options.rowGap)
         styles.rowGap = options.rowGap;
-    return (0, builder_js_1.Div)(children)
+    return (0, structural_js_1.Div)(children)
         .setStyles(styles)
         .addClass(options.className ?? "");
 }
@@ -130,7 +135,7 @@ function Grid(children, options = {}) {
  * })
  */
 function SearchInput(options) {
-    return (0, builder_js_1.Input)()
+    return (0, forms_js_1.Input)()
         .setType("search")
         .setName(options.name ?? "q")
         .setPlaceholder(options.placeholder ?? "Search...")
@@ -158,7 +163,7 @@ function InfiniteScroll(options) {
     const trigger = options.threshold
         ? `revealed threshold:${options.threshold}`
         : "revealed";
-    return (0, builder_js_1.Div)(options.loadingText ?? "Loading...")
+    return (0, structural_js_1.Div)(options.loadingText ?? "Loading...")
         .addClass(options.className ?? "")
         .setHtmx((0, htmx_js_1.hx)(options.endpoint, {
         trigger,
@@ -184,16 +189,16 @@ function InfiniteScroll(options) {
  * })
  */
 function FormField(options) {
-    return (0, builder_js_1.Div)([
-        (0, builder_js_1.Label)(options.label).setFor(options.name).addClass("form-label"),
-        (0, builder_js_1.Input)()
+    return (0, structural_js_1.Div)([
+        (0, forms_js_1.Label)(options.label).setFor(options.name).addClass("form-label"),
+        (0, forms_js_1.Input)()
             .setType(options.type ?? "text")
             .setName(options.name)
             .setId(options.name)
             .setPlaceholder(options.placeholder ?? "")
             .setToggles(options.required ? ["required"] : [])
             .addClass("form-input"),
-        (0, builder_js_2.IfThen)(!!options.error, () => (0, builder_js_1.Span)(options.error).addClass("form-error")),
+        (0, index_js_1.IfThen)(!!options.error, () => (0, text_js_1.Span)(options.error).addClass("form-error")),
     ]).addClass(options.className ?? "form-field");
 }
 // ------------------------------------
@@ -216,7 +221,7 @@ function FormField(options) {
  * )
  */
 function KeyedList(items, getKey, renderItem, options = {}) {
-    return (0, builder_js_1.Ul)((0, builder_js_2.ForEach1)(items, (item, index) => (0, builder_js_1.Li)(renderItem(item, index))
+    return (0, lists_js_1.Ul)((0, index_js_1.ForEach)(items, (item, index) => (0, lists_js_1.Li)(renderItem(item, index))
         .setDataAttrs({ key: getKey(item) })
         .addClass("list-item"))).addClass(options.className ?? "keyed-list");
 }
@@ -256,11 +261,11 @@ function OOB(target, content, swap) {
     // Build OOB value: "true" for default innerHTML, or "strategy:#id" for specific strategy
     const oobValue = swap ? `${swap}:#${elementId}` : "true";
     // If content is already a Tag, add the OOB attributes directly
-    if (content instanceof builder_js_1.Tag) {
+    if (content instanceof tag_js_1.Tag) {
         return content.setId(elementId).addAttribute("hx-swap-oob", oobValue);
     }
     // Otherwise wrap in a div
-    return (0, builder_js_1.Div)(content).setId(elementId).addAttribute("hx-swap-oob", oobValue);
+    return (0, structural_js_1.Div)(content).setId(elementId).addAttribute("hx-swap-oob", oobValue);
 }
 /**
  * Combine main response content with out-of-band swap elements.
@@ -487,7 +492,7 @@ class HxResponse {
      */
     build() {
         return {
-            html: (0, builder_js_1.render)(this._content),
+            html: (0, render_js_1.render)(this._content),
             headers: { ...this._headers },
         };
     }

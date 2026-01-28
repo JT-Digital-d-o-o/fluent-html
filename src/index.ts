@@ -1,7 +1,11 @@
-export { render, Thunk } from './builder.js';
+// Core types and classes
+export type { View, Thunk } from './core/index.js';
+export { Tag } from './core/index.js';
+export { RawString, Raw } from './core/index.js';
+export { Empty, El } from './core/index.js';
 
-// Core types
-export { View, Tag } from './builder.js';
+// Render
+export { render } from './render/index.js';
 
 // Tag classes with typed attributes
 export {
@@ -44,7 +48,7 @@ export {
   TdTag,
   ColTag,
   ColgroupTag,
-} from './builder.js';
+} from './elements/index.js';
 
 // Structural / Semantic elements
 export {
@@ -61,7 +65,7 @@ export {
   Address,
   Hgroup,
   Search,
-} from './builder.js';
+} from './elements/index.js';
 
 // Text content
 export {
@@ -74,7 +78,7 @@ export {
   Hr,
   Br,
   Wbr,
-} from './builder.js';
+} from './elements/index.js';
 
 // Inline text semantics
 export {
@@ -97,7 +101,7 @@ export {
   Ruby,
   Rt,
   Rp,
-} from './builder.js';
+} from './elements/index.js';
 
 // Lists
 export {
@@ -108,7 +112,7 @@ export {
   Dt,
   Dd,
   Menu,
-} from './builder.js';
+} from './elements/index.js';
 
 // Tables
 export {
@@ -122,7 +126,7 @@ export {
   Caption,
   Colgroup,
   Col,
-} from './builder.js';
+} from './elements/index.js';
 
 // Forms
 export {
@@ -138,14 +142,14 @@ export {
   Fieldset,
   Legend,
   Output,
-} from './builder.js';
+} from './elements/index.js';
 
 // Interactive elements
 export {
   Details,
   Summary,
   Dialog,
-} from './builder.js';
+} from './elements/index.js';
 
 // Media elements
 export {
@@ -170,21 +174,21 @@ export {
   Use,
   Text,
   Tspan,
-} from './builder.js';
+} from './elements/index.js';
 
 // Embedded content
 export {
   Iframe,
   ObjectEl,
   Embed,
-} from './builder.js';
+} from './elements/index.js';
 
 // Links
 export {
   A,
   MapEl,
   Area,
-} from './builder.js';
+} from './elements/index.js';
 
 // Document metadata / Head elements
 export {
@@ -199,35 +203,30 @@ export {
   Base,
   Noscript,
   Template,
-} from './builder.js';
+} from './elements/index.js';
 
 // Data / Time elements
 export {
   Time,
   Data,
-} from './builder.js';
+} from './elements/index.js';
 
 // Progress / Meter
 export {
   Progress,
   Meter,
-} from './builder.js';
+} from './elements/index.js';
 
 // Web Components
 export {
   Slot,
-} from './builder.js';
+} from './elements/index.js';
 
 // Utilities
 export {
-  El,
-  Empty,
   Overlay,
   OverlayPosition,
-  // Raw HTML (bypasses XSS escaping - use with caution)
-  Raw,
-  RawString,
-} from './builder.js';
+} from './control/index.js';
 
 // Control flow
 export {
@@ -239,7 +238,7 @@ export {
   ForEach2,
   ForEach3,
   Repeat,
-} from './builder.js';
+} from './control/index.js';
 
 // HTMX
 export {
@@ -293,3 +292,20 @@ export {
   extractId,
   extractSelector,
 } from './ids.js';
+
+// Fold / Catamorphism
+export {
+  foldView,
+  countAlgebra,
+  textAlgebra,
+  linksAlgebra,
+  renderAlgebra,
+  createTransformAlgebra,
+  addClassToMatching,
+} from './fold/index.js';
+
+export type {
+  ViewAlgebra,
+  TagAttrs,
+  LinkInfo,
+} from './fold/index.js';

@@ -1,0 +1,231 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.AudioTag = exports.VideoTag = exports.SourceTag = exports.ImgTag = void 0;
+exports.Img = Img;
+exports.Picture = Picture;
+exports.Source = Source;
+exports.Video = Video;
+exports.Audio = Audio;
+exports.Track = Track;
+exports.Canvas = Canvas;
+exports.Svg = Svg;
+const tag_js_1 = require("../core/tag.js");
+const utils_js_1 = require("../core/utils.js");
+class ImgTag extends tag_js_1.Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setAlt(alt) {
+        this.alt = alt;
+        return this;
+    }
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+    setLoading(loading) {
+        this.loading = loading;
+        return this;
+    }
+    setDecoding(decoding) {
+        this.decoding = decoding;
+        return this;
+    }
+    setSrcset(srcset) {
+        this.srcset = srcset;
+        return this;
+    }
+    setSizes(sizes) {
+        this.sizes = sizes;
+        return this;
+    }
+    setCrossorigin(crossorigin) {
+        this.crossorigin = crossorigin;
+        return this;
+    }
+}
+exports.ImgTag = ImgTag;
+function Img(child = (0, utils_js_1.Empty)()) {
+    return new ImgTag("img", child);
+}
+function Picture(child = (0, utils_js_1.Empty)()) {
+    return (0, utils_js_1.El)("picture", child);
+}
+class SourceTag extends tag_js_1.Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setSrcset(srcset) {
+        this.srcset = srcset;
+        return this;
+    }
+    setSizes(sizes) {
+        this.sizes = sizes;
+        return this;
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setMedia(media) {
+        this.media = media;
+        return this;
+    }
+}
+exports.SourceTag = SourceTag;
+function Source(child = (0, utils_js_1.Empty)()) {
+    return new SourceTag("source", child);
+}
+class VideoTag extends tag_js_1.Tag {
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+    setControls(enabled = true) {
+        this.controls = enabled;
+        return this;
+    }
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setAutoplay(autoplay = true) {
+        this.autoplay = autoplay;
+        return this;
+    }
+    setLoop(loop = true) {
+        this.loop = loop;
+        return this;
+    }
+    setMuted(muted = true) {
+        this.muted = muted;
+        return this;
+    }
+    setPreload(preload) {
+        this.preload = preload;
+        return this;
+    }
+    setPoster(poster) {
+        this.poster = poster;
+        return this;
+    }
+    setPlaysinline(playsinline = true) {
+        this.playsinline = playsinline;
+        return this;
+    }
+}
+exports.VideoTag = VideoTag;
+function Video(child = (0, utils_js_1.Empty)()) {
+    return new VideoTag("video", child);
+}
+class AudioTag extends tag_js_1.Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setControls(controls = true) {
+        this.controls = controls;
+        return this;
+    }
+    setAutoplay(autoplay = true) {
+        this.autoplay = autoplay;
+        return this;
+    }
+    setLoop(loop = true) {
+        this.loop = loop;
+        return this;
+    }
+    setMuted(muted = true) {
+        this.muted = muted;
+        return this;
+    }
+    setPreload(preload) {
+        this.preload = preload;
+        return this;
+    }
+}
+exports.AudioTag = AudioTag;
+function Audio(child = (0, utils_js_1.Empty)()) {
+    return new AudioTag("audio", child);
+}
+class TrackTag extends tag_js_1.Tag {
+    setSrc(src) {
+        this.src = src;
+        return this;
+    }
+    setKind(kind) {
+        this.kind = kind;
+        return this;
+    }
+    setSrclang(srclang) {
+        this.srclang = srclang;
+        return this;
+    }
+    setLabel(label) {
+        this.label = label;
+        return this;
+    }
+    setDefault(isDefault = true) {
+        this.default = isDefault;
+        return this;
+    }
+}
+exports.TrackTag = TrackTag;
+function Track(child = (0, utils_js_1.Empty)()) {
+    return new TrackTag("track", child);
+}
+class CanvasTag extends tag_js_1.Tag {
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+}
+exports.CanvasTag = CanvasTag;
+function Canvas(child = (0, utils_js_1.Empty)()) {
+    return new CanvasTag("canvas", child);
+}
+class SvgTag extends tag_js_1.Tag {
+    setWidth(width) {
+        this.width = width;
+        return this;
+    }
+    setHeight(height) {
+        this.height = height;
+        return this;
+    }
+    setViewBox(viewBox) {
+        this.viewBox = viewBox;
+        return this;
+    }
+    setXmlns(xmlns = "http://www.w3.org/2000/svg") {
+        this.xmlns = xmlns;
+        return this;
+    }
+    setFill(fill) {
+        this.fill = fill;
+        return this;
+    }
+    setStroke(stroke) {
+        this.stroke = stroke;
+        return this;
+    }
+}
+exports.SvgTag = SvgTag;
+function Svg(child = (0, utils_js_1.Empty)()) {
+    return new SvgTag("svg", child);
+}
+//# sourceMappingURL=media.js.map

@@ -1,0 +1,25 @@
+import { Tag } from "../core/tag.js";
+import type { View } from "../core/types.js";
+export declare function Strong(child?: View): Tag;
+export declare function Em(child?: View): Tag;
+export declare function B(child?: View): Tag;
+export declare function I(child?: View): Tag;
+export declare function U(child?: View): Tag;
+export declare function S(child?: View): Tag;
+export declare function Mark(child?: View): Tag;
+export declare function Small(child?: View): Tag;
+export declare function Sub(child?: View): Tag;
+export declare function Sup(child?: View): Tag;
+export declare function Abbr(child?: View): Tag;
+export declare function Cite(child?: View): Tag;
+export declare function Q(child?: View): Tag;
+export declare function Dfn(child?: View): Tag;
+export declare function Kbd(child?: View): Tag;
+export declare function Samp(child?: View): Tag;
+export declare function Var(child?: View): Tag;
+export declare function Bdi(child?: View): Tag;
+export declare function Bdo(child?: View): Tag;
+export declare function Ruby(child?: View): Tag;
+export declare function Rt(child?: View): Tag;
+export declare function Rp(child?: View): Tag;
+//# sourceMappingURL=inline.d.ts.map

@@ -5,9 +5,15 @@
 // This module provides reusable component patterns and layout helpers
 // built on top of the core lambda.html API.
 
-import { View, Tag, Div, Button, Input, Span, Label, Ul, Li, render } from "./builder.js";
+import type { View } from "./core/types.js";
+import { Tag } from "./core/tag.js";
+import { Div } from "./elements/structural.js";
+import { Span } from "./elements/text.js";
+import { Ul, Li } from "./elements/lists.js";
+import { Input, Label } from "./elements/forms.js";
+import { render } from "./render/render.js";
+import { IfThen, ForEach } from "./control/index.js";
 import { hx, HxTarget, HxSwapStyle } from "./htmx.js";
-import { IfThen, ForEach1 } from "./builder.js";
 import { Id, isId } from "./ids.js";
 
 // ------------------------------------
@@ -275,7 +281,7 @@ export function KeyedList<T>(
   } = {}
 ): Tag {
   return Ul(
-    ForEach1(items, (item, index) =>
+    ForEach(items, (item: T, index: number) =>
       Li(renderItem(item, index))
         .setDataAttrs({ key: getKey(item) })
         .addClass("list-item")

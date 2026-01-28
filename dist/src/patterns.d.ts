@@ -1,4 +1,5 @@
-import { View, Tag } from "./builder.js";
+import type { View } from "./core/types.js";
+import { Tag } from "./core/tag.js";
 import { HxTarget, HxSwapStyle } from "./htmx.js";
 import { Id } from "./ids.js";
 /**
