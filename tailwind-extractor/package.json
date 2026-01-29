@@ -1,6 +1,6 @@
 {
   "name": "lambda-html-tailwind-extractor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tailwind CSS content extractor for lambda.html SwiftUI-style methods",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

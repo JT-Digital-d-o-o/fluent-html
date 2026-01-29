@@ -230,15 +230,77 @@ const METHOD_PATTERNS = [
             return [];
         },
     },
+    // Bold
+    {
+        methodName: "bold",
+        classPrefix: "font",
+        generateClass: () => ["font-bold"],
+    },
+    // Italic
+    {
+        methodName: "italic",
+        classPrefix: "",
+        generateClass: () => ["italic"],
+    },
+    // Uppercase
+    {
+        methodName: "uppercase",
+        classPrefix: "",
+        generateClass: () => ["uppercase"],
+    },
+    // Lowercase
+    {
+        methodName: "lowercase",
+        classPrefix: "",
+        generateClass: () => ["lowercase"],
+    },
+    // Capitalize
+    {
+        methodName: "capitalize",
+        classPrefix: "",
+        generateClass: () => ["capitalize"],
+    },
+    // Underline
+    {
+        methodName: "underline",
+        classPrefix: "",
+        generateClass: () => ["underline"],
+    },
+    // Line Through
+    {
+        methodName: "lineThrough",
+        classPrefix: "",
+        generateClass: () => ["line-through"],
+    },
+    // Truncate
+    {
+        methodName: "truncate",
+        classPrefix: "",
+        generateClass: () => ["truncate"],
+    },
+    // Leading (line-height)
+    {
+        methodName: "leading",
+        classPrefix: "leading",
+        generateClass: (args) => args.length === 1 ? [`leading-${args[0]}`] : [],
+    },
+    // Tracking (letter-spacing)
+    {
+        methodName: "tracking",
+        classPrefix: "tracking",
+        generateClass: (args) => args.length === 1 ? [`tracking-${args[0]}`] : [],
+    },
 ];
 /**
  * Extract arguments from a method call
+ * e.g., .flex() -> []
  * e.g., .background("red-500") -> ["red-500"]
  * e.g., .padding("x", "4") -> ["x", "4"]
  */
 function extractMethodArgs(content, methodName) {
-    // Match .methodName("arg1", "arg2") or .methodName('arg1', 'arg2')
+    // Match .methodName( ... ) with optional quoted arguments
     const regex = new RegExp(`\\.${methodName}\\s*\\(\\s*` + // .methodName(
+        `(?:` + // outer optional group
         `(?:` +
         `"([^"]*)"` + // "arg" (double quotes)
         `|` +
@@ -246,7 +308,8 @@ function extractMethodArgs(content, methodName) {
         `)` +
         `(?:\\s*,\\s*` + // optional comma and next arg
         `(?:"([^"]*)"|'([^']*)')` +
-        `)?` +
+        `)?` + // end optional second arg
+        `)?` + // end outer optional group (for zero-arg calls)
         `\\s*\\)`, // )
     "g");
     const results = [];
@@ -263,9 +326,7 @@ function extractMethodArgs(content, methodName) {
             args.push(match[3]);
         else if (match[4] !== undefined)
             args.push(match[4]);
-        if (args.length > 0) {
-            results.push(args);
-        }
+        results.push(args);
     }
     return results;
 }
