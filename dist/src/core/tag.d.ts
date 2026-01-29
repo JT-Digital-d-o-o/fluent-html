@@ -2,6 +2,8 @@ import { HTMX } from "../htmx.js";
 import { Id } from "../ids.js";
 import type { View } from "./types.js";
 import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow } from "./tailwind-types.js";
+/** @internal Shared empty attributes object — never mutate */
+export declare const EMPTY_ATTRS: Record<string, string>;
 export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
     el: string;
     child: View;
@@ -11,6 +13,8 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
     attributes: Record<string, string>;
     htmx?: HTMX;
     toggles?: string[];
+    /** @internal type discriminant for fast render checks */
+    readonly _t: 1;
     constructor(element: string, child?: View);
     setId(id?: string | Id): TSelf;
     setClass(c?: string): TSelf;

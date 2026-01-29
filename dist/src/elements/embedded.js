@@ -49,6 +49,8 @@ class IframeTag extends tag_js_1.Tag {
     }
 }
 exports.IframeTag = IframeTag;
+/** @internal */
+IframeTag.prototype._sk = ['src', 'srcdoc', 'width', 'height', 'allow', 'allowfullscreen', 'sandbox', 'loading', 'name', 'referrerpolicy'];
 function Iframe(child = (0, utils_js_1.Empty)()) {
     return new IframeTag("iframe", child);
 }
@@ -75,6 +77,8 @@ class ObjectTag extends tag_js_1.Tag {
     }
 }
 exports.ObjectTag = ObjectTag;
+/** @internal */
+ObjectTag.prototype._sk = ['data', 'type', 'width', 'height', 'name'];
 function ObjectEl(child = (0, utils_js_1.Empty)()) {
     return new ObjectTag("object", child);
 }
@@ -97,6 +101,8 @@ class EmbedTag extends tag_js_1.Tag {
     }
 }
 exports.EmbedTag = EmbedTag;
+/** @internal */
+EmbedTag.prototype._sk = ['src', 'type', 'width', 'height'];
 function Embed(child = (0, utils_js_1.Empty)()) {
     return new EmbedTag("embed", child);
 }

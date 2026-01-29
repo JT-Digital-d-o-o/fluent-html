@@ -49,6 +49,8 @@ class MetaTag extends tag_js_1.Tag {
     }
 }
 exports.MetaTag = MetaTag;
+/** @internal */
+MetaTag.prototype._sk = ['name', 'charset', 'httpEquiv', 'property', 'content'];
 function Meta() {
     return new MetaTag("meta");
 }
@@ -87,6 +89,8 @@ class LinkTag extends tag_js_1.Tag {
     }
 }
 exports.LinkTag = LinkTag;
+/** @internal */
+LinkTag.prototype._sk = ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity'];
 function Link() {
     return new LinkTag("link");
 }
@@ -101,6 +105,8 @@ class StyleTag extends tag_js_1.Tag {
     }
 }
 exports.StyleTag = StyleTag;
+/** @internal */
+StyleTag.prototype._sk = ['media', 'type'];
 function Style(css) {
     return new StyleTag("style", css);
 }
@@ -115,6 +121,8 @@ class BaseTag extends tag_js_1.Tag {
     }
 }
 exports.BaseTag = BaseTag;
+/** @internal */
+BaseTag.prototype._sk = ['href', 'target'];
 function Base() {
     return new BaseTag("base");
 }
@@ -155,6 +163,8 @@ class ScriptTag extends tag_js_1.Tag {
     }
 }
 exports.ScriptTag = ScriptTag;
+/** @internal */
+ScriptTag.prototype._sk = ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule'];
 function Script(js = "") {
     return new ScriptTag("script", js);
 }

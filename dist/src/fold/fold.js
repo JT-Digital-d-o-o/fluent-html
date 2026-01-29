@@ -18,7 +18,7 @@ function extractAttrs(tag) {
     // Copy element-specific properties (like href, src, etc.)
     // These are properties on specialized Tag subclasses
     for (const key of Object.keys(tag)) {
-        if (!(key in attrs) && key !== 'el' && key !== 'child') {
+        if (!(key in attrs) && key !== '_t' && key !== 'el' && key !== 'child') {
             attrs[key] = tag[key];
         }
     }

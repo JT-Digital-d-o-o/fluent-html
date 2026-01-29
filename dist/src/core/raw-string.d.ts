@@ -4,6 +4,8 @@
  */
 export declare class RawString {
     readonly html: string;
+    /** @internal type discriminant for fast render checks */
+    readonly _t: 2;
     constructor(html: string);
 }
 /**

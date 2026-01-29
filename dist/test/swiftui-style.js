@@ -153,7 +153,7 @@ test("zero values work", '<div class="p-0"></div>', (0, index_js_1.render)((0, i
 test("arbitrary values work", '<div class="p-[10px]"></div>', (0, index_js_1.render)((0, index_js_1.Div)().padding("[10px]")));
 test("fractional values work", '<div class="w-1/3"></div>', (0, index_js_1.render)((0, index_js_1.Div)().w("1/3")));
 test("multiple same method calls append", '<div class="pt-4 pb-2"></div>', (0, index_js_1.render)((0, index_js_1.Div)().padding("top", "4").padding("bottom", "2")));
-test("works with existing Button methods", '<button type="submit" class="px-4 py-2 bg-blue-500"></button>', (0, index_js_1.render)((0, index_js_1.Button)().setType("submit").padding("x", "4").padding("y", "2").background("blue-500")));
+test("works with existing Button methods", '<button class="px-4 py-2 bg-blue-500" type="submit"></button>', (0, index_js_1.render)((0, index_js_1.Button)().setType("submit").padding("x", "4").padding("y", "2").background("blue-500")));
 section("Real-World Patterns");
 test("centered container", '<div class="w-full max-w-md mx-auto p-4"></div>', (0, index_js_1.render)((0, index_js_1.Div)().w("full").maxW("md").margin("x", "auto").padding("4")));
 test("full screen section", '<div class="w-full h-screen flex justify-center items-center"></div>', (0, index_js_1.render)((0, index_js_1.Div)().w("full").h("screen").flex().justifyContent("center").alignItems("center")));

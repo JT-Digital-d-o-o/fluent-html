@@ -11,6 +11,8 @@ class SlotTag extends tag_js_1.Tag {
     }
 }
 exports.SlotTag = SlotTag;
+/** @internal */
+SlotTag.prototype._sk = ['name'];
 function Slot(child = (0, utils_js_1.Empty)()) {
     return new SlotTag("slot", child);
 }

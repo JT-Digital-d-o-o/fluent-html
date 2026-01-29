@@ -14,6 +14,8 @@ class TimeTag extends tag_js_1.Tag {
     }
 }
 exports.TimeTag = TimeTag;
+/** @internal */
+TimeTag.prototype._sk = ['datetime'];
 function Time(child = (0, utils_js_1.Empty)()) {
     return new TimeTag("time", child);
 }
@@ -24,6 +26,8 @@ class DataTag extends tag_js_1.Tag {
     }
 }
 exports.DataTag = DataTag;
+/** @internal */
+DataTag.prototype._sk = ['value'];
 function Data(child = (0, utils_js_1.Empty)()) {
     return new DataTag("data", child);
 }
@@ -38,6 +42,8 @@ class ProgressTag extends tag_js_1.Tag {
     }
 }
 exports.ProgressTag = ProgressTag;
+/** @internal */
+ProgressTag.prototype._sk = ['value', 'max'];
 function Progress(child = (0, utils_js_1.Empty)()) {
     return new ProgressTag("progress", child);
 }
@@ -68,6 +74,8 @@ class MeterTag extends tag_js_1.Tag {
     }
 }
 exports.MeterTag = MeterTag;
+/** @internal */
+MeterTag.prototype._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
 function Meter(child = (0, utils_js_1.Empty)()) {
     return new MeterTag("meter", child);
 }

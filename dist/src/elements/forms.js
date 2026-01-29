@@ -90,6 +90,8 @@ class InputTag extends tag_js_1.Tag {
     }
 }
 exports.InputTag = InputTag;
+/** @internal */
+InputTag.prototype._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
 function Input(child = (0, utils_js_1.Empty)()) {
     return new InputTag("input", child);
 }
@@ -140,6 +142,8 @@ class TextareaTag extends tag_js_1.Tag {
     }
 }
 exports.TextareaTag = TextareaTag;
+/** @internal */
+TextareaTag.prototype._sk = ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly'];
 function Textarea(child = (0, utils_js_1.Empty)()) {
     return new TextareaTag("textarea", child);
 }
@@ -170,6 +174,8 @@ class ButtonTag extends tag_js_1.Tag {
     }
 }
 exports.ButtonTag = ButtonTag;
+/** @internal */
+ButtonTag.prototype._sk = ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod'];
 function Button(child = (0, utils_js_1.Empty)()) {
     return new ButtonTag("button", child);
 }
@@ -180,6 +186,8 @@ class LabelTag extends tag_js_1.Tag {
     }
 }
 exports.LabelTag = LabelTag;
+/** @internal */
+LabelTag.prototype._sk = ['for'];
 function Label(child = (0, utils_js_1.Empty)()) {
     return new LabelTag("label", child);
 }
@@ -210,6 +218,8 @@ class FormTag extends tag_js_1.Tag {
     }
 }
 exports.FormTag = FormTag;
+/** @internal */
+FormTag.prototype._sk = ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete'];
 function Form(child = (0, utils_js_1.Empty)()) {
     return new FormTag("form", child);
 }
@@ -236,6 +246,8 @@ class SelectTag extends tag_js_1.Tag {
     }
 }
 exports.SelectTag = SelectTag;
+/** @internal */
+SelectTag.prototype._sk = ['name', 'multiple', 'size', 'disabled', 'autofocus'];
 function Select(child = (0, utils_js_1.Empty)()) {
     return new SelectTag("select", child);
 }
@@ -258,6 +270,8 @@ class OptionTag extends tag_js_1.Tag {
     }
 }
 exports.OptionTag = OptionTag;
+/** @internal */
+OptionTag.prototype._sk = ['value', 'selected', 'disabled', 'label'];
 function Option(child = (0, utils_js_1.Empty)()) {
     return new OptionTag("option", child);
 }
@@ -272,6 +286,8 @@ class OptgroupTag extends tag_js_1.Tag {
     }
 }
 exports.OptgroupTag = OptgroupTag;
+/** @internal */
+OptgroupTag.prototype._sk = ['label', 'disabled'];
 function Optgroup(child = (0, utils_js_1.Empty)()) {
     return new OptgroupTag("optgroup", child);
 }
@@ -289,6 +305,8 @@ class FieldsetTag extends tag_js_1.Tag {
     }
 }
 exports.FieldsetTag = FieldsetTag;
+/** @internal */
+FieldsetTag.prototype._sk = ['name', 'disabled'];
 function Fieldset(child = (0, utils_js_1.Empty)()) {
     return new FieldsetTag("fieldset", child);
 }
@@ -306,6 +324,8 @@ class OutputTag extends tag_js_1.Tag {
     }
 }
 exports.OutputTag = OutputTag;
+/** @internal */
+OutputTag.prototype._sk = ['for', 'name'];
 function Output(child = (0, utils_js_1.Empty)()) {
     return new OutputTag("output", child);
 }

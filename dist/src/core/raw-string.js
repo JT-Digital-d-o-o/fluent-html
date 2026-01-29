@@ -12,6 +12,8 @@ class RawString {
     }
 }
 exports.RawString = RawString;
+/** @internal */
+RawString.prototype._t = 2;
 /**
  * Creates a raw HTML string that will NOT be escaped during rendering.
  * WARNING: This bypasses XSS protection. Only use with trusted content.

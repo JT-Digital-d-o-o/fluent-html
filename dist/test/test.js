@@ -37,9 +37,9 @@ testView("Div with text", (0, index_js_1.Div)("Hello"), `<div>Hello</div>`);
 testView("P with text", (0, index_js_1.P)("Paragraph text"), `<p>Paragraph text</p>`);
 testView("Span with text", (0, index_js_1.Span)("inline"), `<span>inline</span>`);
 testView("All heading levels", [(0, index_js_1.H1)("One"), (0, index_js_1.H2)("Two"), (0, index_js_1.H3)("Three"), (0, index_js_1.H4)("Four"), (0, index_js_1.H5)("Five"), (0, index_js_1.H6)("Six")], `<h1>One</h1>\n<h2>Two</h2>\n<h3>Three</h3>\n<h4>Four</h4>\n<h5>Five</h5>\n<h6>Six</h6>`);
-testView("Br element", (0, index_js_1.Br)(), `<br></br>`);
-testView("Hr element", (0, index_js_1.Hr)(), `<hr></hr>`);
-testView("Wbr element", (0, index_js_1.Wbr)(), `<wbr></wbr>`);
+testView("Br element", (0, index_js_1.Br)(), `<br>`);
+testView("Hr element", (0, index_js_1.Hr)(), `<hr>`);
+testView("Wbr element", (0, index_js_1.Wbr)(), `<wbr>`);
 // ------------------------------------
 // Semantic Elements
 // ------------------------------------
@@ -54,10 +54,10 @@ testView("Article", (0, index_js_1.Article)("An article"), `<article>An article<
 testView("Figure with Figcaption", (0, index_js_1.Figure)([
     (0, index_js_1.Img)().setSrc("photo.jpg").setAlt("A photo"),
     (0, index_js_1.Figcaption)("Photo caption")
-]), `<figure><img src="photo.jpg" alt="A photo"></img>\n<figcaption>Photo caption</figcaption></figure>`);
+]), `<figure><img src="photo.jpg" alt="A photo">\n<figcaption>Photo caption</figcaption></figure>`);
 testView("Address", (0, index_js_1.Address)("123 Main St"), `<address>123 Main St</address>`);
 testView("Hgroup", (0, index_js_1.Hgroup)([(0, index_js_1.H1)("Title"), (0, index_js_1.P)("Subtitle")]), `<hgroup><h1>Title</h1>\n<p>Subtitle</p></hgroup>`);
-testView("Search", (0, index_js_1.Search)((0, index_js_1.Input)().setType("search")), `<search><input type="search"></input></search>`);
+testView("Search", (0, index_js_1.Search)((0, index_js_1.Input)().setType("search")), `<search><input type="search"></search>`);
 // ------------------------------------
 // Text Formatting Elements
 // ------------------------------------
@@ -104,12 +104,12 @@ testView("El custom element", (0, index_js_1.El)("custom-element", "Content").se
 // Toggles (Boolean Attributes)
 // ------------------------------------
 section("Toggles (Boolean Attributes)");
-testView("Single toggle", (0, index_js_1.Input)().setToggles(["required"]), `<input required></input>`);
-testView("Multiple toggles", (0, index_js_1.Input)().setToggles(["required", "disabled", "readonly"]), `<input required disabled readonly></input>`);
+testView("Single toggle", (0, index_js_1.Input)().setToggles(["required"]), `<input required>`);
+testView("Multiple toggles", (0, index_js_1.Input)().setToggles(["required", "disabled", "readonly"]), `<input required disabled readonly>`);
 testView("Toggle with other attributes", (0, index_js_1.Input)()
     .setType("text")
     .setName("email")
-    .setToggles(["required"]), `<input type="text" name="email" required></input>`);
+    .setToggles(["required"]), `<input type="text" name="email" required>`);
 // ------------------------------------
 // Lists
 // ------------------------------------
@@ -172,68 +172,68 @@ testView("Colgroup and Col", (0, index_js_1.Table)([
         (0, index_js_1.Col)(),
     ]),
     (0, index_js_1.Tr)([(0, index_js_1.Td)("A"), (0, index_js_1.Td)("B"), (0, index_js_1.Td)("C")]),
-]), `<table><colgroup><col class="highlight" span="2"></col>\n<col></col></colgroup>\n<tr><td>A</td>\n<td>B</td>\n<td>C</td></tr></table>`);
+]), `<table><colgroup><col class="highlight" span="2">\n<col></colgroup>\n<tr><td>A</td>\n<td>B</td>\n<td>C</td></tr></table>`);
 // ------------------------------------
 // Forms - Input
 // ------------------------------------
 section("Forms - Input");
-testView("Text input", (0, index_js_1.Input)().setType("text").setName("username").setPlaceholder("Enter username"), `<input type="text" placeholder="Enter username" name="username"></input>`);
+testView("Text input", (0, index_js_1.Input)().setType("text").setName("username").setPlaceholder("Enter username"), `<input type="text" name="username" placeholder="Enter username">`);
 testView("Email input with validation", (0, index_js_1.Input)()
     .setAutocomplete("email")
     .setType("email")
     .setName("email")
-    .setToggles(["required"]), `<input type="email" name="email" autocomplete="email" required></input>`);
+    .setToggles(["required"]), `<input type="email" name="email" autocomplete="email" required>`);
 testView("Number input with min/max/step", (0, index_js_1.Input)()
     .setType("number")
     .setName("quantity")
     .setMin(1)
     .setMax(100)
-    .setStep(5), `<input type="number" name="quantity" min="1" max="100" step="5"></input>`);
+    .setStep(5), `<input type="number" name="quantity" min="1" max="100" step="5">`);
 testView("Password input", (0, index_js_1.Input)()
     .setType("password")
     .setName("password")
     .setMinlength(8)
-    .setMaxlength(64), `<input type="password" name="password" minlength="8" maxlength="64"></input>`);
+    .setMaxlength(64), `<input type="password" name="password" minlength="8" maxlength="64">`);
 testView("Input with pattern", (0, index_js_1.Input)()
     .setType("text")
     .setName("zipcode")
-    .setPattern("[0-9]{5}"), `<input type="text" name="zipcode" pattern="[0-9]{5}"></input>`);
+    .setPattern("[0-9]{5}"), `<input type="text" name="zipcode" pattern="[0-9]{5}">`);
 testView("Checkbox input", (0, index_js_1.Input)()
     .setType("checkbox")
     .setName("agree")
     .setValue("yes")
-    .setChecked(), `<input type="checkbox" name="agree" value="yes" checked="true"></input>`);
+    .setChecked(), `<input type="checkbox" name="agree" value="yes" checked="true">`);
 testView("Radio input", (0, index_js_1.Input)()
     .setType("radio")
     .setName("color")
-    .setValue("red"), `<input type="radio" name="color" value="red"></input>`);
+    .setValue("red"), `<input type="radio" name="color" value="red">`);
 testView("File input", (0, index_js_1.Input)()
     .setType("file")
     .setName("document")
     .setAccept(".pdf,.doc")
-    .setMultiple(), `<input type="file" name="document" accept=".pdf,.doc" multiple="true"></input>`);
+    .setMultiple(), `<input type="file" name="document" accept=".pdf,.doc" multiple="true">`);
 testView("Disabled input", (0, index_js_1.Input)()
     .setType("text")
     .setName("locked")
     .setValue("Cannot edit")
-    .setDisabled(), `<input type="text" name="locked" value="Cannot edit" disabled="true"></input>`);
+    .setDisabled(), `<input type="text" name="locked" value="Cannot edit" disabled="true">`);
 testView("Readonly input", (0, index_js_1.Input)()
     .setType("text")
     .setName("readonly")
     .setValue("Read only")
-    .setReadonly(), `<input type="text" name="readonly" value="Read only" readonly="true"></input>`);
+    .setReadonly(), `<input type="text" name="readonly" value="Read only" readonly="true">`);
 testView("Input with datalist", [
     (0, index_js_1.Input)().setType("text").setName("browser").setList("browsers"),
     (0, index_js_1.Datalist)([
         (0, index_js_1.Option)("Chrome").setValue("chrome"),
         (0, index_js_1.Option)("Firefox").setValue("firefox"),
     ]).setId("browsers"),
-], `<input type="text" name="browser" list="browsers"></input>\n<datalist id="browsers"><option value="chrome">Chrome</option>\n<option value="firefox">Firefox</option></datalist>`);
+], `<input type="text" name="browser" list="browsers">\n<datalist id="browsers"><option value="chrome">Chrome</option>\n<option value="firefox">Firefox</option></datalist>`);
 // ------------------------------------
 // Forms - Textarea
 // ------------------------------------
 section("Forms - Textarea");
-testView("Basic textarea", (0, index_js_1.Textarea)().setName("message").setPlaceholder("Enter message"), `<textarea placeholder="Enter message" name="message"></textarea>`);
+testView("Basic textarea", (0, index_js_1.Textarea)().setName("message").setPlaceholder("Enter message"), `<textarea name="message" placeholder="Enter message"></textarea>`);
 testView("Textarea with rows/cols", (0, index_js_1.Textarea)()
     .setName("bio")
     .setRows(5)
@@ -297,21 +297,21 @@ testView("Fieldset with Legend", (0, index_js_1.Fieldset)([
     (0, index_js_1.Legend)("Personal Info"),
     (0, index_js_1.Label)("Name").setFor("name"),
     (0, index_js_1.Input)().setType("text").setName("name").setId("name"),
-]).setName("personal"), `<fieldset name="personal"><legend>Personal Info</legend>\n<label for="name">Name</label>\n<input id="name" type="text" name="name"></input></fieldset>`);
+]).setName("personal"), `<fieldset name="personal"><legend>Personal Info</legend>\n<label for="name">Name</label>\n<input id="name" type="text" name="name"></fieldset>`);
 testView("Disabled fieldset", (0, index_js_1.Fieldset)([
     (0, index_js_1.Legend)("Disabled Section"),
     (0, index_js_1.Input)().setType("text"),
-]).setDisabled(), `<fieldset disabled="true"><legend>Disabled Section</legend>\n<input type="text"></input></fieldset>`);
+]).setDisabled(), `<fieldset disabled="true"><legend>Disabled Section</legend>\n<input type="text"></fieldset>`);
 testView("Form with method and action", (0, index_js_1.Form)([
     (0, index_js_1.Input)().setType("text").setName("q"),
     (0, index_js_1.Button)("Search").setType("submit"),
-]).setAction("/search").setMethod("get"), `<form action="/search" method="get"><input type="text" name="q"></input>\n<button type="submit">Search</button></form>`);
+]).setAction("/search").setMethod("get"), `<form action="/search" method="get"><input type="text" name="q">\n<button type="submit">Search</button></form>`);
 testView("Form with enctype", (0, index_js_1.Form)([
     (0, index_js_1.Input)().setType("file").setName("upload"),
-]).setAction("/upload").setMethod("post").setEnctype("multipart/form-data"), `<form action="/upload" method="post" enctype="multipart/form-data"><input type="file" name="upload"></input></form>`);
+]).setAction("/upload").setMethod("post").setEnctype("multipart/form-data"), `<form action="/upload" method="post" enctype="multipart/form-data"><input type="file" name="upload"></form>`);
 testView("Form with novalidate", (0, index_js_1.Form)([
     (0, index_js_1.Input)().setType("email").setName("email"),
-]).setNovalidate(), `<form novalidate="true"><input type="email" name="email"></input></form>`);
+]).setNovalidate(), `<form novalidate="true"><input type="email" name="email"></form>`);
 testView("Output element", (0, index_js_1.Output)("100").setFor("a b").setName("result"), `<output for="a b" name="result">100</output>`);
 // ------------------------------------
 // Interactive Elements
@@ -348,25 +348,25 @@ testView("Email link", (0, index_js_1.A)("Contact us").setHref("mailto:info@exam
 // Media Elements
 // ------------------------------------
 section("Media Elements");
-testView("Basic image", (0, index_js_1.Img)().setSrc("photo.jpg").setAlt("A photo"), `<img src="photo.jpg" alt="A photo"></img>`);
-testView("Image with dimensions", (0, index_js_1.Img)().setSrc("photo.jpg").setAlt("Photo").setWidth("640").setHeight("480"), `<img src="photo.jpg" alt="Photo" width="640" height="480"></img>`);
-testView("Lazy loaded image", (0, index_js_1.Img)().setSrc("photo.jpg").setAlt("Lazy").setLoading("lazy"), `<img src="photo.jpg" alt="Lazy" loading="lazy"></img>`);
+testView("Basic image", (0, index_js_1.Img)().setSrc("photo.jpg").setAlt("A photo"), `<img src="photo.jpg" alt="A photo">`);
+testView("Image with dimensions", (0, index_js_1.Img)().setSrc("photo.jpg").setAlt("Photo").setWidth("640").setHeight("480"), `<img src="photo.jpg" alt="Photo" width="640" height="480">`);
+testView("Lazy loaded image", (0, index_js_1.Img)().setSrc("photo.jpg").setAlt("Lazy").setLoading("lazy"), `<img src="photo.jpg" alt="Lazy" loading="lazy">`);
 testView("Image with srcset", (0, index_js_1.Img)()
     .setSrc("small.jpg")
     .setAlt("Responsive")
     .setSrcset("small.jpg 480w, medium.jpg 800w, large.jpg 1200w")
-    .setSizes("(max-width: 600px) 480px, 800px"), `<img src="small.jpg" alt="Responsive" srcset="small.jpg 480w, medium.jpg 800w, large.jpg 1200w" sizes="(max-width: 600px) 480px, 800px"></img>`);
+    .setSizes("(max-width: 600px) 480px, 800px"), `<img src="small.jpg" alt="Responsive" srcset="small.jpg 480w, medium.jpg 800w, large.jpg 1200w" sizes="(max-width: 600px) 480px, 800px">`);
 testView("Picture element", (0, index_js_1.Picture)([
     (0, index_js_1.Source)().setSrcset("large.webp").setMedia("(min-width: 800px)").setType("image/webp"),
     (0, index_js_1.Source)().setSrcset("small.webp").setType("image/webp"),
     (0, index_js_1.Img)().setSrc("fallback.jpg").setAlt("Picture"),
-]), `<picture><source srcset="large.webp" type="image/webp" media="(min-width: 800px)"></source>\n<source srcset="small.webp" type="image/webp"></source>\n<img src="fallback.jpg" alt="Picture"></img></picture>`);
-testView("Video with controls", (0, index_js_1.Video)().setSrc("video.mp4").setControls().setWidth(640).setHeight(360), `<video width="640" height="360" controls="true" src="video.mp4"></video>`);
+]), `<picture><source srcset="large.webp" media="(min-width: 800px)" type="image/webp">\n<source srcset="small.webp" type="image/webp">\n<img src="fallback.jpg" alt="Picture"></picture>`);
+testView("Video with controls", (0, index_js_1.Video)().setSrc("video.mp4").setControls().setWidth(640).setHeight(360), `<video src="video.mp4" controls="true" width="640" height="360"></video>`);
 testView("Video with multiple sources", (0, index_js_1.Video)([
     (0, index_js_1.Source)().setSrc("video.webm").setType("video/webm"),
     (0, index_js_1.Source)().setSrc("video.mp4").setType("video/mp4"),
     "Your browser does not support video.",
-]).setControls(), `<video controls="true"><source src="video.webm" type="video/webm"></source>\n<source src="video.mp4" type="video/mp4"></source>\nYour browser does not support video.</video>`);
+]).setControls(), `<video controls="true"><source src="video.webm" type="video/webm">\n<source src="video.mp4" type="video/mp4">\nYour browser does not support video.</video>`);
 testView("Video with all options", (0, index_js_1.Video)()
     .setSrc("video.mp4")
     .setControls()
@@ -375,7 +375,7 @@ testView("Video with all options", (0, index_js_1.Video)()
     .setMuted()
     .setPoster("poster.jpg")
     .setPreload("metadata")
-    .setPlaysinline(), `<video controls="true" src="video.mp4" autoplay="true" loop="true" muted="true" preload="metadata" poster="poster.jpg" playsinline="true"></video>`);
+    .setPlaysinline(), `<video src="video.mp4" controls="true" autoplay="true" loop="true" muted="true" poster="poster.jpg" preload="metadata" playsinline="true"></video>`);
 testView("Audio", (0, index_js_1.Audio)().setSrc("audio.mp3").setControls(), `<audio src="audio.mp3" controls="true"></audio>`);
 testView("Audio with preload", (0, index_js_1.Audio)()
     .setSrc("audio.mp3")
@@ -389,7 +389,7 @@ testView("Video with Track", (0, index_js_1.Video)([
         .setSrclang("en")
         .setLabel("English")
         .setDefault(),
-]).setControls(), `<video controls="true"><source src="video.mp4" type="video/mp4"></source>\n<track src="captions.vtt" kind="subtitles" srclang="en" label="English" default="true"></track></video>`);
+]).setControls(), `<video controls="true"><source src="video.mp4" type="video/mp4">\n<track src="captions.vtt" kind="subtitles" srclang="en" label="English" default="true"></video>`);
 testView("Canvas", (0, index_js_1.Canvas)().setWidth(800).setHeight(600).setId("myCanvas"), `<canvas id="myCanvas" width="800" height="600"></canvas>`);
 // ------------------------------------
 // SVG
@@ -415,12 +415,12 @@ testView("Iframe basic", (0, index_js_1.Iframe)().setSrc("https://example.com").
 testView("Iframe with sandbox", (0, index_js_1.Iframe)()
     .setSrc("https://example.com")
     .setSandbox("allow-scripts allow-same-origin")
-    .setLoading("lazy"), `<iframe src="https://example.com" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>`);
+    .setLoading("lazy"), `<iframe src="https://example.com" sandbox="allow-scripts allow-same-origin" loading="lazy"></iframe>`);
 testView("Iframe with allow", (0, index_js_1.Iframe)()
     .setSrc("https://youtube.com/embed/xyz")
     .setAllow("accelerometer; autoplay; clipboard-write")
     .setAllowfullscreen(), `<iframe src="https://youtube.com/embed/xyz" allow="accelerometer; autoplay; clipboard-write" allowfullscreen="true"></iframe>`);
-testView("Embed", (0, index_js_1.Embed)().setSrc("game.swf").setType("application/x-shockwave-flash").setWidth("400").setHeight("300"), `<embed src="game.swf" type="application/x-shockwave-flash" width="400" height="300"></embed>`);
+testView("Embed", (0, index_js_1.Embed)().setSrc("game.swf").setType("application/x-shockwave-flash").setWidth("400").setHeight("300"), `<embed src="game.swf" type="application/x-shockwave-flash" width="400" height="300">`);
 // ------------------------------------
 // Document Structure
 // ------------------------------------
@@ -429,13 +429,13 @@ testView("HTML element", (0, index_js_1.HTML)([
     (0, index_js_1.Head)((0, index_js_1.Title)("Page Title")),
     (0, index_js_1.Body)((0, index_js_1.P)("Content")),
 ]), `<html><head><title>Page Title</title></head>\n<body><p>Content</p></body></html>`);
-testView("Meta charset", (0, index_js_1.Meta)().setCharset("UTF-8"), `<meta charset="UTF-8"></meta>`);
-testView("Meta viewport", (0, index_js_1.Meta)().setName("viewport").setContent("width=device-width, initial-scale=1"), `<meta name="viewport" content="width=device-width, initial-scale=1"></meta>`);
-testView("Meta og:title", (0, index_js_1.Meta)().setProperty("og:title").setContent("My Page"), `<meta content="My Page" property="og:title"></meta>`);
-testView("Link stylesheet", (0, index_js_1.Link)().setRel("stylesheet").setHref("styles.css"), `<link rel="stylesheet" href="styles.css"></link>`);
-testView("Link favicon", (0, index_js_1.Link)().setRel("icon").setHref("favicon.ico").setType("image/x-icon"), `<link rel="icon" href="favicon.ico" type="image/x-icon"></link>`);
-testView("Link preload", (0, index_js_1.Link)().setRel("preload").setHref("font.woff2").setAs("font").setCrossorigin("anonymous"), `<link rel="preload" href="font.woff2" crossorigin="anonymous" as="font"></link>`);
-testView("Base", (0, index_js_1.Base)().setHref("https://example.com/").setTarget("_blank"), `<base href="https://example.com/" target="_blank"></base>`);
+testView("Meta charset", (0, index_js_1.Meta)().setCharset("UTF-8"), `<meta charset="UTF-8">`);
+testView("Meta viewport", (0, index_js_1.Meta)().setName("viewport").setContent("width=device-width, initial-scale=1"), `<meta name="viewport" content="width=device-width, initial-scale=1">`);
+testView("Meta og:title", (0, index_js_1.Meta)().setProperty("og:title").setContent("My Page"), `<meta property="og:title" content="My Page">`);
+testView("Link stylesheet", (0, index_js_1.Link)().setRel("stylesheet").setHref("styles.css"), `<link rel="stylesheet" href="styles.css">`);
+testView("Link favicon", (0, index_js_1.Link)().setRel("icon").setHref("favicon.ico").setType("image/x-icon"), `<link rel="icon" href="favicon.ico" type="image/x-icon">`);
+testView("Link preload", (0, index_js_1.Link)().setRel("preload").setHref("font.woff2").setAs("font").setCrossorigin("anonymous"), `<link rel="preload" href="font.woff2" as="font" crossorigin="anonymous">`);
+testView("Base", (0, index_js_1.Base)().setHref("https://example.com/").setTarget("_blank"), `<base href="https://example.com/" target="_blank">`);
 testView("Noscript", (0, index_js_1.Noscript)((0, index_js_1.P)("JavaScript is required")), `<noscript><p>JavaScript is required</p></noscript>`);
 testView("Template", (0, index_js_1.Template)((0, index_js_1.Div)("Template content")), `<template><div>Template content</div></template>`);
 // ------------------------------------
@@ -449,7 +449,7 @@ testView("Script module", (0, index_js_1.Script)().setSrc("module.js").setType("
 testView("Script with integrity", (0, index_js_1.Script)()
     .setSrc("https://cdn.example.com/lib.js")
     .setIntegrity("sha384-abc123")
-    .setCrossorigin("anonymous"), `<script src="https://cdn.example.com/lib.js" crossorigin="anonymous" integrity="sha384-abc123"></script>`);
+    .setCrossorigin("anonymous"), `<script src="https://cdn.example.com/lib.js" integrity="sha384-abc123" crossorigin="anonymous"></script>`);
 testView("Style inline", (0, index_js_1.Style)(`.red { color: red; }`), `<style>.red { color: red; }</style>`);
 testView("Style with special chars (not escaped)", (0, index_js_1.Style)(`body > div { content: '<test>'; }`), `<style>body > div { content: '<test>'; }</style>`);
 // ------------------------------------
@@ -510,7 +510,7 @@ section("HTMX - Triggers");
 testView("hx-trigger click", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/click", { trigger: "click" })), `<div hx-get="/click" hx-trigger="click"></div>`);
 testView("hx-trigger load", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/load", { trigger: "load" })), `<div hx-get="/load" hx-trigger="load"></div>`);
 testView("hx-trigger revealed", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/lazy", { trigger: "revealed" })), `<div hx-get="/lazy" hx-trigger="revealed"></div>`);
-testView("hx-trigger with delay", (0, index_js_1.Input)().setHtmx((0, htmx_js_1.hx)("/search", { trigger: "keyup delay:500ms" })), `<input hx-get="/search" hx-trigger="keyup delay:500ms"></input>`);
+testView("hx-trigger with delay", (0, index_js_1.Input)().setHtmx((0, htmx_js_1.hx)("/search", { trigger: "keyup delay:500ms" })), `<input hx-get="/search" hx-trigger="keyup delay:500ms">`);
 // testView("hx-trigger with throttle",
 //   Div().setHtmx(hx("/scroll", { trigger: "scroll throttle:1s" })),
 //   `<div hx-get="/scroll" hx-trigger="scroll throttle:1s"></div>`);
@@ -554,13 +554,13 @@ testView("Full HTMX form", (0, index_js_1.Form)([
     swap: "innerHTML",
     trigger: "click",
     indicator: "#loading",
-})), `<form hx-post="/search" hx-target="#results" hx-trigger="click" hx-swap="innerHTML" hx-indicator="#loading"><input type="text" placeholder="Search..." name="search"></input>\n<button type="submit">Search</button></form>`);
+})), `<form hx-post="/search" hx-target="#results" hx-swap="innerHTML" hx-trigger="click" hx-indicator="#loading"><input type="text" name="search" placeholder="Search...">\n<button type="submit">Search</button></form>`);
 testView("Infinite scroll", (0, index_js_1.Div)()
     .setId("feed")
     .setHtmx((0, htmx_js_1.hx)("/feed?page=2", {
     trigger: "revealed",
     swap: "beforeend",
-})), `<div id="feed" hx-get="/feed?page=2" hx-trigger="revealed" hx-swap="beforeend"></div>`);
+})), `<div id="feed" hx-get="/feed?page=2" hx-swap="beforeend" hx-trigger="revealed"></div>`);
 testView("Live search", (0, index_js_1.Input)()
     .setType("search")
     .setName("q")
@@ -568,7 +568,7 @@ testView("Live search", (0, index_js_1.Input)()
     .setHtmx((0, htmx_js_1.hx)("/search", {
     trigger: "keyup delay:300ms",
     target: "#results",
-})), `<input type="search" placeholder="Search..." name="q" hx-get="/search" hx-target="#results" hx-trigger="keyup delay:300ms"></input>`);
+})), `<input type="search" name="q" placeholder="Search..." hx-get="/search" hx-target="#results" hx-trigger="keyup delay:300ms">`);
 // ------------------------------------
 // HTMX Helper Functions
 // ------------------------------------
@@ -640,7 +640,7 @@ testView("Complex page structure", (0, index_js_1.Div)([
 // Overlay Utility
 // ------------------------------------
 section("Overlay Utility");
-testView("Overlay center", (0, index_js_1.Overlay)((0, index_js_1.Img)().setSrc("bg.jpg").setAlt("Background"), (0, index_js_1.Span)("Centered text")), `<div style="position: relative"><img src="bg.jpg" alt="Background"></img>\n<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10"><span>Centered text</span></div></div>`);
+testView("Overlay center", (0, index_js_1.Overlay)((0, index_js_1.Img)().setSrc("bg.jpg").setAlt("Background"), (0, index_js_1.Span)("Centered text")), `<div style="position: relative"><img src="bg.jpg" alt="Background">\n<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10"><span>Centered text</span></div></div>`);
 testView("Overlay top-right", (0, index_js_1.Overlay)((0, index_js_1.Div)("Card"), (0, index_js_1.Span)("Badge"), "top-right"), `<div style="position: relative"><div>Card</div>\n<div style="position: absolute; top: 0; right: 0; z-index: 10"><span>Badge</span></div></div>`);
 // ------------------------------------
 // Mixed Content

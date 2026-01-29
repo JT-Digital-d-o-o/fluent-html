@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tag = void 0;
+exports.Tag = exports.EMPTY_ATTRS = void 0;
 const ids_js_1 = require("../ids.js");
+/** @internal Shared empty attributes object — never mutate */
+exports.EMPTY_ATTRS = Object.freeze({});
 class Tag {
     constructor(element, child = "") {
         this.el = element;
         this.child = child;
-        this.attributes = {};
     }
     setId(id) {
         this.id = id ? ((0, ids_js_1.isId)(id) ? id.id : id) : undefined;
@@ -18,7 +19,7 @@ class Tag {
     }
     addClass(c) {
         if (this.class) {
-            this.class += ` ${c}`;
+            this.class += ' ' + c;
         }
         else {
             this.class = c;
@@ -30,7 +31,12 @@ class Tag {
         return this;
     }
     addAttribute(key, value) {
-        this.attributes[key] = value;
+        if (this.attributes === exports.EMPTY_ATTRS) {
+            this.attributes = { [key]: value };
+        }
+        else {
+            this.attributes[key] = value;
+        }
         return this;
     }
     setHtmx(htmx) {
@@ -97,6 +103,8 @@ class Tag {
      * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
      */
     setDataAttrs(attrs) {
+        if (this.attributes === exports.EMPTY_ATTRS)
+            this.attributes = {};
         for (const [key, value] of Object.entries(attrs)) {
             // Convert camelCase to kebab-case
             const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
@@ -118,6 +126,8 @@ class Tag {
      * })
      */
     setAria(attrs) {
+        if (this.attributes === exports.EMPTY_ATTRS)
+            this.attributes = {};
         for (const [key, value] of Object.entries(attrs)) {
             // Convert camelCase to kebab-case
             const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
@@ -529,4 +539,7 @@ class Tag {
     }
 }
 exports.Tag = Tag;
+/** @internal */
+Tag.prototype._t = 1;
+Tag.prototype.attributes = exports.EMPTY_ATTRS;
 //# sourceMappingURL=tag.js.map

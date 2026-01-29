@@ -43,6 +43,8 @@ class ThTag extends tag_js_1.Tag {
     }
 }
 exports.ThTag = ThTag;
+/** @internal */
+ThTag.prototype._sk = ['colspan', 'rowspan', 'scope'];
 function Th(child = (0, utils_js_1.Empty)()) {
     return new ThTag("th", child);
 }
@@ -57,6 +59,8 @@ class TdTag extends tag_js_1.Tag {
     }
 }
 exports.TdTag = TdTag;
+/** @internal */
+TdTag.prototype._sk = ['colspan', 'rowspan'];
 function Td(child = (0, utils_js_1.Empty)()) {
     return new TdTag("td", child);
 }
@@ -70,6 +74,8 @@ class ColgroupTag extends tag_js_1.Tag {
     }
 }
 exports.ColgroupTag = ColgroupTag;
+/** @internal */
+ColgroupTag.prototype._sk = ['span'];
 function Colgroup(child = (0, utils_js_1.Empty)()) {
     return new ColgroupTag("colgroup", child);
 }
@@ -80,6 +86,8 @@ class ColTag extends tag_js_1.Tag {
     }
 }
 exports.ColTag = ColTag;
+/** @internal */
+ColTag.prototype._sk = ['span'];
 function Col(child = (0, utils_js_1.Empty)()) {
     return new ColTag("col", child);
 }

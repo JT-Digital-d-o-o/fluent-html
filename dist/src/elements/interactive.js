@@ -17,6 +17,8 @@ class DetailsTag extends tag_js_1.Tag {
     }
 }
 exports.DetailsTag = DetailsTag;
+/** @internal */
+DetailsTag.prototype._sk = ['open', 'name'];
 function Details(child = (0, utils_js_1.Empty)()) {
     return new DetailsTag("details", child);
 }
@@ -30,6 +32,8 @@ class DialogTag extends tag_js_1.Tag {
     }
 }
 exports.DialogTag = DialogTag;
+/** @internal */
+DialogTag.prototype._sk = ['open'];
 function Dialog(child = (0, utils_js_1.Empty)()) {
     return new DialogTag("dialog", child);
 }
