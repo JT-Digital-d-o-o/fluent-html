@@ -1,7 +1,7 @@
 import { HTMX } from "../htmx.js";
 import { Id } from "../ids.js";
 import type { View } from "./types.js";
-import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow } from "./tailwind-types.js";
+import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit } from "./tailwind-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
 export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
@@ -23,6 +23,15 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
     addAttribute(key: string, value: string): TSelf;
     setHtmx(htmx?: HTMX): TSelf;
     setToggles(toggles?: string[]): TSelf;
+    /**
+     * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
+     *
+     * @example
+     * Input().toggle("required")                    // required
+     * Input().toggle("required", isRequired)        // conditional
+     * Input().toggle("disabled").toggle("readonly")  // chainable
+     */
+    toggle(name: string, condition?: boolean): TSelf;
     /**
      * Set multiple CSS classes, filtering out falsy values.
      *
@@ -297,7 +306,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Add gap with Tailwind classes.
      *
      * @example
-     * Div().gap("4")                     // gap-4
+     * Div().gap("4")                     // gap-4"
      * Div().gap("x", "2")                // gap-x-2
      */
     gap(value: Autocomplete<TailwindSpacing>): TSelf;
@@ -394,5 +403,13 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      */
     overflow(value: Autocomplete<TailwindOverflow>): TSelf;
     overflow(direction: "x" | "y", value: Autocomplete<TailwindOverflow>): TSelf;
+    /**
+     * Add object-fit with Tailwind classes.
+     *
+     * @example
+     * Img().objectFit("cover")             // object-cover
+     * Img().objectFit("contain")           // object-contain
+     */
+    objectFit(value: Autocomplete<TailwindObjectFit>): TSelf;
 }
 //# sourceMappingURL=tag.d.ts.map

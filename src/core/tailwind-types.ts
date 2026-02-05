@@ -92,5 +92,8 @@ export type TailwindFlex = "1" | "auto" | "initial" | "none";
 // Overflow
 export type TailwindOverflow = "auto" | "hidden" | "clip" | "visible" | "scroll";
 
+// Object fit
+export type TailwindObjectFit = "contain" | "cover" | "fill" | "none" | "scale-down";
+
 // Helper type to allow autocomplete while accepting any string
 export type Autocomplete<T extends string> = T | (string & {});

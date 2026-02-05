@@ -36,5 +36,6 @@ export type {
   TailwindGridRows,
   TailwindFlex,
   TailwindOverflow,
+  TailwindObjectFit,
   Autocomplete,
 } from "./tailwind-types.js";

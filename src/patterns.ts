@@ -243,7 +243,7 @@ export function FormField(options: {
       .setName(options.name)
       .setId(options.name)
       .setPlaceholder(options.placeholder ?? "")
-      .setToggles(options.required ? ["required"] : [])
+      .toggle("required", !!options.required)
       .addClass("form-input"),
     IfThen(
       !!options.error,

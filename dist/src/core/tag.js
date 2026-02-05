@@ -48,6 +48,25 @@ class Tag {
         return this;
     }
     /**
+     * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
+     *
+     * @example
+     * Input().toggle("required")                    // required
+     * Input().toggle("required", isRequired)        // conditional
+     * Input().toggle("disabled").toggle("readonly")  // chainable
+     */
+    toggle(name, condition = true) {
+        if (condition) {
+            if (this.toggles) {
+                this.toggles.push(name);
+            }
+            else {
+                this.toggles = [name];
+            }
+        }
+        return this;
+    }
+    /**
      * Set multiple CSS classes, filtering out falsy values.
      *
      * @param classes - Array of class names (falsy values are filtered out)
@@ -536,6 +555,16 @@ class Tag {
             return this.addClass(`overflow-${directionOrValue}`);
         }
         return this.addClass(`overflow-${directionOrValue}-${value}`);
+    }
+    /**
+     * Add object-fit with Tailwind classes.
+     *
+     * @example
+     * Img().objectFit("cover")             // object-cover
+     * Img().objectFit("contain")           // object-contain
+     */
+    objectFit(value) {
+        return this.addClass(`object-${value}`);
     }
 }
 exports.Tag = Tag;

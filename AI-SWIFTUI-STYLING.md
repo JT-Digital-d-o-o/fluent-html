@@ -293,6 +293,13 @@ Both produce identical HTML, but the second is more discoverable and type-safe.
 .overflow("auto")                // overflow-auto
 .overflow("x", "auto")           // overflow-x-auto
 .overflow("y", "scroll")         // overflow-y-scroll
+
+// Object fit
+.objectFit("cover")              // object-cover
+.objectFit("contain")            // object-contain
+.objectFit("fill")               // object-fill
+.objectFit("none")               // object-none
+.objectFit("scale-down")         // object-scale-down
 ```
 
 ## Real-World Examples
@@ -447,7 +454,7 @@ Div(
         .setAlt(img.title)
         .w("full")
         .h("48")
-        .addClass("object-cover"),
+        .objectFit("cover"),
 
       Div(img.title)
         .padding("2")

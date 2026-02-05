@@ -25,6 +25,7 @@ import type {
   TailwindGridRows,
   TailwindFlex,
   TailwindOverflow,
+  TailwindObjectFit,
 } from "./tailwind-types.js";
 
 /** @internal Shared empty attributes object — never mutate */
@@ -89,6 +90,25 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
 
   setToggles(toggles?: string[]): TSelf {
     this.toggles = toggles;
+    return this as any as TSelf;
+  }
+
+  /**
+   * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
+   *
+   * @example
+   * Input().toggle("required")                    // required
+   * Input().toggle("required", isRequired)        // conditional
+   * Input().toggle("disabled").toggle("readonly")  // chainable
+   */
+  toggle(name: string, condition: boolean = true): TSelf {
+    if (condition) {
+      if (this.toggles) {
+        this.toggles.push(name);
+      } else {
+        this.toggles = [name];
+      }
+    }
     return this as any as TSelf;
   }
 
@@ -511,7 +531,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Add gap with Tailwind classes.
    *
    * @example
-   * Div().gap("4")                     // gap-4
+   * Div().gap("4")                     // gap-4"
    * Div().gap("x", "2")                // gap-x-2
    */
   gap(value: Autocomplete<TailwindSpacing>): TSelf;
@@ -662,6 +682,16 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
       return this.addClass(`overflow-${directionOrValue}`);
     }
     return this.addClass(`overflow-${directionOrValue}-${value}`);
+  }
+  /**
+   * Add object-fit with Tailwind classes.
+   *
+   * @example
+   * Img().objectFit("cover")             // object-cover
+   * Img().objectFit("contain")           // object-contain
+   */
+  objectFit(value: Autocomplete<TailwindObjectFit>): TSelf {
+    return this.addClass(`object-${value}`);
   }
 }
 

@@ -121,6 +121,13 @@ test("cursor pointer", '<button class="cursor-pointer"></button>', (0, index_js_
 test("overflow hidden", '<div class="overflow-hidden"></div>', (0, index_js_1.render)((0, index_js_1.Div)().overflow("hidden")));
 test("overflow x auto", '<div class="overflow-x-auto"></div>', (0, index_js_1.render)((0, index_js_1.Div)().overflow("x", "auto")));
 test("overflow y scroll", '<div class="overflow-y-scroll"></div>', (0, index_js_1.render)((0, index_js_1.Div)().overflow("y", "scroll")));
+section("Object Fit");
+test("object fit cover", '<img class="object-cover">', (0, index_js_1.render)((0, index_js_1.Img)().objectFit("cover")));
+test("object fit contain", '<img class="object-contain">', (0, index_js_1.render)((0, index_js_1.Img)().objectFit("contain")));
+test("object fit fill", '<img class="object-fill">', (0, index_js_1.render)((0, index_js_1.Img)().objectFit("fill")));
+test("object fit none", '<img class="object-none">', (0, index_js_1.render)((0, index_js_1.Img)().objectFit("none")));
+test("object fit scale-down", '<img class="object-scale-down">', (0, index_js_1.render)((0, index_js_1.Img)().objectFit("scale-down")));
+test("object fit with sizing", '<img class="w-full h-48 object-cover">', (0, index_js_1.render)((0, index_js_1.Img)().w("full").h("48").objectFit("cover")));
 section("Method Chaining & Integration");
 test("chain all spacing", '<div class="p-4 m-2"></div>', (0, index_js_1.render)((0, index_js_1.Div)().padding("4").margin("2")));
 test("chain with setId", '<div id="test" class="p-4"></div>', (0, index_js_1.render)((0, index_js_1.Div)().setId("test").padding("4")));

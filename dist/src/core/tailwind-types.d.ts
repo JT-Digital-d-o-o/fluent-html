@@ -22,5 +22,6 @@ export type TailwindGridCols = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "
 export type TailwindGridRows = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "none" | "subgrid";
 export type TailwindFlex = "1" | "auto" | "initial" | "none";
 export type TailwindOverflow = "auto" | "hidden" | "clip" | "visible" | "scroll";
+export type TailwindObjectFit = "contain" | "cover" | "fill" | "none" | "scale-down";
 export type Autocomplete<T extends string> = T | (string & {});
 //# sourceMappingURL=tailwind-types.d.ts.map

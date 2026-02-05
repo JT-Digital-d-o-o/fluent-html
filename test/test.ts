@@ -320,6 +320,37 @@ testView("Toggle with other attributes",
     .setToggles(["required"]),
   `<input type="text" name="email" required>`);
 
+testView("toggle() single",
+  Input().toggle("required"),
+  `<input required>`);
+
+testView("toggle() multiple chained",
+  Input().toggle("required").toggle("disabled"),
+  `<input required disabled>`);
+
+testView("toggle() conditional true",
+  Input().toggle("required", true),
+  `<input required>`);
+
+testView("toggle() conditional false",
+  Input().toggle("required", false),
+  `<input>`);
+
+testView("toggle() mixed conditions",
+  Input().toggle("required", true).toggle("disabled", false).toggle("readonly", true),
+  `<input required readonly>`);
+
+testView("toggle() with other attributes",
+  Input()
+    .setType("email")
+    .setName("email")
+    .toggle("required"),
+  `<input type="email" name="email" required>`);
+
+testView("toggle() combined with setToggles",
+  Input().setToggles(["hidden"]).toggle("disabled"),
+  `<input hidden disabled>`);
+
 // ------------------------------------
 // Lists
 // ------------------------------------

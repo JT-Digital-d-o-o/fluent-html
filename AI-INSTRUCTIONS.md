@@ -48,7 +48,6 @@ Input()
   .setPlaceholder("Enter text")
   .setName("fieldName")
   .setValue("default")
-  .setRequired(true)
   .setDisabled(true)
   .setReadonly(true)
   .setChecked(true)       // for checkbox/radio
@@ -116,6 +115,8 @@ Div()
   .addAttribute("data-test", "value")
   .setDataAttrs({ userId: "123", action: "save" })
   .setAria({ label: "Close", expanded: "false" })
+  .toggle("required")               // Adds boolean attribute: required
+  .toggle("hidden", isHidden)       // Conditional boolean attribute
 ```
 
 ### 4. Fluent Tailwind Styling (SwiftUI-like)
@@ -500,7 +501,7 @@ Form([
       .setId("name")
       .setName("name")
       .setType("text")
-      .setRequired(true)
+      .toggle("required")
   ]),
   Div([
     Label("Email").setFor("email"),
@@ -508,7 +509,7 @@ Form([
       .setId("email")
       .setName("email")
       .setType("email")
-      .setRequired(true)
+      .toggle("required")
   ]),
   Button("Submit").setType("submit")
 ])

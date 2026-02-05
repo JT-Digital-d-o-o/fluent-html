@@ -1,4 +1,4 @@
-import { Div, Button, Span, P, render } from "../src/index.js";
+import { Div, Button, Span, P, Img, render } from "../src/index.js";
 
 let passed = 0;
 let failed = 0;
@@ -589,6 +589,44 @@ test(
   "overflow y scroll",
   '<div class="overflow-y-scroll"></div>',
   render(Div().overflow("y", "scroll"))
+);
+
+section("Object Fit");
+
+test(
+  "object fit cover",
+  '<img class="object-cover">',
+  render(Img().objectFit("cover"))
+);
+
+test(
+  "object fit contain",
+  '<img class="object-contain">',
+  render(Img().objectFit("contain"))
+);
+
+test(
+  "object fit fill",
+  '<img class="object-fill">',
+  render(Img().objectFit("fill"))
+);
+
+test(
+  "object fit none",
+  '<img class="object-none">',
+  render(Img().objectFit("none"))
+);
+
+test(
+  "object fit scale-down",
+  '<img class="object-scale-down">',
+  render(Img().objectFit("scale-down"))
+);
+
+test(
+  "object fit with sizing",
+  '<img class="w-full h-48 object-cover">',
+  render(Img().w("full").h("48").objectFit("cover"))
 );
 
 section("Method Chaining & Integration");
