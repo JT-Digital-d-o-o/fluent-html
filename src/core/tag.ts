@@ -580,12 +580,27 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().border()                     // border
    * Div().border("2")                  // border-2
+   * Div().border("t")                  // border-t
+   * Div().border("bottom", "2")        // border-b-2
    */
-  border(value?: Autocomplete<TailwindBorderWidth>): TSelf {
-    if (value === undefined) {
+  border(value?: Autocomplete<TailwindBorderWidth>): TSelf;
+  border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: Autocomplete<TailwindBorderWidth>): TSelf;
+  border(directionOrValue?: string, value?: Autocomplete<TailwindBorderWidth>): TSelf {
+    if (directionOrValue === undefined) {
       return this.addClass("border");
     }
-    return this.addClass(`border-${value}`);
+    const dirMap: Record<string, string> = {
+      x: "x", y: "y",
+      top: "t", bottom: "b", left: "l", right: "r",
+      t: "t", b: "b", l: "l", r: "r"
+    };
+    const dir = dirMap[directionOrValue];
+    if (dir !== undefined) {
+      return value === undefined
+        ? this.addClass(`border-${dir}`)
+        : this.addClass(`border-${dir}-${value}`);
+    }
+    return this.addClass(`border-${directionOrValue}`);
   }
 
   /**

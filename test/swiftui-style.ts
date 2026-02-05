@@ -488,6 +488,60 @@ test(
 );
 
 test(
+  "border top",
+  '<div class="border-t"></div>',
+  render(Div().border("t"))
+);
+
+test(
+  "border bottom",
+  '<div class="border-b"></div>',
+  render(Div().border("b"))
+);
+
+test(
+  "border left",
+  '<div class="border-l"></div>',
+  render(Div().border("l"))
+);
+
+test(
+  "border right",
+  '<div class="border-r"></div>',
+  render(Div().border("r"))
+);
+
+test(
+  "border x-axis",
+  '<div class="border-x"></div>',
+  render(Div().border("x"))
+);
+
+test(
+  "border y-axis",
+  '<div class="border-y"></div>',
+  render(Div().border("y"))
+);
+
+test(
+  "border top (full word)",
+  '<div class="border-t"></div>',
+  render(Div().border("top"))
+);
+
+test(
+  "border bottom with width",
+  '<div class="border-b-2"></div>',
+  render(Div().border("bottom", "2"))
+);
+
+test(
+  "border left with width",
+  '<div class="border-l-4"></div>',
+  render(Div().border("left", "4"))
+);
+
+test(
   "rounded default",
   '<div class="rounded"></div>',
   render(Div().rounded())

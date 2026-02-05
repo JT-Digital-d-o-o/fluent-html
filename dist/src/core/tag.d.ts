@@ -339,8 +339,11 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * @example
      * Div().border()                     // border
      * Div().border("2")                  // border-2
+     * Div().border("t")                  // border-t
+     * Div().border("bottom", "2")        // border-b-2
      */
     border(value?: Autocomplete<TailwindBorderWidth>): TSelf;
+    border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: Autocomplete<TailwindBorderWidth>): TSelf;
     /**
      * Add border color with Tailwind classes.
      *

@@ -464,18 +464,22 @@ class Tag {
     gridRows(rows) {
         return this.addClass(`grid-rows-${rows}`);
     }
-    /**
-     * Add border with Tailwind classes.
-     *
-     * @example
-     * Div().border()                     // border
-     * Div().border("2")                  // border-2
-     */
-    border(value) {
-        if (value === undefined) {
+    border(directionOrValue, value) {
+        if (directionOrValue === undefined) {
             return this.addClass("border");
         }
-        return this.addClass(`border-${value}`);
+        const dirMap = {
+            x: "x", y: "y",
+            top: "t", bottom: "b", left: "l", right: "r",
+            t: "t", b: "b", l: "l", r: "r"
+        };
+        const dir = dirMap[directionOrValue];
+        if (dir !== undefined) {
+            return value === undefined
+                ? this.addClass(`border-${dir}`)
+                : this.addClass(`border-${dir}-${value}`);
+        }
+        return this.addClass(`border-${directionOrValue}`);
     }
     /**
      * Add border color with Tailwind classes.

@@ -245,7 +245,20 @@ Both produce identical HTML, but the second is more discoverable and type-safe.
 .border("2")                     // border-2
 .border("4")                     // border-4
 
-// Border color (requires .border() first)
+// Directional border
+.border("t")                     // border-t
+.border("b")                     // border-b
+.border("l")                     // border-l
+.border("r")                     // border-r
+.border("x")                     // border-x
+.border("y")                     // border-y
+
+// Directional border with width
+.border("top", "2")              // border-t-2
+.border("bottom", "4")           // border-b-4
+.border("left", "2")             // border-l-2
+
+// Border color
 .borderColor("gray-300")         // border-gray-300
 
 // Border radius
