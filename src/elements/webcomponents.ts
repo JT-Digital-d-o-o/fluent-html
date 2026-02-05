@@ -2,7 +2,7 @@ import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import { Empty } from "../core/utils.js";
 
-export class SlotTag extends Tag<SlotTag> {
+export class SlotTag extends Tag {
   name?: string;
 
   setName(name?: string): this {

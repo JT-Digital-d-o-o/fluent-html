@@ -2,7 +2,7 @@ import { Tag } from "../core/tag.js";
 import { El, Empty } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export class ImgTag extends Tag<ImgTag> {
+export class ImgTag extends Tag {
   src?: string;
   alt?: string;
   width?: string;
@@ -70,7 +70,7 @@ export function Picture(child: View = Empty()): Tag {
   return El("picture", child);
 }
 
-export class SourceTag extends Tag<SourceTag> {
+export class SourceTag extends Tag {
   src?: string;
   srcset?: string;
   sizes?: string;
@@ -110,7 +110,7 @@ export function Source(child: View = Empty()): SourceTag {
   return new SourceTag("source", child);
 }
 
-export class VideoTag extends Tag<VideoTag> {
+export class VideoTag extends Tag {
   width?: number;
   height?: number;
   controls?: boolean;
@@ -180,7 +180,7 @@ export function Video(child: View = Empty()): VideoTag {
   return new VideoTag("video", child);
 }
 
-export class AudioTag extends Tag<AudioTag> {
+export class AudioTag extends Tag {
   src?: string;
   controls?: boolean;
   autoplay?: boolean;
@@ -226,7 +226,7 @@ export function Audio(child: View = Empty()): AudioTag {
   return new AudioTag("audio", child);
 }
 
-export class TrackTag extends Tag<TrackTag> {
+export class TrackTag extends Tag {
   src?: string;
   kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
   srclang?: string;
@@ -266,7 +266,7 @@ export function Track(child: View = Empty()): TrackTag {
   return new TrackTag("track", child);
 }
 
-export class CanvasTag extends Tag<CanvasTag> {
+export class CanvasTag extends Tag {
   width?: number;
   height?: number;
 
@@ -288,7 +288,7 @@ export function Canvas(child: View = Empty()): CanvasTag {
   return new CanvasTag("canvas", child);
 }
 
-export class SvgTag extends Tag<SvgTag> {
+export class SvgTag extends Tag {
   width?: string;
   height?: string;
   viewBox?: string;

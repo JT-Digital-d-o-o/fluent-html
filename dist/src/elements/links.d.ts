@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-export declare class AnchorTag extends Tag<AnchorTag> {
+export declare class AnchorTag extends Tag {
     href?: string;
     target?: '_self' | '_blank' | '_parent' | '_top' | string;
     rel?: string;
@@ -15,12 +15,12 @@ export declare class AnchorTag extends Tag<AnchorTag> {
     setReferrerpolicy(referrerpolicy?: string): this;
 }
 export declare function A(child?: View): AnchorTag;
-export declare class MapTag extends Tag<MapTag> {
+export declare class MapTag extends Tag {
     name?: string;
     setName(name?: string): this;
 }
 export declare function MapEl(child?: View): MapTag;
-export declare class AreaTag extends Tag<AreaTag> {
+export declare class AreaTag extends Tag {
     shape?: 'rect' | 'circle' | 'poly' | 'default';
     coords?: string;
     href?: string;

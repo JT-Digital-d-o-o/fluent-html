@@ -4,7 +4,7 @@ import type { View } from "./types.js";
 import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit } from "./tailwind-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
-export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
+export declare class Tag {
     el: string;
     child: View;
     id?: string;
@@ -16,13 +16,13 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
     /** @internal type discriminant for fast render checks */
     readonly _t: 1;
     constructor(element: string, child?: View);
-    setId(id?: string | Id): TSelf;
-    setClass(c?: string): TSelf;
-    addClass(c: string): TSelf;
-    setStyle(style?: string): TSelf;
-    addAttribute(key: string, value: string): TSelf;
-    setHtmx(htmx?: HTMX): TSelf;
-    setToggles(toggles?: string[]): TSelf;
+    setId(id?: string | Id): this;
+    setClass(c?: string): this;
+    addClass(c: string): this;
+    setStyle(style?: string): this;
+    addAttribute(key: string, value: string): this;
+    setHtmx(htmx?: HTMX): this;
+    setToggles(toggles?: string[]): this;
     /**
      * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
      *
@@ -31,7 +31,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Input().toggle("required", isRequired)        // conditional
      * Input().toggle("disabled").toggle("readonly")  // chainable
      */
-    toggle(name: string, condition?: boolean): TSelf;
+    toggle(name: string, condition?: boolean): this;
     /**
      * Set multiple CSS classes, filtering out falsy values.
      *
@@ -45,7 +45,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      *   props.variant === "primary" ? "btn-primary" : "btn-secondary"
      * ])
      */
-    setClasses(classes: (string | false | null | undefined)[]): TSelf;
+    setClasses(classes: (string | false | null | undefined)[]): this;
     /**
      * Set multiple inline styles from an object.
      *
@@ -59,7 +59,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      *   backgroundColor: "blue"
      * })
      */
-    setStyles(styles: Record<string, string | number>): TSelf;
+    setStyles(styles: Record<string, string | number>): this;
     /**
      * Set multiple data-* attributes at once.
      *
@@ -74,7 +74,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * })
      * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
      */
-    setDataAttrs(attrs: Record<string, string>): TSelf;
+    setDataAttrs(attrs: Record<string, string>): this;
     /**
      * Set ARIA attributes for accessibility.
      *
@@ -88,7 +88,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      *   controls: "menu-panel"
      * })
      */
-    setAria(attrs: Record<string, string | boolean>): TSelf;
+    setAria(attrs: Record<string, string | boolean>): this;
     /**
      * Add padding with Tailwind classes.
      *
@@ -97,8 +97,8 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().padding("x", "4")            // px-4
      * Div().padding("top", "4")          // pt-4
      */
-    padding(value: Autocomplete<TailwindSpacing>): TSelf;
-    padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing>): TSelf;
+    padding(value: Autocomplete<TailwindSpacing>): this;
+    padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing>): this;
     /**
      * Add margin with Tailwind classes.
      *
@@ -107,8 +107,8 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().margin("x", "auto")          // mx-auto
      * Div().margin("top", "8")           // mt-8
      */
-    margin(value: Autocomplete<TailwindSpacing | "auto">): TSelf;
-    margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing | "auto">): TSelf;
+    margin(value: Autocomplete<TailwindSpacing | "auto">): this;
+    margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing | "auto">): this;
     /**
      * Add background color with Tailwind classes.
      *
@@ -116,7 +116,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().background("red-500")        // bg-red-500
      * Div().background("blue-100")       // bg-blue-100
      */
-    background(color: Autocomplete<TailwindColor>): TSelf;
+    background(color: Autocomplete<TailwindColor>): this;
     /**
      * Add text color with Tailwind classes.
      *
@@ -124,7 +124,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Span().textColor("gray-700")       // text-gray-700
      * Span().textColor("white")          // text-white
      */
-    textColor(color: Autocomplete<TailwindColor>): TSelf;
+    textColor(color: Autocomplete<TailwindColor>): this;
     /**
      * Add text size with Tailwind classes.
      *
@@ -132,7 +132,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Span().textSize("xl")              // text-xl
      * Span().textSize("sm")              // text-sm
      */
-    textSize(size: Autocomplete<TailwindTextSize>): TSelf;
+    textSize(size: Autocomplete<TailwindTextSize>): this;
     /**
      * Add text alignment with Tailwind classes.
      *
@@ -140,7 +140,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * P().textAlign("center")            // text-center
      * P().textAlign("right")             // text-right
      */
-    textAlign(align: "left" | "center" | "right" | "justify"): TSelf;
+    textAlign(align: "left" | "center" | "right" | "justify"): this;
     /**
      * Add font weight with Tailwind classes.
      *
@@ -148,63 +148,63 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Span().fontWeight("bold")          // font-bold
      * Span().fontWeight("semibold")      // font-semibold
      */
-    fontWeight(weight: Autocomplete<TailwindFontWeight>): TSelf;
+    fontWeight(weight: Autocomplete<TailwindFontWeight>): this;
     /**
      * Make text bold (shorthand for fontWeight("bold")).
      *
      * @example
      * Span("Important").bold()           // font-bold
      */
-    bold(): TSelf;
+    bold(): this;
     /**
      * Make text italic with Tailwind classes.
      *
      * @example
      * Span("Emphasis").italic()          // italic
      */
-    italic(): TSelf;
+    italic(): this;
     /**
      * Transform text to uppercase with Tailwind classes.
      *
      * @example
      * Span("hello").uppercase()          // uppercase
      */
-    uppercase(): TSelf;
+    uppercase(): this;
     /**
      * Transform text to lowercase with Tailwind classes.
      *
      * @example
      * Span("HELLO").lowercase()          // lowercase
      */
-    lowercase(): TSelf;
+    lowercase(): this;
     /**
      * Capitalize first letter of each word with Tailwind classes.
      *
      * @example
      * Span("hello world").capitalize()   // capitalize
      */
-    capitalize(): TSelf;
+    capitalize(): this;
     /**
      * Add underline to text with Tailwind classes.
      *
      * @example
      * Span("Link").underline()           // underline
      */
-    underline(): TSelf;
+    underline(): this;
     /**
      * Add line-through to text with Tailwind classes.
      *
      * @example
      * Span("Deleted").lineThrough()      // line-through
      */
-    lineThrough(): TSelf;
+    lineThrough(): this;
     /**
      * Truncate text with ellipsis using Tailwind classes.
      *
      * @example
      * P("Very long text...").truncate()  // truncate
      */
-    truncate(): TSelf;
+    truncate(): this;
     /**
      * Add line height with Tailwind classes.
      *
@@ -212,7 +212,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * P().leading("tight")               // leading-tight
      * P().leading("relaxed")             // leading-relaxed
      */
-    leading(value: Autocomplete<TailwindLeading>): TSelf;
+    leading(value: Autocomplete<TailwindLeading>): this;
     /**
      * Add letter spacing with Tailwind classes.
      *
@@ -220,7 +220,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Span().tracking("wide")            // tracking-wide
      * Span().tracking("tight")           // tracking-tight
      */
-    tracking(value: Autocomplete<TailwindTracking>): TSelf;
+    tracking(value: Autocomplete<TailwindTracking>): this;
     /**
      * Add width with Tailwind classes.
      *
@@ -229,7 +229,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().w("1/2")                     // w-1/2
      * Div().w("64")                      // w-64
      */
-    w(value: Autocomplete<TailwindWidth>): TSelf;
+    w(value: Autocomplete<TailwindWidth>): this;
     /**
      * Add height with Tailwind classes.
      *
@@ -237,7 +237,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().h("screen")                  // h-screen
      * Div().h("64")                      // h-64
      */
-    h(value: Autocomplete<TailwindHeight>): TSelf;
+    h(value: Autocomplete<TailwindHeight>): this;
     /**
      * Add max-width with Tailwind classes.
      *
@@ -245,7 +245,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().maxW("md")                   // max-w-md
      * Div().maxW("prose")                // max-w-prose
      */
-    maxW(value: Autocomplete<TailwindMaxWidth>): TSelf;
+    maxW(value: Autocomplete<TailwindMaxWidth>): this;
     /**
      * Add min-width with Tailwind classes.
      *
@@ -253,7 +253,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().minW("0")                    // min-w-0
      * Div().minW("full")                 // min-w-full
      */
-    minW(value: Autocomplete<TailwindMinWidth>): TSelf;
+    minW(value: Autocomplete<TailwindMinWidth>): this;
     /**
      * Add max-height with Tailwind classes.
      *
@@ -261,7 +261,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().maxH("screen")               // max-h-screen
      * Div().maxH("96")                   // max-h-96
      */
-    maxH(value: Autocomplete<TailwindMaxHeight>): TSelf;
+    maxH(value: Autocomplete<TailwindMaxHeight>): this;
     /**
      * Add min-height with Tailwind classes.
      *
@@ -269,7 +269,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().minH("screen")               // min-h-screen
      * Div().minH("0")                    // min-h-0
      */
-    minH(value: Autocomplete<TailwindMinHeight>): TSelf;
+    minH(value: Autocomplete<TailwindMinHeight>): this;
     /**
      * Add flex display with Tailwind classes.
      *
@@ -277,7 +277,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().flex()                       // flex
      * Div().flex("1")                    // flex-1
      */
-    flex(value?: Autocomplete<TailwindFlex>): TSelf;
+    flex(value?: Autocomplete<TailwindFlex>): this;
     /**
      * Add flex direction with Tailwind classes.
      *
@@ -285,7 +285,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().flexDirection("col")         // flex-col
      * Div().flexDirection("row-reverse") // flex-row-reverse
      */
-    flexDirection(direction: "row" | "col" | "row-reverse" | "col-reverse"): TSelf;
+    flexDirection(direction: "row" | "col" | "row-reverse" | "col-reverse"): this;
     /**
      * Add justify-content with Tailwind classes.
      *
@@ -293,7 +293,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().justifyContent("center")     // justify-center
      * Div().justifyContent("between")    // justify-between
      */
-    justifyContent(justify: "start" | "end" | "center" | "between" | "around" | "evenly"): TSelf;
+    justifyContent(justify: "start" | "end" | "center" | "between" | "around" | "evenly"): this;
     /**
      * Add align-items with Tailwind classes.
      *
@@ -301,7 +301,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().alignItems("center")         // items-center
      * Div().alignItems("start")          // items-start
      */
-    alignItems(align: "start" | "end" | "center" | "baseline" | "stretch"): TSelf;
+    alignItems(align: "start" | "end" | "center" | "baseline" | "stretch"): this;
     /**
      * Add gap with Tailwind classes.
      *
@@ -309,15 +309,15 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().gap("4")                     // gap-4"
      * Div().gap("x", "2")                // gap-x-2
      */
-    gap(value: Autocomplete<TailwindSpacing>): TSelf;
-    gap(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): TSelf;
+    gap(value: Autocomplete<TailwindSpacing>): this;
+    gap(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): this;
     /**
      * Add grid display with Tailwind classes.
      *
      * @example
      * Div().grid()                       // grid
      */
-    grid(): TSelf;
+    grid(): this;
     /**
      * Add grid columns with Tailwind classes.
      *
@@ -325,14 +325,14 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().gridCols("3")                // grid-cols-3
      * Div().gridCols("1fr-2fr")          // grid-cols-1fr-2fr
      */
-    gridCols(cols: Autocomplete<TailwindGridCols>): TSelf;
+    gridCols(cols: Autocomplete<TailwindGridCols>): this;
     /**
      * Add grid rows with Tailwind classes.
      *
      * @example
      * Div().gridRows("2")                // grid-rows-2
      */
-    gridRows(rows: Autocomplete<TailwindGridRows>): TSelf;
+    gridRows(rows: Autocomplete<TailwindGridRows>): this;
     /**
      * Add border with Tailwind classes.
      *
@@ -342,15 +342,15 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().border("t")                  // border-t
      * Div().border("bottom", "2")        // border-b-2
      */
-    border(value?: Autocomplete<TailwindBorderWidth>): TSelf;
-    border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: Autocomplete<TailwindBorderWidth>): TSelf;
+    border(value?: Autocomplete<TailwindBorderWidth>): this;
+    border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: Autocomplete<TailwindBorderWidth>): this;
     /**
      * Add border color with Tailwind classes.
      *
      * @example
      * Div().borderColor("gray-300")      // border-gray-300
      */
-    borderColor(color: Autocomplete<TailwindColor>): TSelf;
+    borderColor(color: Autocomplete<TailwindColor>): this;
     /**
      * Add border radius with Tailwind classes.
      *
@@ -359,7 +359,7 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().rounded("full")              // rounded-full
      * Div().rounded("lg")                // rounded-lg
      */
-    rounded(value?: Autocomplete<TailwindRounded>): TSelf;
+    rounded(value?: Autocomplete<TailwindRounded>): this;
     /**
      * Add shadow with Tailwind classes.
      *
@@ -367,21 +367,21 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().shadow()                     // shadow
      * Div().shadow("lg")                 // shadow-lg
      */
-    shadow(value?: Autocomplete<TailwindShadow>): TSelf;
+    shadow(value?: Autocomplete<TailwindShadow>): this;
     /**
      * Add opacity with Tailwind classes.
      *
      * @example
      * Div().opacity("50")                // opacity-50
      */
-    opacity(value: Autocomplete<TailwindOpacity>): TSelf;
+    opacity(value: Autocomplete<TailwindOpacity>): this;
     /**
      * Add cursor with Tailwind classes.
      *
      * @example
      * Button().cursor("pointer")         // cursor-pointer
      */
-    cursor(value: Autocomplete<TailwindCursor>): TSelf;
+    cursor(value: Autocomplete<TailwindCursor>): this;
     /**
      * Add position with Tailwind classes.
      *
@@ -389,14 +389,14 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().position("relative")         // relative
      * Div().position("absolute")         // absolute
      */
-    position(value: "static" | "fixed" | "absolute" | "relative" | "sticky"): TSelf;
+    position(value: "static" | "fixed" | "absolute" | "relative" | "sticky"): this;
     /**
      * Add z-index with Tailwind classes.
      *
      * @example
      * Div().zIndex("10")                 // z-10
      */
-    zIndex(value: Autocomplete<TailwindZIndex>): TSelf;
+    zIndex(value: Autocomplete<TailwindZIndex>): this;
     /**
      * Add overflow with Tailwind classes.
      *
@@ -404,8 +404,8 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Div().overflow("hidden")           // overflow-hidden
      * Div().overflow("x", "auto")        // overflow-x-auto
      */
-    overflow(value: Autocomplete<TailwindOverflow>): TSelf;
-    overflow(direction: "x" | "y", value: Autocomplete<TailwindOverflow>): TSelf;
+    overflow(value: Autocomplete<TailwindOverflow>): this;
+    overflow(direction: "x" | "y", value: Autocomplete<TailwindOverflow>): this;
     /**
      * Add object-fit with Tailwind classes.
      *
@@ -413,6 +413,6 @@ export declare class Tag<TSelf extends Tag<any> = Tag<any>> {
      * Img().objectFit("cover")             // object-cover
      * Img().objectFit("contain")           // object-contain
      */
-    objectFit(value: Autocomplete<TailwindObjectFit>): TSelf;
+    objectFit(value: Autocomplete<TailwindObjectFit>): this;
 }
 //# sourceMappingURL=tag.d.ts.map

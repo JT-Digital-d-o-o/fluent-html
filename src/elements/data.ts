@@ -2,7 +2,7 @@ import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import { Empty } from "../core/utils.js";
 
-export class TimeTag extends Tag<TimeTag> {
+export class TimeTag extends Tag {
   datetime?: string;
 
   setDatetime(datetime?: string): this {
@@ -18,7 +18,7 @@ export function Time(child: View = Empty()): TimeTag {
   return new TimeTag("time", child);
 }
 
-export class DataTag extends Tag<DataTag> {
+export class DataTag extends Tag {
   value?: string;
 
   setValue(value?: string): this {
@@ -34,7 +34,7 @@ export function Data(child: View = Empty()): DataTag {
   return new DataTag("data", child);
 }
 
-export class ProgressTag extends Tag<ProgressTag> {
+export class ProgressTag extends Tag {
   value?: number;
   max?: number;
 
@@ -56,7 +56,7 @@ export function Progress(child: View = Empty()): ProgressTag {
   return new ProgressTag("progress", child);
 }
 
-export class MeterTag extends Tag<MeterTag> {
+export class MeterTag extends Tag {
   value?: number;
   min?: number;
   max?: number;

@@ -2,7 +2,7 @@ import { Tag } from "../core/tag.js";
 import { El, Empty } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export class DetailsTag extends Tag<DetailsTag> {
+export class DetailsTag extends Tag {
   open?: boolean;
   name?: string;
 
@@ -28,7 +28,7 @@ export function Summary(child: View = Empty()): Tag {
   return El("summary", child);
 }
 
-export class DialogTag extends Tag<DialogTag> {
+export class DialogTag extends Tag {
   open?: boolean;
 
   setOpen(open: boolean = true): this {

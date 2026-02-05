@@ -2,7 +2,7 @@ import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import { Empty } from "../core/utils.js";
 
-export class IframeTag extends Tag<IframeTag> {
+export class IframeTag extends Tag {
   src?: string;
   srcdoc?: string;
   width?: string;
@@ -72,7 +72,7 @@ export function Iframe(child: View = Empty()): IframeTag {
   return new IframeTag("iframe", child);
 }
 
-export class ObjectTag extends Tag<ObjectTag> {
+export class ObjectTag extends Tag {
   data?: string;
   type?: string;
   width?: string;
@@ -112,7 +112,7 @@ export function ObjectEl(child: View = Empty()): ObjectTag {
   return new ObjectTag("object", child);
 }
 
-export class EmbedTag extends Tag<EmbedTag> {
+export class EmbedTag extends Tag {
   src?: string;
   type?: string;
   width?: string;

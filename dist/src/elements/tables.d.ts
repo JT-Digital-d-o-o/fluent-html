@@ -5,7 +5,7 @@ export declare function Thead(child?: View): Tag;
 export declare function Tbody(child?: View): Tag;
 export declare function Tfoot(child?: View): Tag;
 export declare function Tr(child?: View): Tag;
-export declare class ThTag extends Tag<ThTag> {
+export declare class ThTag extends Tag {
     colspan?: number;
     rowspan?: number;
     scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
@@ -14,7 +14,7 @@ export declare class ThTag extends Tag<ThTag> {
     setScope(scope: 'row' | 'col' | 'rowgroup' | 'colgroup'): this;
 }
 export declare function Th(child?: View): ThTag;
-export declare class TdTag extends Tag<TdTag> {
+export declare class TdTag extends Tag {
     colspan?: number;
     rowspan?: number;
     setColspan(colspan: number): this;
@@ -22,12 +22,12 @@ export declare class TdTag extends Tag<TdTag> {
 }
 export declare function Td(child?: View): TdTag;
 export declare function Caption(child?: View): Tag;
-export declare class ColgroupTag extends Tag<ColgroupTag> {
+export declare class ColgroupTag extends Tag {
     span?: number;
     setSpan(span: number): this;
 }
 export declare function Colgroup(child?: View): ColgroupTag;
-export declare class ColTag extends Tag<ColTag> {
+export declare class ColTag extends Tag {
     span?: number;
     setSpan(span: number): this;
 }

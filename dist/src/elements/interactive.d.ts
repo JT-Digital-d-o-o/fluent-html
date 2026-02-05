@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-export declare class DetailsTag extends Tag<DetailsTag> {
+export declare class DetailsTag extends Tag {
     open?: boolean;
     name?: string;
     setOpen(open?: boolean): this;
@@ -8,7 +8,7 @@ export declare class DetailsTag extends Tag<DetailsTag> {
 }
 export declare function Details(child?: View): DetailsTag;
 export declare function Summary(child?: View): Tag;
-export declare class DialogTag extends Tag<DialogTag> {
+export declare class DialogTag extends Tag {
     open?: boolean;
     setOpen(open?: boolean): this;
 }

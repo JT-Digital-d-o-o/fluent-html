@@ -4,7 +4,7 @@ export declare function HTML(child?: View): Tag;
 export declare function Head(child?: View): Tag;
 export declare function Body(child?: View): Tag;
 export declare function Title(child?: View): Tag;
-export declare class MetaTag extends Tag<MetaTag> {
+export declare class MetaTag extends Tag {
     name?: string;
     content?: string;
     charset?: string;
@@ -17,7 +17,7 @@ export declare class MetaTag extends Tag<MetaTag> {
     setProperty(property?: string): this;
 }
 export declare function Meta(): MetaTag;
-export declare class LinkTag extends Tag<LinkTag> {
+export declare class LinkTag extends Tag {
     rel?: string;
     href?: string;
     type?: string;
@@ -36,14 +36,14 @@ export declare class LinkTag extends Tag<LinkTag> {
     setAs(as?: string): this;
 }
 export declare function Link(): LinkTag;
-export declare class StyleTag extends Tag<StyleTag> {
+export declare class StyleTag extends Tag {
     media?: string;
     type?: string;
     setMedia(media?: string): this;
     setType(type?: string): this;
 }
 export declare function Style(css: string): StyleTag;
-export declare class BaseTag extends Tag<BaseTag> {
+export declare class BaseTag extends Tag {
     href?: string;
     target?: string;
     setHref(href?: string): this;
@@ -52,7 +52,7 @@ export declare class BaseTag extends Tag<BaseTag> {
 export declare function Base(): BaseTag;
 export declare function Noscript(child?: View): Tag;
 export declare function Template(child?: View): Tag;
-export declare class ScriptTag extends Tag<ScriptTag> {
+export declare class ScriptTag extends Tag {
     src?: string;
     type?: string;
     async?: boolean;

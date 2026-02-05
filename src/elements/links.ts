@@ -2,7 +2,7 @@ import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import { Empty } from "../core/utils.js";
 
-export class AnchorTag extends Tag<AnchorTag> {
+export class AnchorTag extends Tag {
   href?: string;
   target?: '_self' | '_blank' | '_parent' | '_top' | string;
   rel?: string;
@@ -48,7 +48,7 @@ export function A(child: View = Empty()): AnchorTag {
   return new AnchorTag("a", child);
 }
 
-export class MapTag extends Tag<MapTag> {
+export class MapTag extends Tag {
   name?: string;
 
   setName(name?: string): this {
@@ -64,7 +64,7 @@ export function MapEl(child: View = Empty()): MapTag {
   return new MapTag("map", child);
 }
 
-export class AreaTag extends Tag<AreaTag> {
+export class AreaTag extends Tag {
   shape?: 'rect' | 'circle' | 'poly' | 'default';
   coords?: string;
   href?: string;

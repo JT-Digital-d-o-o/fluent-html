@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-export declare class InputTag extends Tag<InputTag> {
+export declare class InputTag extends Tag {
     type?: string;
     placeholder?: string;
     name?: string;
@@ -39,7 +39,7 @@ export declare class InputTag extends Tag<InputTag> {
     setList(list?: string): this;
 }
 export declare function Input(child?: View): InputTag;
-export declare class TextareaTag extends Tag<TextareaTag> {
+export declare class TextareaTag extends Tag {
     placeholder?: string;
     name?: string;
     rows?: number;
@@ -64,7 +64,7 @@ export declare class TextareaTag extends Tag<TextareaTag> {
     setReadonly(readonly?: boolean): this;
 }
 export declare function Textarea(child?: View): TextareaTag;
-export declare class ButtonTag extends Tag<ButtonTag> {
+export declare class ButtonTag extends Tag {
     type?: 'submit' | 'reset' | 'button';
     name?: string;
     value?: string;
@@ -79,12 +79,12 @@ export declare class ButtonTag extends Tag<ButtonTag> {
     setFormmethod(formmethod?: string): this;
 }
 export declare function Button(child?: View): ButtonTag;
-export declare class LabelTag extends Tag<LabelTag> {
+export declare class LabelTag extends Tag {
     for?: string;
     setFor(forId?: string): this;
 }
 export declare function Label(child?: View): LabelTag;
-export declare class FormTag extends Tag<FormTag> {
+export declare class FormTag extends Tag {
     action?: string;
     method?: string;
     enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
@@ -99,7 +99,7 @@ export declare class FormTag extends Tag<FormTag> {
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
 }
 export declare function Form(child?: View): FormTag;
-export declare class SelectTag extends Tag<SelectTag> {
+export declare class SelectTag extends Tag {
     name?: string;
     multiple?: boolean;
     size?: number;
@@ -112,7 +112,7 @@ export declare class SelectTag extends Tag<SelectTag> {
     setAutofocus(autofocus?: boolean): this;
 }
 export declare function Select(child?: View): SelectTag;
-export declare class OptionTag extends Tag<OptionTag> {
+export declare class OptionTag extends Tag {
     value?: string;
     selected?: boolean;
     disabled?: boolean;
@@ -123,7 +123,7 @@ export declare class OptionTag extends Tag<OptionTag> {
     setLabel(label?: string): this;
 }
 export declare function Option(child?: View): OptionTag;
-export declare class OptgroupTag extends Tag<OptgroupTag> {
+export declare class OptgroupTag extends Tag {
     label?: string;
     disabled?: boolean;
     setLabel(label?: string): this;
@@ -131,7 +131,7 @@ export declare class OptgroupTag extends Tag<OptgroupTag> {
 }
 export declare function Optgroup(child?: View): OptgroupTag;
 export declare function Datalist(child?: View): Tag;
-export declare class FieldsetTag extends Tag<FieldsetTag> {
+export declare class FieldsetTag extends Tag {
     name?: string;
     disabled?: boolean;
     setName(name?: string): this;
@@ -139,7 +139,7 @@ export declare class FieldsetTag extends Tag<FieldsetTag> {
 }
 export declare function Fieldset(child?: View): FieldsetTag;
 export declare function Legend(child?: View): Tag;
-export declare class OutputTag extends Tag<OutputTag> {
+export declare class OutputTag extends Tag {
     for?: string;
     name?: string;
     setFor(forId?: string): this;

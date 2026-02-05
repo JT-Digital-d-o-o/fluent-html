@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-export declare class ImgTag extends Tag<ImgTag> {
+export declare class ImgTag extends Tag {
     src?: string;
     alt?: string;
     width?: string;
@@ -22,7 +22,7 @@ export declare class ImgTag extends Tag<ImgTag> {
 }
 export declare function Img(child?: View): ImgTag;
 export declare function Picture(child?: View): Tag;
-export declare class SourceTag extends Tag<SourceTag> {
+export declare class SourceTag extends Tag {
     src?: string;
     srcset?: string;
     sizes?: string;
@@ -35,7 +35,7 @@ export declare class SourceTag extends Tag<SourceTag> {
     setMedia(media?: string): this;
 }
 export declare function Source(child?: View): SourceTag;
-export declare class VideoTag extends Tag<VideoTag> {
+export declare class VideoTag extends Tag {
     width?: number;
     height?: number;
     controls?: boolean;
@@ -58,7 +58,7 @@ export declare class VideoTag extends Tag<VideoTag> {
     setPlaysinline(playsinline?: boolean): this;
 }
 export declare function Video(child?: View): VideoTag;
-export declare class AudioTag extends Tag<AudioTag> {
+export declare class AudioTag extends Tag {
     src?: string;
     controls?: boolean;
     autoplay?: boolean;
@@ -73,7 +73,7 @@ export declare class AudioTag extends Tag<AudioTag> {
     setPreload(preload?: 'none' | 'metadata' | 'auto'): this;
 }
 export declare function Audio(child?: View): AudioTag;
-export declare class TrackTag extends Tag<TrackTag> {
+export declare class TrackTag extends Tag {
     src?: string;
     kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
     srclang?: string;
@@ -86,14 +86,14 @@ export declare class TrackTag extends Tag<TrackTag> {
     setDefault(isDefault?: boolean): this;
 }
 export declare function Track(child?: View): TrackTag;
-export declare class CanvasTag extends Tag<CanvasTag> {
+export declare class CanvasTag extends Tag {
     width?: number;
     height?: number;
     setWidth(width: number): this;
     setHeight(height: number): this;
 }
 export declare function Canvas(child?: View): CanvasTag;
-export declare class SvgTag extends Tag<SvgTag> {
+export declare class SvgTag extends Tag {
     width?: string;
     height?: string;
     viewBox?: string;

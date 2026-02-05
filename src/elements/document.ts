@@ -18,7 +18,7 @@ export function Title(child?: View): Tag {
   return El("title", child);
 }
 
-export class MetaTag extends Tag<MetaTag> {
+export class MetaTag extends Tag {
   name?: string;
   content?: string;
   charset?: string;
@@ -58,7 +58,7 @@ export function Meta(): MetaTag {
   return new MetaTag("meta");
 }
 
-export class LinkTag extends Tag<LinkTag> {
+export class LinkTag extends Tag {
   rel?: string;
   href?: string;
   type?: string;
@@ -116,7 +116,7 @@ export function Link(): LinkTag {
   return new LinkTag("link");
 }
 
-export class StyleTag extends Tag<StyleTag> {
+export class StyleTag extends Tag {
   media?: string;
   type?: string;
 
@@ -138,7 +138,7 @@ export function Style(css: string): StyleTag {
   return new StyleTag("style", css);
 }
 
-export class BaseTag extends Tag<BaseTag> {
+export class BaseTag extends Tag {
   href?: string;
   target?: string;
 
@@ -168,7 +168,7 @@ export function Template(child: View = Empty()): Tag {
   return El("template", child);
 }
 
-export class ScriptTag extends Tag<ScriptTag> {
+export class ScriptTag extends Tag {
   src?: string;
   type?: string;
   async?: boolean;

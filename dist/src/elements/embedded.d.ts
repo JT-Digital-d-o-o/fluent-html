@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-export declare class IframeTag extends Tag<IframeTag> {
+export declare class IframeTag extends Tag {
     src?: string;
     srcdoc?: string;
     width?: string;
@@ -23,7 +23,7 @@ export declare class IframeTag extends Tag<IframeTag> {
     setReferrerpolicy(referrerpolicy?: string): this;
 }
 export declare function Iframe(child?: View): IframeTag;
-export declare class ObjectTag extends Tag<ObjectTag> {
+export declare class ObjectTag extends Tag {
     data?: string;
     type?: string;
     width?: string;
@@ -36,7 +36,7 @@ export declare class ObjectTag extends Tag<ObjectTag> {
     setName(name?: string): this;
 }
 export declare function ObjectEl(child?: View): ObjectTag;
-export declare class EmbedTag extends Tag<EmbedTag> {
+export declare class EmbedTag extends Tag {
     src?: string;
     type?: string;
     width?: string;

@@ -22,7 +22,7 @@ export function Tr(child: View = Empty()): Tag {
   return El("tr", child);
 }
 
-export class ThTag extends Tag<ThTag> {
+export class ThTag extends Tag {
   colspan?: number;
   rowspan?: number;
   scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
@@ -50,7 +50,7 @@ export function Th(child: View = Empty()): ThTag {
   return new ThTag("th", child);
 }
 
-export class TdTag extends Tag<TdTag> {
+export class TdTag extends Tag {
   colspan?: number;
   rowspan?: number;
 
@@ -76,7 +76,7 @@ export function Caption(child: View = Empty()): Tag {
   return El("caption", child);
 }
 
-export class ColgroupTag extends Tag<ColgroupTag> {
+export class ColgroupTag extends Tag {
   span?: number;
 
   setSpan(span: number): this {
@@ -92,7 +92,7 @@ export function Colgroup(child: View = Empty()): ColgroupTag {
   return new ColgroupTag("colgroup", child);
 }
 
-export class ColTag extends Tag<ColTag> {
+export class ColTag extends Tag {
   span?: number;
 
   setSpan(span: number): this {

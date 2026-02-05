@@ -31,7 +31,7 @@ import type {
 /** @internal Shared empty attributes object — never mutate */
 export const EMPTY_ATTRS: Record<string, string> = Object.freeze({}) as Record<string, string>;
 
-export class Tag<TSelf extends Tag<any> = Tag<any>> {
+export class Tag {
   el: string;
   child: View;
 
@@ -50,47 +50,47 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
     this.child = child;
   }
 
-  setId(id?: string | Id): TSelf {
+  setId(id?: string | Id): this {
     this.id = id ? (isId(id) ? id.id : id) : undefined;
-    return this as any as TSelf;
+    return this;
   }
 
-  setClass(c?: string): TSelf {
+  setClass(c?: string): this {
     this.class = c;
-    return this as any as TSelf;
+    return this;
   }
 
-  addClass(c: string): TSelf {
+  addClass(c: string): this {
     if (this.class) {
       this.class += ' ' + c;
     } else {
       this.class = c;
     }
-    return this as any as TSelf;
+    return this;
   }
 
-  setStyle(style?: string): TSelf {
+  setStyle(style?: string): this {
     this.style = style;
-    return this as any as TSelf;
+    return this;
   }
 
-  addAttribute(key: string, value: string): TSelf {
+  addAttribute(key: string, value: string): this {
     if (this.attributes === EMPTY_ATTRS) {
       this.attributes = { [key]: value };
     } else {
       this.attributes[key] = value;
     }
-    return this as any as TSelf;
+    return this;
   }
 
-  setHtmx(htmx?: HTMX): TSelf {
+  setHtmx(htmx?: HTMX): this {
     this.htmx = htmx;
-    return this as any as TSelf;
+    return this;
   }
 
-  setToggles(toggles?: string[]): TSelf {
+  setToggles(toggles?: string[]): this {
     this.toggles = toggles;
-    return this as any as TSelf;
+    return this;
   }
 
   /**
@@ -101,7 +101,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Input().toggle("required", isRequired)        // conditional
    * Input().toggle("disabled").toggle("readonly")  // chainable
    */
-  toggle(name: string, condition: boolean = true): TSelf {
+  toggle(name: string, condition: boolean = true): this {
     if (condition) {
       if (this.toggles) {
         this.toggles.push(name);
@@ -109,7 +109,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
         this.toggles = [name];
       }
     }
-    return this as any as TSelf;
+    return this;
   }
 
   /**
@@ -125,9 +125,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    *   props.variant === "primary" ? "btn-primary" : "btn-secondary"
    * ])
    */
-  setClasses(classes: (string | false | null | undefined)[]): TSelf {
+  setClasses(classes: (string | false | null | undefined)[]): this {
     this.class = classes.filter(Boolean).join(" ");
-    return this as any as TSelf;
+    return this;
   }
 
   /**
@@ -143,7 +143,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    *   backgroundColor: "blue"
    * })
    */
-  setStyles(styles: Record<string, string | number>): TSelf {
+  setStyles(styles: Record<string, string | number>): this {
     const styleString = Object.entries(styles)
       .map(([key, value]) => {
         // Convert camelCase to kebab-case
@@ -152,7 +152,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
       })
       .join("; ");
     this.style = styleString;
-    return this as any as TSelf;
+    return this;
   }
 
   /**
@@ -169,14 +169,14 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * })
    * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
    */
-  setDataAttrs(attrs: Record<string, string>): TSelf {
+  setDataAttrs(attrs: Record<string, string>): this {
     if (this.attributes === EMPTY_ATTRS) this.attributes = {};
     for (const [key, value] of Object.entries(attrs)) {
       // Convert camelCase to kebab-case
       const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
       this.attributes[`data-${kebabKey}`] = value;
     }
-    return this as any as TSelf;
+    return this;
   }
 
   /**
@@ -192,14 +192,14 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    *   controls: "menu-panel"
    * })
    */
-  setAria(attrs: Record<string, string | boolean>): TSelf {
+  setAria(attrs: Record<string, string | boolean>): this {
     if (this.attributes === EMPTY_ATTRS) this.attributes = {};
     for (const [key, value] of Object.entries(attrs)) {
       // Convert camelCase to kebab-case
       const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
       this.attributes[`aria-${kebabKey}`] = String(value);
     }
-    return this as any as TSelf;
+    return this;
   }
 
   // ------------------------------------
@@ -214,9 +214,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().padding("x", "4")            // px-4
    * Div().padding("top", "4")          // pt-4
    */
-  padding(value: Autocomplete<TailwindSpacing>): TSelf;
-  padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing>): TSelf;
-  padding(directionOrValue: string, value?: Autocomplete<TailwindSpacing>): TSelf {
+  padding(value: Autocomplete<TailwindSpacing>): this;
+  padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing>): this;
+  padding(directionOrValue: string, value?: Autocomplete<TailwindSpacing>): this {
     if (value === undefined) {
       // Single parameter: all sides
       return this.addClass(`p-${directionOrValue}`);
@@ -240,9 +240,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().margin("x", "auto")          // mx-auto
    * Div().margin("top", "8")           // mt-8
    */
-  margin(value: Autocomplete<TailwindSpacing | "auto">): TSelf;
-  margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing | "auto">): TSelf;
-  margin(directionOrValue: string, value?: Autocomplete<TailwindSpacing | "auto">): TSelf {
+  margin(value: Autocomplete<TailwindSpacing | "auto">): this;
+  margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing | "auto">): this;
+  margin(directionOrValue: string, value?: Autocomplete<TailwindSpacing | "auto">): this {
     if (value === undefined) {
       return this.addClass(`m-${directionOrValue}`);
     } else {
@@ -263,7 +263,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().background("red-500")        // bg-red-500
    * Div().background("blue-100")       // bg-blue-100
    */
-  background(color: Autocomplete<TailwindColor>): TSelf {
+  background(color: Autocomplete<TailwindColor>): this {
     return this.addClass(`bg-${color}`);
   }
 
@@ -274,7 +274,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Span().textColor("gray-700")       // text-gray-700
    * Span().textColor("white")          // text-white
    */
-  textColor(color: Autocomplete<TailwindColor>): TSelf {
+  textColor(color: Autocomplete<TailwindColor>): this {
     return this.addClass(`text-${color}`);
   }
 
@@ -285,7 +285,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Span().textSize("xl")              // text-xl
    * Span().textSize("sm")              // text-sm
    */
-  textSize(size: Autocomplete<TailwindTextSize>): TSelf {
+  textSize(size: Autocomplete<TailwindTextSize>): this {
     return this.addClass(`text-${size}`);
   }
 
@@ -296,7 +296,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * P().textAlign("center")            // text-center
    * P().textAlign("right")             // text-right
    */
-  textAlign(align: "left" | "center" | "right" | "justify"): TSelf {
+  textAlign(align: "left" | "center" | "right" | "justify"): this {
     return this.addClass(`text-${align}`);
   }
 
@@ -307,7 +307,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Span().fontWeight("bold")          // font-bold
    * Span().fontWeight("semibold")      // font-semibold
    */
-  fontWeight(weight: Autocomplete<TailwindFontWeight>): TSelf {
+  fontWeight(weight: Autocomplete<TailwindFontWeight>): this {
     return this.addClass(`font-${weight}`);
   }
 
@@ -317,7 +317,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Span("Important").bold()           // font-bold
    */
-  bold(): TSelf {
+  bold(): this {
     return this.addClass("font-bold");
   }
 
@@ -327,7 +327,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Span("Emphasis").italic()          // italic
    */
-  italic(): TSelf {
+  italic(): this {
     return this.addClass("italic");
   }
 
@@ -337,7 +337,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Span("hello").uppercase()          // uppercase
    */
-  uppercase(): TSelf {
+  uppercase(): this {
     return this.addClass("uppercase");
   }
 
@@ -347,7 +347,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Span("HELLO").lowercase()          // lowercase
    */
-  lowercase(): TSelf {
+  lowercase(): this {
     return this.addClass("lowercase");
   }
 
@@ -357,7 +357,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Span("hello world").capitalize()   // capitalize
    */
-  capitalize(): TSelf {
+  capitalize(): this {
     return this.addClass("capitalize");
   }
 
@@ -367,7 +367,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Span("Link").underline()           // underline
    */
-  underline(): TSelf {
+  underline(): this {
     return this.addClass("underline");
   }
 
@@ -377,7 +377,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Span("Deleted").lineThrough()      // line-through
    */
-  lineThrough(): TSelf {
+  lineThrough(): this {
     return this.addClass("line-through");
   }
 
@@ -387,7 +387,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * P("Very long text...").truncate()  // truncate
    */
-  truncate(): TSelf {
+  truncate(): this {
     return this.addClass("truncate");
   }
 
@@ -398,7 +398,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * P().leading("tight")               // leading-tight
    * P().leading("relaxed")             // leading-relaxed
    */
-  leading(value: Autocomplete<TailwindLeading>): TSelf {
+  leading(value: Autocomplete<TailwindLeading>): this {
     return this.addClass(`leading-${value}`);
   }
 
@@ -409,7 +409,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Span().tracking("wide")            // tracking-wide
    * Span().tracking("tight")           // tracking-tight
    */
-  tracking(value: Autocomplete<TailwindTracking>): TSelf {
+  tracking(value: Autocomplete<TailwindTracking>): this {
     return this.addClass(`tracking-${value}`);
   }
 
@@ -421,7 +421,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().w("1/2")                     // w-1/2
    * Div().w("64")                      // w-64
    */
-  w(value: Autocomplete<TailwindWidth>): TSelf {
+  w(value: Autocomplete<TailwindWidth>): this {
     return this.addClass(`w-${value}`);
   }
 
@@ -432,7 +432,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().h("screen")                  // h-screen
    * Div().h("64")                      // h-64
    */
-  h(value: Autocomplete<TailwindHeight>): TSelf {
+  h(value: Autocomplete<TailwindHeight>): this {
     return this.addClass(`h-${value}`);
   }
 
@@ -443,7 +443,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().maxW("md")                   // max-w-md
    * Div().maxW("prose")                // max-w-prose
    */
-  maxW(value: Autocomplete<TailwindMaxWidth>): TSelf {
+  maxW(value: Autocomplete<TailwindMaxWidth>): this {
     return this.addClass(`max-w-${value}`);
   }
 
@@ -454,7 +454,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().minW("0")                    // min-w-0
    * Div().minW("full")                 // min-w-full
    */
-  minW(value: Autocomplete<TailwindMinWidth>): TSelf {
+  minW(value: Autocomplete<TailwindMinWidth>): this {
     return this.addClass(`min-w-${value}`);
   }
 
@@ -465,7 +465,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().maxH("screen")               // max-h-screen
    * Div().maxH("96")                   // max-h-96
    */
-  maxH(value: Autocomplete<TailwindMaxHeight>): TSelf {
+  maxH(value: Autocomplete<TailwindMaxHeight>): this {
     return this.addClass(`max-h-${value}`);
   }
 
@@ -476,7 +476,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().minH("screen")               // min-h-screen
    * Div().minH("0")                    // min-h-0
    */
-  minH(value: Autocomplete<TailwindMinHeight>): TSelf {
+  minH(value: Autocomplete<TailwindMinHeight>): this {
     return this.addClass(`min-h-${value}`);
   }
 
@@ -487,7 +487,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().flex()                       // flex
    * Div().flex("1")                    // flex-1
    */
-  flex(value?: Autocomplete<TailwindFlex>): TSelf {
+  flex(value?: Autocomplete<TailwindFlex>): this {
     if (value === undefined) {
       return this.addClass("flex");
     }
@@ -501,7 +501,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().flexDirection("col")         // flex-col
    * Div().flexDirection("row-reverse") // flex-row-reverse
    */
-  flexDirection(direction: "row" | "col" | "row-reverse" | "col-reverse"): TSelf {
+  flexDirection(direction: "row" | "col" | "row-reverse" | "col-reverse"): this {
     return this.addClass(`flex-${direction}`);
   }
 
@@ -512,7 +512,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().justifyContent("center")     // justify-center
    * Div().justifyContent("between")    // justify-between
    */
-  justifyContent(justify: "start" | "end" | "center" | "between" | "around" | "evenly"): TSelf {
+  justifyContent(justify: "start" | "end" | "center" | "between" | "around" | "evenly"): this {
     return this.addClass(`justify-${justify}`);
   }
 
@@ -523,7 +523,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().alignItems("center")         // items-center
    * Div().alignItems("start")          // items-start
    */
-  alignItems(align: "start" | "end" | "center" | "baseline" | "stretch"): TSelf {
+  alignItems(align: "start" | "end" | "center" | "baseline" | "stretch"): this {
     return this.addClass(`items-${align}`);
   }
 
@@ -534,9 +534,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().gap("4")                     // gap-4"
    * Div().gap("x", "2")                // gap-x-2
    */
-  gap(value: Autocomplete<TailwindSpacing>): TSelf;
-  gap(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): TSelf;
-  gap(directionOrValue: string, value?: Autocomplete<TailwindSpacing>): TSelf {
+  gap(value: Autocomplete<TailwindSpacing>): this;
+  gap(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): this;
+  gap(directionOrValue: string, value?: Autocomplete<TailwindSpacing>): this {
     if (value === undefined) {
       return this.addClass(`gap-${directionOrValue}`);
     }
@@ -549,7 +549,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().grid()                       // grid
    */
-  grid(): TSelf {
+  grid(): this {
     return this.addClass("grid");
   }
 
@@ -560,7 +560,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().gridCols("3")                // grid-cols-3
    * Div().gridCols("1fr-2fr")          // grid-cols-1fr-2fr
    */
-  gridCols(cols: Autocomplete<TailwindGridCols>): TSelf {
+  gridCols(cols: Autocomplete<TailwindGridCols>): this {
     return this.addClass(`grid-cols-${cols}`);
   }
 
@@ -570,7 +570,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().gridRows("2")                // grid-rows-2
    */
-  gridRows(rows: Autocomplete<TailwindGridRows>): TSelf {
+  gridRows(rows: Autocomplete<TailwindGridRows>): this {
     return this.addClass(`grid-rows-${rows}`);
   }
 
@@ -583,9 +583,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().border("t")                  // border-t
    * Div().border("bottom", "2")        // border-b-2
    */
-  border(value?: Autocomplete<TailwindBorderWidth>): TSelf;
-  border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: Autocomplete<TailwindBorderWidth>): TSelf;
-  border(directionOrValue?: string, value?: Autocomplete<TailwindBorderWidth>): TSelf {
+  border(value?: Autocomplete<TailwindBorderWidth>): this;
+  border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: Autocomplete<TailwindBorderWidth>): this;
+  border(directionOrValue?: string, value?: Autocomplete<TailwindBorderWidth>): this {
     if (directionOrValue === undefined) {
       return this.addClass("border");
     }
@@ -609,7 +609,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().borderColor("gray-300")      // border-gray-300
    */
-  borderColor(color: Autocomplete<TailwindColor>): TSelf {
+  borderColor(color: Autocomplete<TailwindColor>): this {
     return this.addClass(`border-${color}`);
   }
 
@@ -621,7 +621,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().rounded("full")              // rounded-full
    * Div().rounded("lg")                // rounded-lg
    */
-  rounded(value?: Autocomplete<TailwindRounded>): TSelf {
+  rounded(value?: Autocomplete<TailwindRounded>): this {
     if (value === undefined) {
       return this.addClass("rounded");
     }
@@ -635,7 +635,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().shadow()                     // shadow
    * Div().shadow("lg")                 // shadow-lg
    */
-  shadow(value?: Autocomplete<TailwindShadow>): TSelf {
+  shadow(value?: Autocomplete<TailwindShadow>): this {
     if (value === undefined) {
       return this.addClass("shadow");
     }
@@ -648,7 +648,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().opacity("50")                // opacity-50
    */
-  opacity(value: Autocomplete<TailwindOpacity>): TSelf {
+  opacity(value: Autocomplete<TailwindOpacity>): this {
     return this.addClass(`opacity-${value}`);
   }
 
@@ -658,7 +658,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Button().cursor("pointer")         // cursor-pointer
    */
-  cursor(value: Autocomplete<TailwindCursor>): TSelf {
+  cursor(value: Autocomplete<TailwindCursor>): this {
     return this.addClass(`cursor-${value}`);
   }
 
@@ -669,7 +669,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().position("relative")         // relative
    * Div().position("absolute")         // absolute
    */
-  position(value: "static" | "fixed" | "absolute" | "relative" | "sticky"): TSelf {
+  position(value: "static" | "fixed" | "absolute" | "relative" | "sticky"): this {
     return this.addClass(value);
   }
 
@@ -679,7 +679,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * @example
    * Div().zIndex("10")                 // z-10
    */
-  zIndex(value: Autocomplete<TailwindZIndex>): TSelf {
+  zIndex(value: Autocomplete<TailwindZIndex>): this {
     return this.addClass(`z-${value}`);
   }
 
@@ -690,9 +690,9 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Div().overflow("hidden")           // overflow-hidden
    * Div().overflow("x", "auto")        // overflow-x-auto
    */
-  overflow(value: Autocomplete<TailwindOverflow>): TSelf;
-  overflow(direction: "x" | "y", value: Autocomplete<TailwindOverflow>): TSelf;
-  overflow(directionOrValue: string, value?: Autocomplete<TailwindOverflow>): TSelf {
+  overflow(value: Autocomplete<TailwindOverflow>): this;
+  overflow(direction: "x" | "y", value: Autocomplete<TailwindOverflow>): this;
+  overflow(directionOrValue: string, value?: Autocomplete<TailwindOverflow>): this {
     if (value === undefined) {
       return this.addClass(`overflow-${directionOrValue}`);
     }
@@ -705,7 +705,7 @@ export class Tag<TSelf extends Tag<any> = Tag<any>> {
    * Img().objectFit("cover")             // object-cover
    * Img().objectFit("contain")           // object-contain
    */
-  objectFit(value: Autocomplete<TailwindObjectFit>): TSelf {
+  objectFit(value: Autocomplete<TailwindObjectFit>): this {
     return this.addClass(`object-${value}`);
   }
 }

@@ -2,7 +2,7 @@ import { Tag } from "../core/tag.js";
 import { El, Empty } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export class InputTag extends Tag<InputTag> {
+export class InputTag extends Tag {
   type?: string;
   placeholder?: string;
   name?: string;
@@ -120,7 +120,7 @@ export function Input(child: View = Empty()): InputTag {
   return new InputTag("input", child);
 }
 
-export class TextareaTag extends Tag<TextareaTag> {
+export class TextareaTag extends Tag {
   placeholder?: string;
   name?: string;
   rows?: number;
@@ -196,7 +196,7 @@ export function Textarea(child: View = Empty()): TextareaTag {
   return new TextareaTag("textarea", child);
 }
 
-export class ButtonTag extends Tag<ButtonTag> {
+export class ButtonTag extends Tag {
   type?: 'submit' | 'reset' | 'button';
   name?: string;
   value?: string;
@@ -242,7 +242,7 @@ export function Button(child: View = Empty()): ButtonTag {
   return new ButtonTag("button", child);
 }
 
-export class LabelTag extends Tag<LabelTag> {
+export class LabelTag extends Tag {
   for?: string;
 
   setFor(forId?: string): this {
@@ -258,7 +258,7 @@ export function Label(child: View = Empty()): LabelTag {
   return new LabelTag("label", child);
 }
 
-export class FormTag extends Tag<FormTag> {
+export class FormTag extends Tag {
   action?: string;
   method?: string;
   enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
@@ -304,7 +304,7 @@ export function Form(child: View = Empty()): FormTag {
   return new FormTag("form", child);
 }
 
-export class SelectTag extends Tag<SelectTag> {
+export class SelectTag extends Tag {
   name?: string;
   multiple?: boolean;
   size?: number;
@@ -344,7 +344,7 @@ export function Select(child: View = Empty()): SelectTag {
   return new SelectTag("select", child);
 }
 
-export class OptionTag extends Tag<OptionTag> {
+export class OptionTag extends Tag {
   value?: string;
   selected?: boolean;
   disabled?: boolean;
@@ -378,7 +378,7 @@ export function Option(child: View = Empty()): OptionTag {
   return new OptionTag("option", child);
 }
 
-export class OptgroupTag extends Tag<OptgroupTag> {
+export class OptgroupTag extends Tag {
   label?: string;
   disabled?: boolean;
 
@@ -404,7 +404,7 @@ export function Datalist(child: View = Empty()): Tag {
   return El("datalist", child);
 }
 
-export class FieldsetTag extends Tag<FieldsetTag> {
+export class FieldsetTag extends Tag {
   name?: string;
   disabled?: boolean;
 
@@ -430,7 +430,7 @@ export function Legend(child: View = Empty()): Tag {
   return El("legend", child);
 }
 
-export class OutputTag extends Tag<OutputTag> {
+export class OutputTag extends Tag {
   for?: string;
   name?: string;
 
