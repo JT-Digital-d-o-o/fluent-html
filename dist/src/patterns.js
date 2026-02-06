@@ -198,7 +198,7 @@ function FormField(options) {
             .setPlaceholder(options.placeholder ?? "")
             .toggle("required", !!options.required)
             .addClass("form-input"),
-        (0, index_js_1.IfThen)(!!options.error, () => (0, text_js_1.Span)(options.error).addClass("form-error")),
+        (0, index_js_1.IfThen)(options.error, (error) => (0, text_js_1.Span)(error).addClass("form-error")),
     ]).addClass(options.className ?? "form-field");
 }
 // ------------------------------------

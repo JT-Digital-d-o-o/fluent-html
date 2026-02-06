@@ -195,7 +195,7 @@ Fluent HTML provides functional control flow utilities:
 
 **IfThen** - Show element if condition is true:
 ```typescript
-IfThen(user.isLoggedIn, () => 
+IfThen(user.isLoggedIn, () =>
   Div("Welcome back!")
 )
 ```
@@ -206,6 +206,24 @@ IfThenElse(
   user.isAdmin,
   () => Button("Admin Panel"),
   () => Span("Regular User")
+)
+```
+
+**Nullable value narrowing** — pass a nullable value instead of a boolean.
+When non-null, the value is injected into the callback with its type narrowed:
+```typescript
+// user is User | null — the callback receives User (non-null)
+IfThen(user, (u) => Span(`Welcome, ${u.name}`))
+
+IfThenElse(
+  user,
+  (u) => Span(`Welcome, ${u.name}`),
+  () => A("Login").setHref("/login")
+)
+
+// Works for optional properties — no !! or ! needed
+IfThen(props.image, (src) =>
+  Img().setSrc(src).setAlt("Photo")
 )
 ```
 
@@ -265,6 +283,21 @@ IfThenElse(
   ),
   () => P("No users found")
 )
+```
+
+**Optional fields with nullable narrowing:**
+```typescript
+function Card(props: { title: string; image?: string; footer?: View }): View {
+  return Div([
+    IfThen(props.image, (src) =>
+      Img().setSrc(src).setAlt(props.title).setClass("card-img")
+    ),
+    H3(props.title),
+    IfThen(props.footer, (footer) =>
+      Div(footer).setClass("card-footer")
+    ),
+  ]);
+}
 ```
 
 **Status badge:**

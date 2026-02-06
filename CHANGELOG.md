@@ -2,6 +2,27 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [Unreleased]
+
+### ✨ New Features
+
+#### Nullable Value Overloads for IfThen / IfThenElse
+
+`IfThen` and `IfThenElse` now accept a nullable value (`T | null | undefined`) instead of a boolean. When the value is non-null, it is passed into the callback with its type narrowed to `T`:
+
+```typescript
+const user: User | null = getUser();
+
+// Before — requires !! and !
+IfThen(!!user, () => Span(`Welcome, ${user!.name}`))
+
+// After — type-safe, no assertions needed
+IfThen(user, (u) => Span(`Welcome, ${u.name}`))
+
+// Works with IfThenElse too
+IfThenElse(user, (u) => Span(`Welcome, ${u.name}`), () => A("Login").setHref("/login"))
+```
+
 ## [5.1.0] - 2025-01
 
 ### ✨ New Features

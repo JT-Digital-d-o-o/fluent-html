@@ -111,6 +111,10 @@ Form([
 IfThen(user.isAdmin, () => AdminBadge())
 IfThenElse(loggedIn, () => Dashboard(), () => LoginForm())
 
+// Nullable value narrowing — the value is passed as a non-null argument
+IfThen(user.avatar, (src) => Img().setSrc(src).setAlt("Avatar"))
+IfThenElse(user, (u) => Span(`Welcome, ${u.name}`), () => A("Login").setHref("/login"))
+
 // Iteration
 Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
 Div(ForEach(5, i => Star()))  // Repeat 5 times
@@ -1056,25 +1060,49 @@ Fluent HTML provides functional control flow for conditional and iterative rende
 ```typescript
 import { IfThen, IfThenElse } from 'fluent-html';
 
-// Conditional rendering
+// Conditional rendering (boolean)
 function UserBadge(user: { isAdmin: boolean; isPremium: boolean }): View {
   return Div([
-    IfThen(user.isAdmin, () => 
+    IfThen(user.isAdmin, () =>
       Span("Admin").setClass("badge badge-red")
     ),
-    IfThen(user.isPremium, () => 
+    IfThen(user.isPremium, () =>
       Span("Premium").setClass("badge badge-gold")
     ),
   ]);
 }
 
-// If-else rendering
-function LoginStatus(user: User | null): View {
+// If-else rendering (boolean)
+function LoginStatus(loggedIn: boolean): View {
   return IfThenElse(
-    user !== null,
-    () => Span(`Welcome, ${user!.name}`),
+    loggedIn,
+    () => Span("Welcome back"),
     () => A("Login").setHref("/login")
   );
+}
+```
+
+Both `IfThen` and `IfThenElse` also accept **nullable values** instead of booleans.
+When the value is non-null, it is passed into the callback with its type narrowed:
+
+```typescript
+// Nullable value narrowing — no !! or ! needed
+function LoginStatus(user: User | null): View {
+  return IfThenElse(
+    user,
+    (u) => Span(`Welcome, ${u.name}`),  // u is User, not User | null
+    () => A("Login").setHref("/login")
+  );
+}
+
+// Works great for optional props
+function Card(props: { title: string; image?: string }): View {
+  return Div([
+    IfThen(props.image, (src) =>
+      Img().setSrc(src).setAlt(props.title).setClass("card-img")
+    ),
+    H3(props.title),
+  ]);
 }
 ```
 
@@ -1185,9 +1213,9 @@ interface CardProps {
 
 function Card(props: CardProps): View {
   return Div([
-    IfThen(!!props.image, () =>
+    IfThen(props.image, (src) =>
       Img()
-        .setSrc(props.image!)
+        .setSrc(src)
         .setAlt(props.title)
         .setClass("w-full h-48 object-cover")
         .setLoading("lazy")
@@ -1196,8 +1224,8 @@ function Card(props: CardProps): View {
       H3(props.title).setClass("text-xl font-semibold mb-2"),
       Div(props.content).setClass("text-gray-600"),
     ]).setClass("p-4"),
-    IfThen(!!props.footer, () =>
-      Div(props.footer!).setClass("px-4 py-3 bg-gray-50 border-t")
+    IfThen(props.footer, (footer) =>
+      Div(footer).setClass("px-4 py-3 bg-gray-50 border-t")
     ),
   ]).setClass("bg-white rounded-lg shadow-md overflow-hidden");
 }
@@ -1689,7 +1717,9 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | Function                                | Description                 |
 | --------------------------------------- | --------------------------- |
 | `IfThen(condition, thenFn)`             | Render if condition is true |
+| `IfThen(value, thenFn)`                 | Render with narrowed non-null value |
 | `IfThenElse(condition, thenFn, elseFn)` | Conditional rendering       |
+| `IfThenElse(value, thenFn, elseFn)`     | Conditional with narrowed non-null value |
 | `SwitchCase(cases, defaultFn)`          | Multi-branch conditional    |
 | `ForEach(items, renderFn)`              | Iterate over items (with index) |
 | `ForEach(n, renderFn)`                  | Range 0 to n-1              |

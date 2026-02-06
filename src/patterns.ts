@@ -245,9 +245,8 @@ export function FormField(options: {
       .setPlaceholder(options.placeholder ?? "")
       .toggle("required", !!options.required)
       .addClass("form-input"),
-    IfThen(
-      !!options.error,
-      () => Span(options.error!).addClass("form-error")
+    IfThen(options.error, (error) =>
+      Span(error).addClass("form-error")
     ),
   ]).addClass(options.className ?? "form-field");
 }

@@ -4,13 +4,23 @@ exports.IfThenElse = IfThenElse;
 exports.IfThen = IfThen;
 exports.SwitchCase = SwitchCase;
 const utils_js_1 = require("../core/utils.js");
-function IfThenElse(condition, thenBranch, elseBranch) {
-    return condition
-        ? thenBranch()
-        : elseBranch();
+function IfThenElse(conditionOrValue, thenBranch, elseBranch) {
+    if (typeof conditionOrValue === 'boolean') {
+        return conditionOrValue ? thenBranch() : elseBranch();
+    }
+    if (conditionOrValue != null) {
+        return thenBranch(conditionOrValue);
+    }
+    return elseBranch();
 }
-function IfThen(condition, then) {
-    return IfThenElse(condition, then, utils_js_1.Empty);
+function IfThen(conditionOrValue, then) {
+    if (typeof conditionOrValue === 'boolean') {
+        return conditionOrValue ? then() : (0, utils_js_1.Empty)();
+    }
+    if (conditionOrValue != null) {
+        return then(conditionOrValue);
+    }
+    return (0, utils_js_1.Empty)();
 }
 function SwitchCase(cases, defaultView = utils_js_1.Empty) {
     for (const caseItem of cases) {

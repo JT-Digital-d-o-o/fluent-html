@@ -1309,6 +1309,32 @@ testView("Nested conditionals",
   ),
   `<div><p>B</p></div>`);
 
+// Nullable value overloads
+
+testView("IfThen with non-null value",
+  IfThen("hello" as string | null, (val) => Span(val)),
+  `<span>hello</span>`);
+
+testView("IfThen with null value",
+  IfThen(null as string | null, (val) => Span(val)),
+  ``);
+
+testView("IfThen with undefined value",
+  IfThen(undefined as string | undefined, (val) => Span(val)),
+  ``);
+
+testView("IfThenElse with non-null value",
+  IfThenElse("world" as string | null, (val) => Span(val), () => Span("fallback")),
+  `<span>world</span>`);
+
+testView("IfThenElse with null value",
+  IfThenElse(null as string | null, (val) => Span(val), () => Span("fallback")),
+  `<span>fallback</span>`);
+
+testView("IfThenElse with undefined value",
+  IfThenElse(undefined as number | undefined, (val) => Span(String(val)), () => Span("none")),
+  `<span>none</span>`);
+
 // ------------------------------------
 // Control Flow - SwitchCase
 // ------------------------------------

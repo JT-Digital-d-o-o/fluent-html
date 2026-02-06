@@ -596,6 +596,13 @@ testView("IfThenElse false", (0, index_js_1.IfThenElse)(false, () => (0, index_j
 testView("Nested conditionals", (0, index_js_1.IfThen)(true, () => (0, index_js_1.Div)([
     (0, index_js_1.IfThenElse)(false, () => (0, index_js_1.P)("A"), () => (0, index_js_1.P)("B"))
 ])), `<div><p>B</p></div>`);
+// Nullable value overloads
+testView("IfThen with non-null value", (0, index_js_1.IfThen)("hello", (val) => (0, index_js_1.Span)(val)), `<span>hello</span>`);
+testView("IfThen with null value", (0, index_js_1.IfThen)(null, (val) => (0, index_js_1.Span)(val)), ``);
+testView("IfThen with undefined value", (0, index_js_1.IfThen)(undefined, (val) => (0, index_js_1.Span)(val)), ``);
+testView("IfThenElse with non-null value", (0, index_js_1.IfThenElse)("world", (val) => (0, index_js_1.Span)(val), () => (0, index_js_1.Span)("fallback")), `<span>world</span>`);
+testView("IfThenElse with null value", (0, index_js_1.IfThenElse)(null, (val) => (0, index_js_1.Span)(val), () => (0, index_js_1.Span)("fallback")), `<span>fallback</span>`);
+testView("IfThenElse with undefined value", (0, index_js_1.IfThenElse)(undefined, (val) => (0, index_js_1.Span)(String(val)), () => (0, index_js_1.Span)("none")), `<span>none</span>`);
 // ------------------------------------
 // Control Flow - SwitchCase
 // ------------------------------------
