@@ -1,9 +1,9 @@
 // ------------------------------------
-// Common UI Patterns for Lambda.html
+// Common UI Patterns for Fluent HTML
 // ------------------------------------
 //
 // This module provides reusable component patterns and layout helpers
-// built on top of the core lambda.html API.
+// built on top of the core fluent-html API.
 
 import type { View } from "./core/types.js";
 import { Tag } from "./core/tag.js";

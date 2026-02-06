@@ -1,10 +1,10 @@
 "use strict";
 // ------------------------------------
-// Common UI Patterns for Lambda.html
+// Common UI Patterns for Fluent HTML
 // ------------------------------------
 //
 // This module provides reusable component patterns and layout helpers
-// built on top of the core lambda.html API.
+// built on top of the core fluent-html API.
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HxResponse = void 0;
 exports.VStack = VStack;

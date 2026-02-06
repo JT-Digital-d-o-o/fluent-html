@@ -18,15 +18,15 @@ const plugin = {
   },
   configs: {
     recommended: {
-      plugins: ["lambda-html"],
+      plugins: ["fluent-html"],
       rules: {
-        "lambda-html/no-known-modifiers-in-setclass": "warn",
-        "lambda-html/no-unnecessary-spaces-in-setclass": "warn",
-        "lambda-html/no-duplicate-classes-in-setclass": "warn",
-        "lambda-html/no-conflicting-classes-in-setclass": "warn",
-        "lambda-html/no-empty-setclass": "warn",
-        "lambda-html/no-multiple-setclass-in-chain": "error",
-        "lambda-html/no-setclass-after-fluent-modifier": "error",
+        "fluent-html/no-known-modifiers-in-setclass": "warn",
+        "fluent-html/no-unnecessary-spaces-in-setclass": "warn",
+        "fluent-html/no-duplicate-classes-in-setclass": "warn",
+        "fluent-html/no-conflicting-classes-in-setclass": "warn",
+        "fluent-html/no-empty-setclass": "warn",
+        "fluent-html/no-multiple-setclass-in-chain": "error",
+        "fluent-html/no-setclass-after-fluent-modifier": "error",
       },
     },
   },

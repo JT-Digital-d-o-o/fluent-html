@@ -1,4 +1,4 @@
-const lambdaHtmlExtractor = require('lambda-html-tailwind-extractor');
+const fluentHtmlExtractor = require('fluent-html-tailwind-extractor');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -9,11 +9,11 @@ module.exports = {
       './pages/**/*.{ts,tsx,js,jsx}',
     ],
     extract: {
-      // Use the lambda.html extractor for TypeScript/JavaScript files
-      ts: lambdaHtmlExtractor,
-      tsx: lambdaHtmlExtractor,
-      js: lambdaHtmlExtractor,
-      jsx: lambdaHtmlExtractor,
+      // Use the fluent-html extractor for TypeScript/JavaScript files
+      ts: fluentHtmlExtractor,
+      tsx: fluentHtmlExtractor,
+      js: fluentHtmlExtractor,
+      jsx: fluentHtmlExtractor,
     },
   },
   theme: {

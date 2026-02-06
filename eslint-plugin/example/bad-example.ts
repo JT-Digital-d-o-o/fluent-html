@@ -1,4 +1,4 @@
-import { Div, Button } from "lambda.html";
+import { Div, Button } from "fluent-html";
 
 // ❌ BAD: These will trigger linter warnings
 

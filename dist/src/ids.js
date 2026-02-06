@@ -1,6 +1,6 @@
 "use strict";
 // ------------------------------------
-// Type-Safe ID System for Lambda.html
+// Type-Safe ID System for Fluent HTML
 // ------------------------------------
 //
 // This module provides compile-time safety for HTMX targets and element IDs.

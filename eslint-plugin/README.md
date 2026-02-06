@@ -1,10 +1,10 @@
-# eslint-plugin-lambda-html
+# eslint-plugin-fluent-html
 
-ESLint plugin for [lambda.html](https://gitlab.com/seckmaster/lambda.html) that warns when `.setClass()` is used with Tailwind CSS classes that have dedicated SwiftUI-style methods.
+ESLint plugin for [fluent-html](https://github.com/JT-Digital-d-o-o/fluent-html) that warns when `.setClass()` is used with Tailwind CSS classes that have dedicated SwiftUI-style methods.
 
 ## The Problem
 
-When using lambda.html's SwiftUI-style API, calling `.setClass()` can override styles set by dedicated methods:
+When using fluent-html's SwiftUI-style API, calling `.setClass()` can override styles set by dedicated methods:
 
 ```typescript
 // This is problematic:
@@ -68,7 +68,7 @@ Div().background("red-500").padding("4").setClass("my-custom-class")
 ## Installation
 
 ```bash
-npm install --save-dev eslint-plugin-lambda-html
+npm install --save-dev eslint-plugin-fluent-html
 ```
 
 ## Usage
@@ -77,15 +77,15 @@ npm install --save-dev eslint-plugin-lambda-html
 
 ```javascript
 // eslint.config.js
-import lambdaHtml from "eslint-plugin-lambda-html";
+import fluentHtml from "eslint-plugin-fluent-html";
 
 export default [
   {
     plugins: {
-      "lambda-html": lambdaHtml
+      "fluent-html": fluentHtml
     },
     rules: {
-      "lambda-html/no-known-modifiers-in-setclass": "warn"
+      "fluent-html/no-known-modifiers-in-setclass": "warn"
     }
   }
 ];
@@ -96,8 +96,8 @@ export default [
 ```javascript
 // .eslintrc.js
 module.exports = {
-  plugins: ["lambda-html"],
-  extends: ["plugin:lambda-html/recommended"],
+  plugins: ["fluent-html"],
+  extends: ["plugin:fluent-html/recommended"],
 };
 ```
 
@@ -106,9 +106,9 @@ Or configure manually:
 ```javascript
 // .eslintrc.js
 module.exports = {
-  plugins: ["lambda-html"],
+  plugins: ["fluent-html"],
   rules: {
-    "lambda-html/no-known-modifiers-in-setclass": "warn",
+    "fluent-html/no-known-modifiers-in-setclass": "warn",
   },
 };
 ```
@@ -191,13 +191,13 @@ Div().setClass("my-custom-class another-custom-class")
 
 ```javascript
 // Error (blocks build)
-"lambda-html/no-known-modifiers-in-setclass": "error"
+"fluent-html/no-known-modifiers-in-setclass": "error"
 
 // Warning (shows warning but doesn't block)
-"lambda-html/no-known-modifiers-in-setclass": "warn"
+"fluent-html/no-known-modifiers-in-setclass": "warn"
 
 // Disabled
-"lambda-html/no-known-modifiers-in-setclass": "off"
+"fluent-html/no-known-modifiers-in-setclass": "off"
 ```
 
 ## License

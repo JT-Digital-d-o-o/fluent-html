@@ -1,7 +1,7 @@
 # Fluent Tailwind Methods - AI Instructions
 
 ## Overview
-Lambda.html provides SwiftUI-inspired methods for applying Tailwind CSS classes in a type-safe, chainable way. These methods make styling feel native and intuitive.
+Fluent HTML provides SwiftUI-inspired methods for applying Tailwind CSS classes in a type-safe, chainable way. These methods make styling feel native and intuitive.
 
 ## Type-Safe Autocomplete
 

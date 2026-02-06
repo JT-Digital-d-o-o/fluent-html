@@ -2,10 +2,10 @@
 
 ## Installation
 
-1. Install the plugin in your project that uses lambda.html:
+1. Install the plugin in your project that uses fluent-html:
 
 ```bash
-npm install --save-dev eslint-plugin-lambda-html
+npm install --save-dev eslint-plugin-fluent-html
 ```
 
 ## Setup
@@ -15,16 +15,16 @@ npm install --save-dev eslint-plugin-lambda-html
 Create or update `eslint.config.js`:
 
 ```javascript
-import lambdaHtml from "eslint-plugin-lambda-html";
+import fluentHtml from "eslint-plugin-fluent-html";
 
 export default [
   {
     files: ["**/*.ts", "**/*.tsx"],
     plugins: {
-      "lambda-html": lambdaHtml
+      "fluent-html": fluentHtml
     },
     rules: {
-      "lambda-html/no-known-modifiers-in-setclass": "warn"
+      "fluent-html/no-known-modifiers-in-setclass": "warn"
     }
   }
 ];
@@ -36,8 +36,8 @@ Create or update `.eslintrc.js`:
 
 ```javascript
 module.exports = {
-  plugins: ["lambda-html"],
-  extends: ["plugin:lambda-html/recommended"],
+  plugins: ["fluent-html"],
+  extends: ["plugin:fluent-html/recommended"],
 };
 ```
 
@@ -45,9 +45,9 @@ Or just add the plugin without the preset:
 
 ```javascript
 module.exports = {
-  plugins: ["lambda-html"],
+  plugins: ["fluent-html"],
   rules: {
-    "lambda-html/no-known-modifiers-in-setclass": "warn",
+    "fluent-html/no-known-modifiers-in-setclass": "warn",
   },
 };
 ```
@@ -152,13 +152,13 @@ You can change the rule severity in your ESLint config:
 {
   rules: {
     // Show as error (blocks build in CI)
-    "lambda-html/no-known-modifiers-in-setclass": "error",
+    "fluent-html/no-known-modifiers-in-setclass": "error",
 
     // Show as warning (recommended)
-    "lambda-html/no-known-modifiers-in-setclass": "warn",
+    "fluent-html/no-known-modifiers-in-setclass": "warn",
 
     // Disable the rule
-    "lambda-html/no-known-modifiers-in-setclass": "off"
+    "fluent-html/no-known-modifiers-in-setclass": "off"
   }
 }
 ```
@@ -169,7 +169,7 @@ You can change the rule severity in your ESLint config:
 
 Make sure you've installed it:
 ```bash
-npm install --save-dev eslint-plugin-lambda-html
+npm install --save-dev eslint-plugin-fluent-html
 ```
 
 ### Rules not working
@@ -183,14 +183,14 @@ npm install --save-dev eslint-plugin-lambda-html
 If you genuinely need to use `.setClass()` with Tailwind utilities (e.g., in dynamic/computed classes), you can disable the rule for specific lines:
 
 ```typescript
-// eslint-disable-next-line lambda-html/no-known-modifiers-in-setclass
+// eslint-disable-next-line fluent-html/no-known-modifiers-in-setclass
 Div().setClass(computedClasses)
 ```
 
 Or for a whole file:
 
 ```typescript
-/* eslint-disable lambda-html/no-known-modifiers-in-setclass */
+/* eslint-disable fluent-html/no-known-modifiers-in-setclass */
 ```
 
 ## Benefits
@@ -204,4 +204,4 @@ Or for a whole file:
 
 - See [README.md](./README.md) for full documentation
 - Check [example/](./example/) for code examples
-- Read the [lambda.html SwiftUI styling guide](../AI-SWIFTUI-STYLING.md)
+- Read the [fluent-html SwiftUI styling guide](../AI-SWIFTUI-STYLING.md)

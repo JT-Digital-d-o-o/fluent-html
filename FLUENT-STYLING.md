@@ -1,6 +1,6 @@
 # Fluent Styling API
 
-Lambda.html now supports fluent method chaining for Tailwind CSS classes, making your code more readable and native-feeling.
+Fluent HTML now supports fluent method chaining for Tailwind CSS classes, making your code more readable and native-feeling.
 
 ## Type-Safe Autocomplete
 

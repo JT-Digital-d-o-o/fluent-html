@@ -1,10 +1,10 @@
 {
-  "name": "eslint-plugin-lambda-html",
+  "name": "eslint-plugin-fluent-html",
   "publishConfig": {
     "access": "public"
   },
   "version": "1.2.0",
-  "description": "ESLint plugin for lambda.html - lint rules for setClass() including known modifiers, spacing, duplicates, conflicts, and empty calls",
+  "description": "ESLint plugin for fluent-html - lint rules for setClass() including known modifiers, spacing, duplicates, conflicts, and empty calls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -20,23 +20,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/seckmaster/lambda.html.git",
+    "url": "git+https://github.com/JT-Digital-d-o-o/fluent-html.git",
     "directory": "eslint-plugin"
   },
   "bugs": {
-    "url": "https://gitlab.com/seckmaster/lambda.html/issues"
+    "url": "https://github.com/JT-Digital-d-o-o/fluent-html/issues"
   },
-  "homepage": "https://gitlab.com/seckmaster/lambda.html/tree/main/eslint-plugin#readme",
+  "homepage": "https://github.com/JT-Digital-d-o-o/fluent-html/tree/main/eslint-plugin#readme",
   "keywords": [
     "eslint",
     "eslintplugin",
     "eslint-plugin",
-    "lambda.html",
+    "fluent-html",
     "tailwind",
     "linter",
     "code-quality"
   ],
-  "author": "Toni K. Turk",
+  "author": "JT Digital d.o.o.",
+  "contributors": [
+    "Toni K. Turk"
+  ],
   "license": "ISC",
   "peerDependencies": {
     "eslint": ">=7.0.0"

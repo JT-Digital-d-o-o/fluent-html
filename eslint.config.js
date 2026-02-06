@@ -1,5 +1,5 @@
 import tsParser from "@typescript-eslint/parser";
-import lambdaHtml from "eslint-plugin-lambda-html";
+import fluentHtml from "eslint-plugin-fluent-html";
 
 export default [
   {
@@ -22,14 +22,14 @@ export default [
       },
     },
     plugins: {
-      "lambda-html": lambdaHtml
+      "fluent-html": fluentHtml
     },
     rules: {
-      "lambda-html/no-known-modifiers-in-setclass": "warn",
-      "lambda-html/no-unnecessary-spaces-in-setclass": "warn",
-      "lambda-html/no-duplicate-classes-in-setclass": "warn",
-      "lambda-html/no-conflicting-classes-in-setclass": "warn",
-      "lambda-html/no-empty-setclass": "warn"
+      "fluent-html/no-known-modifiers-in-setclass": "warn",
+      "fluent-html/no-unnecessary-spaces-in-setclass": "warn",
+      "fluent-html/no-duplicate-classes-in-setclass": "warn",
+      "fluent-html/no-conflicting-classes-in-setclass": "warn",
+      "fluent-html/no-empty-setclass": "warn"
     }
   }
 ];

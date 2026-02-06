@@ -158,7 +158,7 @@ function addClassToMatching(
 ### Usage Examples
 
 ```typescript
-import { foldView, countAlgebra, textAlgebra, linksAlgebra } from 'lambda.html';
+import { foldView, countAlgebra, textAlgebra, linksAlgebra } from 'fluent-html';
 
 // Count elements
 const view = Div([P("Hello"), P("World")]);
@@ -261,7 +261,7 @@ const names = foldView(elementNamesAlgebra, view);  // ["div", "p", "p"]
 2. `npm test` - all existing + new tests pass
 3. Check no circular dependency warnings
 4. Verify `dist/` output structure is correct
-5. Test consumer imports: `import { Div, foldView, countAlgebra } from 'lambda.html'`
+5. Test consumer imports: `import { Div, foldView, countAlgebra } from 'fluent-html'`
 
 ---
 

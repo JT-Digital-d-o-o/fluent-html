@@ -1,5 +1,5 @@
 {
-  "name": "lambda.html",
+  "name": "fluent-html",
   "version": "5.3.0",
   "description": "Fluent, type-safe HTML builder for TypeScript. Chainable styling API, first-class HTMX support with full autocomplete, automatic XSS protection. Zero dependencies, SSR-ready.",
   "type": "commonjs",
@@ -17,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/seckmaster/lambda.html.git"
+    "url": "git+https://github.com/JT-Digital-d-o-o/fluent-html.git"
   },
   "keywords": [
     "html-builder",
@@ -35,12 +35,15 @@
     "chainable",
     "jsx-alternative"
   ],
-  "author": "Toni K. Turk",
+  "author": "JT Digital d.o.o.",
+  "contributors": [
+    "Toni K. Turk"
+  ],
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/seckmaster/lambda.html/issues"
+    "url": "https://github.com/JT-Digital-d-o-o/fluent-html/issues"
   },
-  "homepage": "https://gitlab.com/seckmaster/lambda.html#readme",
+  "homepage": "https://github.com/JT-Digital-d-o-o/fluent-html#readme",
   "engines": {
     "node": ">=16.0.0"
   },

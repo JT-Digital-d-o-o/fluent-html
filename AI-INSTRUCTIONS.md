@@ -1,7 +1,7 @@
-# Lambda.html AI Assistant Instructions
+# Fluent HTML AI Assistant Instructions
 
 ## Overview
-Lambda.html is a type-safe, zero-dependency HTML builder for TypeScript. When helping users write lambda.html code, follow these guidelines.
+Fluent HTML is a type-safe, zero-dependency HTML builder for TypeScript. When helping users write fluent-html code, follow these guidelines.
 
 ## Core Principles
 
@@ -9,7 +9,7 @@ Lambda.html is a type-safe, zero-dependency HTML builder for TypeScript. When he
 Elements are created using factory functions that return Tag objects:
 
 ```typescript
-import { Div, P, Span, Button, Input } from "lambda.html";
+import { Div, P, Span, Button, Input } from "fluent-html";
 
 Div("Hello")           // Simple element with text
 Div([P("1"), P("2")])  // Element with array of children
@@ -121,7 +121,7 @@ Div()
 
 ### 4. Fluent Tailwind Styling (SwiftUI-like)
 
-Lambda.html provides **type-safe, chainable methods** for Tailwind CSS with IDE autocomplete:
+Fluent HTML provides **type-safe, chainable methods** for Tailwind CSS with IDE autocomplete:
 
 ```typescript
 Div()
@@ -189,7 +189,7 @@ Div([
 
 ## Control Flow
 
-Lambda.html provides functional control flow utilities:
+Fluent HTML provides functional control flow utilities:
 
 ### Conditionals
 
@@ -313,10 +313,10 @@ HTML([
 
 ## HTMX Integration
 
-Lambda.html has first-class HTMX support through the `setHtmx()` method:
+Fluent HTML has first-class HTMX support through the `setHtmx()` method:
 
 ```typescript
-import { hx } from "lambda.html";
+import { hx } from "fluent-html";
 
 // Simple HTMX request (defaults to GET)
 Button("Load More")
@@ -344,7 +344,7 @@ Form([
 
 ## Type-Safe HTMX Targets
 
-**IMPORTANT:** Lambda.html provides compile-time safety for HTMX targets. Use `defineIds()` to ensure your `hx-target` selectors always reference valid element IDs.
+**IMPORTANT:** Fluent HTML provides compile-time safety for HTMX targets. Use `defineIds()` to ensure your `hx-target` selectors always reference valid element IDs.
 
 ### The Problem
 ```typescript
@@ -357,7 +357,7 @@ hx("/api", { target: "#userList" })  // Typo! Silent failure at runtime
 
 ### The Solution
 ```typescript
-import { defineIds } from "lambda.html";
+import { defineIds } from "fluent-html";
 
 // Define IDs once - use everywhere with type safety
 export const ids = defineIds([
@@ -411,7 +411,7 @@ function handleUpdate() {
 Convert your View to HTML string:
 
 ```typescript
-import { render } from "lambda.html";
+import { render } from "fluent-html";
 
 const view = Div("Hello, world!");
 const html = render(view);
@@ -427,7 +427,7 @@ render([Li("One"), Li("Two"), Li("Three")])
 Update multiple parts of the page in a single HTMX response:
 
 ```typescript
-import { OOB, withOOB, render } from "lambda.html";
+import { OOB, withOOB, render } from "fluent-html";
 
 // OOB creates an element with hx-swap-oob attribute
 render(withOOB(
@@ -446,7 +446,7 @@ render(withOOB(
 Build HTMX responses with server-side headers:
 
 ```typescript
-import { hxResponse, Div, Empty } from "lambda.html";
+import { hxResponse, Div, Empty } from "fluent-html";
 
 // Trigger events and update URL
 const { html, headers } = hxResponse(Div("Saved!"))
@@ -477,7 +477,7 @@ hxResponse(content)
 
 ## XSS Protection
 
-Lambda.html **automatically escapes** all text content:
+Fluent HTML **automatically escapes** all text content:
 
 ```typescript
 const userInput = "<script>alert('xss')</script>";
@@ -579,7 +579,7 @@ Nav(
 import {
   Div, H1, P, Button, Ul, Li, A,
   ForEach, IfThen, render
-} from "lambda.html";
+} from "fluent-html";
 
 function UserCard(user: { name: string; email: string; isAdmin: boolean }) {
   return Div([

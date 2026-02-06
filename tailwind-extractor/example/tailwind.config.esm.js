@@ -1,5 +1,5 @@
-// ESM example for lambda-html with Tailwind
-import lambdaHtmlExtractor from 'lambda-html-tailwind-extractor';
+// ESM example for fluent-html with Tailwind
+import fluentHtmlExtractor from 'fluent-html-tailwind-extractor';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -11,11 +11,11 @@ export default {
       "./public/**/*.html"
     ],
     extract: {
-      // Add the lambda-html extractor for TypeScript files
-      ts: lambdaHtmlExtractor,
-      tsx: lambdaHtmlExtractor,
-      js: lambdaHtmlExtractor,
-      jsx: lambdaHtmlExtractor,
+      // Add the fluent-html extractor for TypeScript files
+      ts: fluentHtmlExtractor,
+      tsx: fluentHtmlExtractor,
+      js: fluentHtmlExtractor,
+      jsx: fluentHtmlExtractor,
     },
   },
   theme: {

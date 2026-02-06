@@ -1,10 +1,10 @@
-# lambda-html-tailwind-extractor
+# fluent-html-tailwind-extractor
 
-Tailwind CSS content extractor for lambda.html's SwiftUI-style methods. This extractor tells Tailwind which classes to generate based on your lambda.html code.
+Tailwind CSS content extractor for fluent-html's SwiftUI-style methods. This extractor tells Tailwind which classes to generate based on your fluent-html code.
 
 ## The Problem
 
-When you use lambda.html's SwiftUI-style API, Tailwind doesn't automatically know which classes to generate:
+When you use fluent-html's SwiftUI-style API, Tailwind doesn't automatically know which classes to generate:
 
 ```typescript
 // Tailwind can't detect that this generates "bg-red-500 p-4"
@@ -13,12 +13,12 @@ Div()
   .padding("4")
 ```
 
-This extractor solves that by teaching Tailwind how to read lambda.html method calls.
+This extractor solves that by teaching Tailwind how to read fluent-html method calls.
 
 ## Installation
 
 ```bash
-npm install --save-dev lambda-html-tailwind-extractor
+npm install --save-dev fluent-html-tailwind-extractor
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ npm install --save-dev lambda-html-tailwind-extractor
 Update your `tailwind.config.js`:
 
 ```javascript
-const lambdaHtmlExtractor = require('lambda-html-tailwind-extractor');
+const fluentHtmlExtractor = require('fluent-html-tailwind-extractor');
 
 module.exports = {
   content: {
@@ -37,9 +37,9 @@ module.exports = {
       './views/**/*.{ts,tsx,js,jsx}',
     ],
     extract: {
-      // Use the lambda.html extractor for TypeScript files
-      ts: lambdaHtmlExtractor,
-      tsx: lambdaHtmlExtractor,
+      // Use the fluent-html extractor for TypeScript files
+      ts: fluentHtmlExtractor,
+      tsx: fluentHtmlExtractor,
     },
   },
   theme: {
@@ -54,7 +54,7 @@ module.exports = {
 ```typescript
 // tailwind.config.ts
 import type { Config } from 'tailwindcss';
-import lambdaHtmlExtractor from 'lambda-html-tailwind-extractor';
+import fluentHtmlExtractor from 'fluent-html-tailwind-extractor';
 
 const config: Config = {
   content: {
@@ -63,8 +63,8 @@ const config: Config = {
       './views/**/*.{ts,tsx}',
     ],
     extract: {
-      ts: lambdaHtmlExtractor,
-      tsx: lambdaHtmlExtractor,
+      ts: fluentHtmlExtractor,
+      tsx: fluentHtmlExtractor,
     },
   },
   theme: {
@@ -78,7 +78,7 @@ export default config;
 
 ## What It Extracts
 
-The extractor recognizes all lambda.html SwiftUI-style methods:
+The extractor recognizes all fluent-html SwiftUI-style methods:
 
 ### Method Calls
 
@@ -119,11 +119,11 @@ The extractor recognizes all lambda.html SwiftUI-style methods:
 
 ## Complete Example
 
-### Your lambda.html Code
+### Your fluent-html Code
 
 ```typescript
 // src/components/card.ts
-import { Div, H2, P, Button } from "lambda.html";
+import { Div, H2, P, Button } from "fluent-html";
 
 export const Card = () =>
   Div([
@@ -201,7 +201,7 @@ module.exports = {
   content: {
     files: ['./src/**/*.custom-ext'],
     extract: {
-      'custom-ext': lambdaHtmlExtractor,
+      'custom-ext': fluentHtmlExtractor,
     },
   },
 };
@@ -210,7 +210,7 @@ module.exports = {
 ### Combining with Other Extractors
 
 ```javascript
-const lambdaHtmlExtractor = require('lambda-html-tailwind-extractor');
+const fluentHtmlExtractor = require('fluent-html-tailwind-extractor');
 const defaultExtractor = require('tailwindcss/lib/lib/defaultExtractor');
 
 module.exports = {
@@ -218,10 +218,10 @@ module.exports = {
     files: ['./src/**/*.{ts,html}'],
     extract: {
       ts: (content) => {
-        // Combine lambda.html extractor with default extractor
-        const lambdaClasses = lambdaHtmlExtractor(content);
+        // Combine fluent-html extractor with default extractor
+        const fluentClasses = fluentHtmlExtractor(content);
         const defaultClasses = defaultExtractor(content);
-        return [...lambdaClasses, ...defaultClasses];
+        return [...fluentClasses, ...defaultClasses];
       },
       html: defaultExtractor,
     },
@@ -238,7 +238,7 @@ module.exports = {
   content: {
     files: ['./src/**/*.ts'],
     extract: {
-      ts: lambdaHtmlExtractor,
+      ts: fluentHtmlExtractor,
     },
   },
   safelist: [
@@ -258,7 +258,7 @@ module.exports = {
 
 ### Classes Not Being Generated
 
-1. **Check file paths**: Make sure your `content.files` includes all files using lambda.html
+1. **Check file paths**: Make sure your `content.files` includes all files using fluent-html
 2. **Check extractor assignment**: Ensure the extractor is assigned to the right file extensions
 3. **Rebuild**: Run your build command to regenerate Tailwind CSS
 4. **Check syntax**: The extractor uses regex, so unusual syntax might not be detected
@@ -268,12 +268,12 @@ module.exports = {
 Add this to see what's being extracted:
 
 ```javascript
-const lambdaHtmlExtractor = require('lambda-html-tailwind-extractor');
+const fluentHtmlExtractor = require('fluent-html-tailwind-extractor');
 const fs = require('fs');
 
 // Read a file
 const content = fs.readFileSync('./src/components/card.ts', 'utf-8');
-const classes = lambdaHtmlExtractor(content);
+const classes = fluentHtmlExtractor(content);
 console.log('Extracted classes:', classes);
 ```
 
@@ -297,7 +297,7 @@ Div().background("red-500");
 The extractor:
 
 1. Parses your TypeScript/JavaScript files as strings
-2. Finds lambda.html method calls using regex
+2. Finds fluent-html method calls using regex
 3. Extracts arguments from methods like `.background("red-500")`
 4. Converts them to Tailwind classes (e.g., `bg-red-500`)
 5. Returns the list of classes to Tailwind
@@ -306,7 +306,7 @@ The extractor:
 ## Requirements
 
 - Tailwind CSS 3.0 or higher
-- lambda.html 4.0 or higher
+- fluent-html 4.0 or higher
 
 ## License
 

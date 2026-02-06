@@ -1,6 +1,6 @@
 "use strict";
 // ------------------------------------
-// HTMX Type Definitions for Lambda.html
+// HTMX Type Definitions for Fluent HTML
 // Compatible with HTMX 2.0+
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });

@@ -1,7 +1,7 @@
 {
-  "name": "lambda-html-tailwind-extractor",
+  "name": "fluent-html-tailwind-extractor",
   "version": "1.0.1",
-  "description": "Tailwind CSS content extractor for lambda.html SwiftUI-style methods",
+  "description": "Tailwind CSS content extractor for fluent-html SwiftUI-style methods",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -14,22 +14,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/seckmaster/lambda.html.git",
+    "url": "git+https://github.com/JT-Digital-d-o-o/fluent-html.git",
     "directory": "tailwind-extractor"
   },
   "bugs": {
-    "url": "https://gitlab.com/seckmaster/lambda.html/issues"
+    "url": "https://github.com/JT-Digital-d-o-o/fluent-html/issues"
   },
-  "homepage": "https://gitlab.com/seckmaster/lambda.html/tree/main/tailwind-extractor#readme",
+  "homepage": "https://github.com/JT-Digital-d-o-o/fluent-html/tree/main/tailwind-extractor#readme",
   "keywords": [
     "tailwind",
     "tailwindcss",
-    "lambda.html",
+    "fluent-html",
     "extractor",
     "content",
     "purge"
   ],
-  "author": "Toni K. Turk",
+  "author": "JT Digital d.o.o.",
+  "contributors": [
+    "Toni K. Turk"
+  ],
   "license": "ISC",
   "peerDependencies": {
     "tailwindcss": ">=3.0.0"

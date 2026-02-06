@@ -1,6 +1,6 @@
 # Fold / Catamorphism
 
-Lambda.html provides a **catamorphism** (`foldView`) for its `View` type — a single recursive function that can collapse any HTML tree into an arbitrary result type. If you have used `Array.reduce`, the concept is the same but generalised to trees.
+Fluent HTML provides a **catamorphism** (`foldView`) for its `View` type — a single recursive function that can collapse any HTML tree into an arbitrary result type. If you have used `Array.reduce`, the concept is the same but generalised to trees.
 
 ---
 
@@ -43,7 +43,7 @@ interface ViewAlgebra<A> {
 Recursively walks the `View` and applies the algebra bottom-up:
 
 ```typescript
-import { foldView } from 'lambda.html';
+import { foldView } from 'fluent-html';
 
 const result = foldView(myAlgebra, myView);
 ```
@@ -71,7 +71,7 @@ interface TagAttrs {
 ### `countAlgebra` — count elements
 
 ```typescript
-import { foldView, countAlgebra, Div, P, Ul, Li } from 'lambda.html';
+import { foldView, countAlgebra, Div, P, Ul, Li } from 'fluent-html';
 
 const page = Div([
   P("Intro"),
@@ -98,7 +98,7 @@ const countAlgebra: ViewAlgebra<number> = {
 Strips all tags and returns the concatenated text content. Block-level elements (`p`, `div`, headings, `li`, etc.) append a newline for readability.
 
 ```typescript
-import { foldView, textAlgebra, Div, H1, P, Span } from 'lambda.html';
+import { foldView, textAlgebra, Div, H1, P, Span } from 'fluent-html';
 
 const view = Div([
   H1("Welcome"),
@@ -114,7 +114,7 @@ foldView(textAlgebra, view);
 Returns an array of `LinkInfo` objects for every `<a>` element in the tree.
 
 ```typescript
-import { foldView, linksAlgebra, Div, A } from 'lambda.html';
+import { foldView, linksAlgebra, Div, A } from 'fluent-html';
 
 const nav = Div([
   A("Home").setHref("/"),
@@ -146,7 +146,7 @@ interface LinkInfo {
 An alternative to the built-in `render()` function, implemented as a fold. Useful for understanding the fold pattern; for production rendering prefer the optimised `render()`.
 
 ```typescript
-import { foldView, renderAlgebra, Div, P } from 'lambda.html';
+import { foldView, renderAlgebra, Div, P } from 'fluent-html';
 
 foldView(renderAlgebra, Div([P("Hello")]));
 // '<div><p>Hello</p></div>'
@@ -163,7 +163,7 @@ These helpers return `ViewAlgebra<View>` — they fold a `View` into a *new* `Vi
 Create a custom element transformer. Return a new `{ element, attrs }` to modify the node, or `null` to keep it unchanged.
 
 ```typescript
-import { foldView, createTransformAlgebra, Div, P, render } from 'lambda.html';
+import { foldView, createTransformAlgebra, Div, P, render } from 'fluent-html';
 
 // Wrap every <p> in a container class
 const wrapParagraphs = createTransformAlgebra((el, attrs) => {
@@ -189,7 +189,7 @@ render(transformed);
 A convenience wrapper around `createTransformAlgebra` that adds a CSS class to elements matching a predicate.
 
 ```typescript
-import { foldView, addClassToMatching, Div, H1, H2, P, render } from 'lambda.html';
+import { foldView, addClassToMatching, Div, H1, H2, P, render } from 'fluent-html';
 
 // Highlight all headings
 const highlightHeadings = addClassToMatching(
@@ -213,7 +213,7 @@ Creating your own algebra is as simple as defining an object with `text`, `raw`,
 ### Collect element names
 
 ```typescript
-import { foldView, ViewAlgebra, Div, P, Span } from 'lambda.html';
+import { foldView, ViewAlgebra, Div, P, Span } from 'fluent-html';
 
 const elementNamesAlgebra: ViewAlgebra<string[]> = {
   text: () => [],

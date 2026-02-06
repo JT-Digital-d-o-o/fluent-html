@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Lambda.html will be documented in this file.
+All notable changes to Fluent HTML will be documented in this file.
 
 ## [5.1.0] - 2025-01
 
@@ -53,7 +53,7 @@ P("Long text that might overflow...")
 
 ### 🎉 New Feature: Reactive System
 
-Lambda.html now includes a **minimal, compile-time-checked reactive system** for client-side rendering with automatic state management and DOM updates.
+Fluent HTML now includes a **minimal, compile-time-checked reactive system** for client-side rendering with automatic state management and DOM updates.
 
 #### ✨ Key Features
 
@@ -88,7 +88,7 @@ Lambda.html now includes a **minimal, compile-time-checked reactive system** for
 #### 📝 Usage Example
 
 ```typescript
-import { Div, Button, Span, compile, renderWithScript } from 'lambda.html';
+import { Div, Button, Span, compile, renderWithScript } from 'fluent-html';
 
 const counter = Div([
   Button("Increment").onClick("data.count++"),
@@ -189,7 +189,7 @@ Full type-safe support for all HTMX 2.0 attributes:
 
 Type-safe helpers for HTMX extended selectors:
 ```typescript
-import { id, clss, closest, find, next, previous } from 'lambda.html';
+import { id, clss, closest, find, next, previous } from 'fluent-html';
 
 id("content")      // → "#content"
 clss("items")      // → ".items"
@@ -294,4 +294,4 @@ Complete HTML5 coverage with typed attribute methods:
 
 ## [2.x] - Previous Versions
 
-See [GitLab releases](https://gitlab.com/seckmaster/lambda.html/-/releases) for previous version history.
+See [GitHub releases](https://github.com/JT-Digital-d-o-o/fluent-html/-/releases) for previous version history.

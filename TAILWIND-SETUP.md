@@ -1,10 +1,10 @@
-# Tailwind CSS Setup for lambda.html
+# Tailwind CSS Setup for fluent-html
 
-Quick guide to set up Tailwind CSS with lambda.html's SwiftUI-style API.
+Quick guide to set up Tailwind CSS with fluent-html's SwiftUI-style API.
 
 ## The Problem
 
-When you use lambda.html's SwiftUI-style methods, Tailwind CSS doesn't automatically know which classes to generate:
+When you use fluent-html's SwiftUI-style methods, Tailwind CSS doesn't automatically know which classes to generate:
 
 ```typescript
 Div()
@@ -12,14 +12,14 @@ Div()
   .padding("4")           // Generates "p-4"
 ```
 
-**Solution:** Use the `lambda-html-tailwind-extractor` to tell Tailwind which classes to generate.
+**Solution:** Use the `fluent-html-tailwind-extractor` to tell Tailwind which classes to generate.
 
 ## Quick Setup (3 Steps)
 
 ### 1. Install Dependencies
 
 ```bash
-npm install --save-dev tailwindcss autoprefixer postcss lambda-html-tailwind-extractor
+npm install --save-dev tailwindcss autoprefixer postcss fluent-html-tailwind-extractor
 ```
 
 ### 2. Configure Tailwind
@@ -27,7 +27,7 @@ npm install --save-dev tailwindcss autoprefixer postcss lambda-html-tailwind-ext
 Create or update `tailwind.config.js`:
 
 ```javascript
-const lambdaHtmlExtractor = require('lambda-html-tailwind-extractor');
+const fluentHtmlExtractor = require('fluent-html-tailwind-extractor');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -37,10 +37,10 @@ module.exports = {
       './views/**/*.{ts,tsx,js,jsx}',
     ],
     extract: {
-      ts: lambdaHtmlExtractor,
-      tsx: lambdaHtmlExtractor,
-      js: lambdaHtmlExtractor,
-      jsx: lambdaHtmlExtractor,
+      ts: fluentHtmlExtractor,
+      tsx: fluentHtmlExtractor,
+      js: fluentHtmlExtractor,
+      jsx: fluentHtmlExtractor,
     },
   },
   theme: {
@@ -81,7 +81,7 @@ import './styles.css';
 
 ## How It Works
 
-The extractor scans your lambda.html code and tells Tailwind which classes to generate:
+The extractor scans your fluent-html code and tells Tailwind which classes to generate:
 
 ```typescript
 // Your code:
@@ -119,7 +119,7 @@ npm run watch:css    # Watch for changes
 
 ```typescript
 // src/views/card.ts
-import { Div, H2, P, Button } from "lambda.html";
+import { Div, H2, P, Button } from "fluent-html";
 
 export const Card = () =>
   Div([
@@ -156,7 +156,7 @@ With this setup, Tailwind will generate CSS for:
 
 ### Classes Not Showing Up
 
-1. Check `content.files` includes your lambda.html files
+1. Check `content.files` includes your fluent-html files
 2. Make sure the extractor is assigned to your file extensions
 3. Rebuild your CSS: `npm run build:css`
 4. Check browser console for CSS loading errors
@@ -165,11 +165,11 @@ With this setup, Tailwind will generate CSS for:
 
 ```javascript
 // Test the extractor
-const lambdaHtmlExtractor = require('lambda-html-tailwind-extractor');
+const fluentHtmlExtractor = require('fluent-html-tailwind-extractor');
 const fs = require('fs');
 
 const content = fs.readFileSync('./src/views/card.ts', 'utf-8');
-const classes = lambdaHtmlExtractor(content);
+const classes = fluentHtmlExtractor(content);
 console.log('Extracted classes:', classes);
 ```
 
@@ -187,4 +187,4 @@ npm publish
 
 - [Tailwind Extractor README](./tailwind-extractor/README.md)
 - [Tailwind Content Configuration](https://tailwindcss.com/docs/content-configuration)
-- [lambda.html SwiftUI Styling](./AI-SWIFTUI-STYLING.md)
+- [fluent-html SwiftUI Styling](./AI-SWIFTUI-STYLING.md)

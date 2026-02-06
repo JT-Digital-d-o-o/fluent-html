@@ -1,5 +1,5 @@
 /**
- * Tailwind CSS content extractor for lambda.html
+ * Tailwind CSS content extractor for fluent-html
  * Extracts Tailwind classes from SwiftUI-style method calls
  */
 
@@ -363,7 +363,7 @@ function extractDirectClasses(content: string): string[] {
 /**
  * Main extractor function for Tailwind CSS
  */
-export function lambdaHtmlExtractor(content: string): string[] {
+export function fluentHtmlExtractor(content: string): string[] {
   const classes = new Set<string>();
 
   // Extract classes from direct setClass/addClass calls
@@ -384,5 +384,5 @@ export function lambdaHtmlExtractor(content: string): string[] {
 }
 
 // Default export for CommonJS
-module.exports = lambdaHtmlExtractor;
-module.exports.lambdaHtmlExtractor = lambdaHtmlExtractor;
+module.exports = fluentHtmlExtractor;
+module.exports.fluentHtmlExtractor = fluentHtmlExtractor;

@@ -1,20 +1,20 @@
-# Lambda.html
+# Fluent HTML
 
 **A fluent, type-safe HTML builder for TypeScript.**
 
-[![npm version](https://img.shields.io/npm/v/lambda.html.svg)](https://www.npmjs.com/package/lambda.html)
+[![npm version](https://img.shields.io/npm/v/fluent-html.svg)](https://www.npmjs.com/package/fluent-html)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-green.svg)](https://www.npmjs.com/package/lambda.html)
+[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-green.svg)](https://www.npmjs.com/package/fluent-html)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 ```bash
-npm install lambda.html
+npm install fluent-html
 ```
 
 Build HTML with chainable methods, full IDE autocomplete, and zero dependencies:
 
 ```typescript
-import { Div, H1, Button, render } from 'lambda.html';
+import { Div, H1, Button, render } from 'fluent-html';
 
 const page = Div([
   H1("Welcome")
@@ -155,7 +155,7 @@ render(withOOB(
 
 ## IDE Autocomplete in Action
 
-Lambda.html transforms your IDE into a powerful documentation tool. Here's what you get:
+Fluent HTML transforms your IDE into a powerful documentation tool. Here's what you get:
 
 ### HTMX Triggers
 
@@ -248,12 +248,12 @@ Input().setType("number").setMin(0).setMax(100).setStep(5)
 
 ## Type-Safe HTMX
 
-Lambda.html provides **complete HTMX 2.0 support** with full type safety.
+Fluent HTML provides **complete HTMX 2.0 support** with full type safety.
 
 ### Basic Requests
 
 ```typescript
-import { hx } from 'lambda.html';
+import { hx } from 'fluent-html';
 
 // GET request (default)
 Button("Load").setHtmx(hx("/api/items"))
@@ -274,7 +274,7 @@ Button("Delete").setHtmx(hx("/api/delete/123", { method: "delete" }))
 ### Type-Safe Target Selectors
 
 ```typescript
-import { id, clss, closest, find, next, previous } from 'lambda.html';
+import { id, clss, closest, find, next, previous } from 'fluent-html';
 
 // ID selector → "#content"
 Button("Load").setHtmx(hx("/api", { target: id("content") }))
@@ -438,7 +438,7 @@ Form([
 
 One of the most common issues with HTMX is **broken selectors**. A typo in `hx-target="#userList"` when the element has `id="user-list"` causes silent failures at runtime.
 
-Lambda.html solves this with **compile-time validated HTMX targets**.
+Fluent HTML solves this with **compile-time validated HTMX targets**.
 
 ### The Problem
 
@@ -455,7 +455,7 @@ Button("Load").setHtmx(hx("/api", { target: "#userList" }))
 ### The Solution: Type-Safe IDs
 
 ```typescript
-import { defineIds } from 'lambda.html';
+import { defineIds } from 'fluent-html';
 
 // Define IDs once - shared across your app
 export const ids = defineIds([
@@ -496,7 +496,7 @@ export function UsersPage() {
 ```typescript
 // controllers/users.ts
 import { ids } from '../ids';
-import { OOB, withOOB, Span } from 'lambda.html';
+import { OOB, withOOB, Span } from 'fluent-html';
 
 export function handleUserCreated(users: User[]) {
   return withOOB(
@@ -531,7 +531,7 @@ Each `*.view.ts` file exports both its view components and its IDs. Controllers 
 ### API
 
 ```typescript
-import { defineIds, createId, Id } from 'lambda.html';
+import { defineIds, createId, Id } from 'fluent-html';
 
 // Create a registry of IDs (recommended)
 const ids = defineIds(["user-list", "modal"] as const);
@@ -553,12 +553,12 @@ OOB(ids.userList, content)                   // ✓
 
 ## Fluent Styling API
 
-Lambda.html provides a **fluent, chainable API** for Tailwind CSS classes, making your styling code more expressive and maintainable.
+Fluent HTML provides a **fluent, chainable API** for Tailwind CSS classes, making your styling code more expressive and maintainable.
 
 ### Quick Start
 
 ```typescript
-import { Div, Button } from 'lambda.html';
+import { Div, Button } from 'fluent-html';
 
 // Instead of:
 Div("Content").setClass("p-4 bg-red-500 mx-8 text-white rounded-lg shadow-md")
@@ -759,13 +759,13 @@ Button("Click")
   .setDisabled(false);           // Button-specific method
 ```
 
-The fluent API generates standard Tailwind CSS classes. Make sure Tailwind is included in your project. For a complete API reference, see the [styling documentation](https://github.com/your-repo/lambda.html/blob/main/STYLING.md).
+The fluent API generates standard Tailwind CSS classes. Make sure Tailwind is included in your project. For a complete API reference, see the [styling documentation](https://github.com/your-repo/fluent-html/blob/main/STYLING.md).
 
 ---
 
 ## XSS Protection
 
-Lambda.html **automatically escapes** all text content and attributes. No configuration needed.
+Fluent HTML **automatically escapes** all text content and attributes. No configuration needed.
 
 ### Automatic Text Escaping
 
@@ -835,7 +835,7 @@ render(UserCard(user));
 For cases where you need to render **trusted** HTML content (e.g., pre-sanitized markdown, trusted SVG, CMS content), use the `Raw` helper:
 
 ```typescript
-import { Raw, Div, render } from 'lambda.html';
+import { Raw, Div, render } from 'fluent-html';
 
 // Render pre-sanitized HTML from a markdown library
 const htmlFromMarkdown = markdownToHtml(trustedContent);
@@ -875,7 +875,7 @@ Div(userComment)  // Automatically escaped
 
 ## HTML Elements
 
-Lambda.html provides **60+ HTML elements** with typed attribute methods.
+Fluent HTML provides **60+ HTML elements** with typed attribute methods.
 
 ### Element Chaining
 
@@ -1049,12 +1049,12 @@ Meter().setValue(0.7).setMin(0).setMax(1).setLow(0.3).setHigh(0.8).setOptimum(0.
 
 ## Control Flow
 
-Lambda.html provides functional control flow for conditional and iterative rendering.
+Fluent HTML provides functional control flow for conditional and iterative rendering.
 
 ### IfThen / IfThenElse
 
 ```typescript
-import { IfThen, IfThenElse } from 'lambda.html';
+import { IfThen, IfThenElse } from 'fluent-html';
 
 // Conditional rendering
 function UserBadge(user: { isAdmin: boolean; isPremium: boolean }): View {
@@ -1081,7 +1081,7 @@ function LoginStatus(user: User | null): View {
 ### SwitchCase
 
 ```typescript
-import { SwitchCase } from 'lambda.html';
+import { SwitchCase } from 'fluent-html';
 
 type Status = 'pending' | 'approved' | 'rejected';
 
@@ -1099,7 +1099,7 @@ function StatusBadge(status: Status): View {
 `ForEach` is a unified iteration helper with three overloads:
 
 ```typescript
-import { ForEach, Repeat } from 'lambda.html';
+import { ForEach, Repeat } from 'fluent-html';
 
 const items = ["Apple", "Banana", "Cherry"];
 
@@ -1286,7 +1286,7 @@ function InfiniteScrollList(items: Item[], page: number): View {
 
 ## Common Patterns
 
-Lambda.html includes built-in helpers for common UI patterns and layouts.
+Fluent HTML includes built-in helpers for common UI patterns and layouts.
 
 ### Utility Methods
 
@@ -1335,7 +1335,7 @@ Button("Menu").setAria({
 
 **Vertical Stack (Flexbox Column):**
 ```typescript
-import { VStack } from 'lambda.html';
+import { VStack } from 'fluent-html';
 
 VStack([
   H1("Title"),
@@ -1352,7 +1352,7 @@ VStack([
 
 **Horizontal Stack (Flexbox Row):**
 ```typescript
-import { HStack } from 'lambda.html';
+import { HStack } from 'fluent-html';
 
 HStack([
   Button("Cancel"),
@@ -1366,7 +1366,7 @@ HStack([
 
 **Grid Layout:**
 ```typescript
-import { Grid } from 'lambda.html';
+import { Grid } from 'fluent-html';
 
 // With column count
 Grid([Card1, Card2, Card3, Card4], {
@@ -1387,7 +1387,7 @@ Grid([Item1, Item2, Item3], {
 
 **Debounced Search:**
 ```typescript
-import { SearchInput } from 'lambda.html';
+import { SearchInput } from 'fluent-html';
 
 SearchInput({
   endpoint: "/api/search",
@@ -1401,7 +1401,7 @@ SearchInput({
 
 **Infinite Scroll:**
 ```typescript
-import { InfiniteScroll } from 'lambda.html';
+import { InfiniteScroll } from 'fluent-html';
 
 // In your list view
 Ul(
@@ -1419,7 +1419,7 @@ InfiniteScroll({
 
 **Out-of-Band (OOB) Swaps:**
 ```typescript
-import { OOB, withOOB, render } from 'lambda.html';
+import { OOB, withOOB, render } from 'fluent-html';
 
 // Update multiple parts of the page in one response
 render(withOOB(
@@ -1435,7 +1435,7 @@ render(withOOB(
 
 **HTMX Response Headers:**
 ```typescript
-import { hxResponse, Div, Empty } from 'lambda.html';
+import { hxResponse, Div, Empty } from 'fluent-html';
 
 // Build responses with HTMX headers
 app.post('/api/item', (req, res) => {
@@ -1473,7 +1473,7 @@ const response = hxResponse(content)
 
 **Form Field with Label and Error:**
 ```typescript
-import { FormField } from 'lambda.html';
+import { FormField } from 'fluent-html';
 
 FormField({
   label: "Email Address",
@@ -1490,7 +1490,7 @@ FormField({
 
 **Keyed Lists:**
 ```typescript
-import { KeyedList } from 'lambda.html';
+import { KeyedList } from 'fluent-html';
 
 KeyedList(
   users,
@@ -1546,10 +1546,10 @@ VStack([
 
 ## Fold / Catamorphism
 
-Lambda.html includes a generic **fold** (`foldView`) that recursively collapses any `View` tree into a value of your choice. Supply a `ViewAlgebra<A>` — four functions that handle text, raw HTML, tags, and lists — and `foldView` does the rest.
+Fluent HTML includes a generic **fold** (`foldView`) that recursively collapses any `View` tree into a value of your choice. Supply a `ViewAlgebra<A>` — four functions that handle text, raw HTML, tags, and lists — and `foldView` does the rest.
 
 ```typescript
-import { foldView, countAlgebra, textAlgebra, linksAlgebra } from 'lambda.html';
+import { foldView, countAlgebra, textAlgebra, linksAlgebra } from 'fluent-html';
 
 // Count elements
 foldView(countAlgebra, Div([P("Hello"), P("World")]));  // 3
@@ -1570,18 +1570,18 @@ Writing your own algebra is straightforward — see the **[full Fold documentati
 
 ## ESLint Plugin
 
-Lambda.html has an optional ESLint plugin for additional compile-time checks.
+Fluent HTML has an optional ESLint plugin for additional compile-time checks.
 
 ```bash
-npm install eslint-plugin-lambda-html --save-dev
+npm install eslint-plugin-fluent-html --save-dev
 ```
 
 ```javascript
 // eslint.config.js
-import lambdaHtml from 'eslint-plugin-lambda-html';
+import fluentHtml from 'eslint-plugin-fluent-html';
 
 export default [
-  lambdaHtml.configs.recommended,
+  fluentHtml.configs.recommended,
 ];
 ```
 
@@ -1602,7 +1602,7 @@ Input().setType("checkbox").setPlaceholder("...")
 // Warning: placeholder not supported on checkbox inputs
 ```
 
-See [eslint-plugin-lambda-html](https://www.npmjs.com/package/eslint-plugin-lambda-html) for all rules.
+See [eslint-plugin-fluent-html](https://www.npmjs.com/package/eslint-plugin-fluent-html) for all rules.
 
 ---
 
@@ -1752,7 +1752,7 @@ hx(endpoint: string, options?: {
 ### Selector Helpers
 
 ```typescript
-import { id, clss, closest, find, next, previous } from 'lambda.html';
+import { id, clss, closest, find, next, previous } from 'fluent-html';
 
 id("content")        // → "#content"
 clss("items")        // → ".items"
@@ -1774,7 +1774,7 @@ import {
   hxResponse,
   FormField,
   KeyedList
-} from 'lambda.html';
+} from 'fluent-html';
 ```
 
 | Function | Description |
@@ -1793,7 +1793,7 @@ import {
 ### Raw HTML
 
 ```typescript
-import { Raw, RawString } from 'lambda.html';
+import { Raw, RawString } from 'fluent-html';
 
 Raw(html: string): RawString  // Create unescaped HTML content
 ```
@@ -1805,7 +1805,7 @@ Raw(html: string): RawString  // Create unescaped HTML content
 ### Type-Safe IDs
 
 ```typescript
-import { defineIds, createId, Id, isId, extractId, extractSelector } from 'lambda.html';
+import { defineIds, createId, Id, isId, extractId, extractSelector } from 'fluent-html';
 ```
 
 | Function | Description |
@@ -1834,7 +1834,7 @@ ISC © Toni K. Turk
 
 ## Links
 
-- [npm Package](https://www.npmjs.com/package/lambda.html)
-- [GitLab Repository](https://gitlab.com/seckmaster/lambda.html)
-- [Report Issues](https://gitlab.com/seckmaster/lambda.html/issues)
+- [npm Package](https://www.npmjs.com/package/fluent-html)
+- [GitHub Repository](https://github.com/JT-Digital-d-o-o/fluent-html)
+- [Report Issues](https://github.com/JT-Digital-d-o-o/fluent-html/issues)
 - [HTMX Documentation](https://htmx.org/docs/)
