@@ -1,6 +1,6 @@
 {
   "name": "fluent-html",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "description": "Fluent, type-safe HTML builder for TypeScript. Chainable styling API, first-class HTMX support with full autocomplete, automatic XSS protection. Zero dependencies, SSR-ready.",
   "type": "commonjs",
   "main": "dist/src/index.js",
