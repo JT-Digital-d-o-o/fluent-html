@@ -12,41 +12,13 @@ exports.find = find;
 exports.next = next;
 exports.previous = previous;
 const ids_js_1 = require("./ids.js");
-// ------------------------------------
-// Helper Functions
-// ------------------------------------
 function hx(endpoint, options = {}) {
+    const { method, target, ...rest } = options;
     return {
         endpoint,
-        method: options.method ?? "get",
-        target: options.target ? ((0, ids_js_1.isId)(options.target) ? options.target.selector : options.target) : undefined,
-        swap: options.swap,
-        swapOob: options.swapOob,
-        select: options.select,
-        selectOob: options.selectOob,
-        trigger: options.trigger,
-        pushUrl: options.pushUrl,
-        replaceUrl: options.replaceUrl,
-        vals: options.vals,
-        headers: options.headers,
-        include: options.include,
-        params: options.params,
-        encoding: options.encoding,
-        validate: options.validate,
-        confirm: options.confirm,
-        prompt: options.prompt,
-        indicator: options.indicator,
-        disabledElt: options.disabledElt,
-        sync: options.sync,
-        ext: options.ext,
-        disinherit: options.disinherit,
-        inherit: options.inherit,
-        history: options.history,
-        historyElt: options.historyElt,
-        preserve: options.preserve,
-        request: options.request,
-        boost: options.boost,
-        disable: options.disable,
+        method: method ?? "get",
+        target: target ? ((0, ids_js_1.isId)(target) ? target.selector : target) : undefined,
+        ...rest,
     };
 }
 /**

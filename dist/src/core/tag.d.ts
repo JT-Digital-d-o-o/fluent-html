@@ -1,4 +1,4 @@
-import { HTMX } from "../htmx.js";
+import { HTMX, HxOptions } from "../htmx.js";
 import { Id } from "../ids.js";
 import type { View } from "./types.js";
 import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit } from "./tailwind-types.js";
@@ -22,6 +22,12 @@ export declare class Tag {
     setStyle(style?: string): this;
     addAttribute(key: string, value: string): this;
     setHtmx(htmx?: HTMX): this;
+    setHtmx(endpoint: string, options?: HxOptions): this;
+    hxGet(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    hxPost(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    hxPut(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    hxPatch(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    hxDelete(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
     setToggles(toggles?: string[]): this;
     /**
      * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.

@@ -3,7 +3,7 @@ import { Div } from "../elements/structural.js";
 
 export type OverlayPosition = 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'left' | 'right' | 'center';
 
-const positionStyles: Record<OverlayPosition, string> = {
+const positionStyles = {
   'top': 'top: 0; left: 50%; transform: translateX(-50%);',
   'bottom': 'bottom: 0; left: 50%; transform: translateX(-50%);',
   'top-left': 'top: 0; left: 0;',
@@ -13,7 +13,7 @@ const positionStyles: Record<OverlayPosition, string> = {
   'left': 'top: 50%; left: 0; transform: translateY(-50%);',
   'right': 'top: 50%; right: 0; transform: translateY(-50%);',
   'center': 'top: 50%; left: 50%; transform: translate(-50%, -50%);'
-};
+} satisfies Record<OverlayPosition, string>;
 
 export function Overlay(
   content: View,

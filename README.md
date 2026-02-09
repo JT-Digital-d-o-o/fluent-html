@@ -76,16 +76,20 @@ Div("Content").setClass("p-4 bg-white rounded-lg shadow")
 ### HTMX with Full Type Safety
 
 ```typescript
+// Shorthand methods — clean and concise
+Button("Load More").hxGet("/api/items", { target: "#item-list", swap: "beforeend" })
+Button("Save").hxPost("/api/save")
+Button("Remove").hxDelete("/api/item/1", { confirm: "Sure?" })
+
+// Or use setHtmx with inline args
+Div().setHtmx("/api/data", { trigger: "revealed", swap: "innerHTML" })
+
 // IDE autocomplete for all HTMX attributes
 Button("Load More").setHtmx(hx("/api/items", {
   trigger: "click",      // ✅ IDE suggests: "click" | "load" | "revealed" | ...
   swap: "beforeend",     // ✅ IDE suggests: "innerHTML" | "outerHTML" | ...
   target: "#item-list"
 }))
-
-// Typos caught at compile time
-hx("/api", { swap: "innerHtml" })
-//                  ^^^^^^^^^^ ❌ Error: Did you mean "innerHTML"?
 ```
 
 ### Forms with Validation
@@ -257,22 +261,20 @@ Fluent HTML provides **complete HTMX 2.0 support** with full type safety.
 ### Basic Requests
 
 ```typescript
+// Shorthand methods — method is baked in
+Button("Load").hxGet("/api/items")
+Button("Submit").hxPost("/api/submit")
+Button("Update").hxPut("/api/update/123")
+Button("Patch").hxPatch("/api/resource")
+Button("Delete").hxDelete("/api/delete/123")
+
+// Or use setHtmx with inline args
+Button("Load").setHtmx("/api/items")
+Button("Submit").setHtmx("/api/submit", { method: "post" })
+
+// Or with a pre-built hx() object
 import { hx } from 'fluent-html';
-
-// GET request (default)
-Button("Load").setHtmx(hx("/api/items"))
-
-// POST request
 Button("Submit").setHtmx(hx("/api/submit", { method: "post" }))
-
-// PUT request
-Button("Update").setHtmx(hx("/api/update/123", { method: "put" }))
-
-// PATCH request (new in HTMX 2.0)
-Button("Patch").setHtmx(hx("/api/resource", { method: "patch" }))
-
-// DELETE request
-Button("Delete").setHtmx(hx("/api/delete/123", { method: "delete" }))
 ```
 
 ### Type-Safe Target Selectors
@@ -1669,7 +1671,13 @@ See [eslint-plugin-fluent-html](https://www.npmjs.com/package/eslint-plugin-flue
 | `.addAttribute(key, value)`  | Add custom attribute                                  |
 | `.setDataAttrs({})`          | Set multiple data-* attributes                        |
 | `.setAria({})`               | Set multiple aria-* attributes                        |
-| `.setHtmx(hx(...))`          | Add HTMX behavior                                     |
+| `.setHtmx(hx(...))`          | Add HTMX behavior (pre-built object)                  |
+| `.setHtmx(endpoint, opts?)`  | Add HTMX behavior (inline args)                       |
+| `.hxGet(endpoint, opts?)`    | Shorthand for GET request                              |
+| `.hxPost(endpoint, opts?)`   | Shorthand for POST request                             |
+| `.hxPut(endpoint, opts?)`    | Shorthand for PUT request                              |
+| `.hxPatch(endpoint, opts?)`  | Shorthand for PATCH request                            |
+| `.hxDelete(endpoint, opts?)` | Shorthand for DELETE request                           |
 | `.setToggles([...])`         | Add boolean attributes (`required`, `disabled`, etc.) |
 
 ### Fluent Styling Methods (All Tags)
@@ -1726,9 +1734,30 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | `ForEach(start, end, renderFn)`         | Range start to end-1        |
 | `Repeat(n, renderFn)`                   | Repeat n times              |
 
-### HTMX Helper
+### HTMX Shorthand Methods
+
+All tags have shorthand methods for each HTTP method. The `options` parameter accepts all HTMX options except `method` (which is implied):
 
 ```typescript
+.hxGet(endpoint, options?)     // GET request
+.hxPost(endpoint, options?)    // POST request
+.hxPut(endpoint, options?)     // PUT request
+.hxPatch(endpoint, options?)   // PATCH request
+.hxDelete(endpoint, options?)  // DELETE request
+
+// setHtmx also accepts inline args (method defaults to GET)
+.setHtmx(endpoint, options?)
+.setHtmx(hx(...))             // pre-built HTMX object
+```
+
+### hx() Helper
+
+```typescript
+hx(endpoint: string, options?: HxOptions): HTMX
+
+// HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>>
+//           & { method?: HxHttpMethod; target?: HxTarget | Id }
+
 hx(endpoint: string, options?: {
   // HTTP Method
   method?: 'get' | 'post' | 'put' | 'patch' | 'delete';

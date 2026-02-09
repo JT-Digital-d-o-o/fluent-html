@@ -1,4 +1,4 @@
-import { HTMX } from "../htmx.js";
+import { HTMX, HxOptions, HxHttpMethod, hx } from "../htmx.js";
 import { Id, isId } from "../ids.js";
 import type { View } from "./types.js";
 import type {
@@ -83,8 +83,37 @@ export class Tag {
     return this;
   }
 
-  setHtmx(htmx?: HTMX): this {
-    this.htmx = htmx;
+  setHtmx(htmx?: HTMX): this;
+  setHtmx(endpoint: string, options?: HxOptions): this;
+  setHtmx(endpointOrHtmx?: string | HTMX, options?: HxOptions): this {
+    this.htmx = typeof endpointOrHtmx === 'string'
+      ? hx(endpointOrHtmx, options)
+      : endpointOrHtmx;
+    return this;
+  }
+
+  hxGet(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
+    this.htmx = hx(endpoint, { ...options, method: 'get' });
+    return this;
+  }
+
+  hxPost(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
+    this.htmx = hx(endpoint, { ...options, method: 'post' });
+    return this;
+  }
+
+  hxPut(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
+    this.htmx = hx(endpoint, { ...options, method: 'put' });
+    return this;
+  }
+
+  hxPatch(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
+    this.htmx = hx(endpoint, { ...options, method: 'patch' });
+    return this;
+  }
+
+  hxDelete(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
+    this.htmx = hx(endpoint, { ...options, method: 'delete' });
     return this;
   }
 

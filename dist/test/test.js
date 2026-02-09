@@ -586,6 +586,27 @@ section("HTMX Helpers");
 test("id() helper", (0, htmx_js_1.id)("my-id"), "#my-id");
 test("clss() helper", (0, htmx_js_1.clss)("my-class"), ".my-class");
 // ------------------------------------
+// setHtmx Overloads
+// ------------------------------------
+section("setHtmx Overloads");
+testView("setHtmx with endpoint string", (0, index_js_1.Div)().setHtmx("/api/data"), `<div hx-get="/api/data"></div>`);
+testView("setHtmx with endpoint and options", (0, index_js_1.Button)("Go").setHtmx("/api/submit", { method: "post", target: "#result" }), `<button hx-post="/api/submit" hx-target="#result">Go</button>`);
+testView("setHtmx with endpoint and swap", (0, index_js_1.Div)().setHtmx("/api/data", { swap: "outerHTML" }), `<div hx-get="/api/data" hx-swap="outerHTML"></div>`);
+testView("setHtmx with pre-built HTMX object", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/api/data", { method: "post" })), `<div hx-post="/api/data"></div>`);
+// ------------------------------------
+// hx Shorthand Methods
+// ------------------------------------
+section("hx Shorthand Methods");
+testView("hxGet basic", (0, index_js_1.Button)("Load").hxGet("/api/items"), `<button hx-get="/api/items">Load</button>`);
+testView("hxGet with options", (0, index_js_1.Button)("Load").hxGet("/api/items", { target: "#list", swap: "innerHTML" }), `<button hx-get="/api/items" hx-target="#list" hx-swap="innerHTML">Load</button>`);
+testView("hxPost", (0, index_js_1.Button)("Save").hxPost("/api/save"), `<button hx-post="/api/save">Save</button>`);
+testView("hxPost with options", (0, index_js_1.Button)("Save").hxPost("/api/save", { target: "#result", trigger: "click" }), `<button hx-post="/api/save" hx-target="#result" hx-trigger="click">Save</button>`);
+testView("hxPut", (0, index_js_1.Button)("Update").hxPut("/api/update"), `<button hx-put="/api/update">Update</button>`);
+testView("hxPatch", (0, index_js_1.Button)("Patch").hxPatch("/api/patch"), `<button hx-patch="/api/patch">Patch</button>`);
+testView("hxDelete", (0, index_js_1.Button)("Remove").hxDelete("/api/item/1"), `<button hx-delete="/api/item/1">Remove</button>`);
+testView("hxDelete with confirm", (0, index_js_1.Button)("Remove").hxDelete("/api/item/1", { confirm: "Sure?" }), `<button hx-delete="/api/item/1" hx-confirm="Sure?">Remove</button>`);
+testView("hxGet chained with other methods", (0, index_js_1.Div)("Content").setId("box").hxGet("/api/refresh", { swap: "outerHTML" }), `<div id="box" hx-get="/api/refresh" hx-swap="outerHTML">Content</div>`);
+// ------------------------------------
 // Control Flow - IfThen / IfThenElse
 // ------------------------------------
 section("Control Flow - Conditionals");

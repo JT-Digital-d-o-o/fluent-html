@@ -76,37 +76,12 @@ export interface HTMX {
     boost?: boolean;
     disable?: boolean;
 }
-export declare function hx(endpoint: string, options?: {
+/** Options for the `hx()` helper. Derived from HTMX — `target` also accepts an `Id` object. */
+export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>> & {
     method?: HxHttpMethod;
     target?: HxTarget | Id;
-    swap?: HxSwap;
-    swapOob?: boolean | string;
-    select?: string;
-    selectOob?: string;
-    trigger?: HxTrigger;
-    pushUrl?: boolean | string;
-    replaceUrl?: boolean | string;
-    vals?: Record<string, any> | string;
-    headers?: Record<string, string>;
-    include?: string;
-    params?: string;
-    encoding?: HxEncoding;
-    validate?: boolean;
-    confirm?: string;
-    prompt?: string;
-    indicator?: string;
-    disabledElt?: string;
-    sync?: HxSync;
-    ext?: string;
-    disinherit?: string;
-    inherit?: string;
-    history?: boolean;
-    historyElt?: boolean;
-    preserve?: boolean;
-    request?: string;
-    boost?: boolean;
-    disable?: boolean;
-}): HTMX;
+};
+export declare function hx(endpoint: string, options?: HxOptions): HTMX;
 /**
  * Create an ID selector for hx-target
  * @example hx("/api", { target: id("content") }) // hx-target="#content"

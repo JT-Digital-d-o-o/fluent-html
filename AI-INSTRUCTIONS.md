@@ -346,24 +346,20 @@ HTML([
 
 ## HTMX Integration
 
-Fluent HTML has first-class HTMX support through the `setHtmx()` method:
+Fluent HTML has first-class HTMX support with three calling styles:
 
 ```typescript
 import { hx } from "fluent-html";
 
-// Simple HTMX request (defaults to GET)
-Button("Load More")
-  .setHtmx(hx("/api/items"))
+// Style 1: Shorthand methods (preferred for simple cases)
+Button("Load").hxGet("/api/items")
+Button("Save").hxPost("/api/save", { target: "#result" })
+Button("Remove").hxDelete("/api/item/1", { confirm: "Sure?" })
 
-// With target and swap
-Div("Click to update")
-  .setHtmx(hx("/api/update", {
-    method: "post",
-    target: "#result",
-    swap: "innerHTML"
-  }))
+// Style 2: setHtmx with inline args
+Div().setHtmx("/api/update", { method: "post", target: "#result", swap: "innerHTML" })
 
-// Form with HTMX
+// Style 3: setHtmx with pre-built hx() object
 Form([
   Input().setName("query").setPlaceholder("Search..."),
   Button("Search").setType("submit")
@@ -373,6 +369,18 @@ Form([
     target: "#results",
     swap: "innerHTML"
   }))
+```
+
+### Shorthand Methods
+
+All tags have `.hxGet()`, `.hxPost()`, `.hxPut()`, `.hxPatch()`, `.hxDelete()`:
+
+```typescript
+Button("Load").hxGet("/api/items")
+Button("Save").hxPost("/api/save", { target: "#result", swap: "innerHTML" })
+Button("Update").hxPut("/api/item/1")
+Button("Patch").hxPatch("/api/item/1")
+Button("Delete").hxDelete("/api/item/1", { confirm: "Are you sure?" })
 ```
 
 ## Type-Safe HTMX Targets

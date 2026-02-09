@@ -251,6 +251,7 @@ export {
   HxTarget,
   HxHttpMethod,
   HxSync,
+  HxOptions,
   // Selector helpers
   id,
   clss,

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tag = exports.EMPTY_ATTRS = void 0;
+const htmx_js_1 = require("../htmx.js");
 const ids_js_1 = require("../ids.js");
 /** @internal Shared empty attributes object — never mutate */
 exports.EMPTY_ATTRS = Object.freeze({});
@@ -39,8 +40,30 @@ class Tag {
         }
         return this;
     }
-    setHtmx(htmx) {
-        this.htmx = htmx;
+    setHtmx(endpointOrHtmx, options) {
+        this.htmx = typeof endpointOrHtmx === 'string'
+            ? (0, htmx_js_1.hx)(endpointOrHtmx, options)
+            : endpointOrHtmx;
+        return this;
+    }
+    hxGet(endpoint, options) {
+        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'get' });
+        return this;
+    }
+    hxPost(endpoint, options) {
+        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'post' });
+        return this;
+    }
+    hxPut(endpoint, options) {
+        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'put' });
+        return this;
+    }
+    hxPatch(endpoint, options) {
+        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'patch' });
+        return this;
+    }
+    hxDelete(endpoint, options) {
+        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'delete' });
         return this;
     }
     setToggles(toggles) {

@@ -191,71 +191,22 @@ export interface HTMX {
 // Helper Functions
 // ------------------------------------
 
+/** Options for the `hx()` helper. Derived from HTMX — `target` also accepts an `Id` object. */
+export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>> & {
+  method?: HxHttpMethod;
+  target?: HxTarget | Id;
+};
+
 export function hx(
   endpoint: string,
-  options: {
-    method?: HxHttpMethod;
-    target?: HxTarget | Id;
-    swap?: HxSwap;
-    swapOob?: boolean | string;
-    select?: string;
-    selectOob?: string;
-    trigger?: HxTrigger;
-    pushUrl?: boolean | string;
-    replaceUrl?: boolean | string;
-    vals?: Record<string, any> | string;
-    headers?: Record<string, string>;
-    include?: string;
-    params?: string;
-    encoding?: HxEncoding;
-    validate?: boolean;
-    confirm?: string;
-    prompt?: string;
-    indicator?: string;
-    disabledElt?: string;
-    sync?: HxSync;
-    ext?: string;
-    disinherit?: string;
-    inherit?: string;
-    history?: boolean;
-    historyElt?: boolean;
-    preserve?: boolean;
-    request?: string;
-    boost?: boolean;
-    disable?: boolean;
-  } = {}
+  options: HxOptions = {}
 ): HTMX {
+  const { method, target, ...rest } = options;
   return {
     endpoint,
-    method: options.method ?? "get",
-    target: options.target ? (isId(options.target) ? options.target.selector : options.target) : undefined,
-    swap: options.swap,
-    swapOob: options.swapOob,
-    select: options.select,
-    selectOob: options.selectOob,
-    trigger: options.trigger,
-    pushUrl: options.pushUrl,
-    replaceUrl: options.replaceUrl,
-    vals: options.vals,
-    headers: options.headers,
-    include: options.include,
-    params: options.params,
-    encoding: options.encoding,
-    validate: options.validate,
-    confirm: options.confirm,
-    prompt: options.prompt,
-    indicator: options.indicator,
-    disabledElt: options.disabledElt,
-    sync: options.sync,
-    ext: options.ext,
-    disinherit: options.disinherit,
-    inherit: options.inherit,
-    history: options.history,
-    historyElt: options.historyElt,
-    preserve: options.preserve,
-    request: options.request,
-    boost: options.boost,
-    disable: options.disable,
+    method: method ?? "get",
+    target: target ? (isId(target) ? target.selector : target) : undefined,
+    ...rest,
   };
 }
 

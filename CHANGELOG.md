@@ -6,6 +6,47 @@ All notable changes to Fluent HTML will be documented in this file.
 
 ### ✨ New Features
 
+#### HTMX Shorthand Methods
+
+New shorthand methods on all tags for the most common HTMX operations:
+
+```typescript
+// Before — always needed the hx() wrapper
+Button("Load").setHtmx(hx("/api/items"))
+Button("Save").setHtmx(hx("/api/save", { method: "post", target: "#result" }))
+
+// After — shorthand methods with the HTTP method baked in
+Button("Load").hxGet("/api/items")
+Button("Save").hxPost("/api/save", { target: "#result" })
+Button("Update").hxPut("/api/item/1")
+Button("Patch").hxPatch("/api/item/1")
+Button("Remove").hxDelete("/api/item/1", { confirm: "Sure?" })
+```
+
+#### setHtmx Overloads
+
+`setHtmx` now accepts an endpoint string and options directly, in addition to a pre-built HTMX object:
+
+```typescript
+// New — inline args (method defaults to GET)
+Button("Load").setHtmx("/api/items")
+Button("Save").setHtmx("/api/save", { method: "post", target: "#result" })
+
+// Still works — pre-built hx() object
+Button("Load").setHtmx(hx("/api/items"))
+```
+
+#### HxOptions Type
+
+New exported `HxOptions` type derived from the `HTMX` interface. Eliminates duplication between the interface and the `hx()` function signature:
+
+```typescript
+import type { HxOptions } from 'fluent-html';
+
+// HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>>
+//           & { method?: HxHttpMethod; target?: HxTarget | Id }
+```
+
 #### Nullable Value Overloads for IfThen / IfThenElse
 
 `IfThen` and `IfThenElse` now accept a nullable value (`T | null | undefined`) instead of a boolean. When the value is non-null, it is passed into the callback with its type narrowed to `T`:
