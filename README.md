@@ -119,6 +119,13 @@ IfThenElse(loggedIn, () => Dashboard(), () => LoginForm())
 IfThen(user.avatar, (src) => Img().setSrc(src).setAlt("Avatar"))
 IfThenElse(user, (u) => Span(`Welcome, ${u.name}`), () => A("Login").setHref("/login"))
 
+// Match — exhaustive value matching with type safety
+Match(status, {
+  loading: () => Spinner(),
+  error:   () => ErrorBanner(),
+  success: () => Dashboard(),
+})
+
 // Iteration
 Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
 Div(ForEach(5, i => Star()))  // Repeat 5 times
@@ -153,7 +160,7 @@ render(withOOB(
 - [Fluent Styling API](#fluent-styling-api) - Chainable Tailwind-friendly methods
 - [HTMX Integration](#type-safe-htmx) - Requests, triggers, swaps, all typed
 - [HTML Elements](#html-elements) - 60+ typed elements
-- [Control Flow](#control-flow-1) - IfThen, ForEach, SwitchCase
+- [Control Flow](#control-flow-1) - IfThen, Match, ForEach
 - [Fold / Catamorphism](FOLD.md) - Generic View traversals, pre-built algebras, custom folds
 - [Common Patterns](#common-patterns) - Layouts, OOB swaps, response helpers
 - [ESLint Plugin](#eslint-plugin) - Additional compile-time checks
@@ -1108,20 +1115,30 @@ function Card(props: { title: string; image?: string }): View {
 }
 ```
 
-### SwitchCase
+### Match
+
+`Match` maps a value to a view using an object of cases. TypeScript enforces exhaustiveness — if you miss a case, you get a compile error.
 
 ```typescript
-import { SwitchCase } from 'fluent-html';
+import { Match } from 'fluent-html';
 
 type Status = 'pending' | 'approved' | 'rejected';
 
 function StatusBadge(status: Status): View {
-  return SwitchCase([
-    { condition: status === 'pending',  component: () => Span("⏳ Pending").setClass("text-yellow-600") },
-    { condition: status === 'approved', component: () => Span("✅ Approved").setClass("text-green-600") },
-    { condition: status === 'rejected', component: () => Span("❌ Rejected").setClass("text-red-600") },
-  ], () => Span("Unknown").setClass("text-gray-600"));
+  return Match(status, {
+    pending:  () => Span("Pending").setClass("text-yellow-600"),
+    approved: () => Span("Approved").setClass("text-green-600"),
+    rejected: () => Span("Rejected").setClass("text-red-600"),
+  });
 }
+```
+
+For partial matches, provide a default as the third argument:
+
+```typescript
+Match(status, {
+  approved: () => Span("Approved"),
+}, () => Span("Other"))
 ```
 
 ### ForEach
@@ -1728,7 +1745,8 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | `IfThen(value, thenFn)`                 | Render with narrowed non-null value |
 | `IfThenElse(condition, thenFn, elseFn)` | Conditional rendering       |
 | `IfThenElse(value, thenFn, elseFn)`     | Conditional with narrowed non-null value |
-| `SwitchCase(cases, defaultFn)`          | Multi-branch conditional    |
+| `Match(value, cases)`                   | Exhaustive value matching   |
+| `Match(value, cases, defaultView)`      | Partial value matching with default |
 | `ForEach(items, renderFn)`              | Iterate over items (with index) |
 | `ForEach(n, renderFn)`                  | Range 0 to n-1              |
 | `ForEach(start, end, renderFn)`         | Range start to end-1        |

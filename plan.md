@@ -230,7 +230,7 @@ const names = foldView(elementNamesAlgebra, view);  // ["div", "p", "p"]
 
 ### Phase 4: Control Module ✅
 1. Create `src/control/` directory
-2. Create `conditionals.ts` - IfThen, IfThenElse, SwitchCase
+2. Create `conditionals.ts` - IfThen, IfThenElse, Match
 3. Create `iteration.ts` - ForEach (all overloads), ForEach1/2/3 (deprecated), Repeat, range
 4. Create `overlay.ts` - Overlay, OverlayPosition, positionStyles
 5. Create `index.ts`
@@ -323,7 +323,7 @@ import type { View } from './types';  // type-only, no runtime dep
 | `elements/document.ts` | 210 | Meta, Script, etc. + Tags |
 | `elements/data.ts` | 95 | Time, Progress + Tags |
 | `elements/webcomponents.ts` | 20 | Slot + SlotTag |
-| `control/conditionals.ts` | 45 | IfThen, SwitchCase |
+| `control/conditionals.ts` | 60 | IfThen, Match |
 | `control/iteration.ts` | 60 | ForEach, Repeat |
 | `control/overlay.ts` | 35 | Overlay utility |
 | `render/escape.ts` | 20 | HTML escaping |

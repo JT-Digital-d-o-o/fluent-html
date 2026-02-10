@@ -227,13 +227,18 @@ IfThen(props.image, (src) =>
 )
 ```
 
-**SwitchCase** - Multiple conditions:
+**Match** - Value matching:
 ```typescript
-SwitchCase([
-  { condition: status === "loading", component: () => Div("Loading...") },
-  { condition: status === "error", component: () => Div("Error!") },
-  { condition: status === "success", component: () => Div("Success!") }
-], () => Div("Unknown"))  // default case (optional)
+Match(status, {
+  loading: () => Div("Loading..."),
+  error:   () => Div("Error!"),
+  success: () => Div("Success!"),
+})
+
+// Partial match with default
+Match(status, {
+  loading: () => Div("Loading..."),
+}, () => Div("Other"))
 ```
 
 ### Loops
@@ -302,14 +307,11 @@ function Card(props: { title: string; image?: string; footer?: View }): View {
 
 **Status badge:**
 ```typescript
-SwitchCase([
-  { condition: status === "active", component: () =>
-    Span("Active").setClass("badge-green") },
-  { condition: status === "pending", component: () =>
-    Span("Pending").setClass("badge-yellow") },
-  { condition: status === "inactive", component: () =>
-    Span("Inactive").setClass("badge-gray") }
-])
+Match(status, {
+  active:   () => Span("Active").setClass("badge-green"),
+  pending:  () => Span("Pending").setClass("badge-yellow"),
+  inactive: () => Span("Inactive").setClass("badge-gray"),
+})
 ```
 
 **Numbered list:**
@@ -607,7 +609,7 @@ Nav(
 ## Best Practices
 
 1. **Use specialized tag methods** instead of `addAttribute()` for standard HTML properties
-2. **Use control flow utilities** (IfThen, ForEach, etc.) instead of manual JavaScript loops
+2. **Use control flow utilities** (`IfThen`, `Match`, `ForEach`, etc.) instead of manual JavaScript loops
 3. **Trust XSS protection** - don't manually escape content
 4. **Chain methods** for clean, readable code
 5. **Use TypeScript** for full type safety and IDE autocomplete

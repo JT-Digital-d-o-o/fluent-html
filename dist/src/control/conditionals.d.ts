@@ -7,6 +7,13 @@ type Case = {
     condition: boolean;
     component: Thunk<View>;
 };
+/** @deprecated Use `Match` instead for value matching. */
 export declare function SwitchCase(cases: Case[], defaultView?: Thunk<View>): View;
+export declare function Match<T extends string | number>(value: T, cases: {
+    [K in T]: Thunk<View>;
+}): View;
+export declare function Match<T extends string | number>(value: T, cases: Partial<{
+    [K in T]: Thunk<View>;
+}>, defaultView: Thunk<View>): View;
 export {};
 //# sourceMappingURL=conditionals.d.ts.map

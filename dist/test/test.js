@@ -644,6 +644,26 @@ testView("SwitchCase no match no default", (0, index_js_1.SwitchCase)([
     { condition: false, component: () => (0, index_js_1.Span)("First") },
 ]), ``);
 // ------------------------------------
+// Control Flow - Match
+// ------------------------------------
+section("Control Flow - Match");
+testView("Match first case", (0, index_js_1.Match)("a", {
+    a: () => (0, index_js_1.Span)("Alpha"),
+    b: () => (0, index_js_1.Span)("Beta"),
+    c: () => (0, index_js_1.Span)("Gamma"),
+}), `<span>Alpha</span>`);
+testView("Match last case", (0, index_js_1.Match)("c", {
+    a: () => (0, index_js_1.Span)("Alpha"),
+    b: () => (0, index_js_1.Span)("Beta"),
+    c: () => (0, index_js_1.Span)("Gamma"),
+}), `<span>Gamma</span>`);
+testView("Match partial with default (hit)", (0, index_js_1.Match)("x", {
+    x: () => (0, index_js_1.Span)("Found"),
+}, () => (0, index_js_1.Span)("Default")), `<span>Found</span>`);
+testView("Match partial with default (miss)", (0, index_js_1.Match)("z", {
+    x: () => (0, index_js_1.Span)("Found"),
+}, () => (0, index_js_1.Span)("Default")), `<span>Default</span>`);
+// ------------------------------------
 // Control Flow - ForEach
 // ------------------------------------
 section("Control Flow - ForEach");

@@ -19,7 +19,7 @@ export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 export { Slot, } from './elements/index.js';
 export { Overlay, OverlayPosition, } from './control/index.js';
-export { IfThen, IfThenElse, SwitchCase, ForEach, ForEach1, ForEach2, ForEach3, Repeat, } from './control/index.js';
+export { IfThen, IfThenElse, SwitchCase, Match, ForEach, ForEach1, ForEach2, ForEach3, Repeat, } from './control/index.js';
 export { hx, HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, HxOptions, id, clss, closest, find, next, previous, } from './htmx.js';
 export { VStack, HStack, Grid, SearchInput, InfiniteScroll, OOB, withOOB, hxResponse, HxResponse, HxResponseResult, HxLocationConfig, FormField, KeyedList, } from './patterns.js';
 export { Id, createId, defineIds, isId, extractId, extractSelector, } from './ids.js';

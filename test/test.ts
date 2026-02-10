@@ -49,7 +49,7 @@ import {
   El, Empty, Overlay,
 
   // Control flow
-  IfThen, IfThenElse, SwitchCase, ForEach, ForEach1, ForEach2, ForEach3, Repeat,
+  IfThen, IfThenElse, SwitchCase, Match, ForEach, ForEach1, ForEach2, ForEach3, Repeat,
 } from "../src/index.js";
 
 import { hx, id, clss, HxSwap, HxTrigger } from "../src/htmx.js";
@@ -1431,6 +1431,40 @@ testView("SwitchCase no match no default",
     { condition: false, component: () => Span("First") },
   ]),
   ``);
+
+// ------------------------------------
+// Control Flow - Match
+// ------------------------------------
+
+section("Control Flow - Match");
+
+testView("Match first case",
+  Match("a" as "a" | "b" | "c", {
+    a: () => Span("Alpha"),
+    b: () => Span("Beta"),
+    c: () => Span("Gamma"),
+  }),
+  `<span>Alpha</span>`);
+
+testView("Match last case",
+  Match("c" as "a" | "b" | "c", {
+    a: () => Span("Alpha"),
+    b: () => Span("Beta"),
+    c: () => Span("Gamma"),
+  }),
+  `<span>Gamma</span>`);
+
+testView("Match partial with default (hit)",
+  Match("x" as "x" | "y" | "z", {
+    x: () => Span("Found"),
+  }, () => Span("Default")),
+  `<span>Found</span>`);
+
+testView("Match partial with default (miss)",
+  Match("z" as "x" | "y" | "z", {
+    x: () => Span("Found"),
+  }, () => Span("Default")),
+  `<span>Default</span>`);
 
 // ------------------------------------
 // Control Flow - ForEach

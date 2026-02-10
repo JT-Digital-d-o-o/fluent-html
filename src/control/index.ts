@@ -3,6 +3,7 @@ export {
   IfThen,
   IfThenElse,
   SwitchCase,
+  Match,
 } from "./conditionals.js";
 
 // Control flow - Iteration

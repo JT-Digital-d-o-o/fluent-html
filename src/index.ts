@@ -233,6 +233,7 @@ export {
   IfThen,
   IfThenElse,
   SwitchCase,
+  Match,
   ForEach,
   ForEach1,
   ForEach2,

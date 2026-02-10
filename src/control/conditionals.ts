@@ -33,6 +33,7 @@ export function IfThen<T>(
 }
 
 type Case = { condition: boolean, component: Thunk<View> };
+/** @deprecated Use `Match` instead for value matching. */
 export function SwitchCase(
   cases: Case[],
   defaultView: Thunk<View> = Empty
@@ -41,6 +42,27 @@ export function SwitchCase(
     if (caseItem.condition) {
       return caseItem.component();
     }
+  }
+  return defaultView();
+}
+
+export function Match<T extends string | number>(
+  value: T,
+  cases: { [K in T]: Thunk<View> }
+): View;
+export function Match<T extends string | number>(
+  value: T,
+  cases: Partial<{ [K in T]: Thunk<View> }>,
+  defaultView: Thunk<View>
+): View;
+export function Match<T extends string | number>(
+  value: T,
+  cases: Record<string | number, Thunk<View> | undefined>,
+  defaultView: Thunk<View> = Empty
+): View {
+  const handler = cases[value];
+  if (handler) {
+    return handler();
   }
   return defaultView();
 }

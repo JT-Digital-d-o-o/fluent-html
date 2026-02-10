@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Overlay = exports.range = exports.Repeat = exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.SwitchCase = exports.IfThenElse = exports.IfThen = void 0;
+exports.Overlay = exports.range = exports.Repeat = exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = exports.ForEach = exports.Match = exports.SwitchCase = exports.IfThenElse = exports.IfThen = void 0;
 // Control flow - Conditionals
 var conditionals_js_1 = require("./conditionals.js");
 Object.defineProperty(exports, "IfThen", { enumerable: true, get: function () { return conditionals_js_1.IfThen; } });
 Object.defineProperty(exports, "IfThenElse", { enumerable: true, get: function () { return conditionals_js_1.IfThenElse; } });
 Object.defineProperty(exports, "SwitchCase", { enumerable: true, get: function () { return conditionals_js_1.SwitchCase; } });
+Object.defineProperty(exports, "Match", { enumerable: true, get: function () { return conditionals_js_1.Match; } });
 // Control flow - Iteration
 var iteration_js_1 = require("./iteration.js");
 Object.defineProperty(exports, "ForEach", { enumerable: true, get: function () { return iteration_js_1.ForEach; } });
