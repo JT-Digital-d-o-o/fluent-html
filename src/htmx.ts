@@ -87,21 +87,39 @@ type HtmxEvent =
 // Basic trigger is a DOM or HTMX event
 type BasicTrigger = DOMEvent | HtmxEvent;
 
+// Trigger modifiers and timing values
+type TriggerModifier = 'once' | 'changed' | 'consume';
+type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
+
+// Event + modifier: "click once", "input changed", etc.
+type ModifiedTrigger = `${BasicTrigger} ${TriggerModifier}`;
+
+// Event + timing: "keyup delay:300ms", "scroll throttle:500ms"
+type DelayedTrigger = `${BasicTrigger} delay:${DelayValue}`;
+type ThrottledTrigger = `${BasicTrigger} throttle:${DelayValue}`;
+
+// Event + changed + delay: "keyup changed delay:300ms"
+type ChangedDelayTrigger = `${BasicTrigger} changed delay:${DelayValue}`;
+
+// Polling triggers
+type PollingTrigger = 'every 1s' | 'every 2s' | 'every 5s' | 'every 10s';
+
 /**
- * HTMX Trigger type
- * 
- * Supports:
- * - Basic events: "click", "load", "revealed", etc.
- * - With modifiers: "click once", "keyup changed delay:300ms"
- * - Polling: "every 1s", "every 500ms"
- * - Filters: "click[ctrlKey]", "keyup[key=='Enter']"
- * - SSE/WS: "sse:message", "ws:message"
- * - Multiple: "click, keyup"
- * 
- * Uses string type with union for common cases to enable autocomplete
- * while allowing any valid trigger string.
+ * HTMX Trigger type with deep autocomplete.
+ *
+ * Also accepts any valid trigger string for patterns not covered,
+ * e.g. "click[ctrlKey]", "click, keyup", "keyup changed delay:300ms throttle:1s"
  */
-export type HxTrigger = BasicTrigger | (string & {});
+export type HxTrigger =
+  | BasicTrigger
+  | ModifiedTrigger
+  | DelayedTrigger
+  | ThrottledTrigger
+  | ChangedDelayTrigger
+  | PollingTrigger
+  | 'sse:message'
+  | 'ws:message'
+  | (string & {});
 
 /**
  * HTMX Sync type

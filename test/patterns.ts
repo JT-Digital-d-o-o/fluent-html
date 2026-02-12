@@ -2,7 +2,7 @@
 // Tests for Common Patterns
 // ------------------------------------
 
-import { render, Div, H1, P, Button, Span } from "../src/index.js";
+import { render, Div, H1, P, Button, Span, hx } from "../src/index.js";
 import {
   VStack,
   HStack,
