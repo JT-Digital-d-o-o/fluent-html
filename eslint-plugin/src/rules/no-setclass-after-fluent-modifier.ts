@@ -43,6 +43,9 @@ const FLUENT_MODIFIERS = new Set([
   "overflow",
   // Other common modifiers
   "addClass",
+  // Callback-based modifiers (may add classes internally)
+  "apply",
+  "when",
 ]);
 
 const rule: Rule.RuleModule = {
