@@ -20,8 +20,8 @@ export declare class ImgTag extends Tag {
     setSizes(sizes?: string): this;
     setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this;
 }
-export declare function Img(child?: View): ImgTag;
-export declare function Picture(child?: View): Tag;
+export declare function Img(...children: View[]): ImgTag;
+export declare function Picture(...children: View[]): Tag;
 export declare class SourceTag extends Tag {
     src?: string;
     srcset?: string;
@@ -34,7 +34,7 @@ export declare class SourceTag extends Tag {
     setType(type?: string): this;
     setMedia(media?: string): this;
 }
-export declare function Source(child?: View): SourceTag;
+export declare function Source(...children: View[]): SourceTag;
 export declare class VideoTag extends Tag {
     width?: number;
     height?: number;
@@ -57,7 +57,7 @@ export declare class VideoTag extends Tag {
     setPoster(poster?: string): this;
     setPlaysinline(playsinline?: boolean): this;
 }
-export declare function Video(child?: View): VideoTag;
+export declare function Video(...children: View[]): VideoTag;
 export declare class AudioTag extends Tag {
     src?: string;
     controls?: boolean;
@@ -72,7 +72,7 @@ export declare class AudioTag extends Tag {
     setMuted(muted?: boolean): this;
     setPreload(preload?: 'none' | 'metadata' | 'auto'): this;
 }
-export declare function Audio(child?: View): AudioTag;
+export declare function Audio(...children: View[]): AudioTag;
 export declare class TrackTag extends Tag {
     src?: string;
     kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
@@ -85,14 +85,14 @@ export declare class TrackTag extends Tag {
     setLabel(label?: string): this;
     setDefault(isDefault?: boolean): this;
 }
-export declare function Track(child?: View): TrackTag;
+export declare function Track(...children: View[]): TrackTag;
 export declare class CanvasTag extends Tag {
     width?: number;
     height?: number;
     setWidth(width: number): this;
     setHeight(height: number): this;
 }
-export declare function Canvas(child?: View): CanvasTag;
+export declare function Canvas(...children: View[]): CanvasTag;
 export declare class SvgTag extends Tag {
     width?: string;
     height?: string;
@@ -107,5 +107,5 @@ export declare class SvgTag extends Tag {
     setFill(fill: string): this;
     setStroke(stroke: string): this;
 }
-export declare function Svg(child?: View): SvgTag;
+export declare function Svg(...children: View[]): SvgTag;
 //# sourceMappingURL=media.d.ts.map

@@ -15,41 +15,41 @@ exports.Hr = Hr;
 exports.Br = Br;
 exports.Wbr = Wbr;
 const utils_js_1 = require("../core/utils.js");
-function P(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("p", child);
+function P(...children) {
+    return (0, utils_js_1.El)("p", ...children);
 }
-function H1(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("h1", child);
+function H1(...children) {
+    return (0, utils_js_1.El)("h1", ...children);
 }
-function H2(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("h2", child);
+function H2(...children) {
+    return (0, utils_js_1.El)("h2", ...children);
 }
-function H3(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("h3", child);
+function H3(...children) {
+    return (0, utils_js_1.El)("h3", ...children);
 }
-function H4(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("h4", child);
+function H4(...children) {
+    return (0, utils_js_1.El)("h4", ...children);
 }
-function H5(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("h5", child);
+function H5(...children) {
+    return (0, utils_js_1.El)("h5", ...children);
 }
-function H6(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("h6", child);
+function H6(...children) {
+    return (0, utils_js_1.El)("h6", ...children);
 }
-function Span(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("span", child);
+function Span(...children) {
+    return (0, utils_js_1.El)("span", ...children);
 }
-function Blockquote(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("blockquote", child);
+function Blockquote(...children) {
+    return (0, utils_js_1.El)("blockquote", ...children);
 }
-function Pre(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("pre", child);
+function Pre(...children) {
+    return (0, utils_js_1.El)("pre", ...children);
 }
-function Code(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("code", child);
+function Code(...children) {
+    return (0, utils_js_1.El)("code", ...children);
 }
-function Hr(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("hr", child);
+function Hr(...children) {
+    return (0, utils_js_1.El)("hr", ...children);
 }
 function Br() {
     return (0, utils_js_1.El)("br");

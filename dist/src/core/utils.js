@@ -6,7 +6,7 @@ const tag_js_1 = require("./tag.js");
 function Empty() {
     return "";
 }
-function El(el, child = Empty()) {
-    return new tag_js_1.Tag(el, child);
+function El(el, ...children) {
+    return new tag_js_1.Tag(el, ...children);
 }
 //# sourceMappingURL=utils.js.map

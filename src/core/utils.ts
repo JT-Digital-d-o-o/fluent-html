@@ -5,6 +5,6 @@ export function Empty(): View {
   return "";
 }
 
-export function El(el: string, child: View = Empty()): Tag {
-  return new Tag(el, child);
+export function El(el: string, ...children: View[]): Tag {
+  return new Tag(el, ...children);
 }

@@ -1,11 +1,5 @@
 import type { View } from "../core/types.js";
 
-function* range(low: number, high: number) {
-  for (var i = low; i < high; i++) {
-    yield i;
-  }
-}
-
 // Overload signatures
 export function ForEach<T>(
   views: Iterable<T>,
@@ -71,7 +65,5 @@ export function Repeat(
   times: number,
   content: () => View
 ): View {
-  return ForEach(range(0, times), content);
+  return ForEach(times, content);
 }
-
-export { range };

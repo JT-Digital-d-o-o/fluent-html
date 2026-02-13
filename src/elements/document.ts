@@ -1,21 +1,21 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function HTML(child?: View): Tag {
-  return El("html", child);
+export function HTML(...children: View[]): Tag {
+  return El("html", ...children);
 }
 
-export function Head(child?: View): Tag {
-  return El("head", child);
+export function Head(...children: View[]): Tag {
+  return El("head", ...children);
 }
 
-export function Body(child?: View): Tag {
-  return El("body", child);
+export function Body(...children: View[]): Tag {
+  return El("body", ...children);
 }
 
-export function Title(child?: View): Tag {
-  return El("title", child);
+export function Title(...children: View[]): Tag {
+  return El("title", ...children);
 }
 
 export class MetaTag extends Tag {
@@ -160,12 +160,12 @@ export function Base(): BaseTag {
   return new BaseTag("base");
 }
 
-export function Noscript(child: View = Empty()): Tag {
-  return El("noscript", child);
+export function Noscript(...children: View[]): Tag {
+  return El("noscript", ...children);
 }
 
-export function Template(child: View = Empty()): Tag {
-  return El("template", child);
+export function Template(...children: View[]): Tag {
+  return El("template", ...children);
 }
 
 export class ScriptTag extends Tag {

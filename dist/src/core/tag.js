@@ -6,9 +6,9 @@ const ids_js_1 = require("../ids.js");
 /** @internal Shared empty attributes object — never mutate */
 exports.EMPTY_ATTRS = Object.freeze({});
 class Tag {
-    constructor(element, child = "") {
+    constructor(element, ...children) {
         this.el = element;
-        this.child = child;
+        this.child = children.length === 0 ? "" : children.length === 1 ? children[0] : children;
     }
     setId(id) {
         this.id = id ? ((0, ids_js_1.isId)(id) ? id.id : id) : undefined;

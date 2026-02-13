@@ -45,9 +45,9 @@ export class Tag {
   /** @internal type discriminant for fast render checks */
   declare readonly _t: 1;
 
-  constructor(element: string, child: View = "") {
+  constructor(element: string, ...children: View[]) {
     this.el = element;
-    this.child = child;
+    this.child = children.length === 0 ? "" : children.length === 1 ? children[0] : children;
   }
 
   setId(id?: string | Id): this {

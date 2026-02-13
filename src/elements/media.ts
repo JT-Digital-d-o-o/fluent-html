@@ -1,5 +1,5 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
 export class ImgTag extends Tag {
@@ -62,12 +62,12 @@ export class ImgTag extends Tag {
 /** @internal */
 (ImgTag.prototype as any)._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
 
-export function Img(child: View = Empty()): ImgTag {
-  return new ImgTag("img", child);
+export function Img(...children: View[]): ImgTag {
+  return new ImgTag("img", ...children);
 }
 
-export function Picture(child: View = Empty()): Tag {
-  return El("picture", child);
+export function Picture(...children: View[]): Tag {
+  return El("picture", ...children);
 }
 
 export class SourceTag extends Tag {
@@ -106,8 +106,8 @@ export class SourceTag extends Tag {
 /** @internal */
 (SourceTag.prototype as any)._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
 
-export function Source(child: View = Empty()): SourceTag {
-  return new SourceTag("source", child);
+export function Source(...children: View[]): SourceTag {
+  return new SourceTag("source", ...children);
 }
 
 export class VideoTag extends Tag {
@@ -176,8 +176,8 @@ export class VideoTag extends Tag {
 /** @internal */
 (VideoTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
 
-export function Video(child: View = Empty()): VideoTag {
-  return new VideoTag("video", child);
+export function Video(...children: View[]): VideoTag {
+  return new VideoTag("video", ...children);
 }
 
 export class AudioTag extends Tag {
@@ -222,8 +222,8 @@ export class AudioTag extends Tag {
 /** @internal */
 (AudioTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
 
-export function Audio(child: View = Empty()): AudioTag {
-  return new AudioTag("audio", child);
+export function Audio(...children: View[]): AudioTag {
+  return new AudioTag("audio", ...children);
 }
 
 export class TrackTag extends Tag {
@@ -262,8 +262,8 @@ export class TrackTag extends Tag {
 /** @internal */
 (TrackTag.prototype as any)._sk = ['src', 'kind', 'srclang', 'label', 'default'];
 
-export function Track(child: View = Empty()): TrackTag {
-  return new TrackTag("track", child);
+export function Track(...children: View[]): TrackTag {
+  return new TrackTag("track", ...children);
 }
 
 export class CanvasTag extends Tag {
@@ -284,8 +284,8 @@ export class CanvasTag extends Tag {
 /** @internal */
 (CanvasTag.prototype as any)._sk = ['width', 'height'];
 
-export function Canvas(child: View = Empty()): CanvasTag {
-  return new CanvasTag("canvas", child);
+export function Canvas(...children: View[]): CanvasTag {
+  return new CanvasTag("canvas", ...children);
 }
 
 export class SvgTag extends Tag {
@@ -330,6 +330,6 @@ export class SvgTag extends Tag {
 /** @internal */
 (SvgTag.prototype as any)._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke'];
 
-export function Svg(child: View = Empty()): SvgTag {
-  return new SvgTag("svg", child);
+export function Svg(...children: View[]): SvgTag {
+  return new SvgTag("svg", ...children);
 }

@@ -23,70 +23,70 @@ exports.Ruby = Ruby;
 exports.Rt = Rt;
 exports.Rp = Rp;
 const utils_js_1 = require("../core/utils.js");
-function Strong(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("strong", child);
+function Strong(...children) {
+    return (0, utils_js_1.El)("strong", ...children);
 }
-function Em(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("em", child);
+function Em(...children) {
+    return (0, utils_js_1.El)("em", ...children);
 }
-function B(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("b", child);
+function B(...children) {
+    return (0, utils_js_1.El)("b", ...children);
 }
-function I(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("i", child);
+function I(...children) {
+    return (0, utils_js_1.El)("i", ...children);
 }
-function U(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("u", child);
+function U(...children) {
+    return (0, utils_js_1.El)("u", ...children);
 }
-function S(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("s", child);
+function S(...children) {
+    return (0, utils_js_1.El)("s", ...children);
 }
-function Mark(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("mark", child);
+function Mark(...children) {
+    return (0, utils_js_1.El)("mark", ...children);
 }
-function Small(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("small", child);
+function Small(...children) {
+    return (0, utils_js_1.El)("small", ...children);
 }
-function Sub(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("sub", child);
+function Sub(...children) {
+    return (0, utils_js_1.El)("sub", ...children);
 }
-function Sup(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("sup", child);
+function Sup(...children) {
+    return (0, utils_js_1.El)("sup", ...children);
 }
-function Abbr(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("abbr", child);
+function Abbr(...children) {
+    return (0, utils_js_1.El)("abbr", ...children);
 }
-function Cite(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("cite", child);
+function Cite(...children) {
+    return (0, utils_js_1.El)("cite", ...children);
 }
-function Q(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("q", child);
+function Q(...children) {
+    return (0, utils_js_1.El)("q", ...children);
 }
-function Dfn(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("dfn", child);
+function Dfn(...children) {
+    return (0, utils_js_1.El)("dfn", ...children);
 }
-function Kbd(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("kbd", child);
+function Kbd(...children) {
+    return (0, utils_js_1.El)("kbd", ...children);
 }
-function Samp(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("samp", child);
+function Samp(...children) {
+    return (0, utils_js_1.El)("samp", ...children);
 }
-function Var(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("var", child);
+function Var(...children) {
+    return (0, utils_js_1.El)("var", ...children);
 }
-function Bdi(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("bdi", child);
+function Bdi(...children) {
+    return (0, utils_js_1.El)("bdi", ...children);
 }
-function Bdo(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("bdo", child);
+function Bdo(...children) {
+    return (0, utils_js_1.El)("bdo", ...children);
 }
-function Ruby(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("ruby", child);
+function Ruby(...children) {
+    return (0, utils_js_1.El)("ruby", ...children);
 }
-function Rt(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("rt", child);
+function Rt(...children) {
+    return (0, utils_js_1.El)("rt", ...children);
 }
-function Rp(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("rp", child);
+function Rp(...children) {
+    return (0, utils_js_1.El)("rp", ...children);
 }
 //# sourceMappingURL=inline.js.map

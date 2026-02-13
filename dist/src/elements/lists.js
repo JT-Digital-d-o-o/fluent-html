@@ -8,25 +8,25 @@ exports.Dt = Dt;
 exports.Dd = Dd;
 exports.Menu = Menu;
 const utils_js_1 = require("../core/utils.js");
-function Ul(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("ul", child);
+function Ul(...children) {
+    return (0, utils_js_1.El)("ul", ...children);
 }
-function Ol(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("ol", child);
+function Ol(...children) {
+    return (0, utils_js_1.El)("ol", ...children);
 }
-function Li(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("li", child);
+function Li(...children) {
+    return (0, utils_js_1.El)("li", ...children);
 }
-function Dl(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("dl", child);
+function Dl(...children) {
+    return (0, utils_js_1.El)("dl", ...children);
 }
-function Dt(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("dt", child);
+function Dt(...children) {
+    return (0, utils_js_1.El)("dt", ...children);
 }
-function Dd(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("dd", child);
+function Dd(...children) {
+    return (0, utils_js_1.El)("dd", ...children);
 }
-function Menu(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("menu", child);
+function Menu(...children) {
+    return (0, utils_js_1.El)("menu", ...children);
 }
 //# sourceMappingURL=lists.js.map

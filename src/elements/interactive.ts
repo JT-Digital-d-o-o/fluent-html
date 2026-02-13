@@ -1,5 +1,5 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
 export class DetailsTag extends Tag {
@@ -20,12 +20,12 @@ export class DetailsTag extends Tag {
 /** @internal */
 (DetailsTag.prototype as any)._sk = ['open', 'name'];
 
-export function Details(child: View = Empty()): DetailsTag {
-  return new DetailsTag("details", child);
+export function Details(...children: View[]): DetailsTag {
+  return new DetailsTag("details", ...children);
 }
 
-export function Summary(child: View = Empty()): Tag {
-  return El("summary", child);
+export function Summary(...children: View[]): Tag {
+  return El("summary", ...children);
 }
 
 export class DialogTag extends Tag {
@@ -40,6 +40,6 @@ export class DialogTag extends Tag {
 /** @internal */
 (DialogTag.prototype as any)._sk = ['open'];
 
-export function Dialog(child: View = Empty()): DialogTag {
-  return new DialogTag("dialog", child);
+export function Dialog(...children: View[]): DialogTag {
+  return new DialogTag("dialog", ...children);
 }

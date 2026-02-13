@@ -1,25 +1,25 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function Table(child: View = Empty()): Tag {
-  return El("table", child);
+export function Table(...children: View[]): Tag {
+  return El("table", ...children);
 }
 
-export function Thead(child: View = Empty()): Tag {
-  return El("thead", child);
+export function Thead(...children: View[]): Tag {
+  return El("thead", ...children);
 }
 
-export function Tbody(child: View = Empty()): Tag {
-  return El("tbody", child);
+export function Tbody(...children: View[]): Tag {
+  return El("tbody", ...children);
 }
 
-export function Tfoot(child: View = Empty()): Tag {
-  return El("tfoot", child);
+export function Tfoot(...children: View[]): Tag {
+  return El("tfoot", ...children);
 }
 
-export function Tr(child: View = Empty()): Tag {
-  return El("tr", child);
+export function Tr(...children: View[]): Tag {
+  return El("tr", ...children);
 }
 
 export class ThTag extends Tag {
@@ -46,8 +46,8 @@ export class ThTag extends Tag {
 /** @internal */
 (ThTag.prototype as any)._sk = ['colspan', 'rowspan', 'scope'];
 
-export function Th(child: View = Empty()): ThTag {
-  return new ThTag("th", child);
+export function Th(...children: View[]): ThTag {
+  return new ThTag("th", ...children);
 }
 
 export class TdTag extends Tag {
@@ -68,12 +68,12 @@ export class TdTag extends Tag {
 /** @internal */
 (TdTag.prototype as any)._sk = ['colspan', 'rowspan'];
 
-export function Td(child: View = Empty()): TdTag {
-  return new TdTag("td", child);
+export function Td(...children: View[]): TdTag {
+  return new TdTag("td", ...children);
 }
 
-export function Caption(child: View = Empty()): Tag {
-  return El("caption", child);
+export function Caption(...children: View[]): Tag {
+  return El("caption", ...children);
 }
 
 export class ColgroupTag extends Tag {
@@ -88,8 +88,8 @@ export class ColgroupTag extends Tag {
 /** @internal */
 (ColgroupTag.prototype as any)._sk = ['span'];
 
-export function Colgroup(child: View = Empty()): ColgroupTag {
-  return new ColgroupTag("colgroup", child);
+export function Colgroup(...children: View[]): ColgroupTag {
+  return new ColgroupTag("colgroup", ...children);
 }
 
 export class ColTag extends Tag {
@@ -104,6 +104,6 @@ export class ColTag extends Tag {
 /** @internal */
 (ColTag.prototype as any)._sk = ['span'];
 
-export function Col(child: View = Empty()): ColTag {
-  return new ColTag("col", child);
+export function Col(...children: View[]): ColTag {
+  return new ColTag("col", ...children);
 }

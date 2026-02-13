@@ -1,5 +1,5 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
 export class InputTag extends Tag {
@@ -116,8 +116,8 @@ export class InputTag extends Tag {
 /** @internal */
 (InputTag.prototype as any)._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
 
-export function Input(child: View = Empty()): InputTag {
-  return new InputTag("input", child);
+export function Input(...children: View[]): InputTag {
+  return new InputTag("input", ...children);
 }
 
 export class TextareaTag extends Tag {
@@ -192,8 +192,8 @@ export class TextareaTag extends Tag {
 /** @internal */
 (TextareaTag.prototype as any)._sk = ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly'];
 
-export function Textarea(child: View = Empty()): TextareaTag {
-  return new TextareaTag("textarea", child);
+export function Textarea(...children: View[]): TextareaTag {
+  return new TextareaTag("textarea", ...children);
 }
 
 export class ButtonTag extends Tag {
@@ -238,8 +238,8 @@ export class ButtonTag extends Tag {
 /** @internal */
 (ButtonTag.prototype as any)._sk = ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod'];
 
-export function Button(child: View = Empty()): ButtonTag {
-  return new ButtonTag("button", child);
+export function Button(...children: View[]): ButtonTag {
+  return new ButtonTag("button", ...children);
 }
 
 export class LabelTag extends Tag {
@@ -254,8 +254,8 @@ export class LabelTag extends Tag {
 /** @internal */
 (LabelTag.prototype as any)._sk = ['for'];
 
-export function Label(child: View = Empty()): LabelTag {
-  return new LabelTag("label", child);
+export function Label(...children: View[]): LabelTag {
+  return new LabelTag("label", ...children);
 }
 
 export class FormTag extends Tag {
@@ -300,8 +300,8 @@ export class FormTag extends Tag {
 /** @internal */
 (FormTag.prototype as any)._sk = ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete'];
 
-export function Form(child: View = Empty()): FormTag {
-  return new FormTag("form", child);
+export function Form(...children: View[]): FormTag {
+  return new FormTag("form", ...children);
 }
 
 export class SelectTag extends Tag {
@@ -340,8 +340,8 @@ export class SelectTag extends Tag {
 /** @internal */
 (SelectTag.prototype as any)._sk = ['name', 'multiple', 'size', 'disabled', 'autofocus'];
 
-export function Select(child: View = Empty()): SelectTag {
-  return new SelectTag("select", child);
+export function Select(...children: View[]): SelectTag {
+  return new SelectTag("select", ...children);
 }
 
 export class OptionTag extends Tag {
@@ -374,8 +374,8 @@ export class OptionTag extends Tag {
 /** @internal */
 (OptionTag.prototype as any)._sk = ['value', 'selected', 'disabled', 'label'];
 
-export function Option(child: View = Empty()): OptionTag {
-  return new OptionTag("option", child);
+export function Option(...children: View[]): OptionTag {
+  return new OptionTag("option", ...children);
 }
 
 export class OptgroupTag extends Tag {
@@ -396,12 +396,12 @@ export class OptgroupTag extends Tag {
 /** @internal */
 (OptgroupTag.prototype as any)._sk = ['label', 'disabled'];
 
-export function Optgroup(child: View = Empty()): OptgroupTag {
-  return new OptgroupTag("optgroup", child);
+export function Optgroup(...children: View[]): OptgroupTag {
+  return new OptgroupTag("optgroup", ...children);
 }
 
-export function Datalist(child: View = Empty()): Tag {
-  return El("datalist", child);
+export function Datalist(...children: View[]): Tag {
+  return El("datalist", ...children);
 }
 
 export class FieldsetTag extends Tag {
@@ -422,12 +422,12 @@ export class FieldsetTag extends Tag {
 /** @internal */
 (FieldsetTag.prototype as any)._sk = ['name', 'disabled'];
 
-export function Fieldset(child: View = Empty()): FieldsetTag {
-  return new FieldsetTag("fieldset", child);
+export function Fieldset(...children: View[]): FieldsetTag {
+  return new FieldsetTag("fieldset", ...children);
 }
 
-export function Legend(child: View = Empty()): Tag {
-  return El("legend", child);
+export function Legend(...children: View[]): Tag {
+  return El("legend", ...children);
 }
 
 export class OutputTag extends Tag {
@@ -448,6 +448,6 @@ export class OutputTag extends Tag {
 /** @internal */
 (OutputTag.prototype as any)._sk = ['for', 'name'];
 
-export function Output(child: View = Empty()): OutputTag {
-  return new OutputTag("output", child);
+export function Output(...children: View[]): OutputTag {
+  return new OutputTag("output", ...children);
 }

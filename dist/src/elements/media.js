@@ -52,11 +52,11 @@ class ImgTag extends tag_js_1.Tag {
 exports.ImgTag = ImgTag;
 /** @internal */
 ImgTag.prototype._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
-function Img(child = (0, utils_js_1.Empty)()) {
-    return new ImgTag("img", child);
+function Img(...children) {
+    return new ImgTag("img", ...children);
 }
-function Picture(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("picture", child);
+function Picture(...children) {
+    return (0, utils_js_1.El)("picture", ...children);
 }
 class SourceTag extends tag_js_1.Tag {
     setSrc(src) {
@@ -83,8 +83,8 @@ class SourceTag extends tag_js_1.Tag {
 exports.SourceTag = SourceTag;
 /** @internal */
 SourceTag.prototype._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
-function Source(child = (0, utils_js_1.Empty)()) {
-    return new SourceTag("source", child);
+function Source(...children) {
+    return new SourceTag("source", ...children);
 }
 class VideoTag extends tag_js_1.Tag {
     setWidth(width) {
@@ -131,8 +131,8 @@ class VideoTag extends tag_js_1.Tag {
 exports.VideoTag = VideoTag;
 /** @internal */
 VideoTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
-function Video(child = (0, utils_js_1.Empty)()) {
-    return new VideoTag("video", child);
+function Video(...children) {
+    return new VideoTag("video", ...children);
 }
 class AudioTag extends tag_js_1.Tag {
     setSrc(src) {
@@ -163,8 +163,8 @@ class AudioTag extends tag_js_1.Tag {
 exports.AudioTag = AudioTag;
 /** @internal */
 AudioTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
-function Audio(child = (0, utils_js_1.Empty)()) {
-    return new AudioTag("audio", child);
+function Audio(...children) {
+    return new AudioTag("audio", ...children);
 }
 class TrackTag extends tag_js_1.Tag {
     setSrc(src) {
@@ -191,8 +191,8 @@ class TrackTag extends tag_js_1.Tag {
 exports.TrackTag = TrackTag;
 /** @internal */
 TrackTag.prototype._sk = ['src', 'kind', 'srclang', 'label', 'default'];
-function Track(child = (0, utils_js_1.Empty)()) {
-    return new TrackTag("track", child);
+function Track(...children) {
+    return new TrackTag("track", ...children);
 }
 class CanvasTag extends tag_js_1.Tag {
     setWidth(width) {
@@ -207,8 +207,8 @@ class CanvasTag extends tag_js_1.Tag {
 exports.CanvasTag = CanvasTag;
 /** @internal */
 CanvasTag.prototype._sk = ['width', 'height'];
-function Canvas(child = (0, utils_js_1.Empty)()) {
-    return new CanvasTag("canvas", child);
+function Canvas(...children) {
+    return new CanvasTag("canvas", ...children);
 }
 class SvgTag extends tag_js_1.Tag {
     setWidth(width) {
@@ -239,7 +239,7 @@ class SvgTag extends tag_js_1.Tag {
 exports.SvgTag = SvgTag;
 /** @internal */
 SvgTag.prototype._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke'];
-function Svg(child = (0, utils_js_1.Empty)()) {
-    return new SvgTag("svg", child);
+function Svg(...children) {
+    return new SvgTag("svg", ...children);
 }
 //# sourceMappingURL=media.js.map

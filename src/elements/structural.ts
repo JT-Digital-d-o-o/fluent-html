@@ -1,55 +1,55 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function Div(child: View = Empty()): Tag {
-  return El("div", child);
+export function Div(...children: View[]): Tag {
+  return El("div", ...children);
 }
 
-export function Main(child: View = Empty()): Tag {
-  return El("main", child);
+export function Main(...children: View[]): Tag {
+  return El("main", ...children);
 }
 
-export function Header(child: View = Empty()): Tag {
-  return El("header", child);
+export function Header(...children: View[]): Tag {
+  return El("header", ...children);
 }
 
-export function Footer(child: View = Empty()): Tag {
-  return El("footer", child);
+export function Footer(...children: View[]): Tag {
+  return El("footer", ...children);
 }
 
-export function Section(child: View = Empty()): Tag {
-  return El("section", child);
+export function Section(...children: View[]): Tag {
+  return El("section", ...children);
 }
 
-export function Article(child: View = Empty()): Tag {
-  return El("article", child);
+export function Article(...children: View[]): Tag {
+  return El("article", ...children);
 }
 
-export function Nav(child: View = Empty()): Tag {
-  return El("nav", child);
+export function Nav(...children: View[]): Tag {
+  return El("nav", ...children);
 }
 
-export function Aside(child: View = Empty()): Tag {
-  return El("aside", child);
+export function Aside(...children: View[]): Tag {
+  return El("aside", ...children);
 }
 
-export function Figure(child: View = Empty()): Tag {
-  return El("figure", child);
+export function Figure(...children: View[]): Tag {
+  return El("figure", ...children);
 }
 
-export function Figcaption(child: View = Empty()): Tag {
-  return El("figcaption", child);
+export function Figcaption(...children: View[]): Tag {
+  return El("figcaption", ...children);
 }
 
-export function Address(child: View = Empty()): Tag {
-  return El("address", child);
+export function Address(...children: View[]): Tag {
+  return El("address", ...children);
 }
 
-export function Hgroup(child: View = Empty()): Tag {
-  return El("hgroup", child);
+export function Hgroup(...children: View[]): Tag {
+  return El("hgroup", ...children);
 }
 
-export function Search(child: View = Empty()): Tag {
-  return El("search", child);
+export function Search(...children: View[]): Tag {
+  return El("search", ...children);
 }

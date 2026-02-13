@@ -6,7 +6,6 @@ exports.Data = Data;
 exports.Progress = Progress;
 exports.Meter = Meter;
 const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
 class TimeTag extends tag_js_1.Tag {
     setDatetime(datetime) {
         this.datetime = datetime;
@@ -16,8 +15,8 @@ class TimeTag extends tag_js_1.Tag {
 exports.TimeTag = TimeTag;
 /** @internal */
 TimeTag.prototype._sk = ['datetime'];
-function Time(child = (0, utils_js_1.Empty)()) {
-    return new TimeTag("time", child);
+function Time(...children) {
+    return new TimeTag("time", ...children);
 }
 class DataTag extends tag_js_1.Tag {
     setValue(value) {
@@ -28,8 +27,8 @@ class DataTag extends tag_js_1.Tag {
 exports.DataTag = DataTag;
 /** @internal */
 DataTag.prototype._sk = ['value'];
-function Data(child = (0, utils_js_1.Empty)()) {
-    return new DataTag("data", child);
+function Data(...children) {
+    return new DataTag("data", ...children);
 }
 class ProgressTag extends tag_js_1.Tag {
     setValue(value) {
@@ -44,8 +43,8 @@ class ProgressTag extends tag_js_1.Tag {
 exports.ProgressTag = ProgressTag;
 /** @internal */
 ProgressTag.prototype._sk = ['value', 'max'];
-function Progress(child = (0, utils_js_1.Empty)()) {
-    return new ProgressTag("progress", child);
+function Progress(...children) {
+    return new ProgressTag("progress", ...children);
 }
 class MeterTag extends tag_js_1.Tag {
     setValue(value) {
@@ -76,7 +75,7 @@ class MeterTag extends tag_js_1.Tag {
 exports.MeterTag = MeterTag;
 /** @internal */
 MeterTag.prototype._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
-function Meter(child = (0, utils_js_1.Empty)()) {
-    return new MeterTag("meter", child);
+function Meter(...children) {
+    return new MeterTag("meter", ...children);
 }
 //# sourceMappingURL=data.js.map

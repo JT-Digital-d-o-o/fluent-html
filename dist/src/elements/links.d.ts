@@ -14,12 +14,12 @@ export declare class AnchorTag extends Tag {
     setType(type?: string): this;
     setReferrerpolicy(referrerpolicy?: string): this;
 }
-export declare function A(child?: View): AnchorTag;
+export declare function A(...children: View[]): AnchorTag;
 export declare class MapTag extends Tag {
     name?: string;
     setName(name?: string): this;
 }
-export declare function MapEl(child?: View): MapTag;
+export declare function MapEl(...children: View[]): MapTag;
 export declare class AreaTag extends Tag {
     shape?: 'rect' | 'circle' | 'poly' | 'default';
     coords?: string;
@@ -36,5 +36,5 @@ export declare class AreaTag extends Tag {
     setRel(rel?: string): this;
     setDownload(download?: string): this;
 }
-export declare function Area(child?: View): AreaTag;
+export declare function Area(...children: View[]): AreaTag;
 //# sourceMappingURL=links.d.ts.map

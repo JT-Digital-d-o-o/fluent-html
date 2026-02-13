@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SlotTag = void 0;
 exports.Slot = Slot;
 const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
 class SlotTag extends tag_js_1.Tag {
     setName(name) {
         this.name = name;
@@ -13,7 +12,7 @@ class SlotTag extends tag_js_1.Tag {
 exports.SlotTag = SlotTag;
 /** @internal */
 SlotTag.prototype._sk = ['name'];
-function Slot(child = (0, utils_js_1.Empty)()) {
-    return new SlotTag("slot", child);
+function Slot(...children) {
+    return new SlotTag("slot", ...children);
 }
 //# sourceMappingURL=webcomponents.js.map

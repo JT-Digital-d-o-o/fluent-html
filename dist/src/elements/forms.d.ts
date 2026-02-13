@@ -38,7 +38,7 @@ export declare class InputTag extends Tag {
     setMultiple(multiple?: boolean): this;
     setList(list?: string): this;
 }
-export declare function Input(child?: View): InputTag;
+export declare function Input(...children: View[]): InputTag;
 export declare class TextareaTag extends Tag {
     placeholder?: string;
     name?: string;
@@ -63,7 +63,7 @@ export declare class TextareaTag extends Tag {
     setDisabled(disabled?: boolean): this;
     setReadonly(readonly?: boolean): this;
 }
-export declare function Textarea(child?: View): TextareaTag;
+export declare function Textarea(...children: View[]): TextareaTag;
 export declare class ButtonTag extends Tag {
     type?: 'submit' | 'reset' | 'button';
     name?: string;
@@ -78,12 +78,12 @@ export declare class ButtonTag extends Tag {
     setFormaction(formaction?: string): this;
     setFormmethod(formmethod?: string): this;
 }
-export declare function Button(child?: View): ButtonTag;
+export declare function Button(...children: View[]): ButtonTag;
 export declare class LabelTag extends Tag {
     for?: string;
     setFor(forId?: string): this;
 }
-export declare function Label(child?: View): LabelTag;
+export declare function Label(...children: View[]): LabelTag;
 export declare class FormTag extends Tag {
     action?: string;
     method?: string;
@@ -98,7 +98,7 @@ export declare class FormTag extends Tag {
     setNovalidate(novalidate?: boolean): this;
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
 }
-export declare function Form(child?: View): FormTag;
+export declare function Form(...children: View[]): FormTag;
 export declare class SelectTag extends Tag {
     name?: string;
     multiple?: boolean;
@@ -111,7 +111,7 @@ export declare class SelectTag extends Tag {
     setDisabled(disabled?: boolean): this;
     setAutofocus(autofocus?: boolean): this;
 }
-export declare function Select(child?: View): SelectTag;
+export declare function Select(...children: View[]): SelectTag;
 export declare class OptionTag extends Tag {
     value?: string;
     selected?: boolean;
@@ -122,28 +122,28 @@ export declare class OptionTag extends Tag {
     setDisabled(disabled?: boolean): this;
     setLabel(label?: string): this;
 }
-export declare function Option(child?: View): OptionTag;
+export declare function Option(...children: View[]): OptionTag;
 export declare class OptgroupTag extends Tag {
     label?: string;
     disabled?: boolean;
     setLabel(label?: string): this;
     setDisabled(disabled?: boolean): this;
 }
-export declare function Optgroup(child?: View): OptgroupTag;
-export declare function Datalist(child?: View): Tag;
+export declare function Optgroup(...children: View[]): OptgroupTag;
+export declare function Datalist(...children: View[]): Tag;
 export declare class FieldsetTag extends Tag {
     name?: string;
     disabled?: boolean;
     setName(name?: string): this;
     setDisabled(disabled?: boolean): this;
 }
-export declare function Fieldset(child?: View): FieldsetTag;
-export declare function Legend(child?: View): Tag;
+export declare function Fieldset(...children: View[]): FieldsetTag;
+export declare function Legend(...children: View[]): Tag;
 export declare class OutputTag extends Tag {
     for?: string;
     name?: string;
     setFor(forId?: string): this;
     setName(name?: string): this;
 }
-export declare function Output(child?: View): OutputTag;
+export declare function Output(...children: View[]): OutputTag;
 //# sourceMappingURL=forms.d.ts.map

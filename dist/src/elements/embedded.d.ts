@@ -22,7 +22,7 @@ export declare class IframeTag extends Tag {
     setName(name?: string): this;
     setReferrerpolicy(referrerpolicy?: string): this;
 }
-export declare function Iframe(child?: View): IframeTag;
+export declare function Iframe(...children: View[]): IframeTag;
 export declare class ObjectTag extends Tag {
     data?: string;
     type?: string;
@@ -35,7 +35,7 @@ export declare class ObjectTag extends Tag {
     setHeight(height?: string): this;
     setName(name?: string): this;
 }
-export declare function ObjectEl(child?: View): ObjectTag;
+export declare function ObjectEl(...children: View[]): ObjectTag;
 export declare class EmbedTag extends Tag {
     src?: string;
     type?: string;
@@ -46,5 +46,5 @@ export declare class EmbedTag extends Tag {
     setWidth(width?: string): this;
     setHeight(height?: string): this;
 }
-export declare function Embed(child?: View): EmbedTag;
+export declare function Embed(...children: View[]): EmbedTag;
 //# sourceMappingURL=embedded.d.ts.map

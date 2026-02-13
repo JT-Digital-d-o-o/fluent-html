@@ -14,43 +14,43 @@ exports.Address = Address;
 exports.Hgroup = Hgroup;
 exports.Search = Search;
 const utils_js_1 = require("../core/utils.js");
-function Div(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("div", child);
+function Div(...children) {
+    return (0, utils_js_1.El)("div", ...children);
 }
-function Main(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("main", child);
+function Main(...children) {
+    return (0, utils_js_1.El)("main", ...children);
 }
-function Header(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("header", child);
+function Header(...children) {
+    return (0, utils_js_1.El)("header", ...children);
 }
-function Footer(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("footer", child);
+function Footer(...children) {
+    return (0, utils_js_1.El)("footer", ...children);
 }
-function Section(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("section", child);
+function Section(...children) {
+    return (0, utils_js_1.El)("section", ...children);
 }
-function Article(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("article", child);
+function Article(...children) {
+    return (0, utils_js_1.El)("article", ...children);
 }
-function Nav(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("nav", child);
+function Nav(...children) {
+    return (0, utils_js_1.El)("nav", ...children);
 }
-function Aside(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("aside", child);
+function Aside(...children) {
+    return (0, utils_js_1.El)("aside", ...children);
 }
-function Figure(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("figure", child);
+function Figure(...children) {
+    return (0, utils_js_1.El)("figure", ...children);
 }
-function Figcaption(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("figcaption", child);
+function Figcaption(...children) {
+    return (0, utils_js_1.El)("figcaption", ...children);
 }
-function Address(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("address", child);
+function Address(...children) {
+    return (0, utils_js_1.El)("address", ...children);
 }
-function Hgroup(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("hgroup", child);
+function Hgroup(...children) {
+    return (0, utils_js_1.El)("hgroup", ...children);
 }
-function Search(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("search", child);
+function Search(...children) {
+    return (0, utils_js_1.El)("search", ...children);
 }
 //# sourceMappingURL=structural.js.map

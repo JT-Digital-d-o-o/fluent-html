@@ -19,11 +19,11 @@ class DetailsTag extends tag_js_1.Tag {
 exports.DetailsTag = DetailsTag;
 /** @internal */
 DetailsTag.prototype._sk = ['open', 'name'];
-function Details(child = (0, utils_js_1.Empty)()) {
-    return new DetailsTag("details", child);
+function Details(...children) {
+    return new DetailsTag("details", ...children);
 }
-function Summary(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("summary", child);
+function Summary(...children) {
+    return (0, utils_js_1.El)("summary", ...children);
 }
 class DialogTag extends tag_js_1.Tag {
     setOpen(open = true) {
@@ -34,7 +34,7 @@ class DialogTag extends tag_js_1.Tag {
 exports.DialogTag = DialogTag;
 /** @internal */
 DialogTag.prototype._sk = ['open'];
-function Dialog(child = (0, utils_js_1.Empty)()) {
-    return new DialogTag("dialog", child);
+function Dialog(...children) {
+    return new DialogTag("dialog", ...children);
 }
 //# sourceMappingURL=interactive.js.map

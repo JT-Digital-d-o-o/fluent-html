@@ -4,19 +4,19 @@ export declare class TimeTag extends Tag {
     datetime?: string;
     setDatetime(datetime?: string): this;
 }
-export declare function Time(child?: View): TimeTag;
+export declare function Time(...children: View[]): TimeTag;
 export declare class DataTag extends Tag {
     value?: string;
     setValue(value?: string): this;
 }
-export declare function Data(child?: View): DataTag;
+export declare function Data(...children: View[]): DataTag;
 export declare class ProgressTag extends Tag {
     value?: number;
     max?: number;
     setValue(value?: number): this;
     setMax(max?: number): this;
 }
-export declare function Progress(child?: View): ProgressTag;
+export declare function Progress(...children: View[]): ProgressTag;
 export declare class MeterTag extends Tag {
     value?: number;
     min?: number;
@@ -31,5 +31,5 @@ export declare class MeterTag extends Tag {
     setHigh(high?: number): this;
     setOptimum(optimum?: number): this;
 }
-export declare function Meter(child?: View): MeterTag;
+export declare function Meter(...children: View[]): MeterTag;
 //# sourceMappingURL=data.d.ts.map

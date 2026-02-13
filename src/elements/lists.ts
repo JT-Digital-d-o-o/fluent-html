@@ -1,31 +1,31 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function Ul(child: View = Empty()): Tag {
-  return El("ul", child);
+export function Ul(...children: View[]): Tag {
+  return El("ul", ...children);
 }
 
-export function Ol(child: View = Empty()): Tag {
-  return El("ol", child);
+export function Ol(...children: View[]): Tag {
+  return El("ol", ...children);
 }
 
-export function Li(child: View = Empty()): Tag {
-  return El("li", child);
+export function Li(...children: View[]): Tag {
+  return El("li", ...children);
 }
 
-export function Dl(child: View = Empty()): Tag {
-  return El("dl", child);
+export function Dl(...children: View[]): Tag {
+  return El("dl", ...children);
 }
 
-export function Dt(child: View = Empty()): Tag {
-  return El("dt", child);
+export function Dt(...children: View[]): Tag {
+  return El("dt", ...children);
 }
 
-export function Dd(child: View = Empty()): Tag {
-  return El("dd", child);
+export function Dd(...children: View[]): Tag {
+  return El("dd", ...children);
 }
 
-export function Menu(child: View = Empty()): Tag {
-  return El("menu", child);
+export function Menu(...children: View[]): Tag {
+  return El("menu", ...children);
 }

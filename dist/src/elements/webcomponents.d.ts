@@ -4,5 +4,5 @@ export declare class SlotTag extends Tag {
     name?: string;
     setName(name?: string): this;
 }
-export declare function Slot(child?: View): SlotTag;
+export declare function Slot(...children: View[]): SlotTag;
 //# sourceMappingURL=webcomponents.d.ts.map

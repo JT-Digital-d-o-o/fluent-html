@@ -5,7 +5,6 @@ exports.Iframe = Iframe;
 exports.ObjectEl = ObjectEl;
 exports.Embed = Embed;
 const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
 class IframeTag extends tag_js_1.Tag {
     setSrc(src) {
         this.src = src;
@@ -51,8 +50,8 @@ class IframeTag extends tag_js_1.Tag {
 exports.IframeTag = IframeTag;
 /** @internal */
 IframeTag.prototype._sk = ['src', 'srcdoc', 'width', 'height', 'allow', 'allowfullscreen', 'sandbox', 'loading', 'name', 'referrerpolicy'];
-function Iframe(child = (0, utils_js_1.Empty)()) {
-    return new IframeTag("iframe", child);
+function Iframe(...children) {
+    return new IframeTag("iframe", ...children);
 }
 class ObjectTag extends tag_js_1.Tag {
     setData(data) {
@@ -79,8 +78,8 @@ class ObjectTag extends tag_js_1.Tag {
 exports.ObjectTag = ObjectTag;
 /** @internal */
 ObjectTag.prototype._sk = ['data', 'type', 'width', 'height', 'name'];
-function ObjectEl(child = (0, utils_js_1.Empty)()) {
-    return new ObjectTag("object", child);
+function ObjectEl(...children) {
+    return new ObjectTag("object", ...children);
 }
 class EmbedTag extends tag_js_1.Tag {
     setSrc(src) {
@@ -103,7 +102,7 @@ class EmbedTag extends tag_js_1.Tag {
 exports.EmbedTag = EmbedTag;
 /** @internal */
 EmbedTag.prototype._sk = ['src', 'type', 'width', 'height'];
-function Embed(child = (0, utils_js_1.Empty)()) {
-    return new EmbedTag("embed", child);
+function Embed(...children) {
+    return new EmbedTag("embed", ...children);
 }
 //# sourceMappingURL=embedded.js.map

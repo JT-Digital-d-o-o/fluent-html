@@ -15,7 +15,7 @@ export declare class Tag {
     toggles?: string[];
     /** @internal type discriminant for fast render checks */
     readonly _t: 1;
-    constructor(element: string, child?: View);
+    constructor(element: string, ...children: View[]);
     setId(id?: string | Id): this;
     setClass(c?: string): this;
     addClass(c: string): this;

@@ -1,53 +1,53 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function P(child: View = Empty()): Tag {
-  return El("p", child);
+export function P(...children: View[]): Tag {
+  return El("p", ...children);
 }
 
-export function H1(child: View = Empty()): Tag {
-  return El("h1", child);
+export function H1(...children: View[]): Tag {
+  return El("h1", ...children);
 }
 
-export function H2(child: View = Empty()): Tag {
-  return El("h2", child);
+export function H2(...children: View[]): Tag {
+  return El("h2", ...children);
 }
 
-export function H3(child: View = Empty()): Tag {
-  return El("h3", child);
+export function H3(...children: View[]): Tag {
+  return El("h3", ...children);
 }
 
-export function H4(child: View = Empty()): Tag {
-  return El("h4", child);
+export function H4(...children: View[]): Tag {
+  return El("h4", ...children);
 }
 
-export function H5(child: View = Empty()): Tag {
-  return El("h5", child);
+export function H5(...children: View[]): Tag {
+  return El("h5", ...children);
 }
 
-export function H6(child: View = Empty()): Tag {
-  return El("h6", child);
+export function H6(...children: View[]): Tag {
+  return El("h6", ...children);
 }
 
-export function Span(child: View = Empty()): Tag {
-  return El("span", child);
+export function Span(...children: View[]): Tag {
+  return El("span", ...children);
 }
 
-export function Blockquote(child: View = Empty()): Tag {
-  return El("blockquote", child);
+export function Blockquote(...children: View[]): Tag {
+  return El("blockquote", ...children);
 }
 
-export function Pre(child: View = Empty()): Tag {
-  return El("pre", child);
+export function Pre(...children: View[]): Tag {
+  return El("pre", ...children);
 }
 
-export function Code(child: View = Empty()): Tag {
-  return El("code", child);
+export function Code(...children: View[]): Tag {
+  return El("code", ...children);
 }
 
-export function Hr(child: View = Empty()): Tag {
-  return El("hr", child);
+export function Hr(...children: View[]): Tag {
+  return El("hr", ...children);
 }
 
 export function Br(): Tag {

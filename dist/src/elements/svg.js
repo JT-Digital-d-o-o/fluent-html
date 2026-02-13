@@ -13,40 +13,40 @@ exports.Use = Use;
 exports.Text = Text;
 exports.Tspan = Tspan;
 const utils_js_1 = require("../core/utils.js");
-function Path(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("path", child);
+function Path(...children) {
+    return (0, utils_js_1.El)("path", ...children);
 }
-function Circle(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("circle", child);
+function Circle(...children) {
+    return (0, utils_js_1.El)("circle", ...children);
 }
-function Rect(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("rect", child);
+function Rect(...children) {
+    return (0, utils_js_1.El)("rect", ...children);
 }
-function Line(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("line", child);
+function Line(...children) {
+    return (0, utils_js_1.El)("line", ...children);
 }
-function Polygon(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("polygon", child);
+function Polygon(...children) {
+    return (0, utils_js_1.El)("polygon", ...children);
 }
-function Polyline(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("polyline", child);
+function Polyline(...children) {
+    return (0, utils_js_1.El)("polyline", ...children);
 }
-function Ellipse(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("ellipse", child);
+function Ellipse(...children) {
+    return (0, utils_js_1.El)("ellipse", ...children);
 }
-function G(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("g", child);
+function G(...children) {
+    return (0, utils_js_1.El)("g", ...children);
 }
-function Defs(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("defs", child);
+function Defs(...children) {
+    return (0, utils_js_1.El)("defs", ...children);
 }
-function Use(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("use", child);
+function Use(...children) {
+    return (0, utils_js_1.El)("use", ...children);
 }
-function Text(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("text", child);
+function Text(...children) {
+    return (0, utils_js_1.El)("text", ...children);
 }
-function Tspan(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("tspan", child);
+function Tspan(...children) {
+    return (0, utils_js_1.El)("tspan", ...children);
 }
 //# sourceMappingURL=svg.js.map

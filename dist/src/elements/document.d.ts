@@ -1,9 +1,9 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-export declare function HTML(child?: View): Tag;
-export declare function Head(child?: View): Tag;
-export declare function Body(child?: View): Tag;
-export declare function Title(child?: View): Tag;
+export declare function HTML(...children: View[]): Tag;
+export declare function Head(...children: View[]): Tag;
+export declare function Body(...children: View[]): Tag;
+export declare function Title(...children: View[]): Tag;
 export declare class MetaTag extends Tag {
     name?: string;
     content?: string;
@@ -50,8 +50,8 @@ export declare class BaseTag extends Tag {
     setTarget(target?: string): this;
 }
 export declare function Base(): BaseTag;
-export declare function Noscript(child?: View): Tag;
-export declare function Template(child?: View): Tag;
+export declare function Noscript(...children: View[]): Tag;
+export declare function Template(...children: View[]): Tag;
 export declare class ScriptTag extends Tag {
     src?: string;
     type?: string;

@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import { Empty } from "../core/utils.js";
+
 
 export class IframeTag extends Tag {
   src?: string;
@@ -68,8 +68,8 @@ export class IframeTag extends Tag {
 /** @internal */
 (IframeTag.prototype as any)._sk = ['src', 'srcdoc', 'width', 'height', 'allow', 'allowfullscreen', 'sandbox', 'loading', 'name', 'referrerpolicy'];
 
-export function Iframe(child: View = Empty()): IframeTag {
-  return new IframeTag("iframe", child);
+export function Iframe(...children: View[]): IframeTag {
+  return new IframeTag("iframe", ...children);
 }
 
 export class ObjectTag extends Tag {
@@ -108,8 +108,8 @@ export class ObjectTag extends Tag {
 /** @internal */
 (ObjectTag.prototype as any)._sk = ['data', 'type', 'width', 'height', 'name'];
 
-export function ObjectEl(child: View = Empty()): ObjectTag {
-  return new ObjectTag("object", child);
+export function ObjectEl(...children: View[]): ObjectTag {
+  return new ObjectTag("object", ...children);
 }
 
 export class EmbedTag extends Tag {
@@ -142,6 +142,6 @@ export class EmbedTag extends Tag {
 /** @internal */
 (EmbedTag.prototype as any)._sk = ['src', 'type', 'width', 'height'];
 
-export function Embed(child: View = Empty()): EmbedTag {
-  return new EmbedTag("embed", child);
+export function Embed(...children: View[]): EmbedTag {
+  return new EmbedTag("embed", ...children);
 }

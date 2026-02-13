@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import { Empty } from "../core/utils.js";
+
 
 export class TimeTag extends Tag {
   datetime?: string;
@@ -14,8 +14,8 @@ export class TimeTag extends Tag {
 /** @internal */
 (TimeTag.prototype as any)._sk = ['datetime'];
 
-export function Time(child: View = Empty()): TimeTag {
-  return new TimeTag("time", child);
+export function Time(...children: View[]): TimeTag {
+  return new TimeTag("time", ...children);
 }
 
 export class DataTag extends Tag {
@@ -30,8 +30,8 @@ export class DataTag extends Tag {
 /** @internal */
 (DataTag.prototype as any)._sk = ['value'];
 
-export function Data(child: View = Empty()): DataTag {
-  return new DataTag("data", child);
+export function Data(...children: View[]): DataTag {
+  return new DataTag("data", ...children);
 }
 
 export class ProgressTag extends Tag {
@@ -52,8 +52,8 @@ export class ProgressTag extends Tag {
 /** @internal */
 (ProgressTag.prototype as any)._sk = ['value', 'max'];
 
-export function Progress(child: View = Empty()): ProgressTag {
-  return new ProgressTag("progress", child);
+export function Progress(...children: View[]): ProgressTag {
+  return new ProgressTag("progress", ...children);
 }
 
 export class MeterTag extends Tag {
@@ -98,6 +98,6 @@ export class MeterTag extends Tag {
 /** @internal */
 (MeterTag.prototype as any)._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
 
-export function Meter(child: View = Empty()): MeterTag {
-  return new MeterTag("meter", child);
+export function Meter(...children: View[]): MeterTag {
+  return new MeterTag("meter", ...children);
 }

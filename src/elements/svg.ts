@@ -1,51 +1,51 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function Path(child: View = Empty()): Tag {
-  return El("path", child);
+export function Path(...children: View[]): Tag {
+  return El("path", ...children);
 }
 
-export function Circle(child: View = Empty()): Tag {
-  return El("circle", child);
+export function Circle(...children: View[]): Tag {
+  return El("circle", ...children);
 }
 
-export function Rect(child: View = Empty()): Tag {
-  return El("rect", child);
+export function Rect(...children: View[]): Tag {
+  return El("rect", ...children);
 }
 
-export function Line(child: View = Empty()): Tag {
-  return El("line", child);
+export function Line(...children: View[]): Tag {
+  return El("line", ...children);
 }
 
-export function Polygon(child: View = Empty()): Tag {
-  return El("polygon", child);
+export function Polygon(...children: View[]): Tag {
+  return El("polygon", ...children);
 }
 
-export function Polyline(child: View = Empty()): Tag {
-  return El("polyline", child);
+export function Polyline(...children: View[]): Tag {
+  return El("polyline", ...children);
 }
 
-export function Ellipse(child: View = Empty()): Tag {
-  return El("ellipse", child);
+export function Ellipse(...children: View[]): Tag {
+  return El("ellipse", ...children);
 }
 
-export function G(child: View = Empty()): Tag {
-  return El("g", child);
+export function G(...children: View[]): Tag {
+  return El("g", ...children);
 }
 
-export function Defs(child: View = Empty()): Tag {
-  return El("defs", child);
+export function Defs(...children: View[]): Tag {
+  return El("defs", ...children);
 }
 
-export function Use(child: View = Empty()): Tag {
-  return El("use", child);
+export function Use(...children: View[]): Tag {
+  return El("use", ...children);
 }
 
-export function Text(child: View = Empty()): Tag {
-  return El("text", child);
+export function Text(...children: View[]): Tag {
+  return El("text", ...children);
 }
 
-export function Tspan(child: View = Empty()): Tag {
-  return El("tspan", child);
+export function Tspan(...children: View[]): Tag {
+  return El("tspan", ...children);
 }

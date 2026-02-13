@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import { Empty } from "../core/utils.js";
+
 
 export class AnchorTag extends Tag {
   href?: string;
@@ -44,8 +44,8 @@ export class AnchorTag extends Tag {
 /** @internal */
 (AnchorTag.prototype as any)._sk = ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy'];
 
-export function A(child: View = Empty()): AnchorTag {
-  return new AnchorTag("a", child);
+export function A(...children: View[]): AnchorTag {
+  return new AnchorTag("a", ...children);
 }
 
 export class MapTag extends Tag {
@@ -60,8 +60,8 @@ export class MapTag extends Tag {
 /** @internal */
 (MapTag.prototype as any)._sk = ['name'];
 
-export function MapEl(child: View = Empty()): MapTag {
-  return new MapTag("map", child);
+export function MapEl(...children: View[]): MapTag {
+  return new MapTag("map", ...children);
 }
 
 export class AreaTag extends Tag {
@@ -112,6 +112,6 @@ export class AreaTag extends Tag {
 /** @internal */
 (AreaTag.prototype as any)._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
 
-export function Area(child: View = Empty()): AreaTag {
-  return new AreaTag("area", child);
+export function Area(...children: View[]): AreaTag {
+  return new AreaTag("area", ...children);
 }

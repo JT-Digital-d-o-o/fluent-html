@@ -1,91 +1,91 @@
 import { Tag } from "../core/tag.js";
-import { El, Empty } from "../core/utils.js";
+import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function Strong(child: View = Empty()): Tag {
-  return El("strong", child);
+export function Strong(...children: View[]): Tag {
+  return El("strong", ...children);
 }
 
-export function Em(child: View = Empty()): Tag {
-  return El("em", child);
+export function Em(...children: View[]): Tag {
+  return El("em", ...children);
 }
 
-export function B(child: View = Empty()): Tag {
-  return El("b", child);
+export function B(...children: View[]): Tag {
+  return El("b", ...children);
 }
 
-export function I(child: View = Empty()): Tag {
-  return El("i", child);
+export function I(...children: View[]): Tag {
+  return El("i", ...children);
 }
 
-export function U(child: View = Empty()): Tag {
-  return El("u", child);
+export function U(...children: View[]): Tag {
+  return El("u", ...children);
 }
 
-export function S(child: View = Empty()): Tag {
-  return El("s", child);
+export function S(...children: View[]): Tag {
+  return El("s", ...children);
 }
 
-export function Mark(child: View = Empty()): Tag {
-  return El("mark", child);
+export function Mark(...children: View[]): Tag {
+  return El("mark", ...children);
 }
 
-export function Small(child: View = Empty()): Tag {
-  return El("small", child);
+export function Small(...children: View[]): Tag {
+  return El("small", ...children);
 }
 
-export function Sub(child: View = Empty()): Tag {
-  return El("sub", child);
+export function Sub(...children: View[]): Tag {
+  return El("sub", ...children);
 }
 
-export function Sup(child: View = Empty()): Tag {
-  return El("sup", child);
+export function Sup(...children: View[]): Tag {
+  return El("sup", ...children);
 }
 
-export function Abbr(child: View = Empty()): Tag {
-  return El("abbr", child);
+export function Abbr(...children: View[]): Tag {
+  return El("abbr", ...children);
 }
 
-export function Cite(child: View = Empty()): Tag {
-  return El("cite", child);
+export function Cite(...children: View[]): Tag {
+  return El("cite", ...children);
 }
 
-export function Q(child: View = Empty()): Tag {
-  return El("q", child);
+export function Q(...children: View[]): Tag {
+  return El("q", ...children);
 }
 
-export function Dfn(child: View = Empty()): Tag {
-  return El("dfn", child);
+export function Dfn(...children: View[]): Tag {
+  return El("dfn", ...children);
 }
 
-export function Kbd(child: View = Empty()): Tag {
-  return El("kbd", child);
+export function Kbd(...children: View[]): Tag {
+  return El("kbd", ...children);
 }
 
-export function Samp(child: View = Empty()): Tag {
-  return El("samp", child);
+export function Samp(...children: View[]): Tag {
+  return El("samp", ...children);
 }
 
-export function Var(child: View = Empty()): Tag {
-  return El("var", child);
+export function Var(...children: View[]): Tag {
+  return El("var", ...children);
 }
 
-export function Bdi(child: View = Empty()): Tag {
-  return El("bdi", child);
+export function Bdi(...children: View[]): Tag {
+  return El("bdi", ...children);
 }
 
-export function Bdo(child: View = Empty()): Tag {
-  return El("bdo", child);
+export function Bdo(...children: View[]): Tag {
+  return El("bdo", ...children);
 }
 
-export function Ruby(child: View = Empty()): Tag {
-  return El("ruby", child);
+export function Ruby(...children: View[]): Tag {
+  return El("ruby", ...children);
 }
 
-export function Rt(child: View = Empty()): Tag {
-  return El("rt", child);
+export function Rt(...children: View[]): Tag {
+  return El("rt", ...children);
 }
 
-export function Rp(child: View = Empty()): Tag {
-  return El("rp", child);
+export function Rp(...children: View[]): Tag {
+  return El("rp", ...children);
 }

@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import { Empty } from "../core/utils.js";
+
 
 export class SlotTag extends Tag {
   name?: string;
@@ -14,6 +14,6 @@ export class SlotTag extends Tag {
 /** @internal */
 (SlotTag.prototype as any)._sk = ['name'];
 
-export function Slot(child: View = Empty()): SlotTag {
-  return new SlotTag("slot", child);
+export function Slot(...children: View[]): SlotTag {
+  return new SlotTag("slot", ...children);
 }

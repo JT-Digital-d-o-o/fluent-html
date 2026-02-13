@@ -6,11 +6,11 @@ export declare class DetailsTag extends Tag {
     setOpen(open?: boolean): this;
     setName(name?: string): this;
 }
-export declare function Details(child?: View): DetailsTag;
-export declare function Summary(child?: View): Tag;
+export declare function Details(...children: View[]): DetailsTag;
+export declare function Summary(...children: View[]): Tag;
 export declare class DialogTag extends Tag {
     open?: boolean;
     setOpen(open?: boolean): this;
 }
-export declare function Dialog(child?: View): DialogTag;
+export declare function Dialog(...children: View[]): DialogTag;
 //# sourceMappingURL=interactive.d.ts.map

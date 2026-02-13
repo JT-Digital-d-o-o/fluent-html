@@ -13,20 +13,20 @@ exports.Colgroup = Colgroup;
 exports.Col = Col;
 const tag_js_1 = require("../core/tag.js");
 const utils_js_1 = require("../core/utils.js");
-function Table(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("table", child);
+function Table(...children) {
+    return (0, utils_js_1.El)("table", ...children);
 }
-function Thead(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("thead", child);
+function Thead(...children) {
+    return (0, utils_js_1.El)("thead", ...children);
 }
-function Tbody(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("tbody", child);
+function Tbody(...children) {
+    return (0, utils_js_1.El)("tbody", ...children);
 }
-function Tfoot(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("tfoot", child);
+function Tfoot(...children) {
+    return (0, utils_js_1.El)("tfoot", ...children);
 }
-function Tr(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("tr", child);
+function Tr(...children) {
+    return (0, utils_js_1.El)("tr", ...children);
 }
 class ThTag extends tag_js_1.Tag {
     setColspan(colspan) {
@@ -45,8 +45,8 @@ class ThTag extends tag_js_1.Tag {
 exports.ThTag = ThTag;
 /** @internal */
 ThTag.prototype._sk = ['colspan', 'rowspan', 'scope'];
-function Th(child = (0, utils_js_1.Empty)()) {
-    return new ThTag("th", child);
+function Th(...children) {
+    return new ThTag("th", ...children);
 }
 class TdTag extends tag_js_1.Tag {
     setColspan(colspan) {
@@ -61,11 +61,11 @@ class TdTag extends tag_js_1.Tag {
 exports.TdTag = TdTag;
 /** @internal */
 TdTag.prototype._sk = ['colspan', 'rowspan'];
-function Td(child = (0, utils_js_1.Empty)()) {
-    return new TdTag("td", child);
+function Td(...children) {
+    return new TdTag("td", ...children);
 }
-function Caption(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("caption", child);
+function Caption(...children) {
+    return (0, utils_js_1.El)("caption", ...children);
 }
 class ColgroupTag extends tag_js_1.Tag {
     setSpan(span) {
@@ -76,8 +76,8 @@ class ColgroupTag extends tag_js_1.Tag {
 exports.ColgroupTag = ColgroupTag;
 /** @internal */
 ColgroupTag.prototype._sk = ['span'];
-function Colgroup(child = (0, utils_js_1.Empty)()) {
-    return new ColgroupTag("colgroup", child);
+function Colgroup(...children) {
+    return new ColgroupTag("colgroup", ...children);
 }
 class ColTag extends tag_js_1.Tag {
     setSpan(span) {
@@ -88,7 +88,7 @@ class ColTag extends tag_js_1.Tag {
 exports.ColTag = ColTag;
 /** @internal */
 ColTag.prototype._sk = ['span'];
-function Col(child = (0, utils_js_1.Empty)()) {
-    return new ColTag("col", child);
+function Col(...children) {
+    return new ColTag("col", ...children);
 }
 //# sourceMappingURL=tables.js.map

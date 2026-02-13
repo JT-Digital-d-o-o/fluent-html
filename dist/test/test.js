@@ -719,6 +719,26 @@ testView("Empty in array", (0, index_js_1.Div)([
     (0, index_js_1.P)("After"),
 ]), `<div><p>Before</p>\n\n<p>After</p></div>`);
 // ------------------------------------
+// Variadic Children
+// ------------------------------------
+section("Variadic Children");
+testView("Div with variadic children", (0, index_js_1.Div)((0, index_js_1.H1)("Title"), (0, index_js_1.P)("First paragraph"), (0, index_js_1.P)("Second paragraph")), `<div><h1>Title</h1>\n<p>First paragraph</p>\n<p>Second paragraph</p></div>`);
+testView("Variadic matches array form", (0, index_js_1.render)((0, index_js_1.Div)((0, index_js_1.H1)("A"), (0, index_js_1.P)("B"))) === (0, index_js_1.render)((0, index_js_1.Div)([(0, index_js_1.H1)("A"), (0, index_js_1.P)("B")])) ? (0, index_js_1.Span)("match") : (0, index_js_1.Span)("mismatch"), `<span>match</span>`);
+testView("Variadic single child same as positional", (0, index_js_1.Div)((0, index_js_1.P)("Only child")), `<div><p>Only child</p></div>`);
+testView("Variadic no children", (0, index_js_1.Div)(), `<div></div>`);
+testView("Variadic with strings", (0, index_js_1.P)("Hello, ", (0, index_js_1.Strong)("world"), "!"), `<p>Hello, \n<strong>world</strong>\n!</p>`);
+testView("Variadic Ul with Li children", (0, index_js_1.Ul)((0, index_js_1.Li)("Item 1"), (0, index_js_1.Li)("Item 2"), (0, index_js_1.Li)("Item 3")), `<ul><li>Item 1</li>\n<li>Item 2</li>\n<li>Item 3</li></ul>`);
+testView("Variadic Table structure", (0, index_js_1.Table)((0, index_js_1.Thead)((0, index_js_1.Tr)((0, index_js_1.Th)("Name"), (0, index_js_1.Th)("Age"))), (0, index_js_1.Tbody)((0, index_js_1.Tr)((0, index_js_1.Td)("Alice"), (0, index_js_1.Td)("30")))), `<table><thead><tr><th>Name</th>\n<th>Age</th></tr></thead>\n<tbody><tr><td>Alice</td>\n<td>30</td></tr></tbody></table>`);
+testView("Variadic Form with fields", (0, index_js_1.Form)((0, index_js_1.Label)("Name"), (0, index_js_1.Input)().setType("text").setName("name"), (0, index_js_1.Button)("Submit").setType("submit")), `<form><label>Name</label>\n<input type="text" name="name">\n<button type="submit">Submit</button></form>`);
+testView("Variadic Nav with links", (0, index_js_1.Nav)((0, index_js_1.A)("Home").setHref("/"), (0, index_js_1.A)("About").setHref("/about"), (0, index_js_1.A)("Contact").setHref("/contact")), `<nav><a href="/">Home</a>\n<a href="/about">About</a>\n<a href="/contact">Contact</a></nav>`);
+testView("Variadic Section with mixed content", (0, index_js_1.Section)((0, index_js_1.H2)("Section Title"), (0, index_js_1.P)("Description"), (0, index_js_1.Div)((0, index_js_1.Button)("Action 1"), (0, index_js_1.Button)("Action 2"))), `<section><h2>Section Title</h2>\n<p>Description</p>\n<div><button>Action 1</button>\n<button>Action 2</button></div></section>`);
+testView("Variadic Select with options", (0, index_js_1.Select)((0, index_js_1.Option)("Red").setValue("red"), (0, index_js_1.Option)("Green").setValue("green"), (0, index_js_1.Option)("Blue").setValue("blue")), `<select><option value="red">Red</option>\n<option value="green">Green</option>\n<option value="blue">Blue</option></select>`);
+testView("Variadic Details/Summary", (0, index_js_1.Details)((0, index_js_1.Summary)("Click to expand"), (0, index_js_1.P)("Hidden content here")), `<details><summary>Click to expand</summary>\n<p>Hidden content here</p></details>`);
+testView("Variadic with method chaining", (0, index_js_1.Div)((0, index_js_1.H1)("Styled"), (0, index_js_1.P)("Content")).setId("main").setClass("container"), `<div id="main" class="container"><h1>Styled</h1>\n<p>Content</p></div>`);
+testView("Array child still works with variadic", (0, index_js_1.Div)([(0, index_js_1.H1)("A"), (0, index_js_1.P)("B")]), `<div><h1>A</h1>\n<p>B</p></div>`);
+testView("Variadic El custom element", (0, index_js_1.El)("custom-el", (0, index_js_1.Span)("A"), (0, index_js_1.Span)("B")), `<custom-el><span>A</span>\n<span>B</span></custom-el>`);
+testView("Variadic deeply nested", (0, index_js_1.Div)((0, index_js_1.Header)((0, index_js_1.Nav)((0, index_js_1.A)("Link").setHref("#"))), (0, index_js_1.Main)((0, index_js_1.Article)((0, index_js_1.H1)("Title"), (0, index_js_1.P)("Body"))), (0, index_js_1.Footer)((0, index_js_1.P)("Footer"))), `<div><header><nav><a href="#">Link</a></nav></header>\n<main><article><h1>Title</h1>\n<p>Body</p></article></main>\n<footer><p>Footer</p></footer></div>`);
+// ------------------------------------
 // Summary
 // ------------------------------------
 console.log(`\n${"=".repeat(50)}`);

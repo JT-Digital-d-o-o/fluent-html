@@ -14,17 +14,17 @@ exports.Template = Template;
 exports.Script = Script;
 const tag_js_1 = require("../core/tag.js");
 const utils_js_1 = require("../core/utils.js");
-function HTML(child) {
-    return (0, utils_js_1.El)("html", child);
+function HTML(...children) {
+    return (0, utils_js_1.El)("html", ...children);
 }
-function Head(child) {
-    return (0, utils_js_1.El)("head", child);
+function Head(...children) {
+    return (0, utils_js_1.El)("head", ...children);
 }
-function Body(child) {
-    return (0, utils_js_1.El)("body", child);
+function Body(...children) {
+    return (0, utils_js_1.El)("body", ...children);
 }
-function Title(child) {
-    return (0, utils_js_1.El)("title", child);
+function Title(...children) {
+    return (0, utils_js_1.El)("title", ...children);
 }
 class MetaTag extends tag_js_1.Tag {
     setName(name) {
@@ -126,11 +126,11 @@ BaseTag.prototype._sk = ['href', 'target'];
 function Base() {
     return new BaseTag("base");
 }
-function Noscript(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("noscript", child);
+function Noscript(...children) {
+    return (0, utils_js_1.El)("noscript", ...children);
 }
-function Template(child = (0, utils_js_1.Empty)()) {
-    return (0, utils_js_1.El)("template", child);
+function Template(...children) {
+    return (0, utils_js_1.El)("template", ...children);
 }
 class ScriptTag extends tag_js_1.Tag {
     setSrc(src) {

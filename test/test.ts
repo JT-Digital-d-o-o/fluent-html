@@ -1586,6 +1586,121 @@ testView("Empty in array",
   `<div><p>Before</p>\n\n<p>After</p></div>`);
 
 // ------------------------------------
+// Variadic Children
+// ------------------------------------
+
+section("Variadic Children");
+
+testView("Div with variadic children",
+  Div(
+    H1("Title"),
+    P("First paragraph"),
+    P("Second paragraph")
+  ),
+  `<div><h1>Title</h1>\n<p>First paragraph</p>\n<p>Second paragraph</p></div>`);
+
+testView("Variadic matches array form",
+  render(Div(H1("A"), P("B"))) === render(Div([H1("A"), P("B")])) ? Span("match") : Span("mismatch"),
+  `<span>match</span>`);
+
+testView("Variadic single child same as positional",
+  Div(P("Only child")),
+  `<div><p>Only child</p></div>`);
+
+testView("Variadic no children",
+  Div(),
+  `<div></div>`);
+
+testView("Variadic with strings",
+  P("Hello, ", Strong("world"), "!"),
+  `<p>Hello, \n<strong>world</strong>\n!</p>`);
+
+testView("Variadic Ul with Li children",
+  Ul(
+    Li("Item 1"),
+    Li("Item 2"),
+    Li("Item 3")
+  ),
+  `<ul><li>Item 1</li>\n<li>Item 2</li>\n<li>Item 3</li></ul>`);
+
+testView("Variadic Table structure",
+  Table(
+    Thead(Tr(Th("Name"), Th("Age"))),
+    Tbody(Tr(Td("Alice"), Td("30")))
+  ),
+  `<table><thead><tr><th>Name</th>\n<th>Age</th></tr></thead>\n<tbody><tr><td>Alice</td>\n<td>30</td></tr></tbody></table>`);
+
+testView("Variadic Form with fields",
+  Form(
+    Label("Name"),
+    Input().setType("text").setName("name"),
+    Button("Submit").setType("submit")
+  ),
+  `<form><label>Name</label>\n<input type="text" name="name">\n<button type="submit">Submit</button></form>`);
+
+testView("Variadic Nav with links",
+  Nav(
+    A("Home").setHref("/"),
+    A("About").setHref("/about"),
+    A("Contact").setHref("/contact")
+  ),
+  `<nav><a href="/">Home</a>\n<a href="/about">About</a>\n<a href="/contact">Contact</a></nav>`);
+
+testView("Variadic Section with mixed content",
+  Section(
+    H2("Section Title"),
+    P("Description"),
+    Div(
+      Button("Action 1"),
+      Button("Action 2")
+    )
+  ),
+  `<section><h2>Section Title</h2>\n<p>Description</p>\n<div><button>Action 1</button>\n<button>Action 2</button></div></section>`);
+
+testView("Variadic Select with options",
+  Select(
+    Option("Red").setValue("red"),
+    Option("Green").setValue("green"),
+    Option("Blue").setValue("blue")
+  ),
+  `<select><option value="red">Red</option>\n<option value="green">Green</option>\n<option value="blue">Blue</option></select>`);
+
+testView("Variadic Details/Summary",
+  Details(
+    Summary("Click to expand"),
+    P("Hidden content here")
+  ),
+  `<details><summary>Click to expand</summary>\n<p>Hidden content here</p></details>`);
+
+testView("Variadic with method chaining",
+  Div(
+    H1("Styled"),
+    P("Content")
+  ).setId("main").setClass("container"),
+  `<div id="main" class="container"><h1>Styled</h1>\n<p>Content</p></div>`);
+
+testView("Array child still works with variadic",
+  Div([H1("A"), P("B")]),
+  `<div><h1>A</h1>\n<p>B</p></div>`);
+
+testView("Variadic El custom element",
+  El("custom-el", Span("A"), Span("B")),
+  `<custom-el><span>A</span>\n<span>B</span></custom-el>`);
+
+testView("Variadic deeply nested",
+  Div(
+    Header(Nav(A("Link").setHref("#"))),
+    Main(
+      Article(
+        H1("Title"),
+        P("Body")
+      )
+    ),
+    Footer(P("Footer"))
+  ),
+  `<div><header><nav><a href="#">Link</a></nav></header>\n<main><article><h1>Title</h1>\n<p>Body</p></article></main>\n<footer><p>Footer</p></footer></div>`);
+
+// ------------------------------------
 // Summary
 // ------------------------------------
 

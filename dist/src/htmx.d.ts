@@ -20,21 +20,20 @@ export type HxTarget = StandardCSSSelector | ExtendedCSSSelector;
 type DOMEvent = 'click' | 'dblclick' | 'mouseenter' | 'mouseleave' | 'mouseover' | 'mouseout' | 'mousedown' | 'mouseup' | 'keydown' | 'keyup' | 'keypress' | 'change' | 'input' | 'submit' | 'focus' | 'blur' | 'focusin' | 'focusout' | 'scroll' | 'resize' | 'touchstart' | 'touchend' | 'touchmove';
 type HtmxEvent = 'load' | 'revealed' | 'intersect';
 type BasicTrigger = DOMEvent | HtmxEvent;
+type TriggerModifier = 'once' | 'changed' | 'consume';
+type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
+type ModifiedTrigger = `${BasicTrigger} ${TriggerModifier}`;
+type DelayedTrigger = `${BasicTrigger} delay:${DelayValue}`;
+type ThrottledTrigger = `${BasicTrigger} throttle:${DelayValue}`;
+type ChangedDelayTrigger = `${BasicTrigger} changed delay:${DelayValue}`;
+type PollingTrigger = 'every 1s' | 'every 2s' | 'every 5s' | 'every 10s';
 /**
- * HTMX Trigger type
+ * HTMX Trigger type with deep autocomplete.
  *
- * Supports:
- * - Basic events: "click", "load", "revealed", etc.
- * - With modifiers: "click once", "keyup changed delay:300ms"
- * - Polling: "every 1s", "every 500ms"
- * - Filters: "click[ctrlKey]", "keyup[key=='Enter']"
- * - SSE/WS: "sse:message", "ws:message"
- * - Multiple: "click, keyup"
- *
- * Uses string type with union for common cases to enable autocomplete
- * while allowing any valid trigger string.
+ * Also accepts any valid trigger string for patterns not covered,
+ * e.g. "click[ctrlKey]", "click, keyup", "keyup changed delay:300ms throttle:1s"
  */
-export type HxTrigger = BasicTrigger | (string & {});
+export type HxTrigger = BasicTrigger | ModifiedTrigger | DelayedTrigger | ThrottledTrigger | ChangedDelayTrigger | PollingTrigger | 'sse:message' | 'ws:message' | (string & {});
 /**
  * HTMX Sync type
  *
