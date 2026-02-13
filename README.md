@@ -16,7 +16,7 @@ Build HTML with chainable methods, full IDE autocomplete, and zero dependencies:
 ```typescript
 import { Div, H1, Button, render } from 'fluent-html';
 
-const page = Div([
+const page = Div(
   H1("Welcome")
     .textSize("3xl")
     .fontWeight("bold"),
@@ -28,7 +28,7 @@ const page = Div([
     .textColor("white")
     .rounded("lg")
     .shadow()
-]).padding("8").maxW("4xl").margin("x", "auto");
+).padding("8").maxW("4xl").margin("x", "auto");
 
 render(page);
 ```
@@ -60,10 +60,10 @@ render(page);
 
 ```typescript
 // Chainable Tailwind-friendly methods
-Card([
+Card(
   H2("Dashboard").textSize("xl").fontWeight("semibold"),
   P("Welcome back!").textColor("gray-600")
-])
+)
   .background("white")
   .padding("6")
   .rounded("xl")
@@ -95,7 +95,7 @@ Button("Load More").setHtmx(hx("/api/items", {
 ### Forms with Validation
 
 ```typescript
-Form([
+Form(
   Input()
     .setType("email")
     .setName("email")
@@ -104,7 +104,7 @@ Form([
     .setToggles(["required"]),
 
   Button("Subscribe").setType("submit")
-])
+)
   .setHtmx(hx("/api/subscribe", { method: "post", swap: "outerHTML" }))
 ```
 
@@ -410,10 +410,10 @@ Input().setHtmx(hx("/api/search", {
 ### Complete Form Example
 
 ```typescript
-Form([
-  Fieldset([
+Form(
+  Fieldset(
     Legend("User Registration"),
-    
+
     Label("Email").setFor("email"),
     Input()
       .setType("email")
@@ -422,7 +422,7 @@ Form([
       .setPlaceholder("you@example.com")
       .setAutocomplete("email")
       .setToggles(["required"]),
-    
+
     Label("Password").setFor("password"),
     Input()
       .setType("password")
@@ -431,12 +431,12 @@ Form([
       .setMinlength(8)
       .setAutocomplete("new-password")
       .setToggles(["required"]),
-    
+
     Button("Register")
       .setType("submit")
       .setClass("bg-blue-500 text-white px-4 py-2 rounded")
-  ]).setClass("space-y-4")
-])
+  ).setClass("space-y-4")
+)
   .setHtmx(hx("/api/register", {
     method: "post",
     swap: "outerHTML",
@@ -493,7 +493,7 @@ export const ids = defineIds([
 import { ids } from './ids';
 
 export function UsersPage() {
-  return Div([
+  return Div(
     Div().setId(ids.userList),           // id="user-list"
     Span("0").setId(ids.userCount),      // id="user-count"
 
@@ -501,7 +501,7 @@ export function UsersPage() {
       .setHtmx(hx("/api/users", {
         target: ids.userList              // hx-target="#user-list"
       }))
-  ]);
+  );
 }
 ```
 
@@ -710,7 +710,7 @@ The type system suggests valid Tailwind values while still allowing custom/arbit
 ### Real-World Example
 
 ```typescript
-const card = Div([
+const card = Div(
   H2("Card Title")
     .textSize("2xl")
     .fontWeight("bold")
@@ -720,7 +720,7 @@ const card = Div([
     .textColor("gray-600")
     .margin("bottom", "6"),
 
-  Div([
+  Div(
     Button("Cancel")
       .padding("x", "4")
       .padding("y", "2")
@@ -735,11 +735,11 @@ const card = Div([
       .textColor("white")
       .rounded()
       .shadow()
-  ])
+  )
     .flex()
     .gap("4")
     .justifyContent("end")
-])
+)
   .background("white")
   .padding("6")
   .rounded("xl")
@@ -827,10 +827,10 @@ Style(`
 ```typescript
 // Building HTML from user data is always safe
 function UserCard(user: { name: string; bio: string }): View {
-  return Div([
+  return Div(
     H2(user.name),      // ← Escaped automatically
     P(user.bio),        // ← Escaped automatically
-  ]).setClass("user-card");
+  ).setClass("user-card");
 }
 
 // Even malicious data is safely rendered
@@ -858,11 +858,11 @@ Div(Raw(htmlFromMarkdown))
 Div(Raw('<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>'))
 
 // Mix raw and safe content
-Div([
+Div(
   P(userInput),                    // ← Escaped (safe)
   Raw(trustedHtml),                // ← Not escaped (trusted)
   Span(moreUserInput)              // ← Escaped (safe)
-])
+)
 ```
 
 **⚠️ Warning:** `Raw` bypasses XSS protection. **Never use it with user-provided input.** Only use it when:
@@ -910,19 +910,22 @@ const card = Div("Content")
 // Single child
 Div(P("Paragraph inside div"))
 
-// Multiple children as array
-Div([
+// Multiple children (variadic)
+Div(
   H1("Title"),
   P("First paragraph"),
   P("Second paragraph")
-])
+)
 
 // Mixed content
-Div([
+Div(
   "Text node",
   Strong("Bold text"),
   " more text"
-])
+)
+
+// Array form (also works — useful for dynamic lists)
+Div(...items)
 ```
 
 ### Form Elements
@@ -953,47 +956,47 @@ Textarea()
   .setMaxlength(500)
 
 // Select with optgroups
-Select([
+Select(
   Option("Select a country...").setValue(""),
-  Optgroup([
+  Optgroup(
     Option("United States").setValue("us"),
     Option("Canada").setValue("ca"),
-  ]).setLabel("North America"),
-  Optgroup([
+  ).setLabel("North America"),
+  Optgroup(
     Option("United Kingdom").setValue("uk"),
     Option("Germany").setValue("de"),
-  ]).setLabel("Europe"),
-]).setName("country").setToggles(["required"])
+  ).setLabel("Europe"),
+).setName("country").setToggles(["required"])
 ```
 
 ### Table Elements
 
 ```typescript
-Table([
+Table(
   Caption("Monthly Sales Report"),
   Thead(
-    Tr([
+    Tr(
       Th("Product").setScope("col"),
       Th("Q1").setScope("col"),
       Th("Q2").setScope("col"),
       Th("Total").setScope("col").setColspan(2),
-    ])
+    )
   ),
-  Tbody([
-    Tr([
+  Tbody(
+    Tr(
       Th("Widget A").setScope("row"),
       Td("$1,000"),
       Td("$1,500"),
       Td("$2,500").setColspan(2),
-    ]),
-  ]),
+    ),
+  ),
   Tfoot(
-    Tr([
+    Tr(
       Th("Total").setScope("row"),
       Td("$3,000").setColspan(3),
-    ])
+    )
   ),
-]).setClass("w-full border-collapse")
+).setClass("w-full border-collapse")
 ```
 
 ### Media Elements
@@ -1009,7 +1012,7 @@ Img()
   .setDecoding("async")
 
 // Video with multiple sources
-Video([
+Video(
   Source().setSrc("video.webm").setType("video/webm"),
   Source().setSrc("video.mp4").setType("video/mp4"),
   Track()
@@ -1019,13 +1022,13 @@ Video([
     .setLabel("English")
     .setDefault(),
   "Your browser does not support video."
-])
+)
   .setControls()
   .setPoster("poster.jpg")
   .setPreload("metadata")
 
 // Picture element for art direction
-Picture([
+Picture(
   Source()
     .setSrcset("hero-mobile.jpg")
     .setMedia("(max-width: 600px)"),
@@ -1033,25 +1036,25 @@ Picture([
     .setSrcset("hero-desktop.jpg")
     .setMedia("(min-width: 601px)"),
   Img().setSrc("hero-fallback.jpg").setAlt("Hero"),
-])
+)
 ```
 
 ### Interactive Elements
 
 ```typescript
 // Details/Summary (accordion)
-Details([
+Details(
   Summary("Click to expand"),
   P("Hidden content revealed when opened."),
-]).setOpen()
+).setOpen()
 
 // Dialog (modal)
-Dialog([
+Dialog(
   H2("Confirm Action"),
   P("Are you sure you want to proceed?"),
   Button("Cancel").addAttribute("onclick", "this.closest('dialog').close()"),
   Button("Confirm").setClass("bg-blue-500 text-white"),
-]).setId("confirm-modal")
+).setId("confirm-modal")
 
 // Progress and Meter
 Progress().setValue(70).setMax(100)
@@ -1071,14 +1074,14 @@ import { IfThen, IfThenElse } from 'fluent-html';
 
 // Conditional rendering (boolean)
 function UserBadge(user: { isAdmin: boolean; isPremium: boolean }): View {
-  return Div([
+  return Div(
     IfThen(user.isAdmin, () =>
       Span("Admin").setClass("badge badge-red")
     ),
     IfThen(user.isPremium, () =>
       Span("Premium").setClass("badge badge-gold")
     ),
-  ]);
+  );
 }
 
 // If-else rendering (boolean)
@@ -1106,12 +1109,12 @@ function LoginStatus(user: User | null): View {
 
 // Works great for optional props
 function Card(props: { title: string; image?: string }): View {
-  return Div([
+  return Div(
     IfThen(props.image, (src) =>
       Img().setSrc(src).setAlt(props.title).setClass("card-img")
     ),
     H3(props.title),
-  ]);
+  );
 }
 ```
 
@@ -1231,7 +1234,7 @@ interface CardProps {
 }
 
 function Card(props: CardProps): View {
-  return Div([
+  return Div(
     IfThen(props.image, (src) =>
       Img()
         .setSrc(src)
@@ -1239,14 +1242,14 @@ function Card(props: CardProps): View {
         .setClass("w-full h-48 object-cover")
         .setLoading("lazy")
     ),
-    Div([
+    Div(
       H3(props.title).setClass("text-xl font-semibold mb-2"),
       Div(props.content).setClass("text-gray-600"),
-    ]).setClass("p-4"),
+    ).setClass("p-4"),
     IfThen(props.footer, (footer) =>
       Div(footer).setClass("px-4 py-3 bg-gray-50 border-t")
     ),
-  ]).setClass("bg-white rounded-lg shadow-md overflow-hidden");
+  ).setClass("bg-white rounded-lg shadow-md overflow-hidden");
 }
 ```
 
@@ -1264,7 +1267,7 @@ function DataTable<T extends Record<string, any>>(
   data: T[],
   options?: { striped?: boolean; hoverable?: boolean }
 ): View {
-  return Table([
+  return Table(
     Thead(
       Tr(ForEach(columns, col =>
         Th(col.header).setScope("col").setClass("px-4 py-3 text-left font-semibold")
@@ -1281,7 +1284,7 @@ function DataTable<T extends Record<string, any>>(
           .addClass(options?.striped && index % 2 ? 'bg-gray-50' : '')
       )
     ),
-  ]).setClass("w-full border-collapse");
+  ).setClass("w-full border-collapse");
 }
 
 // Usage
@@ -1307,16 +1310,16 @@ DataTable<User>(
 
 ```typescript
 function InfiniteScrollList(items: Item[], page: number): View {
-  return Div([
+  return Div(
     Ul(
-      ForEach(items, item => 
-        Li([
+      ForEach(items, item =>
+        Li(
           H3(item.title).setClass("font-medium"),
           P(item.description).setClass("text-gray-600 text-sm"),
-        ]).setClass("p-4 border-b")
+        ).setClass("p-4 border-b")
       )
     ).setId("item-list"),
-    
+
     // Load more trigger - fires when scrolled into view
     Div("Loading...")
       .setId("load-more")
@@ -1325,7 +1328,7 @@ function InfiniteScrollList(items: Item[], page: number): View {
         trigger: "revealed",
         swap: "outerHTML",
       }))
-  ]);
+  );
 }
 ```
 
@@ -1471,7 +1474,7 @@ import { OOB, withOOB, render } from 'fluent-html';
 // Update multiple parts of the page in one response
 render(withOOB(
   // Main content (replaces the target)
-  Tr([Td("John"), Td("john@example.com")]).setId("row-1"),
+  Tr(Td("John"), Td("john@example.com")).setId("row-1"),
 
   // OOB updates (swap into their respective targets)
   OOB("user-count", Span("42 users")),
@@ -1542,10 +1545,10 @@ import { KeyedList } from 'fluent-html';
 KeyedList(
   users,
   (user) => user.id,  // Key function
-  (user, index) => Div([
+  (user, index) => Div(
     H3(user.name),
     P(user.email)
-  ])
+  )
 )
 // Adds data-key attribute for stability
 ```
@@ -1599,13 +1602,13 @@ Fluent HTML includes a generic **fold** (`foldView`) that recursively collapses 
 import { foldView, countAlgebra, textAlgebra, linksAlgebra } from 'fluent-html';
 
 // Count elements
-foldView(countAlgebra, Div([P("Hello"), P("World")]));  // 3
+foldView(countAlgebra, Div(P("Hello"), P("World")));  // 3
 
 // Extract plain text
 foldView(textAlgebra, H1("Welcome"));  // "Welcome\n"
 
 // Collect all links
-foldView(linksAlgebra, Div([A("Home").setHref("/"), A("About").setHref("/about")]));
+foldView(linksAlgebra, Div(A("Home").setHref("/"), A("About").setHref("/about")));
 // [{ href: "/" }, { href: "/about" }]
 ```
 

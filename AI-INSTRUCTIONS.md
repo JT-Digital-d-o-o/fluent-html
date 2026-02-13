@@ -12,7 +12,7 @@ Elements are created using factory functions that return Tag objects:
 import { Div, P, Span, Button, Input } from "fluent-html";
 
 Div("Hello")           // Simple element with text
-Div([P("1"), P("2")])  // Element with array of children
+Div(P("1"), P("2"))   // Element with multiple children
 Div()                  // Empty element
 ```
 
@@ -67,10 +67,10 @@ Textarea()
 
 **SelectTag:**
 ```typescript
-Select([
+Select(
   Option("Item 1").setValue("1"),
   Option("Item 2").setValue("2").setSelected(true)
-])
+)
   .setName("choice")
   .setMultiple(true)
 ```
@@ -95,7 +95,7 @@ Img()
 
 **FormTag:**
 ```typescript
-Form([/* children */])
+Form(/* children */)
   .setAction("/submit")
   .setMethod("post")
   .setEnctype("multipart/form-data")
@@ -157,13 +157,13 @@ P("paragraph text")
 Div(P("nested paragraph"))
 ```
 
-**Multiple children (array):**
+**Multiple children (variadic):**
 ```typescript
-Div([
+Div(
   H1("Title"),
   P("Paragraph 1"),
   P("Paragraph 2")
-])
+)
 ```
 
 **Empty element:**
@@ -173,18 +173,21 @@ Div()  // No children
 
 **Deeply nested:**
 ```typescript
-Div([
-  Header([
-    Nav([
+Div(
+  Header(
+    Nav(
       A("Home").setHref("/"),
       A("About").setHref("/about")
-    ])
-  ]),
-  Main([
+    )
+  ),
+  Main(
     H1("Welcome"),
     P("Content here")
-  ])
-])
+  )
+)
+
+// Array form still works (useful for dynamic lists)
+Ul(ForEach(items, item => Li(item.name)))
 ```
 
 ## Control Flow
@@ -280,10 +283,10 @@ IfThenElse(
   users.length > 0,
   () => Ul(
     ForEach(users, user =>
-      Li([
+      Li(
         Strong(user.name),
         Span(` - ${user.email}`)
-      ])
+      )
     )
   ),
   () => P("No users found")
@@ -293,7 +296,7 @@ IfThenElse(
 **Optional fields with nullable narrowing:**
 ```typescript
 function Card(props: { title: string; image?: string; footer?: View }): View {
-  return Div([
+  return Div(
     IfThen(props.image, (src) =>
       Img().setSrc(src).setAlt(props.title).setClass("card-img")
     ),
@@ -301,7 +304,7 @@ function Card(props: { title: string; image?: string; footer?: View }): View {
     IfThen(props.footer, (footer) =>
       Div(footer).setClass("card-footer")
     ),
-  ]);
+  );
 }
 ```
 
@@ -327,23 +330,23 @@ Ol(
 
 ### Complete HTML Document
 ```typescript
-HTML([
-  Head([
+HTML(
+  Head(
     Meta().setCharset("utf-8"),
     Meta()
       .setName("viewport")
       .setContent("width=device-width, initial-scale=1"),
     Title("My Page"),
     Link().setRel("stylesheet").setHref("/styles.css")
-  ]),
-  Body([
-    Header([
-      Nav([/* navigation */])
-    ]),
-    Main([/* main content */]),
-    Footer([/* footer content */])
-  ])
-])
+  ),
+  Body(
+    Header(
+      Nav(/* navigation */)
+    ),
+    Main(/* main content */),
+    Footer(/* footer content */)
+  )
+)
 ```
 
 ## HTMX Integration
@@ -362,10 +365,10 @@ Button("Remove").hxDelete("/api/item/1", { confirm: "Sure?" })
 Div().setHtmx("/api/update", { method: "post", target: "#result", swap: "innerHTML" })
 
 // Style 3: setHtmx with pre-built hx() object
-Form([
+Form(
   Input().setName("query").setPlaceholder("Search..."),
   Button("Search").setType("submit")
-])
+)
   .setHtmx(hx("/search", {
     method: "post",
     target: "#results",
@@ -432,11 +435,11 @@ Each `*.view.ts` file exports both its view and its IDs:
 export const UserIds = defineIds(["user-list", "user-count"] as const);
 
 export function UsersPage() {
-  return Div([
+  return Div(
     Div().setId(UserIds.userList),
     Span("0").setId(UserIds.userCount),
     Button("Refresh").setHtmx(hx("/api/users", { target: UserIds.userList }))
-  ]);
+  );
 }
 ```
 
@@ -475,7 +478,7 @@ import { OOB, withOOB, render } from "fluent-html";
 // OOB creates an element with hx-swap-oob attribute
 render(withOOB(
   // Main content (replaces the target)
-  Tr([Td("John"), Td("john@example.com")]).setId("row-1"),
+  Tr(Td("John"), Td("john@example.com")).setId("row-1"),
 
   // OOB updates (swap into their respective targets)
   OOB("user-count", Span("42 users")),
@@ -537,25 +540,25 @@ Style("p { color: red; }")   // NOT escaped
 
 ### Forms
 ```typescript
-Form([
-  Div([
+Form(
+  Div(
     Label("Name").setFor("name"),
     Input()
       .setId("name")
       .setName("name")
       .setType("text")
       .toggle("required")
-  ]),
-  Div([
+  ),
+  Div(
     Label("Email").setFor("email"),
     Input()
       .setId("email")
       .setName("email")
       .setType("email")
       .toggle("required")
-  ]),
+  ),
   Button("Submit").setType("submit")
-])
+)
   .setAction("/submit")
   .setMethod("post")
 ```
@@ -571,24 +574,24 @@ Ul(
 
 ### Tables
 ```typescript
-Table([
-  Thead([
-    Tr([
+Table(
+  Thead(
+    Tr(
       Th("Name"),
       Th("Email"),
       Th("Role")
-    ])
-  ]),
+    )
+  ),
   Tbody(
     ForEach(users, (user) =>
-      Tr([
+      Tr(
         Td(user.name),
         Td(user.email),
         Td(user.role)
-      ])
+      )
     )
   )
-])
+)
 ```
 
 ### Navigation
@@ -625,7 +628,7 @@ import {
 } from "fluent-html";
 
 function UserCard(user: { name: string; email: string; isAdmin: boolean }) {
-  return Div([
+  return Div(
     H1(user.name)
       .setClass("text-2xl font-bold"),
     P(user.email)
@@ -637,18 +640,18 @@ function UserCard(user: { name: string; email: string; isAdmin: boolean }) {
     Button("Contact")
       .setType("button")
       .setClass("btn-primary")
-  ])
+  )
     .setClass("card");
 }
 
 function UserList(users: Array<{ name: string; email: string; isAdmin: boolean }>) {
-  return Div([
+  return Div(
     H1("Users"),
     Ul(
       ForEach(users, user =>
         Li(UserCard(user))
       )
     )
-  ]);
+  );
 }
 ```

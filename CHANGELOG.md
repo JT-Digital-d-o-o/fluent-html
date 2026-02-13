@@ -2,9 +2,23 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [Unreleased]
+## [5.5.0]
 
 ### ✨ New Features
+
+#### Variadic Children
+
+Element constructors now accept **variadic children** instead of requiring an array:
+
+```typescript
+// Before (array required for multiple children)
+Div([H1("Title"), P("Body")])
+
+// After (variadic — no array needed)
+Div(H1("Title"), P("Body"))
+```
+
+The array form still works but variadic is now the recommended style. Use arrays only when passing a dynamic `View[]` variable (e.g., from `ForEach` or `.map()`).
 
 #### HTMX Shorthand Methods
 

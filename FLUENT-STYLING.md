@@ -204,7 +204,7 @@ Both produce identical HTML output!
 
 ### Card Component
 ```typescript
-const card = Div([
+const card = Div(
   Div("Card Title")
     .textSize("2xl")
     .fontWeight("bold")
@@ -214,7 +214,7 @@ const card = Div([
     .textColor("gray-600")
     .margin("bottom", "6"),
 
-  Div([
+  Div(
     Button("Cancel")
       .padding("x", "4")
       .padding("y", "2")
@@ -231,11 +231,11 @@ const card = Div([
       .rounded()
       .cursor("pointer")
       .shadow()
-  ])
+  )
     .flex()
     .gap("4")
     .justifyContent("end")
-])
+)
   .background("white")
   .padding("6")
   .rounded("xl")
@@ -257,11 +257,11 @@ const container = Div("Content")
 
 ### Flex Layout
 ```typescript
-const header = Div([
+const header = Div(
   Div("Logo"),
   Div("Navigation"),
   Div("User")
-])
+)
   .flex()
   .justifyContent("between")
   .alignItems("center")
@@ -272,12 +272,12 @@ const header = Div([
 
 ### Grid Gallery
 ```typescript
-const gallery = Div([
+const gallery = Div(
   Img().setSrc("1.jpg"),
   Img().setSrc("2.jpg"),
   Img().setSrc("3.jpg"),
   Img().setSrc("4.jpg")
-])
+)
   .grid()
   .gridCols("2")
   .gap("4")

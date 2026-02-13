@@ -3,12 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = void 0;
 exports.ForEach = ForEach;
 exports.Repeat = Repeat;
-exports.range = range;
-function* range(low, high) {
-    for (var i = low; i < high; i++) {
-        yield i;
-    }
-}
 // Implementation
 function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
     // ForEach(low, high, renderItem)
@@ -51,6 +45,6 @@ exports.ForEach2 = ForEach;
 /** @deprecated Use ForEach instead */
 exports.ForEach3 = ForEach;
 function Repeat(times, content) {
-    return ForEach(range(0, times), content);
+    return ForEach(times, content);
 }
 //# sourceMappingURL=iteration.js.map

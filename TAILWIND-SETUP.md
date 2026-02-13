@@ -122,7 +122,7 @@ npm run watch:css    # Watch for changes
 import { Div, H2, P, Button } from "fluent-html";
 
 export const Card = () =>
-  Div([
+  Div(
     H2("Card Title")
       .textSize("2xl")
       .fontWeight("bold")
@@ -138,7 +138,7 @@ export const Card = () =>
       .textColor("white")
       .rounded()
       .addClass("hover:bg-blue-600"),
-  ])
+  )
     .background("white")
     .padding("6")
     .rounded("lg")

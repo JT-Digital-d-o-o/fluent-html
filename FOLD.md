@@ -73,10 +73,10 @@ interface TagAttrs {
 ```typescript
 import { foldView, countAlgebra, Div, P, Ul, Li } from 'fluent-html';
 
-const page = Div([
+const page = Div(
   P("Intro"),
-  Ul([Li("A"), Li("B"), Li("C")])
-]);
+  Ul(Li("A"), Li("B"), Li("C"))
+);
 
 foldView(countAlgebra, page);
 // 6  (div + p + ul + 3 li)
@@ -100,10 +100,10 @@ Strips all tags and returns the concatenated text content. Block-level elements 
 ```typescript
 import { foldView, textAlgebra, Div, H1, P, Span } from 'fluent-html';
 
-const view = Div([
+const view = Div(
   H1("Welcome"),
-  P(["Read the ", Span("docs"), " carefully."])
-]);
+  P("Read the ", Span("docs"), " carefully.")
+);
 
 foldView(textAlgebra, view);
 // "Welcome\nRead the docs carefully.\n\n"
@@ -116,11 +116,11 @@ Returns an array of `LinkInfo` objects for every `<a>` element in the tree.
 ```typescript
 import { foldView, linksAlgebra, Div, A } from 'fluent-html';
 
-const nav = Div([
+const nav = Div(
   A("Home").setHref("/"),
   A("Docs").setHref("/docs"),
   A("GitHub").setHref("https://github.com/example").setTarget("_blank").setRel("noopener"),
-]);
+);
 
 foldView(linksAlgebra, nav);
 // [
@@ -148,7 +148,7 @@ An alternative to the built-in `render()` function, implemented as a fold. Usefu
 ```typescript
 import { foldView, renderAlgebra, Div, P } from 'fluent-html';
 
-foldView(renderAlgebra, Div([P("Hello")]));
+foldView(renderAlgebra, Div(P("Hello")));
 // '<div><p>Hello</p></div>'
 ```
 
@@ -176,7 +176,7 @@ const wrapParagraphs = createTransformAlgebra((el, attrs) => {
   return null;
 });
 
-const original = Div([P("First"), P("Second")]);
+const original = Div(P("First"), P("Second"));
 const transformed = foldView(wrapParagraphs, original);
 
 render(transformed);
@@ -197,7 +197,7 @@ const highlightHeadings = addClassToMatching(
   'text-blue-600 font-bold'
 );
 
-const page = Div([H1("Title"), P("Body"), H2("Subtitle")]);
+const page = Div(H1("Title"), P("Body"), H2("Subtitle"));
 const highlighted = foldView(highlightHeadings, page);
 
 render(highlighted);
@@ -222,7 +222,7 @@ const elementNamesAlgebra: ViewAlgebra<string[]> = {
   list: (arrays) => arrays.flat(),
 };
 
-foldView(elementNamesAlgebra, Div([P("Hello"), Span("World")]));
+foldView(elementNamesAlgebra, Div(P("Hello"), Span("World")));
 // ["div", "p", "span"]
 ```
 
@@ -236,7 +236,7 @@ const depthAlgebra: ViewAlgebra<number> = {
   list: (depths) => Math.max(0, ...depths),
 };
 
-foldView(depthAlgebra, Div([Div([Div([P("Deep")])])]));
+foldView(depthAlgebra, Div(Div(Div(P("Deep")))));
 // 4  (div > div > div > p)
 ```
 
@@ -251,7 +251,7 @@ const hasClassAlgebra = (target: string): ViewAlgebra<boolean> => ({
   list: (results) => results.some(Boolean),
 });
 
-const view = Div([P("Normal"), Span("Highlighted").setClass("highlight")]);
+const view = Div(P("Normal"), Span("Highlighted").setClass("highlight"));
 foldView(hasClassAlgebra("highlight"), view);  // true
 foldView(hasClassAlgebra("missing"), view);    // false
 ```
@@ -322,7 +322,7 @@ const tocAlgebra: ViewAlgebra<TocEntry[]> = {
 Crucially, children are folded **before** their parent — the `children` parameter in `tag` and the items in `list` are already of type `A`, not `View`. This bottom-up evaluation is what makes catamorphisms powerful: you never need to write recursion yourself.
 
 ```
-Div([P("Hello"), P("World")])
+Div(P("Hello"), P("World"))
 
 foldView(countAlgebra, ...) evaluates as:
 

@@ -126,7 +126,7 @@ The extractor recognizes all fluent-html SwiftUI-style methods:
 import { Div, H2, P, Button } from "fluent-html";
 
 export const Card = () =>
-  Div([
+  Div(
     H2("Card Title")
       .textSize("2xl")
       .fontWeight("bold")
@@ -144,7 +144,7 @@ export const Card = () =>
       .rounded("lg")
       .cursor("pointer")
       .addClass("hover:bg-blue-600 transition-colors"),
-  ])
+  )
     .background("white")
     .padding("6")
     .rounded("xl")

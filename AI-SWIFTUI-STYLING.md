@@ -357,7 +357,7 @@ Button("Delete")
 ### Card Component
 
 ```typescript
-Div([
+Div(
   // Card header
   Div("Card Title")
     .textSize("2xl")
@@ -370,7 +370,7 @@ Div([
     .margin("bottom", "6"),
 
   // Card actions
-  Div([
+  Div(
     Button("Cancel")
       .padding("x", "4")
       .padding("y", "2")
@@ -387,11 +387,11 @@ Div([
       .rounded()
       .cursor("pointer")
       .shadow()
-  ])
+  )
     .flex()
     .gap("4")
     .justifyContent("end")
-])
+)
   .background("white")
   .padding("6")
   .rounded("xl")
@@ -405,7 +405,7 @@ Div([
 ### Centered Container
 
 ```typescript
-Div([
+Div(
   H1("Welcome")
     .textSize("4xl")
     .fontWeight("bold")
@@ -415,7 +415,7 @@ Div([
   P("Your content here")
     .textColor("gray-600")
     .textAlign("center")
-])
+)
   .w("full")
   .maxW("md")
   .margin("x", "auto")
@@ -425,18 +425,18 @@ Div([
 ### Flex Layout (Header)
 
 ```typescript
-Div([
+Div(
   // Logo
   Div("MyApp")
     .textSize("xl")
     .fontWeight("bold"),
 
   // Navigation
-  Nav([
+  Nav(
     A("Home").setHref("/"),
     A("About").setHref("/about"),
     A("Contact").setHref("/contact")
-  ])
+  )
     .flex()
     .gap("6"),
 
@@ -447,7 +447,7 @@ Div([
     .background("blue-500")
     .textColor("white")
     .rounded()
-])
+)
   .flex()
   .justifyContent("between")
   .alignItems("center")
@@ -461,7 +461,7 @@ Div([
 ```typescript
 Div(
   ForEach(images, (img) =>
-    Div([
+    Div(
       Img()
         .setSrc(img.url)
         .setAlt(img.title)
@@ -473,7 +473,7 @@ Div(
         .padding("2")
         .textSize("sm")
         .fontWeight("medium")
-    ])
+    )
       .background("white")
       .rounded("lg")
       .shadow()
@@ -489,9 +489,9 @@ Div(
 ### Sticky Header
 
 ```typescript
-Header([
-  Nav([/* navigation items */])
-])
+Header(
+  Nav(/* navigation items */)
+)
   .position("sticky")
   .zIndex("50")
   .background("white")
@@ -502,9 +502,9 @@ Header([
 ### Form Layout
 
 ```typescript
-Form([
+Form(
   // Form field
-  Div([
+  Div(
     Label("Email").setFor("email")
       .fontWeight("medium")
       .textSize("sm")
@@ -520,7 +520,7 @@ Form([
       .border()
       .borderColor("gray-300")
       .rounded()
-  ])
+  )
     .margin("bottom", "4"),
 
   // Submit button
@@ -533,7 +533,7 @@ Form([
     .rounded("lg")
     .fontWeight("semibold")
     .cursor("pointer")
-])
+)
   .maxW("md")
   .margin("x", "auto")
   .padding("6")
@@ -544,7 +544,7 @@ Form([
 ```typescript
 Div(
   ForEach(items, (item) =>
-    Div([
+    Div(
       Div(item.title)
         .textSize("lg")
         .fontWeight("bold")
@@ -553,7 +553,7 @@ Div(
       Div(item.description)
         .textColor("gray-600")
         .textSize("sm")
-    ])
+    )
       .background("white")
       .padding("6")
       .rounded("lg")
@@ -571,7 +571,7 @@ Div(
 ### Full-Screen Section
 
 ```typescript
-Div([
+Div(
   H1("Welcome to Our Site")
     .textSize("5xl")
     .fontWeight("bold")
@@ -581,7 +581,7 @@ Div([
   P("Get started with amazing features")
     .textSize("xl")
     .textColor("gray-200")
-])
+)
   .w("full")
   .h("screen")
   .flex()
