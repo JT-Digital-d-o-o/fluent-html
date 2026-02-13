@@ -13,7 +13,6 @@ export {
   ForEach2,
   ForEach3,
   Repeat,
-  range,
 } from "./iteration.js";
 
 // Overlay utility

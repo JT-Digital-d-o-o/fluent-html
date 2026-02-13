@@ -739,6 +739,37 @@ testView("Array child still works with variadic", (0, index_js_1.Div)([(0, index
 testView("Variadic El custom element", (0, index_js_1.El)("custom-el", (0, index_js_1.Span)("A"), (0, index_js_1.Span)("B")), `<custom-el><span>A</span>\n<span>B</span></custom-el>`);
 testView("Variadic deeply nested", (0, index_js_1.Div)((0, index_js_1.Header)((0, index_js_1.Nav)((0, index_js_1.A)("Link").setHref("#"))), (0, index_js_1.Main)((0, index_js_1.Article)((0, index_js_1.H1)("Title"), (0, index_js_1.P)("Body"))), (0, index_js_1.Footer)((0, index_js_1.P)("Footer"))), `<div><header><nav><a href="#">Link</a></nav></header>\n<main><article><h1>Title</h1>\n<p>Body</p></article></main>\n<footer><p>Footer</p></footer></div>`);
 // ------------------------------------
+// when() and apply()
+// ------------------------------------
+section("when() and apply()");
+// when — true condition
+testView("when() true applies modifier", (0, index_js_1.Button)("Save").when(true, t => t.addClass("bg-blue-500")), `<button class="bg-blue-500">Save</button>`);
+// when — false condition
+testView("when() false skips modifier", (0, index_js_1.Button)("Save").when(false, t => t.addClass("bg-blue-500")), `<button>Save</button>`);
+// when — chained
+testView("when() chained multiple", (0, index_js_1.Div)("Content")
+    .setClass("base")
+    .when(true, t => t.addClass("active"))
+    .when(false, t => t.addClass("hidden")), `<div class="base active">Content</div>`);
+// when — complex modifier
+testView("when() complex modifier", (0, index_js_1.Button)("Submit")
+    .when(true, t => t.toggle("disabled").addClass("opacity-50")), `<button class="opacity-50" disabled>Submit</button>`);
+// apply — single modifier
+testView("apply() single modifier", (0, index_js_1.Div)("Card").apply(t => t.setClass("rounded shadow p-4")), `<div class="rounded shadow p-4">Card</div>`);
+// apply — multiple modifiers
+testView("apply() multiple modifiers", (0, index_js_1.Div)("Alert")
+    .apply(t => t.setClass("rounded p-4"), t => t.addClass("border-red-500")), `<div class="rounded p-4 border-red-500">Alert</div>`);
+// apply — reusable modifier functions
+const card = (t) => t.setClass("rounded shadow p-4");
+const danger = (t) => t.addClass("border-red-500 text-red-700");
+testView("apply() reusable modifiers", (0, index_js_1.Div)("Warning").apply(card, danger), `<div class="rounded shadow p-4 border-red-500 text-red-700">Warning</div>`);
+// when + apply combined
+testView("when() with apply()", (0, index_js_1.Div)("Alert")
+    .apply(card)
+    .when(true, t => t.apply(danger)), `<div class="rounded shadow p-4 border-red-500 text-red-700">Alert</div>`);
+// apply — no modifiers (identity)
+testView("apply() no modifiers", (0, index_js_1.Div)("Unchanged").apply(), `<div>Unchanged</div>`);
+// ------------------------------------
 // Summary
 // ------------------------------------
 console.log(`\n${"=".repeat(50)}`);

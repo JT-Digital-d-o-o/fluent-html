@@ -39,6 +39,27 @@ export declare class Tag {
      */
     toggle(name: string, condition?: boolean): this;
     /**
+     * Conditionally modify this tag. When condition is true, the modifier
+     * function is called with the tag. Otherwise the tag is returned unchanged.
+     *
+     * @example
+     * Button("Save")
+     *   .when(isLoading, t => t.toggle("disabled").addClass("opacity-50"))
+     *   .when(isPrimary, t => t.addClass("bg-blue-500 text-white"))
+     */
+    when(condition: boolean, fn: (tag: this) => this): this;
+    /**
+     * Apply one or more modifier functions to this tag. Enables reusable,
+     * composable styling and behavior.
+     *
+     * @example
+     * const card = (t: Tag) => t.setClass("rounded shadow p-4 bg-white");
+     * const danger = (t: Tag) => t.addClass("border-red-500 text-red-700");
+     *
+     * Div("Warning").apply(card, danger)
+     */
+    apply(...fns: ((tag: this) => this)[]): this;
+    /**
      * Set multiple CSS classes, filtering out falsy values.
      *
      * @param classes - Array of class names (falsy values are filtered out)

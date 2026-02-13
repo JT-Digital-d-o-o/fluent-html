@@ -108,6 +108,36 @@ Form(
   .setHtmx(hx("/api/subscribe", { method: "post", swap: "outerHTML" }))
 ```
 
+### Conditional Modifiers
+
+Use `.when()` to conditionally modify a tag without breaking the chain:
+
+```typescript
+Button("Save")
+  .setClass("btn")
+  .when(isLoading, t => t.toggle("disabled").addClass("opacity-50"))
+  .when(isPrimary, t => t.addClass("btn-primary"))
+```
+
+When the condition is false, the tag passes through unchanged.
+
+### Reusable Modifiers
+
+Use `.apply()` to compose reusable modifier functions:
+
+```typescript
+const card = (t: Tag) => t.setClass("rounded shadow p-4 bg-white");
+const danger = (t: Tag) => t.addClass("border-red-500 text-red-700");
+
+// Apply single or multiple modifiers
+Div("Warning").apply(card, danger)
+
+// Combine with .when() for conditional composition
+Div("Alert")
+  .apply(card)
+  .when(isError, t => t.apply(danger))
+```
+
 ### Control Flow
 
 ```typescript
@@ -1699,6 +1729,8 @@ See [eslint-plugin-fluent-html](https://www.npmjs.com/package/eslint-plugin-flue
 | `.hxPatch(endpoint, opts?)`  | Shorthand for PATCH request                            |
 | `.hxDelete(endpoint, opts?)` | Shorthand for DELETE request                           |
 | `.setToggles([...])`         | Add boolean attributes (`required`, `disabled`, etc.) |
+| `.when(condition, fn)`       | Conditionally modify tag (chain-friendly)              |
+| `.apply(...fns)`             | Apply reusable modifier functions                      |
 
 ### Fluent Styling Methods (All Tags)
 

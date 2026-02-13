@@ -1701,6 +1701,70 @@ testView("Variadic deeply nested",
   `<div><header><nav><a href="#">Link</a></nav></header>\n<main><article><h1>Title</h1>\n<p>Body</p></article></main>\n<footer><p>Footer</p></footer></div>`);
 
 // ------------------------------------
+// when() and apply()
+// ------------------------------------
+
+section("when() and apply()");
+
+// when — true condition
+testView("when() true applies modifier",
+  Button("Save").when(true, t => t.addClass("bg-blue-500")),
+  `<button class="bg-blue-500">Save</button>`);
+
+// when — false condition
+testView("when() false skips modifier",
+  Button("Save").when(false, t => t.addClass("bg-blue-500")),
+  `<button>Save</button>`);
+
+// when — chained
+testView("when() chained multiple",
+  Div("Content")
+    .setClass("base")
+    .when(true, t => t.addClass("active"))
+    .when(false, t => t.addClass("hidden")),
+  `<div class="base active">Content</div>`);
+
+// when — complex modifier
+testView("when() complex modifier",
+  Button("Submit")
+    .when(true, t => t.toggle("disabled").addClass("opacity-50")),
+  `<button class="opacity-50" disabled>Submit</button>`);
+
+// apply — single modifier
+testView("apply() single modifier",
+  Div("Card").apply(t => t.setClass("rounded shadow p-4")),
+  `<div class="rounded shadow p-4">Card</div>`);
+
+// apply — multiple modifiers
+testView("apply() multiple modifiers",
+  Div("Alert")
+    .apply(
+      t => t.setClass("rounded p-4"),
+      t => t.addClass("border-red-500")
+    ),
+  `<div class="rounded p-4 border-red-500">Alert</div>`);
+
+// apply — reusable modifier functions
+const card = (t: Tag) => t.setClass("rounded shadow p-4");
+const danger = (t: Tag) => t.addClass("border-red-500 text-red-700");
+
+testView("apply() reusable modifiers",
+  Div("Warning").apply(card, danger),
+  `<div class="rounded shadow p-4 border-red-500 text-red-700">Warning</div>`);
+
+// when + apply combined
+testView("when() with apply()",
+  Div("Alert")
+    .apply(card)
+    .when(true, t => t.apply(danger)),
+  `<div class="rounded shadow p-4 border-red-500 text-red-700">Alert</div>`);
+
+// apply — no modifiers (identity)
+testView("apply() no modifiers",
+  Div("Unchanged").apply(),
+  `<div>Unchanged</div>`);
+
+// ------------------------------------
 // Summary
 // ------------------------------------
 
