@@ -1,5 +1,6 @@
 const { RuleTester } = require("eslint");
 
+const noKnownModifiersInSetclass = require("../dist/rules/no-known-modifiers-in-setclass");
 const noSetclassInWhenApplyCallback = require("../dist/rules/no-setclass-in-when-apply-callback");
 const noSetclassAfterFluentModifier = require("../dist/rules/no-setclass-after-fluent-modifier");
 const preferVariadicChildren = require("../dist/rules/prefer-variadic-children");
@@ -27,6 +28,52 @@ function runSuite(name, rule, tests) {
     console.log(`  ❌ FAILED: ${e.message}`);
   }
 }
+
+// ------------------------------------
+// no-known-modifiers-in-setclass (addClass violations)
+// ------------------------------------
+
+runSuite("no-known-modifiers-in-setclass (addClass)", noKnownModifiersInSetclass, {
+  valid: [
+    // addClass with pseudo-class prefix — intended use
+    { code: `Div().addClass("hover:bg-blue-600")` },
+    // addClass with responsive prefix — intended use
+    { code: `Div().addClass("md:w-1/2")` },
+    // addClass with multiple modifier-prefixed classes — fine
+    { code: `Div().addClass("hover:bg-blue-600 focus:ring-2")` },
+    // addClass with non-utility class — fine
+    { code: `Div().addClass("custom-widget")` },
+  ],
+  invalid: [
+    // addClass with single base utility
+    {
+      code: `Div().addClass("mt-2")`,
+      output: `Div().margin("t", "2")`,
+      errors: [{ messageId: "useKnownModifier", data: { callee: "addClass", className: "mt-2", method: "margin('t', ...)" } }],
+    },
+    // addClass with base utility + modifier-prefixed class — keeps modifier class in addClass
+    {
+      code: `Div().addClass("p-4 hover:bg-blue-600")`,
+      output: `Div().padding("4").addClass("hover:bg-blue-600")`,
+      errors: [{ messageId: "useKnownModifier", data: { callee: "addClass", className: "p-4", method: "padding()" } }],
+    },
+    // addClass with multiple base utilities
+    {
+      code: `Div().addClass("mt-2 p-4")`,
+      output: `Div().margin("t", "2").padding("4")`,
+      errors: [
+        { messageId: "useKnownModifier", data: { callee: "addClass", className: "mt-2", method: "margin('t', ...)" } },
+        { messageId: "useKnownModifier", data: { callee: "addClass", className: "p-4", method: "padding()" } },
+      ],
+    },
+    // setClass still works (regression check)
+    {
+      code: `Div().setClass("mt-2")`,
+      output: `Div().margin("t", "2")`,
+      errors: [{ messageId: "useKnownModifier", data: { callee: "setClass", className: "mt-2", method: "margin('t', ...)" } }],
+    },
+  ],
+});
 
 // ------------------------------------
 // no-setclass-in-when-apply-callback

@@ -296,13 +296,13 @@ const rule: Rule.RuleModule = {
   meta: {
     type: "suggestion",
     docs: {
-      description: "Warn when setClass() is used with Tailwind classes that have dedicated SwiftUI-style methods",
+      description: "Warn when setClass() or addClass() is used with Tailwind classes that have dedicated fluent methods",
       category: "Best Practices",
       recommended: true,
     },
     fixable: "code",
     messages: {
-      useKnownModifier: "Avoid using .setClass() with '{{className}}'. Use .{{method}} instead to prevent style overrides.",
+      useKnownModifier: "Avoid using .{{callee}}() with '{{className}}'. Use .{{method}} instead to prevent style overrides.",
     },
     schema: [],
   },
@@ -315,13 +315,16 @@ const rule: Rule.RuleModule = {
           return;
         }
 
-        // Check if the method name is "setClass"
+        // Check if the method name is "setClass" or "addClass"
         if (
           node.callee.property.type !== "Identifier" ||
-          node.callee.property.name !== "setClass"
+          (node.callee.property.name !== "setClass" && node.callee.property.name !== "addClass")
         ) {
           return;
         }
+
+        const calleeName: string = node.callee.property.name;
+        const isAddClass = calleeName === "addClass";
 
         // Check if there's a string literal argument
         if (node.arguments.length === 0) {
@@ -337,6 +340,11 @@ const rule: Rule.RuleModule = {
           const remainingClasses: string[] = [];
 
           for (const className of classNames) {
+            // For addClass, skip classes with modifier prefixes (hover:, focus:, md:, etc.)
+            if (isAddClass && className.includes(":")) {
+              remainingClasses.push(className);
+              continue;
+            }
             const match = matchClass(className);
             if (match) {
               fixableClasses.push(match);
@@ -347,6 +355,10 @@ const rule: Rule.RuleModule = {
 
           // Report violations
           for (const className of classNames) {
+            // For addClass, skip classes with modifier prefixes
+            if (isAddClass && className.includes(":")) {
+              continue;
+            }
             const violations = checkClassForKnownModifiers(className);
             for (const violation of violations) {
               const match = matchClass(className);
@@ -355,6 +367,7 @@ const rule: Rule.RuleModule = {
                 node: arg as any,
                 messageId: "useKnownModifier",
                 data: {
+                  callee: calleeName,
                   className: violation.className,
                   method: violation.method,
                 },
@@ -363,13 +376,8 @@ const rule: Rule.RuleModule = {
                   const methodCalls = fixableClasses.map(m => m.methodCall).join("");
 
                   if (remainingClasses.length === 0) {
-                    // All classes can be converted - replace entire .setClass(...) call
-                    // Find the start of .setClass (the dot before setClass)
-                    const sourceCode = context.getSourceCode();
-                    const calleeEnd = node.callee.property.range[1];
+                    // All classes can be converted - replace entire call
                     const argsEnd = node.range[1];
-
-                    // Replace from the dot before setClass to the end of the call
                     const dotStart = node.callee.property.range[0] - 1; // -1 for the dot
 
                     return fixer.replaceTextRange(
@@ -377,14 +385,14 @@ const rule: Rule.RuleModule = {
                       methodCalls
                     );
                   } else {
-                    // Some classes remain - keep setClass with remaining, add method calls
-                    const remainingSetClass = `.setClass("${remainingClasses.join(" ")}")`;
+                    // Some classes remain - keep original method with remaining, add fluent calls
+                    const remainingCall = `.${calleeName}("${remainingClasses.join(" ")}")`;
                     const dotStart = node.callee.property.range[0] - 1;
                     const argsEnd = node.range[1];
 
                     return fixer.replaceTextRange(
                       [dotStart, argsEnd],
-                      methodCalls + remainingSetClass
+                      methodCalls + remainingCall
                     );
                   }
                 } : undefined,
@@ -400,6 +408,10 @@ const rule: Rule.RuleModule = {
               const classNames = quasi.value.cooked.split(/\s+/).filter(Boolean);
 
               for (const className of classNames) {
+                // For addClass, skip classes with modifier prefixes
+                if (isAddClass && className.includes(":")) {
+                  continue;
+                }
                 const violations = checkClassForKnownModifiers(className);
 
                 for (const violation of violations) {
@@ -407,6 +419,7 @@ const rule: Rule.RuleModule = {
                     node: arg as any,
                     messageId: "useKnownModifier",
                     data: {
+                      callee: calleeName,
                       className: violation.className,
                       method: violation.method,
                     },
