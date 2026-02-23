@@ -127,6 +127,28 @@ testView("Wbr element",
 
 
 // ------------------------------------
+// render() variadic
+// ------------------------------------
+
+section("render() variadic");
+
+test("render single view",
+  render(P("Hello")),
+  `<p>Hello</p>`);
+
+test("render two views",
+  render(P("One"), P("Two")),
+  `<p>One</p>\n<p>Two</p>`);
+
+test("render three views",
+  render(H1("Title"), P("Body"), Footer("End")),
+  `<h1>Title</h1>\n<p>Body</p>\n<footer>End</footer>`);
+
+test("render zero views",
+  render(),
+  ``);
+
+// ------------------------------------
 // Semantic Elements
 // ------------------------------------
 

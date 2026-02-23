@@ -41,6 +41,14 @@ testView("Br element", (0, index_js_1.Br)(), `<br>`);
 testView("Hr element", (0, index_js_1.Hr)(), `<hr>`);
 testView("Wbr element", (0, index_js_1.Wbr)(), `<wbr>`);
 // ------------------------------------
+// render() variadic
+// ------------------------------------
+section("render() variadic");
+test("render single view", (0, index_js_1.render)((0, index_js_1.P)("Hello")), `<p>Hello</p>`);
+test("render two views", (0, index_js_1.render)((0, index_js_1.P)("One"), (0, index_js_1.P)("Two")), `<p>One</p>\n<p>Two</p>`);
+test("render three views", (0, index_js_1.render)((0, index_js_1.H1)("Title"), (0, index_js_1.P)("Body"), (0, index_js_1.Footer)("End")), `<h1>Title</h1>\n<p>Body</p>\n<footer>End</footer>`);
+test("render zero views", (0, index_js_1.render)(), ``);
+// ------------------------------------
 // Semantic Elements
 // ------------------------------------
 section("Semantic Elements");

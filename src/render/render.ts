@@ -10,8 +10,8 @@ const VOID_ELEMENTS = new Set([
   'link', 'meta', 'source', 'track', 'wbr'
 ]);
 
-export function render(view: View): string {
-  return renderImpl(view, false);
+export function render(...views: View[]): string {
+  return renderImpl(views.length === 1 ? views[0] : views, false);
 }
 
 function buildHtmx(htmx: HTMX): string {
