@@ -8,8 +8,8 @@ const VOID_ELEMENTS = new Set([
     'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
     'link', 'meta', 'source', 'track', 'wbr'
 ]);
-function render(view) {
-    return renderImpl(view, false);
+function render(...views) {
+    return renderImpl(views.length === 1 ? views[0] : views, false);
 }
 function buildHtmx(htmx) {
     let result = 'hx-' + htmx.method + '="' + (0, escape_js_1.escapeAttr)(htmx.endpoint) + '"';

@@ -1,3 +1,3 @@
 import type { View } from "../core/types.js";
-export declare function render(view: View): string;
+export declare function render(...views: View[]): string;
 //# sourceMappingURL=render.d.ts.map
