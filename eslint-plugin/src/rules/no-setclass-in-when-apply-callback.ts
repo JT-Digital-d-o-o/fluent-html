@@ -5,15 +5,15 @@ const rule: Rule.RuleModule = {
     type: "problem",
     docs: {
       description:
-        "Disallow setClass() inside when() or apply() callbacks (overwrites classes set before the callback)",
+        "Disallow setClass()/setClasses() inside when() or apply() callbacks (overwrites classes set before the callback)",
       category: "Possible Errors",
       recommended: true,
     },
     messages: {
       setClassInWhenCallback:
-        "setClass() inside .when() callback will overwrite classes set before .when(). Use addClass() instead.",
+        "{{method}}() inside .when() callback will overwrite classes set before .when(). Use addClass() instead.",
       setClassInApplyCallback:
-        "setClass() inside .apply() callback will overwrite classes set before .apply(). Use addClass() instead.",
+        "{{method}}() inside .apply() callback will overwrite classes set before .apply(). Use addClass() instead.",
     },
     schema: [],
   },
@@ -66,7 +66,7 @@ const rule: Rule.RuleModule = {
         if (node.callee.type !== "MemberExpression") return;
         if (
           node.callee.property.type !== "Identifier" ||
-          node.callee.property.name !== "setClass"
+          (node.callee.property.name !== "setClass" && node.callee.property.name !== "setClasses")
         )
           return;
 
@@ -77,6 +77,7 @@ const rule: Rule.RuleModule = {
             scope.method === "when"
               ? "setClassInWhenCallback"
               : "setClassInApplyCallback",
+          data: { method: node.callee.property.name },
         });
       },
     };

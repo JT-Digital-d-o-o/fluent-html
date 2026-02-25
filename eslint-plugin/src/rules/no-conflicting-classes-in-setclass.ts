@@ -174,9 +174,8 @@ const rule: Rule.RuleModule = {
   },
 
   create(context: Rule.RuleContext): Rule.RuleListener {
-    function checkForConflicts(node: any, value: string, nodeStart: number) {
+    function checkForConflicts(node: any, value: string, nodeStart: number, seen: Map<string, string>) {
       const classes = value.split(/\s+/).filter(Boolean);
-      const seen = new Map<string, string>(); // conflict group -> first class
 
       let currentIndex = 0;
       for (const className of classes) {
@@ -203,25 +202,43 @@ const rule: Rule.RuleModule = {
       }
     }
 
+    function checkStringNode(node: any, seen: Map<string, string>) {
+      if (node.type === "Literal" && typeof node.value === "string") {
+        checkForConflicts(node, node.value, node.range[0] + 1, seen);
+      }
+      if (node.type === "TemplateLiteral") {
+        for (const quasi of node.quasis) {
+          if (quasi.value.cooked) {
+            checkForConflicts(quasi, quasi.value.cooked, quasi.range[0] + 1, seen);
+          }
+        }
+      }
+    }
+
     return {
       CallExpression(node: any) {
         if (node.callee.type !== "MemberExpression") return;
-        if (node.callee.property.type !== "Identifier" || node.callee.property.name !== "setClass") return;
+        if (node.callee.property.type !== "Identifier") return;
+
+        const methodName = node.callee.property.name;
+
+        if (methodName === "setClasses") {
+          if (node.arguments.length === 0) return;
+          const arg = node.arguments[0];
+          if (arg.type !== "ArrayExpression") return;
+          // Share a single seen map across all elements to catch cross-element conflicts
+          const seen = new Map<string, string>();
+          for (const element of arg.elements) {
+            if (element) checkStringNode(element, seen);
+          }
+          return;
+        }
+
+        if (methodName !== "setClass") return;
         if (node.arguments.length === 0) return;
 
-        const arg = node.arguments[0];
-
-        if (arg.type === "Literal" && typeof arg.value === "string") {
-          checkForConflicts(arg, arg.value, arg.range[0] + 1);
-        }
-
-        if (arg.type === "TemplateLiteral") {
-          for (const quasi of arg.quasis) {
-            if (quasi.value.cooked) {
-              checkForConflicts(quasi, quasi.value.cooked, quasi.range[0] + 1);
-            }
-          }
-        }
+        const seen = new Map<string, string>();
+        checkStringNode(node.arguments[0], seen);
       },
     };
   },

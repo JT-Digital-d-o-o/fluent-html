@@ -75,16 +75,43 @@ const rule: Rule.RuleModule = {
       }
     }
 
+    function checkStringNode(node: any) {
+      if (node.type === "Literal" && typeof node.value === "string") {
+        checkString(node, node.value, node.range[0] + 1);
+      }
+      if (node.type === "TemplateLiteral") {
+        for (let i = 0; i < node.quasis.length; i++) {
+          const quasi = node.quasis[i];
+          if (quasi.value.cooked) {
+            checkString(quasi, quasi.value.cooked, quasi.range[0] + 1, i === 0, i === node.quasis.length - 1);
+          }
+        }
+      }
+    }
+
     return {
       CallExpression(node: any) {
         if (node.callee.type !== "MemberExpression") {
           return;
         }
 
-        if (
-          node.callee.property.type !== "Identifier" ||
-          node.callee.property.name !== "setClass"
-        ) {
+        if (node.callee.property.type !== "Identifier") {
+          return;
+        }
+
+        const methodName = node.callee.property.name;
+
+        if (methodName === "setClasses") {
+          if (node.arguments.length === 0) return;
+          const arg = node.arguments[0];
+          if (arg.type !== "ArrayExpression") return;
+          for (const element of arg.elements) {
+            if (element) checkStringNode(element);
+          }
+          return;
+        }
+
+        if (methodName !== "setClass") {
           return;
         }
 
@@ -92,26 +119,7 @@ const rule: Rule.RuleModule = {
           return;
         }
 
-        const arg = node.arguments[0];
-
-        // Handle string literals
-        if (arg.type === "Literal" && typeof arg.value === "string") {
-          // +1 for the opening quote
-          checkString(arg, arg.value, arg.range[0] + 1);
-        }
-
-        // Handle template literals
-        if (arg.type === "TemplateLiteral") {
-          for (let i = 0; i < arg.quasis.length; i++) {
-            const quasi = arg.quasis[i];
-            if (quasi.value.cooked) {
-              const isFirst = i === 0;
-              const isLast = i === arg.quasis.length - 1;
-              // +1 for the backtick or }
-              checkString(quasi, quasi.value.cooked, quasi.range[0] + 1, isFirst, isLast);
-            }
-          }
-        }
+        checkStringNode(node.arguments[0]);
       },
     };
   },

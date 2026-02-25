@@ -1,6 +1,6 @@
 import { Rule } from "eslint";
 
-// List of fluent modifier methods that add classes (would be overwritten by setClass)
+// List of fluent modifier methods that add classes (would be overwritten by setClass/setClasses)
 const FLUENT_MODIFIERS = new Set([
   // Padding
   "padding",
@@ -53,13 +53,13 @@ const rule: Rule.RuleModule = {
     type: "problem",
     docs: {
       description:
-        "Disallow setClass() after fluent modifier methods (setClass overwrites all previously added classes)",
+        "Disallow setClass()/setClasses() after fluent modifier methods (overwrites all previously added classes)",
       category: "Possible Errors",
       recommended: true,
     },
     messages: {
       setClassAfterModifier:
-        "setClass() called after .{{modifier}}() will overwrite the classes added by {{modifier}}(). Move setClass() before fluent modifiers, or use addClass() instead.",
+        "{{method}}() called after .{{modifier}}() will overwrite the classes added by {{modifier}}(). Move {{method}}() before fluent modifiers, or use addClass() instead.",
     },
     schema: [],
   },
@@ -68,7 +68,7 @@ const rule: Rule.RuleModule = {
     function findFluentModifiersBeforeSetClass(node: any): string[] {
       const modifiersFound: string[] = [];
 
-      // Walk up the chain from the setClass call
+      // Walk up the chain from the setClass/setClasses call
       let current = node.callee.object;
 
       while (current) {
@@ -98,11 +98,11 @@ const rule: Rule.RuleModule = {
         if (node.callee.type !== "MemberExpression") return;
         if (
           node.callee.property.type !== "Identifier" ||
-          node.callee.property.name !== "setClass"
+          (node.callee.property.name !== "setClass" && node.callee.property.name !== "setClasses")
         )
           return;
 
-        // Check if there are any fluent modifiers in the chain before this setClass
+        // Check if there are any fluent modifiers in the chain before this setClass/setClasses
         const modifiers = findFluentModifiersBeforeSetClass(node);
 
         if (modifiers.length > 0) {
@@ -112,6 +112,7 @@ const rule: Rule.RuleModule = {
             messageId: "setClassAfterModifier",
             data: {
               modifier: modifiers[0],
+              method: node.callee.property.name,
             },
           });
         }

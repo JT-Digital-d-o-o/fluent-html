@@ -308,6 +308,51 @@ const rule: Rule.RuleModule = {
   },
 
   create(context: Rule.RuleContext): Rule.RuleListener {
+    function checkStringArg(node: any, calleeName: string, isAddClass: boolean) {
+      if (node.type === "Literal" && typeof node.value === "string") {
+        const classNames = node.value.split(/\s+/).filter(Boolean);
+
+        for (const className of classNames) {
+          if (isAddClass && className.includes(":")) continue;
+          const violations = checkClassForKnownModifiers(className);
+          for (const violation of violations) {
+            context.report({
+              node: node as any,
+              messageId: "useKnownModifier",
+              data: {
+                callee: calleeName,
+                className: violation.className,
+                method: violation.method,
+              },
+            });
+          }
+        }
+      }
+
+      if (node.type === "TemplateLiteral") {
+        for (const quasi of node.quasis) {
+          if (quasi.value.cooked) {
+            const classNames = quasi.value.cooked.split(/\s+/).filter(Boolean);
+            for (const className of classNames) {
+              if (isAddClass && className.includes(":")) continue;
+              const violations = checkClassForKnownModifiers(className);
+              for (const violation of violations) {
+                context.report({
+                  node: node as any,
+                  messageId: "useKnownModifier",
+                  data: {
+                    callee: calleeName,
+                    className: violation.className,
+                    method: violation.method,
+                  },
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
     return {
       CallExpression(node: any) {
         // Check if this is a method call
@@ -315,10 +360,12 @@ const rule: Rule.RuleModule = {
           return;
         }
 
-        // Check if the method name is "setClass" or "addClass"
+        // Check if the method name is "setClass", "setClasses", or "addClass"
         if (
           node.callee.property.type !== "Identifier" ||
-          (node.callee.property.name !== "setClass" && node.callee.property.name !== "addClass")
+          (node.callee.property.name !== "setClass" &&
+            node.callee.property.name !== "setClasses" &&
+            node.callee.property.name !== "addClass")
         ) {
           return;
         }
@@ -326,12 +373,21 @@ const rule: Rule.RuleModule = {
         const calleeName: string = node.callee.property.name;
         const isAddClass = calleeName === "addClass";
 
-        // Check if there's a string literal argument
+        // Check if there's an argument
         if (node.arguments.length === 0) {
           return;
         }
 
         const arg = node.arguments[0];
+
+        // Handle setClasses array (no auto-fix due to complexity)
+        if (calleeName === "setClasses") {
+          if (arg.type !== "ArrayExpression") return;
+          for (const element of arg.elements) {
+            if (element) checkStringArg(element, calleeName, false);
+          }
+          return;
+        }
 
         // Handle string literals
         if (arg.type === "Literal" && typeof arg.value === "string") {

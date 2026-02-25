@@ -11,6 +11,7 @@ const rule: Rule.RuleModule = {
     fixable: "code",
     messages: {
       emptySetClass: "Empty setClass() call has no effect. Remove it or add classes.",
+      emptySetClasses: "Empty setClasses() call has no effect. Remove it or pass class names.",
     },
     schema: [],
   },
@@ -19,7 +20,25 @@ const rule: Rule.RuleModule = {
     return {
       CallExpression(node: any) {
         if (node.callee.type !== "MemberExpression") return;
-        if (node.callee.property.type !== "Identifier" || node.callee.property.name !== "setClass") return;
+        if (node.callee.property.type !== "Identifier") return;
+
+        const methodName = node.callee.property.name;
+
+        if (methodName === "setClasses") {
+          // No arguments
+          if (node.arguments.length === 0) {
+            context.report({ node, messageId: "emptySetClasses" });
+            return;
+          }
+          const arg = node.arguments[0];
+          // Empty array literal
+          if (arg.type === "ArrayExpression" && arg.elements.length === 0) {
+            context.report({ node: arg, messageId: "emptySetClasses" });
+          }
+          return;
+        }
+
+        if (methodName !== "setClass") return;
 
         // No arguments
         if (node.arguments.length === 0) {

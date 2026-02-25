@@ -72,6 +72,19 @@ runSuite("no-known-modifiers-in-setclass (addClass)", noKnownModifiersInSetclass
       output: `Div().margin("t", "2")`,
       errors: [{ messageId: "useKnownModifier", data: { callee: "setClass", className: "mt-2", method: "margin('t', ...)" } }],
     },
+    // setClasses with a string literal element that has a known modifier
+    {
+      code: `Div().setClasses(["p-4", isActive && "active"])`,
+      errors: [{ messageId: "useKnownModifier", data: { callee: "setClasses", className: "p-4", method: "padding()" } }],
+    },
+    // setClasses with multiple known modifiers
+    {
+      code: `Div().setClasses(["mt-2", "rounded"])`,
+      errors: [
+        { messageId: "useKnownModifier", data: { callee: "setClasses", className: "mt-2", method: "margin('t', ...)" } },
+        { messageId: "useKnownModifier", data: { callee: "setClasses", className: "rounded", method: "rounded()" } },
+      ],
+    },
   ],
 });
 
@@ -93,6 +106,8 @@ runSuite("no-setclass-in-when-apply-callback", noSetclassInWhenApplyCallback, {
     { code: `items.map(x => x.setClass("foo"))` },
     // apply with addClass only
     { code: `Div("x").apply(t => t.addClass("a"), t => t.addClass("b"))` },
+    // setClasses outside callback — correct
+    { code: `Div("x").setClasses(["base", isActive && "active"])` },
   ],
   invalid: [
     // setClass inside when() callback
@@ -123,6 +138,16 @@ runSuite("no-setclass-in-when-apply-callback", noSetclassInWhenApplyCallback, {
         { messageId: "setClassInApplyCallback" },
       ],
     },
+    // setClasses inside when() callback
+    {
+      code: `Div("x").when(true, t => t.setClasses(["foo"]))`,
+      errors: [{ messageId: "setClassInWhenCallback" }],
+    },
+    // setClasses inside apply() callback
+    {
+      code: `Div("x").apply(t => t.setClasses(["foo"]))`,
+      errors: [{ messageId: "setClassInApplyCallback" }],
+    },
   ],
 });
 
@@ -138,22 +163,34 @@ runSuite("no-setclass-after-fluent-modifier (apply/when)", noSetclassAfterFluent
     { code: `Div("x").setClass("base").when(true, t => t.addClass("extra"))` },
     // No setClass at all
     { code: `Div("x").apply(t => t.addClass("foo"))` },
+    // setClasses before apply — correct order
+    { code: `Div("x").setClasses(["base"]).apply(t => t.addClass("extra"))` },
   ],
   invalid: [
     // setClass after apply() in chain
     {
       code: `Div("x").apply(t => t.addClass("a")).setClass("override")`,
-      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "apply" } }],
+      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "apply", method: "setClass" } }],
     },
     // setClass after when() in chain
     {
       code: `Div("x").when(true, t => t.addClass("a")).setClass("override")`,
-      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "when" } }],
+      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "when", method: "setClass" } }],
     },
     // setClass after apply + other modifiers
     {
       code: `Div("x").apply(t => t.addClass("a")).padding("4").setClass("override")`,
-      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "padding" } }],
+      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "padding", method: "setClass" } }],
+    },
+    // setClasses after apply() — same problem
+    {
+      code: `Div("x").apply(t => t.addClass("a")).setClasses(["override"])`,
+      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "apply", method: "setClasses" } }],
+    },
+    // setClasses after padding()
+    {
+      code: `Div("x").padding("4").setClasses(["override"])`,
+      errors: [{ messageId: "setClassAfterModifier", data: { modifier: "padding", method: "setClasses" } }],
     },
   ],
 });
