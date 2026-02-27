@@ -1,6 +1,6 @@
 {
   "name": "fluent-html-tailwind-extractor",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Tailwind CSS content extractor for fluent-html SwiftUI-style methods",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
