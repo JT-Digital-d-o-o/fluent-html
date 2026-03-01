@@ -1,0 +1,3 @@
+[submodule ".ai/web-development-guidelines"]
+	path = .ai/web-development-guidelines
+	url = git@github.com:JT-Digital-d-o-o/web-development-guidelines.git

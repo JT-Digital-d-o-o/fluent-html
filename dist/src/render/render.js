@@ -22,8 +22,6 @@ function buildHtmx(htmx) {
     }
     if (htmx.select)
         result += ' hx-select="' + (0, escape_js_1.escapeAttr)(htmx.select) + '"';
-    if (htmx.selectOob)
-        result += ' hx-select-oob="' + (0, escape_js_1.escapeAttr)(htmx.selectOob) + '"';
     if (htmx.trigger)
         result += ' hx-trigger="' + (0, escape_js_1.escapeAttr)(htmx.trigger) + '"';
     if (htmx.pushUrl !== undefined) {
@@ -39,41 +37,58 @@ function buildHtmx(htmx) {
         result += " hx-headers='" + JSON.stringify(htmx.headers) + "'";
     if (htmx.include)
         result += ' hx-include="' + (0, escape_js_1.escapeAttr)(htmx.include) + '"';
-    if (htmx.params)
-        result += ' hx-params="' + (0, escape_js_1.escapeAttr)(htmx.params) + '"';
     if (htmx.encoding)
         result += ' hx-encoding="' + (0, escape_js_1.escapeAttr)(htmx.encoding) + '"';
     if (htmx.validate !== undefined)
         result += ' hx-validate="' + htmx.validate + '"';
     if (htmx.confirm)
         result += ' hx-confirm="' + (0, escape_js_1.escapeAttr)(htmx.confirm) + '"';
-    if (htmx.prompt)
-        result += ' hx-prompt="' + (0, escape_js_1.escapeAttr)(htmx.prompt) + '"';
     if (htmx.indicator)
         result += ' hx-indicator="' + (0, escape_js_1.escapeAttr)(htmx.indicator) + '"';
-    if (htmx.disabledElt)
-        result += ' hx-disabled-elt="' + (0, escape_js_1.escapeAttr)(htmx.disabledElt) + '"';
+    if (htmx.disable)
+        result += ' hx-disable="' + (0, escape_js_1.escapeAttr)(htmx.disable) + '"';
     if (htmx.sync)
         result += ' hx-sync="' + (0, escape_js_1.escapeAttr)(htmx.sync) + '"';
-    if (htmx.ext)
-        result += ' hx-ext="' + (0, escape_js_1.escapeAttr)(htmx.ext) + '"';
-    if (htmx.disinherit)
-        result += ' hx-disinherit="' + (0, escape_js_1.escapeAttr)(htmx.disinherit) + '"';
-    if (htmx.inherit)
-        result += ' hx-inherit="' + (0, escape_js_1.escapeAttr)(htmx.inherit) + '"';
-    if (htmx.history !== undefined)
-        result += ' hx-history="' + htmx.history + '"';
-    if (htmx.historyElt !== undefined)
-        result += ' hx-history-elt="' + htmx.historyElt + '"';
     if (htmx.preserve !== undefined)
         result += ' hx-preserve="' + htmx.preserve + '"';
-    if (htmx.request)
-        result += ' hx-request="' + (0, escape_js_1.escapeAttr)(htmx.request) + '"';
     if (htmx.boost !== undefined)
         result += ' hx-boost="' + htmx.boost + '"';
-    if (htmx.disable !== undefined)
-        result += ' hx-disable="' + htmx.disable + '"';
+    if (htmx.ignore !== undefined)
+        result += ' hx-ignore="' + htmx.ignore + '"';
+    if (htmx.config) {
+        result += " hx-config='" + (typeof htmx.config === 'string' ? htmx.config : JSON.stringify(htmx.config)) + "'";
+    }
+    if (htmx.optimistic !== undefined)
+        result += ' hx-optimistic';
+    if (htmx.preload !== undefined) {
+        result += typeof htmx.preload === 'string'
+            ? ' hx-preload="' + htmx.preload + '"'
+            : ' hx-preload';
+    }
+    if (htmx.status) {
+        for (const code of Object.keys(htmx.status)) {
+            const cfg = htmx.status[code];
+            const value = typeof cfg === 'string' ? cfg : buildStatusConfig(cfg);
+            result += ' hx-status:' + code + '="' + (0, escape_js_1.escapeAttr)(value) + '"';
+        }
+    }
     return result;
+}
+function buildStatusConfig(cfg) {
+    const parts = [];
+    if (cfg.swap)
+        parts.push('swap:' + cfg.swap);
+    if (cfg.target)
+        parts.push('target:' + cfg.target);
+    if (cfg.select)
+        parts.push('select:' + cfg.select);
+    if (cfg.push !== undefined)
+        parts.push('push:' + cfg.push);
+    if (cfg.replace !== undefined)
+        parts.push('replace:' + cfg.replace);
+    if (cfg.transition !== undefined)
+        parts.push('transition:' + cfg.transition);
+    return parts.join(' ');
 }
 function renderImpl(view, isRawContext) {
     if (typeof view === "string") {

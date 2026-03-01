@@ -16,6 +16,8 @@ exports.FormField = FormField;
 exports.KeyedList = KeyedList;
 exports.OOB = OOB;
 exports.withOOB = withOOB;
+exports.Partial = Partial;
+exports.HtmxConfig = HtmxConfig;
 exports.hxResponse = hxResponse;
 const tag_js_1 = require("./core/tag.js");
 const structural_js_1 = require("./elements/structural.js");
@@ -231,29 +233,12 @@ function KeyedList(items, getKey, renderItem, options = {}) {
 /**
  * Create an out-of-band swap element.
  *
- * OOB swaps allow updating multiple parts of the page in a single response.
- * The element will be swapped into the target location regardless of the
- * main response's target.
+ * @deprecated Use `Partial()` instead for htmx 4+. OOB swaps are replaced by `<hx-partial>`.
  *
  * @param target - CSS selector (with #) or element ID (without #)
  * @param content - Content to swap in
  * @param swap - Optional swap strategy (default: "true" which uses innerHTML)
  * @returns Tag with hx-swap-oob attribute
- *
- * @example
- * // Update a toast notification along with main content
- * render([
- *   Div("Main content"),
- *   OOB("toast", Div("Item saved!").addClass("toast-success"))
- * ])
- *
- * @example
- * // Update multiple elements with different strategies
- * render([
- *   Div("New item").setId("item-123"),
- *   OOB("item-count", Span("5 items")),
- *   OOB("notifications", Div("New notification"), "beforeend")
- * ])
  */
 function OOB(target, content, swap) {
     // Normalize target: extract ID from Id object or string
@@ -270,26 +255,43 @@ function OOB(target, content, swap) {
 /**
  * Combine main response content with out-of-band swap elements.
  *
- * This is a semantic helper that makes it clear you're building
- * an HTMX response with OOB swaps. It simply returns an array
- * that can be passed to render().
- *
- * @param main - The main response content
- * @param oob - Out-of-band elements (typically created with OOB())
- * @returns Array of views to be rendered
- *
- * @example
- * render(withOOB(
- *   // Main content that replaces the target
- *   Tr([Td("John"), Td("john@example.com")]).setId("row-1"),
- *
- *   // OOB updates
- *   OOB("user-count", Span("42 users")),
- *   OOB("last-updated", Span("Just now"))
- * ))
+ * @deprecated Use `Partial()` instead for htmx 4+.
  */
 function withOOB(main, ...oob) {
     return [main, ...oob];
+}
+// ------------------------------------
+// HTMX Partial Helpers (htmx 4)
+// ------------------------------------
+/**
+ * Create an `<hx-partial>` element for multi-swap responses.
+ *
+ * Each partial independently declares its target and swap strategy.
+ * This replaces OOB swaps with a cleaner, more explicit pattern.
+ *
+ * @param target - CSS selector string or Id object
+ * @param content - Content to swap in
+ * @param swap - Swap strategy (default: "outerMorph")
+ * @returns Tag with `<hx-partial>` element
+ *
+ * @example
+ * render(
+ *   Partial(ids.userList, UserList(users)),
+ *   Partial(ids.userCount, Span(`${users.length} users`)),
+ * )
+ */
+function Partial(target, // TODO: - can we narrow 'string' to valid css selectors? we should already have something done for htmx
+content, swap = "outerMorph") {
+    const selector = (0, ids_js_1.isId)(target) ? target.selector :
+        target.startsWith('#') ? target : `#${target}`;
+    return new tag_js_1.Tag("hx-partial", content)
+        .addAttribute("hx-target", selector) // TODO: - lets add hxTarget, hxSwap fluent methods?
+        .addAttribute("hx-swap", swap);
+}
+function HtmxConfig(config) {
+    return new tag_js_1.Tag("meta")
+        .addAttribute("name", "htmx-config")
+        .addAttribute("content", JSON.stringify(config));
 }
 /**
  * Builder for HTMX responses with response headers.
@@ -354,36 +356,6 @@ class HxResponse {
             else {
                 this._headers["HX-Trigger"] = event;
             }
-        }
-        return this;
-    }
-    /**
-     * Trigger a client-side event after the swap is complete.
-     *
-     * @param event - Event name to trigger
-     * @param detail - Optional event detail data
-     */
-    triggerAfterSwap(event, detail) {
-        if (detail) {
-            this._headers["HX-Trigger-After-Swap"] = JSON.stringify({ [event]: detail });
-        }
-        else {
-            this._headers["HX-Trigger-After-Swap"] = event;
-        }
-        return this;
-    }
-    /**
-     * Trigger a client-side event after the settle step (after CSS transitions).
-     *
-     * @param event - Event name to trigger
-     * @param detail - Optional event detail data
-     */
-    triggerAfterSettle(event, detail) {
-        if (detail) {
-            this._headers["HX-Trigger-After-Settle"] = JSON.stringify({ [event]: detail });
-        }
-        else {
-            this._headers["HX-Trigger-After-Settle"] = event;
         }
         return this;
     }
@@ -533,7 +505,6 @@ exports.HxResponse = HxResponse;
  * )
  *   .trigger("orderPlaced", { orderId: 123 })
  *   .pushUrl("/orders/123")
- *   .triggerAfterSwap("scrollToTop")
  *   .build();
  *
  * @example

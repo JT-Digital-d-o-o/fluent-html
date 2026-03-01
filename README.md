@@ -165,11 +165,11 @@ Div(ForEach(5, i => Star()))  // Repeat 5 times
 
 ```typescript
 // Flex layouts
-VStack([Header(), Content(), Footer()], { spacing: "1rem" })
-HStack([Logo(), Nav(), UserMenu()], { justify: "space-between" })
+VStack(Header(), Content(), Footer(), { spacing: "1rem" })
+HStack(Logo(), Nav(), UserMenu(), { justify: "space-between" })
 
 // Grid
-Grid(products.map(ProductCard), { columns: 3, gap: "1rem" })
+Grid(ForEach(products, ProductCard), { columns: 3, gap: "1rem" })
 ```
 
 ### Out-of-Band Updates (HTMX)
@@ -1417,16 +1417,17 @@ Button("Menu").setAria({
 ```typescript
 import { VStack } from 'fluent-html';
 
-VStack([
+VStack(
   H1("Title"),
   P("Content"),
-  Button("Action")
-], {
-  spacing: "1rem",
-  align: "center",
-  justify: "flex-start",
-  className: "my-stack"
-})
+  Button("Action"),
+  {
+    spacing: "1rem",
+    align: "center",
+    justify: "flex-start",
+    className: "my-stack"
+  }
+)
 // Creates flex column with gap
 ```
 
@@ -1434,13 +1435,14 @@ VStack([
 ```typescript
 import { HStack } from 'fluent-html';
 
-HStack([
+HStack(
   Button("Cancel"),
-  Button("Save")
-], {
-  spacing: "0.5rem",
-  justify: "flex-end"
-})
+  Button("Save"),
+  {
+    spacing: "0.5rem",
+    justify: "flex-end"
+  }
+)
 // Creates flex row with gap
 ```
 
@@ -1449,18 +1451,17 @@ HStack([
 import { Grid } from 'fluent-html';
 
 // With column count
-Grid([Card1, Card2, Card3, Card4], {
-  columns: 2,
-  gap: "1rem"
-})
+Grid(
+  Card1, Card2, Card3, Card4,
+  { columns: 2, gap: "1rem" }
+)
 // → grid-template-columns: repeat(2, 1fr)
 
 // With custom template
-Grid([Item1, Item2, Item3], {
-  columns: "1fr 2fr 1fr",
-  rows: "auto 1fr auto",
-  gap: "1rem"
-})
+Grid(
+  Item1, Item2, Item3,
+  { columns: "1fr 2fr 1fr", rows: "auto 1fr auto", gap: "1rem" }
+)
 ```
 
 ### HTMX Patterns
@@ -1587,7 +1588,7 @@ KeyedList(
 
 ```typescript
 // Form with layout helpers and fluent styling
-VStack([
+VStack(
   H1("Contact Us")
     .textSize("3xl")
     .fontWeight("bold"),
@@ -1606,7 +1607,7 @@ VStack([
     required: true
   }),
 
-  HStack([
+  HStack(
     Button("Cancel")
       .padding("x", "4")
       .padding("y", "2")
@@ -1617,9 +1618,11 @@ VStack([
       .padding("y", "2")
       .background("blue-500")
       .textColor("white")
-      .rounded()
-  ], { justify: "flex-end" })
-], { spacing: "1.5rem" })
+      .rounded(),
+    { justify: "flex-end" }
+  ),
+  { spacing: "1.5rem" }
+)
 ```
 
 ---

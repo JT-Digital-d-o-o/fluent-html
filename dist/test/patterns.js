@@ -259,6 +259,58 @@ console.assert(keyedListHtml.includes("Bob"), "KeyedList should render all items
 console.log("✓ KeyedList creates list with keys");
 console.log();
 // ------------------------------------
+// Partial Tests (htmx 4)
+// ------------------------------------
+console.log("=== Partial Tests ===");
+// Test Partial with string target
+const partialStr = (0, patterns_js_1.Partial)("user-list", (0, index_js_1.Div)("Users"));
+const partialStrHtml = (0, index_js_1.render)(partialStr);
+console.assert(partialStrHtml.includes("<hx-partial"), "Partial should create hx-partial element");
+console.assert(partialStrHtml.includes('hx-target="#user-list"'), "Partial should set hx-target with # prefix");
+console.assert(partialStrHtml.includes('hx-swap="outerMorph"'), "Partial should default to outerMorph swap");
+console.log("✓ Partial creates hx-partial element with string target");
+// Test Partial with # prefix
+const partialHash = (0, patterns_js_1.Partial)("#sidebar", (0, index_js_1.Span)("Content"));
+const partialHashHtml = (0, index_js_1.render)(partialHash);
+console.assert(partialHashHtml.includes('hx-target="#sidebar"'), "Partial should preserve existing # prefix");
+console.log("✓ Partial handles # prefix in target");
+// Test Partial with custom swap
+const partialSwap = (0, patterns_js_1.Partial)("list", (0, index_js_1.Div)("Items"), "innerHTML");
+const partialSwapHtml = (0, index_js_1.render)(partialSwap);
+console.assert(partialSwapHtml.includes('hx-swap="innerHTML"'), "Partial should accept custom swap strategy");
+console.log("✓ Partial supports custom swap strategy");
+// Test multiple Partials rendered together
+const multiPartialHtml = (0, index_js_1.render)((0, patterns_js_1.Partial)("content", (0, index_js_1.Div)("Main")), (0, patterns_js_1.Partial)("count", (0, index_js_1.Span)("5")));
+console.assert(multiPartialHtml.includes('hx-target="#content"') &&
+    multiPartialHtml.includes('hx-target="#count"'), "Multiple Partials should render independently");
+console.log("✓ Multiple Partials render in a single response");
+console.log();
+// ------------------------------------
+// HtmxConfig Tests (htmx 4)
+// ------------------------------------
+console.log("=== HtmxConfig Tests ===");
+// Test basic config
+const configBasic = (0, patterns_js_1.HtmxConfig)({ extensions: "sse" });
+const configBasicHtml = (0, index_js_1.render)(configBasic);
+console.assert(configBasicHtml.includes('<meta'), "HtmxConfig should create meta element");
+console.assert(configBasicHtml.includes('name="htmx-config"'), "HtmxConfig should set name attribute");
+console.assert(configBasicHtml.includes('content='), "HtmxConfig should set content attribute");
+console.assert(configBasicHtml.includes('extensions'), "HtmxConfig should serialize extensions");
+console.log("✓ HtmxConfig creates meta tag with config");
+// Test config with multiple options
+const configFull = (0, patterns_js_1.HtmxConfig)({
+    extensions: "sse, preload",
+    transitions: true,
+    defaultSwap: "outerMorph",
+    implicitInheritance: true,
+});
+const configFullHtml = (0, index_js_1.render)(configFull);
+console.assert(configFullHtml.includes('transitions'), "HtmxConfig should include transitions");
+console.assert(configFullHtml.includes('defaultSwap'), "HtmxConfig should include defaultSwap");
+console.assert(configFullHtml.includes('outerMorph'), "HtmxConfig should include outerMorph value");
+console.log("✓ HtmxConfig supports multiple options");
+console.log();
+// ------------------------------------
 // Summary
 // ------------------------------------
 console.log("=== All Pattern Tests Passed! ===");

@@ -1,7 +1,7 @@
 import { Id } from "./ids.js";
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type HxEncoding = "multipart/form-data";
-export type HxSwapStyle = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'delete' | 'none';
+export type HxSwapStyle = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'before' | 'after' | 'prepend' | 'append' | 'innerMorph' | 'outerMorph' | 'delete' | 'none';
 /**
  * HTMX Swap type
  *
@@ -43,6 +43,19 @@ export type HxTrigger = BasicTrigger | ModifiedTrigger | DelayedTrigger | Thrott
  * - With selector: "closest form:abort", "#other-form:drop"
  */
 export type HxSync = 'drop' | 'abort' | 'replace' | 'queue' | 'queue first' | 'queue last' | 'queue all' | (string & {});
+export type HxConfig = {
+    timeout?: number;
+    credentials?: boolean;
+    mode?: 'cors' | 'same-origin' | 'no-cors';
+};
+export type HxStatusConfig = {
+    swap?: HxSwap;
+    target?: HxTarget;
+    select?: string;
+    push?: boolean | string;
+    replace?: boolean | string;
+    transition?: boolean;
+};
 export interface HTMX {
     endpoint: string;
     method: HxHttpMethod;
@@ -50,30 +63,25 @@ export interface HTMX {
     swap?: HxSwap;
     swapOob?: boolean | string;
     select?: string;
-    selectOob?: string;
     trigger?: HxTrigger;
     pushUrl?: boolean | string;
     replaceUrl?: boolean | string;
     vals?: Record<string, any> | string;
     headers?: Record<string, string>;
     include?: string;
-    params?: string;
     encoding?: HxEncoding;
     validate?: boolean;
     confirm?: string;
-    prompt?: string;
     indicator?: string;
-    disabledElt?: string;
+    disable?: string;
     sync?: HxSync;
-    ext?: string;
-    disinherit?: string;
-    inherit?: string;
-    history?: boolean;
-    historyElt?: boolean;
     preserve?: boolean;
-    request?: string;
     boost?: boolean;
-    disable?: boolean;
+    ignore?: boolean;
+    config?: HxConfig | string;
+    optimistic?: boolean;
+    preload?: 'mousedown' | 'mouseover' | boolean;
+    status?: Record<string, string | HxStatusConfig>;
 }
 /** Options for the `hx()` helper. Derived from HTMX — `target` also accepts an `Id` object. */
 export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>> & {

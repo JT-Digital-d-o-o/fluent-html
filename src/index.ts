@@ -253,6 +253,8 @@ export {
   HxHttpMethod,
   HxSync,
   HxOptions,
+  HxConfig,
+  HxStatusConfig,
   // Selector helpers
   id,
   clss,
@@ -271,9 +273,14 @@ export {
   // HTMX patterns
   SearchInput,
   InfiniteScroll,
-  // OOB helpers
+  // OOB helpers (deprecated — use Partial)
   OOB,
   withOOB,
+  // Partial helpers (htmx 4)
+  Partial,
+  // Global config helper (htmx 4)
+  HtmxConfig,
+  HtmxGlobalConfig,
   // Response helpers
   hxResponse,
   HxResponse,

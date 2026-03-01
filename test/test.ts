@@ -1212,10 +1212,6 @@ testView("hx-include",
   Button("Submit").setHtmx(hx("/api", { method: "post", include: "#extra-field" })),
   `<button hx-post="/api" hx-include="#extra-field">Submit</button>`);
 
-testView("hx-params",
-  Button("Submit").setHtmx(hx("/api", { method: "post", params: "*" })),
-  `<button hx-post="/api" hx-params="*">Submit</button>`);
-
 // ------------------------------------
 // HTMX - Misc Attributes
 // ------------------------------------
@@ -1230,10 +1226,6 @@ testView("hx-indicator",
   Button("Load").setHtmx(hx("/slow", { indicator: "#spinner" })),
   `<button hx-get="/slow" hx-indicator="#spinner">Load</button>`);
 
-testView("hx-ext",
-  Div().setHtmx(hx("/data", { ext: "json-enc" })),
-  `<div hx-get="/data" hx-ext="json-enc"></div>`);
-
 testView("hx-headers",
   Div().setHtmx(hx("/api", { headers: { "X-Custom": "value" } })),
   `<div hx-get="/api" hx-headers='{"X-Custom":"value"}'></div>`);
@@ -1242,13 +1234,112 @@ testView("hx-select",
   Div().setHtmx(hx("/page", { select: "#content" })),
   `<div hx-get="/page" hx-select="#content"></div>`);
 
-testView("hx-select-oob",
-  Div().setHtmx(hx("/page", { selectOob: "#sidebar" })),
-  `<div hx-get="/page" hx-select-oob="#sidebar"></div>`);
-
 testView("hx-sync",
   Button("Click").setHtmx(hx("/api", { sync: "closest form:abort" })),
   `<button hx-get="/api" hx-sync="closest form:abort">Click</button>`);
+
+// ------------------------------------
+// HTMX - Morph & Short Swap Styles
+// ------------------------------------
+
+section("HTMX - Morph & Short Swap Styles");
+
+testView("hx-swap outerMorph",
+  Div().setHtmx(hx("/data", { swap: "outerMorph" })),
+  `<div hx-get="/data" hx-swap="outerMorph"></div>`);
+
+testView("hx-swap innerMorph",
+  Div().setHtmx(hx("/data", { swap: "innerMorph" })),
+  `<div hx-get="/data" hx-swap="innerMorph"></div>`);
+
+testView("hx-swap before (short)",
+  Div().setHtmx(hx("/data", { swap: "before" })),
+  `<div hx-get="/data" hx-swap="before"></div>`);
+
+testView("hx-swap after (short)",
+  Div().setHtmx(hx("/data", { swap: "after" })),
+  `<div hx-get="/data" hx-swap="after"></div>`);
+
+testView("hx-swap prepend (short)",
+  Div().setHtmx(hx("/data", { swap: "prepend" })),
+  `<div hx-get="/data" hx-swap="prepend"></div>`);
+
+testView("hx-swap append (short)",
+  Div().setHtmx(hx("/data", { swap: "append" })),
+  `<div hx-get="/data" hx-swap="append"></div>`);
+
+testView("hx-swap outerMorph with modifier",
+  Div().setHtmx(hx("/data", { swap: "outerMorph transition:true" })),
+  `<div hx-get="/data" hx-swap="outerMorph transition:true"></div>`);
+
+// ------------------------------------
+// HTMX - Config
+// ------------------------------------
+
+section("HTMX - Config");
+
+testView("hx-config with object",
+  Button("Upload").setHtmx(hx("/upload", { method: "post", config: { timeout: 0 } })),
+  `<button hx-post="/upload" hx-config='{"timeout":0}'>Upload</button>`);
+
+testView("hx-config with string",
+  Button("Fetch").setHtmx(hx("/api", { config: '{"mode":"cors"}' })),
+  `<button hx-get="/api" hx-config='{"mode":"cors"}'>Fetch</button>`);
+
+testView("hx-config with full options",
+  Div().setHtmx(hx("/api", { config: { timeout: 120000, credentials: true, mode: "cors" } })),
+  `<div hx-get="/api" hx-config='{"timeout":120000,"credentials":true,"mode":"cors"}'></div>`);
+
+// ------------------------------------
+// HTMX - Optimistic & Preload
+// ------------------------------------
+
+section("HTMX - Optimistic & Preload");
+
+testView("hx-optimistic",
+  Button("Like").setHtmx(hx("/like", { method: "post", optimistic: true })),
+  `<button hx-post="/like" hx-optimistic>Like</button>`);
+
+testView("hx-preload boolean",
+  Div().setHtmx(hx("/page", { preload: true })),
+  `<div hx-get="/page" hx-preload></div>`);
+
+testView("hx-preload mouseover",
+  Div().setHtmx(hx("/page", { preload: "mouseover" })),
+  `<div hx-get="/page" hx-preload="mouseover"></div>`);
+
+testView("hx-preload mousedown",
+  Div().setHtmx(hx("/page", { preload: "mousedown" })),
+  `<div hx-get="/page" hx-preload="mousedown"></div>`);
+
+// ------------------------------------
+// HTMX - Status Code Handling
+// ------------------------------------
+
+section("HTMX - Status Code Handling");
+
+testView("hx-status with string config",
+  Form().setHtmx(hx("/users", { method: "post", status: { "5xx": "swap:none" } })),
+  `<form hx-post="/users" hx-status:5xx="swap:none"></form>`);
+
+testView("hx-status with object config",
+  Form().setHtmx(hx("/users", { method: "post", status: {
+    422: { swap: "innerHTML", target: "#errors" },
+  }})),
+  `<form hx-post="/users" hx-status:422="swap:innerHTML target:#errors"></form>`);
+
+testView("hx-status multiple codes",
+  Form().setHtmx(hx("/users", { method: "post", status: {
+    422: { swap: "innerHTML", target: "#errors" },
+    "5xx": { swap: "none" },
+  }})),
+  `<form hx-post="/users" hx-status:422="swap:innerHTML target:#errors" hx-status:5xx="swap:none"></form>`);
+
+testView("hx-status with transition",
+  Div().setHtmx(hx("/page", { status: {
+    200: { swap: "outerMorph", transition: true },
+  }})),
+  `<div hx-get="/page" hx-status:200="swap:outerMorph transition:true"></div>`);
 
 // ------------------------------------
 // HTMX - Complex Examples

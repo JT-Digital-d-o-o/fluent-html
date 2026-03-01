@@ -11,6 +11,8 @@ import {
   InfiniteScroll,
   OOB,
   withOOB,
+  Partial,
+  HtmxConfig,
   hxResponse,
   FormField,
   KeyedList,
@@ -476,6 +478,112 @@ console.assert(
 console.assert(keyedListHtml.includes("Alice"), "KeyedList should render item");
 console.assert(keyedListHtml.includes("Bob"), "KeyedList should render all items");
 console.log("✓ KeyedList creates list with keys");
+
+console.log();
+
+// ------------------------------------
+// Partial Tests (htmx 4)
+// ------------------------------------
+
+console.log("=== Partial Tests ===");
+
+// Test Partial with string target
+const partialStr = Partial("user-list", Div("Users"));
+const partialStrHtml = render(partialStr);
+console.assert(
+  partialStrHtml.includes("<hx-partial"),
+  "Partial should create hx-partial element"
+);
+console.assert(
+  partialStrHtml.includes('hx-target="#user-list"'),
+  "Partial should set hx-target with # prefix"
+);
+console.assert(
+  partialStrHtml.includes('hx-swap="outerMorph"'),
+  "Partial should default to outerMorph swap"
+);
+console.log("✓ Partial creates hx-partial element with string target");
+
+// Test Partial with # prefix
+const partialHash = Partial("#sidebar", Span("Content"));
+const partialHashHtml = render(partialHash);
+console.assert(
+  partialHashHtml.includes('hx-target="#sidebar"'),
+  "Partial should preserve existing # prefix"
+);
+console.log("✓ Partial handles # prefix in target");
+
+// Test Partial with custom swap
+const partialSwap = Partial("list", Div("Items"), "innerHTML");
+const partialSwapHtml = render(partialSwap);
+console.assert(
+  partialSwapHtml.includes('hx-swap="innerHTML"'),
+  "Partial should accept custom swap strategy"
+);
+console.log("✓ Partial supports custom swap strategy");
+
+// Test multiple Partials rendered together
+const multiPartialHtml = render(
+  Partial("content", Div("Main")),
+  Partial("count", Span("5")),
+);
+console.assert(
+  multiPartialHtml.includes('hx-target="#content"') &&
+  multiPartialHtml.includes('hx-target="#count"'),
+  "Multiple Partials should render independently"
+);
+console.log("✓ Multiple Partials render in a single response");
+
+console.log();
+
+// ------------------------------------
+// HtmxConfig Tests (htmx 4)
+// ------------------------------------
+
+console.log("=== HtmxConfig Tests ===");
+
+// Test basic config
+const configBasic = HtmxConfig({ extensions: "sse" });
+const configBasicHtml = render(configBasic);
+console.assert(
+  configBasicHtml.includes('<meta'),
+  "HtmxConfig should create meta element"
+);
+console.assert(
+  configBasicHtml.includes('name="htmx-config"'),
+  "HtmxConfig should set name attribute"
+);
+console.assert(
+  configBasicHtml.includes('content='),
+  "HtmxConfig should set content attribute"
+);
+console.assert(
+  configBasicHtml.includes('extensions'),
+  "HtmxConfig should serialize extensions"
+);
+console.log("✓ HtmxConfig creates meta tag with config");
+
+// Test config with multiple options
+const configFull = HtmxConfig({
+  extensions: "sse, preload",
+  transitions: true,
+  defaultSwap: "outerMorph",
+  implicitInheritance: true,
+});
+const configFullHtml = render(configFull);
+console.assert(
+  configFullHtml.includes('transitions'),
+  "HtmxConfig should include transitions"
+);
+console.assert(
+  configFullHtml.includes('defaultSwap'),
+  "HtmxConfig should include defaultSwap"
+);
+console.assert(
+  configFullHtml.includes('outerMorph'),
+  "HtmxConfig should include outerMorph value"
+);
+console.log("✓ HtmxConfig supports multiple options");
 
 console.log();
 

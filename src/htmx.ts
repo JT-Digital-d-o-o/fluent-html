@@ -1,6 +1,6 @@
 // ------------------------------------
 // HTMX Type Definitions for Fluent HTML
-// Compatible with HTMX 2.0+
+// Compatible with HTMX 4.0+
 // ------------------------------------
 
 import { Id, isId } from "./ids.js";
@@ -23,6 +23,12 @@ export type HxSwapStyle =
   | 'afterbegin'     // Insert at start of element
   | 'beforeend'      // Insert at end of element
   | 'afterend'       // Insert after element
+  | 'before'         // Short alias for beforebegin
+  | 'after'          // Short alias for afterend
+  | 'prepend'        // Short alias for afterbegin
+  | 'append'         // Short alias for beforeend
+  | 'innerMorph'     // Morph target's children
+  | 'outerMorph'     // Morph target element itself
   | 'delete'         // Delete element
   | 'none';          // No swap
 
@@ -160,6 +166,23 @@ export type HxSync =
   | 'queue all'
   | (string & {});
 
+// Per-element request configuration (replaces hx-request)
+export type HxConfig = {
+  timeout?: number;
+  credentials?: boolean;
+  mode?: 'cors' | 'same-origin' | 'no-cors';
+};
+
+// Status-code-specific swap behavior
+export type HxStatusConfig = {
+  swap?: HxSwap;
+  target?: HxTarget;
+  select?: string;
+  push?: boolean | string;
+  replace?: boolean | string;
+  transition?: boolean;
+};
+
 // ------------------------------------
 // Main HTMX Interface
 // ------------------------------------
@@ -174,7 +197,6 @@ export interface HTMX {
   swap?: HxSwap;
   swapOob?: boolean | string;  // Out-of-band swap
   select?: string;             // Select content from response
-  selectOob?: string;          // Select OOB content
 
   // Triggering
   trigger?: HxTrigger;
@@ -187,43 +209,39 @@ export interface HTMX {
   vals?: Record<string, any> | string;
   headers?: Record<string, string>;
   include?: string;
-  params?: string;             // Filter params: '*', 'none', 'not x', 'x,y'
   encoding?: HxEncoding;
 
   // Validation & Confirmation
   validate?: boolean;
   confirm?: string;
-  prompt?: string;
 
   // Loading states
   indicator?: string;
-  disabledElt?: string;        // Elements to disable during request
+  disable?: string;            // Elements to disable during request (was disabledElt)
 
   // Synchronization
   sync?: HxSync;
 
-  // Extensions
-  ext?: string;
-
-  // Inheritance control
-  disinherit?: string;         // Disable inheritance: '*' or 'hx-*'
-  inherit?: string;            // Force inheritance
-
-  // History
-  history?: boolean;           // Prevent history snapshot
-  historyElt?: boolean;        // Use this element for history
-
   // Preservation
   preserve?: boolean;          // Preserve element during swap
-
-  // Request configuration
-  request?: string;            // 'timeout:1000' | 'credentials:true' | 'noHeaders:true'
 
   // Boosting (for links/forms)
   boost?: boolean;
 
-  // Disable htmx processing
-  disable?: boolean;
+  // Ignore htmx processing (was disable)
+  ignore?: boolean;
+
+  // Per-element request configuration (replaces hx-request)
+  config?: HxConfig | string;
+
+  // Optimistic UI — show expected content before server responds
+  optimistic?: boolean;
+
+  // Preload on hover — cache response before click
+  preload?: 'mousedown' | 'mouseover' | boolean;
+
+  // Status-code-specific swap behavior
+  status?: Record<string, string | HxStatusConfig>;
 }
 
 // ------------------------------------

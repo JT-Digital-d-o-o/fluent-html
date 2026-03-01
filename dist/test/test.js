@@ -547,18 +547,56 @@ testView("hx-encoding multipart", (0, index_js_1.Form)().setHtmx((0, htmx_js_1.h
 testView("hx-validate", (0, index_js_1.Form)().setHtmx((0, htmx_js_1.hx)("/submit", { method: "post", validate: true })), `<form hx-post="/submit" hx-validate="true"></form>`);
 testView("hx-vals object", (0, index_js_1.Button)("Send").setHtmx((0, htmx_js_1.hx)("/api", { vals: { key: "value", num: 42 } })), `<button hx-get="/api" hx-vals='{"key":"value","num":42}'>Send</button>`);
 testView("hx-include", (0, index_js_1.Button)("Submit").setHtmx((0, htmx_js_1.hx)("/api", { method: "post", include: "#extra-field" })), `<button hx-post="/api" hx-include="#extra-field">Submit</button>`);
-testView("hx-params", (0, index_js_1.Button)("Submit").setHtmx((0, htmx_js_1.hx)("/api", { method: "post", params: "*" })), `<button hx-post="/api" hx-params="*">Submit</button>`);
 // ------------------------------------
 // HTMX - Misc Attributes
 // ------------------------------------
 section("HTMX - Misc Attributes");
 testView("hx-confirm", (0, index_js_1.Button)("Delete").setHtmx((0, htmx_js_1.hx)("/delete", { method: "delete", confirm: "Are you sure?" })), `<button hx-delete="/delete" hx-confirm="Are you sure?">Delete</button>`);
 testView("hx-indicator", (0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/slow", { indicator: "#spinner" })), `<button hx-get="/slow" hx-indicator="#spinner">Load</button>`);
-testView("hx-ext", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { ext: "json-enc" })), `<div hx-get="/data" hx-ext="json-enc"></div>`);
 testView("hx-headers", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/api", { headers: { "X-Custom": "value" } })), `<div hx-get="/api" hx-headers='{"X-Custom":"value"}'></div>`);
 testView("hx-select", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/page", { select: "#content" })), `<div hx-get="/page" hx-select="#content"></div>`);
-testView("hx-select-oob", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/page", { selectOob: "#sidebar" })), `<div hx-get="/page" hx-select-oob="#sidebar"></div>`);
 testView("hx-sync", (0, index_js_1.Button)("Click").setHtmx((0, htmx_js_1.hx)("/api", { sync: "closest form:abort" })), `<button hx-get="/api" hx-sync="closest form:abort">Click</button>`);
+// ------------------------------------
+// HTMX - Morph & Short Swap Styles
+// ------------------------------------
+section("HTMX - Morph & Short Swap Styles");
+testView("hx-swap outerMorph", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { swap: "outerMorph" })), `<div hx-get="/data" hx-swap="outerMorph"></div>`);
+testView("hx-swap innerMorph", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { swap: "innerMorph" })), `<div hx-get="/data" hx-swap="innerMorph"></div>`);
+testView("hx-swap before (short)", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { swap: "before" })), `<div hx-get="/data" hx-swap="before"></div>`);
+testView("hx-swap after (short)", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { swap: "after" })), `<div hx-get="/data" hx-swap="after"></div>`);
+testView("hx-swap prepend (short)", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { swap: "prepend" })), `<div hx-get="/data" hx-swap="prepend"></div>`);
+testView("hx-swap append (short)", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { swap: "append" })), `<div hx-get="/data" hx-swap="append"></div>`);
+testView("hx-swap outerMorph with modifier", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/data", { swap: "outerMorph transition:true" })), `<div hx-get="/data" hx-swap="outerMorph transition:true"></div>`);
+// ------------------------------------
+// HTMX - Config
+// ------------------------------------
+section("HTMX - Config");
+testView("hx-config with object", (0, index_js_1.Button)("Upload").setHtmx((0, htmx_js_1.hx)("/upload", { method: "post", config: { timeout: 0 } })), `<button hx-post="/upload" hx-config='{"timeout":0}'>Upload</button>`);
+testView("hx-config with string", (0, index_js_1.Button)("Fetch").setHtmx((0, htmx_js_1.hx)("/api", { config: '{"mode":"cors"}' })), `<button hx-get="/api" hx-config='{"mode":"cors"}'>Fetch</button>`);
+testView("hx-config with full options", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/api", { config: { timeout: 120000, credentials: true, mode: "cors" } })), `<div hx-get="/api" hx-config='{"timeout":120000,"credentials":true,"mode":"cors"}'></div>`);
+// ------------------------------------
+// HTMX - Optimistic & Preload
+// ------------------------------------
+section("HTMX - Optimistic & Preload");
+testView("hx-optimistic", (0, index_js_1.Button)("Like").setHtmx((0, htmx_js_1.hx)("/like", { method: "post", optimistic: true })), `<button hx-post="/like" hx-optimistic>Like</button>`);
+testView("hx-preload boolean", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/page", { preload: true })), `<div hx-get="/page" hx-preload></div>`);
+testView("hx-preload mouseover", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/page", { preload: "mouseover" })), `<div hx-get="/page" hx-preload="mouseover"></div>`);
+testView("hx-preload mousedown", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/page", { preload: "mousedown" })), `<div hx-get="/page" hx-preload="mousedown"></div>`);
+// ------------------------------------
+// HTMX - Status Code Handling
+// ------------------------------------
+section("HTMX - Status Code Handling");
+testView("hx-status with string config", (0, index_js_1.Form)().setHtmx((0, htmx_js_1.hx)("/users", { method: "post", status: { "5xx": "swap:none" } })), `<form hx-post="/users" hx-status:5xx="swap:none"></form>`);
+testView("hx-status with object config", (0, index_js_1.Form)().setHtmx((0, htmx_js_1.hx)("/users", { method: "post", status: {
+        422: { swap: "innerHTML", target: "#errors" },
+    } })), `<form hx-post="/users" hx-status:422="swap:innerHTML target:#errors"></form>`);
+testView("hx-status multiple codes", (0, index_js_1.Form)().setHtmx((0, htmx_js_1.hx)("/users", { method: "post", status: {
+        422: { swap: "innerHTML", target: "#errors" },
+        "5xx": { swap: "none" },
+    } })), `<form hx-post="/users" hx-status:422="swap:innerHTML target:#errors" hx-status:5xx="swap:none"></form>`);
+testView("hx-status with transition", (0, index_js_1.Div)().setHtmx((0, htmx_js_1.hx)("/page", { status: {
+        200: { swap: "outerMorph", transition: true },
+    } })), `<div hx-get="/page" hx-status:200="swap:outerMorph transition:true"></div>`);
 // ------------------------------------
 // HTMX - Complex Examples
 // ------------------------------------

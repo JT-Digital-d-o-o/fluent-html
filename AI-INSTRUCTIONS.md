@@ -463,8 +463,8 @@ const view = Div("Hello, world!");
 const html = render(view);
 // Returns: <div>Hello, world!</div>
 
-// Arrays render without wrappers (useful for HTMX partials):
-render([Li("One"), Li("Two"), Li("Three")])
+// Multiple views render without wrappers (useful for HTMX partials):
+render(Li("One"), Li("Two"), Li("Three"))
 // Returns: <li>One</li>\n<li>Two</li>\n<li>Three</li>
 ```
 

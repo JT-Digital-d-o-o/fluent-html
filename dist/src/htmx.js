@@ -1,7 +1,7 @@
 "use strict";
 // ------------------------------------
 // HTMX Type Definitions for Fluent HTML
-// Compatible with HTMX 2.0+
+// Compatible with HTMX 4.0+
 // ------------------------------------
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hx = hx;
