@@ -1,5 +1,7 @@
 # CLAUDE.md Updates for htmx 4
 
+> **Status:** Not yet applied. All library changes are implemented — these CLAUDE.md updates should be applied as Phase 9.
+
 ## Changes to HTMX Section
 
 ### 1. Swap Guidance: `outerHTML` → `outerMorph`

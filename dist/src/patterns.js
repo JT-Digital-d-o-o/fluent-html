@@ -280,12 +280,11 @@ function withOOB(main, ...oob) {
  *   Partial(ids.userCount, Span(`${users.length} users`)),
  * )
  */
-function Partial(target, // TODO: - can we narrow 'string' to valid css selectors? we should already have something done for htmx
-content, swap = "outerMorph") {
+function Partial(target, content, swap = "outerMorph") {
     const selector = (0, ids_js_1.isId)(target) ? target.selector :
         target.startsWith('#') ? target : `#${target}`;
     return new tag_js_1.Tag("hx-partial", content)
-        .addAttribute("hx-target", selector) // TODO: - lets add hxTarget, hxSwap fluent methods?
+        .addAttribute("hx-target", selector)
         .addAttribute("hx-swap", swap);
 }
 function HtmxConfig(config) {

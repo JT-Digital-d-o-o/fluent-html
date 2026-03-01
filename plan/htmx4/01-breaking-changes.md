@@ -198,12 +198,14 @@ All event names changed from camelCase to colon-separated:
 
 ---
 
-## Summary: Files Changed
+## Status: ✅ All Breaking Changes Implemented
 
-| File | Changes |
+All items in this document have been implemented in Phase 1.
+
+| File | Changes Done |
 |---|---|
-| `src/htmx.ts` | Remove 9 properties, rename 2, add new ones |
-| `src/render/render.ts` | Update `buildHtmx()` — remove 9 attrs, rename 1, add new attrs |
-| `src/patterns.ts` | Remove `triggerAfterSwap()`, `triggerAfterSettle()` from HxResponse |
-| `test/test.ts` | Update all htmx tests for new attribute names |
-| `test/patterns.ts` | Update HxResponse tests |
+| `src/htmx.ts` | Removed 9 properties, renamed 2 |
+| `src/render/render.ts` | Updated `buildHtmx()` — removed 9 attrs, renamed 2 |
+| `src/patterns.ts` | Removed `triggerAfterSwap()`, `triggerAfterSettle()` from HxResponse |
+| `test/test.ts` | Removed 3 deleted-attr tests |
+| `test/patterns.ts` | No changes needed (no after-swap/settle tests existed) |

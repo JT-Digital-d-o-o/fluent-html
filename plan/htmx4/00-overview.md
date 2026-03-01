@@ -1,6 +1,6 @@
 # fluent-html: htmx 4 Migration Plan
 
-## Summary
+## Status: Phases 1–7 Complete
 
 htmx 4 is a major release that switches from XMLHttpRequest to fetch(), makes inheritance explicit, changes default swap behavior for error responses, removes several attributes, renames others, and adds powerful new features like morph swaps, `<hx-partial>`, status-code handlers, and per-element config.
 
@@ -16,9 +16,14 @@ This plan covers both the **breaking migration** and **new feature opportunities
 | [04-implementation-phases.md](04-implementation-phases.md) | Step-by-step implementation order |
 | [05-claude-md-updates.md](05-claude-md-updates.md) | CLAUDE.md guideline changes for htmx 4 |
 
-## Key Decisions Needed
+## Key Decisions Made
 
-1. **Dual support or clean break?** — Ship a v6 that only supports htmx 4, or maintain backwards compat via a flag?
-2. **Deprecation strategy** — Keep removed properties in the TS interface with `@deprecated` + runtime warnings, or hard-remove them?
-3. **Default swap style** — Change CLAUDE.md recommendation from `outerHTML` to `outerMorph`?
-4. **`<hx-partial>` vs OOB** — Deprecate OOB helpers in favor of Partial helpers, or keep both?
+1. **Clean break** — v6 supports htmx 4 only. No backwards compat layer.
+2. **Hard removal** — Deleted properties removed from TS interface entirely (no `@deprecated` stubs).
+3. **`outerMorph` default** — `Partial()` defaults to `outerMorph`. CLAUDE.md update pending.
+4. **Both kept** — OOB helpers kept with `@deprecated` JSDoc; `Partial()` is the recommended replacement.
+
+## Remaining Work
+
+- [ ] Phase 8: Test utilities (optional)
+- [ ] Phase 9: CLAUDE.md updates

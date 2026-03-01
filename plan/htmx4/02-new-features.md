@@ -1,6 +1,8 @@
 # New htmx 4 Features for fluent-html
 
-## 1. Morph Swap Strategies
+> **Status:** Features 1–8 and 10–11 implemented. Feature 5 (inheritance modifiers) uses `addAttribute()` approach (Option A). Feature 9 (view transitions) already works via swap modifiers. Feature 12 (SSE) not implemented (app-level concern).
+
+## 1. Morph Swap Strategies ✅
 
 htmx 4 ships with built-in morphing based on the idiomorph algorithm. Instead of blowing away and replacing DOM nodes, morphing diffs and patches — preserving focus, scroll position, CSS animation state, and form values.
 
@@ -43,7 +45,7 @@ hx("/users", { target: ids.userList, swap: "outerMorph" })
 
 ---
 
-## 2. `<hx-partial>` — Multiple Targeted Swaps
+## 2. `<hx-partial>` — Multiple Targeted Swaps ✅
 
 The biggest DX improvement. Instead of OOB swaps (which require elements to have matching IDs and use the awkward `hx-swap-oob` attribute), `<hx-partial>` lets you send multiple independently-targeted swaps in a single response.
 
@@ -121,7 +123,7 @@ Keep OOB helpers for backwards compat but mark as `@deprecated` in JSDoc. New co
 
 ---
 
-## 3. `hx-status:CODE` — Status-Code-Specific Swap Behavior
+## 3. `hx-status:CODE` — Status-Code-Specific Swap Behavior ✅
 
 Lets you declare different swap behavior per HTTP status code. Eliminates need for JavaScript error handling.
 
@@ -189,7 +191,7 @@ Form(...).hxPost("/users/create", {
 
 ---
 
-## 4. `hx-config` — Per-Element Request Configuration
+## 4. `hx-config` — Per-Element Request Configuration ✅
 
 Replaces the removed `hx-request`. Lets you configure fetch behavior per element.
 
@@ -236,7 +238,7 @@ Button("Fetch").hxGet("https://api.example.com/data", {
 
 ---
 
-## 5. Inheritance Modifiers (`:inherited`, `:append`)
+## 5. Inheritance Modifiers (`:inherited`, `:append`) — Via `addAttribute()`
 
 ### The problem
 
@@ -279,7 +281,7 @@ confirm?: string | { value: string; inherited: true };
 
 ---
 
-## 6. `hx-optimistic` — Optimistic UI
+## 6. `hx-optimistic` — Optimistic UI ✅
 
 Shows expected content immediately before the server responds, then replaces with actual response.
 
@@ -312,7 +314,7 @@ Button(
 
 ---
 
-## 7. `hx-preload` — Preload on Hover
+## 7. `hx-preload` — Preload on Hover ✅
 
 Triggers requests early (on mouseover or mousedown) so the response is cached by the time the user clicks.
 
@@ -341,7 +343,7 @@ A("Dashboard").setHref("/dashboard").toggle("hx-preload")
 
 ---
 
-## 8. `HtmxConfig` Meta Helper
+## 8. `HtmxConfig` Meta Helper ✅
 
 Since extensions and global config are now set via `<meta>`, provide a helper:
 
@@ -405,7 +407,7 @@ if (options.transition) {
 
 ---
 
-## 10. Modern Swap Short Names
+## 10. Modern Swap Short Names ✅
 
 htmx 4 supports shorter names alongside the old `insertAdjacentHTML` names:
 

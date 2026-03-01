@@ -186,8 +186,7 @@ export declare function withOOB(main: View, ...oob: View[]): View[];
  *   Partial(ids.userCount, Span(`${users.length} users`)),
  * )
  */
-export declare function Partial(target: string | Id, // TODO: - can we narrow 'string' to valid css selectors? we should already have something done for htmx
-content: View, swap?: HxSwap): Tag;
+export declare function Partial(target: HxTarget | Id, content: View, swap?: HxSwap): Tag;
 /**
  * Type-safe global htmx configuration via `<meta>` tag.
  *

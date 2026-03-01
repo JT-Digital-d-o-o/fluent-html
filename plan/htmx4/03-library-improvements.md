@@ -342,16 +342,16 @@ Free caching — repeated requests for unchanged data return 304 with no body. R
 
 ## Summary: Improvement Priority
 
-| Priority | Improvement | Category | Effort |
+| Priority | Improvement | Category | Status |
 |---|---|---|---|
-| **P1** | Morph as default swap | Faster | Docs only |
-| **P1** | `Partial()` over OOB | Less bugs | Small |
-| **P1** | Status-code error handling | Safer | Medium |
-| **P2** | Preload links | Faster | Small |
-| **P2** | Tag introspection testing docs | Testable | Docs only |
-| **P2** | Snapshot test helpers | Testable | Small |
-| **P2** | `renderPartials()` helper | DX | Small |
-| **P2** | `HtmxConfig()` meta helper | DX | Small |
-| **P3** | Route registry pattern | Safer | Docs/pattern |
-| **P3** | ETag support | Faster | Small |
-| **P3** | CSP nonce support | Safer | Small |
+| **P1** | Morph as default swap | Faster | ✅ `Partial()` defaults to `outerMorph`; CLAUDE.md update pending |
+| **P1** | `Partial()` over OOB | Less bugs | ✅ Implemented; OOB deprecated |
+| **P1** | Status-code error handling | Safer | ✅ `hx-status:CODE` implemented |
+| **P2** | Preload links | Faster | ✅ `hx-preload` attribute supported |
+| **P2** | Tag introspection testing docs | Testable | Not started |
+| **P2** | Snapshot test helpers | Testable | Not started (Phase 8) |
+| **P2** | `renderPartials()` helper | DX | Skipped — `render(Partial(...), ...)` works directly |
+| **P2** | `HtmxConfig()` meta helper | DX | ✅ Implemented |
+| **P3** | Route registry pattern | Safer | Not started (app-level pattern) |
+| **P3** | ETag support | Faster | Not started |
+| **P3** | CSP nonce support | Safer | Not started |

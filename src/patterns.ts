@@ -353,14 +353,14 @@ export function withOOB(main: View, ...oob: View[]): View[] {
  * )
  */
 export function Partial(
-  target: string | Id, // TODO: - can we narrow 'string' to valid css selectors? we should already have something done for htmx
+  target: HxTarget | Id,
   content: View,
   swap: HxSwap = "outerMorph"
 ): Tag {
   const selector = isId(target) ? target.selector :
     target.startsWith('#') ? target : `#${target}`;
   return new Tag("hx-partial", content)
-    .addAttribute("hx-target", selector) // TODO: - lets add hxTarget, hxSwap fluent methods?
+    .addAttribute("hx-target", selector)
     .addAttribute("hx-swap", swap);
 }
 
