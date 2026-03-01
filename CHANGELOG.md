@@ -2,6 +2,185 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [6.0.0] - HTMX 4 Migration (Unreleased)
+
+### 🚀 Breaking Changes
+
+#### HTMX 4 Compatibility
+
+Updated the HTMX integration from v2 to v4. This is a major update that aligns with htmx 4's new defaults and removed features.
+
+**Removed attributes:**
+- `selectOob` — removed from htmx 4
+- `params` — removed from htmx 4
+- `prompt` — removed from htmx 4
+- `disinherit` / `inherit` — htmx 4 no longer inherits by default; use `:inherited` modifier instead
+- `history` / `historyElt` — removed from htmx 4
+- `request` — replaced by per-element `config`
+- `ext` — extensions are now configured globally via `HtmxConfig()`
+
+**Renamed attributes:**
+- `disabledElt` → `disable` — aligns with htmx 4 naming
+- `disable` (boolean) → `ignore` — `hx-disable` is now `hx-ignore` in htmx 4
+
+**Removed response helpers:**
+- `triggerAfterSwap()` / `triggerAfterSettle()` — removed from htmx 4's `HxResponse`
+
+### ✨ New Features
+
+#### Type-Safe Routes (`defineRoutes`)
+
+New `defineRoutes()` function for compile-time-safe HTMX endpoints:
+
+```typescript
+export const userRoutes = defineRoutes({
+  list:   { method: "get",    path: "/users" },
+  create: { method: "post",   path: "/users" },
+  delete: { method: "delete", path: "/users/:id" },
+} as const);
+
+// Views — method is locked, params are required, typos are compile errors
+Button("Load").setHtmx(userRoutes.list())
+Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
+
+// Controllers — single-sourced paths
+server.get(userRoutes.list.path, handler)
+```
+
+Path parameters (`:id`) are extracted at the type level and required at call time. Routes also expose `.method` and `.path` for server-side registration.
+
+#### Morph Swap Strategies
+
+New swap styles for DOM-preserving morphs:
+- `outerMorph` — morph the target element itself (preserves focus, scroll, animations)
+- `innerMorph` — morph the target's children
+
+Short swap aliases: `before`, `after`, `prepend`, `append`.
+
+#### Partial Multi-Swap (`Partial`)
+
+New `Partial()` helper replaces OOB swaps with htmx 4's `<hx-partial>` element:
+
+```typescript
+render(
+  Partial(ids.mainContent, UserList(users)),
+  Partial(ids.userCount, Span(`${users.length} users`)),
+)
+```
+
+`OOB()` and `withOOB()` are now deprecated.
+
+#### Global HTMX Config (`HtmxConfig`)
+
+New `HtmxConfig()` helper for type-safe global htmx configuration via `<meta>` tag:
+
+```typescript
+Head(
+  HtmxConfig({
+    extensions: "sse, preload",
+    transitions: true,
+    defaultSwap: "outerMorph",
+    implicitInheritance: true,
+  }),
+)
+```
+
+#### Per-Element Config
+
+New `config` option replaces the removed `hx-request` attribute:
+
+```typescript
+Button("Upload").hxPost("/upload", { config: { timeout: 120000 } })
+```
+
+#### Status-Code Routing
+
+Route HTMX responses to different targets based on HTTP status codes:
+
+```typescript
+Form().hxPost("/users/create", {
+  target: ids.mainContent,
+  swap: "outerMorph",
+  status: {
+    422: { target: ids.formErrors, swap: "innerHTML" },
+    "5xx": { swap: "none" },
+  }
+})
+```
+
+#### Preload & Optimistic UI
+
+- `preload` — prefetch responses on hover before click
+- `optimistic` — show expected content before server responds
+
+---
+
+## [5.7.1]
+
+### ✨ New Features
+
+#### Variadic `render()`
+
+`render()` now accepts variadic arguments, making multi-element responses cleaner:
+
+```typescript
+render(Partial(ids.list, items), Partial(ids.count, count))
+```
+
+#### New ESLint Rules
+
+Six new rules added to the `fluent-html` ESLint plugin:
+
+- **`no-setclass-in-when-apply-callback`** — prevents `setClass()` inside `.when()` / `.apply()` callbacks (overwrites earlier classes)
+- **`prefer-variadic-children`** — suggests `Div(a, b)` over `Div([a, b])`
+- **`no-conditional-in-setclass`** — flags template literals/ternaries in `setClass()`; suggests `.setClasses()` or `.when()`
+- **`no-innerhtml-swap`** — prevents `swap: "innerHTML"` (loses target ID); auto-fixes to `"outerHTML"`
+- **`prefer-set-method`** — suggests `.setType("submit")` over `.addAttribute("type", "submit")`; auto-fixable
+- **`no-raw-ids`** — flags hardcoded `.setId("string")` and `target: "#string"`; suggests `defineIds()`
+
+### 🔧 Improvements
+
+- `no-known-modifiers-in-setclass` now also checks `addClass()` calls (skips pseudo-class prefixed classes like `hover:`)
+- `no-setclass-after-fluent-modifier` recognizes `when()` and `apply()` as fluent modifiers
+
+---
+
+## [5.7.0]
+
+### ✨ New Features
+
+#### Conditional Modifier (`.when()`)
+
+Conditionally apply modifications to a tag without breaking the chain:
+
+```typescript
+Button("Save")
+  .when(isLoading, t => t.toggle("disabled").addClass("opacity-50"))
+  .when(isPrimary, t => t.addClass("bg-blue-500 text-white"))
+```
+
+#### Composable Modifier (`.apply()`)
+
+Apply reusable modifier functions for consistent styling patterns:
+
+```typescript
+const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow("md");
+const danger = (t: Tag) => t.addClass("border-red-500 text-red-700");
+
+Div("Warning").apply(card, danger)
+```
+
+---
+
+## [5.6.0]
+
+### 🔧 Improvements
+
+- Documentation updates across README, AI instructions, and styling guides to reflect variadic children as the recommended pattern
+- Removed deprecated array-only iteration helpers
+
+---
+
 ## [5.5.0]
 
 ### ✨ New Features
