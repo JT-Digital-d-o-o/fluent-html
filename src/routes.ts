@@ -49,6 +49,22 @@ type RouteDefinitions = {
   readonly [name: string]: RouteDef;
 };
 
+// ------------------------------------
+// Prefix Support (type-level)
+// ------------------------------------
+
+/** Join a prefix and a sub-path, collapsing a bare "/" into the prefix. */
+type JoinPath<Prefix extends string, Path extends string> =
+  Path extends "/" ? Prefix : `${Prefix}${Path}`;
+
+/** Map each route definition's path to include the prefix. */
+type PrefixedRouteDefs<P extends string, T extends RouteDefinitions> = {
+  readonly [K in keyof T]: {
+    readonly method: T[K]['method'];
+    readonly path: JoinPath<P, T[K]['path']>;
+  };
+};
+
 /**
  * HTMX options that can be passed when calling a route.
  * Excludes `endpoint` (derived from path) and `method` (locked by definition).
@@ -129,41 +145,61 @@ function buildHtmxFromRoute(
  *   delete: { method: "delete", path: "/users/:id" },
  * } as const);
  *
+ * // With a shared prefix (like Fastify's register prefix)
+ * export const userRoutes = defineRoutes("/users", {
+ *   list:   { method: "get",    path: "/" },
+ *   create: { method: "post",   path: "/" },
+ *   detail: { method: "get",    path: "/:id" },
+ *   delete: { method: "delete", path: "/:id" },
+ * } as const);
+ *
  * // In views — type-safe HTMX
  * Button("Load").setHtmx(userRoutes.list())
  * Button("Delete").setHtmx(userRoutes.delete({ id: user.id }))
  * Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
  *
  * // In controllers — single-sourced paths
- * server.get(userRoutes.list.path, handler)
- * server.delete(userRoutes.delete.path, handler)
+ * server.get(userRoutes.list.path, handler)       // "/users"
+ * server.delete(userRoutes.delete.path, handler)   // "/users/:id"
  */
 export function defineRoutes<const T extends RouteDefinitions>(
   definitions: T
-): RouteRegistry<T> {
+): RouteRegistry<T>;
+export function defineRoutes<const P extends string, const T extends RouteDefinitions>(
+  prefix: P,
+  definitions: T
+): RouteRegistry<PrefixedRouteDefs<P, T>>;
+export function defineRoutes(
+  prefixOrDefinitions: string | RouteDefinitions,
+  maybeDefinitions?: RouteDefinitions
+): RouteRegistry<RouteDefinitions> {
+  const prefix = typeof prefixOrDefinitions === "string" ? prefixOrDefinitions : "";
+  const definitions = typeof prefixOrDefinitions === "string" ? maybeDefinitions! : prefixOrDefinitions;
+
   const registry: Record<string, unknown> = {};
 
   for (const [name, def] of Object.entries(definitions)) {
-    const { method, path } = def;
-    const hasParams = path.includes(":");
+    const { method } = def;
+    const fullPath = prefix && def.path === "/" ? prefix : prefix + def.path;
+    const hasParams = fullPath.includes(":");
 
     const routeFn = hasParams
       ? function (params: Record<string, string>, options?: RouteHxOptions): HTMX {
-          let resolvedPath = path;
+          let resolvedPath = fullPath;
           for (const [key, value] of Object.entries(params)) {
             resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(value));
           }
           return buildHtmxFromRoute(resolvedPath, method, options);
         }
       : function (options?: RouteHxOptions): HTMX {
-          return buildHtmxFromRoute(path, method, options);
+          return buildHtmxFromRoute(fullPath, method, options);
         };
 
     Object.defineProperty(routeFn, "method", { value: method, writable: false, enumerable: true });
-    Object.defineProperty(routeFn, "path", { value: path, writable: false, enumerable: true });
+    Object.defineProperty(routeFn, "path", { value: fullPath, writable: false, enumerable: true });
 
     registry[name] = routeFn;
   }
 
-  return Object.freeze(registry) as RouteRegistry<T>;
+  return Object.freeze(registry) as RouteRegistry<RouteDefinitions>;
 }

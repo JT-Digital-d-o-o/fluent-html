@@ -61,10 +61,11 @@ hx("/api", { target: "#userList" })  // ✗ typos cause silent failures
 
 **Type-safe routes with defineRoutes** — never hardcode endpoint strings:
 ```typescript
-export const userRoutes = defineRoutes({
-  list:   { method: "get",    path: "/users" },
-  create: { method: "post",   path: "/users" },
-  delete: { method: "delete", path: "/users/:id" },
+// Shared prefix avoids repetition (like Fastify's register prefix)
+export const userRoutes = defineRoutes("/users", {
+  list:   { method: "get",    path: "/" },
+  create: { method: "post",   path: "/" },
+  delete: { method: "delete", path: "/:id" },
 } as const);
 
 // Views — method is locked, params are required, typos are compile errors

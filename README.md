@@ -76,10 +76,10 @@ Div("Content").setClass("p-4 bg-white rounded-lg shadow")
 ### HTMX 4 with Full Type Safety
 
 ```typescript
-// Type-safe routes — typos are compile errors
-const userRoutes = defineRoutes({
-  list:   { method: "get",    path: "/users" },
-  delete: { method: "delete", path: "/users/:id" },
+// Type-safe routes — shared prefix, typos are compile errors
+const userRoutes = defineRoutes("/users", {
+  list:   { method: "get",    path: "/" },
+  delete: { method: "delete", path: "/:id" },
 } as const);
 
 Button("Load").setHtmx(userRoutes.list({ target: ids.userList }))
@@ -513,10 +513,11 @@ Form(
 ```typescript
 import { defineRoutes } from 'fluent-html';
 
-export const userRoutes = defineRoutes({
-  list:   { method: "get",    path: "/users" },
-  create: { method: "post",   path: "/users" },
-  delete: { method: "delete", path: "/users/:id" },
+// Shared prefix avoids path repetition (like Fastify's register prefix)
+export const userRoutes = defineRoutes("/users", {
+  list:   { method: "get",    path: "/" },
+  create: { method: "post",   path: "/" },
+  delete: { method: "delete", path: "/:id" },
 } as const);
 
 // Views — method is locked, params are required
@@ -532,7 +533,7 @@ server.get(userRoutes.list.path, handler)       // "/users"
 server.delete(userRoutes.delete.path, handler)  // "/users/:id"
 ```
 
-Routes also expose `.method` and `.path` for server-side registration, so your views and controllers always stay in sync.
+The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method` and `.path` (with prefix applied) for server-side registration, so your views and controllers always stay in sync.
 
 ---
 
@@ -1991,7 +1992,7 @@ import {
 | -------- | ----------- |
 | `Partial(target, content, swap?)` | Multi-swap partial element (HTMX 4) |
 | `HtmxConfig(options)` | Global HTMX configuration via `<meta>` tag |
-| `defineRoutes(routes)` | Type-safe route definitions for HTMX + server |
+| `defineRoutes(prefix?, routes)` | Type-safe route definitions for HTMX + server |
 | `hxResponse(content)` | Build HTMX response with headers |
 | `VStack(children, options)` | Vertical flex layout (column) |
 | `HStack(children, options)` | Horizontal flex layout (row) |
@@ -2028,7 +2029,7 @@ import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes
 | `isId(value)` | Type guard to check if value is an Id |
 | `extractId(value)` | Extract ID string from string or Id |
 | `extractSelector(value)` | Extract selector string from string or Id |
-| `defineRoutes(routes)` | Create type-safe route definitions with params |
+| `defineRoutes(prefix?, routes)` | Create type-safe route definitions with params |
 
 **Id Object:**
 
