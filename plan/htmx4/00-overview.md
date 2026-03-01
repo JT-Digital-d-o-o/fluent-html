@@ -1,6 +1,6 @@
 # fluent-html: htmx 4 Migration Plan
 
-## Status: Phases 1–7 Complete
+## Status: Phases 1–7, 9 Complete
 
 htmx 4 is a major release that switches from XMLHttpRequest to fetch(), makes inheritance explicit, changes default swap behavior for error responses, removes several attributes, renames others, and adds powerful new features like morph swaps, `<hx-partial>`, status-code handlers, and per-element config.
 
@@ -26,4 +26,4 @@ This plan covers both the **breaking migration** and **new feature opportunities
 ## Remaining Work
 
 - [ ] Phase 8: Test utilities (optional)
-- [ ] Phase 9: CLAUDE.md updates
+- [x] Phase 9: CLAUDE.md updates

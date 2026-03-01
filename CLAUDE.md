@@ -59,6 +59,26 @@ Button("Load").hxGet("/api", { target: ids.userList })
 hx("/api", { target: "#userList" })  // ✗ typos cause silent failures
 ```
 
+**Type-safe routes with defineRoutes** — never hardcode endpoint strings:
+```typescript
+export const userRoutes = defineRoutes({
+  list:   { method: "get",    path: "/users" },
+  create: { method: "post",   path: "/users" },
+  delete: { method: "delete", path: "/users/:id" },
+} as const);
+
+// Views — method is locked, params are required, typos are compile errors
+Button("Load").setHtmx(userRoutes.list())
+Button("Load").setHtmx(userRoutes.list({ target: ids.userList }))
+Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
+userRoutes.lsit()            // ✗ typo — compile error
+userRoutes.delete()          // ✗ missing params — compile error
+
+// Controllers — single-sourced paths
+server.get(userRoutes.list.path, handler)       // "/users"
+server.delete(userRoutes.delete.path, handler)  // "/users/:id"
+```
+
 **Shorthand methods** for simple requests, **setHtmx(hx())** for complex:
 ```typescript
 Button("Load").hxGet("/api/items")
@@ -66,23 +86,66 @@ Button("Save").hxPost("/api/save", { target: ids.result })
 
 Form(/* fields */).setHtmx(hx("/search", {
   method: "post", target: ids.results,
-  swap: "outerHTML scroll:top", indicator: "#spinner"
+  swap: "outerMorph", indicator: "#spinner"
 }))
 ```
 
-**Always outerHTML swap** — innerHTML loses the target element's id, breaking subsequent swaps:
+**Prefer outerMorph swap** — preserves focus, scroll, animations; innerHTML loses the target element's id:
 ```typescript
-hx("/users", { target: ids.userList, swap: "outerHTML scroll:top" }) // ✓
-hx("/users", { target: ids.userList, swap: "innerHTML" })            // ✗
+hx("/users", { target: ids.userList, swap: "outerMorph" })  // ✓
+hx("/users", { target: ids.userList, swap: "innerHTML" })    // ✗
+```
+Use `outerHTML` only when you intentionally want to destroy and recreate DOM state.
+
+**Partial swaps** — update multiple page sections in one response:
+```typescript
+render(
+  Partial(ids.mainContent, UserList(users)),
+  Partial(ids.userCount, Span(`${users.length} users`)),
+  Partial(ids.pageTitle, H1("Users")),
+)
 ```
 
-**OOB swaps** — update multiple page sections in one response:
+**Status-code routing** for validation and error responses:
 ```typescript
-render(withOOB(
-  UserList(users).setId(ids.mainContent),
-  OOB(ids.userCount, Span(`${users.length} users`)),
-  OOB(ids.pageTitle, H1("Users")),
-))
+Form(/* fields */).hxPost("/users/create", {
+  target: ids.mainContent,
+  swap: "outerMorph",
+  status: {
+    422: { target: ids.formErrors, swap: "innerHTML" },
+    "5xx": { swap: "none" },
+  }
+})
+```
+
+**Explicit inheritance** — htmx 4 does not inherit attributes by default. Use `:inherited` modifier:
+```typescript
+Div(
+  Button("Delete 1").hxDelete("/item/1"),
+  Button("Delete 2").hxDelete("/item/2"),
+).addAttribute("hx-confirm:inherited", "Are you sure?")
+
+// Or opt back in to htmx 2 behavior globally:
+HtmxConfig({ implicitInheritance: true })
+```
+
+**Global htmx config** via meta tag:
+```typescript
+Head(
+  HtmxConfig({
+    extensions: "sse, preload",
+    transitions: true,
+    defaultSwap: "outerMorph",
+  }),
+  Script().setSrc("/htmx.js"),
+)
+```
+
+**Per-element config** — replaces removed `hx-request`:
+```typescript
+Button("Upload").hxPost("/upload", {
+  config: { timeout: 120000 },
+})
 ```
 
 **hxResponse** for server-driven navigation and events:
@@ -93,6 +156,19 @@ const { html, headers } = hxResponse(Empty())
   .build();
 reply.headers(headers);
 reply.renderView(html);
+```
+
+**Morph swaps** — preserve DOM state (focus, scroll, animations):
+```typescript
+Button("Refresh").hxGet("/users", {
+  target: ids.userList,
+  swap: "outerMorph",
+})
+```
+
+**Preload** — start fetch on hover, cached by click time:
+```typescript
+A("Dashboard").setHref("/dashboard").toggle("hx-boost").toggle("hx-preload")
 ```
 
 ---
@@ -138,7 +214,7 @@ function CreateUserForm(errors: FormErrors = {}) {
     FormField({ id: "name", label: "Name", error: errors.name }),
     FormField({ id: "email", label: "Email", type: "email", error: errors.email }),
     Button("Create").setType("submit")
-  ).hxPost("/users/create", { target: ids.mainContent, swap: "outerHTML scroll:top" });
+  ).hxPost("/users/create", { target: ids.mainContent, swap: "outerMorph" });
 }
 // Controller re-renders with errors: reply.renderView(CreateUserForm({ email: "Email already in use" }));
 ```
@@ -183,9 +259,10 @@ Don't use `setClass` with long Tailwind strings for base utilities — use fluen
 **Feature module structure:**
 ```
 src/[feature]/
-  [feature].controller.ts   # Routes (default async export)
+  [feature].routes.ts       # Route definitions (defineRoutes)
+  [feature].controller.ts   # Routes (imports routes for path registration)
   [feature].schema.ts       # JSON Schema + TS interfaces
-  [feature].view.ts         # Views (fluent-html)
+  [feature].view.ts         # Views (imports routes for setHtmx + ids for targets)
   [feature].utils.ts        # Helpers
 ```
 
@@ -202,10 +279,10 @@ server.post(
 
 **SSR responses only** — no JSON errors:
 ```typescript
-reply.renderView(PageView());                        // ✓
-reply.renderView(PageView({ error: "Not found" }));  // ✓ error state
-reply.redirect("/path");                             // ✓ redirect
-reply.code(400).send({ error: "Bad request" });      // ✗ not a REST API
+reply.renderView(PageView());                                         // ✓
+reply.code(422).renderView(CreateUserForm({ email: "Email taken" })); // ✓ validation error (422 swaps in htmx 4)
+reply.redirect("/path");                                              // ✓ redirect
+reply.code(400).send({ error: "Bad request" });                       // ✗ not a REST API
 ```
 
 **Auth via preHandler:**

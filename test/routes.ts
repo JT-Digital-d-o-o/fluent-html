@@ -1,0 +1,232 @@
+// ------------------------------------
+// Tests for Type-Safe Routes
+// ------------------------------------
+
+import { render, Button, Form } from "../src/index.js";
+import { defineRoutes } from "../src/routes.js";
+import { defineIds } from "../src/ids.js";
+
+// ------------------------------------
+// Test Runner
+// ------------------------------------
+
+let passCount = 0;
+let failCount = 0;
+
+function test(name: string, got: any, expected: any) {
+  const gotStr = JSON.stringify(got);
+  const expectedStr = JSON.stringify(expected);
+  if (gotStr === expectedStr) {
+    console.log(`\u2705 ${name}`);
+    passCount++;
+  } else {
+    console.log(`\u274C ${name}`);
+    console.log(`   Expected: ${expectedStr}`);
+    console.log(`   Got:      ${gotStr}`);
+    failCount++;
+  }
+}
+
+function section(name: string) {
+  console.log(`\n${"=".repeat(50)}`);
+  console.log(`${name}`);
+  console.log("=".repeat(50));
+}
+
+// ------------------------------------
+// Route Definitions
+// ------------------------------------
+
+const routes = defineRoutes({
+  list:   { method: "get",    path: "/users" },
+  create: { method: "post",   path: "/users" },
+  detail: { method: "get",    path: "/users/:id" },
+  update: { method: "put",    path: "/users/:id" },
+  delete: { method: "delete", path: "/users/:id" },
+  nested: { method: "get",    path: "/users/:userId/posts/:postId" },
+} as const);
+
+// ------------------------------------
+// Route Properties
+// ------------------------------------
+
+section("Route properties");
+
+test("list.method is get",
+  routes.list.method, "get");
+
+test("list.path is /users",
+  routes.list.path, "/users");
+
+test("create.method is post",
+  routes.create.method, "post");
+
+test("delete.method is delete",
+  routes.delete.method, "delete");
+
+test("nested.path preserves template",
+  routes.nested.path, "/users/:userId/posts/:postId");
+
+// ------------------------------------
+// Parameterless Routes
+// ------------------------------------
+
+section("Parameterless routes");
+
+test("list() returns correct endpoint",
+  routes.list().endpoint, "/users");
+
+test("list() returns correct method",
+  routes.list().method, "get");
+
+test("create() returns correct method",
+  routes.create().method, "post");
+
+test("list() with target option",
+  routes.list({ target: "#result" }).target, "#result");
+
+test("list() with swap option",
+  routes.list({ swap: "outerMorph" }).swap, "outerMorph");
+
+test("list() with multiple options",
+  (() => {
+    const htmx = routes.list({ target: "#list", swap: "outerMorph", trigger: "load" });
+    return [htmx.endpoint, htmx.method, htmx.target, htmx.swap, htmx.trigger];
+  })(),
+  ["/users", "get", "#list", "outerMorph", "load"]);
+
+// ------------------------------------
+// Parameterized Routes
+// ------------------------------------
+
+section("Parameterized routes");
+
+test("detail() substitutes :id",
+  routes.detail({ id: "42" }).endpoint, "/users/42");
+
+test("detail() locks method to get",
+  routes.detail({ id: "42" }).method, "get");
+
+test("delete() locks method to delete",
+  routes.delete({ id: "5" }).method, "delete");
+
+test("update() locks method to put",
+  routes.update({ id: "5" }).method, "put");
+
+test("detail() with options",
+  (() => {
+    const htmx = routes.detail({ id: "7" }, { target: "#detail", swap: "outerMorph" });
+    return [htmx.endpoint, htmx.method, htmx.target, htmx.swap];
+  })(),
+  ["/users/7", "get", "#detail", "outerMorph"]);
+
+// ------------------------------------
+// Multi-Param Routes
+// ------------------------------------
+
+section("Multi-param routes");
+
+test("nested() substitutes both params",
+  routes.nested({ userId: "1", postId: "99" }).endpoint, "/users/1/posts/99");
+
+test("nested() method is get",
+  routes.nested({ userId: "1", postId: "99" }).method, "get");
+
+test("nested() with options",
+  routes.nested({ userId: "1", postId: "99" }, { swap: "innerHTML" }).swap, "innerHTML");
+
+// ------------------------------------
+// URL Encoding
+// ------------------------------------
+
+section("URL encoding of param values");
+
+test("encodes spaces",
+  routes.detail({ id: "hello world" }).endpoint, "/users/hello%20world");
+
+test("encodes slashes",
+  routes.detail({ id: "a/b" }).endpoint, "/users/a%2Fb");
+
+test("encodes special characters",
+  routes.detail({ id: "foo&bar=baz" }).endpoint, "/users/foo%26bar%3Dbaz");
+
+test("leaves normal IDs unchanged",
+  routes.detail({ id: "550e8400-e29b-41d4-a716-446655440000" }).endpoint,
+  "/users/550e8400-e29b-41d4-a716-446655440000");
+
+// ------------------------------------
+// Integration: setHtmx() + render()
+// ------------------------------------
+
+section("Integration with setHtmx() and render()");
+
+test("renders hx-get for list route",
+  render(Button("Load").setHtmx(routes.list())),
+  '<button hx-get="/users">Load</button>');
+
+test("renders hx-delete for delete route",
+  render(Button("Remove").setHtmx(routes.delete({ id: "5" }))),
+  '<button hx-delete="/users/5">Remove</button>');
+
+test("renders with target and swap",
+  render(Button("Load").setHtmx(routes.list({ target: "#list", swap: "outerMorph" }))),
+  '<button hx-get="/users" hx-target="#list" hx-swap="outerMorph">Load</button>');
+
+test("renders hx-post for create route",
+  render(Form(Button("Save").setType("submit")).setHtmx(routes.create())),
+  '<form hx-post="/users"><button type="submit">Save</button></form>');
+
+test("renders parameterized with options",
+  render(Button("Edit").setHtmx(routes.update({ id: "3" }, { swap: "outerMorph" }))),
+  '<button hx-put="/users/3" hx-swap="outerMorph">Edit</button>');
+
+// ------------------------------------
+// Integration: defineIds() targets
+// ------------------------------------
+
+section("Integration with defineIds()");
+
+const ids = defineIds(["user-list", "user-detail"] as const);
+
+test("Id target resolves to selector",
+  routes.list({ target: ids.userList }).target, "#user-list");
+
+test("renders with Id target",
+  render(Button("Load").setHtmx(routes.list({ target: ids.userList }))),
+  '<button hx-get="/users" hx-target="#user-list">Load</button>');
+
+test("parameterized route with Id target",
+  render(Button("View").setHtmx(routes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))),
+  '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
+
+// ------------------------------------
+// Registry Immutability
+// ------------------------------------
+
+section("Registry immutability");
+
+test("registry is frozen",
+  Object.isFrozen(routes), true);
+
+// ------------------------------------
+// Type-Level Compile Checks (documented)
+// ------------------------------------
+// These would cause TypeScript errors if uncommented:
+//
+// routes.lsit()                                  // Property 'lsit' does not exist
+// routes.detail()                                // Expected 1-2 arguments, got 0
+// routes.detail({ userId: "1" })                 // Property 'id' is missing
+// routes.nested({ userId: "1" })                 // Property 'postId' is missing
+// routes.list({ id: "1" })                       // Argument not assignable (no params expected)
+
+// ------------------------------------
+// Summary
+// ------------------------------------
+
+console.log(`\n${"=".repeat(50)}`);
+console.log(`Test Results: ${passCount} passed, ${failCount} failed`);
+console.log("=".repeat(50));
+
+if (failCount > 0) {
+  process.exit(1);
+}

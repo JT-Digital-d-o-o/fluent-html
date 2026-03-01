@@ -156,11 +156,19 @@ Ship as **fluent-html v6.0.0** — clean break, htmx 4 only. No backwards compat
 
 ---
 
-## Phase 9: Documentation & CLAUDE.md — Not started
+## Phase 9: Documentation & CLAUDE.md ✅
 
-**Goal:** Update all guidance for htmx 4.
+**Done.** All CLAUDE.md guidance updated for htmx 4.
 
-See [05-claude-md-updates.md](05-claude-md-updates.md) for specific changes.
+### Changes made
+
+**`CLAUDE.md`**:
+- Swap guidance: `outerHTML` → `outerMorph` (with note to use `outerHTML` when intentional)
+- OOB examples → `Partial()` examples
+- Added: status-code routing, explicit inheritance, global config, per-element config, morph swaps, preload
+- Updated Fastify SSR example: 422 validation errors swap in htmx 4
+- Updated form example: `outerHTML scroll:top` → `outerMorph`
+- Updated setHtmx example: `outerHTML scroll:top` → `outerMorph`
 
 ---
 

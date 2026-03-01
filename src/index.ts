@@ -302,6 +302,16 @@ export {
   extractSelector,
 } from './ids.js';
 
+// Type-safe Routes
+export {
+  defineRoutes,
+} from './routes.js';
+
+export type {
+  RouteDef,
+  RouteHxOptions,
+} from './routes.js';
+
 // Fold / Catamorphism
 export {
   foldView,
