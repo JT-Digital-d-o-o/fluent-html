@@ -349,20 +349,20 @@ HTML(
 )
 ```
 
-## HTMX Integration
+## HTMX Integration (HTMX 4)
 
-Fluent HTML has first-class HTMX support with three calling styles:
+Fluent HTML has first-class HTMX 4 support with three calling styles:
 
 ```typescript
 import { hx } from "fluent-html";
 
 // Style 1: Shorthand methods (preferred for simple cases)
 Button("Load").hxGet("/api/items")
-Button("Save").hxPost("/api/save", { target: "#result" })
+Button("Save").hxPost("/api/save", { target: ids.result })
 Button("Remove").hxDelete("/api/item/1", { confirm: "Sure?" })
 
 // Style 2: setHtmx with inline args
-Div().setHtmx("/api/update", { method: "post", target: "#result", swap: "innerHTML" })
+Div().setHtmx("/api/update", { method: "post", target: ids.result, swap: "outerMorph" })
 
 // Style 3: setHtmx with pre-built hx() object
 Form(
@@ -371,8 +371,8 @@ Form(
 )
   .setHtmx(hx("/search", {
     method: "post",
-    target: "#results",
-    swap: "innerHTML"
+    target: ids.results,
+    swap: "outerMorph"
   }))
 ```
 
@@ -382,7 +382,7 @@ All tags have `.hxGet()`, `.hxPost()`, `.hxPut()`, `.hxPatch()`, `.hxDelete()`:
 
 ```typescript
 Button("Load").hxGet("/api/items")
-Button("Save").hxPost("/api/save", { target: "#result", swap: "innerHTML" })
+Button("Save").hxPost("/api/save", { target: ids.result, swap: "outerMorph" })
 Button("Update").hxPut("/api/item/1")
 Button("Patch").hxPatch("/api/item/1")
 Button("Delete").hxDelete("/api/item/1", { confirm: "Are you sure?" })
@@ -427,6 +427,26 @@ OOB(ids.userCount, Span("42"))      // id="user-count" hx-swap-oob="true"
 ids.userLits                        // ❌ TypeScript Error!
 ```
 
+### Type-Safe Routes (`defineRoutes`)
+
+```typescript
+import { defineRoutes } from "fluent-html";
+
+export const userRoutes = defineRoutes({
+  list:   { method: "get",    path: "/users" },
+  create: { method: "post",   path: "/users" },
+  delete: { method: "delete", path: "/users/:id" },
+} as const);
+
+// Views — method is locked, params are required, typos are compile errors
+Button("Load").setHtmx(userRoutes.list())
+Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
+
+// Controllers — single-sourced paths
+server.get(userRoutes.list.path, handler)       // "/users"
+server.delete(userRoutes.delete.path, handler)  // "/users/:id"
+```
+
 ### Recommended Pattern
 Each `*.view.ts` file exports both its view and its IDs:
 
@@ -438,7 +458,7 @@ export function UsersPage() {
   return Div(
     Div().setId(UserIds.userList),
     Span("0").setId(UserIds.userCount),
-    Button("Refresh").setHtmx(hx("/api/users", { target: UserIds.userList }))
+    Button("Refresh").setHtmx(userRoutes.list({ target: UserIds.userList }))
   );
 }
 ```
@@ -447,8 +467,11 @@ export function UsersPage() {
 // users.controller.ts
 import { UserIds } from "./users.view";
 
-function handleUpdate() {
-  return OOB(UserIds.userCount, Span("42"));  // Same typed reference!
+function handleUpdate(users: User[]) {
+  return render(
+    Partial(UserIds.userList, UserTable(users)),
+    Partial(UserIds.userCount, Span(`${users.length}`)),
+  );
 }
 ```
 
@@ -468,24 +491,80 @@ render(Li("One"), Li("Two"), Li("Three"))
 // Returns: <li>One</li>\n<li>Two</li>\n<li>Three</li>
 ```
 
-## Out-of-Band (OOB) Swaps
+## Partial Multi-Swap (HTMX 4)
 
 Update multiple parts of the page in a single HTMX response:
 
 ```typescript
-import { OOB, withOOB, render } from "fluent-html";
+import { Partial, render } from "fluent-html";
 
-// OOB creates an element with hx-swap-oob attribute
-render(withOOB(
-  // Main content (replaces the target)
-  Tr(Td("John"), Td("john@example.com")).setId("row-1"),
-
-  // OOB updates (swap into their respective targets)
-  OOB("user-count", Span("42 users")),
-  OOB("last-updated", Span("Just now")),
-  OOB("notifications", Div("New item!"), "beforeend")  // Append
-))
+// Partial creates <hx-partial> elements for multi-target swaps
+render(
+  Partial(ids.mainContent, UserList(users)),
+  Partial(ids.userCount, Span(`${users.length} users`)),
+  Partial(ids.lastUpdated, Span("Just now")),
+  Partial(ids.notifications, Div("New item!"), "append"),
+)
 ```
+
+## Global HTMX Config
+
+Configure HTMX 4 globally via a type-safe `<meta>` tag:
+
+```typescript
+import { HtmxConfig } from "fluent-html";
+
+Head(
+  HtmxConfig({
+    extensions: "sse, preload",
+    transitions: true,
+    defaultSwap: "outerMorph",
+    implicitInheritance: true,  // opt back in to htmx 2 inheritance behavior
+  }),
+  Script().setSrc("/htmx.js"),
+)
+```
+
+## Morph Swaps
+
+Prefer `outerMorph` swap — preserves focus, scroll, and animations:
+
+```typescript
+Button("Refresh").hxGet("/users", {
+  target: ids.userList,
+  swap: "outerMorph",      // morph target element itself
+})
+```
+
+Available swap styles: `outerMorph`, `innerMorph`, `innerHTML`, `outerHTML`, `before`, `after`, `prepend`, `append`, `delete`, `none`.
+
+## Status-Code Routing
+
+Route HTMX responses to different targets based on HTTP status codes:
+
+```typescript
+Form().hxPost("/users/create", {
+  target: ids.mainContent,
+  swap: "outerMorph",
+  status: {
+    422: { target: ids.formErrors, swap: "innerHTML" },
+    "5xx": { swap: "none" },
+  }
+})
+```
+
+## Explicit Inheritance (HTMX 4)
+
+HTMX 4 does **not** inherit attributes by default. Use the `:inherited` modifier:
+
+```typescript
+Div(
+  Button("Delete 1").hxDelete("/item/1"),
+  Button("Delete 2").hxDelete("/item/2"),
+).addAttribute("hx-confirm:inherited", "Are you sure?")
+```
+
+Or opt back in to htmx 2 behavior globally: `HtmxConfig({ implicitInheritance: true })`
 
 ## HTMX Response Headers
 
@@ -508,8 +587,6 @@ res.send(html);
 // Available methods:
 hxResponse(content)
   .trigger(event, detail?)       // HX-Trigger
-  .triggerAfterSwap(event)       // HX-Trigger-After-Swap
-  .triggerAfterSettle(event)     // HX-Trigger-After-Settle
   .pushUrl(url)                  // HX-Push-Url
   .replaceUrl(url)               // HX-Replace-Url
   .redirect(url)                 // HX-Redirect

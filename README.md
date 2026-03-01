@@ -46,7 +46,7 @@ render(page);
 
 - **Fluent API** - Chainable methods for styling, attributes, and structure
 - **Full autocomplete** - Every method, attribute, and value suggested by your IDE
-- **First-class HTMX** - Type-safe triggers, swaps, targets, and more
+- **First-class HTMX 4** - Type-safe routes, triggers, swaps, targets, morph strategies, and more
 - **Fold / Catamorphism** - Generic View traversals via `foldView` with pre-built and custom algebras ([docs](FOLD.md))
 - **XSS protection** - All content escaped automatically
 - **Zero dependencies** - Pure TypeScript, ~15KB minified
@@ -73,22 +73,28 @@ Card(
 Div("Content").setClass("p-4 bg-white rounded-lg shadow")
 ```
 
-### HTMX with Full Type Safety
+### HTMX 4 with Full Type Safety
 
 ```typescript
+// Type-safe routes — typos are compile errors
+const userRoutes = defineRoutes({
+  list:   { method: "get",    path: "/users" },
+  delete: { method: "delete", path: "/users/:id" },
+} as const);
+
+Button("Load").setHtmx(userRoutes.list({ target: ids.userList }))
+Button("Delete").setHtmx(userRoutes.delete({ id: user.id }))
+
 // Shorthand methods — clean and concise
-Button("Load More").hxGet("/api/items", { target: "#item-list", swap: "beforeend" })
+Button("Load More").hxGet("/api/items", { target: ids.itemList, swap: "append" })
 Button("Save").hxPost("/api/save")
 Button("Remove").hxDelete("/api/item/1", { confirm: "Sure?" })
 
-// Or use setHtmx with inline args
-Div().setHtmx("/api/data", { trigger: "revealed", swap: "innerHTML" })
-
 // IDE autocomplete for all HTMX attributes
 Button("Load More").setHtmx(hx("/api/items", {
-  trigger: "click",      // ✅ IDE suggests: "click" | "load" | "revealed" | ...
-  swap: "beforeend",     // ✅ IDE suggests: "innerHTML" | "outerHTML" | ...
-  target: "#item-list"
+  trigger: "click",       // ✅ IDE suggests: "click" | "load" | "revealed" | ...
+  swap: "outerMorph",    // ✅ IDE suggests: "outerMorph" | "innerMorph" | "innerHTML" | ...
+  target: ids.itemList    // ✅ Compile-time validated ID
 }))
 ```
 
@@ -105,7 +111,7 @@ Form(
 
   Button("Subscribe").setType("submit")
 )
-  .setHtmx(hx("/api/subscribe", { method: "post", swap: "outerHTML" }))
+  .setHtmx(hx("/api/subscribe", { method: "post", swap: "outerMorph" }))
 ```
 
 ### Conditional Modifiers
@@ -172,15 +178,15 @@ HStack(Logo(), Nav(), UserMenu(), { justify: "space-between" })
 Grid(ForEach(products, ProductCard), { columns: 3, gap: "1rem" })
 ```
 
-### Out-of-Band Updates (HTMX)
+### Partial Multi-Swap (HTMX 4)
 
 ```typescript
 // Update multiple page sections in one response
-render(withOOB(
-  UserRow(user),                              // Main content
-  OOB("#user-count", Span(`${count} users`)), // Update counter
-  OOB("#toast", Toast("User created!"))       // Show notification
-))
+render(
+  Partial(ids.mainContent, UserList(users)),
+  Partial(ids.userCount, Span(`${users.length} users`)),
+  Partial(ids.toast, Toast("User created!")),
+)
 ```
 
 ---
@@ -189,10 +195,13 @@ render(withOOB(
 
 - [Fluent Styling API](#fluent-styling-api) - Chainable Tailwind-friendly methods
 - [HTMX Integration](#type-safe-htmx) - Requests, triggers, swaps, all typed
+- [Type-Safe Routes](#type-safe-routes) - Compile-time-safe HTMX endpoints
+- [Partial Multi-Swap](#partial-multi-swap) - Update multiple page sections in one response
+- [Global HTMX Config](#global-htmx-config) - Type-safe global htmx configuration
 - [HTML Elements](#html-elements) - 60+ typed elements
 - [Control Flow](#control-flow-1) - IfThen, Match, ForEach
 - [Fold / Catamorphism](FOLD.md) - Generic View traversals, pre-built algebras, custom folds
-- [Common Patterns](#common-patterns) - Layouts, OOB swaps, response helpers
+- [Common Patterns](#common-patterns) - Layouts, partial swaps, response helpers
 - [ESLint Plugin](#eslint-plugin) - Additional compile-time checks
 - [API Reference](#api-reference) - Complete method reference
 
@@ -226,23 +235,25 @@ Fluent HTML transforms your IDE into a powerful documentation tool. Here's what 
 ### HTMX Swap Strategies
 
 ```typescript
-.setHtmx(hx("/api", { 
+.setHtmx(hx("/api", {
   swap: "|"  // Cursor here shows:
 }))
 // Suggestions:
+//   outerMorph  - Morph target element (preserves focus, scroll, animations)
+//   innerMorph  - Morph target's children
 //   innerHTML   - Replace inner content (default)
 //   outerHTML   - Replace entire element
-//   beforebegin - Insert before element
-//   afterbegin  - Insert at start of children
-//   beforeend   - Insert at end of children
-//   afterend    - Insert after element
+//   before      - Insert before element (alias: beforebegin)
+//   after       - Insert after element (alias: afterend)
+//   prepend     - Insert at start of children (alias: afterbegin)
+//   append      - Insert at end of children (alias: beforeend)
 //   delete      - Remove element
 //   none        - No swap
 //
 // With modifiers:
-//   innerHTML scroll:top
+//   outerMorph scroll:top
 //   outerHTML transition:true
-//   beforeend show:window:top
+//   append show:window:top
 ```
 
 ### HTMX Sync Strategies
@@ -293,7 +304,7 @@ Input().setType("number").setMin(0).setMax(100).setStep(5)
 
 ## Type-Safe HTMX
 
-Fluent HTML provides **complete HTMX 2.0 support** with full type safety.
+Fluent HTML provides **complete HTMX 4 support** with full type safety.
 
 ### Basic Requests
 
@@ -374,16 +385,21 @@ Button("Action").setHtmx(hx("/api/action", {
 ### Swap Strategies with Modifiers
 
 ```typescript
-// Basic swaps
+// Morph swaps (preferred — preserves focus, scroll, animations)
+Div().setHtmx(hx("/api", { swap: "outerMorph" }))   // Morph target element itself
+Div().setHtmx(hx("/api", { swap: "innerMorph" }))   // Morph target's children
+
+// Classic swaps
 Div().setHtmx(hx("/api", { swap: "innerHTML" }))    // Replace inner content
 Div().setHtmx(hx("/api", { swap: "outerHTML" }))    // Replace entire element
-Div().setHtmx(hx("/api", { swap: "beforeend" }))    // Append to children
+Div().setHtmx(hx("/api", { swap: "append" }))       // Append to children
+Div().setHtmx(hx("/api", { swap: "prepend" }))      // Prepend to children
 
 // With scroll modifier
-Div().setHtmx(hx("/api", { swap: "innerHTML scroll:top" }))
+Div().setHtmx(hx("/api", { swap: "outerMorph scroll:top" }))
 
 // With show modifier (scroll into view)
-Div().setHtmx(hx("/api", { swap: "innerHTML show:window:top" }))
+Div().setHtmx(hx("/api", { swap: "outerMorph show:window:top" }))
 
 // With transition
 Div().setHtmx(hx("/api", { swap: "outerHTML transition:true" }))
@@ -392,47 +408,60 @@ Div().setHtmx(hx("/api", { swap: "outerHTML transition:true" }))
 Div().setHtmx(hx("/api", { swap: "innerHTML swap:500ms settle:100ms" }))
 ```
 
-### HTMX 2.0 Features
+### HTMX 4 Features
 
 ```typescript
-// Prompt dialog before request
-Button("Rename").setHtmx(hx("/api/rename", {
-  method: "post",
-  prompt: "Enter new name:"
-}))
-
-// Disable elements during request
+// Disable elements during request (renamed from disabledElt)
 Button("Submit").setHtmx(hx("/api/submit", {
   method: "post",
-  disabledElt: "this"  // or "#submit-btn" or "closest form"
+  disable: "this"  // or "#submit-btn" or "closest form"
 }))
 
-// Out-of-band swaps
-Div().setHtmx(hx("/api/data", { swapOob: true }))
-Div().setHtmx(hx("/api/data", { swapOob: "true:#sidebar" }))
+// Per-element config (replaces removed hx-request)
+Button("Upload").hxPost("/upload", {
+  config: { timeout: 120000, credentials: true }
+})
 
-// Control attribute inheritance
-Div().setHtmx(hx("/api", { disinherit: "*" }))           // Disable all
-Div().setHtmx(hx("/api", { inherit: "hx-target hx-swap" })) // Force specific
+// Morph swaps — preserve DOM state (focus, scroll, animations)
+Button("Refresh").hxGet("/users", {
+  target: ids.userList,
+  swap: "outerMorph",    // morph the target element itself
+})
 
-// Prevent history snapshot
-Div().setHtmx(hx("/api/modal", { history: false }))
+// Status-code routing — different targets for different responses
+Form().hxPost("/users/create", {
+  target: ids.mainContent,
+  swap: "outerMorph",
+  status: {
+    422: { target: ids.formErrors, swap: "innerHTML" },
+    "5xx": { swap: "none" },
+  }
+})
+
+// Preload — prefetch on hover, cached by click time
+A("Dashboard").setHref("/dashboard").toggle("hx-boost").toggle("hx-preload")
+
+// Explicit inheritance — htmx 4 does NOT inherit by default
+Div(
+  Button("Delete 1").hxDelete("/item/1"),
+  Button("Delete 2").hxDelete("/item/2"),
+).addAttribute("hx-confirm:inherited", "Are you sure?")
+
+// Or opt back in to htmx 2 behavior globally:
+HtmxConfig({ implicitInheritance: true })
 
 // Preserve element during swap (e.g., video player)
 Video().setId("player").setHtmx(hx("/api/page", { preserve: true }))
-
-// Request configuration
-Div().setHtmx(hx("/api/slow", { request: "timeout:5000" }))
 
 // Boost links/forms to use AJAX
 A("Page").setHref("/page").setHtmx(hx("/page", { boost: true }))
 
 // Sync strategies
-Button("Save").setHtmx(hx("/api/save", { 
+Button("Save").setHtmx(hx("/api/save", {
   method: "post",
   sync: "abort"        // Abort previous request
 }))
-Input().setHtmx(hx("/api/search", { 
+Input().setHtmx(hx("/api/search", {
   sync: "queue last"   // Queue, process last
 }))
 ```
@@ -469,10 +498,85 @@ Form(
 )
   .setHtmx(hx("/api/register", {
     method: "post",
-    swap: "outerHTML",
+    swap: "outerMorph",
     indicator: "#loading",
-    disabledElt: "find button"
+    disable: "find button"
   }))
+```
+
+---
+
+## Type-Safe Routes
+
+`defineRoutes()` gives you compile-time-safe HTMX endpoints. Path parameters (`:id`) are extracted at the type level and required at call time. Typos and missing params are compile errors.
+
+```typescript
+import { defineRoutes } from 'fluent-html';
+
+export const userRoutes = defineRoutes({
+  list:   { method: "get",    path: "/users" },
+  create: { method: "post",   path: "/users" },
+  delete: { method: "delete", path: "/users/:id" },
+} as const);
+
+// Views — method is locked, params are required
+Button("Load").setHtmx(userRoutes.list())
+Button("Load").setHtmx(userRoutes.list({ target: ids.userList }))
+Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
+
+userRoutes.lsit()            // ✗ typo — compile error
+userRoutes.delete()          // ✗ missing params — compile error
+
+// Controllers — single-sourced paths
+server.get(userRoutes.list.path, handler)       // "/users"
+server.delete(userRoutes.delete.path, handler)  // "/users/:id"
+```
+
+Routes also expose `.method` and `.path` for server-side registration, so your views and controllers always stay in sync.
+
+---
+
+## Partial Multi-Swap
+
+HTMX 4 replaces OOB swaps with the `<hx-partial>` element. Fluent HTML's `Partial()` helper generates these for you:
+
+```typescript
+import { Partial, render } from 'fluent-html';
+
+// Update multiple page sections in one response
+render(
+  Partial(ids.mainContent, UserList(users)),
+  Partial(ids.userCount, Span(`${users.length} users`)),
+  Partial(ids.pageTitle, H1("Users")),
+)
+```
+
+Each `Partial` targets a specific element by ID and uses `outerMorph` by default (preserves focus, scroll, animations). You can override the swap strategy:
+
+```typescript
+Partial(ids.notifications, Div("New!"), "append")  // append instead of morph
+```
+
+> **Note:** `OOB()` and `withOOB()` still exist but are deprecated. Migrate to `Partial()`.
+
+---
+
+## Global HTMX Config
+
+Configure HTMX 4 globally via a type-safe `<meta>` tag:
+
+```typescript
+import { HtmxConfig } from 'fluent-html';
+
+Head(
+  HtmxConfig({
+    extensions: "sse, preload",
+    transitions: true,
+    defaultSwap: "outerMorph",
+    implicitInheritance: true,  // opt back in to htmx 2 inheritance behavior
+  }),
+  Script().setSrc("/htmx.js"),
+)
 ```
 
 ---
@@ -539,12 +643,12 @@ export function UsersPage() {
 ```typescript
 // controllers/users.ts
 import { ids } from '../ids';
-import { OOB, withOOB, Span } from 'fluent-html';
+import { Partial, Span } from 'fluent-html';
 
 export function handleUserCreated(users: User[]) {
-  return withOOB(
-    renderUserTable(users),
-    OOB(ids.userCount, Span(`${users.length} users`))  // Same typed reference!
+  return render(
+    Partial(ids.userList, renderUserTable(users)),
+    Partial(ids.userCount, Span(`${users.length} users`)),  // Same typed reference!
   );
 }
 ```
@@ -589,7 +693,7 @@ ids.userList.selector   // "#user-list" - for CSS/HTMX selectors
 // Works with all HTMX-related APIs
 Div().setId(ids.userList)                    // ✓
 hx("/api", { target: ids.userList })         // ✓
-OOB(ids.userList, content)                   // ✓
+Partial(ids.userList, content)               // ✓
 ```
 
 ---
@@ -1498,20 +1602,17 @@ InfiniteScroll({
 // Loads when scrolled into view
 ```
 
-**Out-of-Band (OOB) Swaps:**
+**Partial Multi-Swap (HTMX 4):**
 ```typescript
-import { OOB, withOOB, render } from 'fluent-html';
+import { Partial, render } from 'fluent-html';
 
 // Update multiple parts of the page in one response
-render(withOOB(
-  // Main content (replaces the target)
-  Tr(Td("John"), Td("john@example.com")).setId("row-1"),
-
-  // OOB updates (swap into their respective targets)
-  OOB("user-count", Span("42 users")),
-  OOB("last-updated", Span("Just now")),
-  OOB("notifications", Div("New item added!"), "beforeend")  // Append to notifications
-))
+render(
+  Partial(ids.mainContent, UserList(users)),
+  Partial(ids.userCount, Span(`${users.length} users`)),
+  Partial(ids.lastUpdated, Span("Just now")),
+  Partial(ids.notifications, Div("New item added!"), "append"),
+)
 ```
 
 **HTMX Response Headers:**
@@ -1545,8 +1646,7 @@ app.post('/api/logout', (req, res) => {
 // Override target and swap from server
 const response = hxResponse(content)
   .retarget("#other-element")          // HX-Retarget
-  .reswap("outerHTML")                 // HX-Reswap
-  .triggerAfterSwap("highlight")       // HX-Trigger-After-Swap
+  .reswap("outerMorph")               // HX-Reswap
   .build();
 ```
 
@@ -1817,50 +1917,46 @@ hx(endpoint: string, options?: HxOptions): HTMX
 hx(endpoint: string, options?: {
   // HTTP Method
   method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
-  
+
   // Targeting
   target?: string;              // CSS selector or extended selector
-  swap?: HxSwap;                // Swap strategy
-  swapOob?: boolean | string;   // Out-of-band swap
+  swap?: HxSwap;                // Swap strategy (outerMorph, innerMorph, innerHTML, outerHTML, etc.)
   select?: string;              // Select from response
-  selectOob?: string;           // Select OOB content
-  
-  // Triggering  
+
+  // Triggering
   trigger?: HxTrigger;          // Event trigger
-  
+
   // URL
   pushUrl?: boolean | string;   // Push to history
   replaceUrl?: boolean | string; // Replace in history
-  
+
   // Data
   vals?: object | string;       // Additional values
   headers?: object;             // Custom headers
   include?: string;             // Include elements
-  params?: string;              // Filter params
   encoding?: 'multipart/form-data';
-  
+
   // Validation
   validate?: boolean;
   confirm?: string;             // Confirmation dialog
-  prompt?: string;              // Prompt dialog
-  
+
   // Loading
   indicator?: string;           // Loading indicator
-  disabledElt?: string;         // Disable during request
-  
+  disable?: string;             // Disable elements during request (was disabledElt)
+
   // Sync
   sync?: HxSync;                // Request synchronization
-  
+
+  // HTMX 4 features
+  config?: HxConfig | string;   // Per-element config (replaces removed hx-request)
+  status?: Record<string, HxStatusConfig>; // Status-code routing
+  preload?: 'mousedown' | 'mouseover' | boolean; // Preload on hover
+  optimistic?: boolean;         // Show expected content before response
+
   // Other
-  ext?: string;                 // Extensions
-  disinherit?: string;          // Disable inheritance
-  inherit?: string;             // Force inheritance
-  history?: boolean;            // History snapshot
-  historyElt?: boolean;
   preserve?: boolean;           // Preserve element
-  request?: string;             // Request config
   boost?: boolean;              // Boost links/forms
-  disable?: boolean;            // Disable htmx
+  ignore?: boolean;             // Ignore htmx processing (was hx-disable)
 })
 ```
 
@@ -1885,25 +1981,27 @@ previous()           // → "previous"
 import {
   VStack, HStack, Grid,
   SearchInput, InfiniteScroll,
-  OOB, withOOB,
-  hxResponse,
-  FormField,
-  KeyedList
+  Partial, HtmxConfig,
+  defineRoutes, hxResponse,
+  FormField, KeyedList
 } from 'fluent-html';
 ```
 
 | Function | Description |
 | -------- | ----------- |
+| `Partial(target, content, swap?)` | Multi-swap partial element (HTMX 4) |
+| `HtmxConfig(options)` | Global HTMX configuration via `<meta>` tag |
+| `defineRoutes(routes)` | Type-safe route definitions for HTMX + server |
+| `hxResponse(content)` | Build HTMX response with headers |
 | `VStack(children, options)` | Vertical flex layout (column) |
 | `HStack(children, options)` | Horizontal flex layout (row) |
 | `Grid(children, options)` | CSS Grid layout |
 | `SearchInput(options)` | Debounced search input with HTMX |
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
-| `OOB(target, content, swap?)` | Out-of-band swap element for HTMX |
-| `withOOB(main, ...oob)` | Combine main content with OOB swaps |
-| `hxResponse(content)` | Build HTMX response with headers |
 | `FormField(options)` | Form field with label and error |
 | `KeyedList(items, getKey, render)` | List with keyed items |
+| `OOB(target, content, swap?)` | *Deprecated* — use `Partial` instead |
+| `withOOB(main, ...oob)` | *Deprecated* — use `render()` with `Partial` instead |
 
 ### Raw HTML
 
@@ -1917,10 +2015,10 @@ Raw(html: string): RawString  // Create unescaped HTML content
 | -------- | ----------- |
 | `Raw(html)` | Wrap HTML string to bypass XSS escaping. **Use only with trusted content.** |
 
-### Type-Safe IDs
+### Type-Safe IDs & Routes
 
 ```typescript
-import { defineIds, createId, Id, isId, extractId, extractSelector } from 'fluent-html';
+import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes } from 'fluent-html';
 ```
 
 | Function | Description |
@@ -1930,6 +2028,7 @@ import { defineIds, createId, Id, isId, extractId, extractSelector } from 'fluen
 | `isId(value)` | Type guard to check if value is an Id |
 | `extractId(value)` | Extract ID string from string or Id |
 | `extractSelector(value)` | Extract selector string from string or Id |
+| `defineRoutes(routes)` | Create type-safe route definitions with params |
 
 **Id Object:**
 
