@@ -531,9 +531,13 @@ userRoutes.delete()          // ✗ missing params — compile error
 // Controllers — single-sourced paths
 server.get(userRoutes.list.path, handler)       // "/users"
 server.delete(userRoutes.delete.path, handler)  // "/users/:id"
+
+// Resolved URLs for redirects, links, etc.
+reply.redirect(userRoutes.list.resolve())                  // "/users"
+reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
 ```
 
-The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method` and `.path` (with prefix applied) for server-side registration, so your views and controllers always stay in sync.
+The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method`, `.path` (with prefix applied), and `.resolve()` (for param substitution). Views and controllers always stay in sync.
 
 ---
 
@@ -2030,6 +2034,15 @@ import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes
 | `extractId(value)` | Extract ID string from string or Id |
 | `extractSelector(value)` | Extract selector string from string or Id |
 | `defineRoutes(prefix?, routes)` | Create type-safe route definitions with params |
+
+**Route Callable Object:**
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| `(params?, options?)` | `HTMX` | Call the route to get an HTMX object for `setHtmx()` |
+| `.method` | `string` | HTTP method (`"get"`, `"post"`, etc.) |
+| `.path` | `string` | Full path template with prefix (`"/users/:id"`) |
+| `.resolve(params?)` | `string` | Resolved URL with params substituted (`"/users/42"`) |
 
 **Id Object:**
 

@@ -432,10 +432,11 @@ ids.userLits                        // ❌ TypeScript Error!
 ```typescript
 import { defineRoutes } from "fluent-html";
 
-export const userRoutes = defineRoutes({
-  list:   { method: "get",    path: "/users" },
-  create: { method: "post",   path: "/users" },
-  delete: { method: "delete", path: "/users/:id" },
+// Shared prefix avoids path repetition
+export const userRoutes = defineRoutes("/users", {
+  list:   { method: "get",    path: "/" },
+  create: { method: "post",   path: "/" },
+  delete: { method: "delete", path: "/:id" },
 } as const);
 
 // Views — method is locked, params are required, typos are compile errors
@@ -445,6 +446,10 @@ Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userLi
 // Controllers — single-sourced paths
 server.get(userRoutes.list.path, handler)       // "/users"
 server.delete(userRoutes.delete.path, handler)  // "/users/:id"
+
+// Resolved URLs for redirects, links, etc.
+reply.redirect(userRoutes.list.resolve())                  // "/users"
+reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
 ```
 
 ### Recommended Pattern

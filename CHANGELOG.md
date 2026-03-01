@@ -33,10 +33,11 @@ Updated the HTMX integration from v2 to v4. This is a major update that aligns w
 New `defineRoutes()` function for compile-time-safe HTMX endpoints:
 
 ```typescript
-export const userRoutes = defineRoutes({
-  list:   { method: "get",    path: "/users" },
-  create: { method: "post",   path: "/users" },
-  delete: { method: "delete", path: "/users/:id" },
+// Shared prefix avoids path repetition
+export const userRoutes = defineRoutes("/users", {
+  list:   { method: "get",    path: "/" },
+  create: { method: "post",   path: "/" },
+  delete: { method: "delete", path: "/:id" },
 } as const);
 
 // Views — method is locked, params are required, typos are compile errors
@@ -45,9 +46,12 @@ Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userLi
 
 // Controllers — single-sourced paths
 server.get(userRoutes.list.path, handler)
+
+// Resolved URLs for redirects, links, etc.
+reply.redirect(userRoutes.delete.resolve({ id: user.id }))
 ```
 
-Path parameters (`:id`) are extracted at the type level and required at call time. Routes also expose `.method` and `.path` for server-side registration.
+Path parameters (`:id`) are extracted at the type level and required at call time. Routes expose `.method`, `.path`, and `.resolve()` for server-side use.
 
 #### Morph Swap Strategies
 

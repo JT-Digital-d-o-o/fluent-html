@@ -96,6 +96,24 @@ test("list() with multiple options",
   ["/users", "get", "#list", "outerMorph", "load"]);
 
 // ------------------------------------
+// resolve()
+// ------------------------------------
+
+section("resolve()");
+
+test("resolve() on parameterless route returns path",
+  routes.list.resolve(), "/users");
+
+test("resolve() on parameterized route substitutes params",
+  routes.detail.resolve({ id: "42" }), "/users/42");
+
+test("resolve() on multi-param route substitutes all params",
+  routes.nested.resolve({ userId: "1", postId: "99" }), "/users/1/posts/99");
+
+test("resolve() encodes special characters",
+  routes.detail.resolve({ id: "hello world" }), "/users/hello%20world");
+
+// ------------------------------------
 // Parameterized Routes
 // ------------------------------------
 
@@ -263,6 +281,17 @@ test("prefixed detail() with options",
 
 test("prefixed nested() substitutes both params",
   prefixedRoutes.nested({ userId: "1", postId: "99" }).endpoint, "/users/1/posts/99");
+
+section("Prefixed resolve()");
+
+test("prefixed resolve() on parameterless route",
+  prefixedRoutes.list.resolve(), "/users");
+
+test("prefixed resolve() on parameterized route",
+  prefixedRoutes.detail.resolve({ id: "42" }), "/users/42");
+
+test("prefixed resolve() on multi-param route",
+  prefixedRoutes.nested.resolve({ userId: "1", postId: "99" }), "/users/1/posts/99");
 
 section("Prefixed routes: render integration");
 

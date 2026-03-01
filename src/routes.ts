@@ -81,6 +81,9 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
 type RouteProperties<Def extends RouteDef> = {
   readonly method: Def['method'];
   readonly path: Def['path'];
+  readonly resolve: HasParams<Def['path']> extends true
+    ? (params: { [K in ExtractParams<Def['path']>]: string }) => string
+    : () => string;
 };
 
 /**
@@ -89,6 +92,7 @@ type RouteProperties<Def extends RouteDef> = {
  * - Routes with `:param` segments require a params object as the first argument.
  * - Routes without params accept options directly.
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
+ * - `.resolve(params?)` returns the resolved URL string (for redirects, links, etc.).
  */
 type RouteCallable<Def extends RouteDef> =
   HasParams<Def['path']> extends true
@@ -195,8 +199,21 @@ export function defineRoutes(
           return buildHtmxFromRoute(fullPath, method, options);
         };
 
+    const resolve = hasParams
+      ? function (params: Record<string, string>): string {
+          let resolved = fullPath;
+          for (const [key, value] of Object.entries(params)) {
+            resolved = resolved.replace(`:${key}`, encodeURIComponent(value));
+          }
+          return resolved;
+        }
+      : function (): string {
+          return fullPath;
+        };
+
     Object.defineProperty(routeFn, "method", { value: method, writable: false, enumerable: true });
     Object.defineProperty(routeFn, "path", { value: fullPath, writable: false, enumerable: true });
+    Object.defineProperty(routeFn, "resolve", { value: resolve, writable: false, enumerable: true });
 
     registry[name] = routeFn;
   }

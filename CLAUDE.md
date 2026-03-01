@@ -78,6 +78,10 @@ userRoutes.delete()          // ✗ missing params — compile error
 // Controllers — single-sourced paths
 server.get(userRoutes.list.path, handler)       // "/users"
 server.delete(userRoutes.delete.path, handler)  // "/users/:id"
+
+// Resolved URLs for redirects, links, etc.
+reply.redirect(userRoutes.list.resolve())                  // "/users"
+reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
 ```
 
 **Shorthand methods** for simple requests, **setHtmx(hx())** for complex:
