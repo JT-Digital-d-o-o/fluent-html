@@ -20,6 +20,15 @@ export type RouteDef = {
 type RouteDefinitions = {
     readonly [name: string]: RouteDef;
 };
+/** Join a prefix and a sub-path, collapsing a bare "/" into the prefix. */
+type JoinPath<Prefix extends string, Path extends string> = Path extends "/" ? Prefix : `${Prefix}${Path}`;
+/** Map each route definition's path to include the prefix. */
+type PrefixedRouteDefs<P extends string, T extends RouteDefinitions> = {
+    readonly [K in keyof T]: {
+        readonly method: T[K]['method'];
+        readonly path: JoinPath<P, T[K]['path']>;
+    };
+};
 /**
  * HTMX options that can be passed when calling a route.
  * Excludes `endpoint` (derived from path) and `method` (locked by definition).
@@ -31,6 +40,9 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
 type RouteProperties<Def extends RouteDef> = {
     readonly method: Def['method'];
     readonly path: Def['path'];
+    readonly resolve: HasParams<Def['path']> extends true ? (params: {
+        [K in ExtractParams<Def['path']>]: string;
+    }) => string : () => string;
 };
 /**
  * A type-safe route callable.
@@ -38,6 +50,7 @@ type RouteProperties<Def extends RouteDef> = {
  * - Routes with `:param` segments require a params object as the first argument.
  * - Routes without params accept options directly.
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
+ * - `.resolve(params?)` returns the resolved URL string (for redirects, links, etc.).
  */
 type RouteCallable<Def extends RouteDef> = HasParams<Def['path']> extends true ? ((params: {
     [K in ExtractParams<Def['path']>]: string;
@@ -67,15 +80,24 @@ type RouteRegistry<T extends RouteDefinitions> = {
  *   delete: { method: "delete", path: "/users/:id" },
  * } as const);
  *
+ * // With a shared prefix (like Fastify's register prefix)
+ * export const userRoutes = defineRoutes("/users", {
+ *   list:   { method: "get",    path: "/" },
+ *   create: { method: "post",   path: "/" },
+ *   detail: { method: "get",    path: "/:id" },
+ *   delete: { method: "delete", path: "/:id" },
+ * } as const);
+ *
  * // In views — type-safe HTMX
  * Button("Load").setHtmx(userRoutes.list())
  * Button("Delete").setHtmx(userRoutes.delete({ id: user.id }))
  * Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
  *
  * // In controllers — single-sourced paths
- * server.get(userRoutes.list.path, handler)
- * server.delete(userRoutes.delete.path, handler)
+ * server.get(userRoutes.list.path, handler)       // "/users"
+ * server.delete(userRoutes.delete.path, handler)   // "/users/:id"
  */
 export declare function defineRoutes<const T extends RouteDefinitions>(definitions: T): RouteRegistry<T>;
+export declare function defineRoutes<const P extends string, const T extends RouteDefinitions>(prefix: P, definitions: T): RouteRegistry<PrefixedRouteDefs<P, T>>;
 export {};
 //# sourceMappingURL=routes.d.ts.map

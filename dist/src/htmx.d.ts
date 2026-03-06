@@ -1,19 +1,27 @@
 import { Id } from "./ids.js";
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type HxEncoding = "multipart/form-data";
+type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
 export type HxSwapStyle = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'before' | 'after' | 'prepend' | 'append' | 'innerMorph' | 'outerMorph' | 'delete' | 'none';
+type SwapScrollValue = 'scroll:top' | 'scroll:bottom';
+type SwapShowValue = 'show:top' | 'show:bottom';
+type SwapTimingValue = `swap:${DelayValue}` | `settle:${DelayValue}`;
+type SwapFocusScroll = 'focus-scroll:true' | 'focus-scroll:false';
+type SwapTransition = 'transition:true';
+type SwapModifier = SwapScrollValue | SwapShowValue | SwapTimingValue | SwapFocusScroll | SwapTransition;
+type SwapWithModifier = `${HxSwapStyle} ${SwapModifier}`;
+type SwapWithTwoModifiers = `${HxSwapStyle} ${SwapScrollValue | SwapShowValue} ${SwapTimingValue | SwapTransition}`;
 /**
- * HTMX Swap type
+ * HTMX Swap type with deep autocomplete.
  *
  * Supports:
  * - Basic: "innerHTML", "outerHTML", "beforeend", etc.
- * - With modifiers: "innerHTML scroll:top", "outerHTML transition:true"
- * - Multiple modifiers: "innerHTML swap:500ms settle:100ms"
+ * - With modifier: "outerHTML scroll:top", "innerHTML transition:true"
+ * - With two modifiers: "outerHTML scroll:top swap:500ms"
  *
- * Uses string type with union for common cases to enable autocomplete
- * while allowing any valid swap string with modifiers.
+ * Also accepts any valid swap string for patterns not covered.
  */
-export type HxSwap = HxSwapStyle | (string & {});
+export type HxSwap = HxSwapStyle | SwapWithModifier | SwapWithTwoModifiers | (string & {});
 type StandardCSSSelector = string;
 type ExtendedCSSSelector = 'this' | 'body' | 'window' | 'document' | `closest ${string}` | `next` | `next ${string}` | `previous` | `previous ${string}` | `find ${string}`;
 export type HxTarget = StandardCSSSelector | ExtendedCSSSelector;
@@ -21,7 +29,6 @@ type DOMEvent = 'click' | 'dblclick' | 'mouseenter' | 'mouseleave' | 'mouseover'
 type HtmxEvent = 'load' | 'revealed' | 'intersect';
 type BasicTrigger = DOMEvent | HtmxEvent;
 type TriggerModifier = 'once' | 'changed' | 'consume';
-type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
 type ModifiedTrigger = `${BasicTrigger} ${TriggerModifier}`;
 type DelayedTrigger = `${BasicTrigger} delay:${DelayValue}`;
 type ThrottledTrigger = `${BasicTrigger} throttle:${DelayValue}`;

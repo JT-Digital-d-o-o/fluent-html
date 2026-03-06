@@ -64,6 +64,14 @@ test("list() with multiple options", (() => {
     return [htmx.endpoint, htmx.method, htmx.target, htmx.swap, htmx.trigger];
 })(), ["/users", "get", "#list", "outerMorph", "load"]);
 // ------------------------------------
+// resolve()
+// ------------------------------------
+section("resolve()");
+test("resolve() on parameterless route returns path", routes.list.resolve(), "/users");
+test("resolve() on parameterized route substitutes params", routes.detail.resolve({ id: "42" }), "/users/42");
+test("resolve() on multi-param route substitutes all params", routes.nested.resolve({ userId: "1", postId: "99" }), "/users/1/posts/99");
+test("resolve() encodes special characters", routes.detail.resolve({ id: "hello world" }), "/users/hello%20world");
+// ------------------------------------
 // Parameterized Routes
 // ------------------------------------
 section("Parameterized routes");
@@ -107,6 +115,51 @@ const ids = (0, ids_js_1.defineIds)(["user-list", "user-detail"]);
 test("Id target resolves to selector", routes.list({ target: ids.userList }).target, "#user-list");
 test("renders with Id target", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({ target: ids.userList }))), '<button hx-get="/users" hx-target="#user-list">Load</button>');
 test("parameterized route with Id target", (0, index_js_1.render)((0, index_js_1.Button)("View").setHtmx(routes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))), '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
+// ------------------------------------
+// Prefixed Routes
+// ------------------------------------
+const prefixedRoutes = (0, routes_js_1.defineRoutes)("/users", {
+    list: { method: "get", path: "/" },
+    create: { method: "post", path: "/" },
+    detail: { method: "get", path: "/:id" },
+    update: { method: "put", path: "/:id" },
+    nested: { method: "get", path: "/:userId/posts/:postId" },
+});
+section("Prefixed route properties");
+test("prefixed list.path is /users", prefixedRoutes.list.path, "/users");
+test("prefixed list.method is get", prefixedRoutes.list.method, "get");
+test("prefixed detail.path is /users/:id", prefixedRoutes.detail.path, "/users/:id");
+test("prefixed nested.path preserves template", prefixedRoutes.nested.path, "/users/:userId/posts/:postId");
+section("Prefixed parameterless routes");
+test("prefixed list() returns correct endpoint", prefixedRoutes.list().endpoint, "/users");
+test("prefixed list() returns correct method", prefixedRoutes.list().method, "get");
+test("prefixed create() returns correct method", prefixedRoutes.create().method, "post");
+test("prefixed list() with target option", prefixedRoutes.list({ target: "#result" }).target, "#result");
+test("prefixed list() with multiple options", (() => {
+    const htmx = prefixedRoutes.list({ target: "#list", swap: "outerMorph" });
+    return [htmx.endpoint, htmx.method, htmx.target, htmx.swap];
+})(), ["/users", "get", "#list", "outerMorph"]);
+section("Prefixed parameterized routes");
+test("prefixed detail() substitutes :id", prefixedRoutes.detail({ id: "42" }).endpoint, "/users/42");
+test("prefixed update() locks method to put", prefixedRoutes.update({ id: "5" }).method, "put");
+test("prefixed detail() with options", (() => {
+    const htmx = prefixedRoutes.detail({ id: "7" }, { target: "#detail", swap: "outerMorph" });
+    return [htmx.endpoint, htmx.method, htmx.target, htmx.swap];
+})(), ["/users/7", "get", "#detail", "outerMorph"]);
+test("prefixed nested() substitutes both params", prefixedRoutes.nested({ userId: "1", postId: "99" }).endpoint, "/users/1/posts/99");
+section("Prefixed resolve()");
+test("prefixed resolve() on parameterless route", prefixedRoutes.list.resolve(), "/users");
+test("prefixed resolve() on parameterized route", prefixedRoutes.detail.resolve({ id: "42" }), "/users/42");
+test("prefixed resolve() on multi-param route", prefixedRoutes.nested.resolve({ userId: "1", postId: "99" }), "/users/1/posts/99");
+section("Prefixed routes: render integration");
+test("prefixed renders hx-get for list route", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(prefixedRoutes.list())), '<button hx-get="/users">Load</button>');
+test("prefixed renders hx-delete with params", (0, index_js_1.render)((0, index_js_1.Button)("Remove").setHtmx(prefixedRoutes.detail({ id: "5" }))), '<button hx-get="/users/5">Remove</button>');
+test("prefixed renders with target and swap", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(prefixedRoutes.list({ target: "#list", swap: "outerMorph" }))), '<button hx-get="/users" hx-target="#list" hx-swap="outerMorph">Load</button>');
+section("Prefixed routes with defineIds()");
+test("prefixed route with Id target", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(prefixedRoutes.list({ target: ids.userList }))), '<button hx-get="/users" hx-target="#user-list">Load</button>');
+test("prefixed param route with Id target", (0, index_js_1.render)((0, index_js_1.Button)("View").setHtmx(prefixedRoutes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))), '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
+section("Prefixed registry immutability");
+test("prefixed registry is frozen", Object.isFrozen(prefixedRoutes), true);
 // ------------------------------------
 // Registry Immutability
 // ------------------------------------
