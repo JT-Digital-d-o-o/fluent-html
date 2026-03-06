@@ -11,6 +11,9 @@ export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 // Encoding types
 export type HxEncoding = "multipart/form-data";
 
+// Shared timing values
+type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
+
 // Swap strategies
 export type HxSwapStyle =
   | 'innerHTML'      // Default - replace inner content
@@ -23,18 +26,37 @@ export type HxSwapStyle =
   | 'delete'         // Delete element
   | 'none';          // No swap
 
+// Swap modifiers
+type SwapScrollValue = 'scroll:top' | 'scroll:bottom';
+type SwapShowValue = 'show:top' | 'show:bottom';
+type SwapTimingValue = `swap:${DelayValue}` | `settle:${DelayValue}`;
+type SwapFocusScroll = 'focus-scroll:true' | 'focus-scroll:false';
+type SwapTransition = 'transition:true';
+
+type SwapModifier =
+  | SwapScrollValue
+  | SwapShowValue
+  | SwapTimingValue
+  | SwapFocusScroll
+  | SwapTransition;
+
+// Style + single modifier: "outerHTML scroll:top", "innerHTML transition:true"
+type SwapWithModifier = `${HxSwapStyle} ${SwapModifier}`;
+
+// Style + two modifiers: "outerHTML scroll:top swap:500ms"
+type SwapWithTwoModifiers = `${HxSwapStyle} ${SwapScrollValue | SwapShowValue} ${SwapTimingValue | SwapTransition}`;
+
 /**
- * HTMX Swap type
- * 
+ * HTMX Swap type with deep autocomplete.
+ *
  * Supports:
  * - Basic: "innerHTML", "outerHTML", "beforeend", etc.
- * - With modifiers: "innerHTML scroll:top", "outerHTML transition:true"
- * - Multiple modifiers: "innerHTML swap:500ms settle:100ms"
- * 
- * Uses string type with union for common cases to enable autocomplete
- * while allowing any valid swap string with modifiers.
+ * - With modifier: "outerHTML scroll:top", "innerHTML transition:true"
+ * - With two modifiers: "outerHTML scroll:top swap:500ms"
+ *
+ * Also accepts any valid swap string for patterns not covered.
  */
-export type HxSwap = HxSwapStyle | (string & {});
+export type HxSwap = HxSwapStyle | SwapWithModifier | SwapWithTwoModifiers | (string & {});
 
 // CSS Selectors (standard + HTMX extended)
 type StandardCSSSelector = string;
@@ -87,9 +109,8 @@ type HtmxEvent =
 // Basic trigger is a DOM or HTMX event
 type BasicTrigger = DOMEvent | HtmxEvent;
 
-// Trigger modifiers and timing values
+// Trigger modifiers
 type TriggerModifier = 'once' | 'changed' | 'consume';
-type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
 
 // Event + modifier: "click once", "input changed", etc.
 type ModifiedTrigger = `${BasicTrigger} ${TriggerModifier}`;
