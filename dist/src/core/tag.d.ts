@@ -1,7 +1,7 @@
 import { HTMX, HxOptions } from "../htmx.js";
 import { Id } from "../ids.js";
 import type { View } from "./types.js";
-import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit } from "./tailwind-types.js";
+import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindOutline, TailwindState, TailwindBreakpoint } from "./tailwind-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
 export declare class Tag {
@@ -441,5 +441,40 @@ export declare class Tag {
      * Img().objectFit("contain")           // object-contain
      */
     objectFit(value: Autocomplete<TailwindObjectFit>): this;
+    /** @internal */
+    private _variantPrefix;
+    private _withVariant;
+    on(state: Autocomplete<TailwindState>, fn: (tag: this) => this): this;
+    at(breakpoint: Autocomplete<TailwindBreakpoint>, fn: (tag: this) => this): this;
+    display(value: Autocomplete<TailwindDisplay>): this;
+    hidden(): this;
+    inset(value: Autocomplete<TailwindInset>): this;
+    top(value: Autocomplete<TailwindInset>): this;
+    right(value: Autocomplete<TailwindInset>): this;
+    bottom(value: Autocomplete<TailwindInset>): this;
+    left(value: Autocomplete<TailwindInset>): this;
+    shrink(value?: "0"): this;
+    grow(value?: "0"): this;
+    flexWrap(value: Autocomplete<TailwindFlexWrap>): this;
+    alignSelf(value: Autocomplete<TailwindAlignSelf>): this;
+    colSpan(value: Autocomplete<TailwindColSpan>): this;
+    aspect(value: Autocomplete<TailwindAspect>): this;
+    spaceX(value: Autocomplete<TailwindSpacing>): this;
+    spaceY(value: Autocomplete<TailwindSpacing>): this;
+    divideX(value?: Autocomplete<TailwindBorderWidth>): this;
+    divideY(value?: Autocomplete<TailwindBorderWidth>): this;
+    transition(value?: Autocomplete<TailwindTransition>): this;
+    duration(value: Autocomplete<TailwindDuration>): this;
+    animate(value: Autocomplete<TailwindAnimate>): this;
+    ring(value?: Autocomplete<TailwindRingWidth>): this;
+    ringColor(color: Autocomplete<TailwindColor>): this;
+    scale(value: Autocomplete<TailwindScale>): this;
+    rotate(value: Autocomplete<TailwindRotate>): this;
+    translate(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): this;
+    select(value: Autocomplete<TailwindSelect>): this;
+    pointerEvents(value: Autocomplete<TailwindPointerEvents>): this;
+    whitespace(value: Autocomplete<TailwindWhitespace>): this;
+    srOnly(): this;
+    outline(value: Autocomplete<TailwindOutline>): this;
 }
 //# sourceMappingURL=tag.d.ts.map

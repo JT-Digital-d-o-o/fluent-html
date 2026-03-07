@@ -95,5 +95,63 @@ export type TailwindOverflow = "auto" | "hidden" | "clip" | "visible" | "scroll"
 // Object fit
 export type TailwindObjectFit = "contain" | "cover" | "fill" | "none" | "scale-down";
 
+// Display
+export type TailwindDisplay =
+  | "block" | "inline-block" | "inline" | "flex" | "inline-flex"
+  | "table" | "inline-table" | "table-cell" | "table-row" | "flow-root"
+  | "grid" | "inline-grid" | "contents" | "list-item" | "hidden";
+
+// Inset (top/right/bottom/left shorthand)
+export type TailwindInset = TailwindSpacing | "auto" | "full" | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4";
+
+// Flex wrap
+export type TailwindFlexWrap = "wrap" | "wrap-reverse" | "nowrap";
+
+// Align self
+export type TailwindAlignSelf = "auto" | "start" | "end" | "center" | "stretch" | "baseline";
+
+// Column span
+export type TailwindColSpan = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "full";
+
+// Aspect ratio
+export type TailwindAspect = "auto" | "square" | "video";
+
+// Transitions & Animation
+export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow" | "transform";
+export type TailwindDuration = "0" | "75" | "100" | "150" | "200" | "300" | "500" | "700" | "1000";
+export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce";
+
+// Ring
+export type TailwindRingWidth = "0" | "1" | "2" | "4" | "8";
+
+// Transforms
+export type TailwindScale = "0" | "50" | "75" | "90" | "95" | "100" | "105" | "110" | "125" | "150";
+export type TailwindRotate = "0" | "1" | "2" | "3" | "6" | "12" | "45" | "90" | "180";
+
+// Interactivity
+export type TailwindSelect = "none" | "text" | "all" | "auto";
+export type TailwindPointerEvents = "none" | "auto";
+
+// Whitespace
+export type TailwindWhitespace = "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap" | "break-spaces";
+
+// Outline
+export type TailwindOutline = "none" | "dashed" | "dotted" | "double";
+
+// Variant proxy types
+export type TailwindState =
+  | "hover" | "focus" | "focus-within" | "focus-visible"
+  | "active" | "visited"
+  | "disabled" | "enabled" | "checked" | "indeterminate" | "required" | "invalid" | "valid"
+  | "first" | "last" | "odd" | "even" | "empty"
+  | "first-of-type" | "last-of-type" | "only-child"
+  | "placeholder" | "selection" | "marker" | "file"
+  | "before" | "after"
+  | "dark"
+  | "group-hover" | "group-focus" | "group-active" | "group-disabled"
+  | "peer-hover" | "peer-focus" | "peer-checked" | "peer-invalid";
+
+export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+
 // Helper type to allow autocomplete while accepting any string
 export type Autocomplete<T extends string> = T | (string & {});

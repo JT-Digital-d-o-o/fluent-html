@@ -7,6 +7,11 @@ const ids_js_1 = require("../ids.js");
 exports.EMPTY_ATTRS = Object.freeze({});
 class Tag {
     constructor(element, ...children) {
+        // ------------------------------------
+        // Variant Proxy
+        // ------------------------------------
+        /** @internal */
+        this._variantPrefix = null;
         this.el = element;
         this.child = children.length === 0 ? "" : children.length === 1 ? children[0] : children;
     }
@@ -19,11 +24,14 @@ class Tag {
         return this;
     }
     addClass(c) {
+        const classes = this._variantPrefix
+            ? c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" ")
+            : c;
         if (this.class) {
-            this.class += ' ' + c;
+            this.class += ' ' + classes;
         }
         else {
-            this.class = c;
+            this.class = classes;
         }
         return this;
     }
@@ -619,6 +627,139 @@ class Tag {
      */
     objectFit(value) {
         return this.addClass(`object-${value}`);
+    }
+    _withVariant(prefix, fn) {
+        const outer = this._variantPrefix;
+        this._variantPrefix = outer ? `${outer}:${prefix}` : prefix;
+        fn(this);
+        this._variantPrefix = outer;
+        return this;
+    }
+    on(state, fn) {
+        return this._withVariant(state, fn);
+    }
+    at(breakpoint, fn) {
+        return this._withVariant(breakpoint, fn);
+    }
+    // ------------------------------------
+    // Layout & Display
+    // ------------------------------------
+    display(value) {
+        return this.addClass(value);
+    }
+    hidden() {
+        return this.addClass("hidden");
+    }
+    inset(value) {
+        return this.addClass(`inset-${value}`);
+    }
+    top(value) {
+        return this.addClass(`top-${value}`);
+    }
+    right(value) {
+        return this.addClass(`right-${value}`);
+    }
+    bottom(value) {
+        return this.addClass(`bottom-${value}`);
+    }
+    left(value) {
+        return this.addClass(`left-${value}`);
+    }
+    // ------------------------------------
+    // Flexbox & Grid Extensions
+    // ------------------------------------
+    shrink(value) {
+        return value === undefined ? this.addClass("shrink") : this.addClass(`shrink-${value}`);
+    }
+    grow(value) {
+        return value === undefined ? this.addClass("grow") : this.addClass(`grow-${value}`);
+    }
+    flexWrap(value) {
+        return this.addClass(`flex-${value}`);
+    }
+    alignSelf(value) {
+        return this.addClass(`self-${value}`);
+    }
+    colSpan(value) {
+        return this.addClass(`col-span-${value}`);
+    }
+    aspect(value) {
+        return this.addClass(`aspect-${value}`);
+    }
+    // ------------------------------------
+    // Spacing Between Children
+    // ------------------------------------
+    spaceX(value) {
+        return this.addClass(`space-x-${value}`);
+    }
+    spaceY(value) {
+        return this.addClass(`space-y-${value}`);
+    }
+    divideX(value) {
+        return value === undefined ? this.addClass("divide-x") : this.addClass(`divide-x-${value}`);
+    }
+    divideY(value) {
+        return value === undefined ? this.addClass("divide-y") : this.addClass(`divide-y-${value}`);
+    }
+    // ------------------------------------
+    // Transitions & Animation
+    // ------------------------------------
+    transition(value) {
+        return value === undefined ? this.addClass("transition") : this.addClass(`transition-${value}`);
+    }
+    duration(value) {
+        return this.addClass(`duration-${value}`);
+    }
+    animate(value) {
+        return this.addClass(`animate-${value}`);
+    }
+    // ------------------------------------
+    // Ring (Focus Rings)
+    // ------------------------------------
+    ring(value) {
+        return value === undefined ? this.addClass("ring") : this.addClass(`ring-${value}`);
+    }
+    ringColor(color) {
+        return this.addClass(`ring-${color}`);
+    }
+    // ------------------------------------
+    // Transforms
+    // ------------------------------------
+    scale(value) {
+        return this.addClass(`scale-${value}`);
+    }
+    rotate(value) {
+        return this.addClass(`rotate-${value}`);
+    }
+    translate(direction, value) {
+        return this.addClass(`translate-${direction}-${value}`);
+    }
+    // ------------------------------------
+    // Interactivity
+    // ------------------------------------
+    select(value) {
+        return this.addClass(`select-${value}`);
+    }
+    pointerEvents(value) {
+        return this.addClass(`pointer-events-${value}`);
+    }
+    // ------------------------------------
+    // Text & Whitespace
+    // ------------------------------------
+    whitespace(value) {
+        return this.addClass(`whitespace-${value}`);
+    }
+    // ------------------------------------
+    // Accessibility
+    // ------------------------------------
+    srOnly() {
+        return this.addClass("sr-only");
+    }
+    // ------------------------------------
+    // Outline
+    // ------------------------------------
+    outline(value) {
+        return this.addClass(`outline-${value}`);
     }
 }
 exports.Tag = Tag;

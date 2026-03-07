@@ -7,7 +7,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node dist/test/test.js && node dist/test/patterns.js && node dist/test/swiftui-style.js && node dist/test/routes.js",
+    "test": "npm run build && node dist/test/test.js && node dist/test/patterns.js && node dist/test/swiftui-style.js && node dist/test/routes.js && node dist/test/fluent-styling-v2.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build && npm test"

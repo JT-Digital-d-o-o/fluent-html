@@ -26,6 +26,24 @@ import type {
   TailwindFlex,
   TailwindOverflow,
   TailwindObjectFit,
+  TailwindDisplay,
+  TailwindInset,
+  TailwindFlexWrap,
+  TailwindAlignSelf,
+  TailwindColSpan,
+  TailwindAspect,
+  TailwindTransition,
+  TailwindDuration,
+  TailwindAnimate,
+  TailwindRingWidth,
+  TailwindScale,
+  TailwindRotate,
+  TailwindSelect,
+  TailwindPointerEvents,
+  TailwindWhitespace,
+  TailwindOutline,
+  TailwindState,
+  TailwindBreakpoint,
 } from "./tailwind-types.js";
 
 /** @internal Shared empty attributes object — never mutate */
@@ -61,10 +79,13 @@ export class Tag {
   }
 
   addClass(c: string): this {
+    const classes = this._variantPrefix
+      ? c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" ")
+      : c;
     if (this.class) {
-      this.class += ' ' + c;
+      this.class += ' ' + classes;
     } else {
-      this.class = c;
+      this.class = classes;
     }
     return this;
   }
@@ -764,6 +785,189 @@ export class Tag {
    */
   objectFit(value: Autocomplete<TailwindObjectFit>): this {
     return this.addClass(`object-${value}`);
+  }
+
+  // ------------------------------------
+  // Variant Proxy
+  // ------------------------------------
+
+  /** @internal */
+  private _variantPrefix: string | null = null;
+
+  private _withVariant(prefix: string, fn: (tag: this) => this): this {
+    const outer = this._variantPrefix;
+    this._variantPrefix = outer ? `${outer}:${prefix}` : prefix;
+    fn(this);
+    this._variantPrefix = outer;
+    return this;
+  }
+
+  on(state: Autocomplete<TailwindState>, fn: (tag: this) => this): this {
+    return this._withVariant(state, fn);
+  }
+
+  at(breakpoint: Autocomplete<TailwindBreakpoint>, fn: (tag: this) => this): this {
+    return this._withVariant(breakpoint, fn);
+  }
+
+  // ------------------------------------
+  // Layout & Display
+  // ------------------------------------
+
+  display(value: Autocomplete<TailwindDisplay>): this {
+    return this.addClass(value);
+  }
+
+  hidden(): this {
+    return this.addClass("hidden");
+  }
+
+  inset(value: Autocomplete<TailwindInset>): this {
+    return this.addClass(`inset-${value}`);
+  }
+
+  top(value: Autocomplete<TailwindInset>): this {
+    return this.addClass(`top-${value}`);
+  }
+
+  right(value: Autocomplete<TailwindInset>): this {
+    return this.addClass(`right-${value}`);
+  }
+
+  bottom(value: Autocomplete<TailwindInset>): this {
+    return this.addClass(`bottom-${value}`);
+  }
+
+  left(value: Autocomplete<TailwindInset>): this {
+    return this.addClass(`left-${value}`);
+  }
+
+  // ------------------------------------
+  // Flexbox & Grid Extensions
+  // ------------------------------------
+
+  shrink(value?: "0"): this {
+    return value === undefined ? this.addClass("shrink") : this.addClass(`shrink-${value}`);
+  }
+
+  grow(value?: "0"): this {
+    return value === undefined ? this.addClass("grow") : this.addClass(`grow-${value}`);
+  }
+
+  flexWrap(value: Autocomplete<TailwindFlexWrap>): this {
+    return this.addClass(`flex-${value}`);
+  }
+
+  alignSelf(value: Autocomplete<TailwindAlignSelf>): this {
+    return this.addClass(`self-${value}`);
+  }
+
+  colSpan(value: Autocomplete<TailwindColSpan>): this {
+    return this.addClass(`col-span-${value}`);
+  }
+
+  aspect(value: Autocomplete<TailwindAspect>): this {
+    return this.addClass(`aspect-${value}`);
+  }
+
+  // ------------------------------------
+  // Spacing Between Children
+  // ------------------------------------
+
+  spaceX(value: Autocomplete<TailwindSpacing>): this {
+    return this.addClass(`space-x-${value}`);
+  }
+
+  spaceY(value: Autocomplete<TailwindSpacing>): this {
+    return this.addClass(`space-y-${value}`);
+  }
+
+  divideX(value?: Autocomplete<TailwindBorderWidth>): this {
+    return value === undefined ? this.addClass("divide-x") : this.addClass(`divide-x-${value}`);
+  }
+
+  divideY(value?: Autocomplete<TailwindBorderWidth>): this {
+    return value === undefined ? this.addClass("divide-y") : this.addClass(`divide-y-${value}`);
+  }
+
+  // ------------------------------------
+  // Transitions & Animation
+  // ------------------------------------
+
+  transition(value?: Autocomplete<TailwindTransition>): this {
+    return value === undefined ? this.addClass("transition") : this.addClass(`transition-${value}`);
+  }
+
+  duration(value: Autocomplete<TailwindDuration>): this {
+    return this.addClass(`duration-${value}`);
+  }
+
+  animate(value: Autocomplete<TailwindAnimate>): this {
+    return this.addClass(`animate-${value}`);
+  }
+
+  // ------------------------------------
+  // Ring (Focus Rings)
+  // ------------------------------------
+
+  ring(value?: Autocomplete<TailwindRingWidth>): this {
+    return value === undefined ? this.addClass("ring") : this.addClass(`ring-${value}`);
+  }
+
+  ringColor(color: Autocomplete<TailwindColor>): this {
+    return this.addClass(`ring-${color}`);
+  }
+
+  // ------------------------------------
+  // Transforms
+  // ------------------------------------
+
+  scale(value: Autocomplete<TailwindScale>): this {
+    return this.addClass(`scale-${value}`);
+  }
+
+  rotate(value: Autocomplete<TailwindRotate>): this {
+    return this.addClass(`rotate-${value}`);
+  }
+
+  translate(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): this {
+    return this.addClass(`translate-${direction}-${value}`);
+  }
+
+  // ------------------------------------
+  // Interactivity
+  // ------------------------------------
+
+  select(value: Autocomplete<TailwindSelect>): this {
+    return this.addClass(`select-${value}`);
+  }
+
+  pointerEvents(value: Autocomplete<TailwindPointerEvents>): this {
+    return this.addClass(`pointer-events-${value}`);
+  }
+
+  // ------------------------------------
+  // Text & Whitespace
+  // ------------------------------------
+
+  whitespace(value: Autocomplete<TailwindWhitespace>): this {
+    return this.addClass(`whitespace-${value}`);
+  }
+
+  // ------------------------------------
+  // Accessibility
+  // ------------------------------------
+
+  srOnly(): this {
+    return this.addClass("sr-only");
+  }
+
+  // ------------------------------------
+  // Outline
+  // ------------------------------------
+
+  outline(value: Autocomplete<TailwindOutline>): this {
+    return this.addClass(`outline-${value}`);
   }
 }
 

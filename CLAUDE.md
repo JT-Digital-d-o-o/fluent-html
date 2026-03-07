@@ -1,8 +1,39 @@
+**IMPORTANT: Lint the code often.**
+
 # Project Guidelines
 
 **Stack:** Fastify v5 + TypeScript + fluent-html + HTMX + Tailwind CSS (SSR app)
 
 > References: [fluent-html.md](fluent-html.md) | [fluent-html-FLUENT-APIs.md](fluent-html-FLUENT-APIs.md) | [fastify.md](fastify.md) | [typescript.md](typescript.md)
+
+
+> **Additional guidelines** (read when relevant):
+> - [Analytics](.ai/analytics-guidelines/CLAUDE.md) — Read when implementing tracking, defining metrics, or making data-driven product decisions
+> - [Marketing](.ai/marketing-guidelines/CLAUDE.md) — Read when building landing pages, writing copy, setting up emails, or planning growth experiments
+> - [Quality Assurance](.ai/quality-assurance-guidelines/CLAUDE.md) — Read when writing tests, fixing bugs, or preparing for deployment
+> - [Brand Book](.ai/jtdigital-brand-book/CLAUDE.md) — Read when styling UI, choosing colors/fonts, writing copy, or using logos
+> - [Project Management](.ai/project-management-guidelines/CLAUDE.md) — Read when managing tasks, logging bugs, updating changelogs, or writing status updates
+
+---
+
+## Project Management (MANDATORY)
+
+PM files live in `product/pm/`. These updates are **non-optional** — do them inline as you work, not at the end.
+
+**On every task completion:**
+1. Mark `[x]` in `product/pm/todo/[feature].md`
+2. Add entry to `product/pm/changelog.md`
+
+**On session end:**
+4. Update `product/pm/status.md`
+
+**Before implementing architecture decisions:**
+5. Log to `product/pm/decisions.md`
+
+**On bug discovery:**
+6. Add to `product/pm/qa/[feature].md`
+
+Status marks: `[ ]` todo · `[>]` in progress · `[r]` review · `[x]` done · `[-]` cancelled
 
 ---
 
@@ -41,7 +72,7 @@ user.name ? Span(user.name) : Span("Anon")                      // ✗ use IfThe
 
 **Conditional modifiers & composition:**
 ```typescript
-Button("Save").when(isLoading, t => t.toggle("disabled").addClass("opacity-50"))
+Button("Save").when(isLoading, t => t.toggle("disabled").opacity("50"))
 
 const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow("md");
 Div("Content").apply(card)
@@ -84,11 +115,10 @@ server.get(userRoutes.list.path, handler)       // "/users"
 server.delete(userRoutes.delete.path, handler)  // "/users/:id"
 ```
 
-**Resolved URLs** — use `.resolve()` for redirects, links, `setHref`, etc. Never write manual resolve helpers:
+**Resolved URLs** — use `.resolve()` for redirects and external links. Never write manual resolve helpers:
 ```typescript
 reply.redirect(userRoutes.list.resolve())                  // "/users"
 reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
-A("Profile").setHref(userRoutes.detail.resolve({ id: user.id }))
 
 // ✗ NEVER do this — .resolve() already handles params + encoding
 function resolveUser(id: string) { return `/users/${encodeURIComponent(id)}`; }
@@ -196,10 +226,33 @@ Button("Refresh").hxGet("/users", {
 })
 ```
 
-**Preload** — start fetch on hover, cached by click time:
+**Full layout navigations** — swap the main content area with `outerMorph` and scroll to top:
 ```typescript
-A("Dashboard").setHref("/dashboard").toggle("hx-boost").toggle("hx-preload")
+// Navigation link — uses setHtmx, NOT setHref
+A("Settings").setHtmx(settingsRoutes.index({ swap: "outerMorph show:window:top", target: ids.mainContent }))
+A("Users").setHtmx(userRoutes.list({ swap: "outerMorph show:window:top", target: ids.mainContent }))
+
+// Form submission that replaces the page
+Form(/* fields */).setHtmx(userRoutes.create({
+  target: ids.mainContent,
+  swap: "outerMorph show:window:top",
+}))
+
+// Use Partial swaps to update nav, title, and content in one response
+render(
+  Partial(ids.mainContent, UserList(users)),
+  Partial(ids.navBadge, Span(`${users.length}`)),
+  Partial(ids.pageTitle, H1("Users")),
+)
 ```
+
+**Never use `setHref` for in-app navigation** — it causes a full page reload, bypassing HTMX:
+```typescript
+A("Users").setHtmx(userRoutes.list({ target: ids.mainContent }))           // ✓ HTMX swap
+A("Users").setHref(userRoutes.list.resolve())                               // ✗ full page reload
+A("Users").setHref("/users")                                                // ✗ full page reload
+```
+Use `setHref` only for external links or download URLs.
 
 ---
 
@@ -271,16 +324,26 @@ function UserDetail(user: UserWithPosts) { ... }
 
 ## Fluent Tailwind Styling
 
-**Chainable fluent methods** for base styles, **addClass** for pseudo-classes/responsive:
+**Chainable fluent methods** for all styles — base, variants, and breakpoints:
 ```typescript
 Div().padding("4").margin("x", "auto").background("blue-500")
   .textColor("white").rounded("lg").shadow("md").flex().gap("4")
-
-Button("Click").padding("x", "4").background("blue-500").rounded()
-  .addClass("hover:bg-blue-600 focus:ring-2 md:w-1/2")
+  .transition().duration("200").ring("2").ringColor("blue-300")
 ```
 
-Don't use `setClass` with long Tailwind strings for base utilities — use fluent methods.
+**Variant proxy** — `.on()` for pseudo-classes, `.at()` for breakpoints:
+```typescript
+Button("Save")
+  .padding("x", "4").background("blue-500").textColor("white").rounded()
+  .transition("colors")
+  .on("hover", t => t.background("blue-600").scale("105"))
+  .on("focus", t => t.ring("2").ringColor("blue-300").outline("none"))
+  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
+  .at("md", t => t.padding("x", "8").textSize("lg"))
+```
+
+Don't use `setClass` with long Tailwind strings — use fluent methods.
+Don't use `addClass` for variants — use `.on()` and `.at()` instead.
 
 ---
 
