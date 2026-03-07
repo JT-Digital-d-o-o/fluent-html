@@ -19,11 +19,15 @@ function buildHtmxFromRoute(endpoint, method, options) {
     if (!options) {
         return { endpoint, method };
     }
-    const { target, ...rest } = options;
+    const { target, select, indicator, disable, include, ...rest } = options;
     return {
         endpoint,
         method,
         target: target ? ((0, ids_js_1.isId)(target) ? target.selector : target) : undefined,
+        select: select ? ((0, ids_js_1.isId)(select) ? select.selector : select) : undefined,
+        indicator: indicator ? ((0, ids_js_1.isId)(indicator) ? indicator.selector : indicator) : undefined,
+        disable: disable ? ((0, ids_js_1.isId)(disable) ? disable.selector : disable) : undefined,
+        include: include ? ((0, ids_js_1.isId)(include) ? include.selector : include) : undefined,
         ...rest,
     };
 }

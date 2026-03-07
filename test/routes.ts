@@ -317,6 +317,85 @@ test("prefixed param route with Id target",
   render(Button("View").setHtmx(prefixedRoutes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))),
   '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
 
+// ------------------------------------
+// Id resolution for select, indicator, disable, include
+// ------------------------------------
+
+const extraIds = defineIds(["content", "spinner", "form-fields", "submit-btn"] as const);
+
+section("Id resolution: select");
+
+test("select accepts Id object",
+  routes.list({ select: extraIds.content }).select, "#content");
+
+test("select still accepts plain string",
+  routes.list({ select: "#other" }).select, "#other");
+
+test("renders hx-select with Id",
+  render(Button("Load").setHtmx(routes.list({ select: extraIds.content }))),
+  '<button hx-get="/users" hx-select="#content">Load</button>');
+
+section("Id resolution: indicator");
+
+test("indicator accepts Id object",
+  routes.list({ indicator: extraIds.spinner }).indicator, "#spinner");
+
+test("indicator still accepts plain string",
+  routes.list({ indicator: ".loading" }).indicator, ".loading");
+
+test("renders hx-indicator with Id",
+  render(Button("Load").setHtmx(routes.list({ indicator: extraIds.spinner }))),
+  '<button hx-get="/users" hx-indicator="#spinner">Load</button>');
+
+section("Id resolution: disable");
+
+test("disable accepts Id object",
+  routes.list({ disable: extraIds.submitBtn }).disable, "#submit-btn");
+
+test("renders hx-disable with Id",
+  render(Button("Load").setHtmx(routes.list({ disable: extraIds.submitBtn }))),
+  '<button hx-get="/users" hx-disable="#submit-btn">Load</button>');
+
+section("Id resolution: include");
+
+test("include accepts Id object",
+  routes.list({ include: extraIds.formFields }).include, "#form-fields");
+
+test("renders hx-include with Id",
+  render(Button("Load").setHtmx(routes.list({ include: extraIds.formFields }))),
+  '<button hx-get="/users" hx-include="#form-fields">Load</button>');
+
+section("Id resolution: multiple Id fields together");
+
+test("multiple Id fields resolve correctly",
+  (() => {
+    const htmx = routes.list({
+      target: ids.userList,
+      select: extraIds.content,
+      indicator: extraIds.spinner,
+      include: extraIds.formFields,
+    });
+    return [htmx.target, htmx.select, htmx.indicator, htmx.include];
+  })(),
+  ["#user-list", "#content", "#spinner", "#form-fields"]);
+
+test("renders all Id fields together",
+  render(Button("Load").setHtmx(routes.list({
+    target: ids.userList,
+    select: extraIds.content,
+    indicator: extraIds.spinner,
+  }))),
+  '<button hx-get="/users" hx-target="#user-list" hx-select="#content" hx-indicator="#spinner">Load</button>');
+
+section("Id resolution: parameterized routes");
+
+test("parameterized route with Id select",
+  routes.detail({ id: "42" }, { select: extraIds.content }).select, "#content");
+
+test("parameterized route renders with Id indicator",
+  render(Button("View").setHtmx(routes.detail({ id: "1" }, { indicator: extraIds.spinner }))),
+  '<button hx-get="/users/1" hx-indicator="#spinner">View</button>');
+
 section("Prefixed registry immutability");
 
 test("prefixed registry is frozen",

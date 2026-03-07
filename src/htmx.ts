@@ -248,21 +248,29 @@ export interface HTMX {
 // Helper Functions
 // ------------------------------------
 
-/** Options for the `hx()` helper. Derived from HTMX — `target` also accepts an `Id` object. */
-export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>> & {
+/** Options for the `hx()` helper. Selector fields also accept `Id` objects. */
+export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 'select' | 'indicator' | 'disable' | 'include'>> & {
   method?: HxHttpMethod;
   target?: HxTarget | Id;
+  select?: string | Id;
+  indicator?: string | Id;
+  disable?: string | Id;
+  include?: string | Id;
 };
 
 export function hx(
   endpoint: string,
   options: HxOptions = {}
 ): HTMX {
-  const { method, target, ...rest } = options;
+  const { method, target, select, indicator, disable, include, ...rest } = options;
   return {
     endpoint,
     method: method ?? "get",
     target: target ? (isId(target) ? target.selector : target) : undefined,
+    select: select ? (isId(select) ? select.selector : select) : undefined,
+    indicator: indicator ? (isId(indicator) ? indicator.selector : indicator) : undefined,
+    disable: disable ? (isId(disable) ? disable.selector : disable) : undefined,
+    include: include ? (isId(include) ? include.selector : include) : undefined,
     ...rest,
   };
 }

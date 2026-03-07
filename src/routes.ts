@@ -69,8 +69,12 @@ type PrefixedRouteDefs<P extends string, T extends RouteDefinitions> = {
  * HTMX options that can be passed when calling a route.
  * Excludes `endpoint` (derived from path) and `method` (locked by definition).
  */
-export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>> & {
+export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 'select' | 'indicator' | 'disable' | 'include'>> & {
   target?: HxTarget | Id;
+  select?: string | Id;
+  indicator?: string | Id;
+  disable?: string | Id;
+  include?: string | Id;
 };
 
 // ------------------------------------
@@ -119,11 +123,15 @@ function buildHtmxFromRoute(
   if (!options) {
     return { endpoint, method };
   }
-  const { target, ...rest } = options;
+  const { target, select, indicator, disable, include, ...rest } = options;
   return {
     endpoint,
     method,
     target: target ? (isId(target) ? target.selector : target) : undefined,
+    select: select ? (isId(select) ? select.selector : select) : undefined,
+    indicator: indicator ? (isId(indicator) ? indicator.selector : indicator) : undefined,
+    disable: disable ? (isId(disable) ? disable.selector : disable) : undefined,
+    include: include ? (isId(include) ? include.selector : include) : undefined,
     ...rest,
   };
 }

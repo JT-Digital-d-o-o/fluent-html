@@ -13,11 +13,15 @@ exports.next = next;
 exports.previous = previous;
 const ids_js_1 = require("./ids.js");
 function hx(endpoint, options = {}) {
-    const { method, target, ...rest } = options;
+    const { method, target, select, indicator, disable, include, ...rest } = options;
     return {
         endpoint,
         method: method ?? "get",
         target: target ? ((0, ids_js_1.isId)(target) ? target.selector : target) : undefined,
+        select: select ? ((0, ids_js_1.isId)(select) ? select.selector : select) : undefined,
+        indicator: indicator ? ((0, ids_js_1.isId)(indicator) ? indicator.selector : indicator) : undefined,
+        disable: disable ? ((0, ids_js_1.isId)(disable) ? disable.selector : disable) : undefined,
+        include: include ? ((0, ids_js_1.isId)(include) ? include.selector : include) : undefined,
         ...rest,
     };
 }

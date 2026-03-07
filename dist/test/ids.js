@@ -88,6 +88,27 @@ test("hx target accepts Id object", (0, index_js_1.render)((0, index_js_1.Button
 test("hx target accepts Id.selector", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", { target: ids.userList.selector }))), '<button hx-get="/api/users" hx-target="#user-list">Load</button>');
 test("hx target still accepts string", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", { target: "#other" }))), '<button hx-get="/api/users" hx-target="#other">Load</button>');
 // ------------------------------------
+// Integration: hx() with Id select, indicator, disable, include
+// ------------------------------------
+section("hx() with Id for select, indicator, disable, include");
+test("hx select accepts Id object", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", { select: ids.userList }))), '<button hx-get="/api/users" hx-select="#user-list">Load</button>');
+test("hx select still accepts string", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", { select: "#other" }))), '<button hx-get="/api/users" hx-select="#other">Load</button>');
+test("hx indicator accepts Id object", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", { indicator: ids.userList }))), '<button hx-get="/api/users" hx-indicator="#user-list">Load</button>');
+test("hx disable accepts Id object", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", { disable: ids.userCount }))), '<button hx-get="/api/users" hx-disable="#user-count">Load</button>');
+test("hx include accepts Id object", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", { include: ids.notificationArea }))), '<button hx-get="/api/users" hx-include="#notification-area">Load</button>');
+test("hx multiple Id fields together", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx((0, htmx_js_1.hx)("/api/users", {
+    target: ids.userList,
+    select: ids.userCount,
+    indicator: ids.notificationArea,
+}))), '<button hx-get="/api/users" hx-target="#user-list" hx-select="#user-count" hx-indicator="#notification-area">Load</button>');
+// ------------------------------------
+// Integration: hxGet/hxPost shorthands with Id fields
+// ------------------------------------
+section("hxGet/hxPost shorthands with Id fields");
+test("hxGet with Id select", (0, index_js_1.render)((0, index_js_1.Button)("Load").hxGet("/api", { select: ids.userList })), '<button hx-get="/api" hx-select="#user-list">Load</button>');
+test("hxPost with Id indicator", (0, index_js_1.render)((0, index_js_1.Button)("Save").hxPost("/api", { indicator: ids.notificationArea })), '<button hx-post="/api" hx-indicator="#notification-area">Save</button>');
+test("hxGet with Id include", (0, index_js_1.render)((0, index_js_1.Button)("Load").hxGet("/api", { include: ids.userCount })), '<button hx-get="/api" hx-include="#user-count">Load</button>');
+// ------------------------------------
 // Integration: OOB() with Id
 // ------------------------------------
 section("OOB() with Id objects");

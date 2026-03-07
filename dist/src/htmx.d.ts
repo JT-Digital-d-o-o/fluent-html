@@ -90,10 +90,14 @@ export interface HTMX {
     preload?: 'mousedown' | 'mouseover' | boolean;
     status?: Record<string, string | HxStatusConfig>;
 }
-/** Options for the `hx()` helper. Derived from HTMX — `target` also accepts an `Id` object. */
-export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>> & {
+/** Options for the `hx()` helper. Selector fields also accept `Id` objects. */
+export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 'select' | 'indicator' | 'disable' | 'include'>> & {
     method?: HxHttpMethod;
     target?: HxTarget | Id;
+    select?: string | Id;
+    indicator?: string | Id;
+    disable?: string | Id;
+    include?: string | Id;
 };
 export declare function hx(endpoint: string, options?: HxOptions): HTMX;
 /**

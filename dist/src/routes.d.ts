@@ -33,8 +33,12 @@ type PrefixedRouteDefs<P extends string, T extends RouteDefinitions> = {
  * HTMX options that can be passed when calling a route.
  * Excludes `endpoint` (derived from path) and `method` (locked by definition).
  */
-export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'>> & {
+export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 'select' | 'indicator' | 'disable' | 'include'>> & {
     target?: HxTarget | Id;
+    select?: string | Id;
+    indicator?: string | Id;
+    disable?: string | Id;
+    include?: string | Id;
 };
 /** Base properties available on every route callable. */
 type RouteProperties<Def extends RouteDef> = {
