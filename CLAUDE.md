@@ -67,21 +67,46 @@ export const userRoutes = defineRoutes("/users", {
   create: { method: "post",   path: "/" },
   delete: { method: "delete", path: "/:id" },
 } as const);
+```
 
-// Views — method is locked, params are required, typos are compile errors
+**Views** — method is locked, params are required, typos are compile errors:
+```typescript
 Button("Load").setHtmx(userRoutes.list())
 Button("Load").setHtmx(userRoutes.list({ target: ids.userList }))
 Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
 userRoutes.lsit()            // ✗ typo — compile error
 userRoutes.delete()          // ✗ missing params — compile error
+```
 
-// Controllers — single-sourced paths
+**Controllers** — single-sourced paths:
+```typescript
 server.get(userRoutes.list.path, handler)       // "/users"
 server.delete(userRoutes.delete.path, handler)  // "/users/:id"
+```
 
-// Resolved URLs for redirects, links, etc.
+**Resolved URLs** — use `.resolve()` for redirects, links, `setHref`, etc. Never write manual resolve helpers:
+```typescript
 reply.redirect(userRoutes.list.resolve())                  // "/users"
 reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
+A("Profile").setHref(userRoutes.detail.resolve({ id: user.id }))
+
+// ✗ NEVER do this — .resolve() already handles params + encoding
+function resolveUser(id: string) { return `/users/${encodeURIComponent(id)}`; }
+```
+
+**Always use shared prefix** when routes share a common base path:
+```typescript
+// ✓
+defineRoutes("/dashboard", {
+  overview: { method: "get", path: "/" },
+  project:  { method: "get", path: "/:repoName" },
+} as const);
+
+// ✗ repeating the prefix in every path
+defineRoutes({
+  overview: { method: "get", path: "/dashboard" },
+  project:  { method: "get", path: "/dashboard/:repoName" },
+} as const);
 ```
 
 **Shorthand methods** for simple requests, **setHtmx(hx())** for complex:
