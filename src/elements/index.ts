@@ -173,6 +173,7 @@ export {
 // Document metadata / Head elements
 export {
   HTML,
+  HtmlTag,
   Head,
   Body,
   Title,

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = void 0;
+exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.HtmlTag = void 0;
 exports.HTML = HTML;
 exports.Head = Head;
 exports.Body = Body;
@@ -14,8 +14,21 @@ exports.Template = Template;
 exports.Script = Script;
 const tag_js_1 = require("../core/tag.js");
 const utils_js_1 = require("../core/utils.js");
+class HtmlTag extends tag_js_1.Tag {
+    setLang(lang) {
+        this.lang = lang;
+        return this;
+    }
+    setDir(dir) {
+        this.dir = dir;
+        return this;
+    }
+}
+exports.HtmlTag = HtmlTag;
+/** @internal */
+HtmlTag.prototype._sk = ['lang', 'dir'];
 function HTML(...children) {
-    return (0, utils_js_1.El)("html", ...children);
+    return new HtmlTag("html", ...children);
 }
 function Head(...children) {
     return (0, utils_js_1.El)("head", ...children);

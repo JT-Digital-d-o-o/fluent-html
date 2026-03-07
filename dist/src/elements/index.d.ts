@@ -9,7 +9,7 @@ export { Img, ImgTag, Picture, Source, SourceTag, Video, VideoTag, Audio, AudioT
 export { Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, } from "./svg.js";
 export { Iframe, IframeTag, ObjectEl, ObjectTag, Embed, EmbedTag, } from "./embedded.js";
 export { A, AnchorTag, MapEl, MapTag, Area, AreaTag, } from "./links.js";
-export { HTML, Head, Body, Title, Meta, MetaTag, Link, LinkTag, Style, StyleTag, Script, ScriptTag, Base, BaseTag, Noscript, Template, } from "./document.js";
+export { HTML, HtmlTag, Head, Body, Title, Meta, MetaTag, Link, LinkTag, Style, StyleTag, Script, ScriptTag, Base, BaseTag, Noscript, Template, } from "./document.js";
 export { Time, TimeTag, Data, DataTag, } from "./data.js";
 export { Progress, ProgressTag, Meter, MeterTag, } from "./data.js";
 export { Slot, SlotTag, } from "./webcomponents.js";

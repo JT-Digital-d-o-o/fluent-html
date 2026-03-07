@@ -2,8 +2,26 @@ import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
-export function HTML(...children: View[]): Tag {
-  return El("html", ...children);
+export class HtmlTag extends Tag {
+  lang?: string;
+  dir?: 'ltr' | 'rtl' | 'auto';
+
+  setLang(lang?: string): this {
+    this.lang = lang;
+    return this;
+  }
+
+  setDir(dir?: 'ltr' | 'rtl' | 'auto'): this {
+    this.dir = dir;
+    return this;
+  }
+}
+
+/** @internal */
+(HtmlTag.prototype as any)._sk = ['lang', 'dir'];
+
+export function HTML(...children: View[]): HtmlTag {
+  return new HtmlTag("html", ...children);
 }
 
 export function Head(...children: View[]): Tag {

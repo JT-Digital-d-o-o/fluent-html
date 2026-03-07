@@ -1,6 +1,12 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-export declare function HTML(...children: View[]): Tag;
+export declare class HtmlTag extends Tag {
+    lang?: string;
+    dir?: 'ltr' | 'rtl' | 'auto';
+    setLang(lang?: string): this;
+    setDir(dir?: 'ltr' | 'rtl' | 'auto'): this;
+}
+export declare function HTML(...children: View[]): HtmlTag;
 export declare function Head(...children: View[]): Tag;
 export declare function Body(...children: View[]): Tag;
 export declare function Title(...children: View[]): Tag;

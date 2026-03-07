@@ -937,6 +937,14 @@ testView("HTML element",
   ]),
   `<html><head><title>Page Title</title></head>\n<body><p>Content</p></body></html>`);
 
+testView("HTML with lang",
+  HTML(Head(), Body()).setLang("en"),
+  `<html lang="en"><head></head>\n<body></body></html>`);
+
+testView("HTML with lang and dir",
+  HTML(Head(), Body()).setLang("ar").setDir("rtl"),
+  `<html lang="ar" dir="rtl"><head></head>\n<body></body></html>`);
+
 testView("Meta charset",
   Meta().setCharset("UTF-8"),
   `<meta charset="UTF-8">`);

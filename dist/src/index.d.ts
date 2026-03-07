@@ -14,7 +14,7 @@ export { Details, Summary, Dialog, } from './elements/index.js';
 export { Img, Picture, Source, Video, Audio, Track, Canvas, Svg, Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, } from './elements/index.js';
 export { Iframe, ObjectEl, Embed, } from './elements/index.js';
 export { A, MapEl, Area, } from './elements/index.js';
-export { HTML, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';
+export { HTML, HtmlTag, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';
 export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 export { Slot, } from './elements/index.js';

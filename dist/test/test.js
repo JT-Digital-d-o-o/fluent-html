@@ -447,6 +447,8 @@ testView("HTML element", (0, index_js_1.HTML)([
     (0, index_js_1.Head)((0, index_js_1.Title)("Page Title")),
     (0, index_js_1.Body)((0, index_js_1.P)("Content")),
 ]), `<html><head><title>Page Title</title></head>\n<body><p>Content</p></body></html>`);
+testView("HTML with lang", (0, index_js_1.HTML)((0, index_js_1.Head)(), (0, index_js_1.Body)()).setLang("en"), `<html lang="en"><head></head>\n<body></body></html>`);
+testView("HTML with lang and dir", (0, index_js_1.HTML)((0, index_js_1.Head)(), (0, index_js_1.Body)()).setLang("ar").setDir("rtl"), `<html lang="ar" dir="rtl"><head></head>\n<body></body></html>`);
 testView("Meta charset", (0, index_js_1.Meta)().setCharset("UTF-8"), `<meta charset="UTF-8">`);
 testView("Meta viewport", (0, index_js_1.Meta)().setName("viewport").setContent("width=device-width, initial-scale=1"), `<meta name="viewport" content="width=device-width, initial-scale=1">`);
 testView("Meta og:title", (0, index_js_1.Meta)().setProperty("og:title").setContent("My Page"), `<meta property="og:title" content="My Page">`);
