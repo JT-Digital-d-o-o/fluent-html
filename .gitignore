@@ -1,9 +1,6 @@
 index.html
 .DS_Store
 
-# Build outputs
-eslint-plugin/dist/
-tailwind-extractor/dist/
 node_modules/
 
 .vscode/

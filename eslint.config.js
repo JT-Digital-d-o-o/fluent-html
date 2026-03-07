@@ -6,8 +6,6 @@ export default [
     ignores: [
       "node_modules/**",
       "dist/**",
-      "eslint-plugin/dist/**",
-      "eslint-plugin/node_modules/**",
       "**/*.js",
       "!eslint.config.js"
     ]
