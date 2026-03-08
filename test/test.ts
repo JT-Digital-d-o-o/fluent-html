@@ -1214,7 +1214,7 @@ testView("hx-validate",
 
 testView("hx-vals object",
   Button("Send").setHtmx(hx("/api", { vals: { key: "value", num: 42 } })),
-  `<button hx-get="/api" hx-vals='{"key":"value","num":42}'>Send</button>`);
+  `<button hx-get="/api" hx-vals="{&quot;key&quot;:&quot;value&quot;,&quot;num&quot;:42}">Send</button>`);
 
 testView("hx-include",
   Button("Submit").setHtmx(hx("/api", { method: "post", include: "#extra-field" })),
@@ -1236,7 +1236,7 @@ testView("hx-indicator",
 
 testView("hx-headers",
   Div().setHtmx(hx("/api", { headers: { "X-Custom": "value" } })),
-  `<div hx-get="/api" hx-headers='{"X-Custom":"value"}'></div>`);
+  `<div hx-get="/api" hx-headers="{&quot;X-Custom&quot;:&quot;value&quot;}"></div>`);
 
 testView("hx-select",
   Div().setHtmx(hx("/page", { select: "#content" })),
@@ -1288,15 +1288,45 @@ section("HTMX - Config");
 
 testView("hx-config with object",
   Button("Upload").setHtmx(hx("/upload", { method: "post", config: { timeout: 0 } })),
-  `<button hx-post="/upload" hx-config='{"timeout":0}'>Upload</button>`);
+  `<button hx-post="/upload" hx-config="{&quot;timeout&quot;:0}">Upload</button>`);
 
 testView("hx-config with string",
   Button("Fetch").setHtmx(hx("/api", { config: '{"mode":"cors"}' })),
-  `<button hx-get="/api" hx-config='{"mode":"cors"}'>Fetch</button>`);
+  `<button hx-get="/api" hx-config="{&quot;mode&quot;:&quot;cors&quot;}">Fetch</button>`);
 
 testView("hx-config with full options",
   Div().setHtmx(hx("/api", { config: { timeout: 120000, credentials: true, mode: "cors" } })),
-  `<div hx-get="/api" hx-config='{"timeout":120000,"credentials":true,"mode":"cors"}'></div>`);
+  `<div hx-get="/api" hx-config="{&quot;timeout&quot;:120000,&quot;credentials&quot;:true,&quot;mode&quot;:&quot;cors&quot;}"></div>`);
+
+// ------------------------------------
+// HTMX - Attribute Escaping (Security)
+// ------------------------------------
+
+section("HTMX - Attribute Escaping");
+
+testView("hx-headers escapes double quotes in JSON",
+  Div().setHtmx(hx("/api", { headers: { "X-Token": 'a"b' } })),
+  `<div hx-get="/api" hx-headers="{&quot;X-Token&quot;:&quot;a\\&quot;b&quot;}"></div>`);
+
+testView("hx-headers escapes single quotes",
+  Div().setHtmx(hx("/api", { headers: { "X-Name": "O'Brien" } })),
+  `<div hx-get="/api" hx-headers="{&quot;X-Name&quot;:&quot;O&#39;Brien&quot;}"></div>`);
+
+testView("hx-headers escapes angle brackets",
+  Div().setHtmx(hx("/api", { headers: { "X-Data": "<script>alert(1)</script>" } })),
+  `<div hx-get="/api" hx-headers="{&quot;X-Data&quot;:&quot;&lt;script&gt;alert(1)&lt;/script&gt;&quot;}"></div>`);
+
+testView("hx-headers escapes ampersand",
+  Div().setHtmx(hx("/api", { headers: { "X-Q": "a&b" } })),
+  `<div hx-get="/api" hx-headers="{&quot;X-Q&quot;:&quot;a&amp;b&quot;}"></div>`);
+
+testView("hx-vals object escapes special chars",
+  Button("Send").setHtmx(hx("/api", { vals: { name: "O'Brien & <Co>" } })),
+  `<button hx-get="/api" hx-vals="{&quot;name&quot;:&quot;O&#39;Brien &amp; &lt;Co&gt;&quot;}">Send</button>`);
+
+testView("hx-config object escapes special chars",
+  Div().setHtmx(hx("/api", { config: { mode: "no-cors" } })),
+  `<div hx-get="/api" hx-config="{&quot;mode&quot;:&quot;no-cors&quot;}"></div>`);
 
 // ------------------------------------
 // HTMX - Optimistic & Preload

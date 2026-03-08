@@ -31,9 +31,9 @@ function buildHtmx(htmx: HTMX): string {
     result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl) + '"';
   }
   if (htmx.vals) {
-    result += " hx-vals='" + (typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)) + "'";
+    result += ' hx-vals="' + escapeAttr(typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)) + '"';
   }
-  if (htmx.headers) result += " hx-headers='" + JSON.stringify(htmx.headers) + "'";
+  if (htmx.headers) result += ' hx-headers="' + escapeAttr(JSON.stringify(htmx.headers)) + '"';
   if (htmx.include) result += ' hx-include="' + escapeAttr(htmx.include) + '"';
   if (htmx.encoding) result += ' hx-encoding="' + escapeAttr(htmx.encoding) + '"';
   if (htmx.validate !== undefined) result += ' hx-validate="' + htmx.validate + '"';
@@ -45,7 +45,7 @@ function buildHtmx(htmx: HTMX): string {
   if (htmx.boost !== undefined) result += ' hx-boost="' + htmx.boost + '"';
   if (htmx.ignore !== undefined) result += ' hx-ignore="' + htmx.ignore + '"';
   if (htmx.config) {
-    result += " hx-config='" + (typeof htmx.config === 'string' ? htmx.config : JSON.stringify(htmx.config)) + "'";
+    result += ' hx-config="' + escapeAttr(typeof htmx.config === 'string' ? htmx.config : JSON.stringify(htmx.config)) + '"';
   }
   if (htmx.optimistic !== undefined) result += ' hx-optimistic';
   if (htmx.preload !== undefined) {

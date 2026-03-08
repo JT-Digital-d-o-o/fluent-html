@@ -13,37 +13,9 @@
 
 ---
 
-## P0: Security — Fix Attribute Escaping
+## ~~P0: Security — Fix Attribute Escaping~~ DONE
 
-### Problem
-
-`escapeAttr` is an alias for `escapeHtml`. JSON values inside single-quoted attributes (`hx-headers`, `hx-vals`, `hx-config`) don't escape single quotes in JSON string content, allowing attribute boundary breaks.
-
-### Plan
-
-1. **Make `escapeAttr` escape single quotes to `&#39;`** — already done (single quotes are in the escape map). The real issue is that `hx-headers` and `hx-vals` use `JSON.stringify()` output directly, and JSON doesn't escape `'`.
-
-2. **Fix `buildHtmx` in `render.ts`**: For attributes rendered with single-quote delimiters, ensure the JSON output has `'` replaced:
-   ```typescript
-   // render.ts — hx-headers, hx-vals, hx-config
-   // These use single-quote delimiters: hx-headers='...'
-   // JSON.stringify doesn't escape ', so we must
-   result += " hx-headers='" + JSON.stringify(htmx.headers).replace(/'/g, '&#39;') + "'";
-   ```
-
-3. **Alternative (cleaner):** Switch all JSON-valued attributes to double-quote delimiters and escape the JSON's internal double quotes. This is more standard:
-   ```typescript
-   result += ' hx-headers="' + escapeAttr(JSON.stringify(htmx.headers)) + '"';
-   ```
-
-4. **Add test cases:** Headers/vals containing `'`, `"`, `<`, `>`, `&` characters.
-
-### Files
-- `src/render/render.ts` — lines 34, 36, 48
-- `src/render/escape.ts` — verify coverage
-- `test/test.ts` — add edge-case tests
-
-### Effort: Small (1-2 hours)
+Switched `hx-vals`, `hx-headers`, and `hx-config` from single-quote delimiters with unescaped JSON to double-quote delimiters with `escapeAttr()` applied. All JSON content is now properly escaped (`"` → `&quot;`, `'` → `&#39;`, `<>` → `&lt;&gt;`, `&` → `&amp;`). Added 6 security edge-case tests covering all special characters.
 
 ---
 
@@ -329,6 +301,7 @@ Defer. The current approach is fine for typical SSR page sizes (<100KB HTML). On
 
 | Item | Status |
 |---|---|
+| P0: Attribute escaping | Done — double-quote delimiters + escapeAttr on JSON attrs |
 | P3: ESM entry point | Done — ESM-only, CJS dropped |
 | P1: VStack/HStack/Grid rewrite | Removed — helpers dropped, use fluent methods directly |
 | P2: Dead code cleanup (partial) | Done — removed dead exports + tests for deleted patterns |
