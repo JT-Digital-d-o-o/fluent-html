@@ -33,6 +33,16 @@ export function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
     }
     return Array.from(viewsOrLowOrHigh).map(fn);
 }
+/**
+ * Repeat a view a fixed number of times.
+ *
+ * @param times - How many times to repeat
+ * @param content - Thunk producing the view to repeat
+ * @returns An array of Views
+ *
+ * @example
+ * Div(Repeat(3, () => Span("★")))
+ */
 export function Repeat(times, content) {
     return ForEach(times, content);
 }

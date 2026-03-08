@@ -1,6 +1,12 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { InputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
+/**
+ * Specialized Tag for `<input>` elements with typed attribute setters.
+ *
+ * @example
+ * Input().setType("email").setName("email").setPlaceholder("you@example.com")
+ */
 export declare class InputTag extends Tag {
     type?: InputType;
     placeholder?: string;
@@ -39,7 +45,14 @@ export declare class InputTag extends Tag {
     setMultiple(multiple?: boolean): this;
     setList(list?: string): this;
 }
+/** Create an `<input>` element with typed attribute methods. */
 export declare function Input(...children: View[]): InputTag;
+/**
+ * Specialized Tag for `<textarea>` elements with typed attribute setters.
+ *
+ * @example
+ * Textarea().setName("comment").setRows(5).setPlaceholder("Write a comment...")
+ */
 export declare class TextareaTag extends Tag {
     placeholder?: string;
     name?: string;
@@ -64,7 +77,14 @@ export declare class TextareaTag extends Tag {
     setDisabled(disabled?: boolean): this;
     setReadonly(readonly?: boolean): this;
 }
+/** Create a `<textarea>` element with typed attribute methods. */
 export declare function Textarea(...children: View[]): TextareaTag;
+/**
+ * Specialized Tag for `<button>` elements with typed attribute setters.
+ *
+ * @example
+ * Button("Submit").setType("submit").setDisabled(isLoading)
+ */
 export declare class ButtonTag extends Tag {
     type?: 'submit' | 'reset' | 'button';
     name?: string;
@@ -79,6 +99,7 @@ export declare class ButtonTag extends Tag {
     setFormaction(formaction?: string): this;
     setFormmethod(formmethod?: 'get' | 'post'): this;
 }
+/** Create a `<button>` element with typed attribute methods. */
 export declare function Button(...children: View[]): ButtonTag;
 export declare class LabelTag extends Tag {
     for?: string;
@@ -99,6 +120,7 @@ export declare class FormTag extends Tag {
     setNovalidate(novalidate?: boolean): this;
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
 }
+/** Create a `<form>` element with typed attribute methods. */
 export declare function Form(...children: View[]): FormTag;
 export declare class SelectTag extends Tag {
     name?: string;

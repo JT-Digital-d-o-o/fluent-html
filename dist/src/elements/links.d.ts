@@ -1,6 +1,12 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { BrowsingContext, LinkRel, ReferrerPolicy } from "./html-types.js";
+/**
+ * Specialized Tag for `<a>` (anchor) elements with typed attribute setters.
+ *
+ * @example
+ * A("Dashboard").setHref("/dashboard").setTarget("_blank")
+ */
 export declare class AnchorTag extends Tag {
     href?: string;
     target?: BrowsingContext;
@@ -15,6 +21,7 @@ export declare class AnchorTag extends Tag {
     setType(type?: string): this;
     setReferrerpolicy(referrerpolicy?: ReferrerPolicy): this;
 }
+/** Create an `<a>` (anchor) element with typed attribute methods. */
 export declare function A(...children: View[]): AnchorTag;
 export declare class MapTag extends Tag {
     name?: string;

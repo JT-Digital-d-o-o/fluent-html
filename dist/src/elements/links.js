@@ -1,4 +1,10 @@
 import { Tag } from "../core/tag.js";
+/**
+ * Specialized Tag for `<a>` (anchor) elements with typed attribute setters.
+ *
+ * @example
+ * A("Dashboard").setHref("/dashboard").setTarget("_blank")
+ */
 export class AnchorTag extends Tag {
     setHref(href) {
         this.href = href;
@@ -27,6 +33,7 @@ export class AnchorTag extends Tag {
 }
 /** @internal */
 AnchorTag.prototype._sk = ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy'];
+/** Create an `<a>` (anchor) element with typed attribute methods. */
 export function A(...children) {
     return new AnchorTag("a", ...children);
 }

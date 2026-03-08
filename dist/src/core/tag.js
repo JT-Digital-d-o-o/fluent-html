@@ -19,6 +19,18 @@ function validateAttributeKey(key) {
         throw new Error(`Event handler attribute "${key}" is blocked — use client-side JS or HTMX instead`);
     }
 }
+/**
+ * The core HTML element builder. All element factories (`Div`, `Button`, `Input`, etc.)
+ * create `Tag` instances. Provides chainable methods for attributes, classes, styles,
+ * HTMX integration, and Tailwind CSS styling.
+ *
+ * @example
+ * Div(H1("Hello"), P("World"))
+ *   .setId(ids.main)
+ *   .padding("4")
+ *   .background("white")
+ *   .setHtmx("/api/content")
+ */
 export class Tag {
     constructor(element, ...children) {
         // ------------------------------------
@@ -129,22 +141,27 @@ export class Tag {
             : endpointOrHtmx;
         return this;
     }
+    /** Shorthand for `.setHtmx(endpoint, { method: "get", ...options })`. */
     hxGet(endpoint, options) {
         this.htmx = hx(endpoint, { ...options, method: 'get' });
         return this;
     }
+    /** Shorthand for `.setHtmx(endpoint, { method: "post", ...options })`. */
     hxPost(endpoint, options) {
         this.htmx = hx(endpoint, { ...options, method: 'post' });
         return this;
     }
+    /** Shorthand for `.setHtmx(endpoint, { method: "put", ...options })`. */
     hxPut(endpoint, options) {
         this.htmx = hx(endpoint, { ...options, method: 'put' });
         return this;
     }
+    /** Shorthand for `.setHtmx(endpoint, { method: "patch", ...options })`. */
     hxPatch(endpoint, options) {
         this.htmx = hx(endpoint, { ...options, method: 'patch' });
         return this;
     }
+    /** Shorthand for `.setHtmx(endpoint, { method: "delete", ...options })`. */
     hxDelete(endpoint, options) {
         this.htmx = hx(endpoint, { ...options, method: 'delete' });
         return this;

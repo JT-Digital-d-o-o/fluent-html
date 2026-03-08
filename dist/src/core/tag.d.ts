@@ -5,6 +5,18 @@ import type { BooleanAttribute } from "../elements/html-types.js";
 import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindOutline, TailwindState, TailwindBreakpoint } from "./tailwind-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
+/**
+ * The core HTML element builder. All element factories (`Div`, `Button`, `Input`, etc.)
+ * create `Tag` instances. Provides chainable methods for attributes, classes, styles,
+ * HTMX integration, and Tailwind CSS styling.
+ *
+ * @example
+ * Div(H1("Hello"), P("World"))
+ *   .setId(ids.main)
+ *   .padding("4")
+ *   .background("white")
+ *   .setHtmx("/api/content")
+ */
 export declare class Tag {
     el: string;
     child: View;
@@ -80,12 +92,30 @@ export declare class Tag {
      * Style(".cls { color: red }").setNonce(nonce)
      */
     setNonce(nonce: string): this;
+    /**
+     * Attach HTMX attributes to this element. Accepts a pre-built `HTMX` object,
+     * or an endpoint string with optional options.
+     *
+     * @param endpointOrHtmx - URL string or HTMX object (from `hx()` or `defineRoutes`)
+     * @param options - HTMX options when passing an endpoint string
+     * @returns `this` for chaining
+     *
+     * @example
+     * Button("Load").setHtmx("/api/items")
+     * Button("Save").setHtmx("/api/save", { method: "post", target: ids.result })
+     * Button("Load").setHtmx(hx("/api/items", { swap: "outerMorph" }))
+     */
     setHtmx(htmx?: HTMX): this;
     setHtmx(endpoint: string, options?: HxOptions): this;
+    /** Shorthand for `.setHtmx(endpoint, { method: "get", ...options })`. */
     hxGet(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    /** Shorthand for `.setHtmx(endpoint, { method: "post", ...options })`. */
     hxPost(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    /** Shorthand for `.setHtmx(endpoint, { method: "put", ...options })`. */
     hxPut(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    /** Shorthand for `.setHtmx(endpoint, { method: "patch", ...options })`. */
     hxPatch(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
+    /** Shorthand for `.setHtmx(endpoint, { method: "delete", ...options })`. */
     hxDelete(endpoint: string, options?: Omit<HxOptions, 'method'>): this;
     setToggles(toggles?: string[]): this;
     /**

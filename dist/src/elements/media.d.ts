@@ -1,5 +1,11 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+/**
+ * Specialized Tag for `<img>` elements with typed attribute setters.
+ *
+ * @example
+ * Img().setSrc("/photo.jpg").setAlt("A photo").setLoading("lazy")
+ */
 export declare class ImgTag extends Tag {
     src?: string;
     alt?: string;
@@ -20,6 +26,7 @@ export declare class ImgTag extends Tag {
     setSizes(sizes?: string): this;
     setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this;
 }
+/** Create an `<img>` element with typed attribute methods. */
 export declare function Img(...children: View[]): ImgTag;
 export declare function Picture(...children: View[]): Tag;
 export declare class SourceTag extends Tag {

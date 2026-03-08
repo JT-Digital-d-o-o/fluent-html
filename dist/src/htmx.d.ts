@@ -99,36 +99,78 @@ export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 's
     disable?: string | Id;
     include?: string | Id;
 };
-/** Resolve a string or Id to its selector string, or undefined if falsy. */
+/**
+ * Resolve a string or `Id` to its CSS selector string.
+ *
+ * @param value - A raw CSS selector string, an `Id` object, or undefined
+ * @returns The resolved selector string, or undefined if falsy
+ *
+ * @example
+ * resolveSelector(ids.userList) // "#user-list"
+ * resolveSelector("#my-el")    // "#my-el"
+ * resolveSelector(undefined)   // undefined
+ */
 export declare function resolveSelector(value: string | Id | undefined): string | undefined;
+/**
+ * Create an HTMX configuration object for use with `.setHtmx()`.
+ *
+ * Resolves `Id` objects in target/select/indicator/disable/include to their selectors.
+ * Defaults to `method: "get"` if not specified.
+ *
+ * @param endpoint - The URL endpoint for the HTMX request
+ * @param options - HTMX options (method, target, swap, trigger, etc.)
+ * @returns A fully resolved `HTMX` object
+ *
+ * @example
+ * hx("/api/items")
+ * hx("/api/save", { method: "post", target: ids.result, swap: "outerMorph" })
+ */
 export declare function hx(endpoint: string, options?: HxOptions): HTMX;
 /**
- * Create an ID selector for hx-target
+ * Create an ID selector for hx-target.
+ *
+ * @param elementId - The element ID (without `#`)
+ * @returns The CSS ID selector string
  * @example hx("/api", { target: id("content") }) // hx-target="#content"
  */
 export declare function id(elementId: string): HxTarget;
 /**
- * Create a class selector for hx-target
+ * Create a class selector for hx-target.
+ *
+ * @param className - The class name (without `.`)
+ * @returns The CSS class selector string
  * @example hx("/api", { target: clss("items") }) // hx-target=".items"
  */
 export declare function clss(className: string): HxTarget;
 /**
- * Create a 'closest' selector for hx-target
+ * Create a `closest` ancestor selector for hx-target.
+ *
+ * @param selector - CSS selector to match the closest ancestor
+ * @returns The HTMX extended selector string
  * @example hx("/api", { target: closest("tr") }) // hx-target="closest tr"
  */
 export declare function closest(selector: string): HxTarget;
 /**
- * Create a 'find' selector for hx-target
+ * Create a `find` descendant selector for hx-target.
+ *
+ * @param selector - CSS selector to find within descendants
+ * @returns The HTMX extended selector string
  * @example hx("/api", { target: find(".content") }) // hx-target="find .content"
  */
 export declare function find(selector: string): HxTarget;
 /**
- * Create a 'next' selector for hx-target
+ * Create a `next` sibling selector for hx-target.
+ *
+ * @param selector - Optional CSS selector to match the next sibling
+ * @returns The HTMX extended selector string
  * @example hx("/api", { target: next("div") }) // hx-target="next div"
  */
 export declare function next(selector?: string): HxTarget;
 /**
- * Create a 'previous' selector for hx-target
+ * Create a `previous` sibling selector for hx-target.
+ *
+ * @param selector - Optional CSS selector to match the previous sibling
+ * @returns The HTMX extended selector string
  * @example hx("/api", { target: previous("div") }) // hx-target="previous div"
  */
 export declare function previous(selector?: string): HxTarget;
