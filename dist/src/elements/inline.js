@@ -1,92 +1,68 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Strong = Strong;
-exports.Em = Em;
-exports.B = B;
-exports.I = I;
-exports.U = U;
-exports.S = S;
-exports.Mark = Mark;
-exports.Small = Small;
-exports.Sub = Sub;
-exports.Sup = Sup;
-exports.Abbr = Abbr;
-exports.Cite = Cite;
-exports.Q = Q;
-exports.Dfn = Dfn;
-exports.Kbd = Kbd;
-exports.Samp = Samp;
-exports.Var = Var;
-exports.Bdi = Bdi;
-exports.Bdo = Bdo;
-exports.Ruby = Ruby;
-exports.Rt = Rt;
-exports.Rp = Rp;
-const utils_js_1 = require("../core/utils.js");
-function Strong(...children) {
-    return (0, utils_js_1.El)("strong", ...children);
+import { El } from "../core/utils.js";
+export function Strong(...children) {
+    return El("strong", ...children);
 }
-function Em(...children) {
-    return (0, utils_js_1.El)("em", ...children);
+export function Em(...children) {
+    return El("em", ...children);
 }
-function B(...children) {
-    return (0, utils_js_1.El)("b", ...children);
+export function B(...children) {
+    return El("b", ...children);
 }
-function I(...children) {
-    return (0, utils_js_1.El)("i", ...children);
+export function I(...children) {
+    return El("i", ...children);
 }
-function U(...children) {
-    return (0, utils_js_1.El)("u", ...children);
+export function U(...children) {
+    return El("u", ...children);
 }
-function S(...children) {
-    return (0, utils_js_1.El)("s", ...children);
+export function S(...children) {
+    return El("s", ...children);
 }
-function Mark(...children) {
-    return (0, utils_js_1.El)("mark", ...children);
+export function Mark(...children) {
+    return El("mark", ...children);
 }
-function Small(...children) {
-    return (0, utils_js_1.El)("small", ...children);
+export function Small(...children) {
+    return El("small", ...children);
 }
-function Sub(...children) {
-    return (0, utils_js_1.El)("sub", ...children);
+export function Sub(...children) {
+    return El("sub", ...children);
 }
-function Sup(...children) {
-    return (0, utils_js_1.El)("sup", ...children);
+export function Sup(...children) {
+    return El("sup", ...children);
 }
-function Abbr(...children) {
-    return (0, utils_js_1.El)("abbr", ...children);
+export function Abbr(...children) {
+    return El("abbr", ...children);
 }
-function Cite(...children) {
-    return (0, utils_js_1.El)("cite", ...children);
+export function Cite(...children) {
+    return El("cite", ...children);
 }
-function Q(...children) {
-    return (0, utils_js_1.El)("q", ...children);
+export function Q(...children) {
+    return El("q", ...children);
 }
-function Dfn(...children) {
-    return (0, utils_js_1.El)("dfn", ...children);
+export function Dfn(...children) {
+    return El("dfn", ...children);
 }
-function Kbd(...children) {
-    return (0, utils_js_1.El)("kbd", ...children);
+export function Kbd(...children) {
+    return El("kbd", ...children);
 }
-function Samp(...children) {
-    return (0, utils_js_1.El)("samp", ...children);
+export function Samp(...children) {
+    return El("samp", ...children);
 }
-function Var(...children) {
-    return (0, utils_js_1.El)("var", ...children);
+export function Var(...children) {
+    return El("var", ...children);
 }
-function Bdi(...children) {
-    return (0, utils_js_1.El)("bdi", ...children);
+export function Bdi(...children) {
+    return El("bdi", ...children);
 }
-function Bdo(...children) {
-    return (0, utils_js_1.El)("bdo", ...children);
+export function Bdo(...children) {
+    return El("bdo", ...children);
 }
-function Ruby(...children) {
-    return (0, utils_js_1.El)("ruby", ...children);
+export function Ruby(...children) {
+    return El("ruby", ...children);
 }
-function Rt(...children) {
-    return (0, utils_js_1.El)("rt", ...children);
+export function Rt(...children) {
+    return El("rt", ...children);
 }
-function Rp(...children) {
-    return (0, utils_js_1.El)("rp", ...children);
+export function Rp(...children) {
+    return El("rp", ...children);
 }
 //# sourceMappingURL=inline.js.map

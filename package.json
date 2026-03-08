@@ -2,9 +2,15 @@
   "name": "fluent-html",
   "version": "5.7.1",
   "description": "Fluent, type-safe HTML builder for TypeScript. Chainable styling API, first-class HTMX support with full autocomplete, automatic XSS protection. Zero dependencies, SSR-ready.",
-  "type": "commonjs",
+  "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "test": "npm run build && node dist/test/test.js && node dist/test/patterns.js && node dist/test/swiftui-style.js && node dist/test/routes.js && node dist/test/fluent-styling-v2.js",
@@ -45,7 +51,7 @@
   },
   "homepage": "https://github.com/JT-Digital-d-o-o/fluent-html#readme",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.2.1",

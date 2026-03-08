@@ -1,11 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AreaTag = exports.MapTag = exports.AnchorTag = void 0;
-exports.A = A;
-exports.MapEl = MapEl;
-exports.Area = Area;
-const tag_js_1 = require("../core/tag.js");
-class AnchorTag extends tag_js_1.Tag {
+import { Tag } from "../core/tag.js";
+export class AnchorTag extends Tag {
     setHref(href) {
         this.href = href;
         return this;
@@ -31,25 +25,23 @@ class AnchorTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.AnchorTag = AnchorTag;
 /** @internal */
 AnchorTag.prototype._sk = ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy'];
-function A(...children) {
+export function A(...children) {
     return new AnchorTag("a", ...children);
 }
-class MapTag extends tag_js_1.Tag {
+export class MapTag extends Tag {
     setName(name) {
         this.name = name;
         return this;
     }
 }
-exports.MapTag = MapTag;
 /** @internal */
 MapTag.prototype._sk = ['name'];
-function MapEl(...children) {
+export function MapEl(...children) {
     return new MapTag("map", ...children);
 }
-class AreaTag extends tag_js_1.Tag {
+export class AreaTag extends Tag {
     setShape(shape) {
         this.shape = shape;
         return this;
@@ -79,10 +71,9 @@ class AreaTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.AreaTag = AreaTag;
 /** @internal */
 AreaTag.prototype._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
-function Area(...children) {
+export function Area(...children) {
     return new AreaTag("area", ...children);
 }
 //# sourceMappingURL=links.js.map

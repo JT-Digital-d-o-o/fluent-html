@@ -21,7 +21,7 @@ export { Slot, } from './elements/index.js';
 export { Overlay, OverlayPosition, } from './control/index.js';
 export { IfThen, IfThenElse, SwitchCase, Match, ForEach, ForEach1, ForEach2, ForEach3, Repeat, } from './control/index.js';
 export { hx, HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, HxOptions, HxConfig, HxStatusConfig, id, clss, closest, find, next, previous, } from './htmx.js';
-export { VStack, HStack, Grid, SearchInput, InfiniteScroll, OOB, withOOB, Partial, HtmxConfig, HtmxGlobalConfig, hxResponse, HxResponse, HxResponseResult, HxLocationConfig, FormField, KeyedList, } from './patterns.js';
+export { OOB, withOOB, Partial, HtmxConfig, HtmxGlobalConfig, hxResponse, HxResponse, HxResponseResult, HxLocationConfig, } from './patterns.js';
 export { Id, createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
 export { defineRoutes, } from './routes.js';
 export type { RouteDef, RouteHxOptions, } from './routes.js';

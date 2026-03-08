@@ -1,11 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.IfThenElse = IfThenElse;
-exports.IfThen = IfThen;
-exports.SwitchCase = SwitchCase;
-exports.Match = Match;
-const utils_js_1 = require("../core/utils.js");
-function IfThenElse(conditionOrValue, thenBranch, elseBranch) {
+import { Empty } from "../core/utils.js";
+export function IfThenElse(conditionOrValue, thenBranch, elseBranch) {
     if (typeof conditionOrValue === 'boolean') {
         return conditionOrValue ? thenBranch() : elseBranch();
     }
@@ -14,17 +8,17 @@ function IfThenElse(conditionOrValue, thenBranch, elseBranch) {
     }
     return elseBranch();
 }
-function IfThen(conditionOrValue, then) {
+export function IfThen(conditionOrValue, then) {
     if (typeof conditionOrValue === 'boolean') {
-        return conditionOrValue ? then() : (0, utils_js_1.Empty)();
+        return conditionOrValue ? then() : Empty();
     }
     if (conditionOrValue != null) {
         return then(conditionOrValue);
     }
-    return (0, utils_js_1.Empty)();
+    return Empty();
 }
 /** @deprecated Use `Match` instead for value matching. */
-function SwitchCase(cases, defaultView = utils_js_1.Empty) {
+export function SwitchCase(cases, defaultView = Empty) {
     for (const caseItem of cases) {
         if (caseItem.condition) {
             return caseItem.component();
@@ -32,7 +26,7 @@ function SwitchCase(cases, defaultView = utils_js_1.Empty) {
     }
     return defaultView();
 }
-function Match(value, cases, defaultView = utils_js_1.Empty) {
+export function Match(value, cases, defaultView = Empty) {
     const handler = cases[value];
     if (handler) {
         return handler();

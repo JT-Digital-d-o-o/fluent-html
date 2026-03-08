@@ -1,56 +1,41 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Div = Div;
-exports.Main = Main;
-exports.Header = Header;
-exports.Footer = Footer;
-exports.Section = Section;
-exports.Article = Article;
-exports.Nav = Nav;
-exports.Aside = Aside;
-exports.Figure = Figure;
-exports.Figcaption = Figcaption;
-exports.Address = Address;
-exports.Hgroup = Hgroup;
-exports.Search = Search;
-const utils_js_1 = require("../core/utils.js");
-function Div(...children) {
-    return (0, utils_js_1.El)("div", ...children);
+import { El } from "../core/utils.js";
+export function Div(...children) {
+    return El("div", ...children);
 }
-function Main(...children) {
-    return (0, utils_js_1.El)("main", ...children);
+export function Main(...children) {
+    return El("main", ...children);
 }
-function Header(...children) {
-    return (0, utils_js_1.El)("header", ...children);
+export function Header(...children) {
+    return El("header", ...children);
 }
-function Footer(...children) {
-    return (0, utils_js_1.El)("footer", ...children);
+export function Footer(...children) {
+    return El("footer", ...children);
 }
-function Section(...children) {
-    return (0, utils_js_1.El)("section", ...children);
+export function Section(...children) {
+    return El("section", ...children);
 }
-function Article(...children) {
-    return (0, utils_js_1.El)("article", ...children);
+export function Article(...children) {
+    return El("article", ...children);
 }
-function Nav(...children) {
-    return (0, utils_js_1.El)("nav", ...children);
+export function Nav(...children) {
+    return El("nav", ...children);
 }
-function Aside(...children) {
-    return (0, utils_js_1.El)("aside", ...children);
+export function Aside(...children) {
+    return El("aside", ...children);
 }
-function Figure(...children) {
-    return (0, utils_js_1.El)("figure", ...children);
+export function Figure(...children) {
+    return El("figure", ...children);
 }
-function Figcaption(...children) {
-    return (0, utils_js_1.El)("figcaption", ...children);
+export function Figcaption(...children) {
+    return El("figcaption", ...children);
 }
-function Address(...children) {
-    return (0, utils_js_1.El)("address", ...children);
+export function Address(...children) {
+    return El("address", ...children);
 }
-function Hgroup(...children) {
-    return (0, utils_js_1.El)("hgroup", ...children);
+export function Hgroup(...children) {
+    return El("hgroup", ...children);
 }
-function Search(...children) {
-    return (0, utils_js_1.El)("search", ...children);
+export function Search(...children) {
+    return El("search", ...children);
 }
 //# sourceMappingURL=structural.js.map

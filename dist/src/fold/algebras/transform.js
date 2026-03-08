@@ -1,9 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTransformAlgebra = createTransformAlgebra;
-exports.addClassToMatching = addClassToMatching;
-const tag_js_1 = require("../../core/tag.js");
-const raw_string_js_1 = require("../../core/raw-string.js");
+import { Tag } from "../../core/tag.js";
+import { Raw } from "../../core/raw-string.js";
 /**
  * Create an algebra that transforms Views.
  * The transform function receives each element and can modify or replace it.
@@ -23,16 +19,16 @@ const raw_string_js_1 = require("../../core/raw-string.js");
  *   return null; // keep unchanged
  * });
  */
-function createTransformAlgebra(transform) {
+export function createTransformAlgebra(transform) {
     return {
         text: (s) => s,
-        raw: (html) => (0, raw_string_js_1.Raw)(html),
+        raw: (html) => Raw(html),
         tag: (element, attrs, children) => {
             const result = transform(element, attrs);
             const finalEl = result?.element ?? element;
             const finalAttrs = result?.attrs ?? attrs;
             // Reconstruct the Tag with potentially modified attributes
-            const tag = new tag_js_1.Tag(finalEl, children);
+            const tag = new Tag(finalEl, children);
             if (finalAttrs.id)
                 tag.id = finalAttrs.id;
             if (finalAttrs.class)
@@ -65,7 +61,7 @@ function createTransformAlgebra(transform) {
  * );
  * const highlighted = foldView(highlightParagraphs, myView);
  */
-function addClassToMatching(predicate, className) {
+export function addClassToMatching(predicate, className) {
     return createTransformAlgebra((element, attrs) => {
         if (predicate(element, attrs)) {
             const existingClass = attrs.class || '';

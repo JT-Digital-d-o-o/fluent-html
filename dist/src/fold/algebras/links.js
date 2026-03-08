@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.linksAlgebra = void 0;
 /**
  * Algebra that collects all anchor links from a View.
  *
@@ -12,7 +9,7 @@ exports.linksAlgebra = void 0;
  * const links = foldView(linksAlgebra, nav);
  * // [{ href: "/" }, { href: "/about" }]
  */
-exports.linksAlgebra = {
+export const linksAlgebra = {
     text: () => [],
     raw: () => [],
     tag: (element, attrs, childLinks) => {

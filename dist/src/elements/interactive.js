@@ -1,12 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DialogTag = exports.DetailsTag = void 0;
-exports.Details = Details;
-exports.Summary = Summary;
-exports.Dialog = Dialog;
-const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
-class DetailsTag extends tag_js_1.Tag {
+import { Tag } from "../core/tag.js";
+import { El } from "../core/utils.js";
+export class DetailsTag extends Tag {
     setOpen(open = true) {
         this.open = open;
         return this;
@@ -16,25 +10,23 @@ class DetailsTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.DetailsTag = DetailsTag;
 /** @internal */
 DetailsTag.prototype._sk = ['open', 'name'];
-function Details(...children) {
+export function Details(...children) {
     return new DetailsTag("details", ...children);
 }
-function Summary(...children) {
-    return (0, utils_js_1.El)("summary", ...children);
+export function Summary(...children) {
+    return El("summary", ...children);
 }
-class DialogTag extends tag_js_1.Tag {
+export class DialogTag extends Tag {
     setOpen(open = true) {
         this.open = open;
         return this;
     }
 }
-exports.DialogTag = DialogTag;
 /** @internal */
 DialogTag.prototype._sk = ['open'];
-function Dialog(...children) {
+export function Dialog(...children) {
     return new DialogTag("dialog", ...children);
 }
 //# sourceMappingURL=interactive.js.map

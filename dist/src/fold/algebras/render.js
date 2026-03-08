@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.renderAlgebra = void 0;
-const escape_js_1 = require("../../render/escape.js");
+import { escapeHtml, escapeAttr } from "../../render/escape.js";
 // Elements whose content should NOT be escaped (they contain code, not text)
 const RAW_TEXT_ELEMENTS = new Set(['script', 'style']);
 /**
@@ -11,15 +8,15 @@ function buildAttributes(attrs) {
     const parts = [];
     // Standard attributes
     if (attrs.id)
-        parts.push(`id="${(0, escape_js_1.escapeAttr)(attrs.id)}"`);
+        parts.push(`id="${escapeAttr(attrs.id)}"`);
     if (attrs.class)
-        parts.push(`class="${(0, escape_js_1.escapeAttr)(attrs.class)}"`);
+        parts.push(`class="${escapeAttr(attrs.class)}"`);
     if (attrs.style)
-        parts.push(`style="${(0, escape_js_1.escapeAttr)(attrs.style)}"`);
+        parts.push(`style="${escapeAttr(attrs.style)}"`);
     // Custom attributes
     for (const [key, value] of Object.entries(attrs.attributes)) {
         if (value !== undefined && value !== null) {
-            parts.push(`${key}="${(0, escape_js_1.escapeAttr)(String(value))}"`);
+            parts.push(`${key}="${escapeAttr(String(value))}"`);
         }
     }
     // Element-specific attributes (href, src, etc.)
@@ -27,19 +24,19 @@ function buildAttributes(attrs) {
         if (key !== 'id' && key !== 'class' && key !== 'style' &&
             key !== 'attributes' && key !== 'htmx' && key !== 'toggles' &&
             value !== undefined && value !== null) {
-            parts.push(`${key}="${(0, escape_js_1.escapeAttr)(String(value))}"`);
+            parts.push(`${key}="${escapeAttr(String(value))}"`);
         }
     }
     // HTMX attributes
     if (attrs.htmx) {
         const htmx = attrs.htmx;
-        parts.push(`hx-${htmx.method}="${(0, escape_js_1.escapeAttr)(htmx.endpoint)}"`);
+        parts.push(`hx-${htmx.method}="${escapeAttr(htmx.endpoint)}"`);
         if (htmx.target)
-            parts.push(`hx-target="${(0, escape_js_1.escapeAttr)(htmx.target)}"`);
+            parts.push(`hx-target="${escapeAttr(htmx.target)}"`);
         if (htmx.swap)
-            parts.push(`hx-swap="${(0, escape_js_1.escapeAttr)(htmx.swap)}"`);
+            parts.push(`hx-swap="${escapeAttr(htmx.swap)}"`);
         if (htmx.trigger)
-            parts.push(`hx-trigger="${(0, escape_js_1.escapeAttr)(htmx.trigger)}"`);
+            parts.push(`hx-trigger="${escapeAttr(htmx.trigger)}"`);
         // Add other HTMX attributes as needed...
     }
     // Toggles (boolean attributes)
@@ -60,8 +57,8 @@ function buildAttributes(attrs) {
  * @example
  * const html = foldView(renderAlgebra, myView);
  */
-exports.renderAlgebra = {
-    text: (s) => (0, escape_js_1.escapeHtml)(s),
+export const renderAlgebra = {
+    text: (s) => escapeHtml(s),
     raw: (html) => html, // Raw HTML bypasses escaping
     tag: (element, attrs, childHtml) => {
         const attrString = buildAttributes(attrs);

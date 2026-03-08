@@ -1,10 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ForEach3 = exports.ForEach2 = exports.ForEach1 = void 0;
-exports.ForEach = ForEach;
-exports.Repeat = Repeat;
 // Implementation
-function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
+export function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
     // ForEach(low, high, renderItem)
     if (typeof viewsOrLowOrHigh === "number" && typeof renderItemOrHigh === "number") {
         const low = viewsOrLowOrHigh;
@@ -39,12 +34,12 @@ function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
     return Array.from(viewsOrLowOrHigh).map(fn);
 }
 /** @deprecated Use ForEach instead */
-exports.ForEach1 = ForEach;
+export const ForEach1 = ForEach;
 /** @deprecated Use ForEach instead */
-exports.ForEach2 = ForEach;
+export const ForEach2 = ForEach;
 /** @deprecated Use ForEach instead */
-exports.ForEach3 = ForEach;
-function Repeat(times, content) {
+export const ForEach3 = ForEach;
+export function Repeat(times, content) {
     return ForEach(times, content);
 }
 //# sourceMappingURL=iteration.js.map

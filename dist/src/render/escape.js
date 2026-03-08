@@ -1,10 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.htmlEscapes = void 0;
-exports.escapeHtml = escapeHtml;
-exports.escapeAttr = escapeAttr;
 // Escape map — kept as public API for consumers
-exports.htmlEscapes = {
+export const htmlEscapes = {
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
@@ -12,7 +7,7 @@ exports.htmlEscapes = {
     "'": "&#39;",
 };
 // HTML escape to prevent XSS — manual charCode scan for speed
-function escapeHtml(unsafe) {
+export function escapeHtml(unsafe) {
     let result = '';
     let lastIdx = 0;
     for (let i = 0; i < unsafe.length; i++) {
@@ -38,7 +33,7 @@ function escapeHtml(unsafe) {
     return result + unsafe.substring(lastIdx);
 }
 // For attribute values
-function escapeAttr(unsafe) {
+export function escapeAttr(unsafe) {
     return escapeHtml(unsafe);
 }
 //# sourceMappingURL=escape.js.map

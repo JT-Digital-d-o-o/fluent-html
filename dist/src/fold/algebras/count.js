@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.countAlgebra = void 0;
 /**
  * Algebra that counts all elements in a View.
  *
@@ -8,7 +5,7 @@ exports.countAlgebra = void 0;
  * const view = Div([P("Hello"), P("World")]);
  * const count = foldView(countAlgebra, view);  // 3
  */
-exports.countAlgebra = {
+export const countAlgebra = {
     text: () => 0,
     raw: () => 0,
     tag: (_, __, childCount) => 1 + childCount,

@@ -1,11 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_js_1 = require("../src/index.js");
+import { Div, Button, render } from "../src/index.js";
 // Before: Using setClass with Tailwind
-const oldStyle = (0, index_js_1.Div)()
+const oldStyle = Div()
     .setClass("p-4 bg-red-500 mx-8 text-white rounded-lg shadow-md");
 // After: SwiftUI-like API
-const newStyle = (0, index_js_1.Div)()
+const newStyle = Div()
     .padding("4")
     .background("red-500")
     .margin("x", "8")
@@ -13,27 +11,27 @@ const newStyle = (0, index_js_1.Div)()
     .rounded("lg")
     .shadow("md");
 console.log("Old style:");
-console.log((0, index_js_1.render)(oldStyle));
+console.log(render(oldStyle));
 console.log("\nNew style:");
-console.log((0, index_js_1.render)(newStyle));
+console.log(render(newStyle));
 // More complex example: Card component
-const card = (0, index_js_1.Div)([
-    (0, index_js_1.Div)("Card Title")
+const card = Div([
+    Div("Card Title")
         .textSize("2xl")
         .fontWeight("bold")
         .margin("bottom", "4"),
-    (0, index_js_1.Div)("This is the card content with some description text.")
+    Div("This is the card content with some description text.")
         .textColor("gray-600")
         .margin("bottom", "6"),
-    (0, index_js_1.Div)([
-        (0, index_js_1.Button)("Cancel")
+    Div([
+        Button("Cancel")
             .padding("x", "4")
             .padding("y", "2")
             .border()
             .borderColor("gray-300")
             .rounded()
             .cursor("pointer"),
-        (0, index_js_1.Button)("Submit")
+        Button("Submit")
             .padding("x", "4")
             .padding("y", "2")
             .background("blue-500")
@@ -55,12 +53,12 @@ const card = (0, index_js_1.Div)([
     .w("full")
     .maxW("md"); // Now using the built-in maxW method!
 console.log("\n\nCard component:");
-console.log((0, index_js_1.render)(card));
+console.log(render(card));
 // Flexbox layout example
-const flexLayout = (0, index_js_1.Div)([
-    (0, index_js_1.Div)("Item 1").background("blue-100").padding("4"),
-    (0, index_js_1.Div)("Item 2").background("green-100").padding("4"),
-    (0, index_js_1.Div)("Item 3").background("red-100").padding("4")
+const flexLayout = Div([
+    Div("Item 1").background("blue-100").padding("4"),
+    Div("Item 2").background("green-100").padding("4"),
+    Div("Item 3").background("red-100").padding("4")
 ])
     .flex()
     .flexDirection("row")
@@ -69,24 +67,24 @@ const flexLayout = (0, index_js_1.Div)([
     .gap("4")
     .padding("8");
 console.log("\n\nFlex layout:");
-console.log((0, index_js_1.render)(flexLayout));
+console.log(render(flexLayout));
 // Grid layout example
-const gridLayout = (0, index_js_1.Div)([
-    (0, index_js_1.Div)("1").background("purple-100").padding("4").rounded(),
-    (0, index_js_1.Div)("2").background("purple-100").padding("4").rounded(),
-    (0, index_js_1.Div)("3").background("purple-100").padding("4").rounded(),
-    (0, index_js_1.Div)("4").background("purple-100").padding("4").rounded(),
-    (0, index_js_1.Div)("5").background("purple-100").padding("4").rounded(),
-    (0, index_js_1.Div)("6").background("purple-100").padding("4").rounded()
+const gridLayout = Div([
+    Div("1").background("purple-100").padding("4").rounded(),
+    Div("2").background("purple-100").padding("4").rounded(),
+    Div("3").background("purple-100").padding("4").rounded(),
+    Div("4").background("purple-100").padding("4").rounded(),
+    Div("5").background("purple-100").padding("4").rounded(),
+    Div("6").background("purple-100").padding("4").rounded()
 ])
     .grid()
     .gridCols("3")
     .gap("4")
     .padding("8");
 console.log("\n\nGrid layout:");
-console.log((0, index_js_1.render)(gridLayout));
+console.log(render(gridLayout));
 // Method chaining with all directional helpers
-const allDirections = (0, index_js_1.Div)("Content")
+const allDirections = Div("Content")
     .padding("top", "8")
     .padding("bottom", "4")
     .padding("x", "6")
@@ -97,9 +95,9 @@ const allDirections = (0, index_js_1.Div)("Content")
     .rounded("full")
     .textAlign("center");
 console.log("\n\nDirectional padding/margin:");
-console.log((0, index_js_1.render)(allDirections));
+console.log(render(allDirections));
 // Now maxW is built-in!
-const withMaxWidth = (0, index_js_1.Div)("Centered content")
+const withMaxWidth = Div("Centered content")
     .w("full")
     .maxW("md") // Built-in method
     .margin("x", "auto")
@@ -107,5 +105,5 @@ const withMaxWidth = (0, index_js_1.Div)("Centered content")
     .background("gray-100")
     .textAlign("center");
 console.log("\n\nWith max-width:");
-console.log((0, index_js_1.render)(withMaxWidth));
+console.log(render(withMaxWidth));
 //# sourceMappingURL=swiftui-style-demo.js.map

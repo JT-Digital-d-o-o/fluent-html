@@ -1,4 +1,3 @@
-"use strict";
 // ------------------------------------
 // Type-Safe Route System for Fluent HTML
 // ------------------------------------
@@ -8,9 +7,7 @@
 //
 // Complementary to defineIds() which protects target selectors,
 // defineRoutes() protects endpoint URLs and HTTP methods.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineRoutes = defineRoutes;
-const ids_js_1 = require("./ids.js");
+import { isId } from "./ids.js";
 // ------------------------------------
 // Runtime Implementation
 // ------------------------------------
@@ -23,15 +20,15 @@ function buildHtmxFromRoute(endpoint, method, options) {
     return {
         endpoint,
         method,
-        target: target ? ((0, ids_js_1.isId)(target) ? target.selector : target) : undefined,
-        select: select ? ((0, ids_js_1.isId)(select) ? select.selector : select) : undefined,
-        indicator: indicator ? ((0, ids_js_1.isId)(indicator) ? indicator.selector : indicator) : undefined,
-        disable: disable ? ((0, ids_js_1.isId)(disable) ? disable.selector : disable) : undefined,
-        include: include ? ((0, ids_js_1.isId)(include) ? include.selector : include) : undefined,
+        target: target ? (isId(target) ? target.selector : target) : undefined,
+        select: select ? (isId(select) ? select.selector : select) : undefined,
+        indicator: indicator ? (isId(indicator) ? indicator.selector : indicator) : undefined,
+        disable: disable ? (isId(disable) ? disable.selector : disable) : undefined,
+        include: include ? (isId(include) ? include.selector : include) : undefined,
         ...rest,
     };
 }
-function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
+export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
     const prefix = typeof prefixOrDefinitions === "string" ? prefixOrDefinitions : "";
     const definitions = typeof prefixOrDefinitions === "string" ? maybeDefinitions : prefixOrDefinitions;
     const registry = {};

@@ -1,20 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ScriptTag = exports.BaseTag = exports.StyleTag = exports.LinkTag = exports.MetaTag = exports.HtmlTag = void 0;
-exports.HTML = HTML;
-exports.Head = Head;
-exports.Body = Body;
-exports.Title = Title;
-exports.Meta = Meta;
-exports.Link = Link;
-exports.Style = Style;
-exports.Base = Base;
-exports.Noscript = Noscript;
-exports.Template = Template;
-exports.Script = Script;
-const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
-class HtmlTag extends tag_js_1.Tag {
+import { Tag } from "../core/tag.js";
+import { El } from "../core/utils.js";
+export class HtmlTag extends Tag {
     setLang(lang) {
         this.lang = lang;
         return this;
@@ -24,22 +10,21 @@ class HtmlTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.HtmlTag = HtmlTag;
 /** @internal */
 HtmlTag.prototype._sk = ['lang', 'dir'];
-function HTML(...children) {
+export function HTML(...children) {
     return new HtmlTag("html", ...children);
 }
-function Head(...children) {
-    return (0, utils_js_1.El)("head", ...children);
+export function Head(...children) {
+    return El("head", ...children);
 }
-function Body(...children) {
-    return (0, utils_js_1.El)("body", ...children);
+export function Body(...children) {
+    return El("body", ...children);
 }
-function Title(...children) {
-    return (0, utils_js_1.El)("title", ...children);
+export function Title(...children) {
+    return El("title", ...children);
 }
-class MetaTag extends tag_js_1.Tag {
+export class MetaTag extends Tag {
     setName(name) {
         this.name = name;
         return this;
@@ -61,13 +46,12 @@ class MetaTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.MetaTag = MetaTag;
 /** @internal */
 MetaTag.prototype._sk = ['name', 'charset', 'httpEquiv', 'property', 'content'];
-function Meta() {
+export function Meta() {
     return new MetaTag("meta");
 }
-class LinkTag extends tag_js_1.Tag {
+export class LinkTag extends Tag {
     setRel(rel) {
         this.rel = rel;
         return this;
@@ -101,13 +85,12 @@ class LinkTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.LinkTag = LinkTag;
 /** @internal */
 LinkTag.prototype._sk = ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity'];
-function Link() {
+export function Link() {
     return new LinkTag("link");
 }
-class StyleTag extends tag_js_1.Tag {
+export class StyleTag extends Tag {
     setMedia(media) {
         this.media = media;
         return this;
@@ -117,13 +100,12 @@ class StyleTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.StyleTag = StyleTag;
 /** @internal */
 StyleTag.prototype._sk = ['media', 'type'];
-function Style(css) {
+export function Style(css) {
     return new StyleTag("style", css);
 }
-class BaseTag extends tag_js_1.Tag {
+export class BaseTag extends Tag {
     setHref(href) {
         this.href = href;
         return this;
@@ -133,19 +115,18 @@ class BaseTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.BaseTag = BaseTag;
 /** @internal */
 BaseTag.prototype._sk = ['href', 'target'];
-function Base() {
+export function Base() {
     return new BaseTag("base");
 }
-function Noscript(...children) {
-    return (0, utils_js_1.El)("noscript", ...children);
+export function Noscript(...children) {
+    return El("noscript", ...children);
 }
-function Template(...children) {
-    return (0, utils_js_1.El)("template", ...children);
+export function Template(...children) {
+    return El("template", ...children);
 }
-class ScriptTag extends tag_js_1.Tag {
+export class ScriptTag extends Tag {
     setSrc(src) {
         this.src = src;
         return this;
@@ -175,10 +156,9 @@ class ScriptTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.ScriptTag = ScriptTag;
 /** @internal */
 ScriptTag.prototype._sk = ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule'];
-function Script(js = "") {
+export function Script(js = "") {
     return new ScriptTag("script", js);
 }
 //# sourceMappingURL=document.js.map

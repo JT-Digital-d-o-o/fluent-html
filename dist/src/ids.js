@@ -1,16 +1,9 @@
-"use strict";
 // ------------------------------------
 // Type-Safe ID System for Fluent HTML
 // ------------------------------------
 //
 // This module provides compile-time safety for HTMX targets and element IDs.
 // It ensures that hx-target selectors always reference valid element IDs.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createId = createId;
-exports.defineIds = defineIds;
-exports.isId = isId;
-exports.extractId = extractId;
-exports.extractSelector = extractSelector;
 /**
  * Create a single Id object from a string.
  *
@@ -22,7 +15,7 @@ exports.extractSelector = extractSelector;
  * Div().setId(userId)  // id="user-profile"
  * hx("/api", { target: userId.selector })  // hx-target="#user-profile"
  */
-function createId(name) {
+export function createId(name) {
     const idObj = {
         id: name,
         selector: `#${name}`,
@@ -67,7 +60,7 @@ function createId(name) {
  * // Use in OOB swaps
  * OOB(ids.userCount, Span("42 users"))
  */
-function defineIds(names) {
+export function defineIds(names) {
     const registry = {};
     for (const name of names) {
         // Convert kebab-case to camelCase for the property key
@@ -79,7 +72,7 @@ function defineIds(names) {
 /**
  * Type guard to check if a value is an Id object.
  */
-function isId(value) {
+export function isId(value) {
     return (typeof value === 'object' &&
         value !== null &&
         'id' in value &&
@@ -91,14 +84,14 @@ function isId(value) {
  * Extract the ID string from either a string or Id object.
  * Useful for APIs that accept both.
  */
-function extractId(value) {
+export function extractId(value) {
     return isId(value) ? value.id : value;
 }
 /**
  * Extract the selector string from either a string or Id object.
  * If given a plain string without #, assumes it's an ID and adds #.
  */
-function extractSelector(value) {
+export function extractSelector(value) {
     if (isId(value)) {
         return value.selector;
     }

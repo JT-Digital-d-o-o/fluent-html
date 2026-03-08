@@ -1,17 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SvgTag = exports.CanvasTag = exports.TrackTag = exports.AudioTag = exports.VideoTag = exports.SourceTag = exports.ImgTag = void 0;
-exports.Img = Img;
-exports.Picture = Picture;
-exports.Source = Source;
-exports.Video = Video;
-exports.Audio = Audio;
-exports.Track = Track;
-exports.Canvas = Canvas;
-exports.Svg = Svg;
-const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
-class ImgTag extends tag_js_1.Tag {
+import { Tag } from "../core/tag.js";
+import { El } from "../core/utils.js";
+export class ImgTag extends Tag {
     setSrc(src) {
         this.src = src;
         return this;
@@ -49,16 +38,15 @@ class ImgTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.ImgTag = ImgTag;
 /** @internal */
 ImgTag.prototype._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
-function Img(...children) {
+export function Img(...children) {
     return new ImgTag("img", ...children);
 }
-function Picture(...children) {
-    return (0, utils_js_1.El)("picture", ...children);
+export function Picture(...children) {
+    return El("picture", ...children);
 }
-class SourceTag extends tag_js_1.Tag {
+export class SourceTag extends Tag {
     setSrc(src) {
         this.src = src;
         return this;
@@ -80,13 +68,12 @@ class SourceTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.SourceTag = SourceTag;
 /** @internal */
 SourceTag.prototype._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
-function Source(...children) {
+export function Source(...children) {
     return new SourceTag("source", ...children);
 }
-class VideoTag extends tag_js_1.Tag {
+export class VideoTag extends Tag {
     setWidth(width) {
         this.width = width;
         return this;
@@ -128,13 +115,12 @@ class VideoTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.VideoTag = VideoTag;
 /** @internal */
 VideoTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
-function Video(...children) {
+export function Video(...children) {
     return new VideoTag("video", ...children);
 }
-class AudioTag extends tag_js_1.Tag {
+export class AudioTag extends Tag {
     setSrc(src) {
         this.src = src;
         return this;
@@ -160,13 +146,12 @@ class AudioTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.AudioTag = AudioTag;
 /** @internal */
 AudioTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
-function Audio(...children) {
+export function Audio(...children) {
     return new AudioTag("audio", ...children);
 }
-class TrackTag extends tag_js_1.Tag {
+export class TrackTag extends Tag {
     setSrc(src) {
         this.src = src;
         return this;
@@ -188,13 +173,12 @@ class TrackTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.TrackTag = TrackTag;
 /** @internal */
 TrackTag.prototype._sk = ['src', 'kind', 'srclang', 'label', 'default'];
-function Track(...children) {
+export function Track(...children) {
     return new TrackTag("track", ...children);
 }
-class CanvasTag extends tag_js_1.Tag {
+export class CanvasTag extends Tag {
     setWidth(width) {
         this.width = width;
         return this;
@@ -204,13 +188,12 @@ class CanvasTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.CanvasTag = CanvasTag;
 /** @internal */
 CanvasTag.prototype._sk = ['width', 'height'];
-function Canvas(...children) {
+export function Canvas(...children) {
     return new CanvasTag("canvas", ...children);
 }
-class SvgTag extends tag_js_1.Tag {
+export class SvgTag extends Tag {
     setWidth(width) {
         this.width = width;
         return this;
@@ -236,10 +219,9 @@ class SvgTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.SvgTag = SvgTag;
 /** @internal */
 SvgTag.prototype._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke'];
-function Svg(...children) {
+export function Svg(...children) {
     return new SvgTag("svg", ...children);
 }
 //# sourceMappingURL=media.js.map

@@ -1,60 +1,44 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.P = P;
-exports.H1 = H1;
-exports.H2 = H2;
-exports.H3 = H3;
-exports.H4 = H4;
-exports.H5 = H5;
-exports.H6 = H6;
-exports.Span = Span;
-exports.Blockquote = Blockquote;
-exports.Pre = Pre;
-exports.Code = Code;
-exports.Hr = Hr;
-exports.Br = Br;
-exports.Wbr = Wbr;
-const utils_js_1 = require("../core/utils.js");
-function P(...children) {
-    return (0, utils_js_1.El)("p", ...children);
+import { El } from "../core/utils.js";
+export function P(...children) {
+    return El("p", ...children);
 }
-function H1(...children) {
-    return (0, utils_js_1.El)("h1", ...children);
+export function H1(...children) {
+    return El("h1", ...children);
 }
-function H2(...children) {
-    return (0, utils_js_1.El)("h2", ...children);
+export function H2(...children) {
+    return El("h2", ...children);
 }
-function H3(...children) {
-    return (0, utils_js_1.El)("h3", ...children);
+export function H3(...children) {
+    return El("h3", ...children);
 }
-function H4(...children) {
-    return (0, utils_js_1.El)("h4", ...children);
+export function H4(...children) {
+    return El("h4", ...children);
 }
-function H5(...children) {
-    return (0, utils_js_1.El)("h5", ...children);
+export function H5(...children) {
+    return El("h5", ...children);
 }
-function H6(...children) {
-    return (0, utils_js_1.El)("h6", ...children);
+export function H6(...children) {
+    return El("h6", ...children);
 }
-function Span(...children) {
-    return (0, utils_js_1.El)("span", ...children);
+export function Span(...children) {
+    return El("span", ...children);
 }
-function Blockquote(...children) {
-    return (0, utils_js_1.El)("blockquote", ...children);
+export function Blockquote(...children) {
+    return El("blockquote", ...children);
 }
-function Pre(...children) {
-    return (0, utils_js_1.El)("pre", ...children);
+export function Pre(...children) {
+    return El("pre", ...children);
 }
-function Code(...children) {
-    return (0, utils_js_1.El)("code", ...children);
+export function Code(...children) {
+    return El("code", ...children);
 }
-function Hr(...children) {
-    return (0, utils_js_1.El)("hr", ...children);
+export function Hr(...children) {
+    return El("hr", ...children);
 }
-function Br() {
-    return (0, utils_js_1.El)("br");
+export function Br() {
+    return El("br");
 }
-function Wbr() {
-    return (0, utils_js_1.El)("wbr");
+export function Wbr() {
+    return El("wbr");
 }
 //# sourceMappingURL=text.js.map

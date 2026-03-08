@@ -1,36 +1,27 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.MeterTag = exports.ProgressTag = exports.DataTag = exports.TimeTag = void 0;
-exports.Time = Time;
-exports.Data = Data;
-exports.Progress = Progress;
-exports.Meter = Meter;
-const tag_js_1 = require("../core/tag.js");
-class TimeTag extends tag_js_1.Tag {
+import { Tag } from "../core/tag.js";
+export class TimeTag extends Tag {
     setDatetime(datetime) {
         this.datetime = datetime;
         return this;
     }
 }
-exports.TimeTag = TimeTag;
 /** @internal */
 TimeTag.prototype._sk = ['datetime'];
-function Time(...children) {
+export function Time(...children) {
     return new TimeTag("time", ...children);
 }
-class DataTag extends tag_js_1.Tag {
+export class DataTag extends Tag {
     setValue(value) {
         this.value = value;
         return this;
     }
 }
-exports.DataTag = DataTag;
 /** @internal */
 DataTag.prototype._sk = ['value'];
-function Data(...children) {
+export function Data(...children) {
     return new DataTag("data", ...children);
 }
-class ProgressTag extends tag_js_1.Tag {
+export class ProgressTag extends Tag {
     setValue(value) {
         this.value = value;
         return this;
@@ -40,13 +31,12 @@ class ProgressTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.ProgressTag = ProgressTag;
 /** @internal */
 ProgressTag.prototype._sk = ['value', 'max'];
-function Progress(...children) {
+export function Progress(...children) {
     return new ProgressTag("progress", ...children);
 }
-class MeterTag extends tag_js_1.Tag {
+export class MeterTag extends Tag {
     setValue(value) {
         this.value = value;
         return this;
@@ -72,10 +62,9 @@ class MeterTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.MeterTag = MeterTag;
 /** @internal */
 MeterTag.prototype._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
-function Meter(...children) {
+export function Meter(...children) {
     return new MeterTag("meter", ...children);
 }
 //# sourceMappingURL=data.js.map

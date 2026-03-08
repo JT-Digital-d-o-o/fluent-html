@@ -1,9 +1,7 @@
-"use strict";
 // ------------------------------------
 // Tests for Fold / Catamorphism
 // ------------------------------------
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_js_1 = require("../src/index.js");
+import { Div, P, H1, Span, A, Ul, Li, foldView, countAlgebra, textAlgebra, linksAlgebra, } from "../src/index.js";
 // ------------------------------------
 // Test Runner
 // ------------------------------------
@@ -32,20 +30,20 @@ function section(name) {
 // Count Algebra Tests
 // ------------------------------------
 section("Count Algebra");
-test("counts single element", (0, index_js_1.foldView)(index_js_1.countAlgebra, (0, index_js_1.Div)()), 1);
-test("counts nested elements", (0, index_js_1.foldView)(index_js_1.countAlgebra, (0, index_js_1.Div)([(0, index_js_1.P)("Hello"), (0, index_js_1.P)("World")])), 3 // div + 2 p's
+test("counts single element", foldView(countAlgebra, Div()), 1);
+test("counts nested elements", foldView(countAlgebra, Div([P("Hello"), P("World")])), 3 // div + 2 p's
 );
-test("counts deeply nested", (0, index_js_1.foldView)(index_js_1.countAlgebra, (0, index_js_1.Div)([(0, index_js_1.Div)([(0, index_js_1.Span)("Inner")])])), 3 // outer div + inner div + span
+test("counts deeply nested", foldView(countAlgebra, Div([Div([Span("Inner")])])), 3 // outer div + inner div + span
 );
-test("counts empty array as zero", (0, index_js_1.foldView)(index_js_1.countAlgebra, []), 0);
-test("counts plain text as zero elements", (0, index_js_1.foldView)(index_js_1.countAlgebra, "Hello"), 0);
-test("counts complex structure", (0, index_js_1.foldView)(index_js_1.countAlgebra, (0, index_js_1.Div)([
-    (0, index_js_1.H1)("Title"),
-    (0, index_js_1.P)("Paragraph 1"),
-    (0, index_js_1.Ul)([
-        (0, index_js_1.Li)("Item 1"),
-        (0, index_js_1.Li)("Item 2"),
-        (0, index_js_1.Li)("Item 3"),
+test("counts empty array as zero", foldView(countAlgebra, []), 0);
+test("counts plain text as zero elements", foldView(countAlgebra, "Hello"), 0);
+test("counts complex structure", foldView(countAlgebra, Div([
+    H1("Title"),
+    P("Paragraph 1"),
+    Ul([
+        Li("Item 1"),
+        Li("Item 2"),
+        Li("Item 3"),
     ])
 ])), 7 // div + h1 + p + ul + 3 li's = 7
 );
@@ -53,35 +51,35 @@ test("counts complex structure", (0, index_js_1.foldView)(index_js_1.countAlgebr
 // Text Algebra Tests
 // ------------------------------------
 section("Text Algebra");
-test("extracts plain text", (0, index_js_1.foldView)(index_js_1.textAlgebra, "Hello World"), "Hello World");
-test("extracts text from element", (0, index_js_1.foldView)(index_js_1.textAlgebra, (0, index_js_1.H1)("Welcome")), "Welcome\n");
-test("extracts text from nested elements", (0, index_js_1.foldView)(index_js_1.textAlgebra, (0, index_js_1.Div)([
-    (0, index_js_1.H1)("Title"),
-    (0, index_js_1.P)("Content")
+test("extracts plain text", foldView(textAlgebra, "Hello World"), "Hello World");
+test("extracts text from element", foldView(textAlgebra, H1("Welcome")), "Welcome\n");
+test("extracts text from nested elements", foldView(textAlgebra, Div([
+    H1("Title"),
+    P("Content")
 ])), "Title\nContent\n\n" // div adds trailing newline
 );
-test("extracts text from inline elements", (0, index_js_1.foldView)(index_js_1.textAlgebra, (0, index_js_1.Span)([
+test("extracts text from inline elements", foldView(textAlgebra, Span([
     "Hello ",
-    (0, index_js_1.Span)("World")
+    Span("World")
 ])), "Hello World");
-test("handles empty elements", (0, index_js_1.foldView)(index_js_1.textAlgebra, (0, index_js_1.Div)()), "\n" // block elements add newline even when empty
+test("handles empty elements", foldView(textAlgebra, Div()), "\n" // block elements add newline even when empty
 );
 // ------------------------------------
 // Links Algebra Tests
 // ------------------------------------
 section("Links Algebra");
-test("finds single link", (0, index_js_1.foldView)(index_js_1.linksAlgebra, (0, index_js_1.A)("Home").setHref("/")), [{ href: "/" }]);
-test("finds multiple links", (0, index_js_1.foldView)(index_js_1.linksAlgebra, (0, index_js_1.Div)([
-    (0, index_js_1.A)("Home").setHref("/"),
-    (0, index_js_1.A)("About").setHref("/about"),
-    (0, index_js_1.A)("Contact").setHref("/contact"),
+test("finds single link", foldView(linksAlgebra, A("Home").setHref("/")), [{ href: "/" }]);
+test("finds multiple links", foldView(linksAlgebra, Div([
+    A("Home").setHref("/"),
+    A("About").setHref("/about"),
+    A("Contact").setHref("/contact"),
 ])), [{ href: "/" }, { href: "/about" }, { href: "/contact" }]);
-test("finds nested links", (0, index_js_1.foldView)(index_js_1.linksAlgebra, (0, index_js_1.Div)([
-    (0, index_js_1.P)([(0, index_js_1.A)("Link 1").setHref("/1")]),
-    (0, index_js_1.P)([(0, index_js_1.A)("Link 2").setHref("/2")]),
+test("finds nested links", foldView(linksAlgebra, Div([
+    P([A("Link 1").setHref("/1")]),
+    P([A("Link 2").setHref("/2")]),
 ])), [{ href: "/1" }, { href: "/2" }]);
-test("returns empty for no links", (0, index_js_1.foldView)(index_js_1.linksAlgebra, (0, index_js_1.Div)([(0, index_js_1.P)("No links here")])), []);
-test("includes link attributes", (0, index_js_1.foldView)(index_js_1.linksAlgebra, (0, index_js_1.A)("External").setHref("https://example.com").setTarget("_blank").setRel("noopener")), [{ href: "https://example.com", target: "_blank", rel: "noopener" }]);
+test("returns empty for no links", foldView(linksAlgebra, Div([P("No links here")])), []);
+test("includes link attributes", foldView(linksAlgebra, A("External").setHref("https://example.com").setTarget("_blank").setRel("noopener")), [{ href: "https://example.com", target: "_blank", rel: "noopener" }]);
 // ------------------------------------
 // Custom Algebra Tests
 // ------------------------------------
@@ -93,7 +91,7 @@ const elementNamesAlgebra = {
     tag: (el, _, childNames) => [el, ...childNames],
     list: (arrays) => arrays.flat(),
 };
-test("custom algebra collects element names", (0, index_js_1.foldView)(elementNamesAlgebra, (0, index_js_1.Div)([(0, index_js_1.P)("Hello"), (0, index_js_1.Span)("World")])), ["div", "p", "span"]);
+test("custom algebra collects element names", foldView(elementNamesAlgebra, Div([P("Hello"), Span("World")])), ["div", "p", "span"]);
 // Depth calculator
 const depthAlgebra = {
     text: () => 0,
@@ -101,17 +99,17 @@ const depthAlgebra = {
     tag: (_, __, childDepth) => 1 + childDepth,
     list: (depths) => Math.max(0, ...depths),
 };
-test("custom algebra calculates depth", (0, index_js_1.foldView)(depthAlgebra, (0, index_js_1.Div)([(0, index_js_1.Div)([(0, index_js_1.Div)([(0, index_js_1.P)("Deep")])])])), 4 // div > div > div > p
+test("custom algebra calculates depth", foldView(depthAlgebra, Div([Div([Div([P("Deep")])])])), 4 // div > div > div > p
 );
-test("custom algebra handles flat structure", (0, index_js_1.foldView)(depthAlgebra, (0, index_js_1.Div)([(0, index_js_1.P)("A"), (0, index_js_1.P)("B"), (0, index_js_1.P)("C")])), 2 // div > p (each p is same depth)
+test("custom algebra handles flat structure", foldView(depthAlgebra, Div([P("A"), P("B"), P("C")])), 2 // div > p (each p is same depth)
 );
 // ------------------------------------
 // Edge Cases
 // ------------------------------------
 section("Edge Cases");
-test("handles empty string", (0, index_js_1.foldView)(index_js_1.countAlgebra, ""), 0);
-test("handles array of strings", (0, index_js_1.foldView)(index_js_1.textAlgebra, ["Hello", " ", "World"]), "Hello World");
-test("handles mixed content", (0, index_js_1.foldView)(index_js_1.countAlgebra, [(0, index_js_1.Div)(), "text", (0, index_js_1.P)(), "more"]), 2 // only counts elements, not strings
+test("handles empty string", foldView(countAlgebra, ""), 0);
+test("handles array of strings", foldView(textAlgebra, ["Hello", " ", "World"]), "Hello World");
+test("handles mixed content", foldView(countAlgebra, [Div(), "text", P(), "more"]), 2 // only counts elements, not strings
 );
 // ------------------------------------
 // Summary

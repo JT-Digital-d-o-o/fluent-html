@@ -1,11 +1,9 @@
-"use strict";
 // ------------------------------------
 // Tests for Type-Safe Routes
 // ------------------------------------
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_js_1 = require("../src/index.js");
-const routes_js_1 = require("../src/routes.js");
-const ids_js_1 = require("../src/ids.js");
+import { render, Button, Form } from "../src/index.js";
+import { defineRoutes } from "../src/routes.js";
+import { defineIds } from "../src/ids.js";
 // ------------------------------------
 // Test Runner
 // ------------------------------------
@@ -33,7 +31,7 @@ function section(name) {
 // ------------------------------------
 // Route Definitions
 // ------------------------------------
-const routes = (0, routes_js_1.defineRoutes)({
+const routes = defineRoutes({
     list: { method: "get", path: "/users" },
     create: { method: "post", path: "/users" },
     detail: { method: "get", path: "/users/:id" },
@@ -102,23 +100,23 @@ test("leaves normal IDs unchanged", routes.detail({ id: "550e8400-e29b-41d4-a716
 // Integration: setHtmx() + render()
 // ------------------------------------
 section("Integration with setHtmx() and render()");
-test("renders hx-get for list route", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list())), '<button hx-get="/users">Load</button>');
-test("renders hx-delete for delete route", (0, index_js_1.render)((0, index_js_1.Button)("Remove").setHtmx(routes.delete({ id: "5" }))), '<button hx-delete="/users/5">Remove</button>');
-test("renders with target and swap", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({ target: "#list", swap: "outerMorph" }))), '<button hx-get="/users" hx-target="#list" hx-swap="outerMorph">Load</button>');
-test("renders hx-post for create route", (0, index_js_1.render)((0, index_js_1.Form)((0, index_js_1.Button)("Save").setType("submit")).setHtmx(routes.create())), '<form hx-post="/users"><button type="submit">Save</button></form>');
-test("renders parameterized with options", (0, index_js_1.render)((0, index_js_1.Button)("Edit").setHtmx(routes.update({ id: "3" }, { swap: "outerMorph" }))), '<button hx-put="/users/3" hx-swap="outerMorph">Edit</button>');
+test("renders hx-get for list route", render(Button("Load").setHtmx(routes.list())), '<button hx-get="/users">Load</button>');
+test("renders hx-delete for delete route", render(Button("Remove").setHtmx(routes.delete({ id: "5" }))), '<button hx-delete="/users/5">Remove</button>');
+test("renders with target and swap", render(Button("Load").setHtmx(routes.list({ target: "#list", swap: "outerMorph" }))), '<button hx-get="/users" hx-target="#list" hx-swap="outerMorph">Load</button>');
+test("renders hx-post for create route", render(Form(Button("Save").setType("submit")).setHtmx(routes.create())), '<form hx-post="/users"><button type="submit">Save</button></form>');
+test("renders parameterized with options", render(Button("Edit").setHtmx(routes.update({ id: "3" }, { swap: "outerMorph" }))), '<button hx-put="/users/3" hx-swap="outerMorph">Edit</button>');
 // ------------------------------------
 // Integration: defineIds() targets
 // ------------------------------------
 section("Integration with defineIds()");
-const ids = (0, ids_js_1.defineIds)(["user-list", "user-detail"]);
+const ids = defineIds(["user-list", "user-detail"]);
 test("Id target resolves to selector", routes.list({ target: ids.userList }).target, "#user-list");
-test("renders with Id target", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({ target: ids.userList }))), '<button hx-get="/users" hx-target="#user-list">Load</button>');
-test("parameterized route with Id target", (0, index_js_1.render)((0, index_js_1.Button)("View").setHtmx(routes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))), '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
+test("renders with Id target", render(Button("Load").setHtmx(routes.list({ target: ids.userList }))), '<button hx-get="/users" hx-target="#user-list">Load</button>');
+test("parameterized route with Id target", render(Button("View").setHtmx(routes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))), '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
 // ------------------------------------
 // Prefixed Routes
 // ------------------------------------
-const prefixedRoutes = (0, routes_js_1.defineRoutes)("/users", {
+const prefixedRoutes = defineRoutes("/users", {
     list: { method: "get", path: "/" },
     create: { method: "post", path: "/" },
     detail: { method: "get", path: "/:id" },
@@ -152,30 +150,30 @@ test("prefixed resolve() on parameterless route", prefixedRoutes.list.resolve(),
 test("prefixed resolve() on parameterized route", prefixedRoutes.detail.resolve({ id: "42" }), "/users/42");
 test("prefixed resolve() on multi-param route", prefixedRoutes.nested.resolve({ userId: "1", postId: "99" }), "/users/1/posts/99");
 section("Prefixed routes: render integration");
-test("prefixed renders hx-get for list route", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(prefixedRoutes.list())), '<button hx-get="/users">Load</button>');
-test("prefixed renders hx-delete with params", (0, index_js_1.render)((0, index_js_1.Button)("Remove").setHtmx(prefixedRoutes.detail({ id: "5" }))), '<button hx-get="/users/5">Remove</button>');
-test("prefixed renders with target and swap", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(prefixedRoutes.list({ target: "#list", swap: "outerMorph" }))), '<button hx-get="/users" hx-target="#list" hx-swap="outerMorph">Load</button>');
+test("prefixed renders hx-get for list route", render(Button("Load").setHtmx(prefixedRoutes.list())), '<button hx-get="/users">Load</button>');
+test("prefixed renders hx-delete with params", render(Button("Remove").setHtmx(prefixedRoutes.detail({ id: "5" }))), '<button hx-get="/users/5">Remove</button>');
+test("prefixed renders with target and swap", render(Button("Load").setHtmx(prefixedRoutes.list({ target: "#list", swap: "outerMorph" }))), '<button hx-get="/users" hx-target="#list" hx-swap="outerMorph">Load</button>');
 section("Prefixed routes with defineIds()");
-test("prefixed route with Id target", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(prefixedRoutes.list({ target: ids.userList }))), '<button hx-get="/users" hx-target="#user-list">Load</button>');
-test("prefixed param route with Id target", (0, index_js_1.render)((0, index_js_1.Button)("View").setHtmx(prefixedRoutes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))), '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
+test("prefixed route with Id target", render(Button("Load").setHtmx(prefixedRoutes.list({ target: ids.userList }))), '<button hx-get="/users" hx-target="#user-list">Load</button>');
+test("prefixed param route with Id target", render(Button("View").setHtmx(prefixedRoutes.detail({ id: "1" }, { target: ids.userDetail, swap: "outerMorph" }))), '<button hx-get="/users/1" hx-target="#user-detail" hx-swap="outerMorph">View</button>');
 // ------------------------------------
 // Id resolution for select, indicator, disable, include
 // ------------------------------------
-const extraIds = (0, ids_js_1.defineIds)(["content", "spinner", "form-fields", "submit-btn"]);
+const extraIds = defineIds(["content", "spinner", "form-fields", "submit-btn"]);
 section("Id resolution: select");
 test("select accepts Id object", routes.list({ select: extraIds.content }).select, "#content");
 test("select still accepts plain string", routes.list({ select: "#other" }).select, "#other");
-test("renders hx-select with Id", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({ select: extraIds.content }))), '<button hx-get="/users" hx-select="#content">Load</button>');
+test("renders hx-select with Id", render(Button("Load").setHtmx(routes.list({ select: extraIds.content }))), '<button hx-get="/users" hx-select="#content">Load</button>');
 section("Id resolution: indicator");
 test("indicator accepts Id object", routes.list({ indicator: extraIds.spinner }).indicator, "#spinner");
 test("indicator still accepts plain string", routes.list({ indicator: ".loading" }).indicator, ".loading");
-test("renders hx-indicator with Id", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({ indicator: extraIds.spinner }))), '<button hx-get="/users" hx-indicator="#spinner">Load</button>');
+test("renders hx-indicator with Id", render(Button("Load").setHtmx(routes.list({ indicator: extraIds.spinner }))), '<button hx-get="/users" hx-indicator="#spinner">Load</button>');
 section("Id resolution: disable");
 test("disable accepts Id object", routes.list({ disable: extraIds.submitBtn }).disable, "#submit-btn");
-test("renders hx-disable with Id", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({ disable: extraIds.submitBtn }))), '<button hx-get="/users" hx-disable="#submit-btn">Load</button>');
+test("renders hx-disable with Id", render(Button("Load").setHtmx(routes.list({ disable: extraIds.submitBtn }))), '<button hx-get="/users" hx-disable="#submit-btn">Load</button>');
 section("Id resolution: include");
 test("include accepts Id object", routes.list({ include: extraIds.formFields }).include, "#form-fields");
-test("renders hx-include with Id", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({ include: extraIds.formFields }))), '<button hx-get="/users" hx-include="#form-fields">Load</button>');
+test("renders hx-include with Id", render(Button("Load").setHtmx(routes.list({ include: extraIds.formFields }))), '<button hx-get="/users" hx-include="#form-fields">Load</button>');
 section("Id resolution: multiple Id fields together");
 test("multiple Id fields resolve correctly", (() => {
     const htmx = routes.list({
@@ -186,14 +184,14 @@ test("multiple Id fields resolve correctly", (() => {
     });
     return [htmx.target, htmx.select, htmx.indicator, htmx.include];
 })(), ["#user-list", "#content", "#spinner", "#form-fields"]);
-test("renders all Id fields together", (0, index_js_1.render)((0, index_js_1.Button)("Load").setHtmx(routes.list({
+test("renders all Id fields together", render(Button("Load").setHtmx(routes.list({
     target: ids.userList,
     select: extraIds.content,
     indicator: extraIds.spinner,
 }))), '<button hx-get="/users" hx-target="#user-list" hx-select="#content" hx-indicator="#spinner">Load</button>');
 section("Id resolution: parameterized routes");
 test("parameterized route with Id select", routes.detail({ id: "42" }, { select: extraIds.content }).select, "#content");
-test("parameterized route renders with Id indicator", (0, index_js_1.render)((0, index_js_1.Button)("View").setHtmx(routes.detail({ id: "1" }, { indicator: extraIds.spinner }))), '<button hx-get="/users/1" hx-indicator="#spinner">View</button>');
+test("parameterized route renders with Id indicator", render(Button("View").setHtmx(routes.detail({ id: "1" }, { indicator: extraIds.spinner }))), '<button hx-get="/users/1" hx-indicator="#spinner">View</button>');
 section("Prefixed registry immutability");
 test("prefixed registry is frozen", Object.isFrozen(prefixedRoutes), true);
 // ------------------------------------

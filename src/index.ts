@@ -267,13 +267,6 @@ export {
 
 // Common Patterns
 export {
-  // Layout helpers
-  VStack,
-  HStack,
-  Grid,
-  // HTMX patterns
-  SearchInput,
-  InfiniteScroll,
   // OOB helpers (deprecated — use Partial)
   OOB,
   withOOB,
@@ -287,10 +280,6 @@ export {
   HxResponse,
   HxResponseResult,
   HxLocationConfig,
-  // Form patterns
-  FormField,
-  // List patterns
-  KeyedList,
 } from './patterns.js';
 
 // Type-safe IDs

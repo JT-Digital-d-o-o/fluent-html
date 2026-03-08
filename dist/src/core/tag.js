@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tag = exports.EMPTY_ATTRS = void 0;
-const htmx_js_1 = require("../htmx.js");
-const ids_js_1 = require("../ids.js");
+import { hx } from "../htmx.js";
+import { isId } from "../ids.js";
 /** @internal Shared empty attributes object — never mutate */
-exports.EMPTY_ATTRS = Object.freeze({});
-class Tag {
+export const EMPTY_ATTRS = Object.freeze({});
+export class Tag {
     constructor(element, ...children) {
         // ------------------------------------
         // Variant Proxy
@@ -16,7 +13,7 @@ class Tag {
         this.child = children.length === 0 ? "" : children.length === 1 ? children[0] : children;
     }
     setId(id) {
-        this.id = id ? ((0, ids_js_1.isId)(id) ? id.id : id) : undefined;
+        this.id = id ? (isId(id) ? id.id : id) : undefined;
         return this;
     }
     setClass(c) {
@@ -40,7 +37,7 @@ class Tag {
         return this;
     }
     addAttribute(key, value) {
-        if (this.attributes === exports.EMPTY_ATTRS) {
+        if (this.attributes === EMPTY_ATTRS) {
             this.attributes = { [key]: value };
         }
         else {
@@ -50,28 +47,28 @@ class Tag {
     }
     setHtmx(endpointOrHtmx, options) {
         this.htmx = typeof endpointOrHtmx === 'string'
-            ? (0, htmx_js_1.hx)(endpointOrHtmx, options)
+            ? hx(endpointOrHtmx, options)
             : endpointOrHtmx;
         return this;
     }
     hxGet(endpoint, options) {
-        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'get' });
+        this.htmx = hx(endpoint, { ...options, method: 'get' });
         return this;
     }
     hxPost(endpoint, options) {
-        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'post' });
+        this.htmx = hx(endpoint, { ...options, method: 'post' });
         return this;
     }
     hxPut(endpoint, options) {
-        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'put' });
+        this.htmx = hx(endpoint, { ...options, method: 'put' });
         return this;
     }
     hxPatch(endpoint, options) {
-        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'patch' });
+        this.htmx = hx(endpoint, { ...options, method: 'patch' });
         return this;
     }
     hxDelete(endpoint, options) {
-        this.htmx = (0, htmx_js_1.hx)(endpoint, { ...options, method: 'delete' });
+        this.htmx = hx(endpoint, { ...options, method: 'delete' });
         return this;
     }
     setToggles(toggles) {
@@ -180,7 +177,7 @@ class Tag {
      * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
      */
     setDataAttrs(attrs) {
-        if (this.attributes === exports.EMPTY_ATTRS)
+        if (this.attributes === EMPTY_ATTRS)
             this.attributes = {};
         for (const [key, value] of Object.entries(attrs)) {
             // Convert camelCase to kebab-case
@@ -203,7 +200,7 @@ class Tag {
      * })
      */
     setAria(attrs) {
-        if (this.attributes === exports.EMPTY_ATTRS)
+        if (this.attributes === EMPTY_ATTRS)
             this.attributes = {};
         for (const [key, value] of Object.entries(attrs)) {
             // Convert camelCase to kebab-case
@@ -771,8 +768,7 @@ class Tag {
         return this.addClass(`outline-${value}`);
     }
 }
-exports.Tag = Tag;
 /** @internal */
 Tag.prototype._t = 1;
-Tag.prototype.attributes = exports.EMPTY_ATTRS;
+Tag.prototype.attributes = EMPTY_ATTRS;
 //# sourceMappingURL=tag.js.map

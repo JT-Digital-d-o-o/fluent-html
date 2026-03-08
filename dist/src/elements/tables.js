@@ -1,34 +1,21 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ColTag = exports.ColgroupTag = exports.TdTag = exports.ThTag = void 0;
-exports.Table = Table;
-exports.Thead = Thead;
-exports.Tbody = Tbody;
-exports.Tfoot = Tfoot;
-exports.Tr = Tr;
-exports.Th = Th;
-exports.Td = Td;
-exports.Caption = Caption;
-exports.Colgroup = Colgroup;
-exports.Col = Col;
-const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
-function Table(...children) {
-    return (0, utils_js_1.El)("table", ...children);
+import { Tag } from "../core/tag.js";
+import { El } from "../core/utils.js";
+export function Table(...children) {
+    return El("table", ...children);
 }
-function Thead(...children) {
-    return (0, utils_js_1.El)("thead", ...children);
+export function Thead(...children) {
+    return El("thead", ...children);
 }
-function Tbody(...children) {
-    return (0, utils_js_1.El)("tbody", ...children);
+export function Tbody(...children) {
+    return El("tbody", ...children);
 }
-function Tfoot(...children) {
-    return (0, utils_js_1.El)("tfoot", ...children);
+export function Tfoot(...children) {
+    return El("tfoot", ...children);
 }
-function Tr(...children) {
-    return (0, utils_js_1.El)("tr", ...children);
+export function Tr(...children) {
+    return El("tr", ...children);
 }
-class ThTag extends tag_js_1.Tag {
+export class ThTag extends Tag {
     setColspan(colspan) {
         this.colspan = colspan;
         return this;
@@ -42,13 +29,12 @@ class ThTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.ThTag = ThTag;
 /** @internal */
 ThTag.prototype._sk = ['colspan', 'rowspan', 'scope'];
-function Th(...children) {
+export function Th(...children) {
     return new ThTag("th", ...children);
 }
-class TdTag extends tag_js_1.Tag {
+export class TdTag extends Tag {
     setColspan(colspan) {
         this.colspan = colspan;
         return this;
@@ -58,37 +44,34 @@ class TdTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.TdTag = TdTag;
 /** @internal */
 TdTag.prototype._sk = ['colspan', 'rowspan'];
-function Td(...children) {
+export function Td(...children) {
     return new TdTag("td", ...children);
 }
-function Caption(...children) {
-    return (0, utils_js_1.El)("caption", ...children);
+export function Caption(...children) {
+    return El("caption", ...children);
 }
-class ColgroupTag extends tag_js_1.Tag {
+export class ColgroupTag extends Tag {
     setSpan(span) {
         this.span = span;
         return this;
     }
 }
-exports.ColgroupTag = ColgroupTag;
 /** @internal */
 ColgroupTag.prototype._sk = ['span'];
-function Colgroup(...children) {
+export function Colgroup(...children) {
     return new ColgroupTag("colgroup", ...children);
 }
-class ColTag extends tag_js_1.Tag {
+export class ColTag extends Tag {
     setSpan(span) {
         this.span = span;
         return this;
     }
 }
-exports.ColTag = ColTag;
 /** @internal */
 ColTag.prototype._sk = ['span'];
-function Col(...children) {
+export function Col(...children) {
     return new ColTag("col", ...children);
 }
 //# sourceMappingURL=tables.js.map

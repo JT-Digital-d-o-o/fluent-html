@@ -1,54 +1,51 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.render = render;
-const tag_js_1 = require("../core/tag.js");
-const escape_js_1 = require("./escape.js");
+import { EMPTY_ATTRS } from "../core/tag.js";
+import { escapeHtml, escapeAttr } from "./escape.js";
 // HTML void elements — no closing tag, no children
 const VOID_ELEMENTS = new Set([
     'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
     'link', 'meta', 'source', 'track', 'wbr'
 ]);
-function render(...views) {
+export function render(...views) {
     return renderImpl(views.length === 1 ? views[0] : views, false);
 }
 function buildHtmx(htmx) {
-    let result = 'hx-' + htmx.method + '="' + (0, escape_js_1.escapeAttr)(htmx.endpoint) + '"';
+    let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
     if (htmx.target)
-        result += ' hx-target="' + (0, escape_js_1.escapeAttr)(htmx.target) + '"';
+        result += ' hx-target="' + escapeAttr(htmx.target) + '"';
     if (htmx.swap)
-        result += ' hx-swap="' + (0, escape_js_1.escapeAttr)(htmx.swap) + '"';
+        result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
     if (htmx.swapOob !== undefined) {
-        result += ' hx-swap-oob="' + (typeof htmx.swapOob === 'string' ? (0, escape_js_1.escapeAttr)(htmx.swapOob) : htmx.swapOob) + '"';
+        result += ' hx-swap-oob="' + (typeof htmx.swapOob === 'string' ? escapeAttr(htmx.swapOob) : htmx.swapOob) + '"';
     }
     if (htmx.select)
-        result += ' hx-select="' + (0, escape_js_1.escapeAttr)(htmx.select) + '"';
+        result += ' hx-select="' + escapeAttr(htmx.select) + '"';
     if (htmx.trigger)
-        result += ' hx-trigger="' + (0, escape_js_1.escapeAttr)(htmx.trigger) + '"';
+        result += ' hx-trigger="' + escapeAttr(htmx.trigger) + '"';
     if (htmx.pushUrl !== undefined) {
-        result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? (0, escape_js_1.escapeAttr)(htmx.pushUrl) : htmx.pushUrl) + '"';
+        result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl) + '"';
     }
     if (htmx.replaceUrl !== undefined) {
-        result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? (0, escape_js_1.escapeAttr)(htmx.replaceUrl) : htmx.replaceUrl) + '"';
+        result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl) + '"';
     }
     if (htmx.vals) {
-        result += " hx-vals='" + (typeof htmx.vals === 'string' ? (0, escape_js_1.escapeAttr)(htmx.vals) : JSON.stringify(htmx.vals)) + "'";
+        result += " hx-vals='" + (typeof htmx.vals === 'string' ? escapeAttr(htmx.vals) : JSON.stringify(htmx.vals)) + "'";
     }
     if (htmx.headers)
         result += " hx-headers='" + JSON.stringify(htmx.headers) + "'";
     if (htmx.include)
-        result += ' hx-include="' + (0, escape_js_1.escapeAttr)(htmx.include) + '"';
+        result += ' hx-include="' + escapeAttr(htmx.include) + '"';
     if (htmx.encoding)
-        result += ' hx-encoding="' + (0, escape_js_1.escapeAttr)(htmx.encoding) + '"';
+        result += ' hx-encoding="' + escapeAttr(htmx.encoding) + '"';
     if (htmx.validate !== undefined)
         result += ' hx-validate="' + htmx.validate + '"';
     if (htmx.confirm)
-        result += ' hx-confirm="' + (0, escape_js_1.escapeAttr)(htmx.confirm) + '"';
+        result += ' hx-confirm="' + escapeAttr(htmx.confirm) + '"';
     if (htmx.indicator)
-        result += ' hx-indicator="' + (0, escape_js_1.escapeAttr)(htmx.indicator) + '"';
+        result += ' hx-indicator="' + escapeAttr(htmx.indicator) + '"';
     if (htmx.disable)
-        result += ' hx-disable="' + (0, escape_js_1.escapeAttr)(htmx.disable) + '"';
+        result += ' hx-disable="' + escapeAttr(htmx.disable) + '"';
     if (htmx.sync)
-        result += ' hx-sync="' + (0, escape_js_1.escapeAttr)(htmx.sync) + '"';
+        result += ' hx-sync="' + escapeAttr(htmx.sync) + '"';
     if (htmx.preserve !== undefined)
         result += ' hx-preserve="' + htmx.preserve + '"';
     if (htmx.boost !== undefined)
@@ -69,7 +66,7 @@ function buildHtmx(htmx) {
         for (const code of Object.keys(htmx.status)) {
             const cfg = htmx.status[code];
             const value = typeof cfg === 'string' ? cfg : buildStatusConfig(cfg);
-            result += ' hx-status:' + code + '="' + (0, escape_js_1.escapeAttr)(value) + '"';
+            result += ' hx-status:' + code + '="' + escapeAttr(value) + '"';
         }
     }
     return result;
@@ -92,7 +89,7 @@ function buildStatusConfig(cfg) {
 }
 function renderImpl(view, isRawContext) {
     if (typeof view === "string") {
-        return isRawContext ? view : (0, escape_js_1.escapeHtml)(view);
+        return isRawContext ? view : escapeHtml(view);
     }
     const vt = view._t;
     if (vt === 2) {
@@ -104,30 +101,30 @@ function renderImpl(view, isRawContext) {
         let attrs = '';
         const tid = tag.id;
         if (tid !== undefined)
-            attrs += ' id="' + (0, escape_js_1.escapeAttr)(tid) + '"';
+            attrs += ' id="' + escapeAttr(tid) + '"';
         const tcls = tag.class;
         if (tcls !== undefined)
-            attrs += ' class="' + (0, escape_js_1.escapeAttr)(tcls) + '"';
+            attrs += ' class="' + escapeAttr(tcls) + '"';
         const tsty = tag.style;
         if (tsty !== undefined)
-            attrs += ' style="' + (0, escape_js_1.escapeAttr)(tsty) + '"';
+            attrs += ' style="' + escapeAttr(tsty) + '"';
         const sk = tag._sk;
         if (sk !== undefined) {
             for (let i = 0; i < sk.length; i++) {
                 const value = tag[sk[i]];
                 if (value !== undefined && value !== null) {
-                    attrs += ' ' + sk[i] + '="' + (0, escape_js_1.escapeAttr)(typeof value === 'string' ? value : String(value)) + '"';
+                    attrs += ' ' + sk[i] + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
                 }
             }
         }
         const extraAttrs = tag.attributes;
-        if (extraAttrs !== tag_js_1.EMPTY_ATTRS) {
+        if (extraAttrs !== EMPTY_ATTRS) {
             const extraKeys = Object.keys(extraAttrs);
             for (let i = 0; i < extraKeys.length; i++) {
                 const key = extraKeys[i];
                 const value = extraAttrs[key];
                 if (value !== undefined && value !== null) {
-                    attrs += ' ' + key + '="' + (0, escape_js_1.escapeAttr)(String(value)) + '"';
+                    attrs += ' ' + key + '="' + escapeAttr(String(value)) + '"';
                 }
             }
         }

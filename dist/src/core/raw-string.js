@@ -1,17 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.RawString = void 0;
-exports.Raw = Raw;
 /**
  * Wrapper for raw HTML strings that bypass XSS escaping.
  * WARNING: Only use with trusted content. Never use with user input.
  */
-class RawString {
+export class RawString {
     constructor(html) {
         this.html = html;
     }
 }
-exports.RawString = RawString;
 /** @internal */
 RawString.prototype._t = 2;
 /**
@@ -26,7 +21,7 @@ RawString.prototype._t = 2;
  * // Render trusted SVG
  * Div(Raw('<svg>...</svg>'))
  */
-function Raw(html) {
+export function Raw(html) {
     return new RawString(html);
 }
 //# sourceMappingURL=raw-string.js.map

@@ -1,21 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.OutputTag = exports.FieldsetTag = exports.OptgroupTag = exports.OptionTag = exports.SelectTag = exports.FormTag = exports.LabelTag = exports.ButtonTag = exports.TextareaTag = exports.InputTag = void 0;
-exports.Input = Input;
-exports.Textarea = Textarea;
-exports.Button = Button;
-exports.Label = Label;
-exports.Form = Form;
-exports.Select = Select;
-exports.Option = Option;
-exports.Optgroup = Optgroup;
-exports.Datalist = Datalist;
-exports.Fieldset = Fieldset;
-exports.Legend = Legend;
-exports.Output = Output;
-const tag_js_1 = require("../core/tag.js");
-const utils_js_1 = require("../core/utils.js");
-class InputTag extends tag_js_1.Tag {
+import { Tag } from "../core/tag.js";
+import { El } from "../core/utils.js";
+export class InputTag extends Tag {
     setType(type) {
         this.type = type;
         return this;
@@ -89,13 +74,12 @@ class InputTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.InputTag = InputTag;
 /** @internal */
 InputTag.prototype._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
-function Input(...children) {
+export function Input(...children) {
     return new InputTag("input", ...children);
 }
-class TextareaTag extends tag_js_1.Tag {
+export class TextareaTag extends Tag {
     setPlaceholder(placeholder) {
         this.placeholder = placeholder;
         return this;
@@ -141,13 +125,12 @@ class TextareaTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.TextareaTag = TextareaTag;
 /** @internal */
 TextareaTag.prototype._sk = ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly'];
-function Textarea(...children) {
+export function Textarea(...children) {
     return new TextareaTag("textarea", ...children);
 }
-class ButtonTag extends tag_js_1.Tag {
+export class ButtonTag extends Tag {
     setType(type) {
         this.type = type;
         return this;
@@ -173,25 +156,23 @@ class ButtonTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.ButtonTag = ButtonTag;
 /** @internal */
 ButtonTag.prototype._sk = ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod'];
-function Button(...children) {
+export function Button(...children) {
     return new ButtonTag("button", ...children);
 }
-class LabelTag extends tag_js_1.Tag {
+export class LabelTag extends Tag {
     setFor(forId) {
         this.for = forId;
         return this;
     }
 }
-exports.LabelTag = LabelTag;
 /** @internal */
 LabelTag.prototype._sk = ['for'];
-function Label(...children) {
+export function Label(...children) {
     return new LabelTag("label", ...children);
 }
-class FormTag extends tag_js_1.Tag {
+export class FormTag extends Tag {
     setAction(action) {
         this.action = action;
         return this;
@@ -217,13 +198,12 @@ class FormTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.FormTag = FormTag;
 /** @internal */
 FormTag.prototype._sk = ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete'];
-function Form(...children) {
+export function Form(...children) {
     return new FormTag("form", ...children);
 }
-class SelectTag extends tag_js_1.Tag {
+export class SelectTag extends Tag {
     setName(name) {
         this.name = name;
         return this;
@@ -245,13 +225,12 @@ class SelectTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.SelectTag = SelectTag;
 /** @internal */
 SelectTag.prototype._sk = ['name', 'multiple', 'size', 'disabled', 'autofocus'];
-function Select(...children) {
+export function Select(...children) {
     return new SelectTag("select", ...children);
 }
-class OptionTag extends tag_js_1.Tag {
+export class OptionTag extends Tag {
     setValue(value) {
         this.value = value;
         return this;
@@ -269,13 +248,12 @@ class OptionTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.OptionTag = OptionTag;
 /** @internal */
 OptionTag.prototype._sk = ['value', 'selected', 'disabled', 'label'];
-function Option(...children) {
+export function Option(...children) {
     return new OptionTag("option", ...children);
 }
-class OptgroupTag extends tag_js_1.Tag {
+export class OptgroupTag extends Tag {
     setLabel(label) {
         this.label = label;
         return this;
@@ -285,16 +263,15 @@ class OptgroupTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.OptgroupTag = OptgroupTag;
 /** @internal */
 OptgroupTag.prototype._sk = ['label', 'disabled'];
-function Optgroup(...children) {
+export function Optgroup(...children) {
     return new OptgroupTag("optgroup", ...children);
 }
-function Datalist(...children) {
-    return (0, utils_js_1.El)("datalist", ...children);
+export function Datalist(...children) {
+    return El("datalist", ...children);
 }
-class FieldsetTag extends tag_js_1.Tag {
+export class FieldsetTag extends Tag {
     setName(name) {
         this.name = name;
         return this;
@@ -304,16 +281,15 @@ class FieldsetTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.FieldsetTag = FieldsetTag;
 /** @internal */
 FieldsetTag.prototype._sk = ['name', 'disabled'];
-function Fieldset(...children) {
+export function Fieldset(...children) {
     return new FieldsetTag("fieldset", ...children);
 }
-function Legend(...children) {
-    return (0, utils_js_1.El)("legend", ...children);
+export function Legend(...children) {
+    return El("legend", ...children);
 }
-class OutputTag extends tag_js_1.Tag {
+export class OutputTag extends Tag {
     setFor(forId) {
         this.for = forId;
         return this;
@@ -323,10 +299,9 @@ class OutputTag extends tag_js_1.Tag {
         return this;
     }
 }
-exports.OutputTag = OutputTag;
 /** @internal */
 OutputTag.prototype._sk = ['for', 'name'];
-function Output(...children) {
+export function Output(...children) {
     return new OutputTag("output", ...children);
 }
 //# sourceMappingURL=forms.js.map
