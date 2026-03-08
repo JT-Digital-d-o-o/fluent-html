@@ -111,7 +111,7 @@ Key rules:
 Key rules:
 - **Components = plain functions** with a typed props object (never positional args)
 - **One view file per page/endpoint response** — split by interaction, not size
-- **Shared partials** (rows, cards, badges) in `[feature].partials.ts`
+- **Shared components** (rows, cards, badges) in `[feature].components.ts`
 - **Discriminated unions** for page states — use `Match()`, not conditionals
 - **!IMPORTANT:** Always abstract and reuse components — avoid code duplication
 
