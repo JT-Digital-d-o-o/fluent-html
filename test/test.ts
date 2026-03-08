@@ -1275,6 +1275,61 @@ describe("Control Flow - Match", () => {
       x: () => Span("Found"),
     }, () => Span("Default"))), `<span>Default</span>`);
   });
+
+  // Discriminated union overload
+  it("Match discriminated union — exhaustive", () => {
+    type State =
+      | { status: "loading" }
+      | { status: "error"; message: string }
+      | { status: "success"; count: number };
+
+    const state = { status: "error", message: "Not found" } as State;
+
+    assert.strictEqual(render(Match(state, "status", {
+      loading: () => Span("Loading..."),
+      error:   (s) => Span(s.message),
+      success: (s) => Span(`Count: ${s.count}`),
+    })), `<span>Not found</span>`);
+  });
+
+  it("Match discriminated union — narrowing provides correct type", () => {
+    type Result =
+      | { kind: "ok"; value: number }
+      | { kind: "err"; reason: string };
+
+    const result = { kind: "ok", value: 42 } as Result;
+
+    assert.strictEqual(render(Match(result, "kind", {
+      ok:  (r) => Span(`Value: ${r.value}`),
+      err: (r) => Span(`Error: ${r.reason}`),
+    })), `<span>Value: 42</span>`);
+  });
+
+  it("Match discriminated union — partial with default (hit)", () => {
+    type State =
+      | { status: "loading" }
+      | { status: "error"; message: string }
+      | { status: "success"; count: number };
+
+    const state = { status: "error", message: "Oops" } as State;
+
+    assert.strictEqual(render(Match(state, "status", {
+      error: (s) => Span(s.message),
+    }, () => Span("Fallback"))), `<span>Oops</span>`);
+  });
+
+  it("Match discriminated union — partial with default (miss)", () => {
+    type State =
+      | { status: "loading" }
+      | { status: "error"; message: string }
+      | { status: "success"; count: number };
+
+    const state = { status: "loading" } as State;
+
+    assert.strictEqual(render(Match(state, "status", {
+      error: (s) => Span(s.message),
+    }, () => Span("Fallback"))), `<span>Fallback</span>`);
+  });
 });
 
 // ------------------------------------

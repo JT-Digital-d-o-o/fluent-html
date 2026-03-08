@@ -907,6 +907,34 @@ describe("Control Flow - Match", () => {
             x: () => Span("Found"),
         }, () => Span("Default"))), `<span>Default</span>`);
     });
+    // Discriminated union overload
+    it("Match discriminated union — exhaustive", () => {
+        const state = { status: "error", message: "Not found" };
+        assert.strictEqual(render(Match(state, "status", {
+            loading: () => Span("Loading..."),
+            error: (s) => Span(s.message),
+            success: (s) => Span(`Count: ${s.count}`),
+        })), `<span>Not found</span>`);
+    });
+    it("Match discriminated union — narrowing provides correct type", () => {
+        const result = { kind: "ok", value: 42 };
+        assert.strictEqual(render(Match(result, "kind", {
+            ok: (r) => Span(`Value: ${r.value}`),
+            err: (r) => Span(`Error: ${r.reason}`),
+        })), `<span>Value: 42</span>`);
+    });
+    it("Match discriminated union — partial with default (hit)", () => {
+        const state = { status: "error", message: "Oops" };
+        assert.strictEqual(render(Match(state, "status", {
+            error: (s) => Span(s.message),
+        }, () => Span("Fallback"))), `<span>Oops</span>`);
+    });
+    it("Match discriminated union — partial with default (miss)", () => {
+        const state = { status: "loading" };
+        assert.strictEqual(render(Match(state, "status", {
+            error: (s) => Span(s.message),
+        }, () => Span("Fallback"))), `<span>Fallback</span>`);
+    });
 });
 // ------------------------------------
 // Control Flow - ForEach

@@ -62,6 +62,20 @@ Match(status, {
 }, () => Span("Unknown"))
 ```
 
+**Discriminated union `Match`** — pass a discriminant key for automatic type narrowing:
+```typescript
+Match(state, "status", {
+  loading: ()  => Spinner(),
+  error:   (s) => Alert(s.message),   // s narrowed to { status: "error"; message: string }
+  success: (s) => UserList(s.data),   // s narrowed to { status: "success"; data: User[] }
+})
+
+// Partial with default
+Match(state, "status", {
+  error: (s) => Alert(s.message),
+}, () => Spinner())
+```
+
 **IfThen narrows nullable values** — callback receives the non-null type:
 ```typescript
 IfThen(user.avatar, (avatar) => Img().setSrc(avatar))           // avatar: string

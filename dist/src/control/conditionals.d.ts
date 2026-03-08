@@ -52,6 +52,9 @@ export declare function SwitchCase(cases: Case[], defaultView?: Thunk<View>): Vi
  * Without a default, TypeScript ensures every possible value has a handler (exhaustive).
  * With a default, partial coverage is allowed.
  *
+ * Also supports discriminated union matching: pass a discriminant key to narrow each
+ * variant and receive the narrowed type in the handler callback.
+ *
  * @param value - The value to match against
  * @param cases - A record mapping each possible value to a thunk returning a View
  * @param defaultView - Optional fallback when no case matches (makes `cases` partial)
@@ -68,12 +71,37 @@ export declare function SwitchCase(cases: Case[], defaultView?: Thunk<View>): Vi
  * @example
  * // Partial — with a default fallback
  * Match(role, { admin: () => AdminBadge() }, () => Span("User"))
+ *
+ * @example
+ * // Discriminated union — exhaustive with narrowing
+ * type State =
+ *   | { status: "loading" }
+ *   | { status: "error"; message: string }
+ *   | { status: "success"; data: User[] };
+ *
+ * Match(state, "status", {
+ *   loading: ()  => Spinner(),
+ *   error:   (s) => Alert(s.message),   // s: { status: "error"; message: string }
+ *   success: (s) => UserList(s.data),   // s: { status: "success"; data: User[] }
+ * })
+ *
+ * @example
+ * // Discriminated union — partial with default
+ * Match(state, "status", {
+ *   error: (s) => Alert(s.message),
+ * }, () => Spinner())
  */
 export declare function Match<T extends string | number>(value: T, cases: {
     [K in T]: Thunk<View>;
 }): View;
 export declare function Match<T extends string | number>(value: T, cases: Partial<{
     [K in T]: Thunk<View>;
+}>, defaultView: Thunk<View>): View;
+export declare function Match<T extends Record<K, string | number>, K extends keyof T>(value: T, key: K, cases: {
+    [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View;
+}): View;
+export declare function Match<T extends Record<K, string | number>, K extends keyof T>(value: T, key: K, cases: Partial<{
+    [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View;
 }>, defaultView: Thunk<View>): View;
 export {};
 //# sourceMappingURL=conditionals.d.ts.map

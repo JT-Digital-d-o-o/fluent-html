@@ -89,6 +89,9 @@ export function SwitchCase(
  * Without a default, TypeScript ensures every possible value has a handler (exhaustive).
  * With a default, partial coverage is allowed.
  *
+ * Also supports discriminated union matching: pass a discriminant key to narrow each
+ * variant and receive the narrowed type in the handler callback.
+ *
  * @param value - The value to match against
  * @param cases - A record mapping each possible value to a thunk returning a View
  * @param defaultView - Optional fallback when no case matches (makes `cases` partial)
@@ -105,24 +108,80 @@ export function SwitchCase(
  * @example
  * // Partial — with a default fallback
  * Match(role, { admin: () => AdminBadge() }, () => Span("User"))
+ *
+ * @example
+ * // Discriminated union — exhaustive with narrowing
+ * type State =
+ *   | { status: "loading" }
+ *   | { status: "error"; message: string }
+ *   | { status: "success"; data: User[] };
+ *
+ * Match(state, "status", {
+ *   loading: ()  => Spinner(),
+ *   error:   (s) => Alert(s.message),   // s: { status: "error"; message: string }
+ *   success: (s) => UserList(s.data),   // s: { status: "success"; data: User[] }
+ * })
+ *
+ * @example
+ * // Discriminated union — partial with default
+ * Match(state, "status", {
+ *   error: (s) => Alert(s.message),
+ * }, () => Spinner())
  */
+// Value matching — exhaustive
 export function Match<T extends string | number>(
   value: T,
   cases: { [K in T]: Thunk<View> }
 ): View;
+// Value matching — partial with default
 export function Match<T extends string | number>(
   value: T,
   cases: Partial<{ [K in T]: Thunk<View> }>,
   defaultView: Thunk<View>
 ): View;
-export function Match<T extends string | number>(
+// Discriminated union — exhaustive
+export function Match<
+  T extends Record<K, string | number>,
+  K extends keyof T,
+>(
   value: T,
-  cases: Record<string | number, Thunk<View> | undefined>,
-  defaultView: Thunk<View> = Empty
+  key: K,
+  cases: { [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View },
+): View;
+// Discriminated union — partial with default
+export function Match<
+  T extends Record<K, string | number>,
+  K extends keyof T,
+>(
+  value: T,
+  key: K,
+  cases: Partial<{ [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View }>,
+  defaultView: Thunk<View>,
+): View;
+// Implementation
+export function Match(
+  value: unknown,
+  casesOrKey: unknown,
+  casesOrDefault?: unknown,
+  defaultView?: Thunk<View>,
 ): View {
-  const handler = cases[value];
+  // Discriminated union overload: Match(value, key, cases, ?default)
+  if (typeof casesOrKey === "string" && typeof casesOrDefault === "object" && casesOrDefault !== null) {
+    const obj = value as Record<string, string | number>;
+    const discriminant = obj[casesOrKey as string];
+    const cases = casesOrDefault as Record<string | number, ((value: unknown) => View) | undefined>;
+    const handler = cases[discriminant];
+    if (handler) {
+      return handler(value);
+    }
+    return (defaultView ?? Empty)();
+  }
+
+  // Value matching overload: Match(value, cases, ?default)
+  const cases = casesOrKey as Record<string | number, Thunk<View> | undefined>;
+  const handler = cases[value as string | number];
   if (handler) {
     return handler();
   }
-  return defaultView();
+  return ((casesOrDefault as Thunk<View> | undefined) ?? Empty)();
 }

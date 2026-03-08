@@ -171,6 +171,13 @@ Match(status, {
   success: () => Dashboard(),
 })
 
+// Match — discriminated union with automatic type narrowing
+Match(state, "status", {
+  loading: ()  => Spinner(),
+  error:   (s) => Alert(s.message),   // s narrowed to error variant
+  success: (s) => UserList(s.data),   // s narrowed to success variant
+})
+
 // Iteration
 Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
 Div(ForEach(5, i => Star()))  // Repeat 5 times
@@ -1293,6 +1300,30 @@ Match(status, {
 }, () => Span("Other"))
 ```
 
+#### Discriminated Union Matching
+
+Pass a discriminant key as the second argument to match on object unions. Each callback receives the **narrowed** variant type:
+
+```typescript
+type State =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "success"; data: User[] };
+
+function UserPage(state: State): View {
+  return Match(state, "status", {
+    loading: ()  => Spinner(),
+    error:   (s) => Alert(s.message),   // s: { status: "error"; message: string }
+    success: (s) => UserList(s.data),   // s: { status: "success"; data: User[] }
+  });
+}
+
+// Partial with default
+Match(state, "status", {
+  error: (s) => Alert(s.message),
+}, () => Spinner())
+```
+
 ### ForEach
 
 `ForEach` is a unified iteration helper with three overloads:
@@ -2003,6 +2034,8 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | `IfThenElse(value, thenFn, elseFn)`     | Conditional with narrowed non-null value |
 | `Match(value, cases)`                   | Exhaustive value matching   |
 | `Match(value, cases, defaultView)`      | Partial value matching with default |
+| `Match(value, key, cases)`              | Discriminated union matching with narrowing |
+| `Match(value, key, cases, defaultView)` | Partial discriminated union with default |
 | `ForEach(items, renderFn)`              | Iterate over items (with index) |
 | `ForEach(n, renderFn)`                  | Range 0 to n-1              |
 | `ForEach(start, end, renderFn)`         | Range start to end-1        |
