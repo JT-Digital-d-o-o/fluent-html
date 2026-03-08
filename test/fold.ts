@@ -2,8 +2,10 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  Div, P, H1, Span, A, Ul, Li,
-  foldView, countAlgebra, textAlgebra, linksAlgebra,
+  Div, P, H1, Span, A, Ul, Li, Raw, Button, Input,
+  render,
+  foldView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra,
+  createTransformAlgebra, addClassToMatching,
   ViewAlgebra,
 } from "../src/index.js";
 
@@ -144,4 +146,121 @@ describe("Edge Cases", () => {
   it("handles mixed content", () => {
     assert.deepStrictEqual(foldView(countAlgebra, [Div(), "text", P(), "more"]), 2);
   });
+});
+
+describe("Render Algebra", () => {
+  it("renders simple element", () => {
+    const html = foldView(renderAlgebra, Div("Hello"));
+    assert.ok(html.includes("<div>"));
+    assert.ok(html.includes("Hello"));
+    assert.ok(html.includes("</div>"));
+  });
+
+  it("renders nested elements", () => {
+    const html = foldView(renderAlgebra, Div(P("Inner")));
+    assert.ok(html.includes("<p>"));
+    assert.ok(html.includes("Inner"));
+  });
+
+  it("escapes text content", () => {
+    const html = foldView(renderAlgebra, Span("<script>"));
+    assert.ok(html.includes("&lt;script&gt;"));
+    assert.ok(!html.includes("<script>"));
+  });
+
+  it("passes through raw HTML", () => {
+    const html = foldView(renderAlgebra, Raw("<b>bold</b>"));
+    assert.equal(html, "<b>bold</b>");
+  });
+
+  it("renders element with id and class", () => {
+    const html = foldView(renderAlgebra, Div().setId("main").setClass("container"));
+    assert.ok(html.includes('id="main"'));
+    assert.ok(html.includes('class="container"'));
+  });
+});
+
+describe("Transform Algebra", () => {
+  it("transforms matching elements", () => {
+    const uppercaseDivs = createTransformAlgebra((el, attrs) => {
+      if (el === "div") {
+        return { element: "section", attrs };
+      }
+      return null;
+    });
+
+    const result = foldView(uppercaseDivs, Div(P("Hello")));
+    const html = render(result);
+    assert.ok(html.includes("<section>"));
+    assert.ok(html.includes("<p>Hello</p>"));
+  });
+
+  it("leaves non-matching elements unchanged", () => {
+    const onlyDivs = createTransformAlgebra((el) => {
+      if (el === "div") return { element: "section", attrs: {} };
+      return null;
+    });
+
+    const result = foldView(onlyDivs, P("Hello"));
+    const html = render(result);
+    assert.ok(html.includes("<p>"));
+  });
+
+  it("handles raw strings in transform", () => {
+    const noop = createTransformAlgebra(() => null);
+    const result = foldView(noop, Raw("<b>raw</b>"));
+    const html = render(result);
+    assert.equal(html, "<b>raw</b>");
+  });
+
+  it("handles plain text in transform", () => {
+    const noop = createTransformAlgebra(() => null);
+    const result = foldView(noop, "plain text");
+    assert.equal(result, "plain text");
+  });
+});
+
+describe("addClassToMatching", () => {
+  it("adds class to matching elements", () => {
+    const highlightP = addClassToMatching((el) => el === "p", "highlight");
+    const result = foldView(highlightP, Div(P("Hello")));
+    const html = render(result);
+    assert.ok(html.includes('class="highlight"'));
+  });
+
+  it("does not add class to non-matching elements", () => {
+    const highlightP = addClassToMatching((el) => el === "p", "highlight");
+    const result = foldView(highlightP, Div(Span("Hello")));
+    const html = render(result);
+    assert.ok(!html.includes("highlight"));
+  });
+
+  it("appends to existing class", () => {
+    const highlightP = addClassToMatching((el) => el === "p", "highlight");
+    const result = foldView(highlightP, Div(P("Hello").setClass("existing")));
+    const html = render(result);
+    assert.ok(html.includes('class="existing highlight"'));
+  });
+});
+
+describe("Render round-trip (Phase 4)", () => {
+  const views = [
+    Div("Hello World"),
+    Div(P("Paragraph"), Span("Inline")),
+    H1("Title"),
+    Div(Ul(Li("A"), Li("B"), Li("C"))),
+    Div().setId("test").setClass("cls"),
+    A("Link").setHref("/path"),
+    Div(Raw("<b>raw</b>")),
+  ];
+
+  for (const view of views) {
+    it(`foldView(renderAlgebra) agrees with render() for ${view.el}`, () => {
+      const foldResult = foldView(renderAlgebra, view);
+      const renderResult = render(view);
+      // The renderAlgebra joins lists with \n like render does
+      // They should produce equivalent output for simple structures
+      assert.equal(foldResult, renderResult);
+    });
+  }
 });
