@@ -337,6 +337,20 @@ test(
   render(Span().srOnly())
 );
 
+section("Text Decoration");
+
+test(
+  "noUnderline",
+  '<a class="no-underline"></a>',
+  render(new Tag("a").noUnderline())
+);
+
+test(
+  "underline + noUnderline on hover (typical link pattern)",
+  '<a class="underline hover:no-underline"></a>',
+  render(new Tag("a").underline().on("hover", t => t.noUnderline()))
+);
+
 section("Outline");
 
 test(
