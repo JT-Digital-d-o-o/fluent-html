@@ -4,7 +4,7 @@
 
 **Stack:** Fastify v5 + TypeScript + fluent-html + HTMX + Tailwind CSS (SSR app)
 
-> References: [fluent-html.md](fluent-html.md) | [fluent-html-FLUENT-APIs.md](fluent-html-FLUENT-APIs.md) | [fastify.md](fastify.md) | [typescript.md](typescript.md)
+> References: [fluent-html.md](fluent-html.md) | [fluent-html-FLUENT-APIs.md](fluent-html-FLUENT-APIs.md) | [htmx.md](htmx.md) | [views.md](views.md) | [fastify.md](fastify.md) | [typescript.md](typescript.md)
 
 
 > **Additional guidelines** (read when relevant):
@@ -20,18 +20,18 @@
 
 PM files live in `product/pm/`. These updates are **non-optional** — do them inline as you work, not at the end.
 
-**On every task completion:**
+**On larger completion:**
 1. Mark `[x]` in `product/pm/todo/[feature].md`
 2. Add entry to `product/pm/changelog.md`
 
 **On session end:**
-4. Update `product/pm/status.md`
+3. Update `product/pm/status.md`
 
 **Before implementing architecture decisions:**
-5. Log to `product/pm/decisions.md`
+4. Log to `product/pm/decisions.md`
 
 **On bug discovery:**
-6. Add to `product/pm/qa/[feature].md`
+5. Add to `product/pm/qa/[feature].md`
 
 Status marks: `[ ]` todo · `[>]` in progress · `[r]` review · `[x]` done · `[-]` cancelled
 
@@ -70,6 +70,15 @@ IfThen(user.avatar, () => Img().setSrc(user.avatar!))            // ✗ don't re
 user.name ? Span(user.name) : Span("Anon")                      // ✗ use IfThenElse
 ```
 
+**Boolean attributes** — use `.toggle()` with optional condition, never `setToggles`:
+```typescript
+Input().toggle("required")                        // ✓ always on
+Input().toggle("required", isRequired)            // ✓ conditional
+Option(city).toggle("selected", city === current) // ✓ expression as condition
+Input().setToggles(["required"])                  // ✗ use .toggle()
+Input().setToggles(req ? ["required"] : [])       // ✗ use .toggle("required", req)
+```
+
 **Conditional modifiers & composition:**
 ```typescript
 Button("Save").when(isLoading, t => t.toggle("disabled").opacity("50"))
@@ -82,225 +91,29 @@ Div("Content").apply(card)
 
 ## HTMX
 
-**Type-safe targets with defineIds** — never hardcode ID strings:
-```typescript
-export const ids = defineIds(["user-list", "user-count"] as const);
-Div().setId(ids.userList)
-Button("Load").hxGet("/api", { target: ids.userList })
-hx("/api", { target: "#userList" })  // ✗ typos cause silent failures
-```
+> Full reference: [htmx.md](htmx.md) — read when implementing HTMX interactions
 
-**Type-safe routes with defineRoutes** — never hardcode endpoint strings:
-```typescript
-// Shared prefix avoids repetition (like Fastify's register prefix)
-export const userRoutes = defineRoutes("/users", {
-  list:   { method: "get",    path: "/" },
-  create: { method: "post",   path: "/" },
-  delete: { method: "delete", path: "/:id" },
-} as const);
-```
-
-**Views** — method is locked, params are required, typos are compile errors:
-```typescript
-Button("Load").setHtmx(userRoutes.list())
-Button("Load").setHtmx(userRoutes.list({ target: ids.userList }))
-Button("Delete").setHtmx(userRoutes.delete({ id: user.id }, { target: ids.userList }))
-userRoutes.lsit()            // ✗ typo — compile error
-userRoutes.delete()          // ✗ missing params — compile error
-```
-
-**Controllers** — single-sourced paths:
-```typescript
-server.get(userRoutes.list.path, handler)       // "/users"
-server.delete(userRoutes.delete.path, handler)  // "/users/:id"
-```
-
-**Resolved URLs** — use `.resolve()` for redirects and external links. Never write manual resolve helpers:
-```typescript
-reply.redirect(userRoutes.list.resolve())                  // "/users"
-reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
-
-// ✗ NEVER do this — .resolve() already handles params + encoding
-function resolveUser(id: string) { return `/users/${encodeURIComponent(id)}`; }
-```
-
-**Always use shared prefix** when routes share a common base path:
-```typescript
-// ✓
-defineRoutes("/dashboard", {
-  overview: { method: "get", path: "/" },
-  project:  { method: "get", path: "/:repoName" },
-} as const);
-
-// ✗ repeating the prefix in every path
-defineRoutes({
-  overview: { method: "get", path: "/dashboard" },
-  project:  { method: "get", path: "/dashboard/:repoName" },
-} as const);
-```
-
-**Shorthand methods** for simple requests, **setHtmx(hx())** for complex:
-```typescript
-Button("Load").hxGet("/api/items")
-Button("Save").hxPost("/api/save", { target: ids.result })
-
-Form(/* fields */).setHtmx(hx("/search", {
-  method: "post", target: ids.results,
-  swap: "outerMorph", indicator: "#spinner"
-}))
-```
-
-**Prefer outerMorph swap** — preserves focus, scroll, animations; innerHTML loses the target element's id:
-```typescript
-hx("/users", { target: ids.userList, swap: "outerMorph" })  // ✓
-hx("/users", { target: ids.userList, swap: "innerHTML" })    // ✗
-```
-Use `outerHTML` only when you intentionally want to destroy and recreate DOM state.
-
-**Partial swaps** — update multiple page sections in one response:
-```typescript
-render(
-  Partial(ids.mainContent, UserList(users)),
-  Partial(ids.userCount, Span(`${users.length} users`)),
-  Partial(ids.pageTitle, H1("Users")),
-)
-```
-
-**Status-code routing** for validation and error responses:
-```typescript
-Form(/* fields */).hxPost("/users/create", {
-  target: ids.mainContent,
-  swap: "outerMorph",
-  status: {
-    422: { target: ids.formErrors, swap: "innerHTML" },
-    "5xx": { swap: "none" },
-  }
-})
-```
-
-**Explicit inheritance** — htmx 4 does not inherit attributes by default. Use `:inherited` modifier:
-```typescript
-Div(
-  Button("Delete 1").hxDelete("/item/1"),
-  Button("Delete 2").hxDelete("/item/2"),
-).addAttribute("hx-confirm:inherited", "Are you sure?")
-
-// Or opt back in to htmx 2 behavior globally:
-HtmxConfig({ implicitInheritance: true })
-```
-
-**Global htmx config** via meta tag:
-```typescript
-Head(
-  HtmxConfig({
-    extensions: "sse, preload",
-    transitions: true,
-    defaultSwap: "outerMorph",
-  }),
-  Script().setSrc("/htmx.js"),
-)
-```
-
-**Per-element config** — replaces removed `hx-request`:
-```typescript
-Button("Upload").hxPost("/upload", {
-  config: { timeout: 120000 },
-})
-```
-
-**hxResponse** for server-driven navigation and events:
-```typescript
-const { html, headers } = hxResponse(Empty())
-  .redirect("/users")
-  .trigger("showToast", { message: "User created!" })
-  .build();
-reply.headers(headers);
-reply.renderView(html);
-```
-
-**Morph swaps** — preserve DOM state (focus, scroll, animations):
-```typescript
-Button("Refresh").hxGet("/users", {
-  target: ids.userList,
-  swap: "outerMorph",
-})
-```
-
-**Full layout navigations** — swap the main content area with `outerMorph` and scroll to top:
-```typescript
-// Navigation link — uses setHtmx, NOT setHref
-A("Settings").setHtmx(settingsRoutes.index({ swap: "outerMorph show:window:top", target: ids.mainContent }))
-A("Users").setHtmx(userRoutes.list({ swap: "outerMorph show:window:top", target: ids.mainContent }))
-
-// Form submission that replaces the page
-Form(/* fields */).setHtmx(userRoutes.create({
-  target: ids.mainContent,
-  swap: "outerMorph show:window:top",
-}))
-
-// Use Partial swaps to update nav, title, and content in one response
-render(
-  Partial(ids.mainContent, UserList(users)),
-  Partial(ids.navBadge, Span(`${users.length}`)),
-  Partial(ids.pageTitle, H1("Users")),
-)
-```
-
-**Never use `setHref` for in-app navigation** — it causes a full page reload, bypassing HTMX:
-```typescript
-A("Users").setHtmx(userRoutes.list({ target: ids.mainContent }))           // ✓ HTMX swap
-A("Users").setHref(userRoutes.list.resolve())                               // ✗ full page reload
-A("Users").setHref("/users")                                                // ✗ full page reload
-```
-Use `setHref` only for external links or download URLs.
+Key rules:
+- **`defineIds`** for targets, **`defineRoutes`** for endpoints — never hardcode strings
+- **`outerMorph`** swap by default — preserves focus, scroll, animations
+- **`setHtmx`** for in-app navigation — never `setHref` (causes full reload)
+- **`.resolve()`** for redirects — never manual URL builders
+- **Anchors with `setHtmx`** need `.cursor("pointer")`
+- **Partial swaps** for multi-section updates in one response
+- **htmx 4**: attributes don't inherit — use `:inherited` modifier
 
 ---
 
 ## View Composition
 
-**Components = plain functions with a typed props object** (never positional args):
-```typescript
-type FormFieldProps = { id: string; label: string; type?: string; error?: string };
+> Full reference: [views.md](views.md) — read when building views or creating new features
 
-function FormField({ id, label, type = "text", error }: FormFieldProps) {
-  return Div(
-    Label(label).setFor(id).fontWeight("medium").textSize("sm"),
-    Input().setId(id).setName(id).setType(type)
-      .w("full").padding("2").border().borderColor("gray-300").rounded(),
-    IfThen(error, (msg) => P(msg).textColor("red-500").textSize("sm"))
-  );
-}
-```
-
-**Discriminated unions for page states:**
-```typescript
-type UsersViewProps =
-  | { state: "list"; users: User[] }
-  | { state: "form"; error?: string }
-  | { state: "detail"; user: User };
-
-export function UsersView(props: UsersViewProps) {
-  return Match(props.state, {
-    list:   () => UserListSection(props.users),
-    form:   () => UserFormSection(props.error),
-    detail: () => UserDetailSection(props.user),
-  });
-}
-```
-
-**Inline form validation errors:**
-```typescript
-type FormErrors = { [field: string]: string | undefined };
-
-function CreateUserForm(errors: FormErrors = {}) {
-  return Form(
-    FormField({ id: "name", label: "Name", error: errors.name }),
-    FormField({ id: "email", label: "Email", type: "email", error: errors.email }),
-    Button("Create").setType("submit")
-  ).hxPost("/users/create", { target: ids.mainContent, swap: "outerMorph" });
-}
-// Controller re-renders with errors: reply.renderView(CreateUserForm({ email: "Email already in use" }));
-```
+Key rules:
+- **Components = plain functions** with a typed props object (never positional args)
+- **One view file per page/endpoint response** — split by interaction, not size
+- **Shared partials** (rows, cards, badges) in `[feature].partials.ts`
+- **Discriminated unions** for page states — use `Match()`, not conditionals
+- **!IMPORTANT:** Always abstract and reuse components — avoid code duplication
 
 ---
 
@@ -349,14 +162,14 @@ Don't use `addClass` for variants — use `.on()` and `.at()` instead.
 
 ## Fastify
 
-**Feature module structure:**
+**Feature module structure** (view details in [views.md](views.md)):
 ```
 src/[feature]/
-  [feature].routes.ts       # Route definitions (defineRoutes)
-  [feature].controller.ts   # Routes (imports routes for path registration)
+  [feature].routes.ts       # Route definitions (defineRoutes + ids)
+  [feature].controller.ts   # Request handlers
   [feature].schema.ts       # JSON Schema + TS interfaces
-  [feature].view.ts         # Views (imports routes for setHtmx + ids for targets)
   [feature].utils.ts        # Helpers
+  views/                    # One file per page/endpoint response
 ```
 
 **Type request generics + JSON Schema validation:**
