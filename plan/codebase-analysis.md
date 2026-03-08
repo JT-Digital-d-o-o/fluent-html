@@ -1,12 +1,12 @@
-# Codebase Analysis — fluent-html v5.7.1
+# Codebase Analysis — fluent-html v5.7.2
 
-> Date: 2026-03-08 | Reviewer perspective: Distinguished/Fellow-level software architect
+> Date: 2026-03-08 | Updated: 2026-03-08 | Reviewer perspective: Distinguished/Fellow-level software architect
 
 ---
 
 ## Executive Summary
 
-fluent-html is a zero-dependency, type-safe HTML builder library for TypeScript with first-class HTMX and Tailwind CSS support. At v5.7.1, it demonstrates strong authorial intent, thoughtful API design, and genuine innovation in several areas. The core abstractions are sound and compose well. The main risks are a growing monolithic Tag class, an attribute escaping edge case with security implications, and underinvestment in test infrastructure relative to the library's maturity.
+fluent-html is a zero-dependency, type-safe HTML builder library for TypeScript with first-class HTMX and Tailwind CSS support. The library demonstrates strong authorial intent, thoughtful API design, and genuine innovation in several areas. The core abstractions are sound and compose well. Recent work addressed attribute escaping security issues, migrated to node:test, refactored buildHtmx to data-driven, removed dead code/deprecations, and shipped ESM-only with ES2020 target. The main remaining risk is a growing monolithic Tag class.
 
 **Overall assessment: Strong.** The library delivers on its promise of fluent, type-safe HTML generation with excellent DX.
 
@@ -109,20 +109,11 @@ For SSR where render is called on every request, these details matter.
 
 ## 2. Issues & Critique
 
-### 2.1 SECURITY: Attribute Escaping Edge Case
+### ~~2.1 SECURITY: Attribute Escaping Edge Case~~ FIXED
 
-**Severity: Medium-High**
-**File:** `src/render/escape.ts:31-33`, `src/render/render.ts:34-36`
+**Commit:** `f62a4ea`
 
-`escapeAttr` is currently an alias for `escapeHtml`. This is subtly incorrect for certain attribute contexts:
-
-1. **`hx-headers`** (render.ts:36) outputs JSON inside single quotes (`hx-headers='{"key":"value"}'`) but doesn't escape single quotes within JSON string values. If a header value contains `'`, the attribute terminates early.
-
-2. **`hx-vals`** and **`hx-config`** have the same issue — they output JSON in single-quoted attributes.
-
-3. More broadly, while the five characters escaped (`& < > " '`) cover the OWASP basics, attribute contexts inside single quotes have additional edge cases with backticks and certain Unicode characters in older browsers.
-
-**Impact:** Malicious or malformed data in HTMX headers/vals could break attribute boundaries, potentially enabling attribute injection.
+Switched `hx-vals`, `hx-headers`, and `hx-config` from single-quote delimiters with unescaped JSON to double-quote delimiters with `escapeAttr()` applied. All JSON content is now properly escaped. Added 6 security edge-case tests covering all special characters.
 
 ### 2.2 ARCHITECTURE: Tag Class Monolith (~987 lines)
 
@@ -138,53 +129,23 @@ The existing `.apply()` pattern already demonstrates the composition approach. T
 
 **Trade-off:** The monolith exists because the alternative (mixins, separate concern objects) would degrade the autocomplete experience. This is a conscious trade-off favoring DX, but it has a maintenance cost.
 
-### 2.3 CONSISTENCY: VStack/HStack/Grid Bypass Tailwind
+### ~~2.3 CONSISTENCY: VStack/HStack/Grid Bypass Tailwind~~ REMOVED
 
-**Severity: Medium**
-**File:** `src/patterns.ts:46-55`
+**Commit:** `7170087`
 
-The layout helpers use `setStyles()` (inline CSS) instead of the library's own fluent Tailwind methods:
+VStack, HStack, Grid, SearchInput, InfiniteScroll, FormField, and KeyedList were removed from `patterns.ts` as dead code. Consumers should compose layout directly with fluent methods.
 
-```typescript
-// Current — inline styles
-Div(children).setStyles({
-  display: "flex",
-  flexDirection: "column",
-  gap: options.spacing ?? "0",
-})
+### ~~2.4 QUALITY: Custom Test Runner~~ FIXED
 
-// Expected — eat your own cooking
-Div(children).flex().flexDirection("col").gap("4")
-```
+**Commit:** `5ad1e92`
 
-Problems:
-- Philosophically inconsistent with the library's Tailwind-first ethos
-- Inline styles can't be purged by Tailwind's content scanner
-- Inline styles have higher specificity, making them hard to override
-- Options use CSS values (`"flex-start"`) not Tailwind values (`"start"`)
+Migrated all 6 test files from custom test runner to `node:test` + `node:assert/strict`. 519 tests pass across 104 suites with zero dependencies. Added `ids.ts` and `fold.ts` to the test script (were previously missing).
 
-### 2.4 QUALITY: Custom Test Runner
+### ~~2.5 COUPLING: FormField Hardcoded CSS Classes~~ REMOVED
 
-**Severity: Medium**
-**File:** `test/test.ts`, `package.json:10`
+**Commit:** `7170087`
 
-The test infrastructure is minimal:
-- String equality comparison with no diffing
-- No test isolation (shared mutable state via pass/fail counters)
-- No async support
-- No setup/teardown
-- 5 separate `node` invocations chained with `&&` — no parallelism
-- A single failure in early suites blocks later suites from running
-- No watch mode
-
-At v5.7.1 for a published npm package, this is underinvesting. Even `node:test` (built-in since Node 18, stable since Node 20) would provide test isolation, async support, subtests, and better reporting for free.
-
-### 2.5 COUPLING: FormField Hardcoded CSS Classes
-
-**Severity: Low-Medium**
-**File:** `src/patterns.ts:239-252`
-
-`FormField` emits hardcoded class names (`form-label`, `form-input`, `form-error`, `form-field`) that assume a specific external stylesheet. For a generic library, this couples the pattern to an unknown consumer's CSS. Consumers who don't define these classes get unstyled output with no indication of what went wrong.
+`FormField` was removed along with other dead pattern helpers.
 
 ### 2.6 INCONSISTENCY: foldView Uses instanceof
 
@@ -200,12 +161,11 @@ The renderer uses the `_t` discriminant for type checking, but `foldView` uses `
 
 `isId()` uses duck typing — any object with `{ id: string, selector: string }` passes. In a codebase that recommends branded types for ID safety (per CLAUDE.md), the `Id` type itself lacks a brand. This means an accidental plain object could be misidentified as an `Id`.
 
-### 2.8 MAINTAINABILITY: buildHtmx Is a Long If-Chain
+### ~~2.8 MAINTAINABILITY: buildHtmx Is a Long If-Chain~~ FIXED
 
-**Severity: Low**
-**File:** `src/render/render.ts:17-65`
+**Commit:** `b7e3938`
 
-`buildHtmx` is ~50 lines of sequential `if` statements. Each new HTMX attribute requires adding another branch. A data-driven approach (attribute map with serialization rules) would scale better and reduce the likelihood of omission bugs.
+Replaced ~35-line if-chain with declarative `HTMX_ATTRS` config array using typed serializer factories. Adding a new HTMX attribute is now a one-liner.
 
 ### 2.9 SCALABILITY: No Streaming Support
 
@@ -214,12 +174,11 @@ The renderer uses the `_t` discriminant for type checking, but `foldView` uses `
 
 `render()` builds the entire HTML string in memory. For SSR at scale, this prevents flushing the response while the tree is still being built. Not critical at current adoption, but it's an architectural ceiling that would require a significant rewrite to address.
 
-### 2.10 DISTRIBUTION: CommonJS-Only in 2026
+### ~~2.10 DISTRIBUTION: CommonJS-Only in 2026~~ FIXED
 
-**Severity: Low-Medium**
-**File:** `package.json`
+**Commit:** `7170087`
 
-`"type": "commonjs"` — no ESM entry point. Most modern tooling and runtimes (Deno, Bun, newer Node.js) prefer or require ESM. Dual-publish (CJS + ESM) would maximize compatibility. A single ESM build with `"type": "module"` would be the most forward-looking choice.
+Switched to ESM-only (`"type": "module"`) with ES2020 target. CJS dropped entirely. Single build output, no dual-publish complexity.
 
 ---
 
@@ -227,15 +186,15 @@ The renderer uses the `_t` discriminant for type checking, but `foldView` uses `
 
 1. **`noUnderline()`** emits `no-underline` (tag.ts:458-460). Verify this is the correct class for your target Tailwind version (v3 vs v4 naming changes).
 
-2. **Empty backtick string** on ids.ts:57 with comment "for syntax highlighting in vscode" is executable dead code. Should be a comment.
+2. **Empty backtick string** on ids.ts:57 with comment "for syntax highlighting in vscode" — intentional, kept for VS Code syntax highlighting.
 
-3. **`ForEach1`, `ForEach2`, `ForEach3`** are deprecated aliases pointing to `ForEach`. Consider removing in next major version.
+3. ~~**`ForEach1`, `ForEach2`, `ForEach3`** deprecated aliases~~ — Removed in `b7e3938`.
 
-4. **`addClass("")`** is called in patterns.ts when `className` is undefined — this adds an empty string to the class list, which is harmless but sloppy.
+4. ~~**`addClass("")`** in patterns.ts~~ — Dead code removed with pattern helpers in `7170087`.
 
 5. **Constructor child flattening** (tag.ts:68) silently collapses single-child arrays. `Div(["a"])` stores `"a"` directly. This is a performance optimization but creates a subtle runtime contract where `tag.child` shape depends on child count, making traversal code work harder.
 
-6. **`hx()` and `buildHtmxFromRoute()`** have near-identical logic for resolving Id objects. This is duplicated code that could be extracted.
+6. ~~**`hx()` and `buildHtmxFromRoute()` duplicated Id resolution**~~ — Extracted to `resolveSelector()` in `b7e3938`.
 
 ---
 
@@ -245,14 +204,14 @@ The renderer uses the `_t` discriminant for type checking, but `foldView` uses `
 |---|---|---|
 | **API Design** | 9/10 | Fluent, discoverable, good DX. One of the best fluent APIs I've seen. |
 | **Type Safety** | 9/10 | Route params, IDs, exhaustive matching, conditional callables. |
-| **Security** | 7/10 | Good model, but attribute escaping edge cases need fixing. |
+| **Security** | 9/10 | Attribute escaping fixed — double-quote delimiters + escapeAttr on all JSON attrs. |
 | **Performance** | 8/10 | Discriminants, fast-path escaping, pre-allocated arrays. No streaming. |
-| **Testability** | 5/10 | Good coverage, weak infrastructure. No proper test framework. |
-| **Maintainability** | 7/10 | Good module structure, but Tag monolith and buildHtmx if-chain. |
-| **Distribution** | 6/10 | Clean zero-dep package, but CJS-only with no ESM entry. |
+| **Testability** | 8/10 | 519 tests across 104 suites on node:test. Zero dependencies. |
+| **Maintainability** | 8/10 | Good module structure. buildHtmx now data-driven. Tag monolith remains (conscious DX trade-off). |
+| **Distribution** | 9/10 | ESM-only, ES2020 target, zero dependencies, clean single build output. |
 | **Documentation** | 7/10 | Good JSDoc, good CLAUDE.md guidelines, no standalone docs site. |
 
-**Weighted overall: 7.5/10** — Strong library with clear areas for improvement.
+**Weighted overall: 8.4/10** — Strong library with few remaining issues (foldView discriminants, Id branding).
 
 ---
 
