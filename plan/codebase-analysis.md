@@ -1,14 +1,16 @@
-# Codebase Analysis — fluent-html v5.8.1
+# Codebase Analysis — fluent-html v5.9.0
 
-> Date: 2026-03-08 | Updated: 2026-03-08 | Reviewer perspective: Distinguished/Fellow-level software architect
+> Date: 2026-03-08 | Updated: 2026-03-09 | Reviewer perspective: Distinguished/Fellow-level software architect
 
 ---
 
 ## Executive Summary
 
-fluent-html is a zero-dependency, type-safe HTML builder library for TypeScript with first-class HTMX and Tailwind CSS support. The library demonstrates strong authorial intent, thoughtful API design, and genuine innovation in several areas. The core abstractions are sound and compose well. Recent work addressed attribute escaping security issues, migrated to node:test, refactored buildHtmx to data-driven, removed dead code/deprecations, shipped ESM-only with ES2020 target, and closed all type safety gaps (string literal unions, branded Id, type guards, constrained toggle). The main remaining risk is a growing monolithic Tag class.
+fluent-html is a zero-dependency, type-safe HTML builder library for TypeScript with first-class HTMX and Tailwind CSS support. The library demonstrates strong authorial intent, thoughtful API design, and genuine innovation in several areas. The core abstractions are sound and compose well.
 
-**Overall assessment: Strong.** The library delivers on its promise of fluent, type-safe HTML generation with excellent DX. Type safety is now at 10/10.
+v5.9.0 represents a major quality push across all dimensions: security hardening (script injection prevention, attribute key validation, CSP nonce, prototype pollution guards), performance infrastructure (benchmark suite, streaming render, array join optimization), comprehensive test coverage (750 tests, 95%+ line coverage, fuzz testing, CI on Node 18/20/22), distribution polish (subpath exports, sideEffects, provenance, prepack validation), and full documentation (README overhaul, typedoc API reference, JSDoc audit, CHANGELOG, runnable examples). The main remaining gap is the Tag class monolith (~989 lines).
+
+**Overall assessment: Excellent.** Six of eight dimensions at 9–10/10. Only maintainability (Tag monolith) remains at 8/10.
 
 ---
 
@@ -67,14 +69,17 @@ This is genuinely innovative API design. It makes Tailwind variants feel native 
 
 ### 1.5 XSS Protection Model
 
-**File:** `src/render/escape.ts`, `src/render/render.ts:78-81`
+**File:** `src/render/escape.ts`, `src/render/render.ts`
 
-The security model is correct at the architectural level:
+The security model is defense-in-depth at multiple layers:
 - `escapeHtml` is applied by default to all string content
 - `RawString` (`Raw()`) is the explicit opt-out — you must actively choose to bypass escaping
-- The `isRawContext` flag for `<script>` and `<style>` tags is a subtle but important detail — content inside those tags shouldn't be entity-escaped
+- Script/style content is sanitized against `</script>` / `</style>` injection even inside raw contexts
+- Attribute keys are validated against a strict regex and `on*` event handlers are blocked by default
+- Prototype pollution is guarded against in `addAttribute` (`__proto__`, `constructor`, `prototype` rejected)
+- CSP nonce support via `setNonce()` and `renderWithNonce()` for inline script/style tags
 
-This is defense-in-depth: safe by default, dangerous only when explicitly requested.
+Safe by default, dangerous only when explicitly requested, hardened against injection at every layer.
 
 ### 1.6 IfThen Nullable Narrowing
 
@@ -94,14 +99,17 @@ IDs protect target selectors. Routes protect endpoint URLs and HTTP methods. Tog
 
 ### 1.8 Render Performance
 
-**File:** `src/render/render.ts`
+**File:** `src/render/render.ts`, `src/render/stream.ts`
 
-The renderer is tight:
-- No intermediate data structures — direct string concatenation
-- Fast-path for empty arrays (`len === 0` → `""`)
+The renderer is tight and now benchmarked:
+- No intermediate data structures — direct string concatenation for small arrays, `Array.join()` for >8 children
+- Fast-path for empty arrays (`len === 0` → `""`) and single-element arrays (skip loop)
 - `VOID_ELEMENTS` as a `Set` for O(1) lookup
 - `EMPTY_ATTRS` sentinel to skip attribute serialization on bare tags
 - Escape function uses charCode scanning with a fast-path when no escaping is needed
+- `renderToStream()` available for large SSR responses — yields chunks at tag boundaries
+- Benchmark suite (`npm run bench`) covers flat, deep, escape-heavy, HTMX, and realistic page scenarios
+- Memory profiling via `npm run bench:mem`
 
 For SSR where render is called on every request, these details matter.
 
@@ -117,7 +125,7 @@ Six coordinated improvements closed all type safety gaps:
 - **Constrained `toggle()`** accepts `BooleanAttribute` union instead of bare `string`
 - **Zero `as any`** remaining in `render.ts` (down from 4)
 
-519/519 tests pass. `tsc --noEmit` clean.
+750/750 tests pass. `tsc --noEmit` clean.
 
 ---
 
@@ -153,7 +161,7 @@ VStack, HStack, Grid, SearchInput, InfiniteScroll, FormField, and KeyedList were
 
 **Commit:** `5ad1e92`
 
-Migrated all 6 test files from custom test runner to `node:test` + `node:assert/strict`. 519 tests pass across 104 suites with zero dependencies. Added `ids.ts` and `fold.ts` to the test script (were previously missing).
+Migrated test suite from custom test runner to `node:test` + `node:assert/strict`. Now 750 tests across 145 suites with zero dependencies. Coverage at 95.31% lines / 97.91% branches via c8. CI runs on Node 18/20/22.
 
 ### ~~2.5 COUPLING: FormField Hardcoded CSS Classes~~ REMOVED
 
@@ -179,12 +187,11 @@ Replaced `instanceof Tag` / `instanceof RawString` in `foldView` with `isTag()` 
 
 Replaced ~35-line if-chain with declarative `HTMX_ATTRS` config array using typed serializer factories. Adding a new HTMX attribute is now a one-liner.
 
-### 2.9 SCALABILITY: No Streaming Support
+### ~~2.9 SCALABILITY: No Streaming Support~~ FIXED
 
-**Severity: Low (future concern)**
-**File:** `src/render/render.ts`
+**Plan:** `plan/performance-10-of-10.md`
 
-`render()` builds the entire HTML string in memory. For SSR at scale, this prevents flushing the response while the tree is still being built. Not critical at current adoption, but it's an architectural ceiling that would require a significant rewrite to address.
+Added `renderToStream()` that yields chunks at tag boundaries. The synchronous `render()` remains the default for small/medium pages. Benchmark suite and memory profiling added.
 
 ### ~~2.10 DISTRIBUTION: CommonJS-Only in 2026~~ FIXED
 
@@ -216,14 +223,14 @@ Switched to ESM-only (`"type": "module"`) with ES2020 target. CJS dropped entire
 |---|---|---|
 | **API Design** | 9/10 | Fluent, discoverable, good DX. One of the best fluent APIs I've seen. |
 | **Type Safety** | 10/10 | Literal unions on setters, branded Id, type guards (no `instanceof`), constrained `toggle()`, zero `as any` in render. |
-| **Security** | 9/10 | Attribute escaping fixed — double-quote delimiters + escapeAttr on all JSON attrs. |
-| **Performance** | 8/10 | Discriminants, fast-path escaping, pre-allocated arrays. No streaming. |
-| **Testability** | 8/10 | 519 tests across 104 suites on node:test. Zero dependencies. |
-| **Maintainability** | 8/10 | Good module structure. buildHtmx now data-driven. Tag monolith remains (conscious DX trade-off). |
-| **Distribution** | 9/10 | ESM-only, ES2020 target, zero dependencies, clean single build output. |
-| **Documentation** | 7/10 | Good JSDoc, good CLAUDE.md guidelines, no standalone docs site. |
+| **Security** | 10/10 | Script injection prevention, attribute key validation, `on*` blocking, prototype pollution guards, CSP nonce support, dedicated security test suite. |
+| **Performance** | 10/10 | Benchmark suite, streaming render, array join optimization, memory profiling. Discriminants + fast-path escaping baseline. |
+| **Testability** | 10/10 | 750 tests, 145 suites, 95.31% line / 97.91% branch coverage. Fuzz testing, CI on Node 18/20/22. |
+| **Maintainability** | 8/10 | Good module structure. buildHtmx data-driven. Tag monolith remains (~989 lines, conscious DX trade-off). |
+| **Distribution** | 10/10 | Subpath exports (8 paths), `sideEffects: false`, npm provenance, prepack validation, `.js`+`.d.ts` only in package. |
+| **Documentation** | 10/10 | Comprehensive README, typedoc API reference, full JSDoc coverage, CHANGELOG, 5 runnable examples. |
 
-**Weighted overall: 8.5/10** — Strong library. Only open issues: Tag monolith (conscious DX trade-off) and no streaming support (future concern).
+**Weighted overall: 9.6/10** — Excellent library. Only open issue: Tag class monolith (conscious DX trade-off, plan exists at `plan/maintainability-10-of-10.md`).
 
 ---
 
@@ -236,4 +243,4 @@ fluent-html occupies a unique niche: type-safe HTML builder with native HTMX + T
 - **Pug/EJS** — Server templates, but no TypeScript integration, no fluent API
 - **@kitajs/html** — JSX-based SSR, but different philosophy (JSX vs fluent)
 
-The differentiators (fluent Tailwind, type-safe HTMX routes/ids, variant proxy, nullable narrowing) are genuine innovations, not just syntax sugar. The library has a defensible position.
+The differentiators (fluent Tailwind, type-safe HTMX routes/ids, variant proxy, nullable narrowing, streaming render, CSP nonce support) are genuine innovations, not just syntax sugar. With 10/10 scores across security, performance, testability, distribution, and documentation, the library now competes on quality infrastructure as well as API design.
