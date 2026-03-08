@@ -81,6 +81,9 @@ test("whitespace nowrap", '<div class="whitespace-nowrap"></div>', (0, index_js_
 test("whitespace pre", '<div class="whitespace-pre"></div>', (0, index_js_1.render)((0, index_js_1.Div)().whitespace("pre")));
 section("Accessibility");
 test("srOnly", '<span class="sr-only"></span>', (0, index_js_1.render)((0, index_js_1.Span)().srOnly()));
+section("Text Decoration");
+test("noUnderline", '<a class="no-underline"></a>', (0, index_js_1.render)(new index_js_1.Tag("a").noUnderline()));
+test("underline + noUnderline on hover (typical link pattern)", '<a class="underline hover:no-underline"></a>', (0, index_js_1.render)(new index_js_1.Tag("a").underline().on("hover", t => t.noUnderline())));
 section("Outline");
 test("outline none", '<button class="outline-none"></button>', (0, index_js_1.render)((0, index_js_1.Button)().outline("none")));
 test("outline dashed", '<div class="outline-dashed"></div>', (0, index_js_1.render)((0, index_js_1.Div)().outline("dashed")));
