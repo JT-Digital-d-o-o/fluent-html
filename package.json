@@ -30,7 +30,8 @@
     "prepublishOnly": "npm pack --dry-run"
   },
   "files": [
-    "dist/src/**/*"
+    "dist/src/**/*.js",
+    "dist/src/**/*.d.ts"
   ],
   "repository": {
     "type": "git",
