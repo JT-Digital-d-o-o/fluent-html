@@ -1,4 +1,4 @@
-# Codebase Analysis — fluent-html v5.8.0
+# Codebase Analysis — fluent-html v5.8.1
 
 > Date: 2026-03-08 | Updated: 2026-03-08 | Reviewer perspective: Distinguished/Fellow-level software architect
 
@@ -6,9 +6,9 @@
 
 ## Executive Summary
 
-fluent-html is a zero-dependency, type-safe HTML builder library for TypeScript with first-class HTMX and Tailwind CSS support. The library demonstrates strong authorial intent, thoughtful API design, and genuine innovation in several areas. The core abstractions are sound and compose well. Recent work addressed attribute escaping security issues, migrated to node:test, refactored buildHtmx to data-driven, removed dead code/deprecations, and shipped ESM-only with ES2020 target. The main remaining risk is a growing monolithic Tag class.
+fluent-html is a zero-dependency, type-safe HTML builder library for TypeScript with first-class HTMX and Tailwind CSS support. The library demonstrates strong authorial intent, thoughtful API design, and genuine innovation in several areas. The core abstractions are sound and compose well. Recent work addressed attribute escaping security issues, migrated to node:test, refactored buildHtmx to data-driven, removed dead code/deprecations, shipped ESM-only with ES2020 target, and closed all type safety gaps (string literal unions, branded Id, type guards, constrained toggle). The main remaining risk is a growing monolithic Tag class.
 
-**Overall assessment: Strong.** The library delivers on its promise of fluent, type-safe HTML generation with excellent DX.
+**Overall assessment: Strong.** The library delivers on its promise of fluent, type-safe HTML generation with excellent DX. Type safety is now at 10/10.
 
 ---
 
@@ -105,6 +105,20 @@ The renderer is tight:
 
 For SSR where render is called on every request, these details matter.
 
+### 1.9 Comprehensive Type Safety
+
+**Commit:** `68b03d7` | **Plan:** `plan/type-safety-10-of-10.md`
+
+Six coordinated improvements closed all type safety gaps:
+- **String literal unions** (`InputType`, `FormMethod`, `BrowsingContext`, `LinkRel`, etc.) on all element setters with `(string & {})` escape hatch
+- **Branded `Id` type** prevents plain `{ id, selector }` objects from passing as `Id` at compile time
+- **Type guards** (`isTag()`, `isRawString()`) replace all `instanceof` and `as any` checks in render and fold paths
+- **Typed `_sk` property** — declared on `Tag` class, eliminating casts in the renderer
+- **Constrained `toggle()`** accepts `BooleanAttribute` union instead of bare `string`
+- **Zero `as any`** remaining in `render.ts` (down from 4)
+
+519/519 tests pass. `tsc --noEmit` clean.
+
 ---
 
 ## 2. Issues & Critique
@@ -147,19 +161,17 @@ Migrated all 6 test files from custom test runner to `node:test` + `node:assert/
 
 `FormField` was removed along with other dead pattern helpers.
 
-### 2.6 INCONSISTENCY: foldView Uses instanceof
+### ~~2.6 INCONSISTENCY: foldView Uses instanceof~~ FIXED
 
-**Severity: Low**
-**File:** `src/fold/fold.ts:57-67`
+**Commit:** `68b03d7`
 
-The renderer uses the `_t` discriminant for type checking, but `foldView` uses `instanceof`. If the discriminant pattern was chosen for performance in the render path, the same reasoning applies to fold (which traverses equally large trees). This is also a consistency gap — two different patterns for the same operation.
+Replaced `instanceof Tag` / `instanceof RawString` in `foldView` with `isTag()` / `isRawString()` type guard functions from `src/core/guards.ts`. Now consistent with the render path's discriminant-based checking. `Tag` and `RawString` switched to type-only imports.
 
-### 2.7 SAFETY: isId Type Guard Is Structural
+### ~~2.7 SAFETY: isId Type Guard Is Structural~~ FIXED
 
-**Severity: Low**
-**File:** `src/ids.ts:117-126`
+**Commit:** `68b03d7`
 
-`isId()` uses duck typing — any object with `{ id: string, selector: string }` passes. In a codebase that recommends branded types for ID safety (per CLAUDE.md), the `Id` type itself lacks a brand. This means an accidental plain object could be misidentified as an `Id`.
+`Id` interface now carries a `unique symbol` brand (`__idBrand`). `createId()` casts through `unknown` since the brand is compile-time only. `isId()` structural check is unchanged at runtime, but plain `{ id, selector }` objects no longer satisfy the `Id` type at compile time.
 
 ### ~~2.8 MAINTAINABILITY: buildHtmx Is a Long If-Chain~~ FIXED
 
@@ -203,7 +215,7 @@ Switched to ESM-only (`"type": "module"`) with ES2020 target. CJS dropped entire
 | Dimension | Score | Notes |
 |---|---|---|
 | **API Design** | 9/10 | Fluent, discoverable, good DX. One of the best fluent APIs I've seen. |
-| **Type Safety** | 9/10 | Route params, IDs, exhaustive matching, conditional callables. |
+| **Type Safety** | 10/10 | Literal unions on setters, branded Id, type guards (no `instanceof`), constrained `toggle()`, zero `as any` in render. |
 | **Security** | 9/10 | Attribute escaping fixed — double-quote delimiters + escapeAttr on all JSON attrs. |
 | **Performance** | 8/10 | Discriminants, fast-path escaping, pre-allocated arrays. No streaming. |
 | **Testability** | 8/10 | 519 tests across 104 suites on node:test. Zero dependencies. |
@@ -211,7 +223,7 @@ Switched to ESM-only (`"type": "module"`) with ES2020 target. CJS dropped entire
 | **Distribution** | 9/10 | ESM-only, ES2020 target, zero dependencies, clean single build output. |
 | **Documentation** | 7/10 | Good JSDoc, good CLAUDE.md guidelines, no standalone docs site. |
 
-**Weighted overall: 8.4/10** — Strong library with few remaining issues (foldView discriminants, Id branding).
+**Weighted overall: 8.5/10** — Strong library. Only open issues: Tag monolith (conscious DX trade-off) and no streaming support (future concern).
 
 ---
 
