@@ -211,7 +211,8 @@ render(
 - [Control Flow](#control-flow-1) - IfThen, Match, ForEach
 - [Fold / Catamorphism](FOLD.md) - Generic View traversals, pre-built algebras, custom folds
 - [Common Patterns](#common-patterns) - Layouts, partial swaps, response helpers
-- [ESLint Plugin](#eslint-plugin) - Additional compile-time checks
+- [ESLint Plugin](#eslint-plugin) - Auto-fix `.setClass()` to fluent methods
+- [Tailwind CSS Extractor](#tailwind-css-extractor) - Generate CSS from fluent method calls
 - [API Reference](#api-reference) - Complete method reference
 
 ---
@@ -1767,39 +1768,76 @@ Writing your own algebra is straightforward — see the **[full Fold documentati
 
 ## ESLint Plugin
 
-Fluent HTML has an optional ESLint plugin for additional compile-time checks.
+[eslint-plugin-fluent-html](https://github.com/JT-Digital-d-o-o/fluent-html-eslint-plugin) enforces fluent-html best practices — primarily catching `.setClass()` calls that should use dedicated fluent methods instead.
 
 ```bash
 npm install eslint-plugin-fluent-html --save-dev
 ```
 
 ```javascript
-// eslint.config.js
+// eslint.config.js (ESLint 9+)
 import fluentHtml from 'eslint-plugin-fluent-html';
 
-export default [
-  fluentHtml.configs.recommended,
-];
+export default [{
+  plugins: { "fluent-html": fluentHtml },
+  rules: { "fluent-html/no-known-modifiers-in-setclass": "warn" }
+}];
 ```
 
-The plugin catches common mistakes:
+The plugin auto-fixes `.setClass()` calls containing known Tailwind classes into fluent methods:
 
 ```typescript
-// ❌ Empty element that should have content
-Div()  // Warning: Empty Div - did you forget children?
+// ❌ Before — setClass replaces all classes, breaking prior fluent calls
+Div().background("green-700").padding("4").setClass("bg-red-500 flex justify-center")
 
-// ❌ Redundant nesting
-Div(Div(content))  // Warning: Unnecessary nested Div
-
-// ❌ Missing required attributes
-Img().setSrc("/image.png")  // Warning: Img missing alt attribute
-
-// ❌ Invalid attribute combinations
-Input().setType("checkbox").setPlaceholder("...")
-// Warning: placeholder not supported on checkbox inputs
+// ✅ After auto-fix — fluent methods append safely
+Div().background("green-700").padding("4").background("red-500").flex().justifyContent("center")
 ```
 
-See [eslint-plugin-fluent-html](https://www.npmjs.com/package/eslint-plugin-fluent-html) for all rules.
+It recognizes 30+ Tailwind patterns (spacing, colors, typography, layout, sizing, visual, positioning) and handles mixed classes by preserving non-Tailwind classes in `.setClass()`.
+
+See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-eslint-plugin) for details.
+
+---
+
+## Tailwind CSS Extractor
+
+[fluent-html-tailwind-extractor](https://github.com/JT-Digital-d-o-o/fluent-html-tailwind-extractor) teaches Tailwind which CSS classes to generate from fluent-html's method calls.
+
+**The problem:** Tailwind scans source files for class names, but fluent methods like `.background("red-500")` don't look like `bg-red-500` — so Tailwind won't generate the CSS.
+
+```bash
+npm install fluent-html-tailwind-extractor --save-dev
+```
+
+```javascript
+// tailwind.config.js
+const fluentHtmlExtractor = require('fluent-html-tailwind-extractor');
+
+module.exports = {
+  content: {
+    files: ['./src/**/*.{ts,tsx}'],
+    extract: {
+      ts: fluentHtmlExtractor,
+      tsx: fluentHtmlExtractor,
+    },
+  },
+};
+```
+
+The extractor converts fluent method calls to their Tailwind equivalents:
+
+```typescript
+.background("red-500")      → bg-red-500
+.padding("x", "4")          → px-4
+.textSize("xl")              → text-xl
+.rounded("lg")               → rounded-lg
+.flex()                      → flex
+.justifyContent("center")    → justify-center
+.setClass("hover:bg-blue")   → hover:bg-blue
+```
+
+See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-tailwind-extractor) for advanced configuration.
 
 ---
 
@@ -2093,6 +2131,8 @@ ISC © Toni K. Turk
 
 - [npm Package](https://www.npmjs.com/package/fluent-html)
 - [GitHub Repository](https://github.com/JT-Digital-d-o-o/fluent-html)
+- [ESLint Plugin](https://github.com/JT-Digital-d-o-o/fluent-html-eslint-plugin)
+- [Tailwind CSS Extractor](https://github.com/JT-Digital-d-o-o/fluent-html-tailwind-extractor)
 - [Report Issues](https://github.com/JT-Digital-d-o-o/fluent-html/issues)
 - [HTMX Documentation](https://htmx.org/docs/)
 - [API Reference](https://jt-digital-d-o-o.github.io/fluent-html/)
