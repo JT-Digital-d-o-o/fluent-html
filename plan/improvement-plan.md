@@ -156,16 +156,17 @@ Extracted `resolveSelector(value: string | Id | undefined)` into `src/htmx.ts` a
 
 ---
 
-## ~~P3: Distribution — Add ESM Entry Point~~ DONE
+## ~~P3: Distribution — ESM-only + ES2020~~ DONE
 
-Went with **Option B — ESM-only**. CJS was dropped entirely.
+Went with **Option B — ESM-only**. CJS was dropped entirely. Target bumped to ES2020.
 
 ### Changes made
 - `package.json`: `"type": "module"`, single `exports` field with types, removed `module` field
-- `tsconfig.json`: `"module": "ES2020"`, `"moduleResolution": "bundler"`
+- `tsconfig.json`: `"target": "ES2020"`, `"module": "ES2020"`, `"moduleResolution": "bundler"`
 - `engines` bumped to `>=18.0.0` (ESM baseline)
 - Removed dual-publish configs (`tsconfig.cjs.json`, `tsconfig.esm.json`)
 - Single build output to `dist/src/` — no dual CJS/ESM complexity
+- Dead pattern helpers (VStack, HStack, Grid, SearchInput, InfiniteScroll, FormField, KeyedList) removed from `patterns.ts`
 
 ---
 
@@ -215,13 +216,15 @@ Defer. The current approach is fine for typical SSR page sizes (<100KB HTML). On
 
 ## Completed
 
-| Item | Status |
-|---|---|
-| P0: Attribute escaping | Done — double-quote delimiters + escapeAttr on JSON attrs |
-| P3: ESM entry point | Done — ESM-only, CJS dropped |
-| P1: VStack/HStack/Grid rewrite | Removed — helpers dropped, use fluent methods directly |
-| P2: Dead code cleanup (partial) | Done — removed dead exports + tests for deleted patterns |
-| P1: node:test migration | Done — 519 tests across 104 suites, zero dependencies |
+| Item | Commit | Status |
+|---|---|---|
+| P0: Attribute escaping | `f62a4ea` | Done — double-quote delimiters + escapeAttr on JSON attrs |
+| P3: ESM entry point + ES2020 | `7170087` | Done — ESM-only, CJS dropped, target/module set to ES2020, dead pattern helpers removed |
+| P1: VStack/HStack/Grid consistency | `7170087` | Removed — helpers dropped from patterns.ts, use fluent methods directly |
+| P2: Dead code & deprecations | `b7e3938` | Done — removed ForEach1/2/3 aliases, dead exports, and tests for deleted patterns |
+| P2: Data-driven buildHtmx | `b7e3938` | Done — declarative HTMX_ATTRS config array with typed serializer factories |
+| P2: Extract resolveSelector | `b7e3938` | Done — deduplicated Id-to-string resolution in htmx.ts + routes.ts |
+| P1: node:test migration | `5ad1e92` | Done — 519 tests across 104 suites, zero dependencies |
 
 ## Implementation Order (remaining)
 

@@ -1,4 +1,4 @@
-# Codebase Analysis — fluent-html v5.7.2
+# Codebase Analysis — fluent-html v5.8.0
 
 > Date: 2026-03-08 | Updated: 2026-03-08 | Reviewer perspective: Distinguished/Fellow-level software architect
 

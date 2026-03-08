@@ -1,18 +1,19 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { BrowsingContext, LinkRel, ReferrerPolicy } from "./html-types.js";
 export declare class AnchorTag extends Tag {
     href?: string;
-    target?: '_self' | '_blank' | '_parent' | '_top' | string;
-    rel?: string;
+    target?: BrowsingContext;
+    rel?: LinkRel;
     download?: string | boolean;
     type?: string;
-    referrerpolicy?: string;
+    referrerpolicy?: ReferrerPolicy;
     setHref(href?: string): this;
-    setTarget(target?: '_self' | '_blank' | '_parent' | '_top' | string): this;
-    setRel(rel?: string): this;
+    setTarget(target?: BrowsingContext): this;
+    setRel(rel?: LinkRel): this;
     setDownload(download?: string | boolean): this;
     setType(type?: string): this;
-    setReferrerpolicy(referrerpolicy?: string): this;
+    setReferrerpolicy(referrerpolicy?: ReferrerPolicy): this;
 }
 export declare function A(...children: View[]): AnchorTag;
 export declare class MapTag extends Tag {
@@ -25,15 +26,15 @@ export declare class AreaTag extends Tag {
     coords?: string;
     href?: string;
     alt?: string;
-    target?: string;
-    rel?: string;
+    target?: BrowsingContext;
+    rel?: LinkRel;
     download?: string;
     setShape(shape?: 'rect' | 'circle' | 'poly' | 'default'): this;
     setCoords(coords?: string): this;
     setHref(href?: string): this;
     setAlt(alt?: string): this;
-    setTarget(target?: string): this;
-    setRel(rel?: string): this;
+    setTarget(target?: BrowsingContext): this;
+    setRel(rel?: LinkRel): this;
     setDownload(download?: string): this;
 }
 export declare function Area(...children: View[]): AreaTag;

@@ -1,26 +1,27 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { BrowsingContext, LinkRel, ReferrerPolicy } from "./html-types.js";
 
 
 export class AnchorTag extends Tag {
   href?: string;
-  target?: '_self' | '_blank' | '_parent' | '_top' | string;
-  rel?: string;
+  target?: BrowsingContext;
+  rel?: LinkRel;
   download?: string | boolean;
   type?: string;
-  referrerpolicy?: string;
+  referrerpolicy?: ReferrerPolicy;
 
   setHref(href?: string): this {
     this.href = href;
     return this;
   }
 
-  setTarget(target?: '_self' | '_blank' | '_parent' | '_top' | string): this {
+  setTarget(target?: BrowsingContext): this {
     this.target = target;
     return this;
   }
 
-  setRel(rel?: string): this {
+  setRel(rel?: LinkRel): this {
     this.rel = rel;
     return this;
   }
@@ -35,7 +36,7 @@ export class AnchorTag extends Tag {
     return this;
   }
 
-  setReferrerpolicy(referrerpolicy?: string): this {
+  setReferrerpolicy(referrerpolicy?: ReferrerPolicy): this {
     this.referrerpolicy = referrerpolicy;
     return this;
   }
@@ -69,8 +70,8 @@ export class AreaTag extends Tag {
   coords?: string;
   href?: string;
   alt?: string;
-  target?: string;
-  rel?: string;
+  target?: BrowsingContext;
+  rel?: LinkRel;
   download?: string;
 
   setShape(shape?: 'rect' | 'circle' | 'poly' | 'default'): this {
@@ -93,12 +94,12 @@ export class AreaTag extends Tag {
     return this;
   }
 
-  setTarget(target?: string): this {
+  setTarget(target?: BrowsingContext): this {
     this.target = target;
     return this;
   }
 
-  setRel(rel?: string): this {
+  setRel(rel?: LinkRel): this {
     this.rel = rel;
     return this;
   }

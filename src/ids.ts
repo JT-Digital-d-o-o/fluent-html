@@ -18,7 +18,11 @@
  * // Use .selector for hx-target
  * hx("/api", { target: ids.userList.selector })  // "#user-list"
  */
+declare const __idBrand: unique symbol;
+
 export interface Id {
+  /** @internal Prevents structural spoofing — only `createId`/`defineIds` produce valid Ids */
+  readonly [__idBrand]: true;
   /** The raw ID string (e.g., "user-list") */
   readonly id: string;
   /** The CSS selector (e.g., "#user-list") */
@@ -39,12 +43,11 @@ export interface Id {
  * hx("/api", { target: userId.selector })  // hx-target="#user-profile"
  */
 export function createId(name: string): Id {
-  const idObj: Id = {
+  return Object.freeze({
     id: name,
     selector: `#${name}`,
     toString() { return this.selector; }
-  };
-  return Object.freeze(idObj);
+  }) as unknown as Id; // cast is safe — brand is compile-time only
 }
 
 // Type helper: Convert kebab-case to camelCase

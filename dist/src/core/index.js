@@ -4,4 +4,6 @@ export { Tag } from "./tag.js";
 export { RawString, Raw } from "./raw-string.js";
 // Utility functions
 export { Empty, El } from "./utils.js";
+// Type guards
+export { isTag, isRawString } from "./guards.js";
 //# sourceMappingURL=index.js.map

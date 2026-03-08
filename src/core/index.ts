@@ -10,6 +10,9 @@ export { RawString, Raw } from "./raw-string.js";
 // Utility functions
 export { Empty, El } from "./utils.js";
 
+// Type guards
+export { isTag, isRawString } from "./guards.js";
+
 // Tailwind types (re-export for consumers who need them)
 export type {
   TailwindSpacing,

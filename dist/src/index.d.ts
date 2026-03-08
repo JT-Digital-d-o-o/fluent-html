@@ -2,6 +2,8 @@ export type { View, Thunk } from './core/index.js';
 export { Tag } from './core/index.js';
 export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
+export { isTag, isRawString } from './core/index.js';
+export type { InputType, AutocompleteHint, FormMethod, BrowsingContext, LinkRel, ReferrerPolicy, BooleanAttribute, } from './elements/html-types.js';
 export { render } from './render/index.js';
 export { ButtonTag, InputTag, TextareaTag, ImgTag, AnchorTag, LabelTag, SelectTag, OptionTag, OptgroupTag, FormTag, VideoTag, AudioTag, SourceTag, TrackTag, CanvasTag, SvgTag, IframeTag, ObjectTag, EmbedTag, MapTag, AreaTag, MetaTag, LinkTag, StyleTag, ScriptTag, BaseTag, TimeTag, DataTag, ProgressTag, MeterTag, DetailsTag, DialogTag, FieldsetTag, OutputTag, SlotTag, ThTag, TdTag, ColTag, ColgroupTag, } from './elements/index.js';
 export { Div, Main, Header, Footer, Section, Article, Nav, Aside, Figure, Figcaption, Address, Hgroup, Search, } from './elements/index.js';

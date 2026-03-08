@@ -1,6 +1,7 @@
 import { HTMX, HxOptions, HxHttpMethod, hx } from "../htmx.js";
 import { Id, isId } from "../ids.js";
 import type { View } from "./types.js";
+import type { BooleanAttribute } from "../elements/html-types.js";
 import type {
   Autocomplete,
   TailwindSpacing,
@@ -62,6 +63,8 @@ export class Tag {
 
   /** @internal type discriminant for fast render checks */
   declare readonly _t: 1;
+  /** @internal Schema keys for element-specific attributes */
+  declare readonly _sk?: readonly string[];
 
   constructor(element: string, ...children: View[]) {
     this.el = element;
@@ -151,7 +154,7 @@ export class Tag {
    * Input().toggle("required", isRequired)        // conditional
    * Input().toggle("disabled").toggle("readonly")  // chainable
    */
-  toggle(name: string, condition: boolean = true): this {
+  toggle(name: BooleanAttribute, condition: boolean = true): this {
     if (condition) {
       if (this.toggles) {
         this.toggles.push(name);

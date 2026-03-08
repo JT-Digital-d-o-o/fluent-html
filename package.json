@@ -1,6 +1,6 @@
 {
   "name": "fluent-html",
-  "version": "5.7.1",
+  "version": "5.8.0",
   "description": "Fluent, type-safe HTML builder for TypeScript. Chainable styling API, first-class HTMX support with full autocomplete, automatic XSS protection. Zero dependencies, SSR-ready.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node --test dist/test/test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js",
+    "test": "npm run build && node --test dist/test/test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build && npm test"

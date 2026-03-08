@@ -11,7 +11,10 @@
  * // Use .selector for hx-target
  * hx("/api", { target: ids.userList.selector })  // "#user-list"
  */
+declare const __idBrand: unique symbol;
 export interface Id {
+    /** @internal Prevents structural spoofing — only `createId`/`defineIds` produce valid Ids */
+    readonly [__idBrand]: true;
     /** The raw ID string (e.g., "user-list") */
     readonly id: string;
     /** The CSS selector (e.g., "#user-list") */

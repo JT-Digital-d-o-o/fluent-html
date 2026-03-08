@@ -1,7 +1,7 @@
 import type { HTMX, HxStatusConfig } from "../htmx.js";
-import { Tag, EMPTY_ATTRS } from "../core/tag.js";
-import { RawString } from "../core/raw-string.js";
+import { EMPTY_ATTRS } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import { isTag, isRawString } from "../core/guards.js";
 import { escapeHtml, escapeAttr } from "./escape.js";
 
 // HTML void elements — no closing tag, no children
@@ -17,6 +17,7 @@ export function render(...views: View[]): string {
 // Attribute serialization config for data-driven buildHtmx
 type AttrConfig = {
   key: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   serialize: (value: any) => string;
 };
 
@@ -77,7 +78,7 @@ function buildHtmx(htmx: HTMX): string {
   let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
 
   for (const attr of HTMX_ATTRS) {
-    const value = (htmx as any)[attr.key];
+    const value = htmx[attr.key as keyof HTMX];
     if (value !== undefined) {
       result += attr.serialize(value);
     }
@@ -119,14 +120,12 @@ function renderImpl(view: View, isRawContext: boolean): string {
     return isRawContext ? view : escapeHtml(view);
   }
 
-  const vt = (view as any)._t;
-
-  if (vt === 2) {
-    return (view as RawString).html;
+  if (isRawString(view)) {
+    return view.html;
   }
 
-  if (vt === 1) {
-    const tag = view as Tag;
+  if (isTag(view)) {
+    const tag = view;
     const el = tag.el;
     let attrs = '';
 
@@ -137,10 +136,10 @@ function renderImpl(view: View, isRawContext: boolean): string {
     const tsty = tag.style;
     if (tsty !== undefined) attrs += ' style="' + escapeAttr(tsty) + '"';
 
-    const sk: string[] | undefined = (tag as any)._sk;
+    const sk = tag._sk;
     if (sk !== undefined) {
       for (let i = 0; i < sk.length; i++) {
-        const value = (tag as any)[sk[i]];
+        const value = (tag as unknown as Record<string, unknown>)[sk[i]];
         if (value !== undefined && value !== null) {
           attrs += ' ' + sk[i] + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
         }

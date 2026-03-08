@@ -1,5 +1,4 @@
-import { Tag } from "../core/tag.js";
-import { RawString } from "../core/raw-string.js";
+import { isTag, isRawString } from "../core/guards.js";
 /**
  * Extract TagAttrs from a Tag instance.
  */
@@ -48,7 +47,7 @@ function extractAttrs(tag) {
  */
 export function foldView(alg, view) {
     // Handle RawString
-    if (view instanceof RawString) {
+    if (isRawString(view)) {
         return alg.raw(view.html);
     }
     // Handle plain strings
@@ -56,7 +55,7 @@ export function foldView(alg, view) {
         return alg.text(view);
     }
     // Handle Tag instances
-    if (view instanceof Tag) {
+    if (isTag(view)) {
         const attrs = extractAttrs(view);
         const foldedChildren = foldView(alg, view.child);
         return alg.tag(view.el, attrs, foldedChildren);

@@ -1,4 +1,5 @@
 import { EMPTY_ATTRS } from "../core/tag.js";
+import { isTag, isRawString } from "../core/guards.js";
 import { escapeHtml, escapeAttr } from "./escape.js";
 // HTML void elements — no closing tag, no children
 const VOID_ELEMENTS = new Set([
@@ -101,11 +102,10 @@ function renderImpl(view, isRawContext) {
     if (typeof view === "string") {
         return isRawContext ? view : escapeHtml(view);
     }
-    const vt = view._t;
-    if (vt === 2) {
+    if (isRawString(view)) {
         return view.html;
     }
-    if (vt === 1) {
+    if (isTag(view)) {
         const tag = view;
         const el = tag.el;
         let attrs = '';

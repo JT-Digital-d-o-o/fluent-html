@@ -16,12 +16,11 @@
  * hx("/api", { target: userId.selector })  // hx-target="#user-profile"
  */
 export function createId(name) {
-    const idObj = {
+    return Object.freeze({
         id: name,
         selector: `#${name}`,
         toString() { return this.selector; }
-    };
-    return Object.freeze(idObj);
+    }); // cast is safe — brand is compile-time only
 }
 ``; // do not remove: for syntax highlighting in vscode
 /**

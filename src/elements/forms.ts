@@ -1,9 +1,10 @@
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
+import type { InputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
 
 export class InputTag extends Tag {
-  type?: string;
+  type?: InputType;
   placeholder?: string;
   name?: string;
   value?: string;
@@ -14,7 +15,7 @@ export class InputTag extends Tag {
   pattern?: string;
   minlength?: number;
   maxlength?: number;
-  autocomplete?: string;
+  autocomplete?: AutocompleteHint;
   autofocus?: boolean;
   checked?: boolean;
   disabled?: boolean;
@@ -22,7 +23,7 @@ export class InputTag extends Tag {
   multiple?: boolean;
   list?: string;
 
-  setType(type?: string): this {
+  setType(type?: InputType): this {
     this.type = type;
     return this;
   }
@@ -77,7 +78,7 @@ export class InputTag extends Tag {
     return this;
   }
 
-  setAutocomplete(autocomplete?: string): this {
+  setAutocomplete(autocomplete?: AutocompleteHint): this {
     this.autocomplete = autocomplete;
     return this;
   }
@@ -128,7 +129,7 @@ export class TextareaTag extends Tag {
   minlength?: number;
   maxlength?: number;
   wrap?: 'hard' | 'soft' | 'off';
-  autocomplete?: string;
+  autocomplete?: AutocompleteHint;
   autofocus?: boolean;
   disabled?: boolean;
   readonly?: boolean;
@@ -168,7 +169,7 @@ export class TextareaTag extends Tag {
     return this;
   }
 
-  setAutocomplete(autocomplete?: string): this {
+  setAutocomplete(autocomplete?: AutocompleteHint): this {
     this.autocomplete = autocomplete;
     return this;
   }
@@ -202,7 +203,7 @@ export class ButtonTag extends Tag {
   value?: string;
   disabled?: boolean;
   formaction?: string;
-  formmethod?: string;
+  formmethod?: 'get' | 'post';
 
   setType(type?: 'submit' | 'reset' | 'button'): this {
     this.type = type;
@@ -229,7 +230,7 @@ export class ButtonTag extends Tag {
     return this;
   }
 
-  setFormmethod(formmethod?: string): this {
+  setFormmethod(formmethod?: 'get' | 'post'): this {
     this.formmethod = formmethod;
     return this;
   }
@@ -260,9 +261,9 @@ export function Label(...children: View[]): LabelTag {
 
 export class FormTag extends Tag {
   action?: string;
-  method?: string;
+  method?: FormMethod;
   enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
-  target?: string;
+  target?: BrowsingContext;
   novalidate?: boolean;
   autocomplete?: 'on' | 'off';
 
@@ -271,7 +272,7 @@ export class FormTag extends Tag {
     return this;
   }
 
-  setMethod(method?: string): this {
+  setMethod(method?: FormMethod): this {
     this.method = method;
     return this;
   }
@@ -281,7 +282,7 @@ export class FormTag extends Tag {
     return this;
   }
 
-  setTarget(target?: string): this {
+  setTarget(target?: BrowsingContext): this {
     this.target = target;
     return this;
   }

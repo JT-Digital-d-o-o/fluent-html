@@ -1,6 +1,7 @@
 import { HTMX, HxOptions } from "../htmx.js";
 import { Id } from "../ids.js";
 import type { View } from "./types.js";
+import type { BooleanAttribute } from "../elements/html-types.js";
 import type { Autocomplete, TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindOutline, TailwindState, TailwindBreakpoint } from "./tailwind-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
@@ -15,6 +16,8 @@ export declare class Tag {
     toggles?: string[];
     /** @internal type discriminant for fast render checks */
     readonly _t: 1;
+    /** @internal Schema keys for element-specific attributes */
+    readonly _sk?: readonly string[];
     constructor(element: string, ...children: View[]);
     setId(id?: string | Id): this;
     setClass(c?: string): this;
@@ -37,7 +40,7 @@ export declare class Tag {
      * Input().toggle("required", isRequired)        // conditional
      * Input().toggle("disabled").toggle("readonly")  // chainable
      */
-    toggle(name: string, condition?: boolean): this;
+    toggle(name: BooleanAttribute, condition?: boolean): this;
     /**
      * Conditionally modify this tag. When condition is true, the modifier
      * function is called with the tag. Otherwise the tag is returned unchanged.

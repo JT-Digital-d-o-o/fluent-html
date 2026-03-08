@@ -1,7 +1,8 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { InputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
 export declare class InputTag extends Tag {
-    type?: string;
+    type?: InputType;
     placeholder?: string;
     name?: string;
     value?: string;
@@ -12,14 +13,14 @@ export declare class InputTag extends Tag {
     pattern?: string;
     minlength?: number;
     maxlength?: number;
-    autocomplete?: string;
+    autocomplete?: AutocompleteHint;
     autofocus?: boolean;
     checked?: boolean;
     disabled?: boolean;
     readonly?: boolean;
     multiple?: boolean;
     list?: string;
-    setType(type?: string): this;
+    setType(type?: InputType): this;
     setPlaceholder(placeholder?: string): this;
     setName(name?: string): this;
     setValue(value?: string): this;
@@ -30,7 +31,7 @@ export declare class InputTag extends Tag {
     setPattern(pattern?: string): this;
     setMinlength(minlength?: number): this;
     setMaxlength(maxlength?: number): this;
-    setAutocomplete(autocomplete?: string): this;
+    setAutocomplete(autocomplete?: AutocompleteHint): this;
     setAutofocus(autofocus?: boolean): this;
     setChecked(checked?: boolean): this;
     setDisabled(disabled?: boolean): this;
@@ -47,7 +48,7 @@ export declare class TextareaTag extends Tag {
     minlength?: number;
     maxlength?: number;
     wrap?: 'hard' | 'soft' | 'off';
-    autocomplete?: string;
+    autocomplete?: AutocompleteHint;
     autofocus?: boolean;
     disabled?: boolean;
     readonly?: boolean;
@@ -58,7 +59,7 @@ export declare class TextareaTag extends Tag {
     setMinlength(minlength?: number): this;
     setMaxlength(maxlength?: number): this;
     setWrap(wrap?: 'hard' | 'soft' | 'off'): this;
-    setAutocomplete(autocomplete?: string): this;
+    setAutocomplete(autocomplete?: AutocompleteHint): this;
     setAutofocus(autofocus?: boolean): this;
     setDisabled(disabled?: boolean): this;
     setReadonly(readonly?: boolean): this;
@@ -70,13 +71,13 @@ export declare class ButtonTag extends Tag {
     value?: string;
     disabled?: boolean;
     formaction?: string;
-    formmethod?: string;
+    formmethod?: 'get' | 'post';
     setType(type?: 'submit' | 'reset' | 'button'): this;
     setName(name?: string): this;
     setValue(value?: string): this;
     setDisabled(disabled?: boolean): this;
     setFormaction(formaction?: string): this;
-    setFormmethod(formmethod?: string): this;
+    setFormmethod(formmethod?: 'get' | 'post'): this;
 }
 export declare function Button(...children: View[]): ButtonTag;
 export declare class LabelTag extends Tag {
@@ -86,15 +87,15 @@ export declare class LabelTag extends Tag {
 export declare function Label(...children: View[]): LabelTag;
 export declare class FormTag extends Tag {
     action?: string;
-    method?: string;
+    method?: FormMethod;
     enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
-    target?: string;
+    target?: BrowsingContext;
     novalidate?: boolean;
     autocomplete?: 'on' | 'off';
     setAction(action?: string): this;
-    setMethod(method?: string): this;
+    setMethod(method?: FormMethod): this;
     setEnctype(enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'): this;
-    setTarget(target?: string): this;
+    setTarget(target?: BrowsingContext): this;
     setNovalidate(novalidate?: boolean): this;
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
 }

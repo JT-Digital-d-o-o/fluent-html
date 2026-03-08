@@ -3,6 +3,18 @@ export type { View, Thunk } from './core/index.js';
 export { Tag } from './core/index.js';
 export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
+export { isTag, isRawString } from './core/index.js';
+
+// HTML attribute types
+export type {
+  InputType,
+  AutocompleteHint,
+  FormMethod,
+  BrowsingContext,
+  LinkRel,
+  ReferrerPolicy,
+  BooleanAttribute,
+} from './elements/html-types.js';
 
 // Render
 export { render } from './render/index.js';
