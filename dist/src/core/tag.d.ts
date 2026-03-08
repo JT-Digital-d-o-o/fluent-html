@@ -219,6 +219,13 @@ export declare class Tag {
      */
     underline(): this;
     /**
+     * Remove underline from text with Tailwind classes.
+     *
+     * @example
+     * A("Link").noUnderline()             // no-underline
+     */
+    noUnderline(): this;
+    /**
      * Add line-through to text with Tailwind classes.
      *
      * @example

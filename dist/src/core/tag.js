@@ -347,6 +347,15 @@ class Tag {
         return this.addClass("underline");
     }
     /**
+     * Remove underline from text with Tailwind classes.
+     *
+     * @example
+     * A("Link").noUnderline()             // no-underline
+     */
+    noUnderline() {
+        return this.addClass("no-underline");
+    }
+    /**
      * Add line-through to text with Tailwind classes.
      *
      * @example
