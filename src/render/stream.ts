@@ -1,3 +1,4 @@
+import { Readable } from "node:stream";
 import type { HTMX, HxStatusConfig } from "../htmx.js";
 import { EMPTY_ATTRS } from "../core/tag.js";
 import type { View } from "../core/types.js";
@@ -10,111 +11,60 @@ const VOID_ELEMENTS = new Set([
   'link', 'meta', 'source', 'track', 'wbr'
 ]);
 
-export function render(...views: View[]): string {
-  return renderImpl(views.length === 1 ? views[0] : views, false);
-}
+// Reuse the same HTMX serialization helpers from render.ts
+// (duplicated here to avoid circular deps and keep streaming self-contained)
 
-const NONCE_ELEMENTS = new Set(['script', 'style']);
-
-/** Apply a CSP nonce to all script/style tags in a view tree, then render */
-export function renderWithNonce(nonce: string, ...views: View[]): string {
-  const view = views.length === 1 ? views[0] : views;
-  applyNonce(view, nonce);
-  return renderImpl(view, false);
-}
-
-function applyNonce(view: View, nonce: string): void {
-  if (isTag(view)) {
-    if (NONCE_ELEMENTS.has(view.el)) {
-      view.setNonce(nonce);
-    }
-    applyNonce(view.child, nonce);
-  } else if (Array.isArray(view)) {
-    for (let i = 0; i < view.length; i++) {
-      applyNonce(view[i], nonce);
-    }
-  }
-}
-
-// Attribute serialization config for data-driven buildHtmx
 type AttrConfig = {
   key: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  serialize: (value: any) => string;
+  serialize: (value: unknown) => string;
 };
 
-// String attrs: escape the value, quote with "
 const str = (key: string): AttrConfig => ({
   key,
-  serialize: (v) => ` hx-${key}="${escapeAttr(v)}"`,
+  serialize: (v) => ` hx-${key}="${escapeAttr(v as string)}"`,
 });
 
-// Boolean-or-string attrs (pushUrl, replaceUrl, swapOob): pass through booleans, escape strings
 const boolOrStr = (key: string, hxKey?: string): AttrConfig => ({
   key,
   serialize: (v) => ` hx-${hxKey ?? key}="${typeof v === 'string' ? escapeAttr(v) : v}"`,
 });
 
-// Boolean attrs that render just the value (validate, preserve, boost, ignore)
 const boolVal = (key: string): AttrConfig => ({
   key,
   serialize: (v) => ` hx-${key}="${v}"`,
 });
 
-// JSON-or-string attrs (vals, config): stringify objects, escape strings
 const jsonOrStr = (key: string): AttrConfig => ({
   key,
   serialize: (v) => ` hx-${key}="${escapeAttr(typeof v === 'string' ? v : JSON.stringify(v))}"`,
 });
 
-// JSON-only attrs (headers): always stringify
 const json = (key: string): AttrConfig => ({
   key,
   serialize: (v) => ` hx-${key}="${escapeAttr(JSON.stringify(v))}"`,
 });
 
 const HTMX_ATTRS: AttrConfig[] = [
-  str('target'),
-  str('swap'),
-  boolOrStr('swapOob', 'swap-oob'),
-  str('select'),
-  str('trigger'),
-  boolOrStr('pushUrl', 'push-url'),
-  boolOrStr('replaceUrl', 'replace-url'),
-  jsonOrStr('vals'),
-  json('headers'),
-  str('include'),
-  str('encoding'),
-  boolVal('validate'),
-  str('confirm'),
-  str('indicator'),
-  str('disable'),
-  str('sync'),
-  boolVal('preserve'),
-  boolVal('boost'),
-  boolVal('ignore'),
-  jsonOrStr('config'),
+  str('target'), str('swap'), boolOrStr('swapOob', 'swap-oob'),
+  str('select'), str('trigger'), boolOrStr('pushUrl', 'push-url'),
+  boolOrStr('replaceUrl', 'replace-url'), jsonOrStr('vals'), json('headers'),
+  str('include'), str('encoding'), boolVal('validate'), str('confirm'),
+  str('indicator'), str('disable'), str('sync'), boolVal('preserve'),
+  boolVal('boost'), boolVal('ignore'), jsonOrStr('config'),
 ];
 
 function buildHtmx(htmx: HTMX): string {
   let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
-
   for (const attr of HTMX_ATTRS) {
     const value = htmx[attr.key as keyof HTMX];
-    if (value !== undefined) {
-      result += attr.serialize(value);
-    }
+    if (value !== undefined) result += attr.serialize(value);
   }
-
-  // Special cases: boolean-only attrs
   if (htmx.optimistic !== undefined) result += ' hx-optimistic';
   if (htmx.preload !== undefined) {
     result += typeof htmx.preload === 'string'
       ? ' hx-preload="' + htmx.preload + '"'
       : ' hx-preload';
   }
-
-  // Status-code-specific swap behavior
   if (htmx.status) {
     for (const code of Object.keys(htmx.status)) {
       const cfg = htmx.status[code];
@@ -122,7 +72,6 @@ function buildHtmx(htmx: HTMX): string {
       result += ' hx-status:' + code + '="' + escapeAttr(value) + '"';
     }
   }
-
   return result;
 }
 
@@ -152,16 +101,34 @@ function sanitizeRawContent(content: string, element: string): string {
   return content;
 }
 
-function renderImpl(view: View, isRawContext: boolean | string): string {
+/**
+ * Render a view tree to a Node.js Readable stream.
+ *
+ * Chunks are yielded at tag boundaries — open tag + attributes is one chunk,
+ * children are yielded recursively, and close tag is another chunk.
+ * This enables flushing early bytes to the client for large SSR responses.
+ */
+export function renderToStream(view: View): Readable {
+  return new Readable({
+    read() {
+      streamImpl(this, view, false);
+      this.push(null);
+    },
+  });
+}
+
+function streamImpl(stream: Readable, view: View, isRawContext: boolean | string): void {
   if (typeof view === "string") {
-    if (isRawContext === false) return escapeHtml(view);
-    if (typeof isRawContext === 'string') return sanitizeRawContent(view, isRawContext);
-    return view;
+    if (isRawContext === false) { stream.push(escapeHtml(view)); return; }
+    if (typeof isRawContext === 'string') { stream.push(sanitizeRawContent(view, isRawContext)); return; }
+    stream.push(view);
+    return;
   }
 
   if (isRawString(view)) {
-    if (typeof isRawContext === 'string') return sanitizeRawContent(view.html, isRawContext);
-    return view.html;
+    if (typeof isRawContext === 'string') { stream.push(sanitizeRawContent(view.html, isRawContext)); return; }
+    stream.push(view.html);
+    return;
   }
 
   if (isTag(view)) {
@@ -205,32 +172,23 @@ function renderImpl(view: View, isRawContext: boolean | string): string {
       attrs += ' ' + toggles.join(' ');
     }
 
-    if (VOID_ELEMENTS.has(el)) return '<' + el + attrs + '>';
+    if (VOID_ELEMENTS.has(el)) {
+      stream.push('<' + el + attrs + '>');
+      return;
+    }
 
     const childCtx = el === 'script' ? 'script' : el === 'style' ? 'style' : isRawContext;
-    return '<' + el + attrs + '>' + renderImpl(tag.child, childCtx) + '</' + el + '>';
+    stream.push('<' + el + attrs + '>');
+    streamImpl(stream, tag.child, childCtx);
+    stream.push('</' + el + '>');
+    return;
   }
 
   if (Array.isArray(view)) {
-    const len = view.length;
-    if (len === 0) return '';
-    if (len === 1) return renderImpl(view[0], isRawContext);
-
-    // For larger arrays, .join() is faster than += in a loop
-    if (len > 8) {
-      const parts = new Array<string>(len);
-      for (let i = 0; i < len; i++) {
-        parts[i] = renderImpl(view[i], isRawContext);
-      }
-      return parts.join('\n');
+    for (let i = 0; i < view.length; i++) {
+      if (i > 0) stream.push('\n');
+      streamImpl(stream, view[i], isRawContext);
     }
-
-    let result = renderImpl(view[0], isRawContext);
-    for (let i = 1; i < len; i++) {
-      result += '\n' + renderImpl(view[i], isRawContext);
-    }
-    return result;
+    return;
   }
-
-  return '';
 }

@@ -13,7 +13,11 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node --test dist/test/test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js",
+    "test": "npm run build && node --test dist/test/test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js",
+    "test:coverage": "npm run build && c8 --lines 95 --branches 90 node --test dist/test/test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js",
+    "bench": "npm run build && node dist/bench/render.js",
+    "bench:mem": "npm run build && node --expose-gc dist/bench/render.js",
+    "docs": "typedoc",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build && npm test"
@@ -55,6 +59,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.2.1",
+    "c8": "^11.0.0",
+    "typedoc": "^0.28.17",
     "typescript": "^5.0.0"
   }
 }

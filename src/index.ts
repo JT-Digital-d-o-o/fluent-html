@@ -17,7 +17,8 @@ export type {
 } from './elements/html-types.js';
 
 // Render
-export { render } from './render/index.js';
+export { render, renderWithNonce } from './render/index.js';
+export { renderToStream } from './render/index.js';
 
 // Tag classes with typed attributes
 export {

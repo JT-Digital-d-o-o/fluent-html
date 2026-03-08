@@ -34,7 +34,8 @@
   },
   "include": [
     "src/**/*",
-    "test/**/*"
+    "test/**/*",
+    "bench/**/*"
   ],
   "exclude": [
     "node_modules",
