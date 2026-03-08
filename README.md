@@ -211,7 +211,7 @@ render(
 - [Control Flow](#control-flow-1) - IfThen, Match, ForEach
 - [Fold / Catamorphism](FOLD.md) - Generic View traversals, pre-built algebras, custom folds
 - [Common Patterns](#common-patterns) - Layouts, partial swaps, response helpers
-- [ESLint Plugin](#eslint-plugin) - Auto-fix `.setClass()` to fluent methods
+- [ESLint Plugin](#eslint-plugin) - 16 rules catching style overwrites, class conflicts, HTMX pitfalls & more
 - [Tailwind CSS Extractor](#tailwind-css-extractor) - Generate CSS from fluent method calls
 - [API Reference](#api-reference) - Complete method reference
 
@@ -1768,7 +1768,7 @@ Writing your own algebra is straightforward — see the **[full Fold documentati
 
 ## ESLint Plugin
 
-[eslint-plugin-fluent-html](https://github.com/JT-Digital-d-o-o/fluent-html-eslint-plugin) enforces fluent-html best practices — primarily catching `.setClass()` calls that should use dedicated fluent methods instead.
+[eslint-plugin-fluent-html](https://github.com/JT-Digital-d-o-o/fluent-html-eslint-plugin) — **16 rules** that catch real bugs before they ship: style overwrites, class conflicts, HTMX pitfalls, and API misuse. 8 rules include auto-fix.
 
 ```bash
 npm install eslint-plugin-fluent-html --save-dev
@@ -1780,21 +1780,87 @@ import fluentHtml from 'eslint-plugin-fluent-html';
 
 export default [{
   plugins: { "fluent-html": fluentHtml },
-  rules: { "fluent-html/no-known-modifiers-in-setclass": "warn" }
+  rules: fluentHtml.configs.recommended.rules // all 16 rules
 }];
 ```
 
-The plugin auto-fixes `.setClass()` calls containing known Tailwind classes into fluent methods:
+### Style Overwrite Prevention
+
+The plugin catches the most common fluent-html mistake — calling `.setClass()` after fluent methods, which silently **replaces** all previously set classes:
 
 ```typescript
-// ❌ Before — setClass replaces all classes, breaking prior fluent calls
-Div().background("green-700").padding("4").setClass("bg-red-500 flex justify-center")
+// 🚨 error: setClass after fluent modifier — background("green-700") and padding("4") are lost
+Div().background("green-700").padding("4").setClass("bg-red-500 flex")
 
-// ✅ After auto-fix — fluent methods append safely
-Div().background("green-700").padding("4").background("red-500").flex().justifyContent("center")
+// ✅ auto-fixed — fluent methods append safely
+Div().background("green-700").padding("4").background("red-500").flex()
 ```
 
-It recognizes 30+ Tailwind patterns (spacing, colors, typography, layout, sizing, visual, positioning) and handles mixed classes by preserving non-Tailwind classes in `.setClass()`.
+It also catches `.setClass()` inside `.when()` / `.apply()` callbacks and multiple `.setClass()` calls in the same chain — both of which silently discard styles.
+
+### Class Conflict Detection
+
+Detects mutually exclusive Tailwind classes across 25+ conflict groups:
+
+```typescript
+// ⚠️ warn: conflicting classes — "grid" overwrites "flex" (both are display utilities)
+Div().setClass("flex grid gap-4")
+
+// ⚠️ warn: conflicting classes — "p-8" overwrites "p-4" (same prefix)
+Div().setClass("p-4 p-8 m-2")
+```
+
+### Tailwind → Fluent Auto-Fix
+
+Recognizes 70+ Tailwind patterns and converts them to fluent method calls, including variant-aware suggestions for `.on()` and `.at()`:
+
+```typescript
+// ⚠️ warn: known modifiers in setClass
+Div().setClass("bg-red-500 p-4 flex justify-center my-custom-class")
+
+// ✅ auto-fixed — Tailwind classes become methods, unknown classes stay in setClass
+Div().background("red-500").padding("4").flex().justifyContent("center").setClass("my-custom-class")
+```
+
+### API Best Practices
+
+```typescript
+// ⚠️ prefer-set-method: use dedicated setter instead of addAttribute
+Button().addAttribute("type", "submit")  →  Button().setType("submit")
+
+// ⚠️ prefer-variadic-children: don't wrap children in arrays
+Div([H1("Title"), P("Body")])  →  Div(H1("Title"), P("Body"))
+
+// ⚠️ no-raw-ids: use defineIds() for type-safe IDs
+Div().setId("user-list")  →  Div().setId(ids.userList)
+
+// 🚨 no-innerhtml-swap: innerHTML loses the target element's id
+hx(endpoint, { swap: "innerHTML" })  →  hx(endpoint, { swap: "outerHTML" })
+
+// ⚠️ anchor-requires-cursor-pointer: anchors with setHtmx need cursor
+A("Link").setHtmx(...)  →  A("Link").setHtmx(...).cursor("pointer")
+```
+
+### All 16 Rules
+
+| Rule | Severity | Fix | What it catches |
+|------|----------|-----|-----------------|
+| `no-setclass-after-fluent-modifier` | error | — | `.setClass()` after fluent methods overwrites styles |
+| `no-multiple-setclass-in-chain` | error | — | Multiple `.setClass()` calls — earlier ones are lost |
+| `no-setclass-in-when-apply-callback` | error | — | `.setClass()` in callbacks overwrites outer styles |
+| `no-innerhtml-swap` | error | ✅ | `innerHTML` swap loses target element id |
+| `no-known-modifiers-in-setclass` | warn | ✅ | Tailwind classes that should be fluent methods |
+| `no-conflicting-classes-in-setclass` | warn | — | Mutually exclusive Tailwind classes |
+| `no-duplicate-classes-in-setclass` | warn | — | Duplicate class names |
+| `no-empty-setclass` | warn | — | Empty `.setClass("")` calls |
+| `no-unnecessary-spaces-in-setclass` | warn | ✅ | Extra whitespace in class strings |
+| `no-conditional-in-setclass` | warn | — | Dynamic expressions — use `.when()` instead |
+| `prefer-set-method` | warn | ✅ | `.addAttribute()` for standard HTML attributes |
+| `prefer-variadic-children` | warn | ✅ | Array-wrapped children instead of variadic args |
+| `no-raw-ids` | warn | — | Hardcoded ID strings — use `defineIds()` |
+| `no-ternary-in-view-builder` | warn | — | Ternary children — use `.when()` / `IfThen` |
+| `no-superfluous-view-return-type` | warn | ✅ | Unnecessary `: View` return type annotations |
+| `anchor-requires-cursor-pointer` | warn | ✅ | Missing `cursor("pointer")` on anchors |
 
 See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-eslint-plugin) for details.
 
