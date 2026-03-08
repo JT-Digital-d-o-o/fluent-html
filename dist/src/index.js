@@ -3,7 +3,8 @@ export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';
 // Render
-export { render } from './render/index.js';
+export { render, renderWithNonce } from './render/index.js';
+export { renderToStream } from './render/index.js';
 // Tag classes with typed attributes
 export { ButtonTag, InputTag, TextareaTag, ImgTag, AnchorTag, LabelTag, SelectTag, OptionTag, OptgroupTag, FormTag, VideoTag, AudioTag, SourceTag, TrackTag, CanvasTag, SvgTag, IframeTag, ObjectTag, EmbedTag, MapTag, AreaTag, MetaTag, LinkTag, StyleTag, ScriptTag, BaseTag, TimeTag, DataTag, ProgressTag, MeterTag, DetailsTag, DialogTag, FieldsetTag, OutputTag, SlotTag, ThTag, TdTag, ColTag, ColgroupTag, } from './elements/index.js';
 // Structural / Semantic elements

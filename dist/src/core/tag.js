@@ -1,7 +1,24 @@
 import { hx } from "../htmx.js";
 import { isId } from "../ids.js";
 /** @internal Shared empty attributes object — never mutate */
-export const EMPTY_ATTRS = Object.freeze({});
+export const EMPTY_ATTRS = Object.freeze(Object.create(null));
+// Attribute key must be a valid HTML attribute name
+const VALID_ATTR_KEY = /^[a-zA-Z_][a-zA-Z0-9\-_:.]*$/;
+// Event handler attributes — blocked by default to prevent XSS
+const EVENT_HANDLER_RE = /^on[a-z]/i;
+// Prototype pollution keys
+const PROTO_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+function validateAttributeKey(key) {
+    if (PROTO_KEYS.has(key)) {
+        throw new Error(`Attribute key "${key}" is blocked (prototype pollution)`);
+    }
+    if (!VALID_ATTR_KEY.test(key)) {
+        throw new Error(`Invalid attribute key: "${key}"`);
+    }
+    if (EVENT_HANDLER_RE.test(key)) {
+        throw new Error(`Event handler attribute "${key}" is blocked — use client-side JS or HTMX instead`);
+    }
+}
 export class Tag {
     constructor(element, ...children) {
         // ------------------------------------
@@ -12,14 +29,42 @@ export class Tag {
         this.el = element;
         this.child = children.length === 0 ? "" : children.length === 1 ? children[0] : children;
     }
+    /**
+     * Set the element's `id` attribute. Accepts a string or a type-safe `Id` object.
+     *
+     * @param id - The ID string or Id object (from `defineIds` / `createId`)
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setId(ids.mainContent)
+     * Div("Content").setId("main-content")
+     */
     setId(id) {
         this.id = id ? (isId(id) ? id.id : id) : undefined;
         return this;
     }
+    /**
+     * Set the element's `class` attribute, replacing any existing classes.
+     *
+     * @param c - The class string
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setClass("container mx-auto")
+     */
     setClass(c) {
         this.class = c;
         return this;
     }
+    /**
+     * Append classes to the element's existing `class` attribute.
+     *
+     * @param c - Space-separated class names to add
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setClass("p-4").addClass("bg-white rounded")
+     */
     addClass(c) {
         const classes = this._variantPrefix
             ? c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" ")
@@ -32,17 +77,50 @@ export class Tag {
         }
         return this;
     }
+    /**
+     * Set the element's inline `style` attribute.
+     *
+     * @param style - CSS style string
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setStyle("color: red; font-size: 16px")
+     */
     setStyle(style) {
         this.style = style;
         return this;
     }
+    /**
+     * Add a custom HTML attribute. Validates the key against XSS and prototype pollution.
+     * Prefer typed setter methods (e.g. `.setType()`, `.setPlaceholder()`) over this.
+     *
+     * @param key - The attribute name
+     * @param value - The attribute value
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").addAttribute("data-testid", "my-div")
+     */
     addAttribute(key, value) {
+        validateAttributeKey(key);
         if (this.attributes === EMPTY_ATTRS) {
-            this.attributes = { [key]: value };
+            this.attributes = Object.create(null);
         }
-        else {
-            this.attributes[key] = value;
+        this.attributes[key] = value;
+        return this;
+    }
+    /**
+     * Set a CSP nonce on this element (typically for inline script/style tags).
+     *
+     * @example
+     * Script("console.log('hi')").setNonce(nonce)
+     * Style(".cls { color: red }").setNonce(nonce)
+     */
+    setNonce(nonce) {
+        if (this.attributes === EMPTY_ATTRS) {
+            this.attributes = Object.create(null);
         }
+        this.attributes['nonce'] = nonce;
         return this;
     }
     setHtmx(endpointOrHtmx, options) {
@@ -178,7 +256,7 @@ export class Tag {
      */
     setDataAttrs(attrs) {
         if (this.attributes === EMPTY_ATTRS)
-            this.attributes = {};
+            this.attributes = Object.create(null);
         for (const [key, value] of Object.entries(attrs)) {
             // Convert camelCase to kebab-case
             const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
@@ -201,7 +279,7 @@ export class Tag {
      */
     setAria(attrs) {
         if (this.attributes === EMPTY_ATTRS)
-            this.attributes = {};
+            this.attributes = Object.create(null);
         for (const [key, value] of Object.entries(attrs)) {
             // Convert camelCase to kebab-case
             const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);

@@ -19,11 +19,67 @@ export declare class Tag {
     /** @internal Schema keys for element-specific attributes */
     readonly _sk?: readonly string[];
     constructor(element: string, ...children: View[]);
+    /**
+     * Set the element's `id` attribute. Accepts a string or a type-safe `Id` object.
+     *
+     * @param id - The ID string or Id object (from `defineIds` / `createId`)
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setId(ids.mainContent)
+     * Div("Content").setId("main-content")
+     */
     setId(id?: string | Id): this;
+    /**
+     * Set the element's `class` attribute, replacing any existing classes.
+     *
+     * @param c - The class string
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setClass("container mx-auto")
+     */
     setClass(c?: string): this;
+    /**
+     * Append classes to the element's existing `class` attribute.
+     *
+     * @param c - Space-separated class names to add
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setClass("p-4").addClass("bg-white rounded")
+     */
     addClass(c: string): this;
+    /**
+     * Set the element's inline `style` attribute.
+     *
+     * @param style - CSS style string
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").setStyle("color: red; font-size: 16px")
+     */
     setStyle(style?: string): this;
+    /**
+     * Add a custom HTML attribute. Validates the key against XSS and prototype pollution.
+     * Prefer typed setter methods (e.g. `.setType()`, `.setPlaceholder()`) over this.
+     *
+     * @param key - The attribute name
+     * @param value - The attribute value
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div("Content").addAttribute("data-testid", "my-div")
+     */
     addAttribute(key: string, value: string): this;
+    /**
+     * Set a CSP nonce on this element (typically for inline script/style tags).
+     *
+     * @example
+     * Script("console.log('hi')").setNonce(nonce)
+     * Style(".cls { color: red }").setNonce(nonce)
+     */
+    setNonce(nonce: string): this;
     setHtmx(htmx?: HTMX): this;
     setHtmx(endpoint: string, options?: HxOptions): this;
     hxGet(endpoint: string, options?: Omit<HxOptions, 'method'>): this;

@@ -48,7 +48,28 @@ import type {
 } from "./tailwind-types.js";
 
 /** @internal Shared empty attributes object — never mutate */
-export const EMPTY_ATTRS: Record<string, string> = Object.freeze({}) as Record<string, string>;
+export const EMPTY_ATTRS: Record<string, string> = Object.freeze(Object.create(null)) as Record<string, string>;
+
+// Attribute key must be a valid HTML attribute name
+const VALID_ATTR_KEY = /^[a-zA-Z_][a-zA-Z0-9\-_:.]*$/;
+
+// Event handler attributes — blocked by default to prevent XSS
+const EVENT_HANDLER_RE = /^on[a-z]/i;
+
+// Prototype pollution keys
+const PROTO_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+function validateAttributeKey(key: string): void {
+  if (PROTO_KEYS.has(key)) {
+    throw new Error(`Attribute key "${key}" is blocked (prototype pollution)`);
+  }
+  if (!VALID_ATTR_KEY.test(key)) {
+    throw new Error(`Invalid attribute key: "${key}"`);
+  }
+  if (EVENT_HANDLER_RE.test(key)) {
+    throw new Error(`Event handler attribute "${key}" is blocked — use client-side JS or HTMX instead`);
+  }
+}
 
 export class Tag {
   el: string;
@@ -71,16 +92,44 @@ export class Tag {
     this.child = children.length === 0 ? "" : children.length === 1 ? children[0] : children;
   }
 
+  /**
+   * Set the element's `id` attribute. Accepts a string or a type-safe `Id` object.
+   *
+   * @param id - The ID string or Id object (from `defineIds` / `createId`)
+   * @returns `this` for chaining
+   *
+   * @example
+   * Div("Content").setId(ids.mainContent)
+   * Div("Content").setId("main-content")
+   */
   setId(id?: string | Id): this {
     this.id = id ? (isId(id) ? id.id : id) : undefined;
     return this;
   }
 
+  /**
+   * Set the element's `class` attribute, replacing any existing classes.
+   *
+   * @param c - The class string
+   * @returns `this` for chaining
+   *
+   * @example
+   * Div("Content").setClass("container mx-auto")
+   */
   setClass(c?: string): this {
     this.class = c;
     return this;
   }
 
+  /**
+   * Append classes to the element's existing `class` attribute.
+   *
+   * @param c - Space-separated class names to add
+   * @returns `this` for chaining
+   *
+   * @example
+   * Div("Content").setClass("p-4").addClass("bg-white rounded")
+   */
   addClass(c: string): this {
     const classes = this._variantPrefix
       ? c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" ")
@@ -93,17 +142,52 @@ export class Tag {
     return this;
   }
 
+  /**
+   * Set the element's inline `style` attribute.
+   *
+   * @param style - CSS style string
+   * @returns `this` for chaining
+   *
+   * @example
+   * Div("Content").setStyle("color: red; font-size: 16px")
+   */
   setStyle(style?: string): this {
     this.style = style;
     return this;
   }
 
+  /**
+   * Add a custom HTML attribute. Validates the key against XSS and prototype pollution.
+   * Prefer typed setter methods (e.g. `.setType()`, `.setPlaceholder()`) over this.
+   *
+   * @param key - The attribute name
+   * @param value - The attribute value
+   * @returns `this` for chaining
+   *
+   * @example
+   * Div("Content").addAttribute("data-testid", "my-div")
+   */
   addAttribute(key: string, value: string): this {
+    validateAttributeKey(key);
     if (this.attributes === EMPTY_ATTRS) {
-      this.attributes = { [key]: value };
-    } else {
-      this.attributes[key] = value;
+      this.attributes = Object.create(null) as Record<string, string>;
     }
+    this.attributes[key] = value;
+    return this;
+  }
+
+  /**
+   * Set a CSP nonce on this element (typically for inline script/style tags).
+   *
+   * @example
+   * Script("console.log('hi')").setNonce(nonce)
+   * Style(".cls { color: red }").setNonce(nonce)
+   */
+  setNonce(nonce: string): this {
+    if (this.attributes === EMPTY_ATTRS) {
+      this.attributes = Object.create(null) as Record<string, string>;
+    }
+    this.attributes['nonce'] = nonce;
     return this;
   }
 
@@ -251,7 +335,7 @@ export class Tag {
    * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
    */
   setDataAttrs(attrs: Record<string, string>): this {
-    if (this.attributes === EMPTY_ATTRS) this.attributes = {};
+    if (this.attributes === EMPTY_ATTRS) this.attributes = Object.create(null) as Record<string, string>;
     for (const [key, value] of Object.entries(attrs)) {
       // Convert camelCase to kebab-case
       const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
@@ -274,7 +358,7 @@ export class Tag {
    * })
    */
   setAria(attrs: Record<string, string | boolean>): this {
-    if (this.attributes === EMPTY_ATTRS) this.attributes = {};
+    if (this.attributes === EMPTY_ATTRS) this.attributes = Object.create(null) as Record<string, string>;
     for (const [key, value] of Object.entries(attrs)) {
       // Convert camelCase to kebab-case
       const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);

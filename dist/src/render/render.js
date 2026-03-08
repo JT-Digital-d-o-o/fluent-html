@@ -6,8 +6,57 @@ const VOID_ELEMENTS = new Set([
     'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
     'link', 'meta', 'source', 'track', 'wbr'
 ]);
+/**
+ * Render one or more Views to an HTML string.
+ *
+ * All text content and attributes are automatically HTML-escaped for XSS protection.
+ * Pass multiple views (e.g. `Partial` elements) for multi-swap responses.
+ *
+ * @param views - One or more View trees to render
+ * @returns The rendered HTML string
+ *
+ * @example
+ * render(Div(H1("Hello"), P("World")))
+ * // '<div><h1>Hello</h1>\n<p>World</p></div>'
+ *
+ * @example
+ * // Multi-swap response
+ * render(
+ *   Partial(ids.list, UserList(users)),
+ *   Partial(ids.count, Span(`${users.length}`)),
+ * )
+ */
 export function render(...views) {
     return renderImpl(views.length === 1 ? views[0] : views, false);
+}
+const NONCE_ELEMENTS = new Set(['script', 'style']);
+/**
+ * Apply a CSP nonce to all `<script>` and `<style>` tags in the view tree, then render.
+ *
+ * @param nonce - The CSP nonce string to inject
+ * @param views - One or more View trees to render
+ * @returns The rendered HTML string with nonce attributes applied
+ *
+ * @example
+ * renderWithNonce("abc123", Script().setSrc("/app.js"), Style("body { margin: 0 }"))
+ */
+export function renderWithNonce(nonce, ...views) {
+    const view = views.length === 1 ? views[0] : views;
+    applyNonce(view, nonce);
+    return renderImpl(view, false);
+}
+function applyNonce(view, nonce) {
+    if (isTag(view)) {
+        if (NONCE_ELEMENTS.has(view.el)) {
+            view.setNonce(nonce);
+        }
+        applyNonce(view.child, nonce);
+    }
+    else if (Array.isArray(view)) {
+        for (let i = 0; i < view.length; i++) {
+            applyNonce(view[i], nonce);
+        }
+    }
 }
 // String attrs: escape the value, quote with "
 const str = (key) => ({
@@ -98,11 +147,30 @@ function buildStatusConfig(cfg) {
         parts.push('transition:' + cfg.transition);
     return parts.join(' ');
 }
+// Regex patterns for closing tags inside script/style (case-insensitive)
+const SCRIPT_CLOSE_RE = /<\/script/gi;
+const STYLE_CLOSE_RE = /<\/style/gi;
+/** Sanitize raw context content by escaping closing tags that would break out */
+function sanitizeRawContent(content, element) {
+    if (element === 'script') {
+        return content.replace(SCRIPT_CLOSE_RE, '<\\/script');
+    }
+    if (element === 'style') {
+        return content.replace(STYLE_CLOSE_RE, '<\\/style');
+    }
+    return content;
+}
 function renderImpl(view, isRawContext) {
     if (typeof view === "string") {
-        return isRawContext ? view : escapeHtml(view);
+        if (isRawContext === false)
+            return escapeHtml(view);
+        if (typeof isRawContext === 'string')
+            return sanitizeRawContent(view, isRawContext);
+        return view;
     }
     if (isRawString(view)) {
+        if (typeof isRawContext === 'string')
+            return sanitizeRawContent(view.html, isRawContext);
         return view.html;
     }
     if (isTag(view)) {
@@ -146,12 +214,23 @@ function renderImpl(view, isRawContext) {
         }
         if (VOID_ELEMENTS.has(el))
             return '<' + el + attrs + '>';
-        return '<' + el + attrs + '>' + renderImpl(tag.child, el === 'script' || el === 'style') + '</' + el + '>';
+        const childCtx = el === 'script' ? 'script' : el === 'style' ? 'style' : isRawContext;
+        return '<' + el + attrs + '>' + renderImpl(tag.child, childCtx) + '</' + el + '>';
     }
     if (Array.isArray(view)) {
         const len = view.length;
         if (len === 0)
             return '';
+        if (len === 1)
+            return renderImpl(view[0], isRawContext);
+        // For larger arrays, .join() is faster than += in a loop
+        if (len > 8) {
+            const parts = new Array(len);
+            for (let i = 0; i < len; i++) {
+                parts[i] = renderImpl(view[i], isRawContext);
+            }
+            return parts.join('\n');
+        }
         let result = renderImpl(view[0], isRawContext);
         for (let i = 1; i < len; i++) {
             result += '\n' + renderImpl(view[i], isRawContext);
