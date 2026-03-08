@@ -1,0 +1,17 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "tsconfig.docs.json",
+  "out": "docs",
+  "name": "fluent-html",
+  "readme": "README.md",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeProtected": true,
+  "includeVersion": true,
+  "navigationLinks": {
+    "GitHub": "https://github.com/JT-Digital-d-o-o/fluent-html",
+    "npm": "https://www.npmjs.com/package/fluent-html"
+  },
+  "githubPages": true
+}

@@ -11,6 +11,15 @@
 npm install fluent-html
 ```
 
+## Why fluent-html?
+
+- **No JSX, no templates** — pure TypeScript functions with full type checking, refactoring, and IDE support
+- **Autocomplete everything** — every HTML attribute, Tailwind value, HTMX option, and swap strategy suggested as you type
+- **Type-safe by design** — routes, IDs, and HTMX targets are compile-time validated; typos become build errors, not runtime bugs
+- **Zero dependencies, SSR-ready** — ~15KB minified, renders to strings on the server, no virtual DOM overhead
+
+---
+
 Build HTML with chainable methods, full IDE autocomplete, and zero dependencies:
 
 ```typescript
@@ -2054,6 +2063,26 @@ import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes
 
 ---
 
+## Contributing
+
+Contributions are welcome! Here's how to get started:
+
+```bash
+git clone https://github.com/JT-Digital-d-o-o/fluent-html.git
+cd fluent-html
+npm install
+npm run build
+npm test
+```
+
+- **Report bugs** — open an [issue](https://github.com/JT-Digital-d-o-o/fluent-html/issues) with a minimal reproduction
+- **Suggest features** — open an issue describing the use case
+- **Submit PRs** — fork, create a branch, and open a pull request against `main`
+
+Please ensure `tsc --noEmit` passes and all tests are green before submitting.
+
+---
+
 ## License
 
 ISC © Toni K. Turk
@@ -2066,3 +2095,5 @@ ISC © Toni K. Turk
 - [GitHub Repository](https://github.com/JT-Digital-d-o-o/fluent-html)
 - [Report Issues](https://github.com/JT-Digital-d-o-o/fluent-html/issues)
 - [HTMX Documentation](https://htmx.org/docs/)
+- [API Reference](https://jt-digital-d-o-o.github.io/fluent-html/)
+- [Changelog](CHANGELOG.md)

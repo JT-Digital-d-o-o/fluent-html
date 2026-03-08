@@ -71,6 +71,18 @@ function validateAttributeKey(key: string): void {
   }
 }
 
+/**
+ * The core HTML element builder. All element factories (`Div`, `Button`, `Input`, etc.)
+ * create `Tag` instances. Provides chainable methods for attributes, classes, styles,
+ * HTMX integration, and Tailwind CSS styling.
+ *
+ * @example
+ * Div(H1("Hello"), P("World"))
+ *   .setId(ids.main)
+ *   .padding("4")
+ *   .background("white")
+ *   .setHtmx("/api/content")
+ */
 export class Tag {
   el: string;
   child: View;
@@ -191,6 +203,19 @@ export class Tag {
     return this;
   }
 
+  /**
+   * Attach HTMX attributes to this element. Accepts a pre-built `HTMX` object,
+   * or an endpoint string with optional options.
+   *
+   * @param endpointOrHtmx - URL string or HTMX object (from `hx()` or `defineRoutes`)
+   * @param options - HTMX options when passing an endpoint string
+   * @returns `this` for chaining
+   *
+   * @example
+   * Button("Load").setHtmx("/api/items")
+   * Button("Save").setHtmx("/api/save", { method: "post", target: ids.result })
+   * Button("Load").setHtmx(hx("/api/items", { swap: "outerMorph" }))
+   */
   setHtmx(htmx?: HTMX): this;
   setHtmx(endpoint: string, options?: HxOptions): this;
   setHtmx(endpointOrHtmx?: string | HTMX, options?: HxOptions): this {
@@ -200,26 +225,31 @@ export class Tag {
     return this;
   }
 
+  /** Shorthand for `.setHtmx(endpoint, { method: "get", ...options })`. */
   hxGet(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
     this.htmx = hx(endpoint, { ...options, method: 'get' });
     return this;
   }
 
+  /** Shorthand for `.setHtmx(endpoint, { method: "post", ...options })`. */
   hxPost(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
     this.htmx = hx(endpoint, { ...options, method: 'post' });
     return this;
   }
 
+  /** Shorthand for `.setHtmx(endpoint, { method: "put", ...options })`. */
   hxPut(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
     this.htmx = hx(endpoint, { ...options, method: 'put' });
     return this;
   }
 
+  /** Shorthand for `.setHtmx(endpoint, { method: "patch", ...options })`. */
   hxPatch(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
     this.htmx = hx(endpoint, { ...options, method: 'patch' });
     return this;
   }
 
+  /** Shorthand for `.setHtmx(endpoint, { method: "delete", ...options })`. */
   hxDelete(endpoint: string, options?: Omit<HxOptions, 'method'>): this {
     this.htmx = hx(endpoint, { ...options, method: 'delete' });
     return this;

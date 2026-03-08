@@ -6,11 +6,17 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/src/index.d.ts",
-      "default": "./dist/src/index.js"
-    }
+    ".": { "types": "./dist/src/index.d.ts", "default": "./dist/src/index.js" },
+    "./core": { "types": "./dist/src/core/index.d.ts", "default": "./dist/src/core/index.js" },
+    "./elements": { "types": "./dist/src/elements/index.d.ts", "default": "./dist/src/elements/index.js" },
+    "./control": { "types": "./dist/src/control/index.d.ts", "default": "./dist/src/control/index.js" },
+    "./render": { "types": "./dist/src/render/index.d.ts", "default": "./dist/src/render/index.js" },
+    "./fold": { "types": "./dist/src/fold/index.d.ts", "default": "./dist/src/fold/index.js" },
+    "./ids": { "types": "./dist/src/ids.d.ts", "default": "./dist/src/ids.js" },
+    "./routes": { "types": "./dist/src/routes.d.ts", "default": "./dist/src/routes.js" },
+    "./htmx": { "types": "./dist/src/htmx.d.ts", "default": "./dist/src/htmx.js" }
   },
+  "sideEffects": false,
   "scripts": {
     "build": "tsc",
     "test": "npm run build && node --test dist/test/test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js",
@@ -20,7 +26,8 @@
     "docs": "typedoc",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "prepublishOnly": "npm run build && npm test"
+    "prepack": "npm run build && npm test",
+    "prepublishOnly": "npm pack --dry-run"
   },
   "files": [
     "dist/src/**/*"

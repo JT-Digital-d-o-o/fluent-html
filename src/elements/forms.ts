@@ -3,6 +3,12 @@ import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 import type { InputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
 
+/**
+ * Specialized Tag for `<input>` elements with typed attribute setters.
+ *
+ * @example
+ * Input().setType("email").setName("email").setPlaceholder("you@example.com")
+ */
 export class InputTag extends Tag {
   type?: InputType;
   placeholder?: string;
@@ -117,10 +123,17 @@ export class InputTag extends Tag {
 /** @internal */
 (InputTag.prototype as any)._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
 
+/** Create an `<input>` element with typed attribute methods. */
 export function Input(...children: View[]): InputTag {
   return new InputTag("input", ...children);
 }
 
+/**
+ * Specialized Tag for `<textarea>` elements with typed attribute setters.
+ *
+ * @example
+ * Textarea().setName("comment").setRows(5).setPlaceholder("Write a comment...")
+ */
 export class TextareaTag extends Tag {
   placeholder?: string;
   name?: string;
@@ -193,10 +206,17 @@ export class TextareaTag extends Tag {
 /** @internal */
 (TextareaTag.prototype as any)._sk = ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly'];
 
+/** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children: View[]): TextareaTag {
   return new TextareaTag("textarea", ...children);
 }
 
+/**
+ * Specialized Tag for `<button>` elements with typed attribute setters.
+ *
+ * @example
+ * Button("Submit").setType("submit").setDisabled(isLoading)
+ */
 export class ButtonTag extends Tag {
   type?: 'submit' | 'reset' | 'button';
   name?: string;
@@ -239,6 +259,7 @@ export class ButtonTag extends Tag {
 /** @internal */
 (ButtonTag.prototype as any)._sk = ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod'];
 
+/** Create a `<button>` element with typed attribute methods. */
 export function Button(...children: View[]): ButtonTag {
   return new ButtonTag("button", ...children);
 }
@@ -301,6 +322,7 @@ export class FormTag extends Tag {
 /** @internal */
 (FormTag.prototype as any)._sk = ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete'];
 
+/** Create a `<form>` element with typed attribute methods. */
 export function Form(...children: View[]): FormTag {
   return new FormTag("form", ...children);
 }

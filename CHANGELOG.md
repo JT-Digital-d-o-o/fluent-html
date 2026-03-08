@@ -119,6 +119,37 @@ Form().hxPost("/users/create", {
 
 ---
 
+## [5.8.1]
+
+### 🔧 Improvements
+
+#### Type Safety Improvements
+
+- **Literal string unions** — replaced bare `string` types with specific literal unions where only certain values are valid
+- **Branded `Id` type** — prevents mixing up different ID types at compile time
+- **Type guards** — `isTag()` and `isRawString()` for safe runtime type narrowing
+- **Constrained `.toggle()`** — now accepts only valid `BooleanAttribute` names
+
+---
+
+## [5.8.0]
+
+### 🔧 Improvements
+
+#### Test Suite Migration
+
+- Migrated entire test suite from custom test runner to `node:test` (built-in Node.js test runner)
+- All tests now run with `node --test` — no external test framework needed
+
+#### Code Quality
+
+- Refactored `buildHtmx` to data-driven architecture, eliminating repetitive conditional branches
+- Extracted `resolveSelector` utility for consistent ID/selector handling
+- Removed deprecated `ForEach1`, `ForEach2`, `ForEach3` aliases
+- Output target updated to ES2020 with ESM modules
+
+---
+
 ## [5.7.1]
 
 ### ✨ New Features

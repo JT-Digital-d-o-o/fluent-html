@@ -2,6 +2,12 @@ import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
+/**
+ * Specialized Tag for `<img>` elements with typed attribute setters.
+ *
+ * @example
+ * Img().setSrc("/photo.jpg").setAlt("A photo").setLoading("lazy")
+ */
 export class ImgTag extends Tag {
   src?: string;
   alt?: string;
@@ -62,6 +68,7 @@ export class ImgTag extends Tag {
 /** @internal */
 (ImgTag.prototype as any)._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
 
+/** Create an `<img>` element with typed attribute methods. */
 export function Img(...children: View[]): ImgTag {
   return new ImgTag("img", ...children);
 }
