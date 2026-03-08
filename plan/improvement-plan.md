@@ -27,43 +27,14 @@ Exports and tests cleaned up accordingly in `src/index.ts` and `test/patterns.ts
 
 ---
 
-## P1: Quality — Adopt node:test
+## ~~P1: Quality — Adopt node:test~~ DONE
 
-### Problem
+### Changes made
 
-Custom test runner with string comparison, no isolation, no diffing, no async support. Underinvesting for a published v5 library.
+Migrated all 6 test files from custom test runner to `node:test` + `node:assert/strict`. Each `section()` became a `describe()` block, each `test()`/`testView()` became an `it()` block with `assert.strictEqual()`. Removed all custom pass/fail counters and summary blocks. Also added `ids.ts` and `fold.ts` to the test script (were previously missing). Removed `swiftui-style-demo.ts` from test script (demo, not a test). 519 tests pass across 104 suites.
 
-### Plan
-
-1. **Migrate to `node:test`** (built-in, zero dependencies, available since Node 18):
-   ```typescript
-   import { describe, it } from 'node:test';
-   import assert from 'node:assert/strict';
-
-   describe('Structural elements', () => {
-     it('renders Div with children', () => {
-       assert.equal(render(Div("hello")), '<div>hello</div>');
-     });
-   });
-   ```
-
-2. **Migrate one test file at a time** — start with the smallest (fold.ts), validate the approach, then convert the rest.
-
-3. **Update `package.json` test script:**
-   ```json
-   "test": "npm run build && node --test dist/test/*.js"
-   ```
-   This runs all test files in parallel automatically.
-
-4. **Preserve existing test coverage** — this is a runner migration, not a coverage change. Every existing `test()` call becomes an `it()` block.
-
-5. **Add `--experimental-test-snapshots`** (Node 22+) for complex HTML output comparisons if desired.
-
-### Files
 - All `test/*.ts` files
-- `package.json` — test script
-
-### Effort: Medium (4-8 hours, mostly mechanical)
+- `package.json` — test script updated to `node --test`
 
 ---
 
@@ -250,24 +221,11 @@ Defer. The current approach is fine for typical SSR page sizes (<100KB HTML). On
 | P3: ESM entry point | Done — ESM-only, CJS dropped |
 | P1: VStack/HStack/Grid rewrite | Removed — helpers dropped, use fluent methods directly |
 | P2: Dead code cleanup (partial) | Done — removed dead exports + tests for deleted patterns |
+| P1: node:test migration | Done — 519 tests across 104 suites, zero dependencies |
 
 ## Implementation Order (remaining)
 
 | Phase | Items | Version |
 |---|---|---|
-| **Phase 1 (Now)** | P0: Fix escaping, P1: foldView discriminants, P2: Dead code cleanup (remaining), P2: Extract Id resolution | v5.7.2 (patch) |
-| **Phase 2 (Soon)** | P1: node:test migration, P2: Brand Id type | v5.8.0 (minor) |
-| **Phase 3 (Next)** | P2: Data-driven buildHtmx | v5.9.0 |
-| **Phase 4 (Later)** | P3: Tag decomposition research, P3: Streaming research | v6.x or beyond |
-
----
-
-## Effort Summary
-
-| Phase | Estimated Effort |
-|---|---|
-| Phase 1 | 3-4 hours |
-| Phase 2 | 5-9 hours |
-| Phase 3 | 3-4 hours |
-| Phase 4 | Research only |
-| **Total (Phases 1-3)** | **~11-17 hours** |
+| **Phase 1 (Now)** | P1: foldView discriminants, P2: Brand Id type | v5.7.2 (patch) |
+| **Phase 2 (Later)** | P3: Tag decomposition research, P3: Streaming research | v6.x or beyond |

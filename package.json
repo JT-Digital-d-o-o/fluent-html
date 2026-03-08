@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node dist/test/test.js && node dist/test/patterns.js && node dist/test/swiftui-style.js && node dist/test/routes.js && node dist/test/fluent-styling-v2.js",
+    "test": "npm run build && node --test dist/test/test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build && npm test"
