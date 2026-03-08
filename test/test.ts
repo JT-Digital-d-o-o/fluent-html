@@ -49,7 +49,7 @@ import {
   El, Empty, Overlay,
 
   // Control flow
-  IfThen, IfThenElse, SwitchCase, Match, ForEach, ForEach1, ForEach2, ForEach3, Repeat,
+  IfThen, IfThenElse, SwitchCase, Match, ForEach, Repeat,
 } from "../src/index.js";
 
 import { hx, id, clss, HxSwap, HxTrigger } from "../src/htmx.js";
@@ -1631,16 +1631,16 @@ testView("ForEach empty",
   Ul(ForEach([], item => Li(item))),
   `<ul></ul>`);
 
-testView("ForEach1 with index",
-  Ul(ForEach1(["A", "B", "C"], (item, idx) => Li(`${idx + 1}. ${item}`))),
+testView("ForEach with index",
+  Ul(ForEach(["A", "B", "C"], (item, idx) => Li(`${idx + 1}. ${item}`))),
   `<ul><li>1. A</li>\n<li>2. B</li>\n<li>3. C</li></ul>`);
 
-testView("ForEach2 range",
-  Ul(ForEach2(3, idx => Li(`Item ${idx}`))),
+testView("ForEach range",
+  Ul(ForEach(3, idx => Li(`Item ${idx}`))),
   `<ul><li>Item 0</li>\n<li>Item 1</li>\n<li>Item 2</li></ul>`);
 
-testView("ForEach3 range with start",
-  Ul(ForEach3(5, 8, idx => Li(`Item ${idx}`))),
+testView("ForEach range with start",
+  Ul(ForEach(5, 8, idx => Li(`Item ${idx}`))),
   `<ul><li>Item 5</li>\n<li>Item 6</li>\n<li>Item 7</li></ul>`);
 
 testView("Repeat",

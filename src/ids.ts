@@ -54,7 +54,7 @@ type KebabToCamel<S extends string> = S extends `${infer Head}-${infer Tail}`
     ? `${Head}${Capitalize<KebabToCamel<Tail>>}`
     : S;
 
-``; // for syntax highlighting in vscode
+``; // do not remove: for syntax highlighting in vscode
 
 // Type for the registry object
 type IdRegistry<T extends readonly string[]> = {

@@ -258,6 +258,12 @@ export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 's
   include?: string | Id;
 };
 
+/** Resolve a string or Id to its selector string, or undefined if falsy. */
+export function resolveSelector(value: string | Id | undefined): string | undefined {
+  if (!value) return undefined;
+  return isId(value) ? value.selector : value;
+}
+
 export function hx(
   endpoint: string,
   options: HxOptions = {}
@@ -266,11 +272,11 @@ export function hx(
   return {
     endpoint,
     method: method ?? "get",
-    target: target ? (isId(target) ? target.selector : target) : undefined,
-    select: select ? (isId(select) ? select.selector : select) : undefined,
-    indicator: indicator ? (isId(indicator) ? indicator.selector : indicator) : undefined,
-    disable: disable ? (isId(disable) ? disable.selector : disable) : undefined,
-    include: include ? (isId(include) ? include.selector : include) : undefined,
+    target: resolveSelector(target),
+    select: resolveSelector(select),
+    indicator: resolveSelector(indicator),
+    disable: resolveSelector(disable),
+    include: resolveSelector(include),
     ...rest,
   };
 }

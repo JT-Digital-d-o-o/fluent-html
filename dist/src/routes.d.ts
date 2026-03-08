@@ -1,5 +1,5 @@
 import type { HTMX, HxHttpMethod, HxTarget } from "./htmx.js";
-import { type Id } from "./ids.js";
+import type { Id } from "./ids.js";
 /**
  * Extract parameter names from a route path string literal.
  *

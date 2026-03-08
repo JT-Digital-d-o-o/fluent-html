@@ -9,7 +9,8 @@
 // defineRoutes() protects endpoint URLs and HTTP methods.
 
 import type { HTMX, HxHttpMethod, HxSwap, HxTarget } from "./htmx.js";
-import { type Id, isId } from "./ids.js";
+import { resolveSelector } from "./htmx.js";
+import type { Id } from "./ids.js";
 
 // ------------------------------------
 // Path Parameter Extraction (type-level)
@@ -127,11 +128,11 @@ function buildHtmxFromRoute(
   return {
     endpoint,
     method,
-    target: target ? (isId(target) ? target.selector : target) : undefined,
-    select: select ? (isId(select) ? select.selector : select) : undefined,
-    indicator: indicator ? (isId(indicator) ? indicator.selector : indicator) : undefined,
-    disable: disable ? (isId(disable) ? disable.selector : disable) : undefined,
-    include: include ? (isId(include) ? include.selector : include) : undefined,
+    target: resolveSelector(target),
+    select: resolveSelector(select),
+    indicator: resolveSelector(indicator),
+    disable: resolveSelector(disable),
+    include: resolveSelector(include),
     ...rest,
   };
 }

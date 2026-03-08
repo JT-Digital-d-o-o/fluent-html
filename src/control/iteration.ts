@@ -54,13 +54,6 @@ export function ForEach<T>(
   return Array.from(viewsOrLowOrHigh).map(fn);
 }
 
-/** @deprecated Use ForEach instead */
-export const ForEach1 = ForEach;
-/** @deprecated Use ForEach instead */
-export const ForEach2 = ForEach;
-/** @deprecated Use ForEach instead */
-export const ForEach3 = ForEach;
-
 export function Repeat(
   times: number,
   content: () => View

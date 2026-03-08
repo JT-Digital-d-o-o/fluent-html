@@ -99,6 +99,8 @@ export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 's
     disable?: string | Id;
     include?: string | Id;
 };
+/** Resolve a string or Id to its selector string, or undefined if falsy. */
+export declare function resolveSelector(value: string | Id | undefined): string | undefined;
 export declare function hx(endpoint: string, options?: HxOptions): HTMX;
 /**
  * Create an ID selector for hx-target

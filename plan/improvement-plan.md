@@ -149,94 +149,39 @@ Custom test runner with string comparison, no isolation, no diffing, no async su
 
 ---
 
-## P2: Maintainability — Data-Driven buildHtmx
+## ~~P2: Maintainability — Data-Driven buildHtmx~~ DONE
 
-### Problem
+### Changes made
 
-`buildHtmx` is ~50 lines of sequential `if` statements. Each new HTMX attribute requires another branch.
+Replaced ~35-line if-chain in `buildHtmx` with a declarative `HTMX_ATTRS` config array. Each attribute type uses a factory function (`str`, `boolOrStr`, `boolVal`, `jsonOrStr`, `json`) that handles serialization. The main loop is now 5 lines; adding a new HTMX attribute is a one-liner in the config array. Special cases (`optimistic`, `preload`, `status`) remain handled separately due to unique rendering logic.
 
-### Plan
-
-1. **Define an attribute serialization map:**
-   ```typescript
-   type AttrConfig = {
-     key: string;
-     quote: '"' | "'";
-     serialize?: (value: any) => string;
-   };
-
-   const HTMX_ATTRS: AttrConfig[] = [
-     { key: 'target', quote: '"' },
-     { key: 'swap', quote: '"' },
-     { key: 'select', quote: '"' },
-     { key: 'trigger', quote: '"' },
-     // ...
-     { key: 'headers', quote: "'", serialize: JSON.stringify },
-     { key: 'vals', quote: "'", serialize: v => typeof v === 'string' ? v : JSON.stringify(v) },
-   ];
-   ```
-
-2. **Replace the if-chain with a loop:**
-   ```typescript
-   function buildHtmx(htmx: HTMX): string {
-     let result = `hx-${htmx.method}="${escapeAttr(htmx.endpoint)}"`;
-     for (const attr of HTMX_ATTRS) {
-       const value = (htmx as any)[attr.key];
-       if (value !== undefined) {
-         const serialized = attr.serialize ? attr.serialize(value) : String(value);
-         result += ` hx-${attr.key}=${attr.quote}${escapeAttr(serialized)}${attr.quote}`;
-       }
-     }
-     return result;
-   }
-   ```
-
-3. **Handle special cases** (swapOob, status, optimistic, preload) separately or with a custom serialize function.
-
-### Files
 - `src/render/render.ts`
 
-### Effort: Medium (3-4 hours including tests)
+---
+
+## ~~P2: Cleanup — Remove Dead Code & Deprecations~~ DONE
+
+### Changes made
+
+1. **Removed `ForEach1`, `ForEach2`, `ForEach3`** from `iteration.ts`, `control/index.ts`, `src/index.ts`, and updated tests to use `ForEach` directly.
+2. **Kept the empty backtick string** on ids.ts:57 — it's intentional for VS Code syntax highlighting.
+3. Items 3–5 deferred (no `addClass("")` found in patterns.ts; `SwitchCase` and `OOB`/`withOOB` already marked `@deprecated`).
+
+- `src/control/iteration.ts`
+- `src/control/index.ts`
+- `src/index.ts`
+- `test/test.ts`
 
 ---
 
-## P2: Cleanup — Remove Dead Code & Deprecations
+## ~~P2: DX — Extract Duplicate Id Resolution Logic~~ DONE
 
-### Plan
+### Changes made
 
-1. **Remove `ForEach1`, `ForEach2`, `ForEach3`** — deprecated aliases with no distinct behavior.
-2. **Remove the empty backtick string** on ids.ts:57.
-3. **Fix `addClass("")`** calls in patterns.ts — guard with `if (options.className)`.
-4. **Consider deprecating `SwitchCase`** — `Match` supersedes it.
-5. **Consider deprecating `OOB` / `withOOB`** — already marked deprecated, `Partial` replaces them.
+Extracted `resolveSelector(value: string | Id | undefined)` into `src/htmx.ts` and used it in both `hx()` and `buildHtmxFromRoute()` in `src/routes.ts`, eliminating 10 lines of duplicated ternary expressions.
 
-### Effort: Small (1-2 hours)
-
----
-
-## P2: DX — Extract Duplicate Id Resolution Logic
-
-### Problem
-
-`hx()` and `buildHtmxFromRoute()` have near-identical code for resolving `Id` objects to selectors.
-
-### Plan
-
-Extract a shared helper:
-```typescript
-function resolveSelector(value: string | Id | undefined): string | undefined {
-  if (!value) return undefined;
-  return isId(value) ? value.selector : value;
-}
-```
-
-Use in both `hx()` and `buildHtmxFromRoute()`.
-
-### Files
 - `src/htmx.ts`
 - `src/routes.ts`
-
-### Effort: Tiny (30 minutes)
 
 ---
 

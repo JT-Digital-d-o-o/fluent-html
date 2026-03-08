@@ -14,45 +14,84 @@ export function render(...views: View[]): string {
   return renderImpl(views.length === 1 ? views[0] : views, false);
 }
 
+// Attribute serialization config for data-driven buildHtmx
+type AttrConfig = {
+  key: string;
+  serialize: (value: any) => string;
+};
+
+// String attrs: escape the value, quote with "
+const str = (key: string): AttrConfig => ({
+  key,
+  serialize: (v) => ` hx-${key}="${escapeAttr(v)}"`,
+});
+
+// Boolean-or-string attrs (pushUrl, replaceUrl, swapOob): pass through booleans, escape strings
+const boolOrStr = (key: string, hxKey?: string): AttrConfig => ({
+  key,
+  serialize: (v) => ` hx-${hxKey ?? key}="${typeof v === 'string' ? escapeAttr(v) : v}"`,
+});
+
+// Boolean attrs that render just the value (validate, preserve, boost, ignore)
+const boolVal = (key: string): AttrConfig => ({
+  key,
+  serialize: (v) => ` hx-${key}="${v}"`,
+});
+
+// JSON-or-string attrs (vals, config): stringify objects, escape strings
+const jsonOrStr = (key: string): AttrConfig => ({
+  key,
+  serialize: (v) => ` hx-${key}="${escapeAttr(typeof v === 'string' ? v : JSON.stringify(v))}"`,
+});
+
+// JSON-only attrs (headers): always stringify
+const json = (key: string): AttrConfig => ({
+  key,
+  serialize: (v) => ` hx-${key}="${escapeAttr(JSON.stringify(v))}"`,
+});
+
+const HTMX_ATTRS: AttrConfig[] = [
+  str('target'),
+  str('swap'),
+  boolOrStr('swapOob', 'swap-oob'),
+  str('select'),
+  str('trigger'),
+  boolOrStr('pushUrl', 'push-url'),
+  boolOrStr('replaceUrl', 'replace-url'),
+  jsonOrStr('vals'),
+  json('headers'),
+  str('include'),
+  str('encoding'),
+  boolVal('validate'),
+  str('confirm'),
+  str('indicator'),
+  str('disable'),
+  str('sync'),
+  boolVal('preserve'),
+  boolVal('boost'),
+  boolVal('ignore'),
+  jsonOrStr('config'),
+];
+
 function buildHtmx(htmx: HTMX): string {
   let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
 
-  if (htmx.target) result += ' hx-target="' + escapeAttr(htmx.target) + '"';
-  if (htmx.swap) result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
-  if (htmx.swapOob !== undefined) {
-    result += ' hx-swap-oob="' + (typeof htmx.swapOob === 'string' ? escapeAttr(htmx.swapOob) : htmx.swapOob) + '"';
+  for (const attr of HTMX_ATTRS) {
+    const value = (htmx as any)[attr.key];
+    if (value !== undefined) {
+      result += attr.serialize(value);
+    }
   }
-  if (htmx.select) result += ' hx-select="' + escapeAttr(htmx.select) + '"';
-  if (htmx.trigger) result += ' hx-trigger="' + escapeAttr(htmx.trigger) + '"';
-  if (htmx.pushUrl !== undefined) {
-    result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl) + '"';
-  }
-  if (htmx.replaceUrl !== undefined) {
-    result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl) + '"';
-  }
-  if (htmx.vals) {
-    result += ' hx-vals="' + escapeAttr(typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)) + '"';
-  }
-  if (htmx.headers) result += ' hx-headers="' + escapeAttr(JSON.stringify(htmx.headers)) + '"';
-  if (htmx.include) result += ' hx-include="' + escapeAttr(htmx.include) + '"';
-  if (htmx.encoding) result += ' hx-encoding="' + escapeAttr(htmx.encoding) + '"';
-  if (htmx.validate !== undefined) result += ' hx-validate="' + htmx.validate + '"';
-  if (htmx.confirm) result += ' hx-confirm="' + escapeAttr(htmx.confirm) + '"';
-  if (htmx.indicator) result += ' hx-indicator="' + escapeAttr(htmx.indicator) + '"';
-  if (htmx.disable) result += ' hx-disable="' + escapeAttr(htmx.disable) + '"';
-  if (htmx.sync) result += ' hx-sync="' + escapeAttr(htmx.sync) + '"';
-  if (htmx.preserve !== undefined) result += ' hx-preserve="' + htmx.preserve + '"';
-  if (htmx.boost !== undefined) result += ' hx-boost="' + htmx.boost + '"';
-  if (htmx.ignore !== undefined) result += ' hx-ignore="' + htmx.ignore + '"';
-  if (htmx.config) {
-    result += ' hx-config="' + escapeAttr(typeof htmx.config === 'string' ? htmx.config : JSON.stringify(htmx.config)) + '"';
-  }
+
+  // Special cases: boolean-only attrs
   if (htmx.optimistic !== undefined) result += ' hx-optimistic';
   if (htmx.preload !== undefined) {
     result += typeof htmx.preload === 'string'
       ? ' hx-preload="' + htmx.preload + '"'
       : ' hx-preload';
   }
+
+  // Status-code-specific swap behavior
   if (htmx.status) {
     for (const code of Object.keys(htmx.status)) {
       const cfg = htmx.status[code];

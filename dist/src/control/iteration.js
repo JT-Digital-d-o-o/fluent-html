@@ -33,12 +33,6 @@ export function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
     }
     return Array.from(viewsOrLowOrHigh).map(fn);
 }
-/** @deprecated Use ForEach instead */
-export const ForEach1 = ForEach;
-/** @deprecated Use ForEach instead */
-export const ForEach2 = ForEach;
-/** @deprecated Use ForEach instead */
-export const ForEach3 = ForEach;
 export function Repeat(times, content) {
     return ForEach(times, content);
 }

@@ -236,15 +236,13 @@ export {
   SwitchCase,
   Match,
   ForEach,
-  ForEach1,
-  ForEach2,
-  ForEach3,
   Repeat,
 } from './control/index.js';
 
 // HTMX
 export {
   hx,
+  resolveSelector,
   HTMX,
   HxSwap,
   HxSwapStyle,

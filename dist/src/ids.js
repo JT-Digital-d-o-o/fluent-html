@@ -23,7 +23,6 @@ export function createId(name) {
     };
     return Object.freeze(idObj);
 }
-``; // for syntax highlighting in vscode
 /**
  * Define a registry of type-safe IDs.
  *

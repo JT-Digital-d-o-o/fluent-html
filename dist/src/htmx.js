@@ -3,16 +3,22 @@
 // Compatible with HTMX 4.0+
 // ------------------------------------
 import { isId } from "./ids.js";
+/** Resolve a string or Id to its selector string, or undefined if falsy. */
+export function resolveSelector(value) {
+    if (!value)
+        return undefined;
+    return isId(value) ? value.selector : value;
+}
 export function hx(endpoint, options = {}) {
     const { method, target, select, indicator, disable, include, ...rest } = options;
     return {
         endpoint,
         method: method ?? "get",
-        target: target ? (isId(target) ? target.selector : target) : undefined,
-        select: select ? (isId(select) ? select.selector : select) : undefined,
-        indicator: indicator ? (isId(indicator) ? indicator.selector : indicator) : undefined,
-        disable: disable ? (isId(disable) ? disable.selector : disable) : undefined,
-        include: include ? (isId(include) ? include.selector : include) : undefined,
+        target: resolveSelector(target),
+        select: resolveSelector(select),
+        indicator: resolveSelector(indicator),
+        disable: resolveSelector(disable),
+        include: resolveSelector(include),
         ...rest,
     };
 }
