@@ -70,8 +70,8 @@ export class ImgTag extends Tag {
 (ImgTag.prototype as any)._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
 
 /** Create an `<img>` element with typed attribute methods. */
-export function Img(...children: View[]): ImgTag {
-  return new ImgTag("img", ...children);
+export function Img(): ImgTag {
+  return new ImgTag("img");
 }
 
 export function Picture(...children: View[]): Tag {
@@ -115,8 +115,8 @@ export class SourceTag extends Tag {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (SourceTag.prototype as any)._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
 
-export function Source(...children: View[]): SourceTag {
-  return new SourceTag("source", ...children);
+export function Source(): SourceTag {
+  return new SourceTag("source");
 }
 
 export class VideoTag extends Tag {
@@ -274,8 +274,8 @@ export class TrackTag extends Tag {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (TrackTag.prototype as any)._sk = ['src', 'kind', 'srclang', 'label', 'default'];
 
-export function Track(...children: View[]): TrackTag {
-  return new TrackTag("track", ...children);
+export function Track(): TrackTag {
+  return new TrackTag("track");
 }
 
 export class CanvasTag extends Tag {

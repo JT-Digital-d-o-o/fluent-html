@@ -83,7 +83,7 @@ export class AreaTag extends Tag {
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 AreaTag.prototype._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
-export function Area(...children) {
-    return new AreaTag("area", ...children);
+export function Area() {
+    return new AreaTag("area");
 }
 //# sourceMappingURL=links.js.map

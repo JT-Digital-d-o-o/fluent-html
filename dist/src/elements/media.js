@@ -48,8 +48,8 @@ export class ImgTag extends Tag {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ImgTag.prototype._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
 /** Create an `<img>` element with typed attribute methods. */
-export function Img(...children) {
-    return new ImgTag("img", ...children);
+export function Img() {
+    return new ImgTag("img");
 }
 export function Picture(...children) {
     return El("picture", ...children);
@@ -79,8 +79,8 @@ export class SourceTag extends Tag {
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 SourceTag.prototype._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
-export function Source(...children) {
-    return new SourceTag("source", ...children);
+export function Source() {
+    return new SourceTag("source");
 }
 export class VideoTag extends Tag {
     setWidth(width) {
@@ -187,8 +187,8 @@ export class TrackTag extends Tag {
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 TrackTag.prototype._sk = ['src', 'kind', 'srclang', 'label', 'default'];
-export function Track(...children) {
-    return new TrackTag("track", ...children);
+export function Track() {
+    return new TrackTag("track");
 }
 export class CanvasTag extends Tag {
     setWidth(width) {

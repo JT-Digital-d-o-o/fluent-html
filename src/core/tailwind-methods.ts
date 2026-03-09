@@ -7,7 +7,6 @@
  */
 import { Tag } from "./tag.js";
 import type {
-  Autocomplete,
   TailwindSpacing,
   TailwindWidth,
   TailwindHeight,
@@ -47,6 +46,11 @@ import type {
   TailwindPointerEvents,
   TailwindWhitespace,
   TailwindOutline,
+  TailwindPosition,
+  TailwindTextAlign,
+  TailwindFlexDirection,
+  TailwindJustifyContent,
+  TailwindAlignItems,
   TailwindState,
   TailwindBreakpoint,
 } from "./tailwind-types.js";
@@ -74,23 +78,23 @@ const DIR_MAP: Record<string, string> = {
 declare module "./tag.js" {
   interface Tag {
     // Variant Proxy
-    on(state: Autocomplete<TailwindState>, fn: (tag: this) => this): this;
-    at(breakpoint: Autocomplete<TailwindBreakpoint>, fn: (tag: this) => this): this;
+    on(state: TailwindState, fn: (tag: this) => this): this;
+    at(breakpoint: TailwindBreakpoint, fn: (tag: this) => this): this;
 
     // Spacing
-    padding(value: Autocomplete<TailwindSpacing>): this;
-    padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing>): this;
-    margin(value: Autocomplete<TailwindSpacing | "auto">): this;
-    margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: Autocomplete<TailwindSpacing | "auto">): this;
+    padding(value: TailwindSpacing): this;
+    padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+    margin(value: TailwindSpacing | "auto"): this;
+    margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing | "auto"): this;
 
     // Colors
-    background(color: Autocomplete<TailwindColor>): this;
-    textColor(color: Autocomplete<TailwindColor>): this;
+    background(color: TailwindColor): this;
+    textColor(color: TailwindColor): this;
 
     // Typography
-    textSize(size: Autocomplete<TailwindTextSize>): this;
-    textAlign(align: "left" | "center" | "right" | "justify"): this;
-    fontWeight(weight: Autocomplete<TailwindFontWeight>): this;
+    textSize(size: TailwindTextSize): this;
+    textAlign(align: TailwindTextAlign): this;
+    fontWeight(weight: TailwindFontWeight): this;
     bold(): this;
     italic(): this;
     uppercase(): this;
@@ -100,95 +104,95 @@ declare module "./tag.js" {
     noUnderline(): this;
     lineThrough(): this;
     truncate(): this;
-    leading(value: Autocomplete<TailwindLeading>): this;
-    tracking(value: Autocomplete<TailwindTracking>): this;
+    leading(value: TailwindLeading): this;
+    tracking(value: TailwindTracking): this;
 
     // Sizing
-    w(value: Autocomplete<TailwindWidth>): this;
-    h(value: Autocomplete<TailwindHeight>): this;
-    maxW(value: Autocomplete<TailwindMaxWidth>): this;
-    minW(value: Autocomplete<TailwindMinWidth>): this;
-    maxH(value: Autocomplete<TailwindMaxHeight>): this;
-    minH(value: Autocomplete<TailwindMinHeight>): this;
+    w(value: TailwindWidth): this;
+    h(value: TailwindHeight): this;
+    maxW(value: TailwindMaxWidth): this;
+    minW(value: TailwindMinWidth): this;
+    maxH(value: TailwindMaxHeight): this;
+    minH(value: TailwindMinHeight): this;
 
     // Flexbox
-    flex(value?: Autocomplete<TailwindFlex>): this;
-    flexDirection(direction: "row" | "col" | "row-reverse" | "col-reverse"): this;
-    justifyContent(justify: "start" | "end" | "center" | "between" | "around" | "evenly"): this;
-    alignItems(align: "start" | "end" | "center" | "baseline" | "stretch"): this;
-    gap(value: Autocomplete<TailwindSpacing>): this;
-    gap(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): this;
+    flex(value?: TailwindFlex): this;
+    flexDirection(direction: TailwindFlexDirection): this;
+    justifyContent(justify: TailwindJustifyContent): this;
+    alignItems(align: TailwindAlignItems): this;
+    gap(value: TailwindSpacing): this;
+    gap(direction: "x" | "y", value: TailwindSpacing): this;
 
     // Grid
     grid(): this;
-    gridCols(cols: Autocomplete<TailwindGridCols>): this;
-    gridRows(rows: Autocomplete<TailwindGridRows>): this;
+    gridCols(cols: TailwindGridCols): this;
+    gridRows(rows: TailwindGridRows): this;
 
     // Borders
-    border(value?: Autocomplete<TailwindBorderWidth>): this;
-    border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: Autocomplete<TailwindBorderWidth>): this;
-    borderColor(color: Autocomplete<TailwindColor>): this;
-    rounded(value?: Autocomplete<TailwindRounded>): this;
-    shadow(value?: Autocomplete<TailwindShadow>): this;
+    border(value?: TailwindBorderWidth): this;
+    border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
+    borderColor(color: TailwindColor): this;
+    rounded(value?: TailwindRounded): this;
+    shadow(value?: TailwindShadow): this;
 
     // Effects & Appearance
-    opacity(value: Autocomplete<TailwindOpacity>): this;
-    cursor(value: Autocomplete<TailwindCursor>): this;
-    position(value: "static" | "fixed" | "absolute" | "relative" | "sticky"): this;
-    zIndex(value: Autocomplete<TailwindZIndex>): this;
-    overflow(value: Autocomplete<TailwindOverflow>): this;
-    overflow(direction: "x" | "y", value: Autocomplete<TailwindOverflow>): this;
-    objectFit(value: Autocomplete<TailwindObjectFit>): this;
+    opacity(value: TailwindOpacity): this;
+    cursor(value: TailwindCursor): this;
+    position(value: TailwindPosition): this;
+    zIndex(value: TailwindZIndex): this;
+    overflow(value: TailwindOverflow): this;
+    overflow(direction: "x" | "y", value: TailwindOverflow): this;
+    objectFit(value: TailwindObjectFit): this;
 
     // Layout & Display
-    display(value: Autocomplete<TailwindDisplay>): this;
+    display(value: TailwindDisplay): this;
     hidden(): this;
-    inset(value: Autocomplete<TailwindInset>): this;
-    top(value: Autocomplete<TailwindInset>): this;
-    right(value: Autocomplete<TailwindInset>): this;
-    bottom(value: Autocomplete<TailwindInset>): this;
-    left(value: Autocomplete<TailwindInset>): this;
+    inset(value: TailwindInset): this;
+    top(value: TailwindInset): this;
+    right(value: TailwindInset): this;
+    bottom(value: TailwindInset): this;
+    left(value: TailwindInset): this;
 
     // Flexbox & Grid Extensions
     shrink(value?: "0"): this;
     grow(value?: "0"): this;
-    flexWrap(value: Autocomplete<TailwindFlexWrap>): this;
-    alignSelf(value: Autocomplete<TailwindAlignSelf>): this;
-    colSpan(value: Autocomplete<TailwindColSpan>): this;
-    aspect(value: Autocomplete<TailwindAspect>): this;
+    flexWrap(value: TailwindFlexWrap): this;
+    alignSelf(value: TailwindAlignSelf): this;
+    colSpan(value: TailwindColSpan): this;
+    aspect(value: TailwindAspect): this;
 
     // Spacing Between Children
-    spaceX(value: Autocomplete<TailwindSpacing>): this;
-    spaceY(value: Autocomplete<TailwindSpacing>): this;
-    divideX(value?: Autocomplete<TailwindBorderWidth>): this;
-    divideY(value?: Autocomplete<TailwindBorderWidth>): this;
+    spaceX(value: TailwindSpacing): this;
+    spaceY(value: TailwindSpacing): this;
+    divideX(value?: TailwindBorderWidth): this;
+    divideY(value?: TailwindBorderWidth): this;
 
     // Transitions & Animation
-    transition(value?: Autocomplete<TailwindTransition>): this;
-    duration(value: Autocomplete<TailwindDuration>): this;
-    animate(value: Autocomplete<TailwindAnimate>): this;
+    transition(value?: TailwindTransition): this;
+    duration(value: TailwindDuration): this;
+    animate(value: TailwindAnimate): this;
 
     // Ring (Focus Rings)
-    ring(value?: Autocomplete<TailwindRingWidth>): this;
-    ringColor(color: Autocomplete<TailwindColor>): this;
+    ring(value?: TailwindRingWidth): this;
+    ringColor(color: TailwindColor): this;
 
     // Transforms
-    scale(value: Autocomplete<TailwindScale>): this;
-    rotate(value: Autocomplete<TailwindRotate>): this;
-    translate(direction: "x" | "y", value: Autocomplete<TailwindSpacing>): this;
+    scale(value: TailwindScale): this;
+    rotate(value: TailwindRotate): this;
+    translate(direction: "x" | "y", value: TailwindSpacing): this;
 
     // Interactivity
-    select(value: Autocomplete<TailwindSelect>): this;
-    pointerEvents(value: Autocomplete<TailwindPointerEvents>): this;
+    select(value: TailwindSelect): this;
+    pointerEvents(value: TailwindPointerEvents): this;
 
     // Text & Whitespace
-    whitespace(value: Autocomplete<TailwindWhitespace>): this;
+    whitespace(value: TailwindWhitespace): this;
 
     // Accessibility
     srOnly(): this;
 
     // Outline
-    outline(value: Autocomplete<TailwindOutline>): this;
+    outline(value: TailwindOutline): this;
   }
 }
 

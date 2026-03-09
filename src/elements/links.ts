@@ -123,6 +123,6 @@ export class AreaTag extends Tag {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (AreaTag.prototype as any)._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
 
-export function Area(...children: View[]): AreaTag {
-  return new AreaTag("area", ...children);
+export function Area(): AreaTag {
+  return new AreaTag("area");
 }

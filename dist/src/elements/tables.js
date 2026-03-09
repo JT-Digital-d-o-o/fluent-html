@@ -75,7 +75,7 @@ export class ColTag extends Tag {
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ColTag.prototype._sk = ['span'];
-export function Col(...children) {
-    return new ColTag("col", ...children);
+export function Col() {
+    return new ColTag("col");
 }
 //# sourceMappingURL=tables.js.map

@@ -11,7 +11,7 @@ export declare function Span(...children: View[]): Tag;
 export declare function Blockquote(...children: View[]): Tag;
 export declare function Pre(...children: View[]): Tag;
 export declare function Code(...children: View[]): Tag;
-export declare function Hr(...children: View[]): Tag;
+export declare function Hr(): Tag;
 export declare function Br(): Tag;
 export declare function Wbr(): Tag;
 //# sourceMappingURL=text.d.ts.map

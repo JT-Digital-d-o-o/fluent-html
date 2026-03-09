@@ -46,5 +46,5 @@ export declare class EmbedTag extends Tag {
     setWidth(width?: string): this;
     setHeight(height?: string): this;
 }
-export declare function Embed(...children: View[]): EmbedTag;
+export declare function Embed(): EmbedTag;
 //# sourceMappingURL=embedded.d.ts.map

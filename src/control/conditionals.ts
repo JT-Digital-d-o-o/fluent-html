@@ -69,20 +69,6 @@ export function IfThen<T>(
   return Empty();
 }
 
-type Case = { condition: boolean, component: Thunk<View> };
-/** @deprecated Use `Match` instead for value matching. */
-export function SwitchCase(
-  cases: Case[],
-  defaultView: Thunk<View> = Empty
-): View {
-  for (const caseItem of cases) {
-    if (caseItem.condition) {
-      return caseItem.component();
-    }
-  }
-  return defaultView();
-}
-
 /**
  * Exhaustive value matching — maps a string or number to a corresponding view.
  *

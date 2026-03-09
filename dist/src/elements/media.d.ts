@@ -27,7 +27,7 @@ export declare class ImgTag extends Tag {
     setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this;
 }
 /** Create an `<img>` element with typed attribute methods. */
-export declare function Img(...children: View[]): ImgTag;
+export declare function Img(): ImgTag;
 export declare function Picture(...children: View[]): Tag;
 export declare class SourceTag extends Tag {
     src?: string;
@@ -41,7 +41,7 @@ export declare class SourceTag extends Tag {
     setType(type?: string): this;
     setMedia(media?: string): this;
 }
-export declare function Source(...children: View[]): SourceTag;
+export declare function Source(): SourceTag;
 export declare class VideoTag extends Tag {
     width?: number;
     height?: number;
@@ -92,7 +92,7 @@ export declare class TrackTag extends Tag {
     setLabel(label?: string): this;
     setDefault(isDefault?: boolean): this;
 }
-export declare function Track(...children: View[]): TrackTag;
+export declare function Track(): TrackTag;
 export declare class CanvasTag extends Tag {
     width?: number;
     height?: number;

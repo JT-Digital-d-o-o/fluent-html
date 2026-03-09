@@ -46,7 +46,7 @@ export declare class InputTag extends Tag {
     setList(list?: string): this;
 }
 /** Create an `<input>` element with typed attribute methods. */
-export declare function Input(...children: View[]): InputTag;
+export declare function Input(): InputTag;
 /**
  * Specialized Tag for `<textarea>` elements with typed attribute setters.
  *

@@ -32,8 +32,8 @@ export function Pre(...children) {
 export function Code(...children) {
     return El("code", ...children);
 }
-export function Hr(...children) {
-    return El("hr", ...children);
+export function Hr() {
+    return El("hr");
 }
 export function Br() {
     return El("br");

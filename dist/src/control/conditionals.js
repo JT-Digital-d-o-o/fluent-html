@@ -17,15 +17,6 @@ export function IfThen(conditionOrValue, then) {
     }
     return Empty();
 }
-/** @deprecated Use `Match` instead for value matching. */
-export function SwitchCase(cases, defaultView = Empty) {
-    for (const caseItem of cases) {
-        if (caseItem.condition) {
-            return caseItem.component();
-        }
-    }
-    return defaultView();
-}
 // Implementation
 export function Match(value, casesOrKey, casesOrDefault, defaultView) {
     // Discriminated union overload: Match(value, key, cases, ?default)

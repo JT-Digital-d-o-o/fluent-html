@@ -131,10 +131,6 @@ export class Tag {
         this.attributes['nonce'] = nonce;
         return this;
     }
-    setToggles(toggles) {
-        this.toggles = toggles;
-        return this;
-    }
     /**
      * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
      *

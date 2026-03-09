@@ -40,10 +40,10 @@ test("margin bottom", '<div class="mb-4"></div>', render(Div().margin("bottom", 
 test("margin left", '<div class="ml-2"></div>', render(Div().margin("left", "2")));
 test("margin right", '<div class="mr-2"></div>', render(Div().margin("right", "2")));
 test("margin auto", '<div class="mx-auto"></div>', render(Div().margin("x", "auto")));
-test("margin negative value", '<div class="mt--4"></div>', render(Div().margin("top", "-4")));
+test("margin negative value (arbitrary via addClass)", '<div class="mt--4"></div>', render(Div().addClass("mt--4")));
 section("Colors");
 test("background color", '<div class="bg-red-500"></div>', render(Div().background("red-500")));
-test("background with arbitrary value", '<div class="bg-[#1da1f2]"></div>', render(Div().background("[#1da1f2]")));
+test("background with arbitrary value (via addClass)", '<div class="bg-[#1da1f2]"></div>', render(Div().addClass("bg-[#1da1f2]")));
 test("text color", '<span class="text-gray-700"></span>', render(Span().textColor("gray-700")));
 test("text color white", '<span class="text-white"></span>', render(Span().textColor("white")));
 test("border color", '<div class="border-gray-300"></div>', render(Div().borderColor("gray-300")));
@@ -164,7 +164,7 @@ test("flex container with children", '<div class="flex justify-between items-cen
     .gap("4")));
 section("Edge Cases");
 test("zero values work", '<div class="p-0"></div>', render(Div().padding("0")));
-test("arbitrary values work", '<div class="p-[10px]"></div>', render(Div().padding("[10px]")));
+test("arbitrary values work (via addClass)", '<div class="p-[10px]"></div>', render(Div().addClass("p-[10px]")));
 test("fractional values work", '<div class="w-1/3"></div>', render(Div().w("1/3")));
 test("multiple same method calls append", '<div class="pt-4 pb-2"></div>', render(Div().padding("top", "4").padding("bottom", "2")));
 test("works with existing Button methods", '<button class="px-4 py-2 bg-blue-500" type="submit"></button>', render(Button().setType("submit").padding("x", "4").padding("y", "2").background("blue-500")));

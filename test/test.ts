@@ -53,7 +53,7 @@ import {
   El, Empty, Overlay,
 
   // Control flow
-  IfThen, IfThenElse, SwitchCase, Match, ForEach, Repeat,
+  IfThen, IfThenElse, Match, ForEach, Repeat,
 } from "../src/index.js";
 
 import { hx, id, clss } from "../src/htmx.js";
@@ -212,21 +212,11 @@ describe("Custom Attributes", () => {
 // ------------------------------------
 
 describe("Toggles (Boolean Attributes)", () => {
-  it("Single toggle", () => { assert.strictEqual(render(Input().setToggles(["required"])), `<input required>`); });
-
-  it("Multiple toggles", () => { assert.strictEqual(render(Input().setToggles(["required", "disabled", "readonly"])), `<input required disabled readonly>`); });
-
-  it("Toggle with other attributes", () => {
-    assert.strictEqual(render(Input()
-      .setType("text")
-      .setName("email")
-      .setToggles(["required"])),
-    `<input type="text" name="email" required>`);
-  });
-
   it("toggle() single", () => { assert.strictEqual(render(Input().toggle("required")), `<input required>`); });
 
   it("toggle() multiple chained", () => { assert.strictEqual(render(Input().toggle("required").toggle("disabled")), `<input required disabled>`); });
+
+  it("toggle() multiple chained (3)", () => { assert.strictEqual(render(Input().toggle("required").toggle("disabled").toggle("readonly")), `<input required disabled readonly>`); });
 
   it("toggle() conditional true", () => { assert.strictEqual(render(Input().toggle("required", true)), `<input required>`); });
 
@@ -241,8 +231,6 @@ describe("Toggles (Boolean Attributes)", () => {
       .toggle("required")),
     `<input type="email" name="email" required>`);
   });
-
-  it("toggle() combined with setToggles", () => { assert.strictEqual(render(Input().setToggles(["hidden"]).toggle("disabled")), `<input hidden disabled>`); });
 });
 
 // ------------------------------------
@@ -354,7 +342,7 @@ describe("Forms - Input", () => {
       .setAutocomplete("email")
       .setType("email")
       .setName("email")
-      .setToggles(["required"])),
+      .toggle("required")),
     `<input type="email" name="email" autocomplete="email" required>`);
   });
 
@@ -1209,39 +1197,6 @@ describe("Control Flow - Conditionals", () => {
   it("IfThenElse with null value", () => { assert.strictEqual(render(IfThenElse(null as string | null, (val) => Span(val), () => Span("fallback"))), `<span>fallback</span>`); });
 
   it("IfThenElse with undefined value", () => { assert.strictEqual(render(IfThenElse(undefined as number | undefined, (val) => Span(String(val)), () => Span("none"))), `<span>none</span>`); });
-});
-
-// ------------------------------------
-// Control Flow - SwitchCase
-// ------------------------------------
-
-describe("Control Flow - SwitchCase", () => {
-  it("SwitchCase first match", () => {
-    assert.strictEqual(render(SwitchCase([
-      { condition: true, component: () => Span("First") },
-      { condition: true, component: () => Span("Second") },
-    ])), `<span>First</span>`);
-  });
-
-  it("SwitchCase second match", () => {
-    assert.strictEqual(render(SwitchCase([
-      { condition: false, component: () => Span("First") },
-      { condition: true, component: () => Span("Second") },
-    ])), `<span>Second</span>`);
-  });
-
-  it("SwitchCase default", () => {
-    assert.strictEqual(render(SwitchCase([
-      { condition: false, component: () => Span("First") },
-      { condition: false, component: () => Span("Second") },
-    ], () => Span("Default"))), `<span>Default</span>`);
-  });
-
-  it("SwitchCase no match no default", () => {
-    assert.strictEqual(render(SwitchCase([
-      { condition: false, component: () => Span("First") },
-    ])), ``);
-  });
 });
 
 // ------------------------------------

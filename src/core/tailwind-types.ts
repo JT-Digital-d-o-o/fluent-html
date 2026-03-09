@@ -138,6 +138,17 @@ export type TailwindWhitespace = "normal" | "nowrap" | "pre" | "pre-line" | "pre
 // Outline
 export type TailwindOutline = "none" | "dashed" | "dotted" | "double";
 
+// Position
+export type TailwindPosition = "static" | "fixed" | "absolute" | "relative" | "sticky";
+
+// Text align
+export type TailwindTextAlign = "left" | "center" | "right" | "justify";
+
+// Flexbox layout
+export type TailwindFlexDirection = "row" | "col" | "row-reverse" | "col-reverse";
+export type TailwindJustifyContent = "start" | "end" | "center" | "between" | "around" | "evenly";
+export type TailwindAlignItems = "start" | "end" | "center" | "baseline" | "stretch";
+
 // Variant proxy types
 export type TailwindState =
   | "hover" | "focus" | "focus-within" | "focus-visible"
@@ -153,5 +164,3 @@ export type TailwindState =
 
 export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
 
-// Helper type to allow autocomplete while accepting any string
-export type Autocomplete<T extends string> = T | (string & {});

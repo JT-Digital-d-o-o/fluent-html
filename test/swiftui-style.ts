@@ -146,9 +146,9 @@ test(
 );
 
 test(
-  "margin negative value",
+  "margin negative value (arbitrary via addClass)",
   '<div class="mt--4"></div>',
-  render(Div().margin("top", "-4"))
+  render(Div().addClass("mt--4"))
 );
 
 section("Colors");
@@ -160,9 +160,9 @@ test(
 );
 
 test(
-  "background with arbitrary value",
+  "background with arbitrary value (via addClass)",
   '<div class="bg-[#1da1f2]"></div>',
-  render(Div().background("[#1da1f2]"))
+  render(Div().addClass("bg-[#1da1f2]"))
 );
 
 test(
@@ -761,9 +761,9 @@ test(
 );
 
 test(
-  "arbitrary values work",
+  "arbitrary values work (via addClass)",
   '<div class="p-[10px]"></div>',
-  render(Div().padding("[10px]"))
+  render(Div().addClass("p-[10px]"))
 );
 
 test(

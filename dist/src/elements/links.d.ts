@@ -44,5 +44,5 @@ export declare class AreaTag extends Tag {
     setRel(rel?: LinkRel): this;
     setDownload(download?: string): this;
 }
-export declare function Area(...children: View[]): AreaTag;
+export declare function Area(): AreaTag;
 //# sourceMappingURL=links.d.ts.map

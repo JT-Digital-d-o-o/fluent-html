@@ -125,8 +125,8 @@ export class InputTag extends Tag {
 (InputTag.prototype as any)._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
 
 /** Create an `<input>` element with typed attribute methods. */
-export function Input(...children: View[]): InputTag {
-  return new InputTag("input", ...children);
+export function Input(): InputTag {
+  return new InputTag("input");
 }
 
 /**

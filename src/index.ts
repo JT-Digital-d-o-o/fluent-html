@@ -246,7 +246,6 @@ export {
 export {
   IfThen,
   IfThenElse,
-  SwitchCase,
   Match,
   ForEach,
   Repeat,

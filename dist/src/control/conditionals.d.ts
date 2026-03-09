@@ -40,12 +40,6 @@ export declare function IfThenElse<T>(value: T | null | undefined, thenBranch: (
  */
 export declare function IfThen(condition: boolean, then: Thunk<View>): View;
 export declare function IfThen<T>(value: T | null | undefined, then: (value: T) => View): View;
-type Case = {
-    condition: boolean;
-    component: Thunk<View>;
-};
-/** @deprecated Use `Match` instead for value matching. */
-export declare function SwitchCase(cases: Case[], defaultView?: Thunk<View>): View;
 /**
  * Exhaustive value matching — maps a string or number to a corresponding view.
  *
@@ -103,5 +97,4 @@ export declare function Match<T extends Record<K, string | number>, K extends ke
 export declare function Match<T extends Record<K, string | number>, K extends keyof T>(value: T, key: K, cases: Partial<{
     [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View;
 }>, defaultView: Thunk<View>): View;
-export {};
 //# sourceMappingURL=conditionals.d.ts.map

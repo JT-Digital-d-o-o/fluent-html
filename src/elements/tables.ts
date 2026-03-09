@@ -108,6 +108,6 @@ export class ColTag extends Tag {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ColTag.prototype as any)._sk = ['span'];
 
-export function Col(...children: View[]): ColTag {
-  return new ColTag("col", ...children);
+export function Col(): ColTag {
+  return new ColTag("col");
 }

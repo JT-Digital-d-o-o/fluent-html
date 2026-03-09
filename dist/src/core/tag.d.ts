@@ -91,7 +91,6 @@ export declare class Tag {
      * Style(".cls { color: red }").setNonce(nonce)
      */
     setNonce(nonce: string): this;
-    setToggles(toggles?: string[]): this;
     /**
      * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
      *

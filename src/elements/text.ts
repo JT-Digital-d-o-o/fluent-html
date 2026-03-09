@@ -46,8 +46,8 @@ export function Code(...children: View[]): Tag {
   return El("code", ...children);
 }
 
-export function Hr(...children: View[]): Tag {
-  return El("hr", ...children);
+export function Hr(): Tag {
+  return El("hr");
 }
 
 export function Br(): Tag {

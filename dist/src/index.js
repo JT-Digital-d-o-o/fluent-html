@@ -40,7 +40,7 @@ export { Slot, } from './elements/index.js';
 // Utilities
 export { Overlay, } from './control/index.js';
 // Control flow
-export { IfThen, IfThenElse, SwitchCase, Match, ForEach, Repeat, } from './control/index.js';
+export { IfThen, IfThenElse, Match, ForEach, Repeat, } from './control/index.js';
 // HTMX
 export { hx, resolveSelector, 
 // Selector helpers

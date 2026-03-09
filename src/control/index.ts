@@ -2,7 +2,6 @@
 export {
   IfThen,
   IfThenElse,
-  SwitchCase,
   Match,
 } from "./conditionals.js";
 

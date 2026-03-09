@@ -31,5 +31,5 @@ export declare class ColTag extends Tag {
     span?: number;
     setSpan(span: number): this;
 }
-export declare function Col(...children: View[]): ColTag;
+export declare function Col(): ColTag;
 //# sourceMappingURL=tables.d.ts.map

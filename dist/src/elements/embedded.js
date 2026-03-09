@@ -96,7 +96,7 @@ export class EmbedTag extends Tag {
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 EmbedTag.prototype._sk = ['src', 'type', 'width', 'height'];
-export function Embed(...children) {
-    return new EmbedTag("embed", ...children);
+export function Embed() {
+    return new EmbedTag("embed");
 }
 //# sourceMappingURL=embedded.js.map

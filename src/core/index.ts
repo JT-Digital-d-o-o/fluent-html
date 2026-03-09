@@ -60,7 +60,11 @@ export type {
   TailwindPointerEvents,
   TailwindWhitespace,
   TailwindOutline,
+  TailwindPosition,
+  TailwindTextAlign,
+  TailwindFlexDirection,
+  TailwindJustifyContent,
+  TailwindAlignItems,
   TailwindState,
   TailwindBreakpoint,
-  Autocomplete,
 } from "./tailwind-types.js";

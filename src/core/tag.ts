@@ -160,11 +160,6 @@ export class Tag {
     return this;
   }
 
-  setToggles(toggles?: string[]): this {
-    this.toggles = toggles;
-    return this;
-  }
-
   /**
    * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
    *
