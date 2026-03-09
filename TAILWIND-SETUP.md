@@ -1,10 +1,10 @@
 # Tailwind CSS Setup for fluent-html
 
-Quick guide to set up Tailwind CSS with fluent-html's SwiftUI-style API.
+Quick guide to set up Tailwind CSS with fluent-html's fluent styling API.
 
 ## The Problem
 
-When you use fluent-html's SwiftUI-style methods, Tailwind CSS doesn't automatically know which classes to generate:
+When you use fluent-html's fluent styling methods, Tailwind CSS doesn't automatically know which classes to generate:
 
 ```typescript
 Div()
@@ -137,7 +137,7 @@ export const Card = () =>
       .background("blue-500")
       .textColor("white")
       .rounded()
-      .addClass("hover:bg-blue-600"),
+      .on("hover", t => t.background("blue-600")),
   )
     .background("white")
     .padding("6")
@@ -187,4 +187,4 @@ npm publish
 
 - [Tailwind Extractor README](./tailwind-extractor/README.md)
 - [Tailwind Content Configuration](https://tailwindcss.com/docs/content-configuration)
-- [fluent-html SwiftUI Styling](./AI-SWIFTUI-STYLING.md)
+- [Fluent Styling API](./FLUENT-STYLING.md)

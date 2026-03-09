@@ -116,7 +116,7 @@ Form(
     .setName("email")
     .setPlaceholder("you@example.com")
     .setAutocomplete("email")
-    .setToggles(["required"]),
+    .toggle("required"),
 
   Button("Subscribe").setType("submit")
 )
@@ -497,7 +497,7 @@ Form(
       .setName("email")
       .setPlaceholder("you@example.com")
       .setAutocomplete("email")
-      .setToggles(["required"]),
+      .toggle("required"),
 
     Label("Password").setFor("password"),
     Input()
@@ -506,7 +506,7 @@ Form(
       .setName("password")
       .setMinlength(8)
       .setAutocomplete("new-password")
-      .setToggles(["required"]),
+      .toggle("required"),
 
     Button("Register")
       .setType("submit")
@@ -756,7 +756,7 @@ Div()
   .tracking("wide")       // IDE suggests: "tighter", "tight", "normal", "wide", etc.
 ```
 
-The type system suggests valid Tailwind values while still allowing custom/arbitrary values when needed.
+The type system enforces valid Tailwind values — wrong values don't compile. For arbitrary values, use `addClass()`.
 
 ### Spacing Methods
 
@@ -1084,6 +1084,16 @@ Div(
 Div(...items)
 ```
 
+### Void Elements
+
+Void elements (`Input`, `Img`, `Br`, `Hr`, `Meta`, `Link`, `Source`, `Track`, `Wbr`, `Embed`, `Base`, `Area`, `Col`) **reject children** — any children passed are silently ignored at render time:
+
+```typescript
+Input()          // ✓ void element, no children
+Img()            // ✓ void element, no children
+Hr()             // ✓ void element, no children
+```
+
 ### Form Elements
 
 ```typescript
@@ -1094,7 +1104,7 @@ Input()
   .setPlaceholder("Enter your email")
   .setPattern("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$")
   .setAutocomplete("email")
-  .setToggles(["required"])
+  .toggle("required")
 
 // Number input with constraints
 Input()
@@ -1122,7 +1132,7 @@ Select(
     Option("United Kingdom").setValue("uk"),
     Option("Germany").setValue("de"),
   ).setLabel("Europe"),
-).setName("country").setToggles(["required"])
+).setName("country").toggle("required")
 ```
 
 ### Table Elements
@@ -1194,6 +1204,36 @@ Picture(
   Img().setSrc("hero-fallback.jpg").setAlt("Hero"),
 )
 ```
+
+### SVG Elements with Typed Setters
+
+All SVG shape elements extend `SvgShapeTag` with shared methods: `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setSvgOpacity()`, `setTransform()`.
+
+```typescript
+// Circle with typed setters
+Svg(
+  Circle().setCx("50").setCy("50").setR("40")
+    .setFill("none").setStroke("blue").setStrokeWidth("2"),
+
+  Rect().setX("10").setY("10").setWidth("80").setHeight("80")
+    .setRx("5").setFill("red-500").setSvgOpacity("0.5"),
+
+  Path().setD("M10 80 C40 10, 65 10, 95 80").setFill("none").setStroke("black"),
+
+  Line().setX1("0").setY1("0").setX2("100").setY2("100").setStroke("gray"),
+
+  Ellipse().setCx("50").setCy("50").setRx("40").setRy("20").setFill("green"),
+
+  Polygon().setPoints("50,5 20,99 95,39 5,39 80,99").setFill("purple"),
+
+  Text("Hello SVG").setX("10").setY("50")
+    .setTextAnchor("start").setFontSize("16").setFontFamily("sans-serif"),
+
+  Use().setHref("#my-symbol").setX("0").setY("0"),
+)
+```
+
+> **Note:** SVG uses `setSvgOpacity()` instead of `setOpacity()` to avoid conflict with Tailwind's `.opacity()` method.
 
 ### Interactive Elements
 
@@ -1352,7 +1392,7 @@ Div(ForEach(1, 6, i =>
 Div(Repeat(5, () => Span("⭐")))
 ```
 
-> **Note:** `ForEach1`, `ForEach2`, `ForEach3` are deprecated aliases kept for backwards compatibility.
+> **Note:** The legacy `ForEach1`, `ForEach2`, `ForEach3` aliases have been removed. Use `ForEach` with the appropriate overload.
 
 ---
 
@@ -1953,7 +1993,7 @@ See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-tai
 | **Forms**       | `Form`, `Input`, `Textarea`, `Button`, `Label`, `Select`, `Option`, `Optgroup`, `Datalist`, `Fieldset`, `Legend`, `Output`                                    |
 | **Interactive** | `Details`, `Summary`, `Dialog`                                                                                                                                |
 | **Media**       | `Img`, `Picture`, `Source`, `Video`, `Audio`, `Track`, `Canvas`                                                                                               |
-| **SVG**         | `Svg`, `Path`, `Circle`, `Rect`, `Line`, `Polygon`, `Polyline`, `Ellipse`, `G`, `Defs`, `Use`, `Text`, `Tspan`                                                |
+| **SVG**         | `Svg`, `Path`, `Circle`, `Rect`, `Line`, `Polygon`, `Polyline`, `Ellipse`, `G`, `Defs`, `Use`, `Text`, `Tspan` — all with typed attribute setters              |
 | **Embedded**    | `Iframe`, `ObjectEl`, `Embed`, `MapEl`, `Area`                                                                                                                |
 | **Links**       | `A`                                                                                                                                                           |
 | **Document**    | `HTML`, `Head`, `Body`, `Title`, `Meta`, `Link`, `Style`, `Script`, `Base`, `Noscript`, `Template`                                                            |
@@ -1980,7 +2020,7 @@ See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-tai
 | `.hxPut(endpoint, opts?)`    | Shorthand for PUT request                              |
 | `.hxPatch(endpoint, opts?)`  | Shorthand for PATCH request                            |
 | `.hxDelete(endpoint, opts?)` | Shorthand for DELETE request                           |
-| `.setToggles([...])`         | Add boolean attributes (`required`, `disabled`, etc.) |
+| `.toggle(name, condition?)`  | Add boolean attribute (`required`, `disabled`, etc.) |
 | `.when(condition, fn)`       | Conditionally modify tag (chain-friendly)              |
 | `.apply(...fns)`             | Apply reusable modifier functions                      |
 

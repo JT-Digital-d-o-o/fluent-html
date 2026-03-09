@@ -3,6 +3,7 @@ import {
   render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article,
   Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td,
   Img, Main,
+  ForEach,
 } from "../src/index.js";
 import type { View } from "../src/index.js";
 
@@ -41,11 +42,11 @@ function printResult(name: string, result: { opsPerSec: number; avgMs: number })
 // ---------------------------------------------------------------------------
 
 function benchFlatPage(): View {
-  const children: View[] = [];
-  for (let i = 0; i < 1000; i++) {
-    children.push(Div(`Item ${i}`).setId(`item-${i}`).padding("4").background("white"));
-  }
-  return Div(...children);
+  return Div(
+    ForEach(1000, (i) =>
+      Div(`Item ${i}`).setId(`item-${i}`).padding("4").background("white")
+    )
+  );
 }
 
 function benchDeepTree(depth: number): View {
@@ -55,30 +56,17 @@ function benchDeepTree(depth: number): View {
 
 function benchHeavyEscaping(): View {
   const nasty = `<script>alert("xss")</script> & "quotes" & 'apostrophes' <b>bold</b>`;
-  const children: View[] = [];
-  for (let i = 0; i < 200; i++) {
-    children.push(P(nasty));
-  }
-  return Div(...children);
+  return Div(ForEach(200, () => P(nasty)));
 }
 
 function benchHtmxAttributes(): View {
-  const children: View[] = [];
-  for (let i = 0; i < 100; i++) {
-    children.push(
-      Button(`Action ${i}`)
-        .setHtmx(`/api/action/${i}`, {
-          method: "post",
-          target: `#result-${i}`,
-          swap: "outerHTML",
-          trigger: "click",
-          indicator: `#spinner-${i}`,
-          confirm: "Are you sure?",
-        })
-        .setId(`btn-${i}`)
-    );
-  }
-  return Div(...children);
+  return Div(
+    ForEach(100, (i) =>
+      Button(`Button ${i}`)
+        .setHtmx(`/api/button/${i}`, { method: "post", swap: "none" })
+        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()
+    )
+  );
 }
 
 function benchRealisticPage(): View {
@@ -101,7 +89,7 @@ function benchRealisticPage(): View {
       Section(
         H2("Featured Products").textSize("2xl").bold().margin("b", "6"),
         Div(
-          ...Array.from({ length: 12 }, (_, i) =>
+          ForEach(12, (i) =>
             Article(
               Img().addAttribute("src", `/img/product-${i}.jpg`).addAttribute("alt", `Product ${i}`).w("full").h("48").objectFit("cover"),
               Div(
@@ -123,7 +111,7 @@ function benchRealisticPage(): View {
             Tr(Th("Name"), Th("Rating"), Th("Comment"))
           ),
           Tbody(
-            ...Array.from({ length: 10 }, (_, i) =>
+            ForEach(10, (i) =>
               Tr(
                 Td(`Customer ${i}`).padding("2").border(),
                 Td(`${"★".repeat(3 + (i % 3))}`).padding("2").border(),

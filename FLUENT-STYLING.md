@@ -206,4 +206,6 @@ const Card = ({ title, body }: { title: string; body: string }) =>
 
 - All methods append via `addClass()` — order doesn't affect specificity
 - `setClass()` replaces all classes; fluent methods add to them
-- All values are type-safe with autocomplete, but arbitrary strings are accepted too
+- All values are **strictly typed** — wrong values don't compile
+- For arbitrary Tailwind values (e.g., `p-[37px]`), use `addClass()` as the escape hatch
+- Named types exported for consumer use: `TailwindPosition`, `TailwindTextAlign`, `TailwindFlexDirection`, `TailwindJustifyContent`, `TailwindAlignItems`

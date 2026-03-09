@@ -2,6 +2,71 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [5.9.1]
+
+### 🔧 Improvements
+
+- Updated codebase analysis: API Design now 10/10 (all dimensions at 10/10)
+
+---
+
+## [5.9.0] - Strict Types & API Cleanup
+
+### 🚀 Breaking Changes
+
+#### Strict Tailwind Types
+
+The `Autocomplete<T> = T | (string & {})` escape hatch has been replaced with strict union types on all Tailwind method signatures. Wrong values don't compile. For arbitrary Tailwind values (e.g., `p-[37px]`), use `addClass()`.
+
+#### `.toggle()` Only
+
+`setToggles()` has been replaced by `.toggle()`:
+
+```typescript
+Input().toggle("required").toggle("disabled")
+Input().toggle("required", isRequired)  // conditional
+```
+
+#### `Match()` Only
+
+The deprecated `SwitchCase` export has been replaced by `Match()`.
+
+#### Void Elements Reject Children
+
+Void element factories (`Input`, `Img`, `Hr`, `Br`, `Source`, `Track`, `Col`, `Embed`, `Area`, `Wbr`, `Meta`, `Link`, `Base`) now accept zero arguments. Children passed to void elements are silently ignored at render time.
+
+### ✨ New Features
+
+#### Named Tailwind Types
+
+Extracted 5 named types for better consumer DX:
+- `TailwindPosition` — `"static" | "fixed" | "absolute" | "relative" | "sticky"`
+- `TailwindTextAlign` — `"left" | "center" | "right" | "justify"`
+- `TailwindFlexDirection` — `"row" | "col" | "row-reverse" | "col-reverse"`
+- `TailwindJustifyContent` — `"start" | "end" | "center" | "between" | "around" | "evenly"`
+- `TailwindAlignItems` — `"start" | "end" | "center" | "baseline" | "stretch"`
+
+All types re-exported from `core/index.ts`.
+
+#### Typed SVG Attribute Setters
+
+All SVG elements now have typed tag classes with fluent attribute setters:
+
+- **`SvgShapeTag`** (shared base) — `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setSvgOpacity()`, `setTransform()`
+- **`CircleTag`** — `setCx()`, `setCy()`, `setR()`
+- **`RectTag`** — `setX()`, `setY()`, `setWidth()`, `setHeight()`, `setRx()`, `setRy()`
+- **`LineTag`** — `setX1()`, `setY1()`, `setX2()`, `setY2()`
+- **`PathTag`** — `setD()`, `setFillRule()`, `setClipRule()`
+- **`EllipseTag`** — `setCx()`, `setCy()`, `setRx()`, `setRy()`
+- **`PolygonTag`** / **`PolylineTag`** — `setPoints()`
+- **`SvgTextTag`** — `setX()`, `setY()`, `setDx()`, `setDy()`, `setTextAnchor()`, `setDominantBaseline()`, `setFontSize()`, `setFontFamily()`
+- **`TspanTag`** — `setX()`, `setY()`, `setDx()`, `setDy()`
+- **`UseTag`** — `setHref()`, `setX()`, `setY()`, `setWidth()`, `setHeight()`
+
+> `setSvgOpacity()` is used instead of `setOpacity()` to avoid conflict with Tailwind's `.opacity()`.
+
+---
+
 ## [6.0.0] - HTMX 4 Migration (Unreleased)
 
 ### 🚀 Breaking Changes

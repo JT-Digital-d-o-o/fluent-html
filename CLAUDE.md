@@ -84,13 +84,11 @@ IfThen(user.avatar, () => Img().setSrc(user.avatar!))            // ✗ don't re
 user.name ? Span(user.name) : Span("Anon")                      // ✗ use IfThenElse
 ```
 
-**Boolean attributes** — use `.toggle()` with optional condition, never `setToggles`:
+**Boolean attributes** — use `.toggle()` with optional condition:
 ```typescript
 Input().toggle("required")                        // ✓ always on
 Input().toggle("required", isRequired)            // ✓ conditional
 Option(city).toggle("selected", city === current) // ✓ expression as condition
-Input().setToggles(["required"])                  // ✗ use .toggle()
-Input().setToggles(req ? ["required"] : [])       // ✗ use .toggle("required", req)
 ```
 
 **Conditional modifiers & composition:**
