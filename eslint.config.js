@@ -40,7 +40,7 @@ export default [
     }
   },
   {
-    files: ["bench/**/*.ts", "examples/**/*.ts", "test/swiftui-style*.ts"],
+    files: ["bench/**/*.ts", "examples/**/*.ts", "test/fluent-styling*.ts"],
     rules: {
       "no-console": "off"
     }
