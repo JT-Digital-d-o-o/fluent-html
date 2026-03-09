@@ -160,6 +160,32 @@ describe("Variant Proxy - Integration", () => {
         assert.strictEqual(render(Div().addClass("hover:bg-blue-600")), '<div class="hover:bg-blue-600"></div>');
     });
 });
+describe("Custom theme values via escape hatch", () => {
+    it("custom color in background()", () => {
+        assert.strictEqual(render(Div().background("accent")), '<div class="bg-accent"></div>');
+    });
+    it("custom color with shade in background()", () => {
+        assert.strictEqual(render(Div().background("brand-500")), '<div class="bg-brand-500"></div>');
+    });
+    it("custom color in textColor()", () => {
+        assert.strictEqual(render(Span().textColor("accent-dark")), '<span class="text-accent-dark"></span>');
+    });
+    it("custom color in borderColor()", () => {
+        assert.strictEqual(render(Div().borderColor("accent-light")), '<div class="border-accent-light"></div>');
+    });
+    it("custom color in ringColor()", () => {
+        assert.strictEqual(render(Button().ring("2").ringColor("accent")), '<button class="ring-2 ring-accent"></button>');
+    });
+    it("custom color in variant proxy", () => {
+        assert.strictEqual(render(Div().on("hover", t => t.background("accent"))), '<div class="hover:bg-accent"></div>');
+    });
+    it("custom spacing in padding()", () => {
+        assert.strictEqual(render(Div().padding("18")), '<div class="p-18"></div>');
+    });
+    it("custom spacing in gap()", () => {
+        assert.strictEqual(render(Div().gap("18")), '<div class="gap-18"></div>');
+    });
+});
 describe("Full Example (Plan Before/After)", () => {
     it("complete button with all features", () => {
         assert.strictEqual(render(Button()

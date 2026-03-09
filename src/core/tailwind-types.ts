@@ -2,10 +2,17 @@
 // Tailwind Type Definitions
 // ------------------------------------
 
+// (string & {}) escape hatch: preserves autocomplete for known values while
+// allowing custom values from tailwind.config.ts (e.g. custom colors like
+// "accent" or "brand-500", custom spacing like "18"). Without this, users
+// must fall back to .addClass() for any value not in the default Tailwind
+// palette, which defeats the purpose of fluent methods.
+
 // Spacing scale (used for padding, margin, gap, width, height)
 export type TailwindSpacing =
   | "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
-  | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96";
+  | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96"
+  | (string & {});
 
 // Width values
 export type TailwindWidth =
@@ -40,10 +47,12 @@ export type TailwindColorName =
   | "slate" | "gray" | "zinc" | "neutral" | "stone"
   | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose";
 
-// Full color type
+// Full color type — includes (string & {}) so custom theme colors
+// (e.g. "accent", "brand-500", "accent-dark") work with fluent methods.
 export type TailwindColor =
   | "inherit" | "current" | "transparent" | "black" | "white"
-  | `${TailwindColorName}-${TailwindShade}`;
+  | `${TailwindColorName}-${TailwindShade}`
+  | (string & {});
 
 // Text size
 export type TailwindTextSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl";
