@@ -34,6 +34,7 @@ Slot,
 // Utilities
 El, } from "../src/index.js";
 // Helper: verify element tag name renders correctly
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- test helper accepts any factory
 function assertTag(factory, tagName, isVoid = false) {
     it(`${tagName} renders correct tag`, () => {
         const el = factory();
@@ -46,6 +47,7 @@ function assertTag(factory, tagName, isVoid = false) {
         }
     });
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- test helper accepts any factory
 function assertTagWithChild(factory, tagName) {
     it(`${tagName} renders with children`, () => {
         const html = render(factory("content"));

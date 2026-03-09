@@ -42,6 +42,7 @@ export class IframeTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 IframeTag.prototype._sk = ['src', 'srcdoc', 'width', 'height', 'allow', 'allowfullscreen', 'sandbox', 'loading', 'name', 'referrerpolicy'];
 export function Iframe(...children) {
     return new IframeTag("iframe", ...children);
@@ -69,6 +70,7 @@ export class ObjectTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ObjectTag.prototype._sk = ['data', 'type', 'width', 'height', 'name'];
 export function ObjectEl(...children) {
     return new ObjectTag("object", ...children);
@@ -92,6 +94,7 @@ export class EmbedTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 EmbedTag.prototype._sk = ['src', 'type', 'width', 'height'];
 export function Embed(...children) {
     return new EmbedTag("embed", ...children);

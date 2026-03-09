@@ -1,4 +1,4 @@
-import { Id } from "./ids.js";
+import type { Id } from "./ids.js";
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type HxEncoding = "multipart/form-data";
 type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
@@ -73,7 +73,7 @@ export interface HTMX {
     trigger?: HxTrigger;
     pushUrl?: boolean | string;
     replaceUrl?: boolean | string;
-    vals?: Record<string, any> | string;
+    vals?: Record<string, unknown> | string;
     headers?: Record<string, string>;
     include?: string;
     encoding?: HxEncoding;

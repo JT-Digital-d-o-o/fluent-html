@@ -30,6 +30,7 @@ export class ThTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ThTag.prototype._sk = ['colspan', 'rowspan', 'scope'];
 export function Th(...children) {
     return new ThTag("th", ...children);
@@ -45,6 +46,7 @@ export class TdTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 TdTag.prototype._sk = ['colspan', 'rowspan'];
 export function Td(...children) {
     return new TdTag("td", ...children);
@@ -59,6 +61,7 @@ export class ColgroupTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ColgroupTag.prototype._sk = ['span'];
 export function Colgroup(...children) {
     return new ColgroupTag("colgroup", ...children);
@@ -70,6 +73,7 @@ export class ColTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ColTag.prototype._sk = ['span'];
 export function Col(...children) {
     return new ColTag("col", ...children);

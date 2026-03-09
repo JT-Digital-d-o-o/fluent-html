@@ -6,6 +6,7 @@ export class TimeTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 TimeTag.prototype._sk = ['datetime'];
 export function Time(...children) {
     return new TimeTag("time", ...children);
@@ -17,6 +18,7 @@ export class DataTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 DataTag.prototype._sk = ['value'];
 export function Data(...children) {
     return new DataTag("data", ...children);
@@ -32,6 +34,7 @@ export class ProgressTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ProgressTag.prototype._sk = ['value', 'max'];
 export function Progress(...children) {
     return new ProgressTag("progress", ...children);
@@ -63,6 +66,7 @@ export class MeterTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 MeterTag.prototype._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
 export function Meter(...children) {
     return new MeterTag("meter", ...children);

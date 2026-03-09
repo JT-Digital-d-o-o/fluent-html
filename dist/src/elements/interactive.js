@@ -11,6 +11,7 @@ export class DetailsTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 DetailsTag.prototype._sk = ['open', 'name'];
 export function Details(...children) {
     return new DetailsTag("details", ...children);
@@ -25,6 +26,7 @@ export class DialogTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 DialogTag.prototype._sk = ['open'];
 export function Dialog(...children) {
     return new DialogTag("dialog", ...children);

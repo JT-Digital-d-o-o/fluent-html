@@ -81,6 +81,7 @@ export class InputTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 InputTag.prototype._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
 /** Create an `<input>` element with typed attribute methods. */
 export function Input(...children) {
@@ -139,6 +140,7 @@ export class TextareaTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 TextareaTag.prototype._sk = ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly'];
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children) {
@@ -177,6 +179,7 @@ export class ButtonTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ButtonTag.prototype._sk = ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod'];
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children) {
@@ -189,6 +192,7 @@ export class LabelTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 LabelTag.prototype._sk = ['for'];
 export function Label(...children) {
     return new LabelTag("label", ...children);
@@ -220,6 +224,7 @@ export class FormTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 FormTag.prototype._sk = ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete'];
 /** Create a `<form>` element with typed attribute methods. */
 export function Form(...children) {
@@ -248,6 +253,7 @@ export class SelectTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 SelectTag.prototype._sk = ['name', 'multiple', 'size', 'disabled', 'autofocus'];
 export function Select(...children) {
     return new SelectTag("select", ...children);
@@ -271,6 +277,7 @@ export class OptionTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 OptionTag.prototype._sk = ['value', 'selected', 'disabled', 'label'];
 export function Option(...children) {
     return new OptionTag("option", ...children);
@@ -286,6 +293,7 @@ export class OptgroupTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 OptgroupTag.prototype._sk = ['label', 'disabled'];
 export function Optgroup(...children) {
     return new OptgroupTag("optgroup", ...children);
@@ -304,6 +312,7 @@ export class FieldsetTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 FieldsetTag.prototype._sk = ['name', 'disabled'];
 export function Fieldset(...children) {
     return new FieldsetTag("fieldset", ...children);
@@ -322,6 +331,7 @@ export class OutputTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 OutputTag.prototype._sk = ['for', 'name'];
 export function Output(...children) {
     return new OutputTag("output", ...children);

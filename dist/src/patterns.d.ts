@@ -1,7 +1,7 @@
 import { Tag } from "./core/tag.js";
 import type { View } from "./core/types.js";
-import { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
-import { Id } from "./ids.js";
+import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
+import type { Id } from "./ids.js";
 /**
  * Create an out-of-band swap element.
  *
@@ -83,7 +83,7 @@ export interface HxLocationConfig {
     source?: string;
     event?: string;
     handler?: string;
-    values?: Record<string, any>;
+    values?: Record<string, unknown>;
     headers?: Record<string, string>;
 }
 /**
@@ -127,7 +127,7 @@ export declare class HxResponse {
      * hxResponse(content).trigger("itemAdded")
      * hxResponse(content).trigger("showMessage", { text: "Saved!", type: "success" })
      */
-    trigger(event: string, detail?: Record<string, any>): this;
+    trigger(event: string, detail?: Record<string, unknown>): this;
     /**
      * Push a URL onto the browser history stack.
      *

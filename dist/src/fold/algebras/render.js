@@ -1,6 +1,4 @@
 import { escapeHtml, escapeAttr } from "../../render/escape.js";
-// Elements whose content should NOT be escaped (they contain code, not text)
-const RAW_TEXT_ELEMENTS = new Set(['script', 'style']);
 /**
  * Build HTML attribute string from TagAttrs.
  */

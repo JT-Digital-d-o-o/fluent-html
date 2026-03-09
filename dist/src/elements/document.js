@@ -11,6 +11,7 @@ export class HtmlTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 HtmlTag.prototype._sk = ['lang', 'dir'];
 export function HTML(...children) {
     return new HtmlTag("html", ...children);
@@ -47,6 +48,7 @@ export class MetaTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 MetaTag.prototype._sk = ['name', 'charset', 'httpEquiv', 'property', 'content'];
 export function Meta() {
     return new MetaTag("meta");
@@ -86,6 +88,7 @@ export class LinkTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 LinkTag.prototype._sk = ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity'];
 export function Link() {
     return new LinkTag("link");
@@ -101,6 +104,7 @@ export class StyleTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 StyleTag.prototype._sk = ['media', 'type'];
 export function Style(css) {
     return new StyleTag("style", css);
@@ -116,6 +120,7 @@ export class BaseTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 BaseTag.prototype._sk = ['href', 'target'];
 export function Base() {
     return new BaseTag("base");
@@ -157,6 +162,7 @@ export class ScriptTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ScriptTag.prototype._sk = ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule'];
 export function Script(js = "") {
     return new ScriptTag("script", js);

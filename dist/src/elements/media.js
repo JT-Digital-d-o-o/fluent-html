@@ -45,6 +45,7 @@ export class ImgTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 ImgTag.prototype._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
 /** Create an `<img>` element with typed attribute methods. */
 export function Img(...children) {
@@ -76,6 +77,7 @@ export class SourceTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 SourceTag.prototype._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
 export function Source(...children) {
     return new SourceTag("source", ...children);
@@ -123,6 +125,7 @@ export class VideoTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 VideoTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
 export function Video(...children) {
     return new VideoTag("video", ...children);
@@ -154,6 +157,7 @@ export class AudioTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 AudioTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
 export function Audio(...children) {
     return new AudioTag("audio", ...children);
@@ -181,6 +185,7 @@ export class TrackTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 TrackTag.prototype._sk = ['src', 'kind', 'srclang', 'label', 'default'];
 export function Track(...children) {
     return new TrackTag("track", ...children);
@@ -196,6 +201,7 @@ export class CanvasTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 CanvasTag.prototype._sk = ['width', 'height'];
 export function Canvas(...children) {
     return new CanvasTag("canvas", ...children);
@@ -227,6 +233,7 @@ export class SvgTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 SvgTag.prototype._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke'];
 export function Svg(...children) {
     return new SvgTag("svg", ...children);

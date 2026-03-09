@@ -8,6 +8,7 @@ export class RawString {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype manipulation
 RawString.prototype._t = 2;
 /**
  * Creates a raw HTML string that will NOT be escaped during rendering.

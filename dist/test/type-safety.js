@@ -81,6 +81,7 @@ describe("Branded Id", () => {
     });
     it("Id is frozen", () => {
         const id = createId("test");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- testing frozen object mutation
         assert.throws(() => { id.id = "hacked"; }, TypeError);
     });
     it("renders correctly via setId", () => {

@@ -1,4 +1,4 @@
-import { Tag } from "../core/tag.js";
+import type { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 export declare function Div(...children: View[]): Tag;
 export declare function Main(...children: View[]): Tag;

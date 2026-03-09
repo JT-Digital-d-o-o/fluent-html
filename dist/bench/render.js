@@ -3,7 +3,7 @@ import { render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article, Ul
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function measure(name, fn, iterations) {
+function measure(_name, fn, iterations) {
     // Warm-up
     for (let i = 0; i < Math.min(iterations, 100); i++)
         fn();

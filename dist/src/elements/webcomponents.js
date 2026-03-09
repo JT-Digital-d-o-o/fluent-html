@@ -6,6 +6,7 @@ export class SlotTag extends Tag {
     }
 }
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 SlotTag.prototype._sk = ['name'];
 export function Slot(...children) {
     return new SlotTag("slot", ...children);
