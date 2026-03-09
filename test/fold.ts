@@ -1,8 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import type {
-  ViewAlgebra} from "../src/index.js";
+import type { ViewAlgebra } from "../src/index.js";
 import {
   Div, P, H1, Span, A, Ul, Li, Raw,
   render,
