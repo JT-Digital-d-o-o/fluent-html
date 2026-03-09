@@ -18,26 +18,29 @@ export type TailwindSpacing =
 export type TailwindWidth =
   | TailwindSpacing | "auto" | "full" | "screen" | "svw" | "lvw" | "dvw" | "min" | "max" | "fit"
   | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5"
-  | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | "1/12" | "2/12" | "3/12" | "4/12" | "5/12" | "6/12" | "7/12" | "8/12" | "9/12" | "10/12" | "11/12";
+  | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | "1/12" | "2/12" | "3/12" | "4/12" | "5/12" | "6/12" | "7/12" | "8/12" | "9/12" | "10/12" | "11/12"
+  | (string & {});
 
 // Height values
 export type TailwindHeight =
   | TailwindSpacing | "auto" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit"
-  | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6";
+  | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6"
+  | (string & {});
 
 // Max-width values
 export type TailwindMaxWidth =
   | "0" | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"
-  | "full" | "min" | "max" | "fit" | "prose" | "screen-sm" | "screen-md" | "screen-lg" | "screen-xl" | "screen-2xl";
+  | "full" | "min" | "max" | "fit" | "prose" | "screen-sm" | "screen-md" | "screen-lg" | "screen-xl" | "screen-2xl"
+  | (string & {});
 
 // Min-width values
-export type TailwindMinWidth = "0" | "full" | "min" | "max" | "fit";
+export type TailwindMinWidth = "0" | "full" | "min" | "max" | "fit" | (string & {});
 
 // Max-height values
-export type TailwindMaxHeight = TailwindSpacing | "none" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit";
+export type TailwindMaxHeight = TailwindSpacing | "none" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | (string & {});
 
 // Min-height values
-export type TailwindMinHeight = "0" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit";
+export type TailwindMinHeight = "0" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | (string & {});
 
 // Color shades
 export type TailwindShade = "50" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "950";
