@@ -65,31 +65,23 @@ All method signatures now use named types consistently. Types are re-exported fr
 
 ---
 
-## 7. Typed SVG Attribute Setters
+## 7. Typed SVG Attribute Setters ✅
 
 **Impact: Low-Medium | Effort: Medium**
 
-SVG elements currently fall back to the generic `.addAttribute()` escape hatch:
+Implemented typed tag classes for all SVG elements with `_sk` serialization:
 
-```typescript
-// Current — no autocomplete, no type safety
-Circle().addAttribute("cx", "50").addAttribute("cy", "50").addAttribute("r", "40")
-
-// 10/10 — matches the rest of the API's philosophy
-Circle().setCx("50").setCy("50").setR("40")
-```
-
-Create specialized tag classes for the most common SVG elements:
-
-| Element | Typed setters needed |
-|---------|---------------------|
-| `Circle` | `cx`, `cy`, `r` |
-| `Rect` | `x`, `y`, `width`, `height`, `rx`, `ry` |
-| `Line` | `x1`, `y1`, `x2`, `y2` |
-| `Path` | `d` |
-| `Svg` | `viewBox`, `xmlns`, `fill`, `stroke` |
-
-Use the existing `_sk` serialization key pattern — this is exactly the extension point it was designed for.
+- **`SvgShapeTag`** — shared base with `fill`, `stroke`, `stroke-width`, `stroke-linecap`, `stroke-linejoin`, `stroke-dasharray`, `transform` + `setSvgOpacity()` (avoids conflict with Tailwind's `.opacity()`)
+- **`CircleTag`** — `cx`, `cy`, `r`
+- **`RectTag`** — `x`, `y`, `width`, `height`, `rx`, `ry`
+- **`LineTag`** — `x1`, `y1`, `x2`, `y2`
+- **`PathTag`** — `d`, `fill-rule`, `clip-rule`
+- **`EllipseTag`** — `cx`, `cy`, `rx`, `ry`
+- **`PolygonTag`** / **`PolylineTag`** — `points`
+- **`SvgTextTag`** — `x`, `y`, `dx`, `dy`, `text-anchor`, `dominant-baseline`, `font-size`, `font-family`
+- **`TspanTag`** — `x`, `y`, `dx`, `dy`
+- **`UseTag`** — `href`, `x`, `y`, `width`, `height`
+- `G` and `Defs` remain plain `Tag` (no element-specific attributes)
 
 ---
 
@@ -124,13 +116,13 @@ ariaRole(value: string): this { return this.addAttribute("role", value); }
 
 ---
 
-## 9. `noUnderline()` → Verify Tailwind v4 Class Name
+## 9. `noUnderline()` → Verify Tailwind Class Name ✅
 
 **Impact: Low | Effort: Trivial**
 
-**File:** `src/core/tag.ts:458-460`
+**File:** `src/core/tailwind-methods.ts:244`
 
-`noUnderline()` emits `no-underline`. In Tailwind v4, the class is `decoration-transparent` or `no-underline` depending on the migration path. Verify against the target Tailwind version and document.
+`noUnderline()` emits `no-underline`. Verified correct for Tailwind v3, which is the current target version (`tailwindcss: ^3.4.19`).
 
 ---
 
@@ -144,9 +136,9 @@ ariaRole(value: string): this { return this.addAttribute("role", value); }
 | 4 | Extract named types, use consistently | No | Low | Better consumer DX | ✅ Done |
 | 5 | ~~Add `unless()`~~ | — | — | — | Rejected |
 | 6 | ~~Add `classIf()`~~ | — | — | — | — |
-| 7 | SVG typed setters | No | Medium | Consistency | Pending |
+| 7 | SVG typed setters | No | Medium | Consistency | ✅ Done |
 | 8 | ARIA fluent shorthands with `Id` support | No | Low | Accessibility DX | Pending |
-| 9 | Verify `noUnderline()` class name | No | Trivial | Correctness | Pending |
+| 9 | Verify `noUnderline()` class name | No | Trivial | Correctness | ✅ Done |
 
 Items 1-4 shipped together as breaking changes. Items 7-9 can land incrementally.
 

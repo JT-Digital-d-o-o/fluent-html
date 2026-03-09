@@ -6,7 +6,7 @@ export { Table, Thead, Tbody, Tfoot, Tr, Th, ThTag, Td, TdTag, Caption, Colgroup
 export { Form, FormTag, Input, InputTag, Textarea, TextareaTag, Button, ButtonTag, Label, LabelTag, Select, SelectTag, Option, OptionTag, Optgroup, OptgroupTag, Datalist, Fieldset, FieldsetTag, Legend, Output, OutputTag, } from "./forms.js";
 export { Details, DetailsTag, Summary, Dialog, DialogTag, } from "./interactive.js";
 export { Img, ImgTag, Picture, Source, SourceTag, Video, VideoTag, Audio, AudioTag, Track, TrackTag, Canvas, CanvasTag, Svg, SvgTag, } from "./media.js";
-export { Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, } from "./svg.js";
+export { SvgShapeTag, Path, PathTag, Circle, CircleTag, Rect, RectTag, Line, LineTag, Polygon, PolygonTag, Polyline, PolylineTag, Ellipse, EllipseTag, G, Defs, Use, UseTag, Text, SvgTextTag, Tspan, TspanTag, } from "./svg.js";
 export { Iframe, IframeTag, ObjectEl, ObjectTag, Embed, EmbedTag, } from "./embedded.js";
 export { A, AnchorTag, MapEl, MapTag, Area, AreaTag, } from "./links.js";
 export { HTML, HtmlTag, Head, Body, Title, Meta, MetaTag, Link, LinkTag, Style, StyleTag, Script, ScriptTag, Base, BaseTag, Noscript, Template, } from "./document.js";

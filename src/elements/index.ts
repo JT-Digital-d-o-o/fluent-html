@@ -136,18 +136,29 @@ export {
 
 // SVG elements
 export {
+  SvgShapeTag,
   Path,
+  PathTag,
   Circle,
+  CircleTag,
   Rect,
+  RectTag,
   Line,
+  LineTag,
   Polygon,
+  PolygonTag,
   Polyline,
+  PolylineTag,
   Ellipse,
+  EllipseTag,
   G,
   Defs,
   Use,
+  UseTag,
   Text,
+  SvgTextTag,
   Tspan,
+  TspanTag,
 } from "./svg.js";
 
 // Embedded content

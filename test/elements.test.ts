@@ -23,7 +23,7 @@ import {
 
   // Media
   Img, Picture, Source, Video, Audio, Track, Canvas, Svg,
-  Path, Circle, Rect, Line, G,
+  Path, Circle, Rect, Line, Ellipse, Polygon, Polyline, G, Use, Text, Tspan,
 
   // Embedded
   Iframe, Embed,
@@ -345,6 +345,66 @@ describe("SVG", () => {
       ).addAttribute("transform", "translate(10, 10)"),
     ).setViewBox("0 0 100 100")),
     `<svg viewBox="0 0 100 100"><g transform="translate(10, 10)"><rect width="50" height="50"></rect>\n<line x1="0" y1="0" x2="50" y2="50"></line></g></svg>`);
+  });
+
+  it("Circle typed setters", () => {
+    assert.strictEqual(render(Circle().setCx("50").setCy("50").setR("25").setFill("blue").setStroke("black").setStrokeWidth("2")),
+    `<circle cx="50" cy="50" r="25" fill="blue" stroke="black" stroke-width="2"></circle>`);
+  });
+
+  it("Rect typed setters", () => {
+    assert.strictEqual(render(Rect().setX("10").setY("10").setWidth("80").setHeight("40").setRx("5").setRy("5")),
+    `<rect x="10" y="10" width="80" height="40" rx="5" ry="5"></rect>`);
+  });
+
+  it("Line typed setters", () => {
+    assert.strictEqual(render(Line().setX1("0").setY1("0").setX2("100").setY2("100").setStroke("red").setStrokeLinecap("round")),
+    `<line x1="0" y1="0" x2="100" y2="100" stroke="red" stroke-linecap="round"></line>`);
+  });
+
+  it("Path typed setters", () => {
+    assert.strictEqual(render(Path().setD("M0 0 L50 50").setFill("none").setStroke("green").setFillRule("evenodd")),
+    `<path d="M0 0 L50 50" fill-rule="evenodd" fill="none" stroke="green"></path>`);
+  });
+
+  it("Ellipse typed setters", () => {
+    assert.strictEqual(render(Ellipse().setCx("50").setCy("50").setRx("30").setRy("20").setFill("orange")),
+    `<ellipse cx="50" cy="50" rx="30" ry="20" fill="orange"></ellipse>`);
+  });
+
+  it("Polygon typed setters", () => {
+    assert.strictEqual(render(Polygon().setPoints("50,0 100,100 0,100").setFill("purple")),
+    `<polygon points="50,0 100,100 0,100" fill="purple"></polygon>`);
+  });
+
+  it("Polyline typed setters", () => {
+    assert.strictEqual(render(Polyline().setPoints("0,0 50,50 100,0").setStroke("black").setFill("none")),
+    `<polyline points="0,0 50,50 100,0" fill="none" stroke="black"></polyline>`);
+  });
+
+  it("Text typed setters", () => {
+    assert.strictEqual(render(Text("Hello").setX("10").setY("20").setTextAnchor("middle").setFontSize("16")),
+    `<text x="10" y="20" text-anchor="middle" font-size="16">Hello</text>`);
+  });
+
+  it("Tspan typed setters", () => {
+    assert.strictEqual(render(Tspan("world").setDx("5").setDy("10")),
+    `<tspan dx="5" dy="10">world</tspan>`);
+  });
+
+  it("Use typed setters", () => {
+    assert.strictEqual(render(Use().setHref("#icon").setX("10").setY("20").setWidth("24").setHeight("24")),
+    `<use href="#icon" x="10" y="20" width="24" height="24"></use>`);
+  });
+
+  it("SvgShapeTag shared setters", () => {
+    assert.strictEqual(render(Circle().setStrokeLinejoin("bevel").setStrokeDasharray("5 3").setTransform("rotate(45)")),
+    `<circle stroke-linejoin="bevel" stroke-dasharray="5 3" transform="rotate(45)"></circle>`);
+  });
+
+  it("setSvgOpacity uses addAttribute", () => {
+    assert.strictEqual(render(Rect().setSvgOpacity("0.5")),
+    `<rect opacity="0.5"></rect>`);
   });
 });
 
