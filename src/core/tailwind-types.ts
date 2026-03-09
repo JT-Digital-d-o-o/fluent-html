@@ -68,6 +68,7 @@ export type TailwindTracking = "tighter" | "tight" | "normal" | "wide" | "wider"
 
 // Border radius
 export type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" | "bl" | "s" | "e" | "ss" | "se" | "es" | "ee";
 
 // Shadow
 export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none";

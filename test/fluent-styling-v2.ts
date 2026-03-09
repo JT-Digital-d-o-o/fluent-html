@@ -240,6 +240,20 @@ describe("Custom theme values via escape hatch", () => {
   });
 });
 
+describe("Directional rounded()", () => {
+  it("rounded top", () => { assert.strictEqual(render(Div().rounded("t", "sm")), '<div class="rounded-t-sm"></div>'); });
+  it("rounded bottom lg", () => { assert.strictEqual(render(Div().rounded("b", "lg")), '<div class="rounded-b-lg"></div>'); });
+  it("rounded top-left", () => { assert.strictEqual(render(Div().rounded("tl", "md")), '<div class="rounded-tl-md"></div>'); });
+  it("rounded top-right", () => { assert.strictEqual(render(Div().rounded("tr", "lg")), '<div class="rounded-tr-lg"></div>'); });
+  it("rounded bottom-left", () => { assert.strictEqual(render(Div().rounded("bl", "sm")), '<div class="rounded-bl-sm"></div>'); });
+  it("rounded bottom-right full", () => { assert.strictEqual(render(Div().rounded("br", "full")), '<div class="rounded-br-full"></div>'); });
+  it("rounded corner default (no size)", () => { assert.strictEqual(render(Div().rounded("t")), '<div class="rounded-t"></div>'); });
+  it("rounded start/end", () => { assert.strictEqual(render(Div().rounded("s", "lg")), '<div class="rounded-s-lg"></div>'); });
+  it("size-only still works", () => { assert.strictEqual(render(Div().rounded("lg")), '<div class="rounded-lg"></div>'); });
+  it("no-arg still works", () => { assert.strictEqual(render(Div().rounded()), '<div class="rounded"></div>'); });
+  it("rounded none still works", () => { assert.strictEqual(render(Div().rounded("none")), '<div class="rounded-none"></div>'); });
+});
+
 describe("Full Example (Plan Before/After)", () => {
   it("complete button with all features", () => {
     assert.strictEqual(

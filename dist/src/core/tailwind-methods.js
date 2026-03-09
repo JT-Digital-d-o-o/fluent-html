@@ -97,8 +97,16 @@ p.border = function (directionOrValue, value) {
     return this.addClass(`border-${directionOrValue}`);
 };
 p.borderColor = function (color) { return this.addClass(`border-${color}`); };
-p.rounded = function (value) {
-    return value === undefined ? this.addClass("rounded") : this.addClass(`rounded-${value}`);
+const ROUNDED_CORNERS = new Set(["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]);
+p.rounded = function (cornerOrValue, value) {
+    if (cornerOrValue === undefined)
+        return this.addClass("rounded");
+    if (ROUNDED_CORNERS.has(cornerOrValue)) {
+        return value === undefined
+            ? this.addClass(`rounded-${cornerOrValue}`)
+            : this.addClass(`rounded-${cornerOrValue}-${value}`);
+    }
+    return this.addClass(`rounded-${cornerOrValue}`);
 };
 p.shadow = function (value) {
     return value === undefined ? this.addClass("shadow") : this.addClass(`shadow-${value}`);

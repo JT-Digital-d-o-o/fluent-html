@@ -34,6 +34,7 @@ export type {
   TailwindLeading,
   TailwindTracking,
   TailwindRounded,
+  TailwindRoundedCorner,
   TailwindShadow,
   TailwindBorderWidth,
   TailwindOpacity,

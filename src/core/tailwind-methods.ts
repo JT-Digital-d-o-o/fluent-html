@@ -20,6 +20,7 @@ import type {
   TailwindLeading,
   TailwindTracking,
   TailwindRounded,
+  TailwindRoundedCorner,
   TailwindShadow,
   TailwindBorderWidth,
   TailwindOpacity,
@@ -133,6 +134,7 @@ declare module "./tag.js" {
     border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
     borderColor(color: TailwindColor): this;
     rounded(value?: TailwindRounded): this;
+    rounded(corner: TailwindRoundedCorner, value?: TailwindRounded): this;
     shadow(value?: TailwindShadow): this;
 
     // Effects & Appearance
@@ -288,8 +290,15 @@ p.border = function (directionOrValue?: string, value?: string) {
   return this.addClass(`border-${directionOrValue}`);
 };
 p.borderColor = function (color: string) { return this.addClass(`border-${color}`); };
-p.rounded = function (value?: string) {
-  return value === undefined ? this.addClass("rounded") : this.addClass(`rounded-${value}`);
+const ROUNDED_CORNERS = new Set(["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]);
+p.rounded = function (cornerOrValue?: string, value?: string) {
+  if (cornerOrValue === undefined) return this.addClass("rounded");
+  if (ROUNDED_CORNERS.has(cornerOrValue)) {
+    return value === undefined
+      ? this.addClass(`rounded-${cornerOrValue}`)
+      : this.addClass(`rounded-${cornerOrValue}-${value}`);
+  }
+  return this.addClass(`rounded-${cornerOrValue}`);
 };
 p.shadow = function (value?: string) {
   return value === undefined ? this.addClass("shadow") : this.addClass(`shadow-${value}`);
