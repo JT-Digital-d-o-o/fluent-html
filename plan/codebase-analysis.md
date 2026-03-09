@@ -10,7 +10,7 @@ fluent-html is a zero-dependency, type-safe HTML builder library for TypeScript 
 
 v5.9.0 represents a major quality push across all dimensions: security hardening (script injection prevention, attribute key validation, CSP nonce, prototype pollution guards), performance infrastructure (benchmark suite, streaming render, array join optimization), comprehensive test coverage (754 tests, 95%+ line coverage, fuzz testing, CI on Node 18/20/22), Tag class monolith decomposed via prototype mixins, distribution polish (subpath exports, sideEffects, provenance, prepack validation), and full documentation (README overhaul, typedoc API reference, JSDoc audit, CHANGELOG, runnable examples). The Tag class monolith has been decomposed via prototype mixins, and strict tsconfig + ESLint rules are now enforced.
 
-**Overall assessment: Excellent.** Seven dimensions at 10/10, API Design at 9/10. Weighted overall: 10/10.
+**Overall assessment: Excellent.** All eight dimensions at 10/10. Weighted overall: 10/10.
 
 ---
 
@@ -213,7 +213,7 @@ Switched to ESM-only (`"type": "module"`) with ES2020 target. CJS dropped entire
 
 | Dimension | Score | Notes |
 |---|---|---|
-| **API Design** | 9/10 | Fluent, discoverable, good DX. One of the best fluent APIs I've seen. |
+| **API Design** | 10/10 | Fluent, discoverable, zero escape hatches. Removed `Autocomplete<T>`, `setToggles()`, deprecated exports. Void elements reject children at type level. Named Tailwind types. Typed SVG setters. One way to do each thing. |
 | **Type Safety** | 10/10 | Literal unions on setters, branded Id, type guards (no `instanceof`), constrained `toggle()`, zero `as any` in render. |
 | **Security** | 10/10 | Script injection prevention, attribute key validation, `on*` blocking, prototype pollution guards, CSP nonce support, dedicated security test suite. |
 | **Performance** | 10/10 | Benchmark suite, streaming render, array join optimization, memory profiling. Discriminants + fast-path escaping baseline. |
@@ -222,7 +222,7 @@ Switched to ESM-only (`"type": "module"`) with ES2020 target. CJS dropped entire
 | **Distribution** | 10/10 | Subpath exports (8 paths), `sideEffects: false`, npm provenance, prepack validation, `.js`+`.d.ts` only in package. |
 | **Documentation** | 10/10 | Comprehensive README, typedoc API reference, full JSDoc coverage, CHANGELOG, 5 runnable examples. |
 
-**Weighted overall: 10/10** — Excellent library. All dimensions at 10/10 except API Design (9/10).
+**Weighted overall: 10/10** — Excellent library. All dimensions at 10/10.
 
 ---
 
@@ -235,4 +235,4 @@ fluent-html occupies a unique niche: type-safe HTML builder with native HTMX + T
 - **Pug/EJS** — Server templates, but no TypeScript integration, no fluent API
 - **@kitajs/html** — JSX-based SSR, but different philosophy (JSX vs fluent)
 
-The differentiators (fluent Tailwind, type-safe HTMX routes/ids, variant proxy, nullable narrowing, streaming render, CSP nonce support) are genuine innovations, not just syntax sugar. With 10/10 scores across all dimensions (except API Design at 9/10), the library competes on quality infrastructure as well as API design.
+The differentiators (fluent Tailwind, type-safe HTMX routes/ids, variant proxy, nullable narrowing, streaming render, CSP nonce support, typed SVG setters) are genuine innovations, not just syntax sugar. With 10/10 scores across all dimensions, the library competes on quality infrastructure as well as API design.
