@@ -54,6 +54,7 @@ import type {
   TailwindAlignItems,
   TailwindState,
   TailwindBreakpoint,
+  TailwindUnit,
 } from "./tailwind-types.js";
 
 // ── Variant helper (local, not on prototype) ────────────────────────
@@ -85,8 +86,10 @@ declare module "./tag.js" {
     // Spacing
     padding(value: TailwindSpacing): this;
     padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+    padding(unit: TailwindUnit, amount: number): this;
     margin(value: TailwindSpacing | "auto"): this;
     margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing | "auto"): this;
+    margin(unit: TailwindUnit, amount: number): this;
 
     // Colors
     background(color: TailwindColor): this;
@@ -110,11 +113,17 @@ declare module "./tag.js" {
 
     // Sizing
     w(value: TailwindWidth): this;
+    w(unit: TailwindUnit, amount: number): this;
     h(value: TailwindHeight): this;
+    h(unit: TailwindUnit, amount: number): this;
     maxW(value: TailwindMaxWidth): this;
+    maxW(unit: TailwindUnit, amount: number): this;
     minW(value: TailwindMinWidth): this;
+    minW(unit: TailwindUnit, amount: number): this;
     maxH(value: TailwindMaxHeight): this;
+    maxH(unit: TailwindUnit, amount: number): this;
     minH(value: TailwindMinHeight): this;
+    minH(unit: TailwindUnit, amount: number): this;
 
     // Flexbox
     flex(value?: TailwindFlex): this;
@@ -123,6 +132,7 @@ declare module "./tag.js" {
     alignItems(align: TailwindAlignItems): this;
     gap(value: TailwindSpacing): this;
     gap(direction: "x" | "y", value: TailwindSpacing): this;
+    gap(unit: TailwindUnit, amount: number): this;
 
     // Grid
     grid(): this;
@@ -150,10 +160,15 @@ declare module "./tag.js" {
     display(value: TailwindDisplay): this;
     hidden(): this;
     inset(value: TailwindInset): this;
+    inset(unit: TailwindUnit, amount: number): this;
     top(value: TailwindInset): this;
+    top(unit: TailwindUnit, amount: number): this;
     right(value: TailwindInset): this;
+    right(unit: TailwindUnit, amount: number): this;
     bottom(value: TailwindInset): this;
+    bottom(unit: TailwindUnit, amount: number): this;
     left(value: TailwindInset): this;
+    left(unit: TailwindUnit, amount: number): this;
 
     // Flexbox & Grid Extensions
     shrink(value?: "0"): this;
@@ -215,14 +230,16 @@ p.at = function (breakpoint: string, fn: (tag: Tag) => Tag) {
 
 // Spacing
 
-p.padding = function (directionOrValue: string, value?: string) {
+p.padding = function (directionOrValue: string, value?: string | number) {
   if (value === undefined) return this.addClass(`p-${directionOrValue}`);
+  if (typeof value === "number") return this.addClass(`p-[${value}${directionOrValue}]`);
   const dir = DIR_MAP[directionOrValue] || directionOrValue;
   return this.addClass(`p${dir}-${value}`);
 };
 
-p.margin = function (directionOrValue: string, value?: string) {
+p.margin = function (directionOrValue: string, value?: string | number) {
   if (value === undefined) return this.addClass(`m-${directionOrValue}`);
+  if (typeof value === "number") return this.addClass(`m-[${value}${directionOrValue}]`);
   const dir = DIR_MAP[directionOrValue] || directionOrValue;
   return this.addClass(`m${dir}-${value}`);
 };
@@ -251,12 +268,30 @@ p.tracking = function (value: string) { return this.addClass(`tracking-${value}`
 
 // Sizing
 
-p.w = function (value: string) { return this.addClass(`w-${value}`); };
-p.h = function (value: string) { return this.addClass(`h-${value}`); };
-p.maxW = function (value: string) { return this.addClass(`max-w-${value}`); };
-p.minW = function (value: string) { return this.addClass(`min-w-${value}`); };
-p.maxH = function (value: string) { return this.addClass(`max-h-${value}`); };
-p.minH = function (value: string) { return this.addClass(`min-h-${value}`); };
+p.w = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`w-[${amount}${unitOrValue}]`);
+  return this.addClass(`w-${unitOrValue}`);
+};
+p.h = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`h-[${amount}${unitOrValue}]`);
+  return this.addClass(`h-${unitOrValue}`);
+};
+p.maxW = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`max-w-[${amount}${unitOrValue}]`);
+  return this.addClass(`max-w-${unitOrValue}`);
+};
+p.minW = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`min-w-[${amount}${unitOrValue}]`);
+  return this.addClass(`min-w-${unitOrValue}`);
+};
+p.maxH = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`max-h-[${amount}${unitOrValue}]`);
+  return this.addClass(`max-h-${unitOrValue}`);
+};
+p.minH = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`min-h-[${amount}${unitOrValue}]`);
+  return this.addClass(`min-h-${unitOrValue}`);
+};
 
 // Flexbox
 
@@ -266,8 +301,9 @@ p.flex = function (value?: string) {
 p.flexDirection = function (direction: string) { return this.addClass(`flex-${direction}`); };
 p.justifyContent = function (justify: string) { return this.addClass(`justify-${justify}`); };
 p.alignItems = function (align: string) { return this.addClass(`items-${align}`); };
-p.gap = function (directionOrValue: string, value?: string) {
+p.gap = function (directionOrValue: string, value?: string | number) {
   if (value === undefined) return this.addClass(`gap-${directionOrValue}`);
+  if (typeof value === "number") return this.addClass(`gap-[${value}${directionOrValue}]`);
   return this.addClass(`gap-${directionOrValue}-${value}`);
 };
 
@@ -320,11 +356,26 @@ p.objectFit = function (value: string) { return this.addClass(`object-${value}`)
 
 p.display = function (value: string) { return this.addClass(value); };
 p.hidden = function () { return this.addClass("hidden"); };
-p.inset = function (value: string) { return this.addClass(`inset-${value}`); };
-p.top = function (value: string) { return this.addClass(`top-${value}`); };
-p.right = function (value: string) { return this.addClass(`right-${value}`); };
-p.bottom = function (value: string) { return this.addClass(`bottom-${value}`); };
-p.left = function (value: string) { return this.addClass(`left-${value}`); };
+p.inset = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`inset-[${amount}${unitOrValue}]`);
+  return this.addClass(`inset-${unitOrValue}`);
+};
+p.top = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`top-[${amount}${unitOrValue}]`);
+  return this.addClass(`top-${unitOrValue}`);
+};
+p.right = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`right-[${amount}${unitOrValue}]`);
+  return this.addClass(`right-${unitOrValue}`);
+};
+p.bottom = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`bottom-[${amount}${unitOrValue}]`);
+  return this.addClass(`bottom-${unitOrValue}`);
+};
+p.left = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`left-[${amount}${unitOrValue}]`);
+  return this.addClass(`left-${unitOrValue}`);
+};
 
 // Flexbox & Grid Extensions
 

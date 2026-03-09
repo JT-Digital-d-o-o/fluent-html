@@ -68,4 +68,5 @@ export type {
   TailwindAlignItems,
   TailwindState,
   TailwindBreakpoint,
+  TailwindUnit,
 } from "./tailwind-types.js";

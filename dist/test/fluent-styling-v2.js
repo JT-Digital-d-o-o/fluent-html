@@ -199,6 +199,67 @@ describe("Directional rounded()", () => {
     it("no-arg still works", () => { assert.strictEqual(render(Div().rounded()), '<div class="rounded"></div>'); });
     it("rounded none still works", () => { assert.strictEqual(render(Div().rounded("none")), '<div class="rounded-none"></div>'); });
 });
+describe("Arbitrary value overloads (unit, amount)", () => {
+    // Sizing
+    it("w with px", () => { assert.strictEqual(render(Div().w("px", 200)), '<div class="w-[200px]"></div>'); });
+    it("w with rem", () => { assert.strictEqual(render(Div().w("rem", 12)), '<div class="w-[12rem]"></div>'); });
+    it("h with vh", () => { assert.strictEqual(render(Div().h("vh", 100)), '<div class="h-[100vh]"></div>'); });
+    it("h with em", () => { assert.strictEqual(render(Div().h("em", 2.5)), '<div class="h-[2.5em]"></div>'); });
+    it("minW with px", () => { assert.strictEqual(render(Div().minW("px", 300)), '<div class="min-w-[300px]"></div>'); });
+    it("maxW with rem", () => { assert.strictEqual(render(Div().maxW("rem", 64)), '<div class="max-w-[64rem]"></div>'); });
+    it("minH with px", () => { assert.strictEqual(render(Div().minH("px", 180)), '<div class="min-h-[180px]"></div>'); });
+    it("maxH with dvh", () => { assert.strictEqual(render(Div().maxH("dvh", 80)), '<div class="max-h-[80dvh]"></div>'); });
+    // Spacing
+    it("padding with px", () => { assert.strictEqual(render(Div().padding("px", 16)), '<div class="p-[16px]"></div>'); });
+    it("padding with rem", () => { assert.strictEqual(render(Div().padding("rem", 1.5)), '<div class="p-[1.5rem]"></div>'); });
+    it("margin with em", () => { assert.strictEqual(render(Div().margin("em", 2)), '<div class="m-[2em]"></div>'); });
+    it("margin with %", () => { assert.strictEqual(render(Div().margin("%", 50)), '<div class="m-[50%]"></div>'); });
+    // Gap
+    it("gap with px", () => { assert.strictEqual(render(Div().gap("px", 8)), '<div class="gap-[8px]"></div>'); });
+    it("gap with rem", () => { assert.strictEqual(render(Div().gap("rem", 1)), '<div class="gap-[1rem]"></div>'); });
+    // Position (top/right/bottom/left/inset)
+    it("top with px", () => { assert.strictEqual(render(Div().top("px", 10)), '<div class="top-[10px]"></div>'); });
+    it("right with rem", () => { assert.strictEqual(render(Div().right("rem", 2)), '<div class="right-[2rem]"></div>'); });
+    it("bottom with %", () => { assert.strictEqual(render(Div().bottom("%", 100)), '<div class="bottom-[100%]"></div>'); });
+    it("left with vw", () => { assert.strictEqual(render(Div().left("vw", 50)), '<div class="left-[50vw]"></div>'); });
+    it("inset with px", () => { assert.strictEqual(render(Div().inset("px", 0)), '<div class="inset-[0px]"></div>'); });
+    // Existing overloads still work
+    it("w with named value still works", () => { assert.strictEqual(render(Div().w("full")), '<div class="w-full"></div>'); });
+    it("padding with direction still works", () => { assert.strictEqual(render(Div().padding("x", "4")), '<div class="px-4"></div>'); });
+    it("gap with direction still works", () => { assert.strictEqual(render(Div().gap("x", "2")), '<div class="gap-x-2"></div>'); });
+    it("margin auto still works", () => { assert.strictEqual(render(Div().margin("auto")), '<div class="m-auto"></div>'); });
+    // Works with variant proxy
+    it("unit overload inside .on()", () => {
+        assert.strictEqual(render(Div().on("hover", t => t.w("px", 300))), '<div class="hover:w-[300px]"></div>');
+    });
+    it("unit overload inside .at()", () => {
+        assert.strictEqual(render(Div().w("full").at("md", t => t.w("px", 640))), '<div class="w-full md:w-[640px]"></div>');
+    });
+    // Decimal values
+    it("fractional rem", () => { assert.strictEqual(render(Div().padding("rem", 0.75)), '<div class="p-[0.75rem]"></div>'); });
+    // All unit types
+    it("svh unit", () => { assert.strictEqual(render(Div().h("svh", 100)), '<div class="h-[100svh]"></div>'); });
+    it("lvh unit", () => { assert.strictEqual(render(Div().h("lvh", 100)), '<div class="h-[100lvh]"></div>'); });
+    it("vw unit", () => { assert.strictEqual(render(Div().w("vw", 100)), '<div class="w-[100vw]"></div>'); });
+});
+describe("Escape hatch for newly opened types", () => {
+    it("custom textSize", () => { assert.strictEqual(render(Div().textSize("[13px]")), '<div class="text-[13px]"></div>'); });
+    it("custom fontWeight", () => { assert.strictEqual(render(Div().fontWeight("[450]")), '<div class="font-[450]"></div>'); });
+    it("custom leading", () => { assert.strictEqual(render(Div().leading("[1.35]")), '<div class="leading-[1.35]"></div>'); });
+    it("custom tracking", () => { assert.strictEqual(render(Div().tracking("[0.02em]")), '<div class="tracking-[0.02em]"></div>'); });
+    it("custom rounded", () => { assert.strictEqual(render(Div().rounded("[3px]")), '<div class="rounded-[3px]"></div>'); });
+    it("custom shadow", () => { assert.strictEqual(render(Div().shadow("[0_2px_4px_rgba(0,0,0,0.1)]")), '<div class="shadow-[0_2px_4px_rgba(0,0,0,0.1)]"></div>'); });
+    it("custom border width", () => { assert.strictEqual(render(Div().border("[1.5px]")), '<div class="border-[1.5px]"></div>'); });
+    it("custom opacity", () => { assert.strictEqual(render(Div().opacity("[0.33]")), '<div class="opacity-[0.33]"></div>'); });
+    it("custom zIndex", () => { assert.strictEqual(render(Div().zIndex("[999]")), '<div class="z-[999]"></div>'); });
+    it("custom gridCols", () => { assert.strictEqual(render(Div().gridCols("13")), '<div class="grid-cols-13"></div>'); });
+    it("custom gridRows", () => { assert.strictEqual(render(Div().gridRows("13")), '<div class="grid-rows-13"></div>'); });
+    it("custom duration", () => { assert.strictEqual(render(Div().duration("250")), '<div class="duration-250"></div>'); });
+    it("custom ringWidth", () => { assert.strictEqual(render(Div().ring("[1.5px]")), '<div class="ring-[1.5px]"></div>'); });
+    it("custom scale", () => { assert.strictEqual(render(Div().scale("[1.15]")), '<div class="scale-[1.15]"></div>'); });
+    it("custom rotate", () => { assert.strictEqual(render(Div().rotate("[15deg]")), '<div class="rotate-[15deg]"></div>'); });
+    it("custom colSpan", () => { assert.strictEqual(render(Div().colSpan("13")), '<div class="col-span-13"></div>'); });
+});
 describe("Full Example (Plan Before/After)", () => {
     it("complete button with all features", () => {
         assert.strictEqual(render(Button()

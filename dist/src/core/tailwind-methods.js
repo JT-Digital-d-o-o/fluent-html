@@ -34,12 +34,16 @@ p.at = function (breakpoint, fn) {
 p.padding = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`p-${directionOrValue}`);
+    if (typeof value === "number")
+        return this.addClass(`p-[${value}${directionOrValue}]`);
     const dir = DIR_MAP[directionOrValue] || directionOrValue;
     return this.addClass(`p${dir}-${value}`);
 };
 p.margin = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`m-${directionOrValue}`);
+    if (typeof value === "number")
+        return this.addClass(`m-[${value}${directionOrValue}]`);
     const dir = DIR_MAP[directionOrValue] || directionOrValue;
     return this.addClass(`m${dir}-${value}`);
 };
@@ -62,12 +66,36 @@ p.truncate = function () { return this.addClass("truncate"); };
 p.leading = function (value) { return this.addClass(`leading-${value}`); };
 p.tracking = function (value) { return this.addClass(`tracking-${value}`); };
 // Sizing
-p.w = function (value) { return this.addClass(`w-${value}`); };
-p.h = function (value) { return this.addClass(`h-${value}`); };
-p.maxW = function (value) { return this.addClass(`max-w-${value}`); };
-p.minW = function (value) { return this.addClass(`min-w-${value}`); };
-p.maxH = function (value) { return this.addClass(`max-h-${value}`); };
-p.minH = function (value) { return this.addClass(`min-h-${value}`); };
+p.w = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`w-[${amount}${unitOrValue}]`);
+    return this.addClass(`w-${unitOrValue}`);
+};
+p.h = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`h-[${amount}${unitOrValue}]`);
+    return this.addClass(`h-${unitOrValue}`);
+};
+p.maxW = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`max-w-[${amount}${unitOrValue}]`);
+    return this.addClass(`max-w-${unitOrValue}`);
+};
+p.minW = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`min-w-[${amount}${unitOrValue}]`);
+    return this.addClass(`min-w-${unitOrValue}`);
+};
+p.maxH = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`max-h-[${amount}${unitOrValue}]`);
+    return this.addClass(`max-h-${unitOrValue}`);
+};
+p.minH = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`min-h-[${amount}${unitOrValue}]`);
+    return this.addClass(`min-h-${unitOrValue}`);
+};
 // Flexbox
 p.flex = function (value) {
     return value === undefined ? this.addClass("flex") : this.addClass(`flex-${value}`);
@@ -78,6 +106,8 @@ p.alignItems = function (align) { return this.addClass(`items-${align}`); };
 p.gap = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`gap-${directionOrValue}`);
+    if (typeof value === "number")
+        return this.addClass(`gap-[${value}${directionOrValue}]`);
     return this.addClass(`gap-${directionOrValue}-${value}`);
 };
 // Grid
@@ -125,11 +155,31 @@ p.objectFit = function (value) { return this.addClass(`object-${value}`); };
 // Layout & Display
 p.display = function (value) { return this.addClass(value); };
 p.hidden = function () { return this.addClass("hidden"); };
-p.inset = function (value) { return this.addClass(`inset-${value}`); };
-p.top = function (value) { return this.addClass(`top-${value}`); };
-p.right = function (value) { return this.addClass(`right-${value}`); };
-p.bottom = function (value) { return this.addClass(`bottom-${value}`); };
-p.left = function (value) { return this.addClass(`left-${value}`); };
+p.inset = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`inset-[${amount}${unitOrValue}]`);
+    return this.addClass(`inset-${unitOrValue}`);
+};
+p.top = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`top-[${amount}${unitOrValue}]`);
+    return this.addClass(`top-${unitOrValue}`);
+};
+p.right = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`right-[${amount}${unitOrValue}]`);
+    return this.addClass(`right-${unitOrValue}`);
+};
+p.bottom = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`bottom-[${amount}${unitOrValue}]`);
+    return this.addClass(`bottom-${unitOrValue}`);
+};
+p.left = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`left-[${amount}${unitOrValue}]`);
+    return this.addClass(`left-${unitOrValue}`);
+};
 // Flexbox & Grid Extensions
 p.shrink = function (value) {
     return value === undefined ? this.addClass("shrink") : this.addClass(`shrink-${value}`);

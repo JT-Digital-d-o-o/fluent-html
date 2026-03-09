@@ -1,12 +1,14 @@
-import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint } from "./tailwind-types.js";
+import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit } from "./tailwind-types.js";
 declare module "./tag.js" {
     interface Tag {
         on(state: TailwindState, fn: (tag: this) => this): this;
         at(breakpoint: TailwindBreakpoint, fn: (tag: this) => this): this;
         padding(value: TailwindSpacing): this;
         padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+        padding(unit: TailwindUnit, amount: number): this;
         margin(value: TailwindSpacing | "auto"): this;
         margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing | "auto"): this;
+        margin(unit: TailwindUnit, amount: number): this;
         background(color: TailwindColor): this;
         textColor(color: TailwindColor): this;
         textSize(size: TailwindTextSize): this;
@@ -24,17 +26,24 @@ declare module "./tag.js" {
         leading(value: TailwindLeading): this;
         tracking(value: TailwindTracking): this;
         w(value: TailwindWidth): this;
+        w(unit: TailwindUnit, amount: number): this;
         h(value: TailwindHeight): this;
+        h(unit: TailwindUnit, amount: number): this;
         maxW(value: TailwindMaxWidth): this;
+        maxW(unit: TailwindUnit, amount: number): this;
         minW(value: TailwindMinWidth): this;
+        minW(unit: TailwindUnit, amount: number): this;
         maxH(value: TailwindMaxHeight): this;
+        maxH(unit: TailwindUnit, amount: number): this;
         minH(value: TailwindMinHeight): this;
+        minH(unit: TailwindUnit, amount: number): this;
         flex(value?: TailwindFlex): this;
         flexDirection(direction: TailwindFlexDirection): this;
         justifyContent(justify: TailwindJustifyContent): this;
         alignItems(align: TailwindAlignItems): this;
         gap(value: TailwindSpacing): this;
         gap(direction: "x" | "y", value: TailwindSpacing): this;
+        gap(unit: TailwindUnit, amount: number): this;
         grid(): this;
         gridCols(cols: TailwindGridCols): this;
         gridRows(rows: TailwindGridRows): this;
@@ -54,10 +63,15 @@ declare module "./tag.js" {
         display(value: TailwindDisplay): this;
         hidden(): this;
         inset(value: TailwindInset): this;
+        inset(unit: TailwindUnit, amount: number): this;
         top(value: TailwindInset): this;
+        top(unit: TailwindUnit, amount: number): this;
         right(value: TailwindInset): this;
+        right(unit: TailwindUnit, amount: number): this;
         bottom(value: TailwindInset): this;
+        bottom(unit: TailwindUnit, amount: number): this;
         left(value: TailwindInset): this;
+        left(unit: TailwindUnit, amount: number): this;
         shrink(value?: "0"): this;
         grow(value?: "0"): this;
         flexWrap(value: TailwindFlexWrap): this;

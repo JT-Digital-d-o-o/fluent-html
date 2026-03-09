@@ -91,6 +91,20 @@ Input().toggle("required", isRequired)            // ✓ conditional
 Option(city).toggle("selected", city === current) // ✓ expression as condition
 ```
 
+**Arbitrary values** — unit-based overloads for sizing/spacing/position:
+```typescript
+Div().minH("px", 180)       // → min-h-[180px]
+Div().w("rem", 12)          // → w-[12rem]
+Div().padding("em", 1.5)    // → p-[1.5em]
+Div().gap("%", 50)          // → gap-[50%]
+Div().top("vh", 100)        // → top-[100vh]
+// Units: px | rem | em | % | vh | vw | dvh | svh | lvh
+// Methods: w, h, minW, maxW, minH, maxH, padding, margin, gap, top, right, bottom, left, inset
+```
+
+Most types also accept escape-hatch strings: `.textSize("[13px]")`, `.opacity("[0.33]")`, `.zIndex("[999]")`
+
+
 **Conditional modifiers & composition:**
 ```typescript
 Button("Save").when(isLoading, t => t.toggle("disabled").opacity("50"))
@@ -113,6 +127,15 @@ Key rules:
 - **Anchors with `setHtmx`** need `.cursor("pointer")`
 - **Partial swaps** for multi-section updates in one response
 - **htmx 4**: attributes don't inherit — use `:inherited` modifier
+
+**Full layout navigation** — almost always use this pattern for screen navigations:
+```typescript
+A("Settings").setHtmx(settingsRoutes.index({
+  swap: "outerMorph show:window:top",
+  target: ids.mainContent,
+  pushUrl: true,
+})).cursor("pointer")
+```
 
 ---
 
