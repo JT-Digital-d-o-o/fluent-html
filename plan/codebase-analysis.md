@@ -213,7 +213,7 @@ Switched to ESM-only (`"type": "module"`) with ES2020 target. CJS dropped entire
 
 | Dimension | Score | Notes |
 |---|---|---|
-| **API Design** | 10/10 | Fluent, discoverable, zero escape hatches. Removed `Autocomplete<T>`, `setToggles()`, deprecated exports. Void elements reject children at type level. Named Tailwind types. Typed SVG setters. One way to do each thing. |
+| **API Design** | 10/10 | Fluent, discoverable, `(string & {})` escape hatches on extensible types (colors, spacing, HTML attributes) preserve autocomplete while allowing custom values. Void elements reject children at type level. Named Tailwind types. Typed SVG setters. One way to do each thing. |
 | **Type Safety** | 10/10 | Literal unions on setters, branded Id, type guards (no `instanceof`), constrained `toggle()`, zero `as any` in render. |
 | **Security** | 10/10 | Script injection prevention, attribute key validation, `on*` blocking, prototype pollution guards, CSP nonce support, dedicated security test suite. |
 | **Performance** | 10/10 | Benchmark suite, streaming render, array join optimization, memory profiling. Discriminants + fast-path escaping baseline. |
