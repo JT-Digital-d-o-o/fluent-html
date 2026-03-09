@@ -6,15 +6,42 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/src/index.d.ts", "default": "./dist/src/index.js" },
-    "./core": { "types": "./dist/src/core/index.d.ts", "default": "./dist/src/core/index.js" },
-    "./elements": { "types": "./dist/src/elements/index.d.ts", "default": "./dist/src/elements/index.js" },
-    "./control": { "types": "./dist/src/control/index.d.ts", "default": "./dist/src/control/index.js" },
-    "./render": { "types": "./dist/src/render/index.d.ts", "default": "./dist/src/render/index.js" },
-    "./fold": { "types": "./dist/src/fold/index.d.ts", "default": "./dist/src/fold/index.js" },
-    "./ids": { "types": "./dist/src/ids.d.ts", "default": "./dist/src/ids.js" },
-    "./routes": { "types": "./dist/src/routes.d.ts", "default": "./dist/src/routes.js" },
-    "./htmx": { "types": "./dist/src/htmx.d.ts", "default": "./dist/src/htmx.js" }
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./core": {
+      "types": "./dist/src/core/index.d.ts",
+      "default": "./dist/src/core/index.js"
+    },
+    "./elements": {
+      "types": "./dist/src/elements/index.d.ts",
+      "default": "./dist/src/elements/index.js"
+    },
+    "./control": {
+      "types": "./dist/src/control/index.d.ts",
+      "default": "./dist/src/control/index.js"
+    },
+    "./render": {
+      "types": "./dist/src/render/index.d.ts",
+      "default": "./dist/src/render/index.js"
+    },
+    "./fold": {
+      "types": "./dist/src/fold/index.d.ts",
+      "default": "./dist/src/fold/index.js"
+    },
+    "./ids": {
+      "types": "./dist/src/ids.d.ts",
+      "default": "./dist/src/ids.js"
+    },
+    "./routes": {
+      "types": "./dist/src/routes.d.ts",
+      "default": "./dist/src/routes.js"
+    },
+    "./htmx": {
+      "types": "./dist/src/htmx.d.ts",
+      "default": "./dist/src/htmx.js"
+    }
   },
   "sideEffects": false,
   "scripts": {
@@ -67,7 +94,10 @@
   },
   "devDependencies": {
     "@types/node": "^25.2.1",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "c8": "^11.0.0",
+    "eslint-plugin-fluent-html": "file:../fluent-html-eslint-plugin",
     "typedoc": "^0.28.17",
     "typescript": "^5.0.0"
   }

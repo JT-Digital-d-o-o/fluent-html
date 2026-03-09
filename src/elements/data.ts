@@ -12,6 +12,7 @@ export class TimeTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (TimeTag.prototype as any)._sk = ['datetime'];
 
 export function Time(...children: View[]): TimeTag {
@@ -28,6 +29,7 @@ export class DataTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (DataTag.prototype as any)._sk = ['value'];
 
 export function Data(...children: View[]): DataTag {
@@ -50,6 +52,7 @@ export class ProgressTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ProgressTag.prototype as any)._sk = ['value', 'max'];
 
 export function Progress(...children: View[]): ProgressTag {
@@ -96,6 +99,7 @@ export class MeterTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (MeterTag.prototype as any)._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
 
 export function Meter(...children: View[]): MeterTag {

@@ -9,6 +9,7 @@ export class RawString {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype manipulation
 (RawString.prototype as any)._t = 2;
 
 /**

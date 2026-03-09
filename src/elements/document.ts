@@ -18,6 +18,7 @@ export class HtmlTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (HtmlTag.prototype as any)._sk = ['lang', 'dir'];
 
 export function HTML(...children: View[]): HtmlTag {
@@ -70,6 +71,7 @@ export class MetaTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (MetaTag.prototype as any)._sk = ['name', 'charset', 'httpEquiv', 'property', 'content'];
 
 export function Meta(): MetaTag {
@@ -128,6 +130,7 @@ export class LinkTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (LinkTag.prototype as any)._sk = ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity'];
 
 export function Link(): LinkTag {
@@ -150,6 +153,7 @@ export class StyleTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (StyleTag.prototype as any)._sk = ['media', 'type'];
 
 export function Style(css: string): StyleTag {
@@ -172,6 +176,7 @@ export class BaseTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (BaseTag.prototype as any)._sk = ['href', 'target'];
 
 export function Base(): BaseTag {
@@ -232,6 +237,7 @@ export class ScriptTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ScriptTag.prototype as any)._sk = ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule'];
 
 export function Script(js: string = ""): ScriptTag {

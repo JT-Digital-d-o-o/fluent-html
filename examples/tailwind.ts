@@ -3,7 +3,8 @@
  *
  * Run: npx tsx examples/tailwind.ts
  */
-import { Div, H2, P, Button, Tag, render } from '../src/index.js';
+import type { Tag} from '../src/index.js';
+import { Div, H2, P, Button, render } from '../src/index.js';
 
 // Reusable modifier functions via .apply()
 const card = (t: Tag) =>

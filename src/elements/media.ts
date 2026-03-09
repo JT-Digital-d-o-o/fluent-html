@@ -66,6 +66,7 @@ export class ImgTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ImgTag.prototype as any)._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
 
 /** Create an `<img>` element with typed attribute methods. */
@@ -111,6 +112,7 @@ export class SourceTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (SourceTag.prototype as any)._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
 
 export function Source(...children: View[]): SourceTag {
@@ -181,6 +183,7 @@ export class VideoTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (VideoTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
 
 export function Video(...children: View[]): VideoTag {
@@ -227,6 +230,7 @@ export class AudioTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (AudioTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
 
 export function Audio(...children: View[]): AudioTag {
@@ -267,6 +271,7 @@ export class TrackTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (TrackTag.prototype as any)._sk = ['src', 'kind', 'srclang', 'label', 'default'];
 
 export function Track(...children: View[]): TrackTag {
@@ -289,6 +294,7 @@ export class CanvasTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (CanvasTag.prototype as any)._sk = ['width', 'height'];
 
 export function Canvas(...children: View[]): CanvasTag {
@@ -335,6 +341,7 @@ export class SvgTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (SvgTag.prototype as any)._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke'];
 
 export function Svg(...children: View[]): SvgTag {

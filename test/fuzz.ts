@@ -11,9 +11,9 @@ function randomString(length: number): string {
   let str = '';
   for (let i = 0; i < bytes.length; i++) {
     if (Math.random() < 0.3) {
-      str += specials[bytes[i] % specials.length];
+      str += specials[bytes[i]! % specials.length]!;
     } else {
-      str += String.fromCharCode(bytes[i]);
+      str += String.fromCharCode(bytes[i]!);
     }
   }
   return str;
@@ -28,7 +28,7 @@ describe("Property-based fuzz: text content escaping", () => {
       // Extract text content (between <div> and </div>)
       const match = html.match(/^<div>(.*)<\/div>$/s);
       assert.ok(match, `Expected <div>...</div> wrapper, got: ${html.slice(0, 100)}`);
-      const content = match[1];
+      const content = match[1]!;
 
       // Verify no unescaped special chars
       // After removing known entity sequences, no bare &, <, > should remain

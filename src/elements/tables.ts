@@ -44,6 +44,7 @@ export class ThTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ThTag.prototype as any)._sk = ['colspan', 'rowspan', 'scope'];
 
 export function Th(...children: View[]): ThTag {
@@ -66,6 +67,7 @@ export class TdTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (TdTag.prototype as any)._sk = ['colspan', 'rowspan'];
 
 export function Td(...children: View[]): TdTag {
@@ -86,6 +88,7 @@ export class ColgroupTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ColgroupTag.prototype as any)._sk = ['span'];
 
 export function Colgroup(...children: View[]): ColgroupTag {
@@ -102,6 +105,7 @@ export class ColTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ColTag.prototype as any)._sk = ['span'];
 
 export function Col(...children: View[]): ColTag {

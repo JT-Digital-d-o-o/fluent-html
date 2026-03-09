@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   render, renderWithNonce, Raw,
-  Div, Span, Script, Style, Button, Input, P, El,
+  Div, Span, Script, Style, Input, P, El,
 } from "../src/index.js";
 
 // ------------------------------------

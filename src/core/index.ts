@@ -4,6 +4,10 @@ export type { View, Thunk } from "./types.js";
 // Tag class
 export { Tag } from "./tag.js";
 
+// Mixins — add methods to Tag.prototype via declaration merging
+import "./tailwind-methods.js";
+import "./htmx-methods.js";
+
 // Raw HTML support
 export { RawString, Raw } from "./raw-string.js";
 

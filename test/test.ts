@@ -1,9 +1,10 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
+import type { Tag } from "../src/index.js";
 import {
   // Core
-  render, View, Tag,
+  render,
 
   // Structural
   Div, Main, Header, Footer, Section, Article, Nav, Aside,
@@ -37,7 +38,7 @@ import {
   Iframe, Embed,
 
   // Links
-  A, Area,
+  A,
 
   // Document
   HTML, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template,
@@ -55,7 +56,7 @@ import {
   IfThen, IfThenElse, SwitchCase, Match, ForEach, Repeat,
 } from "../src/index.js";
 
-import { hx, id, clss, HxSwap, HxTrigger } from "../src/htmx.js";
+import { hx, id, clss } from "../src/htmx.js";
 
 // ------------------------------------
 // Basic Elements

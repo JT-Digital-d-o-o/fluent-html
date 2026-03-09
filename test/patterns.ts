@@ -95,7 +95,7 @@ describe("HTMX Patterns", () => {
 
   it("hxResponse.trigger handles event detail", () => {
     const response = hxResponse(Div("Saved")).trigger("showMessage", { text: "Success" }).build();
-    assert.ok(response.headers["HX-Trigger"].includes("showMessage"));
+    assert.ok(response.headers["HX-Trigger"]!.includes("showMessage"));
   });
 
   it("hxResponse.pushUrl sets HX-Push-Url header", () => {
@@ -138,7 +138,7 @@ describe("HTMX Patterns", () => {
 
   it("hxResponse.location handles config object", () => {
     const response = hxResponse(Div("")).location({ path: "/dashboard", target: "#main" }).build();
-    assert.ok(response.headers["HX-Location"].includes("dashboard"));
+    assert.ok(response.headers["HX-Location"]!.includes("dashboard"));
   });
 });
 

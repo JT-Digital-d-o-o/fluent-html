@@ -67,7 +67,7 @@ function buildHtmx(htmx: HTMX): string {
   }
   if (htmx.status) {
     for (const code of Object.keys(htmx.status)) {
-      const cfg = htmx.status[code];
+      const cfg = htmx.status[code]!;
       const value = typeof cfg === 'string' ? cfg : buildStatusConfig(cfg);
       result += ' hx-status:' + code + '="' + escapeAttr(value) + '"';
     }
@@ -146,9 +146,9 @@ function streamImpl(stream: Readable, view: View, isRawContext: boolean | string
     const sk = tag._sk;
     if (sk !== undefined) {
       for (let i = 0; i < sk.length; i++) {
-        const value = (tag as unknown as Record<string, unknown>)[sk[i]];
+        const value = (tag as unknown as Record<string, unknown>)[sk[i]!];
         if (value !== undefined && value !== null) {
-          attrs += ' ' + sk[i] + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
+          attrs += ' ' + sk[i]! + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
         }
       }
     }
@@ -157,7 +157,7 @@ function streamImpl(stream: Readable, view: View, isRawContext: boolean | string
     if (extraAttrs !== EMPTY_ATTRS) {
       const extraKeys = Object.keys(extraAttrs);
       for (let i = 0; i < extraKeys.length; i++) {
-        const key = extraKeys[i];
+        const key = extraKeys[i]!;
         const value = extraAttrs[key];
         if (value !== undefined && value !== null) {
           attrs += ' ' + key + '="' + escapeAttr(String(value)) + '"';
@@ -187,7 +187,7 @@ function streamImpl(stream: Readable, view: View, isRawContext: boolean | string
   if (Array.isArray(view)) {
     for (let i = 0; i < view.length; i++) {
       if (i > 0) stream.push('\n');
-      streamImpl(stream, view[i], isRawContext);
+      streamImpl(stream, view[i]!, isRawContext);
     }
     return;
   }

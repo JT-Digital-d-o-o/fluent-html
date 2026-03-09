@@ -3,7 +3,8 @@
 // Compatible with HTMX 4.0+
 // ------------------------------------
 
-import { Id, isId } from "./ids.js";
+import type { Id} from "./ids.js";
+import { isId } from "./ids.js";
 
 // HTTP Methods
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
@@ -206,7 +207,7 @@ export interface HTMX {
   replaceUrl?: boolean | string;
 
   // Data
-  vals?: Record<string, any> | string;
+  vals?: Record<string, unknown> | string;
   headers?: Record<string, string>;
   include?: string;
   encoding?: HxEncoding;

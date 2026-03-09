@@ -168,7 +168,7 @@ export function Match(
   // Discriminated union overload: Match(value, key, cases, ?default)
   if (typeof casesOrKey === "string" && typeof casesOrDefault === "object" && casesOrDefault !== null) {
     const obj = value as Record<string, string | number>;
-    const discriminant = obj[casesOrKey as string];
+    const discriminant = obj[casesOrKey as string] as string | number;
     const cases = casesOrDefault as Record<string | number, ((value: unknown) => View) | undefined>;
     const handler = cases[discriminant];
     if (handler) {

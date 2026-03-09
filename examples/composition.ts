@@ -3,8 +3,9 @@
  *
  * Run: npx tsx examples/composition.ts
  */
+import type { Tag} from '../src/index.js';
 import {
-  Div, H2, P, Span, Button, Ul, Li, Tag,
+  Div, H2, P, Span, Button, Ul, Li,
   ForEach, IfThen,
   render,
 } from '../src/index.js';

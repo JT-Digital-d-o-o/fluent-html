@@ -20,7 +20,7 @@ function extractAttrs(tag: Tag): TagAttrs {
   // These are properties on specialized Tag subclasses
   for (const key of Object.keys(tag)) {
     if (!(key in attrs) && key !== '_t' && key !== 'el' && key !== 'child') {
-      (attrs as any)[key] = (tag as any)[key];
+      (attrs as Record<string, unknown>)[key] = (tag as unknown as Record<string, unknown>)[key];
     }
   }
 

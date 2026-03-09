@@ -38,6 +38,7 @@ import {
 } from "../src/index.js";
 
 // Helper: verify element tag name renders correctly
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- test helper accepts any factory
 function assertTag(factory: (...args: any[]) => any, tagName: string, isVoid = false) {
   it(`${tagName} renders correct tag`, () => {
     const el = factory();
@@ -50,6 +51,7 @@ function assertTag(factory: (...args: any[]) => any, tagName: string, isVoid = f
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- test helper accepts any factory
 function assertTagWithChild(factory: (...args: any[]) => any, tagName: string) {
   it(`${tagName} renders with children`, () => {
     const html = render(factory("content"));

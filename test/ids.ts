@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { render, Div, Button, Span } from "../src/index.js";
 import { hx } from "../src/htmx.js";
 import { OOB, withOOB } from "../src/patterns.js";
-import { Id, createId, defineIds, isId, extractId, extractSelector } from "../src/ids.js";
+import { createId, defineIds, isId, extractId, extractSelector } from "../src/ids.js";
 
 describe("createId()", () => {
   it("returns correct id", () => {

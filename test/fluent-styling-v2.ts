@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { Div, Button, Span, Img, render, Tag } from "../src/index.js";
+import { Div, Button, Span, render, Tag } from "../src/index.js";
 
 describe("Layout & Display", () => {
   it("display block", () => { assert.strictEqual(render(Div().display("block")), '<div class="block"></div>'); });

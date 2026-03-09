@@ -1,8 +1,8 @@
 import { performance } from "node:perf_hooks";
 import {
   render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article,
-  Ul, Li, A, Button, Input, Form, Label, Table, Thead, Tbody, Tr, Th, Td,
-  Img, ForEach, Main,
+  Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td,
+  Img, Main,
 } from "../src/index.js";
 import type { View } from "../src/index.js";
 
@@ -10,7 +10,7 @@ import type { View } from "../src/index.js";
 // Helpers
 // ---------------------------------------------------------------------------
 
-function measure(name: string, fn: () => void, iterations: number): { opsPerSec: number; avgMs: number } {
+function measure(_name: string, fn: () => void, iterations: number): { opsPerSec: number; avgMs: number } {
   // Warm-up
   for (let i = 0; i < Math.min(iterations, 100); i++) fn();
 

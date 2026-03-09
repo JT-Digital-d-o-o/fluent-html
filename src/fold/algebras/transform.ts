@@ -1,6 +1,6 @@
 import type { View } from "../../core/types.js";
 import { Tag } from "../../core/tag.js";
-import { RawString, Raw } from "../../core/raw-string.js";
+import { Raw } from "../../core/raw-string.js";
 import type { ViewAlgebra, TagAttrs } from "../types.js";
 
 /**

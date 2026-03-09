@@ -18,6 +18,7 @@ export class DetailsTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (DetailsTag.prototype as any)._sk = ['open', 'name'];
 
 export function Details(...children: View[]): DetailsTag {
@@ -38,6 +39,7 @@ export class DialogTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (DialogTag.prototype as any)._sk = ['open'];
 
 export function Dialog(...children: View[]): DialogTag {

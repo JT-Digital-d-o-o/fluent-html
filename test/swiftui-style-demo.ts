@@ -1,4 +1,4 @@
-import { Div, Button, Span, render } from "../src/index.js";
+import { Div, Button, render } from "../src/index.js";
 
 // Before: Using setClass with Tailwind
 const oldStyle = Div()

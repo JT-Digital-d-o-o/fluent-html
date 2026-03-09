@@ -49,6 +49,7 @@ export class AnchorTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (AnchorTag.prototype as any)._sk = ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy'];
 
 /** Create an `<a>` (anchor) element with typed attribute methods. */
@@ -66,6 +67,7 @@ export class MapTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (MapTag.prototype as any)._sk = ['name'];
 
 export function MapEl(...children: View[]): MapTag {
@@ -118,6 +120,7 @@ export class AreaTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (AreaTag.prototype as any)._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
 
 export function Area(...children: View[]): AreaTag {

@@ -66,6 +66,7 @@ export class IframeTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (IframeTag.prototype as any)._sk = ['src', 'srcdoc', 'width', 'height', 'allow', 'allowfullscreen', 'sandbox', 'loading', 'name', 'referrerpolicy'];
 
 export function Iframe(...children: View[]): IframeTag {
@@ -106,6 +107,7 @@ export class ObjectTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (ObjectTag.prototype as any)._sk = ['data', 'type', 'width', 'height', 'name'];
 
 export function ObjectEl(...children: View[]): ObjectTag {
@@ -140,6 +142,7 @@ export class EmbedTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (EmbedTag.prototype as any)._sk = ['src', 'type', 'width', 'height'];
 
 export function Embed(...children: View[]): EmbedTag {

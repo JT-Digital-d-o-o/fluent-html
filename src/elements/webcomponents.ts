@@ -12,6 +12,7 @@ export class SlotTag extends Tag {
 }
 
 /** @internal */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 (SlotTag.prototype as any)._sk = ['name'];
 
 export function Slot(...children: View[]): SlotTag {

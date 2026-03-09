@@ -31,7 +31,7 @@ const VOID_ELEMENTS = new Set([
  * )
  */
 export function render(...views: View[]): string {
-  return renderImpl(views.length === 1 ? views[0] : views, false);
+  return renderImpl(views.length === 1 ? views[0]! : views, false);
 }
 
 const NONCE_ELEMENTS = new Set(['script', 'style']);
@@ -47,7 +47,7 @@ const NONCE_ELEMENTS = new Set(['script', 'style']);
  * renderWithNonce("abc123", Script().setSrc("/app.js"), Style("body { margin: 0 }"))
  */
 export function renderWithNonce(nonce: string, ...views: View[]): string {
-  const view = views.length === 1 ? views[0] : views;
+  const view = views.length === 1 ? views[0]! : views;
   applyNonce(view, nonce);
   return renderImpl(view, false);
 }
@@ -60,7 +60,7 @@ function applyNonce(view: View, nonce: string): void {
     applyNonce(view.child, nonce);
   } else if (Array.isArray(view)) {
     for (let i = 0; i < view.length; i++) {
-      applyNonce(view[i], nonce);
+      applyNonce(view[i]!, nonce);
     }
   }
 }
@@ -146,7 +146,7 @@ function buildHtmx(htmx: HTMX): string {
   // Status-code-specific swap behavior
   if (htmx.status) {
     for (const code of Object.keys(htmx.status)) {
-      const cfg = htmx.status[code];
+      const cfg = htmx.status[code]!;
       const value = typeof cfg === 'string' ? cfg : buildStatusConfig(cfg);
       result += ' hx-status:' + code + '="' + escapeAttr(value) + '"';
     }
@@ -208,9 +208,9 @@ function renderImpl(view: View, isRawContext: boolean | string): string {
     const sk = tag._sk;
     if (sk !== undefined) {
       for (let i = 0; i < sk.length; i++) {
-        const value = (tag as unknown as Record<string, unknown>)[sk[i]];
+        const value = (tag as unknown as Record<string, unknown>)[sk[i]!];
         if (value !== undefined && value !== null) {
-          attrs += ' ' + sk[i] + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
+          attrs += ' ' + sk[i]! + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
         }
       }
     }
@@ -219,7 +219,7 @@ function renderImpl(view: View, isRawContext: boolean | string): string {
     if (extraAttrs !== EMPTY_ATTRS) {
       const extraKeys = Object.keys(extraAttrs);
       for (let i = 0; i < extraKeys.length; i++) {
-        const key = extraKeys[i];
+        const key = extraKeys[i]!;
         const value = extraAttrs[key];
         if (value !== undefined && value !== null) {
           attrs += ' ' + key + '="' + escapeAttr(String(value)) + '"';
@@ -243,20 +243,20 @@ function renderImpl(view: View, isRawContext: boolean | string): string {
   if (Array.isArray(view)) {
     const len = view.length;
     if (len === 0) return '';
-    if (len === 1) return renderImpl(view[0], isRawContext);
+    if (len === 1) return renderImpl(view[0]!, isRawContext);
 
     // For larger arrays, .join() is faster than += in a loop
     if (len > 8) {
       const parts = new Array<string>(len);
       for (let i = 0; i < len; i++) {
-        parts[i] = renderImpl(view[i], isRawContext);
+        parts[i] = renderImpl(view[i]!, isRawContext);
       }
       return parts.join('\n');
     }
 
-    let result = renderImpl(view[0], isRawContext);
+    let result = renderImpl(view[0]!, isRawContext);
     for (let i = 1; i < len; i++) {
-      result += '\n' + renderImpl(view[i], isRawContext);
+      result += '\n' + renderImpl(view[i]!, isRawContext);
     }
     return result;
   }

@@ -8,8 +8,9 @@
 import { Tag } from "./core/tag.js";
 import type { View } from "./core/types.js";
 import { Div } from "./elements/structural.js";
-import { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
-import { Id, isId } from "./ids.js";
+import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
+import type { Id} from "./ids.js";
+import { isId } from "./ids.js";
 import { render } from "./render/render.js";
 
 // ------------------------------------
@@ -148,7 +149,7 @@ export interface HxLocationConfig {
   source?: string;
   event?: string;
   handler?: string;
-  values?: Record<string, any>;
+  values?: Record<string, unknown>;
   headers?: Record<string, string>;
 }
 
@@ -198,7 +199,7 @@ export class HxResponse {
    * hxResponse(content).trigger("itemAdded")
    * hxResponse(content).trigger("showMessage", { text: "Saved!", type: "success" })
    */
-  trigger(event: string, detail?: Record<string, any>): this {
+  trigger(event: string, detail?: Record<string, unknown>): this {
     const existing = this._headers["HX-Trigger"];
     if (existing) {
       // If we already have triggers, merge them
@@ -212,7 +213,7 @@ export class HxResponse {
         this._headers["HX-Trigger"] = JSON.stringify(parsed);
       } catch {
         // Was a simple string, convert to object
-        const obj: Record<string, any> = { [existing]: {} };
+        const obj: Record<string, unknown> = { [existing]: {} };
         obj[event] = detail ?? {};
         this._headers["HX-Trigger"] = JSON.stringify(obj);
       }

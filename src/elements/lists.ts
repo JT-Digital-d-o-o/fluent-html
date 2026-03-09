@@ -1,4 +1,4 @@
-import { Tag } from "../core/tag.js";
+import type { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 

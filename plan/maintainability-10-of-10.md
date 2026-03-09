@@ -94,11 +94,12 @@
 
 ## Acceptance Criteria
 
-- [ ] `tag.ts` under 400 lines — Tailwind methods extracted to mixin
-- [ ] HTMX methods extracted to separate mixin file
-- [ ] `noUnusedLocals` and `noUnusedParameters` enabled
-- [ ] `noUncheckedIndexedAccess` enabled
-- [ ] ESLint strict rules enforced, zero violations
-- [ ] Public API surface audited via barrel files
-- [ ] No breaking changes to consumer API
-- [ ] `tsc --noEmit` clean, all tests pass
+- [x] `tag.ts` under 400 lines — Tailwind methods extracted to mixin (312 lines)
+- [x] HTMX methods extracted to separate mixin file (59 lines)
+- [x] `noUnusedLocals` and `noUnusedParameters` enabled
+- [x] `noUncheckedIndexedAccess` enabled
+- [x] ESLint strict rules enforced, zero violations (0 errors, warnings only)
+- [x] Public API surface audited via barrel files — clean, no leaks
+- [x] No breaking changes to consumer API
+- [x] `tsc --noEmit` clean, all 754 tests pass
+- [ ] `exactOptionalPropertyTypes` — deferred (278 errors, excessive churn)

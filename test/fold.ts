@@ -1,12 +1,13 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
+import type {
+  ViewAlgebra} from "../src/index.js";
 import {
-  Div, P, H1, Span, A, Ul, Li, Raw, Button, Input,
+  Div, P, H1, Span, A, Ul, Li, Raw,
   render,
   foldView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra,
-  createTransformAlgebra, addClassToMatching,
-  ViewAlgebra,
+  createTransformAlgebra, addClassToMatching
 } from "../src/index.js";
 
 describe("Count Algebra", () => {

@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-  render, Tag, RawString, Raw, Div, Span, P,
+  render, Raw, Div, Span,
   Input, Textarea, Button, Form, A, Area,
   isTag, isRawString,
 } from "../src/index.js";
@@ -135,6 +135,7 @@ describe("Branded Id", () => {
 
   it("Id is frozen", () => {
     const id = createId("test");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- testing frozen object mutation
     assert.throws(() => { (id as any).id = "hacked"; }, TypeError);
   });
 

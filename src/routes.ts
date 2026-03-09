@@ -8,7 +8,7 @@
 // Complementary to defineIds() which protects target selectors,
 // defineRoutes() protects endpoint URLs and HTTP methods.
 
-import type { HTMX, HxHttpMethod, HxSwap, HxTarget } from "./htmx.js";
+import type { HTMX, HxHttpMethod, HxTarget } from "./htmx.js";
 import { resolveSelector } from "./htmx.js";
 import type { Id } from "./ids.js";
 
