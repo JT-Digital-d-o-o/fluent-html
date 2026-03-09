@@ -1,5 +1,5 @@
 import { performance } from "node:perf_hooks";
-import { render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article, Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td, Img, Main, } from "../src/index.js";
+import { render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article, Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td, Img, Main, ForEach, } from "../src/index.js";
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -30,11 +30,7 @@ function printResult(name, result) {
 // Benchmarks
 // ---------------------------------------------------------------------------
 function benchFlatPage() {
-    const children = [];
-    for (let i = 0; i < 1000; i++) {
-        children.push(Div(`Item ${i}`).setId(`item-${i}`).padding("4").background("white"));
-    }
-    return Div(...children);
+    return Div(ForEach(1000, (i) => Div(`Item ${i}`).setId(`item-${i}`).padding("4").background("white")));
 }
 function benchDeepTree(depth) {
     if (depth === 0)
@@ -43,32 +39,17 @@ function benchDeepTree(depth) {
 }
 function benchHeavyEscaping() {
     const nasty = `<script>alert("xss")</script> & "quotes" & 'apostrophes' <b>bold</b>`;
-    const children = [];
-    for (let i = 0; i < 200; i++) {
-        children.push(P(nasty));
-    }
-    return Div(...children);
+    return Div(ForEach(200, () => P(nasty)));
 }
 function benchHtmxAttributes() {
-    const children = [];
-    for (let i = 0; i < 100; i++) {
-        children.push(Button(`Action ${i}`)
-            .setHtmx(`/api/action/${i}`, {
-            method: "post",
-            target: `#result-${i}`,
-            swap: "outerHTML",
-            trigger: "click",
-            indicator: `#spinner-${i}`,
-            confirm: "Are you sure?",
-        })
-            .setId(`btn-${i}`));
-    }
-    return Div(...children);
+    return Div(ForEach(100, (i) => Button(`Button ${i}`)
+        .setHtmx(`/api/button/${i}`, { method: "post", swap: "none" })
+        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()));
 }
 function benchRealisticPage() {
-    return Div(Header(Nav(Ul(Li(A("Home").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("About").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Products").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Contact").setClass("nav-link").padding("x", "4").padding("y", "2"))).flex().gap("4")).padding("4").background("white").shadow("md")), Main(Section(H1("Welcome to Our Store").textSize("3xl").bold().margin("b", "4"), P("Browse our collection of fine products.").textColor("gray-600")).padding("8"), Section(H2("Featured Products").textSize("2xl").bold().margin("b", "6"), Div(...Array.from({ length: 12 }, (_, i) => Article(Img().addAttribute("src", `/img/product-${i}.jpg`).addAttribute("alt", `Product ${i}`).w("full").h("48").objectFit("cover"), Div(H2(`Product ${i}`).textSize("lg").bold(), P(`$${(i + 1) * 9.99}`).textColor("green-600").bold(), P("Lorem ipsum dolor sit amet, consectetur adipiscing elit.").textColor("gray-500").textSize("sm"), Button("Add to Cart")
+    return Div(Header(Nav(Ul(Li(A("Home").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("About").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Products").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Contact").setClass("nav-link").padding("x", "4").padding("y", "2"))).flex().gap("4")).padding("4").background("white").shadow("md")), Main(Section(H1("Welcome to Our Store").textSize("3xl").bold().margin("b", "4"), P("Browse our collection of fine products.").textColor("gray-600")).padding("8"), Section(H2("Featured Products").textSize("2xl").bold().margin("b", "6"), Div(ForEach(12, (i) => Article(Img().addAttribute("src", `/img/product-${i}.jpg`).addAttribute("alt", `Product ${i}`).w("full").h("48").objectFit("cover"), Div(H2(`Product ${i}`).textSize("lg").bold(), P(`$${(i + 1) * 9.99}`).textColor("green-600").bold(), P("Lorem ipsum dolor sit amet, consectetur adipiscing elit.").textColor("gray-500").textSize("sm"), Button("Add to Cart")
         .setHtmx(`/cart/add/${i}`, { method: "post", swap: "none" })
-        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()).padding("4")).border().rounded("lg").overflow("hidden"))).grid().gridCols("3").gap("6")).padding("8"), Section(H2("Customer Reviews").textSize("2xl").bold().margin("b", "4"), Table(Thead(Tr(Th("Name"), Th("Rating"), Th("Comment"))), Tbody(...Array.from({ length: 10 }, (_, i) => Tr(Td(`Customer ${i}`).padding("2").border(), Td(`${"★".repeat(3 + (i % 3))}`).padding("2").border(), Td("Great product, highly recommended!").padding("2").border())))).w("full").border()).padding("8")), Footer(Div(P("© 2026 Our Store. All rights reserved.").textColor("gray-400"), Ul(Li(A("Privacy").textColor("gray-400")), Li(A("Terms").textColor("gray-400")), Li(A("Support").textColor("gray-400"))).flex().gap("4")).flex().justifyContent("between").alignItems("center").padding("8")).background("gray-800"));
+        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()).padding("4")).border().rounded("lg").overflow("hidden"))).grid().gridCols("3").gap("6")).padding("8"), Section(H2("Customer Reviews").textSize("2xl").bold().margin("b", "4"), Table(Thead(Tr(Th("Name"), Th("Rating"), Th("Comment"))), Tbody(ForEach(10, (i) => Tr(Td(`Customer ${i}`).padding("2").border(), Td(`${"★".repeat(3 + (i % 3))}`).padding("2").border(), Td("Great product, highly recommended!").padding("2").border())))).w("full").border()).padding("8")), Footer(Div(P("© 2026 Our Store. All rights reserved.").textColor("gray-400"), Ul(Li(A("Privacy").textColor("gray-400")), Li(A("Terms").textColor("gray-400")), Li(A("Support").textColor("gray-400"))).flex().gap("4")).flex().justifyContent("between").alignItems("center").padding("8")).background("gray-800"));
 }
 // ---------------------------------------------------------------------------
 // Memory measurement
