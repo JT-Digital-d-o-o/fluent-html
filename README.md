@@ -183,17 +183,6 @@ Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
 Div(ForEach(5, i => Star()))  // Repeat 5 times
 ```
 
-### Layout Helpers
-
-```typescript
-// Flex layouts
-VStack(Header(), Content(), Footer(), { spacing: "1rem" })
-HStack(Logo(), Nav(), UserMenu(), { justify: "space-between" })
-
-// Grid
-Grid(ForEach(products, ProductCard), { columns: 3, gap: "1rem" })
-```
-
 ### Partial Multi-Swap (HTMX 4)
 
 ```typescript
@@ -1601,59 +1590,6 @@ Button("Menu").setAria({
 })
 ```
 
-### Layout Helpers
-
-**Vertical Stack (Flexbox Column):**
-```typescript
-import { VStack } from 'fluent-html';
-
-VStack(
-  H1("Title"),
-  P("Content"),
-  Button("Action"),
-  {
-    spacing: "1rem",
-    align: "center",
-    justify: "flex-start",
-    className: "my-stack"
-  }
-)
-// Creates flex column with gap
-```
-
-**Horizontal Stack (Flexbox Row):**
-```typescript
-import { HStack } from 'fluent-html';
-
-HStack(
-  Button("Cancel"),
-  Button("Save"),
-  {
-    spacing: "0.5rem",
-    justify: "flex-end"
-  }
-)
-// Creates flex row with gap
-```
-
-**Grid Layout:**
-```typescript
-import { Grid } from 'fluent-html';
-
-// With column count
-Grid(
-  Card1, Card2, Card3, Card4,
-  { columns: 2, gap: "1rem" }
-)
-// → grid-template-columns: repeat(2, 1fr)
-
-// With custom template
-Grid(
-  Item1, Item2, Item3,
-  { columns: "1fr 2fr 1fr", rows: "auto 1fr auto", gap: "1rem" }
-)
-```
-
 ### HTMX Patterns
 
 **Debounced Search:**
@@ -1773,8 +1709,8 @@ KeyedList(
 ### Combining Patterns
 
 ```typescript
-// Form with layout helpers and fluent styling
-VStack(
+// Form with fluent styling
+Div(
   H1("Contact Us")
     .textSize("3xl")
     .fontWeight("bold"),
@@ -1793,7 +1729,7 @@ VStack(
     required: true
   }),
 
-  HStack(
+  Div(
     Button("Cancel")
       .padding("x", "4")
       .padding("y", "2")
@@ -1805,10 +1741,8 @@ VStack(
       .background("blue-500")
       .textColor("white")
       .rounded(),
-    { justify: "flex-end" }
-  ),
-  { spacing: "1.5rem" }
-)
+  ).flex().justifyContent("end").gap("2"),
+).flex().flexDirection("col").gap("6")
 ```
 
 ---
@@ -2170,7 +2104,6 @@ previous()           // → "previous"
 
 ```typescript
 import {
-  VStack, HStack, Grid,
   SearchInput, InfiniteScroll,
   Partial, HtmxConfig,
   defineRoutes, hxResponse,
@@ -2184,9 +2117,6 @@ import {
 | `HtmxConfig(options)` | Global HTMX configuration via `<meta>` tag |
 | `defineRoutes(prefix?, routes)` | Type-safe route definitions for HTMX + server |
 | `hxResponse(content)` | Build HTMX response with headers |
-| `VStack(children, options)` | Vertical flex layout (column) |
-| `HStack(children, options)` | Horizontal flex layout (row) |
-| `Grid(children, options)` | CSS Grid layout |
 | `SearchInput(options)` | Debounced search input with HTMX |
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
 | `FormField(options)` | Form field with label and error |
