@@ -222,6 +222,9 @@ p.select = function (value) { return this.addClass(`select-${value}`); };
 p.pointerEvents = function (value) { return this.addClass(`pointer-events-${value}`); };
 // Text & Whitespace
 p.whitespace = function (value) { return this.addClass(`whitespace-${value}`); };
+// List Style
+p.listStyleType = function (value) { return this.addClass(`list-${value}`); };
+p.listStylePosition = function (value) { return this.addClass(`list-${value}`); };
 // Accessibility
 p.srOnly = function () { return this.addClass("sr-only"); };
 // Outline

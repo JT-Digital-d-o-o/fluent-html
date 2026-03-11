@@ -260,6 +260,15 @@ describe("Escape hatch for newly opened types", () => {
     it("custom rotate", () => { assert.strictEqual(render(Div().rotate("[15deg]")), '<div class="rotate-[15deg]"></div>'); });
     it("custom colSpan", () => { assert.strictEqual(render(Div().colSpan("13")), '<div class="col-span-13"></div>'); });
 });
+describe("List Style", () => {
+    it("listStyleType disc", () => { assert.strictEqual(render(Div().listStyleType("disc")), '<div class="list-disc"></div>'); });
+    it("listStyleType decimal", () => { assert.strictEqual(render(Div().listStyleType("decimal")), '<div class="list-decimal"></div>'); });
+    it("listStyleType none", () => { assert.strictEqual(render(Div().listStyleType("none")), '<div class="list-none"></div>'); });
+    it("listStylePosition inside", () => { assert.strictEqual(render(Div().listStylePosition("inside")), '<div class="list-inside"></div>'); });
+    it("listStylePosition outside", () => { assert.strictEqual(render(Div().listStylePosition("outside")), '<div class="list-outside"></div>'); });
+    it("chained list styles", () => { assert.strictEqual(render(Div().listStyleType("disc").listStylePosition("inside")), '<div class="list-disc list-inside"></div>'); });
+    it("custom listStyleType via escape hatch", () => { assert.strictEqual(render(Div().listStyleType("[square]")), '<div class="list-[square]"></div>'); });
+});
 describe("Full Example (Plan Before/After)", () => {
     it("complete button with all features", () => {
         assert.strictEqual(render(Button()

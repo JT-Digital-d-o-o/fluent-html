@@ -46,6 +46,8 @@ import type {
   TailwindSelect,
   TailwindPointerEvents,
   TailwindWhitespace,
+  TailwindListStyleType,
+  TailwindListStylePosition,
   TailwindOutline,
   TailwindPosition,
   TailwindTextAlign,
@@ -204,6 +206,10 @@ declare module "./tag.js" {
 
     // Text & Whitespace
     whitespace(value: TailwindWhitespace): this;
+
+    // List Style
+    listStyleType(value: TailwindListStyleType): this;
+    listStylePosition(value: TailwindListStylePosition): this;
 
     // Accessibility
     srOnly(): this;
@@ -432,6 +438,11 @@ p.pointerEvents = function (value: string) { return this.addClass(`pointer-event
 // Text & Whitespace
 
 p.whitespace = function (value: string) { return this.addClass(`whitespace-${value}`); };
+
+// List Style
+
+p.listStyleType = function (value: string) { return this.addClass(`list-${value}`); };
+p.listStylePosition = function (value: string) { return this.addClass(`list-${value}`); };
 
 // Accessibility
 

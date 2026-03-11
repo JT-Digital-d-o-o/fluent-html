@@ -60,6 +60,8 @@ export type {
   TailwindSelect,
   TailwindPointerEvents,
   TailwindWhitespace,
+  TailwindListStyleType,
+  TailwindListStylePosition,
   TailwindOutline,
   TailwindPosition,
   TailwindTextAlign,

@@ -146,6 +146,10 @@ export type TailwindRotate = "0" | "1" | "2" | "3" | "6" | "12" | "45" | "90" | 
 export type TailwindSelect = "none" | "text" | "all" | "auto";
 export type TailwindPointerEvents = "none" | "auto";
 
+// List style
+export type TailwindListStyleType = "none" | "disc" | "decimal" | (string & {});
+export type TailwindListStylePosition = "inside" | "outside";
+
 // Whitespace
 export type TailwindWhitespace = "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap" | "break-spaces";
 
