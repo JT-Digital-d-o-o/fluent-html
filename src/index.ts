@@ -312,6 +312,9 @@ export type {
   RouteHxOptions,
 } from './routes.js';
 
+// Behavior system
+export type { BehaviorMap } from './core/behavior-methods.js';
+
 // Fold / Catamorphism
 export {
   foldView,

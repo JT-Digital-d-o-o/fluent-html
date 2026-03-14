@@ -1,6 +1,6 @@
 {
   "name": "fluent-html",
-  "version": "5.9.1",
+  "version": "5.10.0",
   "description": "Fluent, type-safe HTML builder for TypeScript. Chainable styling API, first-class HTMX support with full autocomplete, automatic XSS protection. Zero dependencies, SSR-ready.",
   "type": "module",
   "main": "dist/src/index.js",
@@ -46,8 +46,8 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node --test dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js",
-    "test:coverage": "npm run build && c8 --lines 95 --branches 90 node --test dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js",
+    "test": "npm run build && node --test dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js",
+    "test:coverage": "npm run build && c8 --lines 95 --branches 90 node --test dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fold.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js",
     "bench": "npm run build && node dist/bench/render.js",
     "bench:mem": "npm run build && node --expose-gc dist/bench/render.js",
     "docs": "typedoc",

@@ -709,6 +709,84 @@ Partial(ids.userList, content)               // ✓
 
 ---
 
+## Behavior System
+
+A **declarative, type-safe bridge** between server-rendered HTML and client-side JavaScript. Define behaviors via TypeScript declaration merging — get full autocomplete, typo detection, and typed options at zero runtime cost.
+
+### Setup
+
+The library ships an empty `BehaviorMap` interface. Augment it in your project to register behaviors:
+
+```typescript
+import type { Id } from 'fluent-html';
+
+declare module 'fluent-html' {
+  interface BehaviorMap {
+    toggle:    { target: Id };
+    charCount: { target: Id; max: number };
+    confirm:   { message?: string };
+    autofocus: void;  // no options needed
+  }
+}
+```
+
+### Usage
+
+```typescript
+const ids = defineIds(["filter-panel", "bio-count"] as const);
+
+// With options — fully typed
+Button("Toggle").behavior("toggle", { target: ids.filterPanel })
+Textarea().behavior("charCount", { target: ids.bioCount, max: 280 })
+
+// Optional options
+Button("Delete").behavior("confirm", { message: "Sure?" })
+Button("Delete").behavior("confirm")  // message is optional
+
+// Void behavior — no second argument
+Input().behavior("autofocus")
+
+// Compile errors:
+Button("x").behavior("togle", { target: ids.x })  // ❌ typo
+Input().behavior("autofocus", { foo: 1 })          // ❌ void takes no options
+```
+
+### Rendered HTML
+
+`Id` objects resolve to selectors automatically. Options are namespaced per-behavior in kebab-case:
+
+```html
+<button data-behavior="toggle" data-toggle-target="#filter-panel">Toggle</button>
+<textarea data-behavior="charCount" data-char-count-target="#bio-count" data-char-count-max="280"></textarea>
+<button data-behavior="confirm" data-confirm-message="Sure?">Delete</button>
+<input data-behavior="autofocus">
+```
+
+### Multiple Behaviors
+
+Calling `.behavior()` multiple times appends — `data-behavior` becomes space-separated:
+
+```typescript
+Button("Delete")
+  .behavior("confirm", { message: "Sure?" })
+  .behavior("trackClick", { event: "delete-user" })
+// data-behavior="confirm trackClick"
+// data-confirm-message="Sure?"
+// data-track-click-event="delete-user"
+```
+
+### Client-Side Init
+
+The library doesn't ship client-side JS — wire up behaviors however you like:
+
+```javascript
+document.querySelectorAll("[data-behavior]").forEach(el => {
+  el.dataset.behavior.split(" ").forEach(name => behaviors[name]?.(el));
+});
+```
+
+---
+
 ## Fluent Styling API
 
 Fluent HTML provides a **fluent, chainable API** for Tailwind CSS classes, making your styling code more expressive and maintainable.

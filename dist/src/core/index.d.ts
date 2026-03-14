@@ -2,6 +2,7 @@ export type { View, Thunk } from "./types.js";
 export { Tag } from "./tag.js";
 import "./tailwind-methods.js";
 import "./htmx-methods.js";
+import "./behavior-methods.js";
 export { RawString, Raw } from "./raw-string.js";
 export { Empty, El } from "./utils.js";
 export { isTag, isRawString } from "./guards.js";
