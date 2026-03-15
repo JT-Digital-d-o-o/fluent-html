@@ -711,78 +711,60 @@ Partial(ids.userList, content)               // ✓
 
 ## Behavior System
 
-A **declarative, type-safe bridge** between server-rendered HTML and client-side JavaScript. Define behaviors via TypeScript declaration merging — get full autocomplete, typo detection, and typed options at zero runtime cost.
+**Built-in, type-safe client-side interactions** via `hx-on:*` attributes. No client-side runtime needed — the library generates the JS inline. Full autocomplete, typed options, compile-time typo detection.
 
-### Setup
+### Built-in Behaviors
 
-The library ships an empty `BehaviorMap` interface. Augment it in your project to register behaviors:
-
-```typescript
-import type { Id } from 'fluent-html';
-
-declare module 'fluent-html' {
-  interface BehaviorMap {
-    toggle:    { target: Id };
-    charCount: { target: Id; max: number };
-    confirm:   { message?: string };
-    autofocus: void;  // no options needed
-  }
-}
-```
+| Behavior      | Options                        | Event   | Description                    |
+|---------------|-------------------------------|---------|--------------------------------|
+| `toggle`      | `{ target: Id }`              | click   | Toggle `hidden` class          |
+| `toggleClass` | `{ target: Id; class: string }` | click | Toggle any CSS class           |
+| `remove`      | `{ target: Id }`              | click   | Remove element from DOM        |
+| `clipboard`   | `{ value: string }`           | click   | Copy text to clipboard         |
+| `disable`     | void                          | click   | Disable the clicked element    |
+| `focus`       | `{ target: Id }`              | click   | Focus another element          |
+| `scrollTo`    | `{ target: Id }`              | click   | Smooth scroll to element       |
+| `selectAll`   | void                          | focus   | Select all text on focus       |
 
 ### Usage
 
 ```typescript
-const ids = defineIds(["filter-panel", "bio-count"] as const);
+const ids = defineIds(["panel", "banner", "search", "section"] as const);
 
-// With options — fully typed
-Button("Toggle").behavior("toggle", { target: ids.filterPanel })
-Textarea().behavior("charCount", { target: ids.bioCount, max: 280 })
-
-// Optional options
-Button("Delete").behavior("confirm", { message: "Sure?" })
-Button("Delete").behavior("confirm")  // message is optional
-
-// Void behavior — no second argument
-Input().behavior("autofocus")
+Button("Toggle").behavior("toggle", { target: ids.panel })
+Button("Fade").behavior("toggleClass", { target: ids.panel, class: "opacity-50" })
+Button("Dismiss").behavior("remove", { target: ids.banner })
+Button("Copy").behavior("clipboard", { value: apiKey })
+Button("Submit").behavior("disable")
+Button("Go").behavior("focus", { target: ids.search })
+Button("Top").behavior("scrollTo", { target: ids.section })
+Input().behavior("selectAll")
 
 // Compile errors:
-Button("x").behavior("togle", { target: ids.x })  // ❌ typo
-Input().behavior("autofocus", { foo: 1 })          // ❌ void takes no options
+Button("x").behavior("togle", { target: ids.panel })  // ❌ typo
+Input().behavior("selectAll", { foo: 1 })              // ❌ void takes no options
 ```
 
 ### Rendered HTML
 
-`Id` objects resolve to selectors automatically. Options are namespaced per-behavior in kebab-case:
+Behaviors emit `hx-on:*` attributes with inline JS. HTMX handles re-init on swaps automatically:
 
 ```html
-<button data-behavior="toggle" data-toggle-target="#filter-panel">Toggle</button>
-<textarea data-behavior="charCount" data-char-count-target="#bio-count" data-char-count-max="280"></textarea>
-<button data-behavior="confirm" data-confirm-message="Sure?">Delete</button>
-<input data-behavior="autofocus">
+<button hx-on:click="document.getElementById('panel').classList.toggle('hidden')">Toggle</button>
+<button hx-on:click="document.getElementById('banner').remove()">Dismiss</button>
+<button hx-on:click="this.disabled=true">Submit</button>
+<input hx-on:focus="this.select()">
 ```
 
 ### Multiple Behaviors
 
-Calling `.behavior()` multiple times appends — `data-behavior` becomes space-separated:
+Calling `.behavior()` multiple times appends. Same-event behaviors are semicolon-separated:
 
 ```typescript
 Button("Delete")
-  .behavior("confirm", { message: "Sure?" })
-  .behavior("trackClick", { event: "delete-user" })
-// data-behavior="confirm trackClick"
-// data-confirm-message="Sure?"
-// data-track-click-event="delete-user"
-```
-
-### Client-Side Init
-
-The library doesn't ship client-side JS — wire up behaviors however you like:
-
-```javascript
-document.querySelectorAll("[data-behavior]").forEach(el => {
-  el.dataset.behavior.split(" ").forEach(name => behaviors[name]?.(el));
-});
+  .behavior("disable")
+  .behavior("remove", { target: ids.banner })
+// hx-on:click="this.disabled=true;document.getElementById('banner').remove()"
 ```
 
 ---

@@ -12,26 +12,20 @@
 > - [Marketing](.ai/marketing-guidelines/CLAUDE.md) — Read when building landing pages, writing copy, setting up emails, or planning growth experiments
 > - [Quality Assurance](.ai/quality-assurance-guidelines/CLAUDE.md) — Read when writing tests, fixing bugs, or preparing for deployment
 > - [Brand Book](.ai/jtdigital-brand-book/CLAUDE.md) — Read when styling UI, choosing colors/fonts, writing copy, or using logos
-> - [Project Management](.ai/project-management-guidelines/CLAUDE.md) — Read when managing tasks, logging bugs, updating changelogs, or writing status updates
+> - [Project Management](.ai/project-management-guidelines/CLAUDE.md) — Read when managing tasks, logging bugs, or recording architecture decisions
 
 ---
 
 ## Project Management (MANDATORY)
 
-PM files live in `product/pm/`. These updates are **non-optional** — do them inline as you work, not at the end.
+If `project/pm/` exists, these updates are **non-optional** — do them inline as you work, not at the end.
 
-**On larger completion:**
-1. Mark `[x]` in `product/pm/todo/[feature].md`
-2. Add entry to `product/pm/changelog.md`
+**On task start:** Mark `[>]` in `project/pm/[epic]/[feature]/todo.md`
+**On task completion:** Mark `[x]` in `project/pm/[epic]/[feature]/todo.md`
+**On bug discovery:** Add to `project/pm/[epic]/[feature]/qa.md`
+**On architecture decisions:** Log to `project/pm/[epic]/[feature]/decisions.md` (or `project/pm/decisions.md` if cross-cutting)
 
-**On session end:**
-3. Update `product/pm/status.md`
-
-**Before implementing architecture decisions:**
-4. Log to `product/pm/decisions.md`
-
-**On bug discovery:**
-5. Add to `product/pm/qa/[feature].md`
+**No IDs** — no TASK-001, BUG-003, DECISION-002. File path + task text is the unique identifier.
 
 Status marks: `[ ]` todo · `[>]` in progress · `[r]` review · `[x]` done · `[-]` cancelled
 
@@ -120,15 +114,16 @@ Div("Content").apply(card)
 > Full reference: [htmx.md](htmx.md) — read when implementing HTMX interactions
 
 Key rules:
-- **`defineIds`** for targets, **`defineRoutes`** for endpoints — never hardcode strings
+- **`defineRoutes`** for endpoints, **`defineIds`** for targets — never hardcode strings
 - **`outerMorph`** swap by default — preserves focus, scroll, animations
 - **`setHtmx`** for in-app navigation — never `setHref` (causes full reload)
 - **`.resolve()`** for redirects — never manual URL builders
 - **Anchors with `setHtmx`** need `.cursor("pointer")`
 - **Partial swaps** for multi-section updates in one response
 - **htmx 4**: attributes don't inherit — use `:inherited` modifier
+- **Almost everything uses full-layout swap** targeting `ids.mainContent` — including forms, modals, and inline edits. Feature-specific `defineIds` targets are rare; default to the full-layout pattern unless there's a clear reason not to
 
-**Full layout navigation** — almost always use this pattern for screen navigations:
+**Full layout navigation** — the default pattern for all interactions:
 ```typescript
 A("Settings").setHtmx(settingsRoutes.index({
   swap: "outerMorph show:window:top",
@@ -136,6 +131,16 @@ A("Settings").setHtmx(settingsRoutes.index({
   pushUrl: true,
 })).cursor("pointer")
 ```
+
+**Avoid client-side JavaScript** — use `.behavior()` for common interactions (emits `hx-on:*` attributes, no runtime needed):
+```typescript
+Button("Toggle").behavior("toggle", { target: ids.filterPanel })
+Button("Dismiss").behavior("remove", { target: ids.banner })
+Button("Copy").behavior("clipboard", { value: apiKey })
+Button("Submit").behavior("disable")
+Input().behavior("selectAll")
+```
+Built-in behaviors: `toggle`, `toggleClass`, `remove`, `clipboard`, `disable`, `focus`, `scrollTo`, `selectAll`. Never sprinkle raw inline JS — use `.behavior()` for type safety.
 
 ---
 
@@ -207,15 +212,20 @@ src/[feature]/
   views/                    # One file per page/endpoint response
 ```
 
-**Type request generics + JSON Schema validation:**
+**`handle` helper** — bind routes via `defineRoutes` route refs, never raw `server.get`/`server.post`:
 ```typescript
-server.post(
-  "/users",
+const getUsers = handle(server, userRoutes.list, async (_request, reply) => { ... });
+const postUser = handle(server, userRoutes.create,
   { schema: createUserSchema },
-  async (request: FastifyRequest<{ Body: CreateUserReq }>, reply) => {
-    const { email, name } = request.body;
-  }
+  async (request: FastifyRequest<{ Body: CreateUserReq }>, reply) => { ... },
 );
+```
+
+**Handler naming convention:** `httpVerb` + `SemanticName` in camelCase — enables VS Code `@` search by method or meaning:
+```typescript
+const getLoginPage = handle(...);   // search "get" → all GETs; search "login" → all login handlers
+const postLogin    = handle(...);
+const deleteUser   = handle(...);
 ```
 
 **SSR responses only** — no JSON errors:
@@ -228,7 +238,10 @@ reply.code(400).send({ error: "Bad request" });                       // ✗ not
 
 **Auth via preHandler:**
 ```typescript
-server.get("/dashboard", { preHandler: [requireAuth] }, async (request, reply) => { ... });
+const getDashboard = handle(server, dashboardRoutes.index,
+  { preHandler: [requireAuth] },
+  async (request, reply) => { ... },
+);
 ```
 
 **Always `as const` on JSON Schema type values** — inference breaks without it:
@@ -240,6 +253,8 @@ properties: { email: { type: "string" } }            // ✗
 ---
 
 ## TypeScript
+
+**Narrowest type by default** — use `as const`, `satisfies`, `const` type parameters, and literal types. Widen only when you have a reason to.
 
 **`type` over `interface`** (exception: Fastify module augmentation).
 
@@ -276,6 +291,20 @@ const themes = {
   dark:  { bg: "gray-900", text: "white" },
 } satisfies Record<string, { bg: string; text: string }>;
 ```
+
+**`as const` by default** on static data — arrays, objects, configs:
+```typescript
+const config = { retries: 3, timeout: 5000 } as const; // ✓ literal types
+const config = { retries: 3, timeout: 5000 };           // ✗ widens to number
+```
+
+**`const` type parameters** — infer literals in generics:
+```typescript
+function defineRoutes<const T extends readonly string[]>(routes: T): T { ... }
+// caller gets readonly ["users", "posts"], not readonly string[]
+```
+
+**No magic constants** — extract numbers and strings into named variables; reuse the variable everywhere instead of repeating the raw value.
 
 **Narrow props with union variants** — no bags of optionals:
 ```typescript

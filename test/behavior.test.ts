@@ -1,85 +1,72 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { render, Div, Button, Input, Textarea } from "../src/index.js";
-import { type Id, createId, defineIds } from "../src/ids.js";
+import { render, Button, Input } from "../src/index.js";
+import { defineIds } from "../src/ids.js";
 
-// Augment BehaviorMap for testing
-declare module "../src/core/behavior-methods.js" {
-  interface BehaviorMap {
-    toggle: { target: Id };
-    charCount: { target: Id; max: number };
-    confirm: { message?: string };
-    autofocus: void;
-    trackClick: { event: string };
-  }
-}
+// Single quotes become &#39; in rendered attribute values (standard HTML escaping).
+// Browsers decode this before executing hx-on:* handlers, so it works correctly.
+const q = "&#39;";
 
 describe("behavior()", () => {
-  it("renders data-behavior and option attributes", () => {
-    const ids = defineIds(["filter-panel"] as const);
-    const html = render(Button("Toggle").behavior("toggle", { target: ids.filterPanel }));
-    assert.ok(html.includes('data-behavior="toggle"'));
-    assert.ok(html.includes('data-toggle-target="#filter-panel"'));
+  const ids = defineIds(["panel", "banner", "search", "section"] as const);
+
+  it("toggle — emits hx-on:click with classList.toggle", () => {
+    const html = render(Button("Toggle").behavior("toggle", { target: ids.panel }));
+    assert.ok(html.includes(`hx-on:click="document.getElementById(${q}panel${q}).classList.toggle(${q}hidden${q})"`));
   });
 
-  it("resolves Id objects to selector strings", () => {
-    const id = createId("bio-count");
-    const html = render(Textarea().behavior("charCount", { target: id, max: 280 }));
-    assert.ok(html.includes('data-char-count-target="#bio-count"'));
-    assert.ok(html.includes('data-char-count-max="280"'));
+  it("toggleClass — emits hx-on:click with classList.toggle(className)", () => {
+    const html = render(Button("Fade").behavior("toggleClass", { target: ids.panel, class: "opacity-50" }));
+    assert.ok(html.includes(`hx-on:click="document.getElementById(${q}panel${q}).classList.toggle(${q}opacity-50${q})"`));
   });
 
-  it("renders void behavior with no options", () => {
-    const html = render(Input().behavior("autofocus"));
-    assert.ok(html.includes('data-behavior="autofocus"'));
-    // Should not have any other data- attributes from the behavior
-    assert.ok(!html.includes("data-autofocus-"));
+  it("remove — emits hx-on:click with .remove()", () => {
+    const html = render(Button("Dismiss").behavior("remove", { target: ids.banner }));
+    assert.ok(html.includes(`hx-on:click="document.getElementById(${q}banner${q}).remove()"`));
   });
 
-  it("appends multiple behaviors as space-separated list", () => {
+  it("clipboard — emits hx-on:click with navigator.clipboard.writeText", () => {
+    const html = render(Button("Copy").behavior("clipboard", { value: "sk-abc123" }));
+    assert.ok(html.includes(`hx-on:click="navigator.clipboard.writeText(${q}sk-abc123${q})"`));
+  });
+
+  it("disable — emits hx-on:click with this.disabled=true", () => {
+    const html = render(Button("Submit").behavior("disable"));
+    assert.ok(html.includes(`hx-on:click="this.disabled=true"`));
+  });
+
+  it("focus — emits hx-on:click with .focus()", () => {
+    const html = render(Button("Go").behavior("focus", { target: ids.search }));
+    assert.ok(html.includes(`hx-on:click="document.getElementById(${q}search${q}).focus()"`));
+  });
+
+  it("scrollTo — emits hx-on:click with scrollIntoView", () => {
+    const html = render(Button("Top").behavior("scrollTo", { target: ids.section }));
+    assert.ok(html.includes(`hx-on:click="document.getElementById(${q}section${q}).scrollIntoView({behavior:${q}smooth${q}})"`));
+  });
+
+  it("selectAll — emits hx-on:focus with this.select()", () => {
+    const html = render(Input().behavior("selectAll"));
+    assert.ok(html.includes(`hx-on:focus="this.select()"`));
+  });
+
+  it("multiple behaviors on same event — appends with semicolon", () => {
     const html = render(
       Button("Delete")
-        .behavior("confirm", { message: "Sure?" })
-        .behavior("trackClick", { event: "delete-user" })
+        .behavior("disable")
+        .behavior("remove", { target: ids.banner })
     );
-    assert.ok(html.includes('data-behavior="confirm trackClick"'));
-    assert.ok(html.includes('data-confirm-message="Sure?"'));
-    assert.ok(html.includes('data-track-click-event="delete-user"'));
+    assert.ok(html.includes(`hx-on:click="this.disabled=true;document.getElementById(${q}banner${q}).remove()"`));
   });
 
-  it("namespaces options per-behavior (no collisions)", () => {
-    const ids = defineIds(["panel", "counter"] as const);
+  it("multiple behaviors on different events — separate attributes", () => {
     const html = render(
-      Div()
-        .behavior("toggle", { target: ids.panel })
-        .behavior("charCount", { target: ids.counter, max: 100 })
+      Input()
+        .behavior("selectAll")
+        .behavior("disable")
     );
-    assert.ok(html.includes('data-toggle-target="#panel"'));
-    assert.ok(html.includes('data-char-count-target="#counter"'));
-    // Targets should not collide
-    assert.ok(!html.includes('data-toggle-max'));
-    assert.ok(!html.includes('data-char-count-target="#panel"'));
-  });
-
-  it("converts camelCase option keys to kebab-case", () => {
-    const ids = defineIds(["count"] as const);
-    const html = render(Textarea().behavior("charCount", { target: ids.count, max: 280 }));
-    assert.ok(html.includes("data-char-count-target"));
-    assert.ok(html.includes("data-char-count-max"));
-  });
-
-  it("converts camelCase behavior names to kebab-case in prefix", () => {
-    const ids = defineIds(["count"] as const);
-    const html = render(Textarea().behavior("charCount", { target: ids.count, max: 280 }));
-    // "charCount" → "char-count" in the attribute prefix
-    assert.ok(html.includes("data-char-count-"));
-    assert.ok(!html.includes("data-charCount-"));
-  });
-
-  it("skips null and undefined option values", () => {
-    const html = render(Button("Del").behavior("confirm", { message: undefined }));
-    assert.ok(html.includes('data-behavior="confirm"'));
-    assert.ok(!html.includes("data-confirm-message"));
+    assert.ok(html.includes(`hx-on:focus="this.select()"`));
+    assert.ok(html.includes(`hx-on:click="this.disabled=true"`));
   });
 });
