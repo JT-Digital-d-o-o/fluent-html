@@ -1,4 +1,4 @@
-import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit } from "./tailwind-types.js";
+import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit } from "./tailwind-types.js";
 declare module "./tag.js" {
     interface Tag {
         on(state: TailwindState, fn: (tag: this) => this): this;
@@ -38,6 +38,7 @@ declare module "./tag.js" {
         minH(value: TailwindMinHeight): this;
         minH(unit: TailwindUnit, amount: number): this;
         flex(value?: TailwindFlex): this;
+        flex1(): this;
         flexDirection(direction: TailwindFlexDirection): this;
         justifyContent(justify: TailwindJustifyContent): this;
         alignItems(align: TailwindAlignItems): this;
@@ -50,6 +51,8 @@ declare module "./tag.js" {
         border(value?: TailwindBorderWidth): this;
         border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
         borderColor(color: TailwindColor): this;
+        borderColor(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", color: TailwindColor): this;
+        borderStyle(style: TailwindBorderStyle): this;
         rounded(value?: TailwindRounded): this;
         rounded(corner: TailwindRoundedCorner, value?: TailwindRounded): this;
         shadow(value?: TailwindShadow): this;

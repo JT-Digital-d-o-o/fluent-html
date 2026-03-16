@@ -153,6 +153,9 @@ export type TailwindListStylePosition = "inside" | "outside";
 // Whitespace
 export type TailwindWhitespace = "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap" | "break-spaces";
 
+// Border style
+export type TailwindBorderStyle = "solid" | "dashed" | "dotted" | "double" | "hidden" | "none";
+
 // Outline
 export type TailwindOutline = "none" | "dashed" | "dotted" | "double";
 

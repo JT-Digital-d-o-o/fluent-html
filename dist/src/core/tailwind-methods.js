@@ -100,6 +100,7 @@ p.minH = function (unitOrValue, amount) {
 p.flex = function (value) {
     return value === undefined ? this.addClass("flex") : this.addClass(`flex-${value}`);
 };
+p.flex1 = function () { return this.addClass("flex-1"); };
 p.flexDirection = function (direction) { return this.addClass(`flex-${direction}`); };
 p.justifyContent = function (justify) { return this.addClass(`justify-${justify}`); };
 p.alignItems = function (align) { return this.addClass(`items-${align}`); };
@@ -126,7 +127,13 @@ p.border = function (directionOrValue, value) {
     }
     return this.addClass(`border-${directionOrValue}`);
 };
-p.borderColor = function (color) { return this.addClass(`border-${color}`); };
+p.borderColor = function (directionOrColor, color) {
+    if (color === undefined)
+        return this.addClass(`border-${directionOrColor}`);
+    const dir = DIR_MAP[directionOrColor] || directionOrColor;
+    return this.addClass(`border-${dir}-${color}`);
+};
+p.borderStyle = function (style) { return this.addClass(`border-${style}`); };
 const ROUNDED_CORNERS = new Set(["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]);
 p.rounded = function (cornerOrValue, value) {
     if (cornerOrValue === undefined)

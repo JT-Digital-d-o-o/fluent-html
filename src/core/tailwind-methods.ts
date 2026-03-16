@@ -23,6 +23,7 @@ import type {
   TailwindRoundedCorner,
   TailwindShadow,
   TailwindBorderWidth,
+  TailwindBorderStyle,
   TailwindOpacity,
   TailwindCursor,
   TailwindZIndex,
@@ -147,6 +148,7 @@ declare module "./tag.js" {
     border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
     borderColor(color: TailwindColor): this;
     borderColor(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", color: TailwindColor): this;
+    borderStyle(style: TailwindBorderStyle): this;
     rounded(value?: TailwindRounded): this;
     rounded(corner: TailwindRoundedCorner, value?: TailwindRounded): this;
     shadow(value?: TailwindShadow): this;
@@ -339,6 +341,7 @@ p.borderColor = function (directionOrColor: string, color?: string) {
   const dir = DIR_MAP[directionOrColor] || directionOrColor;
   return this.addClass(`border-${dir}-${color}`);
 };
+p.borderStyle = function (style: string) { return this.addClass(`border-${style}`); };
 const ROUNDED_CORNERS = new Set(["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]);
 p.rounded = function (cornerOrValue?: string, value?: string) {
   if (cornerOrValue === undefined) return this.addClass("rounded");
