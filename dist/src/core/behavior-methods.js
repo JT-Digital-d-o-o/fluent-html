@@ -45,6 +45,10 @@ const renderers = {
         "focus",
         "this.select()",
     ],
+    back: () => [
+        "click",
+        "history.back()",
+    ],
 };
 function escapeJs(str) {
     return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'");

@@ -21,6 +21,7 @@ export type BehaviorMap = {
         target: Id;
     };
     selectAll: void;
+    back: void;
 };
 type BehaviorName = keyof BehaviorMap;
 declare module "./tag.js" {

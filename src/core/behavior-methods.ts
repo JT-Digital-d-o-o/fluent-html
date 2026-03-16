@@ -17,6 +17,7 @@ export type BehaviorMap = {
   focus:      { target: Id };
   scrollTo:   { target: Id };
   selectAll:  void;
+  back:       void;
 };
 
 type BehaviorName = keyof BehaviorMap;
@@ -74,6 +75,10 @@ const renderers: Record<BehaviorName, BehaviorRenderer> = {
   selectAll: () => [
     "focus",
     "this.select()",
+  ],
+  back: () => [
+    "click",
+    "history.back()",
   ],
 };
 

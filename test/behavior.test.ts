@@ -51,6 +51,11 @@ describe("behavior()", () => {
     assert.ok(html.includes(`hx-on:focus="this.select()"`));
   });
 
+  it("back — emits hx-on:click with history.back()", () => {
+    const html = render(Button("Back").behavior("back"));
+    assert.ok(html.includes(`hx-on:click="history.back()"`));
+  });
+
   it("multiple behaviors on same event — appends with semicolon", () => {
     const html = render(
       Button("Delete")
