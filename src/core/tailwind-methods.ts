@@ -129,6 +129,7 @@ declare module "./tag.js" {
 
     // Flexbox
     flex(value?: TailwindFlex): this;
+    flex1(): this;
     flexDirection(direction: TailwindFlexDirection): this;
     justifyContent(justify: TailwindJustifyContent): this;
     alignItems(align: TailwindAlignItems): this;
@@ -145,6 +146,7 @@ declare module "./tag.js" {
     border(value?: TailwindBorderWidth): this;
     border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
     borderColor(color: TailwindColor): this;
+    borderColor(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", color: TailwindColor): this;
     rounded(value?: TailwindRounded): this;
     rounded(corner: TailwindRoundedCorner, value?: TailwindRounded): this;
     shadow(value?: TailwindShadow): this;
@@ -304,6 +306,7 @@ p.minH = function (unitOrValue: string, amount?: number) {
 p.flex = function (value?: string) {
   return value === undefined ? this.addClass("flex") : this.addClass(`flex-${value}`);
 };
+p.flex1 = function () { return this.addClass("flex-1"); };
 p.flexDirection = function (direction: string) { return this.addClass(`flex-${direction}`); };
 p.justifyContent = function (justify: string) { return this.addClass(`justify-${justify}`); };
 p.alignItems = function (align: string) { return this.addClass(`items-${align}`); };
@@ -331,7 +334,11 @@ p.border = function (directionOrValue?: string, value?: string) {
   }
   return this.addClass(`border-${directionOrValue}`);
 };
-p.borderColor = function (color: string) { return this.addClass(`border-${color}`); };
+p.borderColor = function (directionOrColor: string, color?: string) {
+  if (color === undefined) return this.addClass(`border-${directionOrColor}`);
+  const dir = DIR_MAP[directionOrColor] || directionOrColor;
+  return this.addClass(`border-${dir}-${color}`);
+};
 const ROUNDED_CORNERS = new Set(["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]);
 p.rounded = function (cornerOrValue?: string, value?: string) {
   if (cornerOrValue === undefined) return this.addClass("rounded");

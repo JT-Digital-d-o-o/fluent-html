@@ -77,7 +77,7 @@ export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" |
 export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | (string & {});
 
 // Border width
-export type TailwindBorderWidth = "0" | "2" | "4" | "8" | (string & {});
+export type TailwindBorderWidth = "0" | "2" | "4" | "8" | `[${string}]`;
 
 // Opacity
 export type TailwindOpacity =

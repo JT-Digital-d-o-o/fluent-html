@@ -139,8 +139,9 @@ Button("Dismiss").behavior("remove", { target: ids.banner })
 Button("Copy").behavior("clipboard", { value: apiKey })
 Button("Submit").behavior("disable")
 Input().behavior("selectAll")
+A("Back").behavior("back").cursor("pointer")
 ```
-Built-in behaviors: `toggle`, `toggleClass`, `remove`, `clipboard`, `disable`, `focus`, `scrollTo`, `selectAll`. Never sprinkle raw inline JS — use `.behavior()` for type safety.
+Built-in behaviors: `toggle`, `toggleClass`, `remove`, `clipboard`, `disable`, `focus`, `scrollTo`, `selectAll`, `back`. Never sprinkle raw inline JS — use `.behavior()` for type safety.
 
 ---
 
