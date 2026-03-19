@@ -89,7 +89,7 @@ const gridLayout = Div([
   Div("6").background("purple-100").padding("4").rounded()
 ])
   .grid()
-  .gridCols("3")
+  .gridCols(3)
   .gap("4")
   .padding("8");
 

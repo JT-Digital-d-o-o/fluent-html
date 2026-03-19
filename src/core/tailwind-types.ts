@@ -2,13 +2,14 @@
 // Tailwind Type Definitions
 // ------------------------------------
 
-// (string & {}) escape hatch: preserves autocomplete for known values while
-// allowing custom values from tailwind.config.ts (e.g. custom colors like
-// "accent" or "brand-500", custom spacing like "18"). Without this, users
-// must fall back to .addClass() for any value not in the default Tailwind
-// palette, which defeats the purpose of fluent methods.
+// Escape hatches:
+//   (string & {})   — accepts any string while preserving autocomplete.
+//                      Used where custom theme tokens are common (colors, spacing).
+//   `[${string}]`   — bracket-only escape hatch for arbitrary CSS values.
+//                      Stricter: forces explicit bracket syntax like "[13px]".
 
 // Spacing scale (used for padding, margin, gap, width, height)
+// Keeps (string & {}) — custom theme spacing tokens (e.g. "18") are common.
 export type TailwindSpacing =
   | "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
   | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96"
@@ -43,7 +44,7 @@ export type TailwindMaxHeight = TailwindSpacing | "none" | "full" | "screen" | "
 export type TailwindMinHeight = "0" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | (string & {});
 
 // Color shades
-export type TailwindShade = "50" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | "950";
+export type TailwindShade = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
 
 // Color names
 export type TailwindColorName =
@@ -58,32 +59,32 @@ export type TailwindColor =
   | (string & {});
 
 // Text size
-export type TailwindTextSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl" | (string & {});
+export type TailwindTextSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl" | `[${string}]`;
 
 // Font weight
-export type TailwindFontWeight = "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black" | (string & {});
+export type TailwindFontWeight = "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black" | `[${string}]`;
 
 // Leading (line-height)
-export type TailwindLeading = "none" | "tight" | "snug" | "normal" | "relaxed" | "loose" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | (string & {});
+export type TailwindLeading = "none" | "tight" | "snug" | "normal" | "relaxed" | "loose" | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | `[${string}]`;
 
 // Tracking (letter-spacing)
-export type TailwindTracking = "tighter" | "tight" | "normal" | "wide" | "wider" | "widest" | (string & {});
+export type TailwindTracking = "tighter" | "tight" | "normal" | "wide" | "wider" | "widest" | `[${string}]`;
 
 // Border radius
-export type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | (string & {});
+export type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | `[${string}]`;
 export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" | "bl" | "s" | "e" | "ss" | "se" | "es" | "ee";
 
 // Shadow
-export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | (string & {});
+export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | `[${string}]`;
 
 // Border width
-export type TailwindBorderWidth = "0" | "2" | "4" | "8" | `[${string}]`;
+export type TailwindBorderWidth = 0 | 2 | 4 | 8 | `[${string}]`;
 
 // Opacity
 export type TailwindOpacity =
-  | "0" | "5" | "10" | "15" | "20" | "25" | "30" | "35" | "40" | "45"
-  | "50" | "55" | "60" | "65" | "70" | "75" | "80" | "85" | "90" | "95" | "100"
-  | (string & {});
+  | 0 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45
+  | 50 | 55 | 60 | 65 | 70 | 75 | 80 | 85 | 90 | 95 | 100
+  | `[${string}]`;
 
 // Cursor
 export type TailwindCursor =
@@ -94,11 +95,11 @@ export type TailwindCursor =
   | "ew-resize" | "ns-resize" | "nesw-resize" | "nwse-resize" | "zoom-in" | "zoom-out";
 
 // Z-index
-export type TailwindZIndex = "0" | "10" | "20" | "30" | "40" | "50" | "auto" | (string & {});
+export type TailwindZIndex = 0 | 10 | 20 | 30 | 40 | 50 | "auto" | `[${string}]`;
 
-// Grid columns/rows
-export type TailwindGridCols = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "none" | "subgrid" | (string & {});
-export type TailwindGridRows = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "none" | "subgrid" | (string & {});
+// Grid columns/rows — keeps (string & {}) for JIT bare numbers beyond 12
+export type TailwindGridCols = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | (string & {});
+export type TailwindGridRows = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | (string & {});
 
 // Flex
 export type TailwindFlex = "1" | "auto" | "initial" | "none";
@@ -124,30 +125,30 @@ export type TailwindFlexWrap = "wrap" | "wrap-reverse" | "nowrap";
 // Align self
 export type TailwindAlignSelf = "auto" | "start" | "end" | "center" | "stretch" | "baseline";
 
-// Column span
-export type TailwindColSpan = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "full" | (string & {});
+// Column span — keeps (string & {}) for JIT bare numbers beyond 12
+export type TailwindColSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full" | (string & {});
 
 // Aspect ratio
 export type TailwindAspect = "auto" | "square" | "video";
 
 // Transitions & Animation
 export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow" | "transform";
-export type TailwindDuration = "0" | "75" | "100" | "150" | "200" | "300" | "500" | "700" | "1000" | (string & {});
-export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce";
+export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | (string & {});
+export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
 
 // Ring
-export type TailwindRingWidth = "0" | "1" | "2" | "4" | "8" | (string & {});
+export type TailwindRingWidth = 0 | 1 | 2 | 4 | 8 | `[${string}]`;
 
 // Transforms
-export type TailwindScale = "0" | "50" | "75" | "90" | "95" | "100" | "105" | "110" | "125" | "150" | (string & {});
-export type TailwindRotate = "0" | "1" | "2" | "3" | "6" | "12" | "45" | "90" | "180" | (string & {});
+export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | `[${string}]`;
+export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | `[${string}]`;
 
 // Interactivity
 export type TailwindSelect = "none" | "text" | "all" | "auto";
 export type TailwindPointerEvents = "none" | "auto";
 
 // List style
-export type TailwindListStyleType = "none" | "disc" | "decimal" | (string & {});
+export type TailwindListStyleType = "none" | "disc" | "decimal" | `[${string}]`;
 export type TailwindListStylePosition = "inside" | "outside";
 
 // Whitespace

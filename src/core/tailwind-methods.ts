@@ -144,7 +144,7 @@ declare module "./tag.js" {
     gridRows(rows: TailwindGridRows): this;
 
     // Borders
-    border(value?: TailwindBorderWidth): this;
+    border(value?: TailwindBorderWidth | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
     border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
     borderColor(color: TailwindColor): this;
     borderColor(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", color: TailwindColor): this;
@@ -177,8 +177,8 @@ declare module "./tag.js" {
     left(unit: TailwindUnit, amount: number): this;
 
     // Flexbox & Grid Extensions
-    shrink(value?: "0"): this;
-    grow(value?: "0"): this;
+    shrink(value?: 0): this;
+    grow(value?: 0): this;
     flexWrap(value: TailwindFlexWrap): this;
     alignSelf(value: TailwindAlignSelf): this;
     colSpan(value: TailwindColSpan): this;
@@ -273,7 +273,7 @@ p.underline = function () { return this.addClass("underline"); };
 p.noUnderline = function () { return this.addClass("no-underline"); };
 p.lineThrough = function () { return this.addClass("line-through"); };
 p.truncate = function () { return this.addClass("truncate"); };
-p.leading = function (value: string) { return this.addClass(`leading-${value}`); };
+p.leading = function (value: string | number) { return this.addClass(`leading-${value}`); };
 p.tracking = function (value: string) { return this.addClass(`tracking-${value}`); };
 
 // Sizing
@@ -321,14 +321,14 @@ p.gap = function (directionOrValue: string, value?: string | number) {
 // Grid
 
 p.grid = function () { return this.addClass("grid"); };
-p.gridCols = function (cols: string) { return this.addClass(`grid-cols-${cols}`); };
-p.gridRows = function (rows: string) { return this.addClass(`grid-rows-${rows}`); };
+p.gridCols = function (cols: string | number) { return this.addClass(`grid-cols-${cols}`); };
+p.gridRows = function (rows: string | number) { return this.addClass(`grid-rows-${rows}`); };
 
 // Borders
 
-p.border = function (directionOrValue?: string, value?: string) {
+p.border = function (directionOrValue?: string | number, value?: string | number) {
   if (directionOrValue === undefined) return this.addClass("border");
-  const dir = DIR_MAP[directionOrValue];
+  const dir = DIR_MAP[directionOrValue as string];
   if (dir !== undefined) {
     return value === undefined
       ? this.addClass(`border-${dir}`)
@@ -358,10 +358,10 @@ p.shadow = function (value?: string) {
 
 // Effects & Appearance
 
-p.opacity = function (value: string) { return this.addClass(`opacity-${value}`); };
+p.opacity = function (value: string | number) { return this.addClass(`opacity-${value}`); };
 p.cursor = function (value: string) { return this.addClass(`cursor-${value}`); };
 p.position = function (value: string) { return this.addClass(value); };
-p.zIndex = function (value: string) { return this.addClass(`z-${value}`); };
+p.zIndex = function (value: string | number) { return this.addClass(`z-${value}`); };
 p.overflow = function (directionOrValue: string, value?: string) {
   if (value === undefined) return this.addClass(`overflow-${directionOrValue}`);
   return this.addClass(`overflow-${directionOrValue}-${value}`);
@@ -395,25 +395,25 @@ p.left = function (unitOrValue: string, amount?: number) {
 
 // Flexbox & Grid Extensions
 
-p.shrink = function (value?: string) {
+p.shrink = function (value?: string | number) {
   return value === undefined ? this.addClass("shrink") : this.addClass(`shrink-${value}`);
 };
-p.grow = function (value?: string) {
+p.grow = function (value?: string | number) {
   return value === undefined ? this.addClass("grow") : this.addClass(`grow-${value}`);
 };
 p.flexWrap = function (value: string) { return this.addClass(`flex-${value}`); };
 p.alignSelf = function (value: string) { return this.addClass(`self-${value}`); };
-p.colSpan = function (value: string) { return this.addClass(`col-span-${value}`); };
+p.colSpan = function (value: string | number) { return this.addClass(`col-span-${value}`); };
 p.aspect = function (value: string) { return this.addClass(`aspect-${value}`); };
 
 // Spacing Between Children
 
 p.spaceX = function (value: string) { return this.addClass(`space-x-${value}`); };
 p.spaceY = function (value: string) { return this.addClass(`space-y-${value}`); };
-p.divideX = function (value?: string) {
+p.divideX = function (value?: string | number) {
   return value === undefined ? this.addClass("divide-x") : this.addClass(`divide-x-${value}`);
 };
-p.divideY = function (value?: string) {
+p.divideY = function (value?: string | number) {
   return value === undefined ? this.addClass("divide-y") : this.addClass(`divide-y-${value}`);
 };
 
@@ -422,20 +422,20 @@ p.divideY = function (value?: string) {
 p.transition = function (value?: string) {
   return value === undefined ? this.addClass("transition") : this.addClass(`transition-${value}`);
 };
-p.duration = function (value: string) { return this.addClass(`duration-${value}`); };
+p.duration = function (value: string | number) { return this.addClass(`duration-${value}`); };
 p.animate = function (value: string) { return this.addClass(`animate-${value}`); };
 
 // Ring (Focus Rings)
 
-p.ring = function (value?: string) {
+p.ring = function (value?: string | number) {
   return value === undefined ? this.addClass("ring") : this.addClass(`ring-${value}`);
 };
 p.ringColor = function (color: string) { return this.addClass(`ring-${color}`); };
 
 // Transforms
 
-p.scale = function (value: string) { return this.addClass(`scale-${value}`); };
-p.rotate = function (value: string) { return this.addClass(`rotate-${value}`); };
+p.scale = function (value: string | number) { return this.addClass(`scale-${value}`); };
+p.rotate = function (value: string | number) { return this.addClass(`rotate-${value}`); };
 p.translate = function (direction: string, value: string) {
   return this.addClass(`translate-${direction}-${value}`);
 };

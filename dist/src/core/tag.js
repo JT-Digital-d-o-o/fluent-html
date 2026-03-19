@@ -150,17 +150,8 @@ export class Tag {
         }
         return this;
     }
-    /**
-     * Conditionally modify this tag. When condition is true, the modifier
-     * function is called with the tag. Otherwise the tag is returned unchanged.
-     *
-     * @example
-     * Button("Save")
-     *   .when(isLoading, t => t.toggle("disabled").addClass("opacity-50"))
-     *   .when(isPrimary, t => t.addClass("bg-blue-500 text-white"))
-     */
     when(condition, fn) {
-        return condition ? fn(this) : this;
+        return condition ? fn(this, condition) : this;
     }
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,

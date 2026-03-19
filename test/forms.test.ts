@@ -255,3 +255,4 @@ describe("Forms - Label, Fieldset, Form", () => {
 
   it("Output element", () => { assert.strictEqual(render(Output("100").setFor("a b").setName("result")), `<output for="a b" name="result">100</output>`); });
 });
+

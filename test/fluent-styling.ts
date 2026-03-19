@@ -446,19 +446,19 @@ test(
 test(
   "grid columns",
   '<div class="grid-cols-3"></div>',
-  render(Div().gridCols("3"))
+  render(Div().gridCols(3))
 );
 
 test(
   "grid rows",
   '<div class="grid-rows-2"></div>',
-  render(Div().gridRows("2"))
+  render(Div().gridRows(2))
 );
 
 test(
   "complete grid layout",
   '<div class="grid grid-cols-3 gap-4"></div>',
-  render(Div().grid().gridCols("3").gap("4"))
+  render(Div().grid().gridCols(3).gap("4"))
 );
 
 section("Borders & Effects");
@@ -472,7 +472,7 @@ test(
 test(
   "border with width",
   '<div class="border-2"></div>',
-  render(Div().border("2"))
+  render(Div().border(2))
 );
 
 test(
@@ -532,13 +532,13 @@ test(
 test(
   "border bottom with width",
   '<div class="border-b-2"></div>',
-  render(Div().border("bottom", "2"))
+  render(Div().border("bottom", 2))
 );
 
 test(
   "border left with width",
   '<div class="border-l-4"></div>',
-  render(Div().border("left", "4"))
+  render(Div().border("left", 4))
 );
 
 test(
@@ -606,19 +606,19 @@ test(
 test(
   "z-index",
   '<div class="z-10"></div>',
-  render(Div().zIndex("10"))
+  render(Div().zIndex(10))
 );
 
 test(
   "z-index 50",
   '<div class="z-50"></div>',
-  render(Div().zIndex("50"))
+  render(Div().zIndex(50))
 );
 
 test(
   "opacity",
   '<div class="opacity-50"></div>',
-  render(Div().opacity("50"))
+  render(Div().opacity(50))
 );
 
 test(
@@ -807,13 +807,13 @@ test(
 test(
   "sticky header",
   '<div class="sticky z-50 bg-white shadow"></div>',
-  render(Div().position("sticky").zIndex("50").background("white").shadow())
+  render(Div().position("sticky").zIndex(50).background("white").shadow())
 );
 
 test(
   "responsive grid",
   '<div class="grid grid-cols-3 gap-4 p-8"></div>',
-  render(Div().grid().gridCols("3").gap("4").padding("8"))
+  render(Div().grid().gridCols(3).gap("4").padding("8"))
 );
 
 section("TEST SUMMARY");

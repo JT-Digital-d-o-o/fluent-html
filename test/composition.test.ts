@@ -282,4 +282,28 @@ describe("when() and apply()", () => {
 
   // apply -- no modifiers (identity)
   it("apply() no modifiers", () => { assert.strictEqual(render(Div("Unchanged").apply()), `<div>Unchanged</div>`); });
+
+  // when -- nullable type narrowing (truthy value)
+  it("when() with nullable value passes narrowed value", () => {
+    const avatar: string | undefined = "/img/avatar.png";
+    assert.strictEqual(render(Div().when(avatar, (t, src) => t.addClass(src))), `<div class="/img/avatar.png"></div>`);
+  });
+
+  // when -- nullable type narrowing (null)
+  it("when() with null value skips modifier", () => {
+    const avatar: string | null | undefined = null;
+    assert.strictEqual(render(Div().when(avatar, (t, src) => t.addClass(src))), `<div></div>`);
+  });
+
+  // when -- nullable type narrowing (undefined)
+  it("when() with undefined value skips modifier", () => {
+    const name: string | undefined = undefined;
+    assert.strictEqual(render(Span().when(name, (t, n) => t.addClass(n))), `<span></span>`);
+  });
+
+  // when -- nullable type narrowing (truthy non-string)
+  it("when() with nullable object passes narrowed value", () => {
+    const user: { name: string } | undefined = { name: "Alice" };
+    assert.strictEqual(render(Span().when(user, (t, u) => t.addClass(u.name))), `<span class="Alice"></span>`);
+  });
 });

@@ -104,11 +104,16 @@ export declare class Tag {
      * Conditionally modify this tag. When condition is true, the modifier
      * function is called with the tag. Otherwise the tag is returned unchanged.
      *
+     * When condition is a nullable value, the callback receives the narrowed
+     * non-null value as a second argument.
+     *
      * @example
      * Button("Save")
-     *   .when(isLoading, t => t.toggle("disabled").addClass("opacity-50"))
-     *   .when(isPrimary, t => t.addClass("bg-blue-500 text-white"))
+     *   .when(isLoading, t => t.toggle("disabled").opacity(50))
+     *   .when(isPrimary, t => t.background("blue-500").textColor("white"))
+     *   .when(user.avatar, (t, avatar) => t.children(Img().setSrc(avatar)))
      */
+    when<T>(condition: T | null | undefined, fn: (tag: this, value: NonNullable<T>) => this): this;
     when(condition: boolean, fn: (tag: this) => this): this;
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,
