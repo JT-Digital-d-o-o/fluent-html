@@ -133,7 +133,7 @@ export type TailwindAspect = "auto" | "square" | "video";
 // Transitions & Animation
 export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow" | "transform";
 export type TailwindDuration = "0" | "75" | "100" | "150" | "200" | "300" | "500" | "700" | "1000" | (string & {});
-export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce";
+export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
 
 // Ring
 export type TailwindRingWidth = "0" | "1" | "2" | "4" | "8" | (string & {});

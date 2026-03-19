@@ -47,6 +47,7 @@ describe("Transitions & Animation", () => {
   it("transition + duration", () => { assert.strictEqual(render(Div().transition().duration("200")), '<div class="transition duration-200"></div>'); });
   it("animate spin", () => { assert.strictEqual(render(Div().animate("spin")), '<div class="animate-spin"></div>'); });
   it("animate bounce", () => { assert.strictEqual(render(Div().animate("bounce")), '<div class="animate-bounce"></div>'); });
+  it("animate custom bracket value", () => { assert.strictEqual(render(Div().animate("[saved]")), '<div class="animate-[saved]"></div>'); });
 });
 
 describe("Ring (Focus Rings)", () => {
