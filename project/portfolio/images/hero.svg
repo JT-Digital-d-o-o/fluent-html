@@ -1,0 +1,281 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="accent-glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="card-shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="white" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow-sm">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-lg">
+      <feGaussianBlur stdDeviation="30" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Ambient glow orbs -->
+  <ellipse cx="280" cy="320" rx="280" ry="220" fill="url(#accent-glow)"/>
+  <ellipse cx="920" cy="300" rx="250" ry="200" fill="#06b6d4" opacity="0.04"/>
+
+  <!-- Subtle grid -->
+  <g opacity="0.03" stroke="#cbd5e1" stroke-width="0.5">
+    <line x1="0" y1="105" x2="1200" y2="105"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+    <line x1="0" y1="525" x2="1200" y2="525"/>
+    <line x1="200" y1="0" x2="200" y2="630"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+    <line x1="1000" y1="0" x2="1000" y2="630"/>
+  </g>
+
+  <!-- === LEFT SIDE: TypeScript Code Editor === -->
+
+  <!-- Editor card -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="50" width="480" height="530" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <rect x="50" y="50" width="480" height="530" rx="16" fill="url(#card-shine)"/>
+  </g>
+
+  <!-- Editor title bar -->
+  <rect x="50" y="50" width="480" height="40" rx="16" fill="#1e293b"/>
+  <rect x="50" y="74" width="480" height="16" fill="#1e293b"/>
+  <circle cx="76" cy="70" r="5" fill="#ef4444" opacity="0.7"/>
+  <circle cx="94" cy="70" r="5" fill="#eab308" opacity="0.7"/>
+  <circle cx="112" cy="70" r="5" fill="#22c55e" opacity="0.7"/>
+  <text x="290" y="75" font-family="JetBrains Mono, monospace" font-size="11" fill="#64748b" text-anchor="middle">page.view.ts</text>
+  <line x1="50" y1="90" x2="530" y2="90" stroke="white" stroke-opacity="0.06"/>
+
+  <!-- Line numbers gutter -->
+  <rect x="50" y="90" width="36" height="490" fill="#0f172a" opacity="0.3"/>
+
+  <!-- Code content -->
+  <!-- Line 1 -->
+  <text x="60" y="116" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">1</text>
+  <text x="96" y="116" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#c084fc">import</tspan><tspan fill="#e2e8f0"> { Div, H1, Button, P } </tspan><tspan fill="#c084fc">from</tspan><tspan fill="#a5f3fc"> 'fluent-html'</tspan>
+  </text>
+
+  <!-- Line 2 (blank) -->
+  <text x="60" y="136" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">2</text>
+
+  <!-- Line 3 -->
+  <text x="60" y="156" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">3</text>
+  <text x="96" y="156" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#c084fc">const</tspan><tspan fill="#22d3ee"> page</tspan><tspan fill="#e2e8f0"> = </tspan><tspan fill="#22d3ee">Div</tspan><tspan fill="#e2e8f0">(</tspan>
+  </text>
+
+  <!-- Line 4 -->
+  <text x="60" y="176" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">4</text>
+  <text x="96" y="176" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">  </tspan><tspan fill="#22d3ee">H1</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"Welcome"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 5 -->
+  <text x="60" y="196" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">5</text>
+  <text x="96" y="196" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">textSize</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"3xl"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 6 -->
+  <text x="60" y="216" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">6</text>
+  <text x="96" y="216" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">bold</tspan><tspan fill="#e2e8f0">(),</tspan>
+  </text>
+
+  <!-- Line 7 (blank) -->
+  <text x="60" y="236" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">7</text>
+
+  <!-- Line 8 -->
+  <text x="60" y="256" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">8</text>
+  <text x="96" y="256" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">  </tspan><tspan fill="#22d3ee">P</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"Build HTML with type safety"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 9 -->
+  <text x="60" y="276" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">9</text>
+  <text x="96" y="276" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">textColor</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"gray-500"</tspan><tspan fill="#e2e8f0">),</tspan>
+  </text>
+
+  <!-- Line 10 (blank) -->
+  <text x="60" y="296" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">10</text>
+
+  <!-- Line 11 -->
+  <text x="60" y="316" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">11</text>
+  <text x="96" y="316" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">  </tspan><tspan fill="#22d3ee">Button</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"Get Started"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 12 -->
+  <text x="60" y="336" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">12</text>
+  <text x="96" y="336" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">padding</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"x"</tspan><tspan fill="#e2e8f0">, </tspan><tspan fill="#a5f3fc">"6"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 13 -->
+  <text x="60" y="356" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">13</text>
+  <text x="96" y="356" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">background</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"blue-500"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 14 -->
+  <text x="60" y="376" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">14</text>
+  <text x="96" y="376" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">textColor</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"white"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 15 -->
+  <text x="60" y="396" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">15</text>
+  <text x="96" y="396" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">rounded</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"lg"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- Line 16 -->
+  <text x="60" y="416" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">16</text>
+  <text x="96" y="416" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">    .</tspan><tspan fill="#7dd3fc">shadow</tspan><tspan fill="#e2e8f0">()</tspan>
+  </text>
+
+  <!-- Line 17 -->
+  <text x="60" y="436" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">17</text>
+  <text x="96" y="436" font-family="JetBrains Mono, monospace" font-size="11">
+    <tspan fill="#e2e8f0">).</tspan><tspan fill="#7dd3fc">padding</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"8"</tspan><tspan fill="#e2e8f0">).</tspan><tspan fill="#7dd3fc">maxW</tspan><tspan fill="#e2e8f0">(</tspan><tspan fill="#a5f3fc">"4xl"</tspan><tspan fill="#e2e8f0">)</tspan>
+  </text>
+
+  <!-- IDE autocomplete popup -->
+  <g filter="url(#shadow)">
+    <rect x="225" y="420" width="200" height="136" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-opacity="0.4" stroke-width="1"/>
+    <!-- Selected item -->
+    <rect x="229" y="424" width="192" height="22" rx="4" fill="#3b82f6" opacity="0.2"/>
+    <text x="240" y="440" font-family="JetBrains Mono, monospace" font-size="11" fill="#7dd3fc">shadow</text>
+    <text x="340" y="440" font-family="JetBrains Mono, monospace" font-size="9" fill="#64748b">() =&gt; Tag</text>
+    <!-- Other items -->
+    <text x="240" y="462" font-family="JetBrains Mono, monospace" font-size="11" fill="#94a3b8">setStyle</text>
+    <text x="340" y="462" font-family="JetBrains Mono, monospace" font-size="9" fill="#64748b">(css) =&gt; Tag</text>
+    <text x="240" y="484" font-family="JetBrains Mono, monospace" font-size="11" fill="#94a3b8">setHtmx</text>
+    <text x="340" y="484" font-family="JetBrains Mono, monospace" font-size="9" fill="#64748b">(hx) =&gt; Tag</text>
+    <text x="240" y="506" font-family="JetBrains Mono, monospace" font-size="11" fill="#94a3b8">setId</text>
+    <text x="340" y="506" font-family="JetBrains Mono, monospace" font-size="9" fill="#64748b">(id) =&gt; Tag</text>
+    <text x="240" y="528" font-family="JetBrains Mono, monospace" font-size="11" fill="#94a3b8">setClass</text>
+    <text x="340" y="528" font-family="JetBrains Mono, monospace" font-size="9" fill="#64748b">(cls) =&gt; Tag</text>
+    <text x="240" y="550" font-family="JetBrains Mono, monospace" font-size="11" fill="#94a3b8">setAria</text>
+    <text x="340" y="550" font-family="JetBrains Mono, monospace" font-size="9" fill="#64748b">({}) =&gt; Tag</text>
+  </g>
+
+
+  <!-- === CENTER: Arrow / Transform === -->
+
+  <!-- Flowing connection particles -->
+  <g filter="url(#glow-sm)" opacity="0.7">
+    <circle cx="570" cy="200" r="3" fill="#3b82f6"/>
+    <circle cx="590" cy="280" r="2" fill="#06b6d4"/>
+    <circle cx="585" cy="350" r="2.5" fill="#22d3ee"/>
+    <circle cx="575" cy="420" r="2" fill="#3b82f6"/>
+    <circle cx="600" cy="160" r="1.5" fill="#06b6d4"/>
+    <circle cx="610" cy="310" r="2" fill="#22d3ee"/>
+    <circle cx="565" cy="470" r="1.5" fill="#3b82f6"/>
+  </g>
+  <!-- Flowing arrow hint -->
+  <path d="M555 250 Q590 300 555 350" stroke="url(#accent)" stroke-width="1.5" fill="none" opacity="0.25"/>
+  <path d="M565 220 Q610 315 565 410" stroke="url(#accent)" stroke-width="1" fill="none" opacity="0.15"/>
+  <!-- Sparkle bursts -->
+  <g transform="translate(590, 250)" filter="url(#glow-sm)">
+    <path d="M0 -6L1.5 -1.5L6 0L1.5 1.5L0 6L-1.5 1.5L-6 0L-1.5 -1.5Z" fill="#06b6d4" opacity="0.8"/>
+  </g>
+  <g transform="translate(575, 390)" filter="url(#glow-sm)">
+    <path d="M0 -5L1.2 -1.2L5 0L1.2 1.2L0 5L-1.2 1.2L-5 0L-1.2 -1.2Z" fill="#3b82f6" opacity="0.6"/>
+  </g>
+
+  <!-- Arrow icon -->
+  <g transform="translate(583, 315)" filter="url(#glow-sm)">
+    <path d="M-12 0 L8 0 M2 -6 L8 0 L2 6" stroke="url(#accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+
+  <!-- === RIGHT SIDE: Rendered HTML Output === -->
+
+  <!-- Browser chrome -->
+  <g filter="url(#shadow)">
+    <rect x="640" y="50" width="520" height="530" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  </g>
+  <rect x="640" y="50" width="520" height="40" rx="16" fill="#1e293b"/>
+  <rect x="640" y="74" width="520" height="16" fill="#1e293b"/>
+  <circle cx="666" cy="70" r="5" fill="#ef4444" opacity="0.7"/>
+  <circle cx="684" cy="70" r="5" fill="#eab308" opacity="0.7"/>
+  <circle cx="702" cy="70" r="5" fill="#22c55e" opacity="0.7"/>
+  <!-- URL bar -->
+  <rect x="724" y="60" width="320" height="20" rx="6" fill="#0f172a" stroke="white" stroke-opacity="0.06"/>
+  <text x="744" y="74" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#64748b">localhost:3000</text>
+  <line x1="640" y1="90" x2="1160" y2="90" stroke="white" stroke-opacity="0.06"/>
+
+  <!-- Rendered output label -->
+  <rect x="640" y="90" width="520" height="28" fill="#0f172a"/>
+  <text x="660" y="109" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">&lt;!-- Rendered HTML output --&gt;</text>
+  <line x1="640" y1="118" x2="1160" y2="118" stroke="white" stroke-opacity="0.04"/>
+
+  <!-- Rendered page preview -->
+  <rect x="660" y="130" width="480" height="430" rx="8" fill="white" opacity="0.97"/>
+
+  <!-- Page content: the rendered result -->
+  <rect x="660" y="130" width="480" height="430" rx="8" fill="#f8fafc"/>
+
+  <!-- Rendered container with p-8 max-w-4xl mx-auto feel -->
+  <rect x="700" y="180" width="400" height="300" rx="0" fill="transparent"/>
+
+  <!-- Rendered H1 -->
+  <text x="900" y="240" font-family="Inter, system-ui, sans-serif" font-size="36" fill="#0f172a" text-anchor="middle" font-weight="800">Welcome</text>
+
+  <!-- Rendered P -->
+  <text x="900" y="280" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#6b7280" text-anchor="middle">Build HTML with type safety</text>
+
+  <!-- Rendered Button -->
+  <rect x="830" y="310" width="140" height="44" rx="8" fill="#3b82f6"/>
+  <text x="900" y="338" font-family="Inter, system-ui, sans-serif" font-size="14" fill="white" text-anchor="middle" font-weight="600">Get Started</text>
+  <!-- Button shadow hint -->
+  <rect x="832" y="356" width="136" height="4" rx="2" fill="#3b82f6" opacity="0.2"/>
+
+  <!-- HTML source overlay (faded, bottom of preview) -->
+  <rect x="680" y="400" width="440" height="140" rx="6" fill="#0f172a" opacity="0.92"/>
+  <text x="696" y="424" font-family="JetBrains Mono, monospace" font-size="10" fill="#475569">&lt;!-- Generated HTML --&gt;</text>
+  <text x="696" y="444" font-family="JetBrains Mono, monospace" font-size="10">
+    <tspan fill="#64748b">&lt;</tspan><tspan fill="#22d3ee">div</tspan><tspan fill="#c084fc"> class</tspan><tspan fill="#64748b">=</tspan><tspan fill="#a5f3fc">"p-8 max-w-4xl mx-auto"</tspan><tspan fill="#64748b">&gt;</tspan>
+  </text>
+  <text x="696" y="462" font-family="JetBrains Mono, monospace" font-size="10">
+    <tspan fill="#64748b">  &lt;</tspan><tspan fill="#22d3ee">h1</tspan><tspan fill="#c084fc"> class</tspan><tspan fill="#64748b">=</tspan><tspan fill="#a5f3fc">"text-3xl font-bold"</tspan><tspan fill="#64748b">&gt;</tspan><tspan fill="#e2e8f0">Welcome</tspan><tspan fill="#64748b">&lt;/</tspan><tspan fill="#22d3ee">h1</tspan><tspan fill="#64748b">&gt;</tspan>
+  </text>
+  <text x="696" y="480" font-family="JetBrains Mono, monospace" font-size="10">
+    <tspan fill="#64748b">  &lt;</tspan><tspan fill="#22d3ee">p</tspan><tspan fill="#c084fc"> class</tspan><tspan fill="#64748b">=</tspan><tspan fill="#a5f3fc">"text-gray-500"</tspan><tspan fill="#64748b">&gt;</tspan><tspan fill="#e2e8f0">Build...</tspan><tspan fill="#64748b">&lt;/</tspan><tspan fill="#22d3ee">p</tspan><tspan fill="#64748b">&gt;</tspan>
+  </text>
+  <text x="696" y="498" font-family="JetBrains Mono, monospace" font-size="10">
+    <tspan fill="#64748b">  &lt;</tspan><tspan fill="#22d3ee">button</tspan><tspan fill="#c084fc"> class</tspan><tspan fill="#64748b">=</tspan><tspan fill="#a5f3fc">"px-6 bg-blue-500</tspan>
+  </text>
+  <text x="696" y="516" font-family="JetBrains Mono, monospace" font-size="10">
+    <tspan fill="#a5f3fc">    text-white rounded-lg shadow"</tspan><tspan fill="#64748b">&gt;</tspan>
+  </text>
+  <text x="696" y="534" font-family="JetBrains Mono, monospace" font-size="10">
+    <tspan fill="#64748b">&lt;/</tspan><tspan fill="#22d3ee">div</tspan><tspan fill="#64748b">&gt;</tspan>
+  </text>
+</svg>
