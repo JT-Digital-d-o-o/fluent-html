@@ -82,7 +82,6 @@ cmd_pull() {
   # Clone into temp dir, copy files over
   local tmp_dir
   tmp_dir=$(mktemp -d)
-  trap 'rm -rf "$tmp_dir"' EXIT
 
   git clone --depth 1 --quiet "$REPO" "$tmp_dir/guidelines" 2>/dev/null
 
@@ -90,6 +89,9 @@ cmd_pull() {
   rm -rf "${AI_DIR:?}/"
   cp -R "$tmp_dir/guidelines/" "$AI_DIR/"
   rm -rf "$AI_DIR/.git"
+
+  # Clean up temp dir
+  rm -rf "$tmp_dir"
 
   # Write version hash
   echo "$remote_hash" > "$VERSION_FILE"
