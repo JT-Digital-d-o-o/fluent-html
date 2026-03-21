@@ -351,7 +351,7 @@ it("first", () => { let counter = 0; counter++; expect(counter).toBe(1); });
 it("second", () => { let counter = 0; expect(counter).toBe(0); });
 ```
 
-### DON'T: Use snapshots for logic tests — explicit assertions are clearer
+### DON'T: Use snapshots for unit tests — explicit assertions are clearer
 ```typescript
 // WRONG — snapshot hides what you're actually verifying
 it("should format date", () => {
@@ -363,3 +363,5 @@ it("should format date", () => {
   expect(formatDate(new Date("2026-01-15"))).toBe("Jan 15, 2026");
 });
 ```
+
+For the snapshot rule (when they're OK in view tests), see [CLAUDE.md](CLAUDE.md#key-rules).

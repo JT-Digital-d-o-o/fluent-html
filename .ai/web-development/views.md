@@ -1,19 +1,8 @@
 # View Guidelines
 
-## Feature view structure
-
-```
-src/[feature]/
-  views/
-    [feature].list.view.ts    # List/table view
-    [feature].form.view.ts    # Create/edit form
-    [feature].detail.view.ts  # Single-item detail
-    [feature].components.ts   # Shared components (rows, cards, badges)
-```
+## View file segregation
 
 **!IMPORTANT:** Always abstract and reuse components — avoid code duplication across views.
-
-## View file segregation
 
 Split by page/interaction, not by component size:
 - One view file per distinct page or HTMX endpoint response

@@ -350,30 +350,19 @@ describe("FormField", () => {
 
 ## When to Use Snapshots
 
-### DO: Use snapshots sparingly — only for complex static components
+See [CLAUDE.md](CLAUDE.md#key-rules) for the canonical snapshot rule. In short: only for static view components with deep nesting (5+ levels) and no dynamic data. Use explicit assertions everywhere else.
+
 ```typescript
-// Snapshots can be useful for detecting accidental changes to static layouts
+// OK — static layout, no dynamic data
 describe("Footer", () => {
   it("should match snapshot", () => {
-    const html = render(Footer());
-    expect(html).toMatchSnapshot();
+    expect(render(Footer())).toMatchSnapshot();
   });
 });
-```
 
-### DON'T: Use snapshots for components with dynamic data
-```typescript
-// WRONG — snapshot includes timestamps, IDs, etc. that change every run
+// WRONG — dynamic data means the snapshot breaks on every run
 it("should match snapshot", () => {
-  const html = render(UserCard({ ...user, createdAt: new Date() }));
-  expect(html).toMatchSnapshot(); // fails on every run
-});
-
-// CORRECT — use explicit assertions for dynamic content
-it("should render user info", () => {
-  const html = render(UserCard(user));
-  expect(html).toContain(user.name);
-  expect(html).toContain(user.email);
+  expect(render(UserCard({ ...user, createdAt: new Date() }))).toMatchSnapshot();
 });
 ```
 

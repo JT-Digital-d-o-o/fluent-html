@@ -188,45 +188,14 @@ class="hover:border-accent/50 transition-colors"
 
 ## Writing & Copy
 
-### DO: Write like an experienced engineer talking to a peer
-```
-CORRECT: "We tried BullMQ first. It had 10-15 second delays in
-         edge cases. setInterval is self-healing."
+> Full reference: [guidelines/voice-and-copy.md](guidelines/voice-and-copy.md) — voice attributes, CTAs, blog structure, word choice, ban lists
 
-WRONG:   "After careful evaluation of multiple queue-based
-         architectures, our team determined..."
-```
-
-### DO: Use the established word choices
-```
-build (not develop/implement), ship (not deliver/deploy),
-simple (not streamlined), craft (not methodology),
-conversation (not consultation/discovery call)
-```
-
-### DON'T: Use buzzwords or vague claims
-```
-Never: leverage, utilize, synergy, paradigm, world-class,
-       cutting-edge, revolutionary, seamlessly, full-stack
-```
-
-### DO: Use the established CTAs
-```
-Primary:   "Start a Conversation"
-Secondary: "Let's Build Something Together"
-Blog:      "Don't miss the next one"
-
-Never: "Learn More", "Get Started", "Contact Us"
-```
-
-### DO: Lead blog posts with a concrete statement
-```
-CORRECT: "When your app runs live on national television, there's no second chance."
-CORRECT: "Most agencies send a document after the first meeting. We send something you can click."
-
-WRONG:   "Have you ever wondered how to build a quiz app?"
-WRONG:   "In this post, we'll explore..."
-```
+Key rules:
+- **Write like an experienced engineer talking to a peer** — direct, confident, technical, honest
+- **Word choice:** build (not develop), ship (not deliver), simple (not streamlined), conversation (not consultation)
+- **Ban list:** leverage, utilize, synergy, paradigm, world-class, cutting-edge, revolutionary, seamlessly, full-stack
+- **CTAs:** "Start a Conversation" (primary), "Let's Build Something Together" (secondary), "Don't miss the next one" (blog). Never: "Learn More", "Get Started", "Contact Us"
+- **Blog hooks:** lead with a concrete statement, never a question or "In this post, we'll explore..."
 
 ---
 
@@ -262,13 +231,3 @@ Footer social: w-5 h-5
 Contact info:  w-4 h-4
 ```
 
----
-
-## Social Presence
-
-| Platform | URL |
-|----------|-----|
-| Website | [jtdigital.si](https://jtdigital.si) |
-| Blog | [blog.jtdigital.si](https://blog.jtdigital.si) |
-| LinkedIn | [JT Digital](https://www.linkedin.com/company/111728342/) |
-| GitHub | [JT-Digital-d-o-o](https://github.com/JT-Digital-d-o-o) |

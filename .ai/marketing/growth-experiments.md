@@ -63,13 +63,13 @@ Example backlog:
 
 ## Channel Testing
 
-### DO: Test one channel at a time — give it a fair shot
+### DO: Test one channel at a time — minimum 2 weeks and 200+ visitors before judging
 ```
 Channel testing process:
 1. Pick one channel
-2. Set a budget (time + money): e.g., "$200 and 2 weeks"
+2. Set a budget (time + money): e.g., "$200 and 2–4 weeks"
 3. Define success: e.g., "≥20 signups at <$10 CAC"
-4. Run the test
+4. Run until you have ≥200 visitors or 2 weeks pass — whichever comes last
 5. Measure and decide: scale, optimize, or kill
 
 Common channels to test (roughly in order of ease for early stage):

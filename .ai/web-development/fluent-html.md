@@ -74,35 +74,7 @@ Div("Content").apply(card, hoverLift)
 
 ## Fluent Tailwind Styling
 
-> Full method reference: [fluent-html-FLUENT-APIs.md](fluent-html-FLUENT-APIs.md)
-
-Use **fluent methods** — not `setClass` with Tailwind strings:
-
-```typescript
-Div()
-  .padding("4").margin("x", "auto").background("blue-500")
-  .textColor("white").rounded("lg").shadow("md")
-  .flex().justifyContent("center").gap("4")
-```
-
-**`.on()` for pseudo-classes/states, `.at()` for breakpoints** — not `addClass`:
-
-```typescript
-Button("Save")
-  .padding("x", "4").background("blue-500").textColor("white").rounded()
-  .transition("colors")
-  .on("hover", t => t.background("blue-600").scale("105"))
-  .on("focus", t => t.ring("2").ringColor("blue-300").outline("none"))
-  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
-  .at("md", t => t.padding("x", "8").textSize("lg"))
-```
-
-Variants nest for compound selectors:
-
-```typescript
-Div().on("dark", t => t.background("gray-900").on("hover", t => t.background("gray-800")))
-// -> dark:bg-gray-900 dark:hover:bg-gray-800
-```
+> Use fluent methods (not `setClass`) for type safety + IDE autocomplete. `.on()` for pseudo-classes, `.at()` for breakpoints. All methods are strictly typed — check the library's TypeScript definitions for the full API.
 
 ## Control Flow
 
@@ -137,44 +109,7 @@ Repeat(3, () => Br())                              // simple repeat
 
 ## HTMX Integration
 
-> Full patterns: [htmx.md](htmx.md)
-
-```typescript
-// Type-safe IDs
-const ids = defineIds(["user-list", "user-count"] as const);
-Div().setId(ids.userList)                                 // id="user-list"
-
-// Type-safe routes with path params
-const routes = defineRoutes({
-  list:   { method: "get",  path: "/api/users" },
-  delete: { method: "delete", path: "/api/users/:id" },
-});
-Button("Load").setHtmx(routes.list())
-Button("Delete").setHtmx(routes.delete({ id: user.id }))
-routes.delete.resolve({ id })                             // "/api/users/123" for redirects
-
-// HTTP verb shorthands
-Button("Load").hxGet("/api/items")
-Button("Save").hxPost("/api/save", { target: ids.result })
-
-// Full builder for complex options
-Form(/* fields */).setHtmx(hx("/search", {
-  method: "post", target: ids.results, swap: "outerMorph"
-}))
-
-// Partial swaps — update multiple sections in one response
-render(
-  Partial(ids.mainContent, UserList(users)),
-  Partial(ids.userCount, Span(`${users.length}`)),
-)
-
-// Server-driven response headers
-const { html, headers } = hxResponse(Empty())
-  .redirect("/users")                              // HX-Redirect
-  .trigger("showToast", { message: "Done!" })      // HX-Trigger
-  .pushUrl("/users")                               // HX-Push-Url
-  .build();
-```
+> Full patterns: [htmx.md](htmx.md) — `defineRoutes`, `defineIds`, `setHtmx`, `Partial` swaps, `hxResponse`.
 
 ## Rendering
 

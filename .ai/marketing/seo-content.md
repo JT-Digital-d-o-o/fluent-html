@@ -141,15 +141,14 @@ Research before writing:
 // are free and surprisingly useful for keyword discovery.
 ```
 
-### DO: Write content that's genuinely better than what ranks
+### DO: Write content that's measurably better than what ranks
 ```
-The "10× content" test:
-- Is this more useful than the #1 result? (more specific, more current)
-- Does it answer the question faster? (clear structure, no fluff)
-- Does it include something unique? (original data, real experience)
+The "10× content" test — answer YES to at least two:
+- More useful:  covers edge cases the #1 result skips, or is more current (updated within 6 months)
+- Faster to use: reader finds the answer in <30 seconds via clear structure, no fluff
+- Unique value:  includes original data, real benchmarks, or first-hand experience not found elsewhere
 
-// If you can't honestly say "yes" to at least one of these,
-// the content won't rank. Don't publish for the sake of publishing.
+// If you can't pass 2 of 3, the content won't rank. Don't publish for the sake of publishing.
 ```
 
 ### DON'T: Write thin content to hit a publishing schedule
