@@ -54,7 +54,9 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepack": "npm run build && npm test",
-    "prepublishOnly": "npm pack --dry-run"
+    "prepublishOnly": "npm pack --dry-run",
+    "guidelines:check": "bash scripts/guidelines.sh check",
+    "guidelines:pull": "bash scripts/guidelines.sh pull"
   },
   "files": [
     "dist/src/**/*.js",
