@@ -14,6 +14,8 @@ export declare class SvgShapeTag extends Tag {
     setStrokeLinecap(linecap: 'butt' | 'round' | 'square'): this;
     setStrokeLinejoin(linejoin: 'miter' | 'round' | 'bevel'): this;
     setStrokeDasharray(dasharray: string): this;
+    setOpacity(opacity: string): this;
+    /** @deprecated Use `setOpacity` instead. */
     setSvgOpacity(opacity: string): this;
     setTransform(transform: string): this;
 }
@@ -125,6 +127,6 @@ export declare class UseTag extends Tag {
     setHeight(height: string): this;
 }
 export declare function Use(...children: View[]): UseTag;
-export declare function G(...children: View[]): Tag;
+export declare function G(...children: View[]): SvgShapeTag;
 export declare function Defs(...children: View[]): Tag;
 //# sourceMappingURL=svg.d.ts.map

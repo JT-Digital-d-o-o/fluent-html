@@ -26,8 +26,12 @@ export class SvgShapeTag extends Tag {
         this['stroke-dasharray'] = dasharray;
         return this;
     }
-    setSvgOpacity(opacity) {
+    setOpacity(opacity) {
         return this.addAttribute('opacity', opacity);
+    }
+    /** @deprecated Use `setOpacity` instead. */
+    setSvgOpacity(opacity) {
+        return this.setOpacity(opacity);
     }
     setTransform(transform) {
         this.transform = transform;
@@ -36,6 +40,8 @@ export class SvgShapeTag extends Tag {
 }
 /** @internal */
 const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform'];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
+SvgShapeTag.prototype._sk = [...SHAPE_SK];
 // ─── Circle ─────────────────────────────────────────────────────────
 export class CircleTag extends SvgShapeTag {
     setCx(cx) {
@@ -284,7 +290,7 @@ export function Use(...children) {
 }
 // ─── Container elements (no extra attributes) ──────────────────────
 export function G(...children) {
-    return El("g", ...children);
+    return new SvgShapeTag("g", ...children);
 }
 export function Defs(...children) {
     return El("defs", ...children);

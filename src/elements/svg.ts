@@ -43,8 +43,13 @@ export class SvgShapeTag extends Tag {
     return this;
   }
 
-  setSvgOpacity(opacity: string): this {
+  setOpacity(opacity: string): this {
     return this.addAttribute('opacity', opacity);
+  }
+
+  /** @deprecated Use `setOpacity` instead. */
+  setSvgOpacity(opacity: string): this {
+    return this.setOpacity(opacity);
   }
 
   setTransform(transform: string): this {
@@ -55,6 +60,9 @@ export class SvgShapeTag extends Tag {
 
 /** @internal */
 const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform'] as const;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
+(SvgShapeTag.prototype as any)._sk = [...SHAPE_SK];
 
 // ─── Circle ─────────────────────────────────────────────────────────
 
@@ -422,8 +430,8 @@ export function Use(...children: View[]): UseTag {
 
 // ─── Container elements (no extra attributes) ──────────────────────
 
-export function G(...children: View[]): Tag {
-  return El("g", ...children);
+export function G(...children: View[]): SvgShapeTag {
+  return new SvgShapeTag("g", ...children);
 }
 
 export function Defs(...children: View[]): Tag {
