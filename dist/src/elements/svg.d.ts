@@ -18,6 +18,7 @@ export declare class SvgShapeTag extends Tag {
     /** @deprecated Use `setOpacity` instead. */
     setSvgOpacity(opacity: string): this;
     setTransform(transform: string): this;
+    setFilter(filter: string): this;
 }
 export declare class CircleTag extends SvgShapeTag {
     cx?: string;
@@ -76,12 +77,12 @@ export declare class EllipseTag extends SvgShapeTag {
 export declare function Ellipse(...children: View[]): EllipseTag;
 export declare class PolygonTag extends SvgShapeTag {
     points?: string;
-    setPoints(points: string): this;
+    setPoints(points: string | [number, number][]): this;
 }
 export declare function Polygon(...children: View[]): PolygonTag;
 export declare class PolylineTag extends SvgShapeTag {
     points?: string;
-    setPoints(points: string): this;
+    setPoints(points: string | [number, number][]): this;
 }
 export declare function Polyline(...children: View[]): PolylineTag;
 export declare class SvgTextTag extends SvgShapeTag {
@@ -93,6 +94,10 @@ export declare class SvgTextTag extends SvgShapeTag {
     'dominant-baseline'?: string;
     'font-size'?: string;
     'font-family'?: string;
+    'font-weight'?: string;
+    'font-style'?: 'normal' | 'italic' | 'oblique';
+    'text-decoration'?: 'none' | 'underline' | 'overline' | 'line-through';
+    'letter-spacing'?: string;
     setX(x: string): this;
     setY(y: string): this;
     setDx(dx: string): this;
@@ -101,6 +106,10 @@ export declare class SvgTextTag extends SvgShapeTag {
     setDominantBaseline(baseline: string): this;
     setFontSize(size: string): this;
     setFontFamily(family: string): this;
+    setFontWeight(weight: number | 'normal' | 'bold' | 'bolder' | 'lighter'): this;
+    setFontStyle(style: 'normal' | 'italic' | 'oblique'): this;
+    setTextDecoration(decoration: 'none' | 'underline' | 'overline' | 'line-through'): this;
+    setLetterSpacing(spacing: string): this;
 }
 export declare function Text(...children: View[]): SvgTextTag;
 export declare class TspanTag extends SvgShapeTag {
@@ -108,10 +117,22 @@ export declare class TspanTag extends SvgShapeTag {
     y?: string;
     dx?: string;
     dy?: string;
+    'font-weight'?: string;
+    'font-style'?: 'normal' | 'italic' | 'oblique';
+    'text-decoration'?: 'none' | 'underline' | 'overline' | 'line-through';
+    'letter-spacing'?: string;
+    'font-size'?: string;
+    'font-family'?: string;
     setX(x: string): this;
     setY(y: string): this;
     setDx(dx: string): this;
     setDy(dy: string): this;
+    setFontSize(size: string): this;
+    setFontFamily(family: string): this;
+    setFontWeight(weight: number | 'normal' | 'bold' | 'bolder' | 'lighter'): this;
+    setFontStyle(style: 'normal' | 'italic' | 'oblique'): this;
+    setTextDecoration(decoration: 'none' | 'underline' | 'overline' | 'line-through'): this;
+    setLetterSpacing(spacing: string): this;
 }
 export declare function Tspan(...children: View[]): TspanTag;
 export declare class UseTag extends Tag {

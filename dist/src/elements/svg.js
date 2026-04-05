@@ -37,6 +37,9 @@ export class SvgShapeTag extends Tag {
         this.transform = transform;
         return this;
     }
+    setFilter(filter) {
+        return this.addAttribute('filter', filter);
+    }
 }
 /** @internal */
 const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform'];
@@ -170,7 +173,9 @@ export function Ellipse(...children) {
 // ─── Polygon ────────────────────────────────────────────────────────
 export class PolygonTag extends SvgShapeTag {
     setPoints(points) {
-        this.points = points;
+        this.points = Array.isArray(points)
+            ? points.map(([x, y]) => `${x},${y}`).join(' ')
+            : points;
         return this;
     }
 }
@@ -183,7 +188,9 @@ export function Polygon(...children) {
 // ─── Polyline ───────────────────────────────────────────────────────
 export class PolylineTag extends SvgShapeTag {
     setPoints(points) {
-        this.points = points;
+        this.points = Array.isArray(points)
+            ? points.map(([x, y]) => `${x},${y}`).join(' ')
+            : points;
         return this;
     }
 }
@@ -227,10 +234,26 @@ export class SvgTextTag extends SvgShapeTag {
         this['font-family'] = family;
         return this;
     }
+    setFontWeight(weight) {
+        this['font-weight'] = `${weight}`;
+        return this;
+    }
+    setFontStyle(style) {
+        this['font-style'] = style;
+        return this;
+    }
+    setTextDecoration(decoration) {
+        this['text-decoration'] = decoration;
+        return this;
+    }
+    setLetterSpacing(spacing) {
+        this['letter-spacing'] = spacing;
+        return this;
+    }
 }
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-SvgTextTag.prototype._sk = ['x', 'y', 'dx', 'dy', 'text-anchor', 'dominant-baseline', 'font-size', 'font-family', ...SHAPE_SK];
+SvgTextTag.prototype._sk = ['x', 'y', 'dx', 'dy', 'text-anchor', 'dominant-baseline', 'font-size', 'font-family', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', ...SHAPE_SK];
 export function Text(...children) {
     return new SvgTextTag("text", ...children);
 }
@@ -252,10 +275,34 @@ export class TspanTag extends SvgShapeTag {
         this.dy = dy;
         return this;
     }
+    setFontSize(size) {
+        this['font-size'] = size;
+        return this;
+    }
+    setFontFamily(family) {
+        this['font-family'] = family;
+        return this;
+    }
+    setFontWeight(weight) {
+        this['font-weight'] = `${weight}`;
+        return this;
+    }
+    setFontStyle(style) {
+        this['font-style'] = style;
+        return this;
+    }
+    setTextDecoration(decoration) {
+        this['text-decoration'] = decoration;
+        return this;
+    }
+    setLetterSpacing(spacing) {
+        this['letter-spacing'] = spacing;
+        return this;
+    }
 }
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-TspanTag.prototype._sk = ['x', 'y', 'dx', 'dy', ...SHAPE_SK];
+TspanTag.prototype._sk = ['x', 'y', 'dx', 'dy', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', 'font-size', 'font-family', ...SHAPE_SK];
 export function Tspan(...children) {
     return new TspanTag("tspan", ...children);
 }

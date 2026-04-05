@@ -4,6 +4,41 @@ How to articulate what your product does, who it's for, and why it matters — s
 
 ---
 
+## One-Liner
+
+A one-liner is a concise, repeatable verbal pitch you can use anywhere — conversations, bios, social profiles, email signatures. It follows a three-part formula.
+
+### DO: Use the problem → solution → result formula
+```
+[Problem], so we built [solution]. Which means [result].
+
+Example:
+"Most founders spend weeks wiring up auth, payments, and deployment
+ before writing a single feature — so we built a production-ready
+ starter kit with everything pre-configured. Which means you ship
+ your first real feature this weekend, not your auth flow."
+```
+
+### DO: Test it verbally — if it's hard to say out loud, simplify
+```
+// The one-liner should work in a 15-second elevator pitch.
+// Read it aloud. If you stumble, it's too long or complex.
+
+Good length: 1-2 sentences, <30 words
+Good test: Can someone repeat it back to you after hearing it once?
+```
+
+### DON'T: Describe your category — describe the transformation
+```
+// WRONG — category label
+"We're a full-stack web application template"
+
+// CORRECT — transformation
+"We help solo founders go from idea to deployed app in a weekend"
+```
+
+---
+
 ## Positioning Statement
 
 A positioning statement is internal — it aligns your team on who you serve and why you win. It's not marketing copy.
@@ -135,6 +170,53 @@ CORRECT: "Used by 230+ solo founders and small teams"
 "Renders pages in <100ms (benchmarked on M1 Mac)"
 "Includes auth, payments, analytics, file uploads, and email"
 "Deploy to production in under 5 minutes with our CLI"
+```
+
+---
+
+## Lead Generator
+
+A lead generator is a free resource offered in exchange for an email address. It captures leads from people who aren't ready to sign up yet but have the problem you solve.
+
+### DO: Solve one specific problem completely
+```
+Good lead generators (high value, low effort to consume):
+- Checklist:  "The Launch-Day Checklist: 23 things to ship before go-live"
+- Template:   "Copy-paste Stripe integration config for Fastify"
+- Guide:      "How to set up auth, payments, and email in one afternoon"
+- Video:      "5-minute walkthrough: deploy to production with zero config"
+- Tool:       "Free audit: is your landing page passing the 5-second test?"
+
+// The lead generator should give a quick win related to your product's
+// problem space. It proves you can help before they pay anything.
+```
+
+### DO: Gate only what's worth gating
+```
+// The lead generator must be valuable enough that giving
+// an email address feels like a fair trade.
+
+Worth gating:
+- Original frameworks, templates, or tools they can't get elsewhere
+- Curated, actionable content that saves hours of research
+
+NOT worth gating:
+- Blog posts (just publish them — they help SEO)
+- Feature announcements (nobody trades email for a changelog)
+- Generic "tips" they could find on page 1 of Google
+```
+
+### DON'T: Create a lead generator that's disconnected from your product
+```
+// WRONG — attracts the wrong audience
+Product: web app starter kit
+Lead magnet: "10 Productivity Hacks for Remote Teams"
+// You'll get emails from people who will never buy.
+
+// CORRECT — attracts future customers
+Product: web app starter kit
+Lead magnet: "The Solo Founder's Stack Decision Guide"
+// Everyone who downloads this is evaluating tools you compete with.
 ```
 
 ---

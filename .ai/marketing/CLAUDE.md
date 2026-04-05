@@ -5,9 +5,9 @@ This project follows **Lean Marketing** principles aligned with Lean Analytics s
 > **Precedence:** [voice-and-copy.md](../brand-book/guidelines/voice-and-copy.md) is the canonical voice definition. Marketing guidelines define messaging structure, not voice.
 
 > Detailed references (read when working on marketing pages, copy, or growth):
-> - [positioning-messaging.md](positioning-messaging.md) — Value props, messaging hierarchy, PAS copywriting framework
+> - [positioning-messaging.md](positioning-messaging.md) — One-liner, value props, messaging hierarchy, lead generators, PAS copywriting framework
 > - [landing-pages.md](landing-pages.md) — Page structure, copy patterns, CTAs, A/B testing
-> - [email-lifecycle.md](email-lifecycle.md) — Transactional, onboarding, retention, and re-engagement emails
+> - [email-lifecycle.md](email-lifecycle.md) — Nurture & sales sequences, transactional, onboarding, retention emails
 > - [seo-content.md](seo-content.md) — Technical SEO for SSR apps, content strategy, keyword targeting
 > - [growth-experiments.md](growth-experiments.md) — Channel testing, growth loops, experiment framework
 

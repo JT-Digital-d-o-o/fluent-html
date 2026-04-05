@@ -48,6 +48,107 @@ Bad broadcasts:
 
 ---
 
+## Nurture Sequence (pre-signup leads)
+
+For leads captured via a lead generator who haven't signed up yet. The goal is to build trust and authority until they're ready to buy.
+
+### DO: Deliver value weekly — earn the right to sell later
+```
+Nurture emails go to people who gave you their email (via lead generator)
+but haven't become users yet. They're interested, not committed.
+
+Cadence: 1 email per week, ongoing.
+
+Content mix (rotate these):
+- Quick tip       → One actionable insight they can use today
+- Story/case      → How someone solved the problem your product solves
+- Insight         → A non-obvious take on their problem space
+- Curated link    → Best resource you found this week (not always yours)
+
+// Every email should be useful even if they never buy.
+// That's what builds trust.
+```
+
+### DO: Structure as value-first, soft CTA
+```
+Example nurture email:
+
+Subject: "The #1 mistake solo founders make with auth"
+
+Body:
+  "Most founders build auth from scratch because they think
+   it'll take a day. It takes a week — and introduces security
+   bugs they won't catch until production.
+
+   The fix: treat auth as infrastructure, not a feature.
+   Use a proven, pre-configured setup and move on.
+
+   [Here's how we set up auth in 5 minutes →]"
+
+// The CTA links to your product, but the email is useful
+// even without clicking. That's the difference between
+// nurture and spam.
+```
+
+### DON'T: Start selling immediately after they download the lead generator
+```
+// WRONG — download → sales pitch the next day
+Email 1: "Thanks for downloading!"
+Email 2: "Ready to buy? Here's our pricing →"
+// They just met you. This burns trust instantly.
+
+// CORRECT — earn trust first, sell later
+Emails 1-4: Pure value (tips, stories, insights)
+Email 5+:   Mention your product naturally when relevant
+// After 4+ weeks of value, a product mention feels helpful, not pushy.
+```
+
+---
+
+## Sales Sequence (leads ready to convert)
+
+A short, direct sequence for leads who've shown buying signals — clicked pricing, visited signup multiple times, or engaged heavily with nurture emails.
+
+### DO: Use a short, time-bound sequence (3-5 emails over 2 weeks)
+```
+Email 1: Direct pitch
+  "You've been reading about [problem] for a few weeks.
+   Here's how [product] solves it — and what it costs."
+  CTA: [Start your free trial →]
+
+Email 2: Handle the #1 objection (3 days later)
+  "Most people wonder about [common concern].
+   Here's the honest answer: [address it directly]."
+  CTA: [See it in action →]
+
+Email 3: Social proof (3 days later)
+  "Here's what [name] built with [product] in their first week:
+   [specific outcome with numbers]."
+  CTA: [Start building →]
+
+Email 4: Urgency or scarcity — only if genuine (4 days later)
+  "We're closing early-access pricing on [date]."
+  CTA: [Lock in your price →]
+
+// After this sequence: if they don't convert, move them
+// back to nurture. Don't keep hammering.
+```
+
+### DON'T: Manufacture fake urgency
+```
+// WRONG
+"Only 3 spots left!" (there are no spots, it's SaaS)
+"This offer expires tonight!" (it doesn't)
+
+// CORRECT — only use urgency that's real
+"Early-access pricing ends March 31" (if it actually does)
+"We're onboarding 10 teams this month for hands-on setup" (if true)
+
+// Fake urgency works once and destroys trust permanently.
+```
+
+---
+
 ## Onboarding Sequence
 
 ### DO: Design a behavior-triggered onboarding sequence

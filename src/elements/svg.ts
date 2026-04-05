@@ -56,6 +56,10 @@ export class SvgShapeTag extends Tag {
     this.transform = transform;
     return this;
   }
+
+  setFilter(filter: string): this {
+    return this.addAttribute('filter', filter);
+  }
 }
 
 /** @internal */
@@ -254,8 +258,10 @@ export function Ellipse(...children: View[]): EllipseTag {
 export class PolygonTag extends SvgShapeTag {
   points?: string;
 
-  setPoints(points: string): this {
-    this.points = points;
+  setPoints(points: string | [number, number][]): this {
+    this.points = Array.isArray(points)
+      ? points.map(([x, y]) => `${x},${y}`).join(' ')
+      : points;
     return this;
   }
 }
@@ -273,8 +279,10 @@ export function Polygon(...children: View[]): PolygonTag {
 export class PolylineTag extends SvgShapeTag {
   points?: string;
 
-  setPoints(points: string): this {
-    this.points = points;
+  setPoints(points: string | [number, number][]): this {
+    this.points = Array.isArray(points)
+      ? points.map(([x, y]) => `${x},${y}`).join(' ')
+      : points;
     return this;
   }
 }
@@ -298,6 +306,10 @@ export class SvgTextTag extends SvgShapeTag {
   'dominant-baseline'?: string;
   'font-size'?: string;
   'font-family'?: string;
+  'font-weight'?: string;
+  'font-style'?: 'normal' | 'italic' | 'oblique';
+  'text-decoration'?: 'none' | 'underline' | 'overline' | 'line-through';
+  'letter-spacing'?: string;
 
   setX(x: string): this {
     this.x = x;
@@ -338,11 +350,31 @@ export class SvgTextTag extends SvgShapeTag {
     this['font-family'] = family;
     return this;
   }
+
+  setFontWeight(weight: number | 'normal' | 'bold' | 'bolder' | 'lighter'): this {
+    this['font-weight'] = `${weight}`;
+    return this;
+  }
+
+  setFontStyle(style: 'normal' | 'italic' | 'oblique'): this {
+    this['font-style'] = style;
+    return this;
+  }
+
+  setTextDecoration(decoration: 'none' | 'underline' | 'overline' | 'line-through'): this {
+    this['text-decoration'] = decoration;
+    return this;
+  }
+
+  setLetterSpacing(spacing: string): this {
+    this['letter-spacing'] = spacing;
+    return this;
+  }
 }
 
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(SvgTextTag.prototype as any)._sk = ['x', 'y', 'dx', 'dy', 'text-anchor', 'dominant-baseline', 'font-size', 'font-family', ...SHAPE_SK];
+(SvgTextTag.prototype as any)._sk = ['x', 'y', 'dx', 'dy', 'text-anchor', 'dominant-baseline', 'font-size', 'font-family', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', ...SHAPE_SK];
 
 export function Text(...children: View[]): SvgTextTag {
   return new SvgTextTag("text", ...children);
@@ -355,6 +387,12 @@ export class TspanTag extends SvgShapeTag {
   y?: string;
   dx?: string;
   dy?: string;
+  'font-weight'?: string;
+  'font-style'?: 'normal' | 'italic' | 'oblique';
+  'text-decoration'?: 'none' | 'underline' | 'overline' | 'line-through';
+  'letter-spacing'?: string;
+  'font-size'?: string;
+  'font-family'?: string;
 
   setX(x: string): this {
     this.x = x;
@@ -375,11 +413,41 @@ export class TspanTag extends SvgShapeTag {
     this.dy = dy;
     return this;
   }
+
+  setFontSize(size: string): this {
+    this['font-size'] = size;
+    return this;
+  }
+
+  setFontFamily(family: string): this {
+    this['font-family'] = family;
+    return this;
+  }
+
+  setFontWeight(weight: number | 'normal' | 'bold' | 'bolder' | 'lighter'): this {
+    this['font-weight'] = `${weight}`;
+    return this;
+  }
+
+  setFontStyle(style: 'normal' | 'italic' | 'oblique'): this {
+    this['font-style'] = style;
+    return this;
+  }
+
+  setTextDecoration(decoration: 'none' | 'underline' | 'overline' | 'line-through'): this {
+    this['text-decoration'] = decoration;
+    return this;
+  }
+
+  setLetterSpacing(spacing: string): this {
+    this['letter-spacing'] = spacing;
+    return this;
+  }
 }
 
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(TspanTag.prototype as any)._sk = ['x', 'y', 'dx', 'dy', ...SHAPE_SK];
+(TspanTag.prototype as any)._sk = ['x', 'y', 'dx', 'dy', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', 'font-size', 'font-family', ...SHAPE_SK];
 
 export function Tspan(...children: View[]): TspanTag {
   return new TspanTag("tspan", ...children);
