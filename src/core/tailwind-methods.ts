@@ -152,7 +152,7 @@ declare module "./tag.js" {
     gridRows(rows: TailwindGridRows): this;
 
     // Borders
-    border(value?: TailwindBorderWidth | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
+    border(value?: TailwindBorderWidth | TailwindBorderStyle | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
     border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
     borderColor(color: TailwindColor): this;
     borderColor(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", color: TailwindColor): this;
@@ -185,8 +185,8 @@ declare module "./tag.js" {
     left(unit: TailwindUnit, amount: number): this;
 
     // Flexbox & Grid Extensions
-    shrink(value?: 0): this;
-    grow(value?: 0): this;
+    shrink(value?: 0 | "0"): this;
+    grow(value?: 0 | "0"): this;
     flexWrap(value: TailwindFlexWrap): this;
     alignSelf(value: TailwindAlignSelf): this;
     colSpan(value: TailwindColSpan): this;

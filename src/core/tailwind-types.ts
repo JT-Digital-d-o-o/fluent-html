@@ -2,6 +2,9 @@
 // Tailwind Type Definitions
 // ------------------------------------
 
+// Utility: allows both number literals and their string equivalents (e.g. 2 | "2")
+type Stringified<T extends number> = `${T}`;
+
 // Escape hatches:
 //   (string & {})   — accepts any string while preserving autocomplete.
 //                      Used where custom theme tokens are common (colors, spacing).
@@ -78,12 +81,13 @@ export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" |
 export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | `[${string}]`;
 
 // Border width
-export type TailwindBorderWidth = 0 | 2 | 4 | 8 | `[${string}]`;
+export type TailwindBorderWidth = 0 | 2 | 4 | 8 | Stringified<0 | 2 | 4 | 8> | `[${string}]`;
 
 // Opacity
 export type TailwindOpacity =
   | 0 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45
   | 50 | 55 | 60 | 65 | 70 | 75 | 80 | 85 | 90 | 95 | 100
+  | Stringified<0 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 | 55 | 60 | 65 | 70 | 75 | 80 | 85 | 90 | 95 | 100>
   | `[${string}]`;
 
 // Cursor
@@ -95,7 +99,7 @@ export type TailwindCursor =
   | "ew-resize" | "ns-resize" | "nesw-resize" | "nwse-resize" | "zoom-in" | "zoom-out";
 
 // Z-index
-export type TailwindZIndex = 0 | 10 | 20 | 30 | 40 | 50 | "auto" | `[${string}]`;
+export type TailwindZIndex = 0 | 10 | 20 | 30 | 40 | 50 | Stringified<0 | 10 | 20 | 30 | 40 | 50> | "auto" | `[${string}]`;
 
 // Grid columns/rows — keeps (string & {}) for JIT bare numbers beyond 12
 export type TailwindGridCols = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | (string & {});
@@ -133,15 +137,15 @@ export type TailwindAspect = "auto" | "square" | "video";
 
 // Transitions & Animation
 export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow" | "transform";
-export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | (string & {});
+export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | (string & {});
 export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
 
 // Ring
-export type TailwindRingWidth = 0 | 1 | 2 | 4 | 8 | `[${string}]`;
+export type TailwindRingWidth = 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | `[${string}]`;
 
 // Transforms
-export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | `[${string}]`;
-export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | `[${string}]`;
+export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | `[${string}]`;
+export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | Stringified<0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180> | `[${string}]`;
 
 // Interactivity
 export type TailwindSelect = "none" | "text" | "all" | "auto";
