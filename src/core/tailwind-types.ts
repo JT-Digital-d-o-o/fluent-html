@@ -78,7 +78,7 @@ export type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl"
 export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" | "bl" | "s" | "e" | "ss" | "se" | "es" | "ee";
 
 // Shadow
-export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | `[${string}]`;
+export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | (string & {});
 
 // Border width
 export type TailwindBorderWidth = 0 | 2 | 4 | 8 | Stringified<0 | 2 | 4 | 8> | `[${string}]`;
@@ -141,10 +141,10 @@ export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000
 export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
 
 // Ring
-export type TailwindRingWidth = 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | `[${string}]`;
+export type TailwindRingWidth = 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | (string & {});
 
 // Transforms
-export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | `[${string}]`;
+export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | (string & {});
 export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | Stringified<0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180> | `[${string}]`;
 
 // Interactivity
@@ -208,7 +208,7 @@ export type TailwindBlur = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | 
 export type TailwindLineClamp = 1 | 2 | 3 | 4 | 5 | 6 | "none" | (string & {});
 
 // Underline offset
-export type TailwindUnderlineOffset = "auto" | 0 | 1 | 2 | 4 | 8 | `[${string}]`;
+export type TailwindUnderlineOffset = "auto" | 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | `[${string}]`;
 
 // Timing function
 export type TailwindEase = "linear" | "in" | "out" | "in-out" | `[${string}]`;
