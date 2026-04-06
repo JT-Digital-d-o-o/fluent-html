@@ -1,4 +1,4 @@
-import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit } from "./tailwind-types.js";
+import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize } from "./tailwind-types.js";
 declare module "./tag.js" {
     interface Tag {
         on(state: TailwindState, fn: (tag: this) => this): this;
@@ -100,6 +100,24 @@ declare module "./tag.js" {
         listStylePosition(value: TailwindListStylePosition): this;
         srOnly(): this;
         outline(value: TailwindOutline): this;
+        fontFamily(family: TailwindFontFamily): this;
+        gradientTo(direction: TailwindGradientDirection): this;
+        from(color: TailwindGradientStop): this;
+        via(color: TailwindGradientStop): this;
+        to(color: TailwindGradientStop): this;
+        group(name?: string): this;
+        peer(name?: string): this;
+        shadowColor(color: TailwindColor): this;
+        blur(value?: TailwindBlur): this;
+        backdropBlur(value?: TailwindBlur): this;
+        lineClamp(value: TailwindLineClamp): this;
+        antialiased(): this;
+        tabularNums(): this;
+        underlineOffset(value: TailwindUnderlineOffset): this;
+        breakAll(): this;
+        ease(value: TailwindEase): this;
+        resize(value?: TailwindResize): this;
+        neg(cls: string): this;
     }
 }
 //# sourceMappingURL=tailwind-methods.d.ts.map

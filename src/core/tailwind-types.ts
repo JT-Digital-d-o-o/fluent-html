@@ -186,5 +186,31 @@ export type TailwindState =
 
 export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
 
+// Font family
+export type TailwindFontFamily = "sans" | "serif" | "mono" | (string & {});
+
+// Gradient direction
+export type TailwindGradientDirection =
+  | "to-t" | "to-tr" | "to-r" | "to-br" | "to-b" | "to-bl" | "to-l" | "to-tl"
+  | (string & {});
+
+// Gradient stop (color with optional opacity)
+export type TailwindGradientStop = TailwindColor;
+
+// Blur
+export type TailwindBlur = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | `[${string}]`;
+
+// Line clamp
+export type TailwindLineClamp = 1 | 2 | 3 | 4 | 5 | 6 | "none" | (string & {});
+
+// Underline offset
+export type TailwindUnderlineOffset = "auto" | 0 | 1 | 2 | 4 | 8 | `[${string}]`;
+
+// Timing function
+export type TailwindEase = "linear" | "in" | "out" | "in-out" | `[${string}]`;
+
+// Resize
+export type TailwindResize = "none" | "x" | "y";
+
 // CSS unit for arbitrary value overloads: .minH("px", 180) → min-h-[180px]
 export type TailwindUnit = "px" | "rem" | "em" | "%" | "vh" | "vw" | "dvh" | "svh" | "lvh";

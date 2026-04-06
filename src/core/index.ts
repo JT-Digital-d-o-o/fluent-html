@@ -72,4 +72,12 @@ export type {
   TailwindState,
   TailwindBreakpoint,
   TailwindUnit,
+  TailwindFontFamily,
+  TailwindGradientDirection,
+  TailwindGradientStop,
+  TailwindBlur,
+  TailwindLineClamp,
+  TailwindUnderlineOffset,
+  TailwindEase,
+  TailwindResize,
 } from "./tailwind-types.js";

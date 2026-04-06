@@ -236,4 +236,42 @@ p.listStylePosition = function (value) { return this.addClass(`list-${value}`); 
 p.srOnly = function () { return this.addClass("sr-only"); };
 // Outline
 p.outline = function (value) { return this.addClass(`outline-${value}`); };
+// Font Family
+p.fontFamily = function (family) { return this.addClass(`font-${family}`); };
+// Gradients
+p.gradientTo = function (direction) { return this.addClass(`bg-gradient-${direction}`); };
+p.from = function (color) { return this.addClass(`from-${color}`); };
+p.via = function (color) { return this.addClass(`via-${color}`); };
+p.to = function (color) { return this.addClass(`to-${color}`); };
+// Group / Peer markers
+p.group = function (name) {
+    return name === undefined ? this.addClass("group") : this.addClass(`group/${name}`);
+};
+p.peer = function (name) {
+    return name === undefined ? this.addClass("peer") : this.addClass(`peer/${name}`);
+};
+// Shadow Color
+p.shadowColor = function (color) { return this.addClass(`shadow-${color}`); };
+// Blur & Backdrop Blur
+p.blur = function (value) {
+    return value === undefined ? this.addClass("blur") : this.addClass(`blur-${value}`);
+};
+p.backdropBlur = function (value) {
+    return value === undefined ? this.addClass("backdrop-blur") : this.addClass(`backdrop-blur-${value}`);
+};
+// Line Clamp
+p.lineClamp = function (value) { return this.addClass(`line-clamp-${value}`); };
+// Typography extras
+p.antialiased = function () { return this.addClass("antialiased"); };
+p.tabularNums = function () { return this.addClass("tabular-nums"); };
+p.underlineOffset = function (value) { return this.addClass(`underline-offset-${value}`); };
+p.breakAll = function () { return this.addClass("break-all"); };
+// Timing function
+p.ease = function (value) { return this.addClass(`ease-${value}`); };
+// Resize
+p.resize = function (value) {
+    return value === undefined ? this.addClass("resize") : this.addClass(`resize-${value}`);
+};
+// Negative value prefix
+p.neg = function (cls) { return this.addClass(`-${cls}`); };
 //# sourceMappingURL=tailwind-methods.js.map

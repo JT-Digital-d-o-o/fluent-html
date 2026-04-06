@@ -58,6 +58,14 @@ import type {
   TailwindState,
   TailwindBreakpoint,
   TailwindUnit,
+  TailwindFontFamily,
+  TailwindGradientDirection,
+  TailwindGradientStop,
+  TailwindBlur,
+  TailwindLineClamp,
+  TailwindUnderlineOffset,
+  TailwindEase,
+  TailwindResize,
 } from "./tailwind-types.js";
 
 // ── Variant helper (local, not on prototype) ────────────────────────
@@ -220,6 +228,44 @@ declare module "./tag.js" {
 
     // Outline
     outline(value: TailwindOutline): this;
+
+    // Font Family
+    fontFamily(family: TailwindFontFamily): this;
+
+    // Gradients
+    gradientTo(direction: TailwindGradientDirection): this;
+    from(color: TailwindGradientStop): this;
+    via(color: TailwindGradientStop): this;
+    to(color: TailwindGradientStop): this;
+
+    // Group / Peer markers
+    group(name?: string): this;
+    peer(name?: string): this;
+
+    // Shadow Color
+    shadowColor(color: TailwindColor): this;
+
+    // Blur & Backdrop Blur
+    blur(value?: TailwindBlur): this;
+    backdropBlur(value?: TailwindBlur): this;
+
+    // Line Clamp
+    lineClamp(value: TailwindLineClamp): this;
+
+    // Typography extras
+    antialiased(): this;
+    tabularNums(): this;
+    underlineOffset(value: TailwindUnderlineOffset): this;
+    breakAll(): this;
+
+    // Timing function
+    ease(value: TailwindEase): this;
+
+    // Resize
+    resize(value?: TailwindResize): this;
+
+    // Negative value prefix
+    neg(cls: string): this;
   }
 }
 
@@ -461,3 +507,61 @@ p.srOnly = function () { return this.addClass("sr-only"); };
 // Outline
 
 p.outline = function (value: string) { return this.addClass(`outline-${value}`); };
+
+// Font Family
+
+p.fontFamily = function (family: string) { return this.addClass(`font-${family}`); };
+
+// Gradients
+
+p.gradientTo = function (direction: string) { return this.addClass(`bg-gradient-${direction}`); };
+p.from = function (color: string) { return this.addClass(`from-${color}`); };
+p.via = function (color: string) { return this.addClass(`via-${color}`); };
+p.to = function (color: string) { return this.addClass(`to-${color}`); };
+
+// Group / Peer markers
+
+p.group = function (name?: string) {
+  return name === undefined ? this.addClass("group") : this.addClass(`group/${name}`);
+};
+p.peer = function (name?: string) {
+  return name === undefined ? this.addClass("peer") : this.addClass(`peer/${name}`);
+};
+
+// Shadow Color
+
+p.shadowColor = function (color: string) { return this.addClass(`shadow-${color}`); };
+
+// Blur & Backdrop Blur
+
+p.blur = function (value?: string) {
+  return value === undefined ? this.addClass("blur") : this.addClass(`blur-${value}`);
+};
+p.backdropBlur = function (value?: string) {
+  return value === undefined ? this.addClass("backdrop-blur") : this.addClass(`backdrop-blur-${value}`);
+};
+
+// Line Clamp
+
+p.lineClamp = function (value: string | number) { return this.addClass(`line-clamp-${value}`); };
+
+// Typography extras
+
+p.antialiased = function () { return this.addClass("antialiased"); };
+p.tabularNums = function () { return this.addClass("tabular-nums"); };
+p.underlineOffset = function (value: string | number) { return this.addClass(`underline-offset-${value}`); };
+p.breakAll = function () { return this.addClass("break-all"); };
+
+// Timing function
+
+p.ease = function (value: string) { return this.addClass(`ease-${value}`); };
+
+// Resize
+
+p.resize = function (value?: string) {
+  return value === undefined ? this.addClass("resize") : this.addClass(`resize-${value}`);
+};
+
+// Negative value prefix
+
+p.neg = function (cls: string) { return this.addClass(`-${cls}`); };
