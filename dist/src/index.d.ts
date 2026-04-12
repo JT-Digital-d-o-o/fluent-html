@@ -28,7 +28,7 @@ export { hx, resolveSelector, HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, 
 export { OOB, withOOB, Partial, HtmxConfig, HtmxGlobalConfig, hxResponse, HxResponse, HxResponseResult, HxLocationConfig, } from './patterns.js';
 export { Id, createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
 export { defineRoutes, } from './routes.js';
-export type { RouteDef, RouteHxOptions, } from './routes.js';
+export type { RouteDef, RouteHxOptions, QueryParams, QueryParamValue, } from './routes.js';
 export type { BehaviorMap } from './core/behavior-methods.js';
 export { foldView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra, createTransformAlgebra, addClassToMatching, } from './fold/index.js';
 export type { ViewAlgebra, TagAttrs, LinkInfo, } from './fold/index.js';

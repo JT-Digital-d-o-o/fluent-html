@@ -39,14 +39,19 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
     indicator?: string | Id;
     disable?: string | Id;
     include?: string | Id;
+    query?: QueryParams;
 };
+/** Values accepted in a query-parameter object. `undefined` and `null` entries are silently skipped. */
+export type QueryParamValue = string | number | boolean | undefined | null;
+/** A bag of query parameters. */
+export type QueryParams = Record<string, QueryParamValue>;
 /** Base properties available on every route callable. */
 type RouteProperties<Def extends RouteDef> = {
     readonly method: Def['method'];
     readonly path: Def['path'];
     readonly resolve: HasParams<Def['path']> extends true ? (params: {
         [K in ExtractParams<Def['path']>]: string;
-    }) => string : () => string;
+    }, query?: QueryParams) => string : (query?: QueryParams) => string;
 };
 /**
  * A type-safe route callable.
@@ -54,7 +59,7 @@ type RouteProperties<Def extends RouteDef> = {
  * - Routes with `:param` segments require a params object as the first argument.
  * - Routes without params accept options directly.
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
- * - `.resolve(params?)` returns the resolved URL string (for redirects, links, etc.).
+ * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
 type RouteCallable<Def extends RouteDef> = HasParams<Def['path']> extends true ? ((params: {
     [K in ExtractParams<Def['path']>]: string;

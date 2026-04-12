@@ -76,7 +76,18 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
   indicator?: string | Id;
   disable?: string | Id;
   include?: string | Id;
+  query?: QueryParams;
 };
+
+// ------------------------------------
+// Query Parameter Types
+// ------------------------------------
+
+/** Values accepted in a query-parameter object. `undefined` and `null` entries are silently skipped. */
+export type QueryParamValue = string | number | boolean | undefined | null;
+
+/** A bag of query parameters. */
+export type QueryParams = Record<string, QueryParamValue>;
 
 // ------------------------------------
 // Route Callable Types
@@ -87,8 +98,8 @@ type RouteProperties<Def extends RouteDef> = {
   readonly method: Def['method'];
   readonly path: Def['path'];
   readonly resolve: HasParams<Def['path']> extends true
-    ? (params: { [K in ExtractParams<Def['path']>]: string }) => string
-    : () => string;
+    ? (params: { [K in ExtractParams<Def['path']>]: string }, query?: QueryParams) => string
+    : (query?: QueryParams) => string;
 };
 
 /**
@@ -97,7 +108,7 @@ type RouteProperties<Def extends RouteDef> = {
  * - Routes with `:param` segments require a params object as the first argument.
  * - Routes without params accept options directly.
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
- * - `.resolve(params?)` returns the resolved URL string (for redirects, links, etc.).
+ * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
 type RouteCallable<Def extends RouteDef> =
   HasParams<Def['path']> extends true
@@ -115,6 +126,16 @@ type RouteRegistry<T extends RouteDefinitions> = {
 // Runtime Implementation
 // ------------------------------------
 
+/** Internal: serialize a query-params bag into a `?key=value&…` string. Skips nullish entries. */
+function buildQueryString(query: QueryParams): string {
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(query)) {
+    if (value == null) continue;
+    parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+  }
+  return parts.length > 0 ? `?${parts.join("&")}` : "";
+}
+
 /** Internal: build an HTMX object from a resolved path + method + options. */
 function buildHtmxFromRoute(
   endpoint: string,
@@ -124,9 +145,10 @@ function buildHtmxFromRoute(
   if (!options) {
     return { endpoint, method };
   }
-  const { target, select, indicator, disable, include, ...rest } = options;
+  const { target, select, indicator, disable, include, query, ...rest } = options;
+  const resolvedEndpoint = query ? endpoint + buildQueryString(query) : endpoint;
   return {
-    endpoint,
+    endpoint: resolvedEndpoint,
     method,
     target: resolveSelector(target),
     select: resolveSelector(select),
@@ -209,15 +231,15 @@ export function defineRoutes(
         };
 
     const resolve = hasParams
-      ? function (params: Record<string, string>): string {
+      ? function (params: Record<string, string>, query?: QueryParams): string {
           let resolved = fullPath;
           for (const [key, value] of Object.entries(params)) {
             resolved = resolved.replace(`:${key}`, encodeURIComponent(value));
           }
-          return resolved;
+          return query ? resolved + buildQueryString(query) : resolved;
         }
-      : function (): string {
-          return fullPath;
+      : function (query?: QueryParams): string {
+          return query ? fullPath + buildQueryString(query) : fullPath;
         };
 
     Object.defineProperty(routeFn, "method", { value: method, writable: false, enumerable: true });

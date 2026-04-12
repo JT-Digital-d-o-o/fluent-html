@@ -392,6 +392,63 @@ describe("Id resolution: parameterized routes", () => {
   });
 });
 
+describe("Query parameters on resolve()", () => {
+  it("appends query params to parameterless route", () => {
+    assert.deepStrictEqual(routes.list.resolve({ page: "2", limit: "10" }), "/users?page=2&limit=10");
+  });
+  it("appends query params to parameterized route", () => {
+    assert.deepStrictEqual(routes.detail.resolve({ id: "42" }, { tab: "posts" }), "/users/42?tab=posts");
+  });
+  it("skips undefined values", () => {
+    assert.deepStrictEqual(routes.list.resolve({ page: "1", filter: undefined }), "/users?page=1");
+  });
+  it("skips null values", () => {
+    assert.deepStrictEqual(routes.list.resolve({ page: "1", filter: null }), "/users?page=1");
+  });
+  it("supports number and boolean values", () => {
+    assert.deepStrictEqual(routes.list.resolve({ page: 2, active: true }), "/users?page=2&active=true");
+  });
+  it("encodes special characters in keys and values", () => {
+    assert.deepStrictEqual(routes.list.resolve({ "my key": "a&b=c" }), "/users?my%20key=a%26b%3Dc");
+  });
+  it("returns plain path when all query values are nullish", () => {
+    assert.deepStrictEqual(routes.list.resolve({ a: undefined, b: null }), "/users");
+  });
+  it("returns plain path when query is undefined", () => {
+    assert.deepStrictEqual(routes.list.resolve(undefined), "/users");
+  });
+  it("returns plain path when query is empty object", () => {
+    assert.deepStrictEqual(routes.list.resolve({}), "/users");
+  });
+});
+
+describe("Query parameters on route callable", () => {
+  it("appends query to endpoint on parameterless route", () => {
+    assert.deepStrictEqual(routes.list({ query: { page: "2" } }).endpoint, "/users?page=2");
+  });
+  it("appends query to endpoint on parameterized route", () => {
+    assert.deepStrictEqual(routes.detail({ id: "42" }, { query: { tab: "posts" } }).endpoint, "/users/42?tab=posts");
+  });
+  it("renders query params in hx-get", () => {
+    assert.strictEqual(
+      render(Button("Load").setHtmx(routes.list({ query: { page: "2" } }))),
+      '<button hx-get="/users?page=2">Load</button>'
+    );
+  });
+  it("skips nullish query values", () => {
+    assert.deepStrictEqual(routes.list({ query: { page: "1", x: undefined } }).endpoint, "/users?page=1");
+  });
+});
+
+describe("Prefixed query parameters", () => {
+  it("resolve with query on prefixed parameterless", () => {
+    assert.deepStrictEqual(prefixedRoutes.list.resolve({ page: "3" }), "/users?page=3");
+  });
+  it("resolve with query on prefixed parameterized", () => {
+    assert.deepStrictEqual(prefixedRoutes.detail.resolve({ id: "7" }, { tab: "info" }), "/users/7?tab=info");
+  });
+});
+
 describe("Registry immutability", () => {
   it("registry is frozen", () => {
     assert.strictEqual(Object.isFrozen(routes), true);
