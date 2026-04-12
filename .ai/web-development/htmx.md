@@ -63,8 +63,16 @@ Use `.resolve()` for redirects and external links. Never write manual resolve he
 reply.redirect(userRoutes.list.resolve())                  // "/users"
 reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
 
-// ✗ NEVER do this — .resolve() already handles params + encoding
+// With query parameters — nullish values are silently skipped
+reply.redirect(userRoutes.list.resolve({ page: "2", sort: "name" }))           // "/users?page=2&sort=name"
+reply.redirect(userRoutes.delete.resolve({ id: user.id }, { tab: "posts" }))   // "/users/42?tab=posts"
+
+// Query parameters in HTMX calls
+Button("Page 2").setHtmx(userRoutes.list({ query: { page: "2" } }))
+
+// ✗ NEVER do this — .resolve() already handles params, query, and encoding
 function resolveUser(id: string) { return `/users/${encodeURIComponent(id)}`; }
+const url = route.resolve() + `?page=${page}`; // ✗ use resolve({ page })
 ```
 
 ## Shorthand vs setHtmx

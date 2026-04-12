@@ -118,6 +118,42 @@ reply.redirect(userRoutes.delete.resolve({ id: user.id }))
 
 Path parameters (`:id`) are extracted at the type level and required at call time. Routes expose `.method`, `.path`, and `.resolve()` for server-side use.
 
+#### Query Parameters on Routes
+
+Routes now accept query parameters on both the callable and `.resolve()`. Nullish values are silently skipped:
+
+```typescript
+// resolve() with query params
+userRoutes.list.resolve({ page: "2", sort: "name" })                       // "/users?page=2&sort=name"
+userRoutes.delete.resolve({ id: user.id }, { tab: "posts" })               // "/users/42?tab=posts"
+userRoutes.list.resolve({ page: "1", filter: undefined })                   // "/users?page=1"
+
+// HTMX calls with query params
+Button("Page 2").setHtmx(userRoutes.list({ query: { page: "2" } }))
+```
+
+Supports `string`, `number`, and `boolean` values. Keys and values are properly encoded via `encodeURIComponent`.
+
+#### Scoped Context (`createContext`)
+
+New `createContext()` for implicit, request-safe values without prop drilling. Uses TC39 Explicit Resource Management (`using`) for automatic cleanup:
+
+```typescript
+const ThemeCtx = createContext<"light" | "dark">("light");
+
+function Page(theme: "light" | "dark") {
+  using _ = ThemeCtx.scope(theme);
+  return Div(Header(), Content());
+}
+
+function Header() {
+  const theme = ThemeCtx.current;  // reads innermost scope
+  return Nav().background(theme === "dark" ? "gray-900" : "white");
+}
+```
+
+Stack-based: nested `scope()` calls compose safely, disposal pops automatically.
+
 #### Morph Swap Strategies
 
 New swap styles for DOM-preserving morphs:

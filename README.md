@@ -541,9 +541,43 @@ server.delete(userRoutes.delete.path, handler)  // "/users/:id"
 // Resolved URLs for redirects, links, etc.
 reply.redirect(userRoutes.list.resolve())                  // "/users"
 reply.redirect(userRoutes.delete.resolve({ id: user.id })) // "/users/42"
+
+// Query parameters — nullish values are silently skipped
+reply.redirect(userRoutes.list.resolve({ page: "2", sort: "name" }))           // "/users?page=2&sort=name"
+reply.redirect(userRoutes.delete.resolve({ id: user.id }, { tab: "posts" }))   // "/users/42?tab=posts"
+userRoutes.list.resolve({ page: "1", filter: undefined })                       // "/users?page=1"
+
+// Query parameters in HTMX calls
+Button("Page 2").setHtmx(userRoutes.list({ query: { page: "2" } }))
 ```
 
-The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method`, `.path` (with prefix applied), and `.resolve()` (for param substitution). Views and controllers always stay in sync.
+The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method`, `.path` (with prefix applied), and `.resolve()` (for param + query substitution). Views and controllers always stay in sync.
+
+---
+
+## Scoped Context
+
+`createContext()` provides implicit, request-safe values without prop drilling — ideal for cross-cutting concerns like theme, locale, auth, and nonce. Uses TC39 Explicit Resource Management (`using`) for automatic cleanup.
+
+```typescript
+import { createContext } from 'fluent-html';
+
+const ThemeCtx = createContext<"light" | "dark">("light");
+const LocaleCtx = createContext("en-US");
+
+function Page(theme: "light" | "dark") {
+  using _t = ThemeCtx.scope(theme);
+  using _l = LocaleCtx.scope("de");
+  return Div(Header(), Content());
+}
+
+function Header() {
+  const theme = ThemeCtx.current;  // "dark" — reads the innermost scope
+  return Nav().background(theme === "dark" ? "gray-900" : "white");
+}
+```
+
+Contexts are stack-based: each `scope()` pushes a value, and disposal pops it. Nested overrides compose safely. Default value is returned when no scope is active.
 
 ---
 
@@ -2166,7 +2200,7 @@ previous()           // → "previous"
 import {
   SearchInput, InfiniteScroll,
   Partial, HtmxConfig,
-  defineRoutes, hxResponse,
+  defineRoutes, createContext, hxResponse,
   FormField, KeyedList
 } from 'fluent-html';
 ```
@@ -2176,6 +2210,7 @@ import {
 | `Partial(target, content, swap?)` | Multi-swap partial element (HTMX 4) |
 | `HtmxConfig(options)` | Global HTMX configuration via `<meta>` tag |
 | `defineRoutes(prefix?, routes)` | Type-safe route definitions for HTMX + server |
+| `createContext(defaultValue)` | Scoped context for implicit values (theme, locale, auth) |
 | `hxResponse(content)` | Build HTMX response with headers |
 | `SearchInput(options)` | Debounced search input with HTMX |
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
@@ -2199,7 +2234,7 @@ Raw(html: string): RawString  // Create unescaped HTML content
 ### Type-Safe IDs & Routes
 
 ```typescript
-import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes } from 'fluent-html';
+import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes, createContext } from 'fluent-html';
 ```
 
 | Function | Description |
@@ -2210,15 +2245,16 @@ import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes
 | `extractId(value)` | Extract ID string from string or Id |
 | `extractSelector(value)` | Extract selector string from string or Id |
 | `defineRoutes(prefix?, routes)` | Create type-safe route definitions with params |
+| `createContext(defaultValue)` | Create a scoped context with stack-based overrides |
 
 **Route Callable Object:**
 
 | Property | Type | Description |
 | -------- | ---- | ----------- |
-| `(params?, options?)` | `HTMX` | Call the route to get an HTMX object for `setHtmx()` |
+| `(params?, options?)` | `HTMX` | Call the route to get an HTMX object for `setHtmx()`. Options accept `query` for query params. |
 | `.method` | `string` | HTTP method (`"get"`, `"post"`, etc.) |
 | `.path` | `string` | Full path template with prefix (`"/users/:id"`) |
-| `.resolve(params?)` | `string` | Resolved URL with params substituted (`"/users/42"`) |
+| `.resolve(params?, query?)` | `string` | Resolved URL with params and query string (`"/users/42?tab=posts"`) |
 
 **Id Object:**
 

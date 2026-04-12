@@ -89,6 +89,8 @@ const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow
 Div("Content").apply(card)
 ```
 
+**Scoped context (`createContext`)** — use for cross-cutting values read by many components (i18n, theme, auth, nonce, feature flags) instead of prop drilling. Use props for component-specific data. **Never use `AsyncLocalStorage`** for render-time data — `createContext` is sufficient for synchronous rendering.
+
 ---
 
 ## Fluent Tailwind Styling
@@ -114,7 +116,7 @@ Critical rules:
 - **`defineRoutes`** for endpoints, **`defineIds`** for targets — never hardcode strings
 - **`outerMorph`** swap by default — preserves focus, scroll, animations
 - **`setHtmx`** for in-app navigation — never `setHref` (causes full reload)
-- **`.resolve()`** for redirects — never manual URL builders
+- **`.resolve(query?)`** for redirects — never manual URL builders or query string concatenation
 - **Anchors with `setHtmx`** need `.cursor("pointer")`
 - **Partial swaps** for multi-section updates in one response
 - **htmx 4**: attributes don't inherit — use `:inherited` modifier
