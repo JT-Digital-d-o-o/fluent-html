@@ -249,7 +249,10 @@ export {
   Match,
   ForEach,
   Repeat,
+  createContext,
 } from './control/index.js';
+
+export type { Context } from './control/index.js';
 
 // HTMX
 export {

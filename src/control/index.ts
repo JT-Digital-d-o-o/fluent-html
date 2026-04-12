@@ -11,6 +11,13 @@ export {
   Repeat,
 } from "./iteration.js";
 
+// Context (scoped implicit values)
+export {
+  createContext,
+} from "./context.js";
+
+export type { Context } from "./context.js";
+
 // Overlay utility
 export {
   Overlay,
