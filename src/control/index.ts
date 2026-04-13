@@ -14,6 +14,7 @@ export {
 // Context (scoped implicit values)
 export {
   createContext,
+  createRequiredContext,
 } from "./context.js";
 
 export type { Context } from "./context.js";

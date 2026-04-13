@@ -61,4 +61,27 @@ export type Context<T> = {
  * }
  */
 export declare function createContext<T>(defaultValue: T): Context<T>;
+/**
+ * Create a scoped context **without** a default value.
+ *
+ * Accessing `current` outside an active `scope()` throws an error.
+ * Use this for values that have no valid default (auth, nonce, request-specific data).
+ *
+ * @param name - A descriptive name used in the error message when accessed outside a scope
+ * @returns A Context object with `current` and `scope()` members
+ *
+ * @example
+ * const AuthCtx = createRequiredContext<User>("AuthCtx");
+ *
+ * function App(user: User) {
+ *   using _ = AuthCtx.scope(user);
+ *   return Div(Header(), Content());
+ * }
+ *
+ * function Header() {
+ *   const user = AuthCtx.current;  // User — throws if no scope active
+ *   return Span(user.name);
+ * }
+ */
+export declare function createRequiredContext<T>(name: string): Context<T>;
 //# sourceMappingURL=context.d.ts.map

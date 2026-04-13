@@ -11,6 +11,13 @@ import { resolveSelector } from "./htmx.js";
 // ------------------------------------
 // Runtime Implementation
 // ------------------------------------
+/** Internal: throw if any `:param` placeholders remain after substitution. */
+function assertNoUnresolvedParams(resolved, template) {
+    const match = resolved.match(/:([a-zA-Z_]\w*)/);
+    if (match) {
+        throw new Error(`Unresolved route param ":${match[1]}" in "${template}"`);
+    }
+}
 /** Internal: serialize a query-params bag into a `?key=value&…` string. Skips nullish entries. */
 function buildQueryString(query) {
     const parts = [];
@@ -53,6 +60,7 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
                 for (const [key, value] of Object.entries(params)) {
                     resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(value));
                 }
+                assertNoUnresolvedParams(resolvedPath, fullPath);
                 return buildHtmxFromRoute(resolvedPath, method, options);
             }
             : function (options) {
@@ -64,6 +72,7 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
                 for (const [key, value] of Object.entries(params)) {
                     resolved = resolved.replace(`:${key}`, encodeURIComponent(value));
                 }
+                assertNoUnresolvedParams(resolved, fullPath);
                 return query ? resolved + buildQueryString(query) : resolved;
             }
             : function (query) {

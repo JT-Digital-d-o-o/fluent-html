@@ -44,6 +44,20 @@ describe("Control Flow - Conditionals", () => {
   it("IfThenElse with null value", () => { assert.strictEqual(render(IfThenElse(null as string | null, (val) => Span(val), () => Span("fallback"))), `<span>fallback</span>`); });
 
   it("IfThenElse with undefined value", () => { assert.strictEqual(render(IfThenElse(undefined as number | undefined, (val) => Span(String(val)), () => Span("none"))), `<span>none</span>`); });
+
+  // Falsy non-null values — must pass through, not be swallowed
+
+  it("IfThen with 0 passes through (not swallowed)", () => { assert.strictEqual(render(IfThen(0 as number | null, (n) => Span(`${n}`))), `<span>0</span>`); });
+
+  it("IfThen with empty string passes through (not swallowed)", () => { assert.strictEqual(render(IfThen("" as string | null, (s) => Span(`[${s}]`))), `<span>[]</span>`); });
+
+  it("IfThen with NaN passes through (not swallowed)", () => { assert.strictEqual(render(IfThen(NaN as number | null, (n) => Span(`${n}`))), `<span>NaN</span>`); });
+
+  it("IfThenElse with 0 takes then-branch", () => { assert.strictEqual(render(IfThenElse(0 as number | null, (n) => Span(`${n}`), () => Span("none"))), `<span>0</span>`); });
+
+  it("IfThenElse with empty string takes then-branch", () => { assert.strictEqual(render(IfThenElse("" as string | null, (s) => Span(`[${s}]`), () => Span("none"))), `<span>[]</span>`); });
+
+  it("IfThenElse with NaN takes then-branch", () => { assert.strictEqual(render(IfThenElse(NaN as number | null, (n) => Span(`${n}`), () => Span("none"))), `<span>NaN</span>`); });
 });
 
 // ------------------------------------

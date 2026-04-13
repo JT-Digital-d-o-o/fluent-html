@@ -22,7 +22,7 @@ export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 export { Slot, } from './elements/index.js';
 export { Overlay, OverlayPosition, } from './control/index.js';
-export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, } from './control/index.js';
+export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, createRequiredContext, } from './control/index.js';
 export type { Context } from './control/index.js';
 export { hx, resolveSelector, HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, HxOptions, HxConfig, HxStatusConfig, id, clss, closest, find, next, previous, } from './htmx.js';
 export { OOB, withOOB, Partial, HtmxConfig, HtmxGlobalConfig, hxResponse, HxResponse, HxResponseResult, HxLocationConfig, } from './patterns.js';
@@ -30,6 +30,6 @@ export { Id, createId, defineIds, isId, extractId, extractSelector, } from './id
 export { defineRoutes, } from './routes.js';
 export type { RouteDef, RouteHxOptions, QueryParams, QueryParamValue, } from './routes.js';
 export type { BehaviorMap } from './core/behavior-methods.js';
-export { foldView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra, createTransformAlgebra, addClassToMatching, } from './fold/index.js';
-export type { ViewAlgebra, TagAttrs, LinkInfo, } from './fold/index.js';
+export { foldView, paraView, unfoldView, hyloView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra, createTransformAlgebra, addClassToMatching, ariaDescribeAlgebra, tocCoalgebra, linkedTocCoalgebra, } from './fold/index.js';
+export type { ViewAlgebra, ParaAlgebra, TagAttrs, ViewCoalgebra, ViewLayer, LinkInfo, TocEntry, TocSeed, } from './fold/index.js';
 //# sourceMappingURL=index.d.ts.map

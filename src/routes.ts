@@ -39,10 +39,10 @@ type HasParams<Path extends string> =
 // Route Definition Types
 // ------------------------------------
 
-/** A single route definition: HTTP method + path. */
+/** A single route definition: HTTP method + path. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
 export type RouteDef = {
   readonly method: HxHttpMethod;
-  readonly path: string;
+  readonly path: `/${string}`;
 };
 
 /** Input object for defineRoutes(). */
@@ -55,14 +55,14 @@ type RouteDefinitions = {
 // ------------------------------------
 
 /** Join a prefix and a sub-path, collapsing a bare "/" into the prefix. */
-type JoinPath<Prefix extends string, Path extends string> =
+type JoinPath<Prefix extends `/${string}`, Path extends `/${string}`> =
   Path extends "/" ? Prefix : `${Prefix}${Path}`;
 
 /** Map each route definition's path to include the prefix. */
-type PrefixedRouteDefs<P extends string, T extends RouteDefinitions> = {
+type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
   readonly [K in keyof T]: {
     readonly method: T[K]['method'];
-    readonly path: JoinPath<P, T[K]['path']>;
+    readonly path: JoinPath<P, T[K]['path']> & `/${string}`;
   };
 };
 
@@ -125,6 +125,14 @@ type RouteRegistry<T extends RouteDefinitions> = {
 // ------------------------------------
 // Runtime Implementation
 // ------------------------------------
+
+/** Internal: throw if any `:param` placeholders remain after substitution. */
+function assertNoUnresolvedParams(resolved: string, template: string): void {
+  const match = resolved.match(/:([a-zA-Z_]\w*)/);
+  if (match) {
+    throw new Error(`Unresolved route param ":${match[1]}" in "${template}"`);
+  }
+}
 
 /** Internal: serialize a query-params bag into a `?key=value&…` string. Skips nullish entries. */
 function buildQueryString(query: QueryParams): string {
@@ -200,7 +208,7 @@ function buildHtmxFromRoute(
 export function defineRoutes<const T extends RouteDefinitions>(
   definitions: T
 ): RouteRegistry<T>;
-export function defineRoutes<const P extends string, const T extends RouteDefinitions>(
+export function defineRoutes<const P extends `/${string}`, const T extends RouteDefinitions>(
   prefix: P,
   definitions: T
 ): RouteRegistry<PrefixedRouteDefs<P, T>>;
@@ -224,6 +232,7 @@ export function defineRoutes(
           for (const [key, value] of Object.entries(params)) {
             resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(value));
           }
+          assertNoUnresolvedParams(resolvedPath, fullPath);
           return buildHtmxFromRoute(resolvedPath, method, options);
         }
       : function (options?: RouteHxOptions): HTMX {
@@ -236,6 +245,7 @@ export function defineRoutes(
           for (const [key, value] of Object.entries(params)) {
             resolved = resolved.replace(`:${key}`, encodeURIComponent(value));
           }
+          assertNoUnresolvedParams(resolved, fullPath);
           return query ? resolved + buildQueryString(query) : resolved;
         }
       : function (query?: QueryParams): string {

@@ -40,7 +40,7 @@ export { Slot, } from './elements/index.js';
 // Utilities
 export { Overlay, } from './control/index.js';
 // Control flow
-export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, } from './control/index.js';
+export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, createRequiredContext, } from './control/index.js';
 // HTMX
 export { hx, resolveSelector, 
 // Selector helpers
@@ -59,6 +59,6 @@ hxResponse, HxResponse, } from './patterns.js';
 export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
 // Type-safe Routes
 export { defineRoutes, } from './routes.js';
-// Fold / Catamorphism
-export { foldView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra, createTransformAlgebra, addClassToMatching, } from './fold/index.js';
+// Fold / Recursion schemes
+export { foldView, paraView, unfoldView, hyloView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra, createTransformAlgebra, addClassToMatching, ariaDescribeAlgebra, tocCoalgebra, linkedTocCoalgebra, } from './fold/index.js';
 //# sourceMappingURL=index.js.map

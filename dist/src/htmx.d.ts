@@ -3,8 +3,8 @@ export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type HxEncoding = "multipart/form-data";
 type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
 export type HxSwapStyle = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'before' | 'after' | 'prepend' | 'append' | 'innerMorph' | 'outerMorph' | 'delete' | 'none';
-type SwapScrollValue = 'scroll:top' | 'scroll:bottom';
-type SwapShowValue = 'show:top' | 'show:bottom';
+type SwapScrollValue = 'scroll:top' | 'scroll:bottom' | 'scroll:window:top' | 'scroll:window:bottom';
+type SwapShowValue = 'show:top' | 'show:bottom' | 'show:window:top' | 'show:window:bottom' | 'show:none';
 type SwapTimingValue = `swap:${DelayValue}` | `settle:${DelayValue}`;
 type SwapFocusScroll = 'focus-scroll:true' | 'focus-scroll:false';
 type SwapTransition = 'transition:true';
@@ -21,7 +21,7 @@ type SwapWithTwoModifiers = `${HxSwapStyle} ${SwapScrollValue | SwapShowValue} $
  *
  * Also accepts any valid swap string for patterns not covered.
  */
-export type HxSwap = HxSwapStyle | SwapWithModifier | SwapWithTwoModifiers | (string & {});
+export type HxSwap = HxSwapStyle | SwapWithModifier | SwapWithTwoModifiers;
 type StandardCSSSelector = string;
 type ExtendedCSSSelector = 'this' | 'body' | 'window' | 'document' | `closest ${string}` | `next` | `next ${string}` | `previous` | `previous ${string}` | `find ${string}`;
 export type HxTarget = StandardCSSSelector | ExtendedCSSSelector;

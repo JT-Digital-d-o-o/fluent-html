@@ -256,6 +256,7 @@ export {
   ForEach,
   Repeat,
   createContext,
+  createRequiredContext,
 } from './control/index.js';
 
 export type { Context } from './control/index.js';

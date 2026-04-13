@@ -449,6 +449,30 @@ describe("Prefixed query parameters", () => {
   });
 });
 
+describe("Unresolved param runtime guard", () => {
+  it("route callable throws on missing param", () => {
+    assert.throws(
+      () => (routes.nested as any)({ userId: "1" }),
+      { message: 'Unresolved route param ":postId" in "/users/:userId/posts/:postId"' }
+    );
+  });
+  it("resolve() throws on missing param", () => {
+    assert.throws(
+      () => (routes.nested.resolve as any)({ userId: "1" }),
+      { message: 'Unresolved route param ":postId" in "/users/:userId/posts/:postId"' }
+    );
+  });
+  it("route callable throws when all params missing", () => {
+    assert.throws(
+      () => (routes.nested as any)({}),
+      /Unresolved route param/
+    );
+  });
+  it("does not throw when all params provided", () => {
+    assert.doesNotThrow(() => routes.nested({ userId: "1", postId: "99" }));
+  });
+});
+
 describe("Registry immutability", () => {
   it("registry is frozen", () => {
     assert.strictEqual(Object.isFrozen(routes), true);

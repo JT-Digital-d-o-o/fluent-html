@@ -20,7 +20,6 @@
  */
 var _a;
 // Polyfill Symbol.dispose for ES2020 targets
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 (_a = Symbol).dispose ?? (_a.dispose = Symbol('Symbol.dispose'));
 /**
  * Create a scoped context with a default value.
@@ -50,6 +49,47 @@ export function createContext(defaultValue) {
     const stack = [defaultValue];
     return {
         get current() {
+            return stack[stack.length - 1];
+        },
+        scope(value) {
+            stack.push(value);
+            return {
+                [Symbol.dispose]() {
+                    stack.pop();
+                },
+            };
+        },
+    };
+}
+/**
+ * Create a scoped context **without** a default value.
+ *
+ * Accessing `current` outside an active `scope()` throws an error.
+ * Use this for values that have no valid default (auth, nonce, request-specific data).
+ *
+ * @param name - A descriptive name used in the error message when accessed outside a scope
+ * @returns A Context object with `current` and `scope()` members
+ *
+ * @example
+ * const AuthCtx = createRequiredContext<User>("AuthCtx");
+ *
+ * function App(user: User) {
+ *   using _ = AuthCtx.scope(user);
+ *   return Div(Header(), Content());
+ * }
+ *
+ * function Header() {
+ *   const user = AuthCtx.current;  // User — throws if no scope active
+ *   return Span(user.name);
+ * }
+ */
+export function createRequiredContext(name) {
+    const stack = [];
+    return {
+        get current() {
+            if (stack.length === 0) {
+                throw new Error(`Context "${name}" accessed outside of a scope. Wrap the call in ${name}.scope(value).`);
+            }
             return stack[stack.length - 1];
         },
         scope(value) {

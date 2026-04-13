@@ -52,7 +52,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Div, Span, Nav, Section, IfThen, createContext, } from "../src/index.js";
+import { render, Div, Span, Nav, Section, IfThen, createContext, createRequiredContext, } from "../src/index.js";
 // ----------------------------------------
 // Context — scoped implicit values
 // ----------------------------------------
@@ -264,6 +264,93 @@ describe("Context — createContext", () => {
         }
         const html = render(Page());
         assert.strictEqual(html, `<div><span>Hallo</span></div>`);
+    });
+});
+// ----------------------------------------
+// Context — createRequiredContext
+// ----------------------------------------
+describe("Context — createRequiredContext", () => {
+    const AuthCtx = createRequiredContext("AuthCtx");
+    it("throws when accessed outside scope", () => {
+        assert.throws(() => AuthCtx.current, { message: 'Context "AuthCtx" accessed outside of a scope. Wrap the call in AuthCtx.scope(value).' });
+    });
+    it("returns value inside scope", () => {
+        const env_12 = { stack: [], error: void 0, hasError: false };
+        try {
+            const _ = __addDisposableResource(env_12, AuthCtx.scope({ name: "Alice" }), false);
+            assert.deepStrictEqual(AuthCtx.current, { name: "Alice" });
+        }
+        catch (e_12) {
+            env_12.error = e_12;
+            env_12.hasError = true;
+        }
+        finally {
+            __disposeResources(env_12);
+        }
+    });
+    it("reverts to throwing after scope exits", () => {
+        {
+            const env_13 = { stack: [], error: void 0, hasError: false };
+            try {
+                const _ = __addDisposableResource(env_13, AuthCtx.scope({ name: "Bob" }), false);
+                assert.strictEqual(AuthCtx.current.name, "Bob");
+            }
+            catch (e_13) {
+                env_13.error = e_13;
+                env_13.hasError = true;
+            }
+            finally {
+                __disposeResources(env_13);
+            }
+        }
+        assert.throws(() => AuthCtx.current, /AuthCtx/);
+    });
+    it("nested scopes work correctly", () => {
+        const env_14 = { stack: [], error: void 0, hasError: false };
+        try {
+            const _outer = __addDisposableResource(env_14, AuthCtx.scope({ name: "Outer" }), false);
+            assert.strictEqual(AuthCtx.current.name, "Outer");
+            {
+                const env_15 = { stack: [], error: void 0, hasError: false };
+                try {
+                    const _inner = __addDisposableResource(env_15, AuthCtx.scope({ name: "Inner" }), false);
+                    assert.strictEqual(AuthCtx.current.name, "Inner");
+                }
+                catch (e_14) {
+                    env_15.error = e_14;
+                    env_15.hasError = true;
+                }
+                finally {
+                    __disposeResources(env_15);
+                }
+            }
+            assert.strictEqual(AuthCtx.current.name, "Outer");
+        }
+        catch (e_15) {
+            env_14.error = e_15;
+            env_14.hasError = true;
+        }
+        finally {
+            __disposeResources(env_14);
+        }
+    });
+    it("works during render", () => {
+        const env_16 = { stack: [], error: void 0, hasError: false };
+        try {
+            function UserBadge() {
+                return Span(AuthCtx.current.name);
+            }
+            const _ = __addDisposableResource(env_16, AuthCtx.scope({ name: "Alice" }), false);
+            const html = render(UserBadge());
+            assert.strictEqual(html, `<span>Alice</span>`);
+        }
+        catch (e_16) {
+            env_16.error = e_16;
+            env_16.hasError = true;
+        }
+        finally {
+            __disposeResources(env_16);
+        }
     });
 });
 //# sourceMappingURL=context.test.js.map

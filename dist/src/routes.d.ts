@@ -11,22 +11,22 @@ import type { Id } from "./ids.js";
 type ExtractParams<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? Param | ExtractParams<`/${Rest}`> : Path extends `${string}:${infer Param}` ? Param : never;
 /** Whether a path contains `:param` segments. */
 type HasParams<Path extends string> = ExtractParams<Path> extends never ? false : true;
-/** A single route definition: HTTP method + path. */
+/** A single route definition: HTTP method + path. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
 export type RouteDef = {
     readonly method: HxHttpMethod;
-    readonly path: string;
+    readonly path: `/${string}`;
 };
 /** Input object for defineRoutes(). */
 type RouteDefinitions = {
     readonly [name: string]: RouteDef;
 };
 /** Join a prefix and a sub-path, collapsing a bare "/" into the prefix. */
-type JoinPath<Prefix extends string, Path extends string> = Path extends "/" ? Prefix : `${Prefix}${Path}`;
+type JoinPath<Prefix extends `/${string}`, Path extends `/${string}`> = Path extends "/" ? Prefix : `${Prefix}${Path}`;
 /** Map each route definition's path to include the prefix. */
-type PrefixedRouteDefs<P extends string, T extends RouteDefinitions> = {
+type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
     readonly [K in keyof T]: {
         readonly method: T[K]['method'];
-        readonly path: JoinPath<P, T[K]['path']>;
+        readonly path: JoinPath<P, T[K]['path']> & `/${string}`;
     };
 };
 /**
@@ -107,6 +107,6 @@ type RouteRegistry<T extends RouteDefinitions> = {
  * server.delete(userRoutes.delete.path, handler)   // "/users/:id"
  */
 export declare function defineRoutes<const T extends RouteDefinitions>(definitions: T): RouteRegistry<T>;
-export declare function defineRoutes<const P extends string, const T extends RouteDefinitions>(prefix: P, definitions: T): RouteRegistry<PrefixedRouteDefs<P, T>>;
+export declare function defineRoutes<const P extends `/${string}`, const T extends RouteDefinitions>(prefix: P, definitions: T): RouteRegistry<PrefixedRouteDefs<P, T>>;
 export {};
 //# sourceMappingURL=routes.d.ts.map

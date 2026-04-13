@@ -6,6 +6,7 @@ import {
   Div, Span, Nav, Section,
   IfThen,
   createContext,
+  createRequiredContext,
 } from "../src/index.js";
 
 // ----------------------------------------
@@ -136,5 +137,55 @@ describe("Context — createContext", () => {
 
     const html = render(Page());
     assert.strictEqual(html, `<div><span>Hallo</span></div>`);
+  });
+});
+
+// ----------------------------------------
+// Context — createRequiredContext
+// ----------------------------------------
+
+describe("Context — createRequiredContext", () => {
+  const AuthCtx = createRequiredContext<{ name: string }>("AuthCtx");
+
+  it("throws when accessed outside scope", () => {
+    assert.throws(
+      () => AuthCtx.current,
+      { message: 'Context "AuthCtx" accessed outside of a scope. Wrap the call in AuthCtx.scope(value).' }
+    );
+  });
+
+  it("returns value inside scope", () => {
+    using _ = AuthCtx.scope({ name: "Alice" });
+    assert.deepStrictEqual(AuthCtx.current, { name: "Alice" });
+  });
+
+  it("reverts to throwing after scope exits", () => {
+    {
+      using _ = AuthCtx.scope({ name: "Bob" });
+      assert.strictEqual(AuthCtx.current.name, "Bob");
+    }
+    assert.throws(() => AuthCtx.current, /AuthCtx/);
+  });
+
+  it("nested scopes work correctly", () => {
+    using _outer = AuthCtx.scope({ name: "Outer" });
+    assert.strictEqual(AuthCtx.current.name, "Outer");
+
+    {
+      using _inner = AuthCtx.scope({ name: "Inner" });
+      assert.strictEqual(AuthCtx.current.name, "Inner");
+    }
+
+    assert.strictEqual(AuthCtx.current.name, "Outer");
+  });
+
+  it("works during render", () => {
+    function UserBadge() {
+      return Span(AuthCtx.current.name);
+    }
+
+    using _ = AuthCtx.scope({ name: "Alice" });
+    const html = render(UserBadge());
+    assert.strictEqual(html, `<span>Alice</span>`);
   });
 });
