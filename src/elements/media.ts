@@ -310,13 +310,13 @@ export class SvgTag extends Tag {
   stroke?: string;
   'stroke-width'?: string;
 
-  setWidth(width: string): this {
-    this.width = width;
+  setWidth(width: string | number): this {
+    this.width = String(width);
     return this;
   }
 
-  setHeight(height: string): this {
-    this.height = height;
+  setHeight(height: string | number): this {
+    this.height = String(height);
     return this;
   }
 

@@ -38,8 +38,8 @@ export declare class RectTag extends SvgShapeTag {
     ry?: string;
     setX(x: string): this;
     setY(y: string): this;
-    setWidth(width: string): this;
-    setHeight(height: string): this;
+    setWidth(width: string | number): this;
+    setHeight(height: string | number): this;
     setRx(rx: string): this;
     setRy(ry: string): this;
 }
@@ -144,8 +144,8 @@ export declare class UseTag extends Tag {
     setHref(href: string): this;
     setX(x: string): this;
     setY(y: string): this;
-    setWidth(width: string): this;
-    setHeight(height: string): this;
+    setWidth(width: string | number): this;
+    setHeight(height: string | number): this;
 }
 export declare function Use(...children: View[]): UseTag;
 export declare function G(...children: View[]): SvgShapeTag;

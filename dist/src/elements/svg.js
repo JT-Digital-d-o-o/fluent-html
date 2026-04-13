@@ -77,11 +77,11 @@ export class RectTag extends SvgShapeTag {
         return this;
     }
     setWidth(width) {
-        this.width = width;
+        this.width = String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = String(height);
         return this;
     }
     setRx(rx) {
@@ -321,11 +321,11 @@ export class UseTag extends Tag {
         return this;
     }
     setWidth(width) {
-        this.width = width;
+        this.width = String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = String(height);
         return this;
     }
 }

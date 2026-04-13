@@ -208,11 +208,11 @@ export function Canvas(...children) {
 }
 export class SvgTag extends Tag {
     setWidth(width) {
-        this.width = width;
+        this.width = String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = String(height);
         return this;
     }
     setViewBox(viewBox) {
