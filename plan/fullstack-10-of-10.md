@@ -6,27 +6,11 @@
 
 ---
 
-## 1. Typed Route Params — Not Just `string`
+## ~~1. Typed Route Params — Not Just `string`~~ ✅ DONE
 
 **Impact: High | Effort: Medium**
 
-**Problem:** Every route param is `string`. A route like `/:id` where `id` is a UUID or number requires manual `parseInt` or validation in every handler. The type system can't distinguish `/users/:id` (UUID) from `/posts/:page` (number).
-
-**Current:**
-```typescript
-// routes.ts — all params are string
-type RouteCallable<Def> = HasParams<Def['path']> extends true
-  ? (params: { [K in ExtractParams<Def['path']>]: string }, ...) => HTMX
-  : ...
-
-// handler — manual coercion, no safety
-const getUser = handle(server, userRoutes.detail, async (request, reply) => {
-  const id = request.params.id;  // string — is it a UUID? a number? who knows
-  const user = await server.prisma.user.findUnique({ where: { id } });
-});
-```
-
-**Fix — param type metadata on route definitions:**
+Added optional `params` field to `RouteDef` with `ParamTypeName` (`"string" | "number" | "uuid"`). `ResolveParamTypes` conditional type maps each param to its TypeScript type. Number params get `String()` before URL encoding at runtime. Fully backward compatible — routes without `params` keep all-`string` behavior.
 
 ```typescript
 export const userRoutes = defineRoutes("/users", {
@@ -35,48 +19,15 @@ export const userRoutes = defineRoutes("/users", {
   page:   { method: "get",  path: "/page/:page", params: { page: "number" } },
 } as const);
 
-// Calling the route — id accepts string (UUIDs are strings), page accepts number
-userRoutes.detail({ id: "550e8400-..." })     // ✓
-userRoutes.detail({ id: 42 })                  // ✗ compile error — uuid must be string
-userRoutes.page({ page: 3 })                   // ✓
-userRoutes.page({ page: "three" })             // ✗ compile error — expects number
-
-// .resolve() — same typed params
-userRoutes.detail.resolve({ id: userId })      // ✓ string
-userRoutes.page.resolve({ page: 3 })           // ✓ number → stringified in URL
+userRoutes.detail({ id: "550e8400-..." })     // ✓ uuid = string
+userRoutes.detail({ id: 42 })                  // ✗ compile error
+userRoutes.page({ page: 3 })                   // ✓ number
+userRoutes.page({ page: "three" })             // ✗ compile error
 ```
 
-**Type-level design:**
+15 tests added (runtime + 4 `@ts-expect-error` compile-time rejection tests). `ParamTypeName` exported from public API.
 
-```typescript
-type ParamTypeMap = {
-  string: string;
-  number: number;
-  uuid: string;  // UUIDs are strings, but semantically distinct
-};
-
-type ParamTypeName = keyof ParamTypeMap;
-
-type RouteDef = {
-  readonly method: HxHttpMethod;
-  readonly path: `/${string}`;
-  readonly params?: Readonly<Record<string, ParamTypeName>>;
-};
-
-// Extract resolved param types from definition
-type ResolveParamTypes<Def extends RouteDef> =
-  Def extends { params: infer P }
-    ? { [K in ExtractParams<Def['path']>]: K extends keyof P
-        ? P[K] extends ParamTypeName ? ParamTypeMap[P[K]] : string
-        : string }
-    : { [K in ExtractParams<Def['path']>]: string };
-```
-
-**Runtime:** `number` params get `String()` before URL encoding. `uuid` params get a format check (optional, dev-only). The metadata is available on the route object for downstream use (Fastify schema generation, Prisma query typing).
-
-**Backward compatible:** Routes without `params` keep the current behavior (all `string`).
-
-**Files:** `src/routes.ts`
+**Files:** `src/routes.ts`, `src/index.ts`, `test/routes.ts`
 
 ---
 
@@ -351,15 +302,15 @@ export type CreateUserReq = FromSchema<typeof createUserSchema.body>;
 
 ## Summary
 
-| # | Change | Where it lives | Impact | Effort |
-|---|--------|---------------|--------|--------|
-| 1 | Typed route params (`uuid`, `number`, `string`) | `src/routes.ts` | High | Medium |
-| 2 | `formFor<T>()` — typed form field names | new `src/form.ts` | High | Low |
-| 3 | Prisma query-view co-location guidance + ESLint rule | docs + eslint plugin | Very High | Medium |
-| 4 | `RouteParams<R>` utility type for `handle()` | `src/routes.ts` | High | Medium |
-| 5 | `FromSchema` for schema → type derivation | app pattern (docs) | Medium | Low |
+| # | Change | Where it lives | Impact | Effort | Status |
+|---|--------|---------------|--------|--------|--------|
+| 1 | Typed route params (`uuid`, `number`, `string`) | `src/routes.ts` | High | Medium | **Done** |
+| 2 | `formFor<T>()` — typed form field names | new `src/form.ts` | High | Low | Open |
+| 3 | Prisma query-view co-location guidance + ESLint rule | docs + eslint plugin | Very High | Medium | Open |
+| 4 | `RouteParams<R>` utility type for `handle()` | `src/routes.ts` | High | Medium | Open |
+| 5 | `FromSchema` for schema → type derivation | app pattern (docs) | Medium | Low | Open |
 
-**What ships in fluent-html core:** #1 (typed params), #2 (`formFor`), #4 (`RouteParams` export).
+**What ships in fluent-html core:** #1 (typed params — done), #2 (`formFor`), #4 (`RouteParams` export).
 
 **What ships as ecosystem guidance:** #3 (Prisma co-location + ESLint rule), #5 (schema derivation pattern).
 
