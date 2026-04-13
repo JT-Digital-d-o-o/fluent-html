@@ -85,6 +85,16 @@ export const createUserSchema = {
 
 Combine schemas with spread: `{ ...paramsSchema, body: { ... } }`
 
+**Type-safe form fields** — use `formFor<T>()` to bind field names to the schema interface:
+
+```typescript
+const f = formFor<CreateUserReq>();
+
+// f.input("nmae", "text")  // ✗ compile error — typo caught
+f.input("name", "text")     // ✓ matches schema key
+f.input("email", "email")   // ✓
+```
+
 ## Auth Guards
 
 ```typescript

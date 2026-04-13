@@ -37,6 +37,8 @@ export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 // Web Components
 export { Slot, } from './elements/index.js';
+// Type-safe form factory
+export { formFor } from './form.js';
 // Utilities
 export { Overlay, } from './control/index.js';
 // Control flow

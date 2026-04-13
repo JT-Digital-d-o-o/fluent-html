@@ -60,6 +60,32 @@ Img()     // ✓ no children
 Hr()      // ✓ no children
 ```
 
+## Type-Safe Forms — `formFor<T>()`
+
+Constrains field names to keys of a schema type — typos become compile errors:
+
+```typescript
+type CreateUserReq = { email: string; name: string; role: "admin" | "viewer" };
+const f = formFor<CreateUserReq>();
+
+Form(
+  f.input("email", "email"),        // ✓ typed name + input type
+  f.input("name", "text"),          // ✓
+  f.input("nmae", "text"),          // ✗ compile error — not a key of CreateUserReq
+  f.textarea("name"),               // ✓ typed textarea
+  f.select("role",                  // ✓ typed select with children
+    Option("Admin").setValue("admin"),
+    Option("Viewer").setValue("viewer"),
+  ),
+  f.hidden("role", "admin"),        // ✓ typed hidden input with value
+  Button("Submit").setType("submit"),
+)
+```
+
+Returns standard `InputTag`/`TextareaTag`/`SelectTag` — full chaining works: `f.input("email", "email").setPlaceholder("you@example.com").toggle("required")`
+
+Untyped `.setName()` still works for one-off elements outside a schema.
+
 ## Modifiers & Composition
 
 ```typescript

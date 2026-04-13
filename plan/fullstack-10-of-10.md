@@ -31,56 +31,14 @@ userRoutes.page({ page: "three" })             // ✗ compile error
 
 ---
 
-## 2. Typed Form Fields — `setName` Constrained to Schema Keys
+## ~~2. Typed Form Fields — `setName` Constrained to Schema Keys~~ ✅ DONE
 
 **Impact: High | Effort: Low**
 
-**Problem:** `.setName("nmae")` compiles fine. Form field names are `string`, with no connection to the schema that validates them on the server.
+Added `formFor<T>()` factory that constrains form field names to keys of `T` at compile time. Returns an object with `input`, `textarea`, `select`, and `hidden` methods — each generic over `keyof T & string`. Typos in field names are now compile errors instead of silent bugs. Existing untyped `.setName()` still works — fully backward compatible.
 
-**Current:**
-```typescript
-// forms.ts
-setName(name?: string): this {  // any string
-  this.name = name;
-  return this;
-}
-
-// usage — typo not caught
-Form(
-  Input("text").setName("emial"),   // ✗ should be "email", no error
-  Input("text").setName("name"),
-)
-```
-
-**Fix — `formFor` helper that constrains field names:**
-
-```typescript
-// New export from fluent-html
-export function formFor<T extends Record<string, unknown>>() {
-  return {
-    input<K extends keyof T & string>(
-      name: K,
-      type?: InputType
-    ): InputTag {
-      return Input(type).setName(name);
-    },
-    textarea<K extends keyof T & string>(name: K): TextareaTag {
-      return Textarea().setName(name);
-    },
-    select<K extends keyof T & string>(name: K, ...children: View[]): SelectTag {
-      return Select(...children).setName(name);
-    },
-    hidden<K extends keyof T & string>(name: K, value: string): InputTag {
-      return Input("hidden").setName(name).setValue(value);
-    },
-  };
-}
-```
-
-**Usage:**
 ```typescript
 type CreateUserReq = { email: string; name: string; role: "admin" | "viewer" };
-
 const f = formFor<CreateUserReq>();
 
 Form(
@@ -91,13 +49,12 @@ Form(
     Option("Admin").setValue("admin"),
     Option("Viewer").setValue("viewer"),
   ),
-  Button("Submit").setType("submit"),
 )
 ```
 
-**Why a factory, not a generic `setName`:** Making `InputTag.setName` generic would require threading a type parameter through the entire Tag class hierarchy. A standalone `formFor<T>()` factory is zero-cost, doesn't touch existing code, and provides the same safety at the call site.
+6 tests added covering input, textarea, select, hidden, and chaining.
 
-**Files:** new `src/form.ts`, export from `src/index.ts`
+**Files:** `src/form.ts`, `src/index.ts`, `test/form-for.test.ts`
 
 ---
 

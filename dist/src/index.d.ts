@@ -21,6 +21,7 @@ export { HTML, HtmlTag, Head, Body, Title, Meta, Link, Style, Script, Base, Nosc
 export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 export { Slot, } from './elements/index.js';
+export { formFor } from './form.js';
 export { Overlay, OverlayPosition, } from './control/index.js';
 export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, createRequiredContext, } from './control/index.js';
 export type { Context } from './control/index.js';

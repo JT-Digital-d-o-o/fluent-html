@@ -37,6 +37,18 @@ Button("Save").setType("submit")         // ✓
 Button().addAttribute("type", "submit")  // ✗
 ```
 
+**`formFor<T>()`** — type-safe form fields constrained to schema keys (never untyped `.setName()` when a schema exists):
+```typescript
+type CreateUserReq = { email: string; name: string; role: "admin" | "viewer" };
+const f = formFor<CreateUserReq>();
+
+f.input("email", "email")   // ✓ InputTag with typed name
+f.input("nmae", "text")     // ✗ compile error
+f.textarea("name")          // ✓ TextareaTag
+f.select("role", ...)       // ✓ SelectTag
+f.hidden("role", "admin")   // ✓ hidden input with value
+```
+
 **Control flow:**
 ```typescript
 IfThen(user.isAdmin, () => Button("Admin Panel"))

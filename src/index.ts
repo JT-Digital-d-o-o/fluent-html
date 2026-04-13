@@ -242,6 +242,9 @@ export {
   Slot,
 } from './elements/index.js';
 
+// Type-safe form factory
+export { formFor } from './form.js';
+
 // Utilities
 export {
   Overlay,

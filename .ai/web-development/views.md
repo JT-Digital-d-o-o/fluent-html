@@ -55,6 +55,23 @@ export function UsersView(props: UsersViewProps) {
 }
 ```
 
+## Type-safe form fields with `formFor`
+
+Use `formFor<T>()` to constrain field names to schema keys — typos become compile errors:
+
+```typescript
+type CreateUserReq = { email: string; name: string; role: "admin" | "viewer" };
+const f = formFor<CreateUserReq>();
+
+function CreateUserForm(errors: FormErrors = {}) {
+  return Form(
+    FormField({ id: "name", label: "Name", input: f.input("name", "text"), error: errors.name }),
+    FormField({ id: "email", label: "Email", input: f.input("email", "email"), error: errors.email }),
+    Button("Create").setType("submit")
+  ).hxPost("/users/create", { target: ids.mainContent, swap: "outerMorph" });
+}
+```
+
 ## Inline form validation errors
 
 ```typescript
