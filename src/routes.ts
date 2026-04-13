@@ -36,6 +36,36 @@ type HasParams<Path extends string> =
   ExtractParams<Path> extends never ? false : true;
 
 // ------------------------------------
+// Param Type Metadata
+// ------------------------------------
+
+/** Supported param type names. Determines the TypeScript type required at call sites. */
+export type ParamTypeName = "string" | "number" | "uuid";
+
+/** Maps param type names to the TypeScript types accepted at call sites. */
+type ParamTypeMap = {
+  string: string;
+  number: number;
+  uuid: string;
+};
+
+/**
+ * Resolve the TypeScript type for each extracted path param.
+ * When a `params` map is provided, each param uses its declared type.
+ * Params not listed in the map (or routes without `params`) default to `string`.
+ */
+type ResolveParamTypes<
+  Path extends string,
+  Params extends Readonly<Record<string, ParamTypeName>> | undefined,
+> = {
+  [K in ExtractParams<Path>]: Params extends Readonly<Record<string, ParamTypeName>>
+    ? K extends keyof Params
+      ? Params[K] extends ParamTypeName ? ParamTypeMap[Params[K]] : string
+      : string
+    : string;
+};
+
+// ------------------------------------
 // Route Definition Types
 // ------------------------------------
 
@@ -43,6 +73,7 @@ type HasParams<Path extends string> =
 export type RouteDef = {
   readonly method: HxHttpMethod;
   readonly path: `/${string}`;
+  readonly params?: Readonly<Record<string, ParamTypeName>>;
 };
 
 /** Input object for defineRoutes(). */
@@ -63,6 +94,7 @@ type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
   readonly [K in keyof T]: {
     readonly method: T[K]['method'];
     readonly path: JoinPath<P, T[K]['path']> & `/${string}`;
+    readonly params: T[K]['params'];
   };
 };
 
@@ -98,7 +130,7 @@ type RouteProperties<Def extends RouteDef> = {
   readonly method: Def['method'];
   readonly path: Def['path'];
   readonly resolve: HasParams<Def['path']> extends true
-    ? (params: { [K in ExtractParams<Def['path']>]: string }, query?: QueryParams) => string
+    ? (params: ResolveParamTypes<Def['path'], Def['params']>, query?: QueryParams) => string
     : (query?: QueryParams) => string;
 };
 
@@ -112,7 +144,7 @@ type RouteProperties<Def extends RouteDef> = {
  */
 type RouteCallable<Def extends RouteDef> =
   HasParams<Def['path']> extends true
-    ? ((params: { [K in ExtractParams<Def['path']>]: string }, options?: RouteHxOptions) => HTMX)
+    ? ((params: ResolveParamTypes<Def['path'], Def['params']>, options?: RouteHxOptions) => HTMX)
       & RouteProperties<Def>
     : ((options?: RouteHxOptions) => HTMX)
       & RouteProperties<Def>;
@@ -227,10 +259,10 @@ export function defineRoutes(
     const hasParams = fullPath.includes(":");
 
     const routeFn = hasParams
-      ? function (params: Record<string, string>, options?: RouteHxOptions): HTMX {
+      ? function (params: Record<string, string | number>, options?: RouteHxOptions): HTMX {
           let resolvedPath = fullPath;
           for (const [key, value] of Object.entries(params)) {
-            resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(value));
+            resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(String(value)));
           }
           assertNoUnresolvedParams(resolvedPath, fullPath);
           return buildHtmxFromRoute(resolvedPath, method, options);
@@ -240,10 +272,10 @@ export function defineRoutes(
         };
 
     const resolve = hasParams
-      ? function (params: Record<string, string>, query?: QueryParams): string {
+      ? function (params: Record<string, string | number>, query?: QueryParams): string {
           let resolved = fullPath;
           for (const [key, value] of Object.entries(params)) {
-            resolved = resolved.replace(`:${key}`, encodeURIComponent(value));
+            resolved = resolved.replace(`:${key}`, encodeURIComponent(String(value)));
           }
           assertNoUnresolvedParams(resolved, fullPath);
           return query ? resolved + buildQueryString(query) : resolved;

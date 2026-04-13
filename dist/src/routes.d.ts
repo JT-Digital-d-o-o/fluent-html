@@ -11,10 +11,27 @@ import type { Id } from "./ids.js";
 type ExtractParams<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? Param | ExtractParams<`/${Rest}`> : Path extends `${string}:${infer Param}` ? Param : never;
 /** Whether a path contains `:param` segments. */
 type HasParams<Path extends string> = ExtractParams<Path> extends never ? false : true;
+/** Supported param type names. Determines the TypeScript type required at call sites. */
+export type ParamTypeName = "string" | "number" | "uuid";
+/** Maps param type names to the TypeScript types accepted at call sites. */
+type ParamTypeMap = {
+    string: string;
+    number: number;
+    uuid: string;
+};
+/**
+ * Resolve the TypeScript type for each extracted path param.
+ * When a `params` map is provided, each param uses its declared type.
+ * Params not listed in the map (or routes without `params`) default to `string`.
+ */
+type ResolveParamTypes<Path extends string, Params extends Readonly<Record<string, ParamTypeName>> | undefined> = {
+    [K in ExtractParams<Path>]: Params extends Readonly<Record<string, ParamTypeName>> ? K extends keyof Params ? Params[K] extends ParamTypeName ? ParamTypeMap[Params[K]] : string : string : string;
+};
 /** A single route definition: HTTP method + path. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
 export type RouteDef = {
     readonly method: HxHttpMethod;
     readonly path: `/${string}`;
+    readonly params?: Readonly<Record<string, ParamTypeName>>;
 };
 /** Input object for defineRoutes(). */
 type RouteDefinitions = {
@@ -27,6 +44,7 @@ type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
     readonly [K in keyof T]: {
         readonly method: T[K]['method'];
         readonly path: JoinPath<P, T[K]['path']> & `/${string}`;
+        readonly params: T[K]['params'];
     };
 };
 /**
@@ -49,9 +67,7 @@ export type QueryParams = Record<string, QueryParamValue>;
 type RouteProperties<Def extends RouteDef> = {
     readonly method: Def['method'];
     readonly path: Def['path'];
-    readonly resolve: HasParams<Def['path']> extends true ? (params: {
-        [K in ExtractParams<Def['path']>]: string;
-    }, query?: QueryParams) => string : (query?: QueryParams) => string;
+    readonly resolve: HasParams<Def['path']> extends true ? (params: ResolveParamTypes<Def['path'], Def['params']>, query?: QueryParams) => string : (query?: QueryParams) => string;
 };
 /**
  * A type-safe route callable.
@@ -61,9 +77,7 @@ type RouteProperties<Def extends RouteDef> = {
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
  * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
-type RouteCallable<Def extends RouteDef> = HasParams<Def['path']> extends true ? ((params: {
-    [K in ExtractParams<Def['path']>]: string;
-}, options?: RouteHxOptions) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptions) => HTMX) & RouteProperties<Def>;
+type RouteCallable<Def extends RouteDef> = HasParams<Def['path']> extends true ? ((params: ResolveParamTypes<Def['path'], Def['params']>, options?: RouteHxOptions) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptions) => HTMX) & RouteProperties<Def>;
 /** The full registry object returned by defineRoutes(). */
 type RouteRegistry<T extends RouteDefinitions> = {
     readonly [K in keyof T]: RouteCallable<T[K]>;

@@ -58,7 +58,7 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
             ? function (params, options) {
                 let resolvedPath = fullPath;
                 for (const [key, value] of Object.entries(params)) {
-                    resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(value));
+                    resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(String(value)));
                 }
                 assertNoUnresolvedParams(resolvedPath, fullPath);
                 return buildHtmxFromRoute(resolvedPath, method, options);
@@ -70,7 +70,7 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
             ? function (params, query) {
                 let resolved = fullPath;
                 for (const [key, value] of Object.entries(params)) {
-                    resolved = resolved.replace(`:${key}`, encodeURIComponent(value));
+                    resolved = resolved.replace(`:${key}`, encodeURIComponent(String(value)));
                 }
                 assertNoUnresolvedParams(resolved, fullPath);
                 return query ? resolved + buildQueryString(query) : resolved;

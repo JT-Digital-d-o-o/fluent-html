@@ -322,6 +322,7 @@ export type {
   RouteHxOptions,
   QueryParams,
   QueryParamValue,
+  ParamTypeName,
 } from './routes.js';
 
 // Behavior system

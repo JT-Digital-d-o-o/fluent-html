@@ -354,6 +354,72 @@ describe("Unresolved param runtime guard", () => {
         assert.doesNotThrow(() => routes.nested({ userId: "1", postId: "99" }));
     });
 });
+// --- Typed params ---
+const typedRoutes = defineRoutes("/items", {
+    list: { method: "get", path: "/" },
+    detail: { method: "get", path: "/:id", params: { id: "uuid" } },
+    page: { method: "get", path: "/page/:page", params: { page: "number" } },
+    mixed: { method: "get", path: "/:slug/rev/:rev", params: { slug: "string", rev: "number" } },
+});
+describe("Typed params: number", () => {
+    it("accepts number and stringifies in endpoint", () => {
+        assert.deepStrictEqual(typedRoutes.page({ page: 3 }).endpoint, "/items/page/3");
+    });
+    it("resolve() stringifies number param", () => {
+        assert.deepStrictEqual(typedRoutes.page.resolve({ page: 7 }), "/items/page/7");
+    });
+    it("resolve() with query and number param", () => {
+        assert.deepStrictEqual(typedRoutes.page.resolve({ page: 2 }, { sort: "name" }), "/items/page/2?sort=name");
+    });
+    it("renders number param in hx-get", () => {
+        assert.strictEqual(render(Button("Next").setHtmx(typedRoutes.page({ page: 5 }))), '<button hx-get="/items/page/5">Next</button>');
+    });
+});
+describe("Typed params: uuid (string)", () => {
+    it("accepts string and passes through", () => {
+        assert.deepStrictEqual(typedRoutes.detail({ id: "550e8400-e29b-41d4-a716-446655440000" }).endpoint, "/items/550e8400-e29b-41d4-a716-446655440000");
+    });
+    it("resolve() passes string through", () => {
+        assert.deepStrictEqual(typedRoutes.detail.resolve({ id: "abc-123" }), "/items/abc-123");
+    });
+});
+describe("Typed params: mixed param types", () => {
+    it("accepts string + number together", () => {
+        assert.deepStrictEqual(typedRoutes.mixed({ slug: "hello", rev: 42 }).endpoint, "/items/hello/rev/42");
+    });
+    it("resolve() with mixed types", () => {
+        assert.deepStrictEqual(typedRoutes.mixed.resolve({ slug: "hello", rev: 42 }), "/items/hello/rev/42");
+    });
+    it("encodes special chars in string param", () => {
+        assert.deepStrictEqual(typedRoutes.mixed({ slug: "a b", rev: 1 }).endpoint, "/items/a%20b/rev/1");
+    });
+});
+describe("Typed params: compile-time type enforcement", () => {
+    it("number param rejects string at compile time", () => {
+        // @ts-expect-error — page is typed as number, not string
+        typedRoutes.page({ page: "3" });
+    });
+    it("number param rejects string in resolve()", () => {
+        // @ts-expect-error — page is typed as number, not string
+        typedRoutes.page.resolve({ page: "3" });
+    });
+    it("mixed route rejects number for string param", () => {
+        // @ts-expect-error — slug is typed as string, not number
+        typedRoutes.mixed({ slug: 123, rev: 1 });
+    });
+    it("mixed route rejects string for number param", () => {
+        // @ts-expect-error — rev is typed as number, not string
+        typedRoutes.mixed({ slug: "ok", rev: "1" });
+    });
+});
+describe("Typed params: backward compat (no params field)", () => {
+    it("routes without params still accept string", () => {
+        assert.deepStrictEqual(routes.detail({ id: "42" }).endpoint, "/users/42");
+    });
+    it("prefixed routes without params still accept string", () => {
+        assert.deepStrictEqual(prefixedRoutes.detail({ id: "42" }).endpoint, "/users/42");
+    });
+});
 describe("Registry immutability", () => {
     it("registry is frozen", () => {
         assert.strictEqual(Object.isFrozen(routes), true);
