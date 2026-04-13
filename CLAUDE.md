@@ -89,7 +89,9 @@ const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow
 Div("Content").apply(card)
 ```
 
-**Scoped context (`createContext`)** — use for cross-cutting values read by many components (i18n, theme, auth, nonce, feature flags) instead of prop drilling. Use props for component-specific data. **Never use `AsyncLocalStorage`** for render-time data — `createContext` is sufficient for synchronous rendering.
+**Scoped context** — use for cross-cutting values read by many components (i18n, theme, auth, nonce, feature flags) instead of prop drilling. Use props for component-specific data. **Never use `AsyncLocalStorage`** for render-time data — context is sufficient for synchronous rendering:
+- `createContext(defaultValue)` — returns default when no scope active
+- `createRequiredContext(name)` — throws if accessed outside a scope (use for auth, request data)
 
 ---
 
@@ -122,14 +124,14 @@ Critical rules:
 - **htmx 4**: attributes don't inherit — use `:inherited` modifier
 - **Almost everything uses full-layout swap** targeting `ids.mainContent` — including forms, modals, and inline edits. Feature-specific targets are rare; default to the full-layout pattern.
 
-**`defineRoutes` / `defineIds`** — define in `[feature].routes.ts`:
+**`defineRoutes` / `defineIds`** — define in `[feature].routes.ts`. Use typed params (`"string"`, `"number"`, `"uuid"`) for compile-time safety:
 ```typescript
 export const ids = defineIds(["mainContent", "userList", "userCount"] as const);
 export const userRoutes = defineRoutes("/users", {
   list:   { method: "GET",  path: "/" },
   create: { method: "POST", path: "/" },
-  detail: { method: "GET",  path: "/:id" },
-});
+  detail: { method: "GET",  path: "/:id", params: { id: "number" } as const },
+} as const);
 ```
 
 **Full layout navigation** — the default pattern:

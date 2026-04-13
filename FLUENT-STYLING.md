@@ -89,6 +89,22 @@ Option(city).toggle("selected", city === current) // expression
 .aspect("video")                     // aspect-video
 ```
 
+### Arbitrary Value Unit Overloads
+
+Sizing, spacing, and position methods accept a `(unit, amount)` overload for arbitrary values:
+
+```typescript
+.w("px", 180)              // w-[180px]
+.h("rem", 2.5)             // h-[2.5rem]
+.minH("vh", 50)            // min-h-[50vh]
+.padding("px", 12)         // p-[12px]
+.margin("em", 1.5)         // m-[1.5em]
+.gap("px", 10)             // gap-[10px]
+.top("rem", 2)             // top-[2rem]
+```
+
+Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, `minW`, `maxW`, `minH`, `maxH`, `padding`, `margin`, `gap`, `top`, `right`, `bottom`, `left`, `inset`.
+
 ### Colors
 
 ```typescript
@@ -104,11 +120,19 @@ Option(city).toggle("selected", city === current) // expression
 .textSize("xl")            // text-xl
 .textAlign("center")       // text-center
 .fontWeight("semibold")    // font-semibold
+.fontFamily("mono")        // font-mono
 .bold()  .italic()         // font-bold, italic
-.underline()  .lineThrough()  .truncate()
+.underline()  .noUnderline()  .lineThrough()  .truncate()
 .uppercase()  .lowercase()  .capitalize()
 .leading("tight")          // leading-tight (line-height)
 .tracking("wide")          // tracking-wide (letter-spacing)
+.antialiased()             // antialiased
+.tabularNums()             // tabular-nums
+.underlineOffset("4")      // underline-offset-4
+.lineClamp("3")            // line-clamp-3
+.breakAll()                // break-all
+.listStyleType("disc")     // list-disc
+.listStylePosition("inside") // list-inside
 ```
 
 ### Flexbox
@@ -140,6 +164,7 @@ Option(city).toggle("selected", city === current) // expression
 .border("t")               // border-t (directional)
 .rounded("lg")             // rounded-lg
 .shadow("md")              // shadow-md
+.shadowColor("red-500")    // shadow-red-500
 .ring("2")                 // ring-2
 .opacity("50")             // opacity-50
 .divideX()  .divideY("2")  // divide-x, divide-y-2
@@ -165,9 +190,54 @@ Option(city).toggle("selected", city === current) // expression
 .scale("105")              // scale-105
 .rotate("45")              // rotate-45
 .translate("x", "4")       // translate-x-4
+.skewX("6")                // skew-x-6
+.skewY("3")                // skew-y-3
 .transition("colors")      // transition-colors
 .duration("200")           // duration-200
+.ease("in-out")            // ease-in-out
 .animate("spin")           // animate-spin
+```
+
+### Gradients
+
+```typescript
+.gradientTo("r")           // bg-gradient-to-r
+.from("blue-500")          // from-blue-500
+.via("purple-500")         // via-purple-500
+.to("pink-500")            // to-pink-500
+```
+
+### Filters
+
+```typescript
+.blur()  .blur("lg")       // blur, blur-lg
+.brightness("75")          // brightness-75
+.contrast("125")           // contrast-125
+.grayscale()               // grayscale
+.hueRotate("90")           // hue-rotate-90
+.invert()                  // invert
+.saturate("150")           // saturate-150
+.sepia()                   // sepia
+```
+
+All filters have `backdrop` variants: `.backdropBlur()`, `.backdropBrightness()`, `.backdropContrast()`, etc.
+
+### Group & Peer
+
+```typescript
+.group()                   // group
+.group("form")             // group/form (named group)
+.peer()                    // peer
+.peer("input")             // peer/input (named peer)
+```
+
+Use with `.on()` for group/peer state variants:
+
+```typescript
+Div(
+  Input().peer(),
+  Span("Error").on("peer-invalid", t => t.display("block")),
+).group()
 ```
 
 ### Interactivity
@@ -179,6 +249,9 @@ Option(city).toggle("selected", city === current) // expression
 .whitespace("nowrap")      // whitespace-nowrap
 .outline("none")           // outline-none
 .srOnly()                  // sr-only
+.willChange("transform")   // will-change-transform
+.overscroll("contain")     // overscroll-contain
+.resize("y")               // resize-y
 ```
 
 ## Real-World Example

@@ -338,17 +338,77 @@ foldView(countAlgebra, ...) evaluates as:
 
 ---
 
+## Other Recursion Schemes
+
+`foldView` (catamorphism) is one of four recursion schemes provided by fluent-html. The others are:
+
+### Paramorphism (`paraView`)
+
+Like `foldView`, but the `tag` handler also receives the **original subtree** — useful when you need to inspect the raw node while working with already-folded results.
+
+```typescript
+import { paraView, ParaAlgebra } from 'fluent-html';
+
+const alg: ParaAlgebra<string> = {
+  text: (s) => s,
+  raw: (html) => html,
+  tag: (el, attrs, children, original) => { /* original is the unfolded View */ },
+  list: (items) => items.join(""),
+};
+```
+
+Built-in: `ariaDescribeAlgebra` — generates accessibility descriptions from a View tree.
+
+### Anamorphism (`unfoldView`)
+
+The dual of `foldView` — **builds** a View tree by recursively expanding a seed:
+
+```typescript
+import { unfoldView, ViewCoalgebra } from 'fluent-html';
+
+const coalg: ViewCoalgebra<Seed> = (seed) => {
+  if (done) return { type: "text", value: "leaf" };
+  return { type: "tag", element: "div", children: [nextSeed] };
+};
+const tree = unfoldView(coalg, initialSeed);
+```
+
+Built-in: `tocCoalgebra`, `linkedTocCoalgebra` — generate `<ul>/<li>` table of contents from flat headings.
+
+### Hylomorphism (`hyloView`)
+
+Fused unfold-then-fold in a **single pass** — no intermediate tree allocation:
+
+```typescript
+import { hyloView } from 'fluent-html';
+
+// Equivalent to foldView(alg, unfoldView(coalg, seed)) but more efficient
+hyloView(coalg, alg, seed);
+```
+
+For full documentation, examples, and usage patterns for all four schemes, see **[functional-patterns.md](functional-patterns.md)**.
+
+---
+
 ## API Summary
 
 | Export                    | Type                    | Description                                      |
 |--------------------------|-------------------------|--------------------------------------------------|
-| `foldView(alg, view)`   | `<A>(ViewAlgebra<A>, View) => A` | Core fold function                     |
-| `ViewAlgebra<A>`         | interface               | Algebra definition                               |
+| `foldView(alg, view)`   | `<A>(ViewAlgebra<A>, View) => A` | Catamorphism — collapse tree to value    |
+| `paraView(alg, view)`   | `<A>(ParaAlgebra<A>, View) => A` | Paramorphism — fold with original subtree |
+| `unfoldView(coalg, seed)` | `<S>(ViewCoalgebra<S>, S) => View` | Anamorphism — build tree from seed    |
+| `hyloView(coalg, alg, seed)` | `<S, A>(...) => A`          | Hylomorphism — fused unfold+fold       |
+| `ViewAlgebra<A>`         | interface               | Algebra definition (text, raw, tag, list)        |
+| `ParaAlgebra<A>`         | interface               | Algebra with original subtree access             |
+| `ViewCoalgebra<S>`       | type                    | Coalgebra for building trees from seeds          |
 | `TagAttrs`               | interface               | Tag attributes passed to `tag` handler           |
 | `countAlgebra`           | `ViewAlgebra<number>`   | Count all elements                               |
 | `textAlgebra`            | `ViewAlgebra<string>`   | Extract plain text                               |
 | `linksAlgebra`           | `ViewAlgebra<LinkInfo[]>` | Collect all `<a>` links                        |
 | `renderAlgebra`          | `ViewAlgebra<string>`   | Render to HTML (use `render()` in production)    |
+| `ariaDescribeAlgebra`    | `ParaAlgebra<string>`   | Generate accessibility descriptions              |
+| `tocCoalgebra`           | `ViewCoalgebra<TocSeed>` | Build TOC `<ul>/<li>` from headings             |
+| `linkedTocCoalgebra`     | `ViewCoalgebra<LinkedTocSeed>` | Build linked TOC with anchor hrefs        |
 | `createTransformAlgebra` | `(...) => ViewAlgebra<View>` | Create element transformers                 |
 | `addClassToMatching`     | `(...) => ViewAlgebra<View>` | Add a class to matching elements            |
 | `LinkInfo`               | interface               | Shape returned by `linksAlgebra`                 |

@@ -55,11 +55,13 @@ render(page);
 
 - **Fluent API** - Chainable methods for styling, attributes, and structure
 - **Full autocomplete** - Every method, attribute, and value suggested by your IDE
-- **First-class HTMX 4** - Type-safe routes, triggers, swaps, targets, morph strategies, and more
-- **Fold / Catamorphism** - Generic View traversals via `foldView` with pre-built and custom algebras ([docs](FOLD.md))
+- **First-class HTMX 4** - Type-safe routes with typed params, triggers, swaps, targets, morph strategies, and more
+- **100+ Tailwind methods** - Gradients, filters, group/peer, arbitrary values with unit overloads, and more
+- **Functional patterns** - Fold, para, ana, hylo recursion schemes for View tree processing ([docs](functional-patterns.md))
+- **Scoped context** - `createContext` / `createRequiredContext` for implicit values without prop drilling
 - **XSS protection** - All content escaped automatically
 - **Zero dependencies** - Pure TypeScript, ~15KB minified
-- **SSR-ready** - Built for server-side rendering
+- **SSR-ready** - Built for server-side rendering, optimized render path
 
 ---
 
@@ -85,14 +87,14 @@ Div("Content").setClass("p-4 bg-white rounded-lg shadow")
 ### HTMX 4 with Full Type Safety
 
 ```typescript
-// Type-safe routes — shared prefix, typos are compile errors
+// Type-safe routes — shared prefix, typed params, typos are compile errors
 const userRoutes = defineRoutes("/users", {
   list:   { method: "get",    path: "/" },
-  delete: { method: "delete", path: "/:id" },
+  delete: { method: "delete", path: "/:id", params: { id: "number" } as const },
 } as const);
 
 Button("Load").setHtmx(userRoutes.list({ target: ids.userList }))
-Button("Delete").setHtmx(userRoutes.delete({ id: user.id }))
+Button("Delete").setHtmx(userRoutes.delete({ id: user.id }))  // id must be number
 
 // Shorthand methods — clean and concise
 Button("Load More").hxGet("/api/items", { target: ids.itemList, swap: "append" })
@@ -200,12 +202,13 @@ render(
 
 - [Fluent Styling API](#fluent-styling-api) - Chainable Tailwind-friendly methods
 - [HTMX Integration](#type-safe-htmx) - Requests, triggers, swaps, all typed
-- [Type-Safe Routes](#type-safe-routes) - Compile-time-safe HTMX endpoints
+- [Type-Safe Routes](#type-safe-routes) - Compile-time-safe HTMX endpoints with typed params
+- [Scoped Context](#scoped-context) - `createContext` / `createRequiredContext` for implicit values
 - [Partial Multi-Swap](#partial-multi-swap) - Update multiple page sections in one response
 - [Global HTMX Config](#global-htmx-config) - Type-safe global htmx configuration
-- [HTML Elements](#html-elements) - 60+ typed elements
+- [HTML Elements](#html-elements) - 60+ typed elements with generic `Input()` factory
 - [Control Flow](#control-flow-1) - IfThen, Match, ForEach
-- [Fold / Catamorphism](FOLD.md) - Generic View traversals, pre-built algebras, custom folds
+- [Functional Patterns](functional-patterns.md) - Fold, para, ana, hylo recursion schemes, control flow, context
 - [Common Patterns](#common-patterns) - Layouts, partial swaps, response helpers
 - [ESLint Plugin](#eslint-plugin) - 16 rules catching style overwrites, class conflicts, HTMX pitfalls & more
 - [Tailwind CSS Extractor](#tailwind-css-extractor) - Generate CSS from fluent method calls
@@ -551,6 +554,22 @@ userRoutes.list.resolve({ page: "1", filter: undefined })                       
 Button("Page 2").setHtmx(userRoutes.list({ query: { page: "2" } }))
 ```
 
+### Typed Route Parameters
+
+Route params can be typed as `string`, `number`, or `uuid`. The type is enforced at compile time:
+
+```typescript
+export const userRoutes = defineRoutes("/users", {
+  detail: { method: "get", path: "/:id",   params: { id: "number" } as const },
+  bySlug: { method: "get", path: "/:slug", params: { slug: "string" } as const },
+  byUuid: { method: "get", path: "/:uuid", params: { uuid: "uuid" } as const },
+} as const);
+
+userRoutes.detail.resolve({ id: 42 })        // "/users/42" — id must be number
+userRoutes.bySlug.resolve({ slug: "hello" })  // "/users/hello"
+userRoutes.detail.resolve({ id: "42" })       // ✗ compile error — number expected
+```
+
 The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method`, `.path` (with prefix applied), and `.resolve()` (for param + query substitution). Views and controllers always stay in sync.
 
 ---
@@ -578,6 +597,26 @@ function Header() {
 ```
 
 Contexts are stack-based: each `scope()` pushes a value, and disposal pops it. Nested overrides compose safely. Default value is returned when no scope is active.
+
+### Required Context
+
+Use `createRequiredContext()` when a missing scope is always a bug (e.g., auth, request-specific data). It throws instead of returning a default:
+
+```typescript
+import { createRequiredContext } from 'fluent-html';
+
+const AuthCtx = createRequiredContext<User>("AuthCtx");
+
+function handler(user: User) {
+  using _ = AuthCtx.scope(user);
+  return Page();
+}
+
+function Page() {
+  const user = AuthCtx.current;  // User — throws if no scope active
+  return Div(`Hello, ${user.name}`);
+}
+```
 
 ---
 
@@ -1179,7 +1218,16 @@ Hr()             // ✓ void element, no children
 
 ### Form Elements
 
+`Input()` accepts an optional type argument for type-safe `min`/`max`/`step`:
+
 ```typescript
+// Generic factory — min/max/step types match the input type
+Input("number").setMin(0).setMax(100).setStep(5)     // min/max: number
+Input("date").setMin("2024-01-01")                    // min/max: string
+Input("range").setMin(0).setMax(10).setStep(0.5)     // min/max: number
+Input("email")                                        // no min/max/step available
+Input()                                               // all types allowed
+
 // Text input with validation
 Input()
   .setType("email")
@@ -1190,8 +1238,7 @@ Input()
   .toggle("required")
 
 // Number input with constraints
-Input()
-  .setType("number")
+Input("number")
   .setName("quantity")
   .setMin(1)
   .setMax(100)
@@ -1841,27 +1888,32 @@ Div(
 
 ---
 
-## Fold / Catamorphism
+## Functional Patterns
 
-Fluent HTML includes a generic **fold** (`foldView`) that recursively collapses any `View` tree into a value of your choice. Supply a `ViewAlgebra<A>` — four functions that handle text, raw HTML, tags, and lists — and `foldView` does the rest.
+Fluent HTML provides four recursion schemes for View tree processing:
 
 ```typescript
-import { foldView, countAlgebra, textAlgebra, linksAlgebra } from 'fluent-html';
+import { foldView, paraView, unfoldView, hyloView, countAlgebra, textAlgebra } from 'fluent-html';
 
-// Count elements
+// Catamorphism — collapse tree to value
 foldView(countAlgebra, Div(P("Hello"), P("World")));  // 3
+foldView(textAlgebra, H1("Welcome"));                  // "Welcome\n"
 
-// Extract plain text
-foldView(textAlgebra, H1("Welcome"));  // "Welcome\n"
+// Paramorphism — fold with access to original subtree
+paraView(ariaDescribeAlgebra, Nav(A("Home").setHref("/")));
+// "nav containing: link 'Home' (href: /)"
 
-// Collect all links
-foldView(linksAlgebra, Div(A("Home").setHref("/"), A("About").setHref("/about")));
-// [{ href: "/" }, { href: "/about" }]
+// Anamorphism — build tree from seed
+unfoldView(tocCoalgebra, { type: "list", entries: headings });
+// <ul><li>Introduction</li><li>Getting Started</li></ul>
+
+// Hylomorphism — fused unfold+fold, no intermediate tree
+hyloView(nestCoalg, countAlgebra, { depth: 3 });  // 3
 ```
 
-Pre-built algebras: `countAlgebra`, `textAlgebra`, `linksAlgebra`, `renderAlgebra`. Transform helpers: `createTransformAlgebra`, `addClassToMatching`.
+Pre-built algebras: `countAlgebra`, `textAlgebra`, `linksAlgebra`, `renderAlgebra`, `ariaDescribeAlgebra`. Transform helpers: `createTransformAlgebra`, `addClassToMatching`. Coalgebras: `tocCoalgebra`, `linkedTocCoalgebra`.
 
-Writing your own algebra is straightforward — see the **[full Fold documentation](FOLD.md)** for in-depth explanations and examples.
+See the **[full documentation](functional-patterns.md)** for in-depth explanations, all four recursion schemes, and custom algebra examples.
 
 ---
 
@@ -2091,6 +2143,24 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | `.opacity(value)`                | Opacity (`opacity-50`)                              |
 | `.cursor(value)`                 | Cursor (`cursor-pointer`)                           |
 | `.overflow(value)` / `.overflow(axis, value)` | Overflow (`overflow-hidden`, `overflow-x-auto`) |
+| `.fontFamily(family)`                 | Font family (`font-sans`, `font-mono`)              |
+| `.antialiased()`                      | Font smoothing (`antialiased`)                      |
+| `.gradientTo(dir)`                    | Gradient direction (`bg-gradient-to-r`)             |
+| `.from(color)` / `.via(color)` / `.to(color)` | Gradient color stops                       |
+| `.blur()` / `.blur(size)`            | Blur filter (`blur`, `blur-lg`)                     |
+| `.brightness(value)`                  | Brightness filter (`brightness-75`)                 |
+| `.contrast(value)`                    | Contrast filter (`contrast-125`)                    |
+| `.grayscale()`                        | Grayscale filter (`grayscale`)                      |
+| `.saturate(value)`                    | Saturation filter (`saturate-150`)                  |
+| `.sepia()`                            | Sepia filter (`sepia`)                              |
+| `.shadowColor(color)`                 | Shadow color (`shadow-red-500`)                     |
+| `.group(name?)` / `.peer(name?)`     | Group/peer variants (`group`, `group/form`)         |
+| `.listStyleType(type)`                | List style (`list-disc`, `list-decimal`)             |
+| `.lineClamp(lines)`                   | Line clamp (`line-clamp-3`)                         |
+| `.underlineOffset(value)`             | Underline offset (`underline-offset-4`)             |
+| `.ease(value)`                        | Timing function (`ease-in`, `ease-out`)             |
+| `.aspect(ratio)`                      | Aspect ratio (`aspect-video`, `aspect-square`)      |
+| `.w(unit, amount)` / `.h(unit, amount)` | Arbitrary values (`w-[180px]`, `h-[2.5rem]`)     |
 
 ### Control Flow
 
@@ -2211,6 +2281,7 @@ import {
 | `HtmxConfig(options)` | Global HTMX configuration via `<meta>` tag |
 | `defineRoutes(prefix?, routes)` | Type-safe route definitions for HTMX + server |
 | `createContext(defaultValue)` | Scoped context for implicit values (theme, locale, auth) |
+| `createRequiredContext(name)` | Scoped context that throws if accessed outside a scope |
 | `hxResponse(content)` | Build HTMX response with headers |
 | `SearchInput(options)` | Debounced search input with HTMX |
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
@@ -2234,7 +2305,7 @@ Raw(html: string): RawString  // Create unescaped HTML content
 ### Type-Safe IDs & Routes
 
 ```typescript
-import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes, createContext } from 'fluent-html';
+import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes, createContext, createRequiredContext } from 'fluent-html';
 ```
 
 | Function | Description |
@@ -2246,6 +2317,7 @@ import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes
 | `extractSelector(value)` | Extract selector string from string or Id |
 | `defineRoutes(prefix?, routes)` | Create type-safe route definitions with params |
 | `createContext(defaultValue)` | Create a scoped context with stack-based overrides |
+| `createRequiredContext(name)` | Create a scoped context that throws if accessed outside a scope |
 
 **Route Callable Object:**
 
