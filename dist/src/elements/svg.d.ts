@@ -10,7 +10,7 @@ export declare class SvgShapeTag extends Tag {
     transform?: string;
     setFill(fill: string): this;
     setStroke(stroke: string): this;
-    setStrokeWidth(width: string): this;
+    setStrokeWidth(width: string | number): this;
     setStrokeLinecap(linecap: 'butt' | 'round' | 'square'): this;
     setStrokeLinejoin(linejoin: 'miter' | 'round' | 'bevel'): this;
     setStrokeDasharray(dasharray: string): this;

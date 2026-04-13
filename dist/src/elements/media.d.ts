@@ -114,7 +114,7 @@ export declare class SvgTag extends Tag {
     setXmlns(xmlns?: string): this;
     setFill(fill: string): this;
     setStroke(stroke: string): this;
-    setStrokeWidth(width: string): this;
+    setStrokeWidth(width: string | number): this;
 }
 export declare function Svg(...children: View[]): SvgTag;
 //# sourceMappingURL=media.d.ts.map

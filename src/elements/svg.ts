@@ -23,8 +23,8 @@ export class SvgShapeTag extends Tag {
     return this;
   }
 
-  setStrokeWidth(width: string): this {
-    this['stroke-width'] = width;
+  setStrokeWidth(width: string | number): this {
+    this['stroke-width'] = String(width);
     return this;
   }
 

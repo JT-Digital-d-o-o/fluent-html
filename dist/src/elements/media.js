@@ -232,7 +232,7 @@ export class SvgTag extends Tag {
         return this;
     }
     setStrokeWidth(width) {
-        this['stroke-width'] = width;
+        this['stroke-width'] = String(width);
         return this;
     }
 }
