@@ -347,6 +347,13 @@ describe("SVG", () => {
     `<svg viewBox="0 0 100 100"><g transform="translate(10, 10)"><rect width="50" height="50"></rect>\n<line x1="0" y1="0" x2="50" y2="50"></line></g></svg>`);
   });
 
+  it("SvgTag setStrokeWidth", () => {
+    assert.strictEqual(render(Svg(
+      Path().setD("M0 0 L24 24").setStroke("currentColor"),
+    ).setXmlns().setFill("none").setViewBox("0 0 24 24").setStrokeWidth("1.5")),
+    `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-width="1.5"><path d="M0 0 L24 24" stroke="currentColor"></path></svg>`);
+  });
+
   it("Circle typed setters", () => {
     assert.strictEqual(render(Circle().setCx("50").setCy("50").setR("25").setFill("blue").setStroke("black").setStrokeWidth("2")),
     `<circle cx="50" cy="50" r="25" fill="blue" stroke="black" stroke-width="2"></circle>`);

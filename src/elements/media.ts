@@ -308,6 +308,7 @@ export class SvgTag extends Tag {
   xmlns?: string;
   fill?: string;
   stroke?: string;
+  'stroke-width'?: string;
 
   setWidth(width: string): this {
     this.width = width;
@@ -338,11 +339,16 @@ export class SvgTag extends Tag {
     this.stroke = stroke;
     return this;
   }
+
+  setStrokeWidth(width: string): this {
+    this['stroke-width'] = width;
+    return this;
+  }
 }
 
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(SvgTag.prototype as any)._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke'];
+(SvgTag.prototype as any)._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width'];
 
 export function Svg(...children: View[]): SvgTag {
   return new SvgTag("svg", ...children);
