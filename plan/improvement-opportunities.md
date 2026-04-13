@@ -64,26 +64,19 @@ Since `EMPTY_ATTRS` is frozen and shared, the spread is wasted work for most tag
 
 ---
 
-## 6. MISSING TAILWIND METHODS (Medium Impact, Additive)
+## 6. ~~MISSING TAILWIND METHODS~~ (DONE)
 
-Compared to Tailwind v3.4/v4, these commonly-used utilities have no fluent method:
+**Fixed:** Added 29 new fluent methods with full type safety:
 
-**Filters (frequently used in image-heavy UIs):**
-- `brightness()`, `contrast()`, `grayscale()`, `hueRotate()`, `invert()`, `saturate()`, `sepia()`
-- Backdrop variants of all above
+**Filters (14 methods):** `brightness()`, `backdropBrightness()`, `contrast()`, `backdropContrast()`, `grayscale()`, `backdropGrayscale()`, `hueRotate()`, `backdropHueRotate()`, `invert()`, `backdropInvert()`, `saturate()`, `backdropSaturate()`, `sepia()`, `backdropSepia()`
 
-**Layout (used in complex grids):**
-- `placeContent()`, `placeItems()`, `placeSelf()`
-- `gridAutoFlow()`, `gridAutoRows()`, `gridAutoColumns()`
-- `order()`
+**Layout (7 methods):** `placeContent()`, `placeItems()`, `placeSelf()`, `gridAutoFlow()`, `gridAutoRows()`, `gridAutoCols()`, `order()`
 
-**Modern features:**
-- `container()` / container query support via `.at("@md", ...)`
-- `skewX()` / `skewY()` transforms
-- `willChange()` for performance hints
-- `overscroll()` behavior
+**Modern features (5 methods):** `skewX()`, `skewY()`, `willChange()`, `overscroll()` (with directional overload)
 
-Every one of these that's missing forces users to fall back to `.addClass("brightness-50")` — losing type safety and autocomplete.
+**Not added:** `container()` / container queries — requires deeper `.at("@md", ...)` integration, tracked separately.
+
+47 new tests added.
 
 ---
 
@@ -100,39 +93,27 @@ Current SVG support covers basic shapes well, but is missing container/definitio
 
 ---
 
-## 8. `listStyleType` AND `listStylePosition` PRODUCE IDENTICAL OUTPUT
+## 8. ~~`listStyleType` AND `listStylePosition` PRODUCE IDENTICAL OUTPUT~~ (DONE)
 
-`tailwind-methods.ts:500-501`:
-```typescript
-p.listStyleType = function (value: string) { return this.addClass(`list-${value}`); };
-p.listStylePosition = function (value: string) { return this.addClass(`list-${value}`); };
-```
-
-Both generate `list-${value}`. This happens to work because Tailwind uses `list-disc`, `list-decimal`, `list-inside`, `list-outside` — all under the `list-` prefix. But it means the two methods are **functionally identical** and provide no compile-time protection against passing a position value to `listStyleType` or vice versa. The type system catches this via separate union types, but the runtime doesn't distinguish them at all. Not a bug per se, but worth noting for documentation clarity.
+**Fixed:** Added JSDoc to both methods documenting that they share the `list-` prefix intentionally — Tailwind uses `list-disc`/`list-decimal` for type and `list-inside`/`list-outside` for position. Type safety is enforced via separate union types (`TailwindListStyleType` vs `TailwindListStylePosition`). No runtime change needed.
 
 ---
 
-## 9. `escapeAttr` IS JUST `escapeHtml` (Minor, Correctness)
+## 9. ~~`escapeAttr` IS JUST `escapeHtml`~~ (DONE)
 
-`escape.ts:31-33`:
-```typescript
-export function escapeAttr(unsafe: string): string {
-  return escapeHtml(unsafe);
-}
-```
-
-This is fine for double-quoted attributes (which is all the renderer produces). But if you ever support unquoted or single-quoted attributes, this would need to also escape backticks, equals signs, etc. The indirection is good forward-thinking — just noting it.
+**Fixed:** Added JSDoc to `escapeAttr` documenting the double-quoted attribute assumption and what would need to change for unquoted/single-quoted attributes. No code change needed — the indirection is intentional.
 
 ---
 
-## 10. BENCHMARK SUITE MISSES KEY SCENARIOS (Minor)
+## 10. ~~BENCHMARK SUITE MISSES KEY SCENARIOS~~ (DONE)
 
-The benchmark covers construction and render, but doesn't measure:
-- **Variant-heavy rendering** (`.on("hover", ...)` called 10+ times per element — tests the `split/map/join` path)
-- **Streaming vs string rendering** comparison
-- **`foldView` traversal** performance
-- **Context creation/scope/dispose** overhead
-- **Large ForEach** (10K items) — where the array allocation in render really hurts
+**Fixed:** Added benchmarks for:
+- ~~Variant-heavy rendering~~ — 100 buttons with 10+ `.on()`/`.at()` variants
+- ~~`foldView` traversal~~ — `countAlgebra` over realistic page
+- ~~Context creation/scope/dispose~~ — 1000 scope/read cycles
+- ~~Large ForEach~~ — 5000 items
+
+**Remaining:** Streaming vs string rendering comparison (blocked on #2 — stream tests).
 
 ---
 
@@ -145,8 +126,10 @@ The benchmark covers construction and render, but doesn't measure:
 | 3 | ~~Optimize flat-page render path~~ | Performance++ | Medium | Low | **DONE** — +47% flat page, +20% realistic |
 | 4 | ~~Fast-path single-class variant prefix~~ | Performance+ | Trivial | None | **DONE** |
 | 5 | Optimize `foldView` extraction | Performance+ | Low | Low | |
-| 6 | Add missing Tailwind methods | DX++ | Medium | None | |
+| 6 | ~~Add missing Tailwind methods~~ | DX++ | Medium | None | **DONE** — 29 methods, 47 tests |
 | 7 | Add SVG container elements | Feature++ | Medium | None | |
-| 8-10 | Minor fixes & benchmarks | Quality+ | Low | None | |
+| 8 | ~~JSDoc listStyleType/listStylePosition~~ | Quality+ | Trivial | None | **DONE** |
+| 9 | ~~JSDoc escapeAttr~~ | Quality+ | Trivial | None | **DONE** |
+| 10 | ~~Add missing benchmarks~~ | Quality+ | Low | None | **DONE** — foldView, context, variants |
 
 Items 1-2 are the next highest-value targets — they touch maintenance pain and reliability gaps.

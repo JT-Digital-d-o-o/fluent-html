@@ -1,4 +1,4 @@
-import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize } from "./tailwind-types.js";
+import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll } from "./tailwind-types.js";
 declare module "./tag.js" {
     interface Tag {
         on(state: TailwindState, fn: (tag: this) => this): this;
@@ -48,6 +48,9 @@ declare module "./tag.js" {
         grid(): this;
         gridCols(cols: TailwindGridCols): this;
         gridRows(rows: TailwindGridRows): this;
+        gridAutoFlow(value: TailwindGridAutoFlow): this;
+        gridAutoRows(value: TailwindGridAuto): this;
+        gridAutoCols(value: TailwindGridAuto): this;
         border(value?: TailwindBorderWidth | TailwindBorderStyle | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
         border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
         borderColor(color: TailwindColor): this;
@@ -81,6 +84,10 @@ declare module "./tag.js" {
         alignSelf(value: TailwindAlignSelf): this;
         colSpan(value: TailwindColSpan): this;
         aspect(value: TailwindAspect): this;
+        order(value: TailwindOrder): this;
+        placeContent(value: TailwindPlaceContent): this;
+        placeItems(value: TailwindPlaceItems): this;
+        placeSelf(value: TailwindPlaceSelf): this;
         spaceX(value: TailwindSpacing): this;
         spaceY(value: TailwindSpacing): this;
         divideX(value?: TailwindBorderWidth): this;
@@ -93,10 +100,14 @@ declare module "./tag.js" {
         scale(value: TailwindScale): this;
         rotate(value: TailwindRotate): this;
         translate(direction: "x" | "y", value: TailwindSpacing): this;
+        skewX(value: TailwindSkew): this;
+        skewY(value: TailwindSkew): this;
         select(value: TailwindSelect): this;
         pointerEvents(value: TailwindPointerEvents): this;
         whitespace(value: TailwindWhitespace): this;
+        /** Sets list style type. Generates `list-{value}` — same prefix as `listStylePosition`, but type-safe via `TailwindListStyleType`. */
         listStyleType(value: TailwindListStyleType): this;
+        /** Sets list style position. Generates `list-{value}` — same prefix as `listStyleType`, but type-safe via `TailwindListStylePosition`. */
         listStylePosition(value: TailwindListStylePosition): this;
         srOnly(): this;
         outline(value: TailwindOutline): this;
@@ -110,6 +121,20 @@ declare module "./tag.js" {
         shadowColor(color: TailwindColor): this;
         blur(value?: TailwindBlur): this;
         backdropBlur(value?: TailwindBlur): this;
+        brightness(value: TailwindBrightness): this;
+        backdropBrightness(value: TailwindBrightness): this;
+        contrast(value: TailwindContrast): this;
+        backdropContrast(value: TailwindContrast): this;
+        grayscale(value?: 0 | "0"): this;
+        backdropGrayscale(value?: 0 | "0"): this;
+        hueRotate(value: TailwindHueRotate): this;
+        backdropHueRotate(value: TailwindHueRotate): this;
+        invert(value?: 0 | "0"): this;
+        backdropInvert(value?: 0 | "0"): this;
+        saturate(value: TailwindSaturate): this;
+        backdropSaturate(value: TailwindSaturate): this;
+        sepia(value?: 0 | "0"): this;
+        backdropSepia(value?: 0 | "0"): this;
         lineClamp(value: TailwindLineClamp): this;
         antialiased(): this;
         tabularNums(): this;
@@ -117,6 +142,9 @@ declare module "./tag.js" {
         breakAll(): this;
         ease(value: TailwindEase): this;
         resize(value?: TailwindResize): this;
+        willChange(value: TailwindWillChange): this;
+        overscroll(value: TailwindOverscroll): this;
+        overscroll(direction: "x" | "y", value: TailwindOverscroll): this;
         neg(cls: string): this;
     }
 }

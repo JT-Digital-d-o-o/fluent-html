@@ -66,6 +66,19 @@ import type {
   TailwindUnderlineOffset,
   TailwindEase,
   TailwindResize,
+  TailwindBrightness,
+  TailwindContrast,
+  TailwindHueRotate,
+  TailwindSaturate,
+  TailwindPlaceContent,
+  TailwindPlaceItems,
+  TailwindPlaceSelf,
+  TailwindGridAutoFlow,
+  TailwindGridAuto,
+  TailwindOrder,
+  TailwindSkew,
+  TailwindWillChange,
+  TailwindOverscroll,
 } from "./tailwind-types.js";
 
 // ── Variant helper (local, not on prototype) ────────────────────────
@@ -150,6 +163,9 @@ declare module "./tag.js" {
     grid(): this;
     gridCols(cols: TailwindGridCols): this;
     gridRows(rows: TailwindGridRows): this;
+    gridAutoFlow(value: TailwindGridAutoFlow): this;
+    gridAutoRows(value: TailwindGridAuto): this;
+    gridAutoCols(value: TailwindGridAuto): this;
 
     // Borders
     border(value?: TailwindBorderWidth | TailwindBorderStyle | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
@@ -191,6 +207,12 @@ declare module "./tag.js" {
     alignSelf(value: TailwindAlignSelf): this;
     colSpan(value: TailwindColSpan): this;
     aspect(value: TailwindAspect): this;
+    order(value: TailwindOrder): this;
+
+    // Place (Grid/Flex alignment)
+    placeContent(value: TailwindPlaceContent): this;
+    placeItems(value: TailwindPlaceItems): this;
+    placeSelf(value: TailwindPlaceSelf): this;
 
     // Spacing Between Children
     spaceX(value: TailwindSpacing): this;
@@ -211,6 +233,8 @@ declare module "./tag.js" {
     scale(value: TailwindScale): this;
     rotate(value: TailwindRotate): this;
     translate(direction: "x" | "y", value: TailwindSpacing): this;
+    skewX(value: TailwindSkew): this;
+    skewY(value: TailwindSkew): this;
 
     // Interactivity
     select(value: TailwindSelect): this;
@@ -220,7 +244,9 @@ declare module "./tag.js" {
     whitespace(value: TailwindWhitespace): this;
 
     // List Style
+    /** Sets list style type. Generates `list-{value}` — same prefix as `listStylePosition`, but type-safe via `TailwindListStyleType`. */
     listStyleType(value: TailwindListStyleType): this;
+    /** Sets list style position. Generates `list-{value}` — same prefix as `listStyleType`, but type-safe via `TailwindListStylePosition`. */
     listStylePosition(value: TailwindListStylePosition): this;
 
     // Accessibility
@@ -245,9 +271,23 @@ declare module "./tag.js" {
     // Shadow Color
     shadowColor(color: TailwindColor): this;
 
-    // Blur & Backdrop Blur
+    // Filters
     blur(value?: TailwindBlur): this;
     backdropBlur(value?: TailwindBlur): this;
+    brightness(value: TailwindBrightness): this;
+    backdropBrightness(value: TailwindBrightness): this;
+    contrast(value: TailwindContrast): this;
+    backdropContrast(value: TailwindContrast): this;
+    grayscale(value?: 0 | "0"): this;
+    backdropGrayscale(value?: 0 | "0"): this;
+    hueRotate(value: TailwindHueRotate): this;
+    backdropHueRotate(value: TailwindHueRotate): this;
+    invert(value?: 0 | "0"): this;
+    backdropInvert(value?: 0 | "0"): this;
+    saturate(value: TailwindSaturate): this;
+    backdropSaturate(value: TailwindSaturate): this;
+    sepia(value?: 0 | "0"): this;
+    backdropSepia(value?: 0 | "0"): this;
 
     // Line Clamp
     lineClamp(value: TailwindLineClamp): this;
@@ -263,6 +303,13 @@ declare module "./tag.js" {
 
     // Resize
     resize(value?: TailwindResize): this;
+
+    // Performance hints
+    willChange(value: TailwindWillChange): this;
+
+    // Overscroll behavior
+    overscroll(value: TailwindOverscroll): this;
+    overscroll(direction: "x" | "y", value: TailwindOverscroll): this;
 
     // Negative value prefix
     neg(cls: string): this;
@@ -369,6 +416,9 @@ p.gap = function (directionOrValue: string, value?: string | number) {
 p.grid = function () { return this.addClass("grid"); };
 p.gridCols = function (cols: string | number) { return this.addClass(`grid-cols-${cols}`); };
 p.gridRows = function (rows: string | number) { return this.addClass(`grid-rows-${rows}`); };
+p.gridAutoFlow = function (value: string) { return this.addClass(`grid-flow-${value}`); };
+p.gridAutoRows = function (value: string) { return this.addClass(`auto-rows-${value}`); };
+p.gridAutoCols = function (value: string) { return this.addClass(`auto-cols-${value}`); };
 
 // Borders
 
@@ -451,6 +501,13 @@ p.flexWrap = function (value: string) { return this.addClass(`flex-${value}`); }
 p.alignSelf = function (value: string) { return this.addClass(`self-${value}`); };
 p.colSpan = function (value: string | number) { return this.addClass(`col-span-${value}`); };
 p.aspect = function (value: string) { return this.addClass(`aspect-${value}`); };
+p.order = function (value: string | number) { return this.addClass(`order-${value}`); };
+
+// Place (Grid/Flex alignment)
+
+p.placeContent = function (value: string) { return this.addClass(`place-content-${value}`); };
+p.placeItems = function (value: string) { return this.addClass(`place-items-${value}`); };
+p.placeSelf = function (value: string) { return this.addClass(`place-self-${value}`); };
 
 // Spacing Between Children
 
@@ -485,6 +542,8 @@ p.rotate = function (value: string | number) { return this.addClass(`rotate-${va
 p.translate = function (direction: string, value: string) {
   return this.addClass(`translate-${direction}-${value}`);
 };
+p.skewX = function (value: string | number) { return this.addClass(`skew-x-${value}`); };
+p.skewY = function (value: string | number) { return this.addClass(`skew-y-${value}`); };
 
 // Interactivity
 
@@ -532,13 +591,39 @@ p.peer = function (name?: string) {
 
 p.shadowColor = function (color: string) { return this.addClass(`shadow-${color}`); };
 
-// Blur & Backdrop Blur
+// Filters
 
 p.blur = function (value?: string) {
   return value === undefined ? this.addClass("blur") : this.addClass(`blur-${value}`);
 };
 p.backdropBlur = function (value?: string) {
   return value === undefined ? this.addClass("backdrop-blur") : this.addClass(`backdrop-blur-${value}`);
+};
+p.brightness = function (value: string | number) { return this.addClass(`brightness-${value}`); };
+p.backdropBrightness = function (value: string | number) { return this.addClass(`backdrop-brightness-${value}`); };
+p.contrast = function (value: string | number) { return this.addClass(`contrast-${value}`); };
+p.backdropContrast = function (value: string | number) { return this.addClass(`backdrop-contrast-${value}`); };
+p.grayscale = function (value?: string | number) {
+  return value === undefined ? this.addClass("grayscale") : this.addClass(`grayscale-${value}`);
+};
+p.backdropGrayscale = function (value?: string | number) {
+  return value === undefined ? this.addClass("backdrop-grayscale") : this.addClass(`backdrop-grayscale-${value}`);
+};
+p.hueRotate = function (value: string | number) { return this.addClass(`hue-rotate-${value}`); };
+p.backdropHueRotate = function (value: string | number) { return this.addClass(`backdrop-hue-rotate-${value}`); };
+p.invert = function (value?: string | number) {
+  return value === undefined ? this.addClass("invert") : this.addClass(`invert-${value}`);
+};
+p.backdropInvert = function (value?: string | number) {
+  return value === undefined ? this.addClass("backdrop-invert") : this.addClass(`backdrop-invert-${value}`);
+};
+p.saturate = function (value: string | number) { return this.addClass(`saturate-${value}`); };
+p.backdropSaturate = function (value: string | number) { return this.addClass(`backdrop-saturate-${value}`); };
+p.sepia = function (value?: string | number) {
+  return value === undefined ? this.addClass("sepia") : this.addClass(`sepia-${value}`);
+};
+p.backdropSepia = function (value?: string | number) {
+  return value === undefined ? this.addClass("backdrop-sepia") : this.addClass(`backdrop-sepia-${value}`);
 };
 
 // Line Clamp
@@ -560,6 +645,17 @@ p.ease = function (value: string) { return this.addClass(`ease-${value}`); };
 
 p.resize = function (value?: string) {
   return value === undefined ? this.addClass("resize") : this.addClass(`resize-${value}`);
+};
+
+// Performance hints
+
+p.willChange = function (value: string) { return this.addClass(`will-change-${value}`); };
+
+// Overscroll behavior
+
+p.overscroll = function (directionOrValue: string, value?: string) {
+  if (value === undefined) return this.addClass(`overscroll-${directionOrValue}`);
+  return this.addClass(`overscroll-${directionOrValue}-${value}`);
 };
 
 // Negative value prefix

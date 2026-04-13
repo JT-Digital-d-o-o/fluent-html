@@ -115,6 +115,9 @@ p.gap = function (directionOrValue, value) {
 p.grid = function () { return this.addClass("grid"); };
 p.gridCols = function (cols) { return this.addClass(`grid-cols-${cols}`); };
 p.gridRows = function (rows) { return this.addClass(`grid-rows-${rows}`); };
+p.gridAutoFlow = function (value) { return this.addClass(`grid-flow-${value}`); };
+p.gridAutoRows = function (value) { return this.addClass(`auto-rows-${value}`); };
+p.gridAutoCols = function (value) { return this.addClass(`auto-cols-${value}`); };
 // Borders
 p.border = function (directionOrValue, value) {
     if (directionOrValue === undefined)
@@ -198,6 +201,11 @@ p.flexWrap = function (value) { return this.addClass(`flex-${value}`); };
 p.alignSelf = function (value) { return this.addClass(`self-${value}`); };
 p.colSpan = function (value) { return this.addClass(`col-span-${value}`); };
 p.aspect = function (value) { return this.addClass(`aspect-${value}`); };
+p.order = function (value) { return this.addClass(`order-${value}`); };
+// Place (Grid/Flex alignment)
+p.placeContent = function (value) { return this.addClass(`place-content-${value}`); };
+p.placeItems = function (value) { return this.addClass(`place-items-${value}`); };
+p.placeSelf = function (value) { return this.addClass(`place-self-${value}`); };
 // Spacing Between Children
 p.spaceX = function (value) { return this.addClass(`space-x-${value}`); };
 p.spaceY = function (value) { return this.addClass(`space-y-${value}`); };
@@ -224,6 +232,8 @@ p.rotate = function (value) { return this.addClass(`rotate-${value}`); };
 p.translate = function (direction, value) {
     return this.addClass(`translate-${direction}-${value}`);
 };
+p.skewX = function (value) { return this.addClass(`skew-x-${value}`); };
+p.skewY = function (value) { return this.addClass(`skew-y-${value}`); };
 // Interactivity
 p.select = function (value) { return this.addClass(`select-${value}`); };
 p.pointerEvents = function (value) { return this.addClass(`pointer-events-${value}`); };
@@ -252,12 +262,38 @@ p.peer = function (name) {
 };
 // Shadow Color
 p.shadowColor = function (color) { return this.addClass(`shadow-${color}`); };
-// Blur & Backdrop Blur
+// Filters
 p.blur = function (value) {
     return value === undefined ? this.addClass("blur") : this.addClass(`blur-${value}`);
 };
 p.backdropBlur = function (value) {
     return value === undefined ? this.addClass("backdrop-blur") : this.addClass(`backdrop-blur-${value}`);
+};
+p.brightness = function (value) { return this.addClass(`brightness-${value}`); };
+p.backdropBrightness = function (value) { return this.addClass(`backdrop-brightness-${value}`); };
+p.contrast = function (value) { return this.addClass(`contrast-${value}`); };
+p.backdropContrast = function (value) { return this.addClass(`backdrop-contrast-${value}`); };
+p.grayscale = function (value) {
+    return value === undefined ? this.addClass("grayscale") : this.addClass(`grayscale-${value}`);
+};
+p.backdropGrayscale = function (value) {
+    return value === undefined ? this.addClass("backdrop-grayscale") : this.addClass(`backdrop-grayscale-${value}`);
+};
+p.hueRotate = function (value) { return this.addClass(`hue-rotate-${value}`); };
+p.backdropHueRotate = function (value) { return this.addClass(`backdrop-hue-rotate-${value}`); };
+p.invert = function (value) {
+    return value === undefined ? this.addClass("invert") : this.addClass(`invert-${value}`);
+};
+p.backdropInvert = function (value) {
+    return value === undefined ? this.addClass("backdrop-invert") : this.addClass(`backdrop-invert-${value}`);
+};
+p.saturate = function (value) { return this.addClass(`saturate-${value}`); };
+p.backdropSaturate = function (value) { return this.addClass(`backdrop-saturate-${value}`); };
+p.sepia = function (value) {
+    return value === undefined ? this.addClass("sepia") : this.addClass(`sepia-${value}`);
+};
+p.backdropSepia = function (value) {
+    return value === undefined ? this.addClass("backdrop-sepia") : this.addClass(`backdrop-sepia-${value}`);
 };
 // Line Clamp
 p.lineClamp = function (value) { return this.addClass(`line-clamp-${value}`); };
@@ -271,6 +307,14 @@ p.ease = function (value) { return this.addClass(`ease-${value}`); };
 // Resize
 p.resize = function (value) {
     return value === undefined ? this.addClass("resize") : this.addClass(`resize-${value}`);
+};
+// Performance hints
+p.willChange = function (value) { return this.addClass(`will-change-${value}`); };
+// Overscroll behavior
+p.overscroll = function (directionOrValue, value) {
+    if (value === undefined)
+        return this.addClass(`overscroll-${directionOrValue}`);
+    return this.addClass(`overscroll-${directionOrValue}-${value}`);
 };
 // Negative value prefix
 p.neg = function (cls) { return this.addClass(`-${cls}`); };

@@ -1,5 +1,59 @@
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose, inner;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        var r, s = 0;
+        function next() {
+            while (r = env.stack.pop()) {
+                try {
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 import { performance } from "node:perf_hooks";
-import { render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article, Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td, Img, Main, ForEach, } from "../src/index.js";
+import { render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article, Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td, Img, Main, ForEach, createContext, } from "../src/index.js";
+import { foldView } from "../src/fold/index.js";
+import { countAlgebra } from "../src/fold/algebras/index.js";
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -100,6 +154,28 @@ const variantPage = benchVariantHeavy();
 printResult("Variant-heavy (100 buttons, 10+ variants)", measure("variants", () => render(variantPage), ITERATIONS));
 const largeForEach = benchLargeForEach();
 printResult("Large ForEach (5000 items)", measure("large-foreach", () => render(largeForEach), ITERATIONS));
+console.log("");
+console.log("Fold & Context benchmarks:");
+console.log("─".repeat(72));
+printResult("foldView count (realistic page)", measure("fold-count", () => foldView(countAlgebra, realisticPage), ITERATIONS));
+const ThemeCtx = createContext("light");
+printResult("Context scope/read (1000 scopes)", measure("context", () => {
+    for (let i = 0; i < 1000; i++) {
+        const env_1 = { stack: [], error: void 0, hasError: false };
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const _s = __addDisposableResource(env_1, ThemeCtx.scope("dark"), false);
+            void ThemeCtx.current;
+        }
+        catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+        }
+        finally {
+            __disposeResources(env_1);
+        }
+    }
+}, ITERATIONS));
 console.log("");
 console.log("Memory usage:");
 console.log("─".repeat(72));

@@ -3,9 +3,11 @@ import {
   render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article,
   Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td,
   Img, Main,
-  ForEach,
+  ForEach, createContext,
 } from "../src/index.js";
 import type { View } from "../src/index.js";
+import { foldView } from "../src/fold/index.js";
+import { countAlgebra } from "../src/fold/algebras/index.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -205,6 +207,21 @@ printResult("Variant-heavy (100 buttons, 10+ variants)", measure("variants", () 
 
 const largeForEach = benchLargeForEach();
 printResult("Large ForEach (5000 items)", measure("large-foreach", () => render(largeForEach), ITERATIONS));
+
+console.log("");
+console.log("Fold & Context benchmarks:");
+console.log("─".repeat(72));
+
+printResult("foldView count (realistic page)", measure("fold-count", () => foldView(countAlgebra, realisticPage), ITERATIONS));
+
+const ThemeCtx = createContext("light");
+printResult("Context scope/read (1000 scopes)", measure("context", () => {
+  for (let i = 0; i < 1000; i++) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    using _s = ThemeCtx.scope("dark");
+    void ThemeCtx.current;
+  }
+}, ITERATIONS));
 
 console.log("");
 console.log("Memory usage:");

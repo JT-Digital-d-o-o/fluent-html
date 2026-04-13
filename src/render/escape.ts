@@ -27,7 +27,13 @@ export function escapeHtml(unsafe: string): string {
   return result + unsafe.substring(lastIdx);
 }
 
-// For attribute values
+/**
+ * Escape a string for use in a double-quoted HTML attribute value.
+ * Currently identical to `escapeHtml` — sufficient because the renderer
+ * always emits double-quoted attributes. If unquoted or single-quoted
+ * attributes are ever supported, this would need to also escape
+ * backticks, equals signs, etc.
+ */
 export function escapeAttr(unsafe: string): string {
   return escapeHtml(unsafe);
 }

@@ -420,6 +420,62 @@ describe("List Style", () => {
   it("custom listStyleType via escape hatch", () => { assert.strictEqual(render(Div().listStyleType("[square]")), '<div class="list-[square]"></div>'); });
 });
 
+describe("Filters", () => {
+  it("brightness", () => { assert.strictEqual(render(Div().brightness(50)), '<div class="brightness-50"></div>'); });
+  it("backdropBrightness", () => { assert.strictEqual(render(Div().backdropBrightness(125)), '<div class="backdrop-brightness-125"></div>'); });
+  it("contrast", () => { assert.strictEqual(render(Div().contrast(200)), '<div class="contrast-200"></div>'); });
+  it("backdropContrast", () => { assert.strictEqual(render(Div().backdropContrast(75)), '<div class="backdrop-contrast-75"></div>'); });
+  it("grayscale default", () => { assert.strictEqual(render(Div().grayscale()), '<div class="grayscale"></div>'); });
+  it("grayscale 0", () => { assert.strictEqual(render(Div().grayscale(0)), '<div class="grayscale-0"></div>'); });
+  it("backdropGrayscale", () => { assert.strictEqual(render(Div().backdropGrayscale()), '<div class="backdrop-grayscale"></div>'); });
+  it("hueRotate", () => { assert.strictEqual(render(Div().hueRotate(90)), '<div class="hue-rotate-90"></div>'); });
+  it("backdropHueRotate", () => { assert.strictEqual(render(Div().backdropHueRotate(180)), '<div class="backdrop-hue-rotate-180"></div>'); });
+  it("invert default", () => { assert.strictEqual(render(Div().invert()), '<div class="invert"></div>'); });
+  it("invert 0", () => { assert.strictEqual(render(Div().invert(0)), '<div class="invert-0"></div>'); });
+  it("backdropInvert", () => { assert.strictEqual(render(Div().backdropInvert()), '<div class="backdrop-invert"></div>'); });
+  it("saturate", () => { assert.strictEqual(render(Div().saturate(150)), '<div class="saturate-150"></div>'); });
+  it("backdropSaturate", () => { assert.strictEqual(render(Div().backdropSaturate(50)), '<div class="backdrop-saturate-50"></div>'); });
+  it("sepia default", () => { assert.strictEqual(render(Div().sepia()), '<div class="sepia"></div>'); });
+  it("sepia 0", () => { assert.strictEqual(render(Div().sepia(0)), '<div class="sepia-0"></div>'); });
+  it("backdropSepia", () => { assert.strictEqual(render(Div().backdropSepia()), '<div class="backdrop-sepia"></div>'); });
+  it("brightness with escape hatch", () => { assert.strictEqual(render(Div().brightness("[1.75]")), '<div class="brightness-[1.75]"></div>'); });
+  it("filter in variant", () => { assert.strictEqual(render(Div().on("hover", t => t.brightness(110))), '<div class="hover:brightness-110"></div>'); });
+});
+
+describe("Layout — Place, Grid Auto, Order", () => {
+  it("placeContent center", () => { assert.strictEqual(render(Div().placeContent("center")), '<div class="place-content-center"></div>'); });
+  it("placeContent between", () => { assert.strictEqual(render(Div().placeContent("between")), '<div class="place-content-between"></div>'); });
+  it("placeItems start", () => { assert.strictEqual(render(Div().placeItems("start")), '<div class="place-items-start"></div>'); });
+  it("placeItems center", () => { assert.strictEqual(render(Div().placeItems("center")), '<div class="place-items-center"></div>'); });
+  it("placeSelf auto", () => { assert.strictEqual(render(Div().placeSelf("auto")), '<div class="place-self-auto"></div>'); });
+  it("placeSelf end", () => { assert.strictEqual(render(Div().placeSelf("end")), '<div class="place-self-end"></div>'); });
+  it("gridAutoFlow row", () => { assert.strictEqual(render(Div().gridAutoFlow("row")), '<div class="grid-flow-row"></div>'); });
+  it("gridAutoFlow col-dense", () => { assert.strictEqual(render(Div().gridAutoFlow("col-dense")), '<div class="grid-flow-col-dense"></div>'); });
+  it("gridAutoRows min", () => { assert.strictEqual(render(Div().gridAutoRows("min")), '<div class="auto-rows-min"></div>'); });
+  it("gridAutoRows fr", () => { assert.strictEqual(render(Div().gridAutoRows("fr")), '<div class="auto-rows-fr"></div>'); });
+  it("gridAutoCols auto", () => { assert.strictEqual(render(Div().gridAutoCols("auto")), '<div class="auto-cols-auto"></div>'); });
+  it("gridAutoCols escape hatch", () => { assert.strictEqual(render(Div().gridAutoCols("[minmax(0,2fr)]")), '<div class="auto-cols-[minmax(0,2fr)]"></div>'); });
+  it("order first", () => { assert.strictEqual(render(Div().order("first")), '<div class="order-first"></div>'); });
+  it("order last", () => { assert.strictEqual(render(Div().order("last")), '<div class="order-last"></div>'); });
+  it("order numeric", () => { assert.strictEqual(render(Div().order(3)), '<div class="order-3"></div>'); });
+  it("order none", () => { assert.strictEqual(render(Div().order("none")), '<div class="order-none"></div>'); });
+});
+
+describe("Modern features — Skew, WillChange, Overscroll", () => {
+  it("skewX", () => { assert.strictEqual(render(Div().skewX(6)), '<div class="skew-x-6"></div>'); });
+  it("skewY", () => { assert.strictEqual(render(Div().skewY(12)), '<div class="skew-y-12"></div>'); });
+  it("skewX escape hatch", () => { assert.strictEqual(render(Div().skewX("[17deg]")), '<div class="skew-x-[17deg]"></div>'); });
+  it("skew in variant", () => { assert.strictEqual(render(Div().on("hover", t => t.skewX(3))), '<div class="hover:skew-x-3"></div>'); });
+  it("willChange transform", () => { assert.strictEqual(render(Div().willChange("transform")), '<div class="will-change-transform"></div>'); });
+  it("willChange scroll", () => { assert.strictEqual(render(Div().willChange("scroll")), '<div class="will-change-scroll"></div>'); });
+  it("willChange auto", () => { assert.strictEqual(render(Div().willChange("auto")), '<div class="will-change-auto"></div>'); });
+  it("overscroll auto", () => { assert.strictEqual(render(Div().overscroll("auto")), '<div class="overscroll-auto"></div>'); });
+  it("overscroll contain", () => { assert.strictEqual(render(Div().overscroll("contain")), '<div class="overscroll-contain"></div>'); });
+  it("overscroll none", () => { assert.strictEqual(render(Div().overscroll("none")), '<div class="overscroll-none"></div>'); });
+  it("overscroll x contain", () => { assert.strictEqual(render(Div().overscroll("x", "contain")), '<div class="overscroll-x-contain"></div>'); });
+  it("overscroll y none", () => { assert.strictEqual(render(Div().overscroll("y", "none")), '<div class="overscroll-y-none"></div>'); });
+});
+
 describe("Full Example (Plan Before/After)", () => {
   it("complete button with all features", () => {
     assert.strictEqual(
