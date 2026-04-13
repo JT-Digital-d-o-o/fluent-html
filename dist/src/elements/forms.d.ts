@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import type { InputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
+import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
  *
@@ -13,8 +13,8 @@ export declare class InputTag extends Tag {
     name?: string;
     value?: string;
     accept?: string;
-    min?: number;
-    max?: number;
+    min?: number | string;
+    max?: number | string;
     step?: number | 'any';
     pattern?: string;
     minlength?: number;
@@ -31,8 +31,8 @@ export declare class InputTag extends Tag {
     setName(name?: string): this;
     setValue(value?: string): this;
     setAccept(accept?: string): this;
-    setMin(min?: number): this;
-    setMax(max?: number): this;
+    setMin(min?: number | string): this;
+    setMax(max?: number | string): this;
     setStep(step?: number | 'any'): this;
     setPattern(pattern?: string): this;
     setMinlength(minlength?: number): this;
@@ -45,8 +45,27 @@ export declare class InputTag extends Tag {
     setMultiple(multiple?: boolean): this;
     setList(list?: string): this;
 }
-/** Create an `<input>` element with typed attribute methods. */
+/** InputTag narrowed for numeric input types (number, range). */
+export interface NumericInputTag extends InputTag {
+    setMin(min?: number): this;
+    setMax(max?: number): this;
+}
+/** InputTag narrowed for date/time input types. */
+export interface DateTimeInputTag extends InputTag {
+    setMin(min?: string): this;
+    setMax(max?: string): this;
+}
+/** InputTag narrowed for input types that don't support min/max/step. */
+export interface NoMinMaxInputTag extends InputTag {
+    setMin(min?: never): this;
+    setMax(max?: never): this;
+    setStep(step?: never): this;
+}
+/** Create an `<input>` element. Pass a type for typed min/max/step validation. */
 export declare function Input(): InputTag;
+export declare function Input(type: NumericInputType): NumericInputTag;
+export declare function Input(type: DateTimeInputType): DateTimeInputTag;
+export declare function Input(type: NoMinMaxInputType): NoMinMaxInputTag;
 /**
  * Specialized Tag for `<textarea>` elements with typed attribute setters.
  *

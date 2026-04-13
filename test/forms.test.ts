@@ -94,6 +94,31 @@ describe("Forms - Input", () => {
     `<input type="text" name="readonly" value="Read only" readonly="true">`);
   });
 
+  it("Input factory sets type attribute", () => {
+    assert.strictEqual(render(Input("email").setName("email")),
+    `<input type="email" name="email">`);
+  });
+
+  it("Number input via factory with min/max", () => {
+    assert.strictEqual(render(Input("number").setName("qty").setMin(1).setMax(100).setStep(5)),
+    `<input type="number" name="qty" min="1" max="100" step="5">`);
+  });
+
+  it("Date input with string min/max", () => {
+    assert.strictEqual(render(Input("date").setName("start").setMin("2024-01-01").setMax("2024-12-31")),
+    `<input type="date" name="start" min="2024-01-01" max="2024-12-31">`);
+  });
+
+  it("Range input with numeric min/max", () => {
+    assert.strictEqual(render(Input("range").setName("volume").setMin(0).setMax(100).setStep(10)),
+    `<input type="range" name="volume" min="0" max="100" step="10">`);
+  });
+
+  it("Time input with string min/max", () => {
+    assert.strictEqual(render(Input("time").setName("alarm").setMin("09:00").setMax("17:00")),
+    `<input type="time" name="alarm" min="09:00" max="17:00">`);
+  });
+
   it("Input with datalist", () => {
     assert.strictEqual(render([
       Input().setType("text").setName("browser").setList("browsers"),

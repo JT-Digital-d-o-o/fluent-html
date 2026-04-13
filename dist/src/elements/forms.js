@@ -83,9 +83,11 @@ export class InputTag extends Tag {
 /** @internal */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
 InputTag.prototype._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
-/** Create an `<input>` element with typed attribute methods. */
-export function Input() {
-    return new InputTag("input");
+export function Input(type) {
+    const tag = new InputTag("input");
+    if (type)
+        tag.type = type;
+    return tag;
 }
 /**
  * Specialized Tag for `<textarea>` elements with typed attribute setters.

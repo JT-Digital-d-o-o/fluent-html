@@ -1,4 +1,10 @@
 export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'datetime-local' | 'month' | 'week' | 'time' | 'checkbox' | 'radio' | 'range' | 'color' | 'file' | 'hidden' | 'image' | 'submit' | 'reset' | 'button';
+/** Input types that accept numeric min/max (number, range). */
+export type NumericInputType = 'number' | 'range';
+/** Input types that accept date/time string min/max. */
+export type DateTimeInputType = 'date' | 'datetime-local' | 'month' | 'week' | 'time';
+/** Input types that do NOT support min/max. */
+export type NoMinMaxInputType = Exclude<InputType, NumericInputType | DateTimeInputType>;
 export type AutocompleteHint = 'on' | 'off' | 'name' | 'email' | 'username' | 'new-password' | 'current-password' | 'organization' | 'street-address' | 'country' | 'postal-code' | 'tel' | 'url' | 'one-time-code' | (string & {});
 export type FormMethod = 'get' | 'post' | 'dialog';
 export type BrowsingContext = '_self' | '_blank' | '_parent' | '_top' | (string & {});

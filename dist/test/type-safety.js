@@ -21,6 +21,36 @@ describe("InputTag typed setters", () => {
         assert.strictEqual(render(Input().setAutocomplete("section-billing street-address")), '<input autocomplete="section-billing street-address">');
     });
 });
+describe("Generic Input factory type safety", () => {
+    it("Input() backward compat accepts number and string min/max", () => {
+        assert.ok(render(Input().setMin(5)).includes('min="5"'));
+        assert.ok(render(Input().setMin("2024-01-01")).includes('min="2024-01-01"'));
+    });
+    it("Input('number') accepts numeric min/max", () => {
+        assert.ok(render(Input("number").setMin(0).setMax(100)).includes('min="0"'));
+    });
+    it("Input('date') accepts string min/max", () => {
+        assert.ok(render(Input("date").setMin("2024-01-01").setMax("2024-12-31")).includes('min="2024-01-01"'));
+    });
+    it("Input factory sets type attribute", () => {
+        assert.strictEqual(render(Input("email")), '<input type="email">');
+        assert.strictEqual(render(Input("number")), '<input type="number">');
+        assert.strictEqual(render(Input("date")), '<input type="date">');
+    });
+    it("Input factory preserves chaining with tailwind methods", () => {
+        const html = render(Input("number").setMin(1).setMax(10).padding("4"));
+        assert.ok(html.includes('min="1"'));
+        assert.ok(html.includes('class="p-4"'));
+    });
+    // @ts-expect-error — numeric input rejects string min
+    it("ts-expect: Input('number').setMin('bad')", () => { Input("number").setMin("bad"); });
+    // @ts-expect-error — date input rejects numeric min
+    it("ts-expect: Input('date').setMin(42)", () => { Input("date").setMin(42); });
+    // @ts-expect-error — text input rejects min entirely
+    it("ts-expect: Input('text').setMin(5)", () => { Input("text").setMin(5); });
+    // @ts-expect-error — text input rejects step entirely
+    it("ts-expect: Input('text').setStep(1)", () => { Input("text").setStep(1); });
+});
 describe("TextareaTag typed setters", () => {
     it("setAutocomplete renders typed value", () => {
         assert.strictEqual(render(Textarea().setAutocomplete("name")), '<textarea autocomplete="name"></textarea>');

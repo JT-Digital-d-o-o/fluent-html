@@ -8,6 +8,9 @@ export { isTag, isRawString } from './core/index.js';
 // HTML attribute types
 export type {
   InputType,
+  NumericInputType,
+  DateTimeInputType,
+  NoMinMaxInputType,
   AutocompleteHint,
   FormMethod,
   BrowsingContext,
@@ -24,6 +27,9 @@ export { renderToStream } from './render/index.js';
 export {
   ButtonTag,
   InputTag,
+  NumericInputTag,
+  DateTimeInputTag,
+  NoMinMaxInputTag,
   TextareaTag,
   ImgTag,
   AnchorTag,
