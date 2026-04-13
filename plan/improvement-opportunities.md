@@ -20,15 +20,19 @@ The comment on `stream.ts:14-15` says *"duplicated here to avoid circular deps"*
 
 ---
 
-## 2. STREAMING HAS ZERO TESTS (High Impact, High Risk)
+## 2. ~~STREAMING HAS ZERO TESTS~~ (DONE)
 
-`src/render/stream.ts` (195 lines) has **no test coverage at all**. This is concerning because:
-- It's the SSR performance path — the one you'd use for large pages in production
-- It has its own copy of all rendering logic (see #1)
-- Edge cases like void elements, script/style raw content, and HTMX attributes in streaming are unverified
-- The `read()` callback does all work synchronously — for very large trees this defeats the purpose of streaming
+**Fixed:** Added 52 tests for `renderToStream()` covering:
+- Basic elements, nested/deep structures, arrays
+- All attribute types (id, class, style, custom, boolean toggles, element-specific)
+- All void elements (br, hr, img, input, meta, link, source, col)
+- XSS escaping (text content, attribute values, Raw passthrough)
+- Script/style raw context (no-escape + `</script>`/`</style>` sanitization)
+- 11 HTMX attribute tests (get, post, target, swap, push-url, trigger, vals, headers, confirm, swap-oob, boost, indicator)
+- Complex realistic structures (page, table, form, mixed Raw content, 100-item list)
+- Stream-specific behavior (chunked output, Readable API)
 
-926 tests pass, but none exercise `renderToStream()`.
+Every test asserts `renderToStream()` output equals `render()` output for the same view.
 
 ---
 
@@ -122,7 +126,7 @@ Current SVG support covers basic shapes well, but is missing container/definitio
 | # | Improvement | Impact | Effort | Risk | Status |
 |---|-------------|--------|--------|------|--------|
 | 1 | Extract shared render internals | Maintenance++ | Low | Low | |
-| 2 | Add stream tests | Reliability++ | Low | None | |
+| 2 | ~~Add stream tests~~ | Reliability++ | Low | None | **DONE** — 52 tests, full parity with render() |
 | 3 | ~~Optimize flat-page render path~~ | Performance++ | Medium | Low | **DONE** — +47% flat page, +20% realistic |
 | 4 | ~~Fast-path single-class variant prefix~~ | Performance+ | Trivial | None | **DONE** |
 | 5 | Optimize `foldView` extraction | Performance+ | Low | Low | |
