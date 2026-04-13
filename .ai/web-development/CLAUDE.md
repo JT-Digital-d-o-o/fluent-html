@@ -15,9 +15,47 @@
 
 ---
 
+## Code Editing Rules
+
+- **Only change what was requested** — do not rewrite or refactor surrounding code. Never uncomment intentionally commented-out code.
+- **Confirm the target** before writing files — ask which repo/directory if ambiguous. Common: `guidelines/` for guides, project repos for project content, `public/` for static files.
+
+---
+
+## Content & Copy
+
+- **Never assume a client has launched** — don't imply existing business, customers, or established processes unless explicitly stated.
+
+---
+
+## SVG & Visual Assets
+
+- **Apply changes precisely as specified** — exact colors, opacity values, positions.
+- **No decorative flourishes** (constellation patterns, complex backgrounds) unless asked.
+- **Small incremental changes** — expect multiple positional tweaking rounds.
+
+---
+
+## Tailwind CSS
+
+- **No dynamic class interpolation** — Tailwind purging removes dynamically-generated classes. Always use full class names.
+
+---
+
+## Deployment
+
+- **Deploy scripts are interactive** and cannot be run via Bash. After code changes, just commit and push — let the user handle deployment unless they explicitly ask otherwise.
+
+---
+
 ## Project Management (MANDATORY)
 
 If `project/pm/` exists, follow the [Project Management Guidelines](../project-management/CLAUDE.md) — updates are **non-optional**, do them inline as you work, not at the end.
+
+**PM scripts** (run these when starting work or when asked for status):
+- `npm run focus` — prioritized "what's next" list: critical bugs, uphill stories needing decisions, then executable tasks
+- `npm run hill` — hill phase overview: what needs decisions (uphill) vs ready to execute (downhill), flags stuck scopes
+- `npm run tree` — scope tree with task counts and hill status at each level
 
 ---
 
@@ -89,6 +127,10 @@ const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow
 Div("Content").apply(card)
 ```
 
+**Scoped context** — use for cross-cutting values read by many components (i18n, theme, auth, nonce, feature flags) instead of prop drilling. Use props for component-specific data. **Never use `AsyncLocalStorage`** for render-time data — context is sufficient for synchronous rendering:
+- `createContext(defaultValue)` — returns default when no scope active
+- `createRequiredContext(name)` — throws if accessed outside a scope (use for auth, request data)
+
 ---
 
 ## Fluent Tailwind Styling
@@ -120,20 +162,20 @@ Critical rules:
 - **htmx 4**: attributes don't inherit — use `:inherited` modifier
 - **Almost everything uses full-layout swap** targeting `ids.mainContent` — including forms, modals, and inline edits. Feature-specific targets are rare; default to the full-layout pattern.
 
-**`defineRoutes` / `defineIds`** — define in `[feature].routes.ts`:
+**`defineRoutes` / `defineIds`** — define in `[feature].routes.ts`. Use typed params (`"string"`, `"number"`, `"uuid"`) for compile-time safety:
 ```typescript
 export const ids = defineIds(["mainContent", "userList", "userCount"] as const);
 export const userRoutes = defineRoutes("/users", {
   list:   { method: "GET",  path: "/" },
   create: { method: "POST", path: "/" },
-  detail: { method: "GET",  path: "/:id" },
-});
+  detail: { method: "GET",  path: "/:id", params: { id: "number" } as const },
+} as const);
 ```
 
 **Full layout navigation** — the default pattern:
 ```typescript
 A("Settings").setHtmx(settingsRoutes.index({
-  swap: "outerMorph show:window:top",
+  swap: "outerMorph scroll:top",
   target: ids.mainContent,
   pushUrl: true,
 })).cursor("pointer")

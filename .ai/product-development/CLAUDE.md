@@ -1,6 +1,6 @@
 # Product Development Guidelines
 
-Precedence: [Brand Book](../brand-book/CLAUDE.md) overrides Refactoring UI on concrete choices (fonts, colors, components, spacing, shadows). Deep-dive files in `lean-startup/`, `shape-up/`, `refactoring-ui/`.
+Precedence: [Brand Book](../brand-book/CLAUDE.md) overrides Refactoring UI on concrete choices (fonts, colors, components, spacing, shadows). Deep-dive files in `lean-startup/`, `shape-up/`, `refactoring-ui/`, `loonshots/`, `competing-against-luck/`.
 
 ## Lean Startup — validate before you build
 
@@ -8,7 +8,9 @@ Precedence: [Brand Book](../brand-book/CLAUDE.md) overrides Refactoring UI on co
 - **DO** validate the problem before the solution. Gate order: (1) do customers have this problem? → (2) would they pay? → (3) would they buy from us? → (4) can we build it? Don't start at 4.
 - **DO** run Build-Measure-Learn loops in 1–3 days. If a cycle takes longer, the experiment scope is too large.
 - **DO** test value before growth. Growth without retention fills a leaky bucket.
+- **DO** treat distribution as experiments, not strategy. Channels, positioning, and messaging are hypotheses — test them with the same loops, targets, and kill criteria as any feature.
 - **DON'T** count "launched" as success. Success = measured outcome against a pre-defined target.
+- **DON'T** plan how to reach "the market" before you know the problem is real. The people who have the problem are the market — you find them during validation, not after.
 - **DO** match MVP type to your riskiest assumption:
 
 | Riskiest assumption | MVP type | Time to signal |
@@ -25,7 +27,7 @@ Precedence: [Brand Book](../brand-book/CLAUDE.md) overrides Refactoring UI on co
 
 ## Shape Up — fixed time, variable scope
 
-- **DO** set the appetite (time budget) before designing the solution. A 1-week appetite produces a different solution than a 2-day appetite. Both can be good.
+- **DO** set the appetite (time budget) before designing the solution. A 1-week appetite produces a different solution than a 2-day appetite. Both can be good. Appetite caps investment in unvalidated ideas naturally — no budget spreadsheet needed.
 - **DON'T** estimate first then try to fit the schedule. Fixed scope + variable time = projects that drag.
 - **DO** shape work to be rough (room for team creativity), solved (main elements connected), and bounded (what's out of scope is explicit).
 - **DON'T** start with wireframes or high-fidelity mockups. Over-specifying leaves no room for trade-offs.
@@ -42,8 +44,29 @@ Precedence: [Brand Book](../brand-book/CLAUDE.md) overrides Refactoring UI on co
 
 - **DO** break every bet into deployable slices. A 1-week bet should ship to real users 2–3 times during the week, not once at the end.
 - **DON'T** batch up features for a "big launch." If feature A fails, features B–F built on that assumption are wasted.
+- **DON'T** build toward a launch moment. There is no launch — there's a series of deployments, each producing signal. The point where you stop questioning and start growing is earned by hitting targets, not planned on a calendar.
 - **DO** build, deploy, and measure one scope before starting the next. Sequential delivery of small batches beats parallel delivery of large batches.
 - **DON'T** wait until "it's ready" to deploy. If the core hypothesis can be tested with what you have now, deploy now.
+
+## Loonshots — protect crazy ideas long enough to prove them
+
+- **DO** separate the loonshot nursery (exploration) from the franchise (execution). Artists need protection from soldiers' efficiency demands; soldiers need protection from nursery chaos.
+- **DON'T** apply Shape Up appetite constraints to early-stage nursery exploration. Time-boxing is for execution, not for keeping ideas alive through the valley of death.
+- **DO** distinguish S-type (strategy) loonshots from P-type (product) loonshots — counterintuitive pricing, distribution, or business model bets die just as easily as unproven features.
+- **DON'T** kill an idea after one failed experiment. Investigate the false fail first: did the idea fail, or did the first implementation of it fail?
+- **DO** listen to negative feedback with curiosity ("what specifically failed and why?"), not dismissal or despair.
+- **DO** make career advancement depend on outcomes, not visibility or headcount. Return-on-politics kills loonshots faster than any competitor.
+- **DO** create a structured transfer mechanism: nursery ideas get field-tested by the franchise, and field learnings flow back to the nursery. Transfer is two-way.
+
+## Competing Against Luck — know the job before you build
+
+- **DO** ask "what job is the customer hiring this product to do?" before writing any requirement. The job — not the feature — is the unit of analysis.
+- **DON'T** segment users by demographics. Segment by circumstance: in what situation does someone need this?
+- **DO** capture all three job dimensions: functional (what they need to do), social (how others will perceive them), and emotional (how they want to feel).
+- **DO** write job stories: "When [situation], I want to [motivation], so I can [expected outcome]." Not user stories that describe solutions.
+- **DO** map the four forces before designing: push (pain with current solution), pull (appeal of new solution), anxiety (fear it won't work), habit (comfort with existing behavior). Design reduces anxiety and respects habit — not just adds pull.
+- **DON'T** define competition as only direct substitutes. Non-consumption — people living with the problem or using workarounds — is almost always the largest competitor.
+- **DO** ground Lean Startup hypotheses in the job. "Users hired this to feel ready before their first client call" is a testable, meaningful hypothesis. "Users will click faster" is not.
 
 ## Refactoring UI — systematize design choices
 

@@ -19,7 +19,9 @@ Raw("<svg>...</svg>")              // trusted HTML only — bypasses XSS escapin
 
 ```typescript
 Button("Save").setType("submit")                                       // ButtonTag
-Input().setType("email").setPlaceholder("you@example.com").setName("email")  // InputTag
+Input().setType("email").setPlaceholder("you@example.com").setName("email")  // InputTag (generic)
+Input("number").setMin(0).setMax(100).setStep(5)                               // NumericInputTag (type-safe min/max)
+Input("date").setMin("2024-01-01")                                              // DateTimeInputTag (string min/max)
 Textarea().setPlaceholder("Message").setName("msg").setRows(5)         // TextareaTag
 Select(Option("A").setValue("1"), Option("B").setValue("2")).setName("x") // SelectTag
 A("Link").setHref("/page").setTarget("_blank")                         // AnchorTag
@@ -76,6 +78,14 @@ Div("Content").apply(card, hoverLift)
 
 > Use fluent methods (not `setClass`) for type safety + IDE autocomplete. `.on()` for pseudo-classes, `.at()` for breakpoints. All methods are strictly typed — check the library's TypeScript definitions for the full API.
 
+Key method categories: spacing (`padding`, `margin`, `gap`), colors (`background`, `textColor`, `borderColor`, `shadowColor`), typography (`textSize`, `fontWeight`, `fontFamily`, `lineClamp`), layout (`flex`, `grid`, `w`, `h`), effects (`shadow`, `opacity`, `blur`, `brightness`), gradients (`gradientTo`, `from`, `via`, `to`), group/peer (`group()`, `peer()`), transforms (`scale`, `rotate`, `translate`, `skewX`, `skewY`), transitions (`transition`, `duration`, `ease`).
+
+**Arbitrary values** — unit overloads for sizing/spacing/position:
+```typescript
+Div().w("px", 180)       // → w-[180px]
+Div().h("rem", 2.5)      // → h-[2.5rem]
+```
+
 ## Control Flow
 
 **`IfThen` narrows nullable values** — callback receives the non-null type. Do NOT re-check, cast, or use ternaries:
@@ -106,6 +116,28 @@ ForEach(5, i => Div(`Item ${i}`))                  // 0..n
 ForEach(1, 6, i => Div(`Item ${i}`))               // range
 Repeat(3, () => Br())                              // simple repeat
 ```
+
+## Scoped Context
+
+Use for cross-cutting values (theme, auth, locale, nonce) instead of prop drilling. **Never use `AsyncLocalStorage`** — `createContext` is sufficient for synchronous rendering.
+
+```typescript
+const ThemeCtx = createContext<"light" | "dark">("light");       // returns default when no scope
+const AuthCtx = createRequiredContext<User>("AuthCtx");          // throws if no scope active
+
+function handler(user: User) {
+  using _t = ThemeCtx.scope("dark");
+  using _a = AuthCtx.scope(user);
+  return Page();
+}
+
+function Header() {
+  const theme = ThemeCtx.current;  // reads innermost scope
+  const user = AuthCtx.current;    // throws if called without scope
+}
+```
+
+Use `createContext(default)` for values with sensible defaults. Use `createRequiredContext(name)` when a missing scope is always a bug.
 
 ## HTMX Integration
 

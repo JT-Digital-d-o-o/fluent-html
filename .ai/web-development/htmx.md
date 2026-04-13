@@ -12,14 +12,19 @@ hx("/api", { target: "#userList" })  // ✗ typos cause silent failures
 
 ## Type-safe routes with defineRoutes
 
-Never hardcode endpoint strings:
+Never hardcode endpoint strings. Use typed params (`"string"`, `"number"`, `"uuid"`) for compile-time safety:
 ```typescript
 // Shared prefix avoids repetition (like Fastify's register prefix)
 export const userRoutes = defineRoutes("/users", {
   list:   { method: "get",    path: "/" },
   create: { method: "post",   path: "/" },
-  delete: { method: "delete", path: "/:id" },
+  detail: { method: "get",    path: "/:id", params: { id: "number" } as const },
+  delete: { method: "delete", path: "/:id", params: { id: "number" } as const },
 } as const);
+
+// Typed params are enforced at call sites:
+userRoutes.detail.resolve({ id: 42 })        // ✓ id must be number
+userRoutes.detail.resolve({ id: "42" })       // ✗ compile error
 ```
 
 **Always use shared prefix** when routes share a common base path:
@@ -135,13 +140,13 @@ Form(/* fields */).hxPost("/users/create", {
 Swap the main content area with `outerMorph` and scroll to top:
 ```typescript
 // Navigation link — uses setHtmx, NOT setHref
-A("Settings").setHtmx(settingsRoutes.index({ swap: "outerMorph show:window:top", target: ids.mainContent, pushUrl: true }))
-A("Users").setHtmx(userRoutes.list({ swap: "outerMorph show:window:top", target: ids.mainContent, pushUrl: true }))
+A("Settings").setHtmx(settingsRoutes.index({ swap: "outerMorph scroll:top", target: ids.mainContent, pushUrl: true }))
+A("Users").setHtmx(userRoutes.list({ swap: "outerMorph scroll:top", target: ids.mainContent, pushUrl: true }))
 
 // Form submission that replaces the page
 Form(/* fields */).setHtmx(userRoutes.create({
   target: ids.mainContent,
-  swap: "outerMorph show:window:top",
+  swap: "outerMorph scroll:top",
 }))
 
 // Use Partial swaps to update nav, title, and content in one response

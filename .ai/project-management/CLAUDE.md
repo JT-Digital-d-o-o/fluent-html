@@ -10,26 +10,61 @@ All PM files live in `project/pm/`. **Guard:** These rules only apply if `projec
 
 ## File Structure
 
-Epic (directory) > feature (directory) > concern (file).
+The structure is fractal: every directory is a **scope**. Scopes nest recursively — a scope can contain child scopes, and every scope has the same potential file vocabulary. Whether something is a "project", "epic", or "feature" is just a function of its depth, not a different concept.
 
 ```
-/project/pm/
-├── INDEX.md                    ← project overview + epic list
-├── decisions.md                ← cross-cutting decisions only
-├── cooldown.md                 ← optional: tech debt, cleanup, exploration ideas
+/project/pm/                        ← root scope
+├── INDEX.md                        ← scope overview + child scope list
+├── prd.md                          ← scope requirements (when applicable)
+├── todo.md                         ← cross-cutting tasks at this level
+├── qa.md                           ← bugs scoped to this level
+├── decisions.md                    ← cross-cutting decisions
+├── cooldown.md                     ← optional: tech debt, cleanup, exploration
 │
-└── [epic]/
-    ├── INDEX.md                ← epic overview + feature list
-    └── [feature]/
-        ├── prd.md              ← feature requirements
-        ├── todo.md             ← tasks grouped by user story (with hill phases)
-        ├── qa.md               ← bugs for this feature
-        └── decisions.md        ← optional, created when needed
+└── [scope]/                        ← child scope (same structure, recursively)
+    ├── INDEX.md                    ← scope overview + child scope list
+    ├── prd.md                      ← scope requirements
+    ├── todo.md                     ← tasks grouped by user story
+    ├── qa.md                       ← bugs for this scope
+    ├── decisions.md                ← optional, created when needed
+    │
+    └── [scope]/                    ← deeper child scope (discovered during build)
+        ├── prd.md
+        ├── todo.md
+        ├── qa.md
+        └── decisions.md
 ```
+
+Files appear when needed — a scope with just `INDEX.md` and one child is valid. A leaf scope with just `prd.md` and `todo.md` is valid. `INDEX.md` is only needed when a scope has children.
 
 Source of truth: `prd.md`, `todo.md`, `qa.md`, `decisions.md`, `cooldown.md`. Never duplicate derived data (counts, percentages, changelog, velocity) into files — the dashboard computes these live. INDEX files are link-only, never store counts.
 
-Anti-patterns: flat files without epic/feature directories; parallel trees (`prd/auth/`, `todo/auth/`); `status.md` or `changelog.md` files.
+Anti-patterns: parallel trees (`prd/auth/`, `todo/auth/`); `status.md` or `changelog.md` files; duplicating parent-level info in children.
+
+### Scoping Rule
+
+Tasks, bugs, and decisions go at the **most specific scope they belong to**. Parent-level files are for cross-cutting work that spans multiple child scopes:
+
+```
+project/pm/
+├── todo.md                         ← tasks spanning multiple scopes (e.g., "Set up CI")
+├── auth/
+│   ├── todo.md                     ← tasks spanning auth child scopes
+│   ├── login/
+│   │   └── todo.md                 ← tasks specific to login
+│   └── password-reset/
+│       └── todo.md                 ← tasks specific to password reset
+```
+
+### Depth = Decision History
+
+The tree encodes how the project's scope evolved over time. Outer scopes represent older, foundational decisions. Inner scopes represent newer discoveries made during the build. Git history (`git log --diff-filter=A`) provides timestamps for when each scope was born.
+
+The dashboard can use this to:
+- Animate scope growing over time — replay how the project evolved
+- Color scopes by age — old settled branches vs. fresh inner growth
+- Spot scope creep — a branch growing unexpectedly deep may be a rabbit hole
+- Show decision velocity — still discovering scope (tree growing) vs. executing (tasks completing)
 
 ---
 
@@ -39,7 +74,7 @@ Anti-patterns: flat files without epic/feature directories; parallel trees (`prd
 
 ```markdown
 - [ ] [P1] Update shared auth middleware
-  - Note: also referenced in admin/users/todo.md
+  - Note: also referenced in auth/login/todo.md
 ```
 
 **Status marks** (used in both todo.md and qa.md headings):
@@ -109,6 +144,7 @@ The PM system implements Shape Up's build track. Two flows exist: **product** (S
 | Task discovery | New tasks added to stories as work reveals them |
 | Scope hammering | Mark cuttable tasks with `~` prefix (see below) |
 | Scariest work first | Uphill stories before routine downhill ones |
+| Scope grows | New child scope directories discovered during build |
 
 **Nice-to-haves** — prefix with `~` to mark tasks that can be cut if time runs out:
 
@@ -133,7 +169,7 @@ Continuous 1-week cycles. You choose what to build.
 
 **DO: Enter scope through the betting table only**
 ```
-Betting table picks pitches → create epic/feature dirs → write prd.md from
+Betting table picks pitches → create scope dirs → write prd.md from
 the pitch (problem, appetite, solution, rabbit holes, no-gos) → create
 todo.md with uphill stories.
 
@@ -175,7 +211,7 @@ Scope comes from a contract or project brief. Delivery is the commitment.
 
 **DO: Enter scope from the project brief**
 ```
-Client brief/SOW → create epic/feature dirs → write prd.md from the brief
+Client brief/SOW → create scope dirs → write prd.md from the brief
 (requirements, constraints, deliverables, out-of-scope) → create todo.md
 with uphill stories.
 
@@ -229,7 +265,7 @@ Never just "squeeze it in" without recording it.
 
 ## Todo Format
 
-Tasks grouped by user story in `project/pm/[epic]/[feature]/todo.md`. Every story ends with two mandatory tasks: write tests and check for bugs. Task format: `- [status] [priority] Title`.
+Tasks grouped by user story in `todo.md` at any scope level. Every story ends with two mandatory tasks: write tests and check for bugs. Task format: `- [status] [priority] Title`.
 
 New user stories go at the bottom. Bug-fix tasks can be added to a completed story if directly related (prefixed with `BUG:`). New features always get their own story.
 
@@ -245,7 +281,7 @@ New user stories go at the bottom. Bug-fix tasks can be added to a completed sto
 
 ## QA Format
 
-Each bug is a section in `project/pm/[epic]/[feature]/qa.md` with status and severity in the heading. The heading IS the summary — no separate summary lists.
+Each bug is a section in the relevant scope's `qa.md` with status and severity in the heading. The heading IS the summary — no separate summary lists.
 
 ```markdown
 ## [ ] [P1] Login fails with special characters in password
@@ -260,7 +296,7 @@ Each bug is a section in `project/pm/[epic]/[feature]/qa.md` with status and sev
 **Resolution:**
 ```
 
-Resolution is only filled when status is `[x]`. File bugs in the correct feature's qa.md.
+Resolution is only filled when status is `[x]`. File bugs in the correct scope's qa.md.
 
 **Workflow:** Bug found → add as `[ ]` → fix in progress → mark `[>]` → verified fixed → mark `[x]`, fill Resolution.
 
@@ -268,13 +304,13 @@ Resolution is only filled when status is `[x]`. File bugs in the correct feature
 
 ## Cooldown
 
-`project/pm/cooldown.md` — optional parking lot for tech debt, cleanup, exploration that isn't committed scope. Categories as `## ` headings, items as `- [ ]` / `- [x]` checkboxes. No priorities, no user stories. When picked up, remove from cooldown and create proper feature files. Review between cycles to prune stale items.
+`cooldown.md` — optional parking lot for tech debt, cleanup, exploration that isn't committed scope. Can exist at any scope level, but most common at the root. Categories as `## ` headings, items as `- [ ]` / `- [x]` checkboxes. No priorities, no user stories. When picked up, remove from cooldown and create proper scope files. Review between cycles to prune stale items.
 
 ---
 
 ## Decisions Format
 
-Feature-scoped → `project/pm/[epic]/[feature]/decisions.md` (created on first decision). Cross-cutting → `project/pm/decisions.md`. When in doubt, scope to the feature. Record **before** writing code, never after.
+Scope-level → `[scope]/decisions.md` (created on first decision). Cross-cutting → parent scope's `decisions.md`. When in doubt, scope to the most specific level. Record **before** writing code, never after.
 
 ```markdown
 ## Use Resend instead of SendGrid for transactional emails
@@ -296,9 +332,9 @@ Never edit a past decision — add a new one that supersedes it.
 | Starting a task | Mark `[>]` in the relevant todo.md |
 | Task completion | Mark `[x]` immediately |
 | Hill phase change | Update `<!-- hill: uphill -->` ↔ `<!-- hill: downhill -->` |
-| New feature scope | Update prd.md before writing code; create epic/feature dirs + files as needed |
-| Bug discovery | Add formatted entry to the relevant qa.md before continuing |
-| Architecture decision | Log to feature or cross-cutting decisions.md |
+| New scope discovered | Create child scope directory + prd.md before writing code |
+| Bug discovery | Add formatted entry to the relevant scope's qa.md before continuing |
+| Architecture decision | Log to the most specific scope's decisions.md |
 
 ## Session Start
 

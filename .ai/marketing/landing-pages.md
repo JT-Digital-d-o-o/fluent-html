@@ -19,6 +19,10 @@ Patterns for high-converting landing pages in a server-rendered stack. Every pag
 
 // Not every page needs all 8. A simple landing page
 // can be just: Hero + Social proof + How it works + CTA.
+//
+// Keep sections shallow — present key value props on the surface
+// and link to deeper content for visitors who want it.
+// Don't front-load exhaustive comparisons or feature dumps.
 ```
 
 ### DO: Make the hero section self-contained
@@ -35,6 +39,22 @@ Example:
   CTA: [Start free — no credit card]
 ```
 
+### DO: Show the product in the hero — interactive simulation over static images
+```
+// Best-performing pages let the visitor experience the product immediately.
+// The hero IS the product, not a description of it.
+
+Strength hierarchy (strongest → weakest):
+1. Interactive product simulation  (visitor can click/type in a live preview)
+2. Animated product walkthrough    (auto-playing demo of real UI)
+3. Annotated screenshot            (real UI with callouts)
+4. Static illustration             (custom art showing the concept)
+5. Stock photo / generic visual    (tells the visitor nothing)
+
+// If you can embed a working slice of the product in the hero, do it.
+// A 10-second hands-on experience beats 500 words of copy.
+```
+
 ### DON'T: Use the hero section for decoration
 ```
 // WRONG — stock photo background, vague headline
@@ -42,7 +62,11 @@ Hero: [large stock photo of people in a meeting]
 H1: "Welcome to ProductName"
 Sub: "The platform for modern teams"
 
+// WRONG — 50/50 split with generic explainer video
+Hero: [left: headline text] [right: autoplay video with talking head]
+
 // The visitor learns nothing. They'll bounce in 3 seconds.
+// Show the product, not a description of it.
 ```
 
 ---
@@ -169,6 +193,145 @@ CORRECT: "We shipped our MVP in 3 days instead of 3 weeks.
 "Used by 12 early-access founders" (honest and intriguing)
 "Built with security best practices: HTTPS, httpOnly cookies,
  CSRF protection, parameterized queries" (specific and true)
+```
+
+---
+
+## Confidence Posture
+
+The best landing pages **assume** the visitor wants the product. The rest try to **convince** them. This distinction shapes every decision below.
+
+### DO: Assume intent — let the product speak
+```
+// CONFIDENT — the page presents the product and gets out of the way
+Short headline, interactive demo, clean CTA, "Learn more" for depth.
+The visitor self-selects. You don't chase them.
+
+// DESPERATE — the page argues, pleads, and interrupts
+Sticky CTA bars, urgency countdown timers, exit-intent popups,
+walls of comparison tables, aggressive micro-copy ("Don't miss out!").
+
+// If you need 12 persuasion tactics to get a signup,
+// the problem is positioning, not the landing page.
+```
+
+### DO: Keep content shallow and wide — let visitors pull depth
+```
+// Present the key value props on the surface.
+// Link to deeper content ("See how it works →") for those who want it.
+// Don't front-load exhaustive feature comparisons or spec tables.
+
+// The page should feel like a confident introduction,
+// not a desperate sales pitch that's afraid you'll leave.
+```
+
+### DON'T: Use high-pressure tactics as a substitute for product clarity
+```
+// WRONG — compensating for weak positioning with aggression
+- Sticky CTA bar that follows the scroll
+- "Only 3 spots left!" (fake scarcity)
+- Exit-intent popup with discount
+- Countdown timer for an offer that resets
+
+// These signal that you don't trust your own product.
+// Fix the headline and the demo instead.
+```
+
+---
+
+## Visual Design & Chrome
+
+### DO: Make the UI invisible — 1px borders, 5% shadows
+```
+// The best pages have minimal visual chrome.
+// The design disappears so the product and copy are the focus.
+
+CORRECT:
+- Borders: 1px solid, low-contrast (e.g., gray-200)
+- Shadows: subtle, 5% opacity (e.g., shadow-sm)
+- Backgrounds: flat white or near-white, no gradients
+- Cards: thin border or faint shadow, not both
+
+WRONG:
+- Heavy drop shadows on every element
+- Gradient backgrounds behind text sections
+- Decorative borders, glows, or bevels
+- Multiple competing visual treatments on the same page
+
+// If you notice the chrome, it's too much.
+```
+
+### DON'T: Use gradient text or heavy effects for "wow"
+```
+// WRONG — gradient text on headings for visual impact
+background: linear-gradient(...); -webkit-background-clip: text;
+
+// This is a bottom-10 signal. It says "look at my design"
+// instead of "look at what this product does for you."
+// Reserve visual energy for the product demo, not the typography.
+```
+
+---
+
+## Typography
+
+### DO: Use a strategic serif for authority headings
+```
+// Top-performing pages pair a serif for headings with a sans-serif for body.
+// Serif signals confidence, credibility, and editorial quality.
+
+Example pairing:
+  H1-H3: Serif (e.g., Playfair Display, Source Serif, Lora)
+  Body:  Sans-serif (e.g., Inter, system-ui)
+
+// This is a deliberate typographic choice, not decoration.
+// The serif says "we're established" without needing to say it in copy.
+```
+
+### DON'T: Use decorative type treatments as a design crutch
+```
+// WRONG — gradient text, outlined text, animated type
+// These draw attention to the typography, not the message.
+
+// WRONG — all-caps everything for "impact"
+// Reserve all-caps for short labels (NAV ITEMS, BADGES), not headlines.
+
+// The type should feel invisible — the visitor reads the message,
+// not the font.
+```
+
+---
+
+## Animations & Motion
+
+### DO: Use motion to demonstrate product capability ("performance flex")
+```
+// Good animation earns its place by showing what the product does.
+
+CORRECT:
+- Animate a real workflow completing in the product demo
+- Transition between before/after states of user data
+- Micro-interactions on the interactive hero (hover, click feedback)
+- Smooth number counters on real metrics
+
+// Motion should make the visitor think "this product is fast/capable,"
+// not "this website has nice animations."
+```
+
+### DON'T: Use generic SaaS entrance animations
+```
+// WRONG — every section fades/slides in on scroll
+[section 1: fade-in-up]  [section 2: slide-in-left]  [section 3: fade-in-up]
+
+// This is the default for every SaaS template on the internet.
+// It adds load time, delays content visibility, and communicates nothing.
+// If an animation doesn't show product capability, remove it.
+
+// Specifically avoid:
+- Scroll-triggered fade-ins on text sections
+- Slide-up reveals on feature cards
+- Parallax backgrounds
+- Animated SVG illustrations unrelated to the product
 ```
 
 ---
