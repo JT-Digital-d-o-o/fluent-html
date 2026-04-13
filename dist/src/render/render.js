@@ -223,14 +223,6 @@ function renderImpl(view, isRawContext) {
             return '';
         if (len === 1)
             return renderImpl(view[0], isRawContext);
-        // For larger arrays, .join() is faster than += in a loop
-        if (len > 8) {
-            const parts = new Array(len);
-            for (let i = 0; i < len; i++) {
-                parts[i] = renderImpl(view[i], isRawContext);
-            }
-            return parts.join('\n');
-        }
         let result = renderImpl(view[0], isRawContext);
         for (let i = 1; i < len; i++) {
             result += '\n' + renderImpl(view[i], isRawContext);

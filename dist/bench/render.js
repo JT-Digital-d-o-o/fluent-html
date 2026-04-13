@@ -46,6 +46,19 @@ function benchHtmxAttributes() {
         .setHtmx(`/api/button/${i}`, { method: "post", swap: "none" })
         .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()));
 }
+function benchVariantHeavy() {
+    return Div(ForEach(100, (i) => Button(`Button ${i}`)
+        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()
+        .transition("colors")
+        .on("hover", t => t.background("blue-600").scale("105").textColor("white").shadow("lg"))
+        .on("focus", t => t.ring("2").ringColor("blue-300").outline("none").shadow("md"))
+        .on("disabled", t => t.opacity("50").cursor("not-allowed").background("gray-400"))
+        .at("md", t => t.padding("x", "8").textSize("lg").rounded("lg"))
+        .at("lg", t => t.padding("x", "12").textSize("xl"))));
+}
+function benchLargeForEach() {
+    return Div(ForEach(5000, (i) => Div(`Item ${i}`).setId(`item-${i}`)));
+}
 function benchRealisticPage() {
     return Div(Header(Nav(Ul(Li(A("Home").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("About").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Products").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Contact").setClass("nav-link").padding("x", "4").padding("y", "2"))).flex().gap("4")).padding("4").background("white").shadow("md")), Main(Section(H1("Welcome to Our Store").textSize("3xl").bold().margin("b", "4"), P("Browse our collection of fine products.").textColor("gray-600")).padding("8"), Section(H2("Featured Products").textSize("2xl").bold().margin("b", "6"), Div(ForEach(12, (i) => Article(Img().addAttribute("src", `/img/product-${i}.jpg`).addAttribute("alt", `Product ${i}`).w("full").h("48").objectFit("cover"), Div(H2(`Product ${i}`).textSize("lg").bold(), P(`$${(i + 1) * 9.99}`).textColor("green-600").bold(), P("Lorem ipsum dolor sit amet, consectetur adipiscing elit.").textColor("gray-500").textSize("sm"), Button("Add to Cart")
         .setHtmx(`/cart/add/${i}`, { method: "post", swap: "none" })
@@ -83,6 +96,10 @@ const htmxPage = benchHtmxAttributes();
 printResult("HTMX attributes (100 buttons)", measure("htmx", () => render(htmxPage), ITERATIONS));
 const realisticPage = benchRealisticPage();
 printResult("Realistic page (~200 tags)", measure("realistic", () => render(realisticPage), ITERATIONS));
+const variantPage = benchVariantHeavy();
+printResult("Variant-heavy (100 buttons, 10+ variants)", measure("variants", () => render(variantPage), ITERATIONS));
+const largeForEach = benchLargeForEach();
+printResult("Large ForEach (5000 items)", measure("large-foreach", () => render(largeForEach), ITERATIONS));
 console.log("");
 console.log("Memory usage:");
 console.log("─".repeat(72));

@@ -101,7 +101,9 @@ export class Tag {
    */
   addClass(c: string): this {
     const classes = this._variantPrefix
-      ? c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" ")
+      ? (c.indexOf(' ') === -1
+          ? this._variantPrefix + ':' + c
+          : c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" "))
       : c;
     if (this.class) {
       this.class += ' ' + classes;

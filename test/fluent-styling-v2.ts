@@ -117,6 +117,12 @@ describe("Variant Proxy - .on()", () => {
   it("empty callback is no-op", () => {
     assert.strictEqual(render(Div().on("hover", t => t)), '<div></div>');
   });
+  it("addClass with multi-class string inside variant", () => {
+    assert.strictEqual(render(Div().on("hover", t => t.addClass("foo bar baz"))), '<div class="hover:foo hover:bar hover:baz"></div>');
+  });
+  it("addClass with single-class string inside variant", () => {
+    assert.strictEqual(render(Div().on("hover", t => t.addClass("foo"))), '<div class="hover:foo"></div>');
+  });
 });
 
 describe("Variant Proxy - .at()", () => {

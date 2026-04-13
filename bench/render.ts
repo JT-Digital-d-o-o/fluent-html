@@ -69,6 +69,29 @@ function benchHtmxAttributes(): View {
   );
 }
 
+function benchVariantHeavy(): View {
+  return Div(
+    ForEach(100, (i) =>
+      Button(`Button ${i}`)
+        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()
+        .transition("colors")
+        .on("hover", t => t.background("blue-600").scale("105").textColor("white").shadow("lg"))
+        .on("focus", t => t.ring("2").ringColor("blue-300").outline("none").shadow("md"))
+        .on("disabled", t => t.opacity("50").cursor("not-allowed").background("gray-400"))
+        .at("md", t => t.padding("x", "8").textSize("lg").rounded("lg"))
+        .at("lg", t => t.padding("x", "12").textSize("xl"))
+    )
+  );
+}
+
+function benchLargeForEach(): View {
+  return Div(
+    ForEach(5000, (i) =>
+      Div(`Item ${i}`).setId(`item-${i}`)
+    )
+  );
+}
+
 function benchRealisticPage(): View {
   return Div(
     Header(
@@ -176,6 +199,12 @@ printResult("HTMX attributes (100 buttons)", measure("htmx", () => render(htmxPa
 
 const realisticPage = benchRealisticPage();
 printResult("Realistic page (~200 tags)", measure("realistic", () => render(realisticPage), ITERATIONS));
+
+const variantPage = benchVariantHeavy();
+printResult("Variant-heavy (100 buttons, 10+ variants)", measure("variants", () => render(variantPage), ITERATIONS));
+
+const largeForEach = benchLargeForEach();
+printResult("Large ForEach (5000 items)", measure("large-foreach", () => render(largeForEach), ITERATIONS));
 
 console.log("");
 console.log("Memory usage:");

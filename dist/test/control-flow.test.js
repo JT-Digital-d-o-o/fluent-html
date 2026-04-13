@@ -89,5 +89,19 @@ describe("Control Flow - ForEach", () => {
     it("ForEach range", () => { assert.strictEqual(render(Ul(ForEach(3, idx => Li(`Item ${idx}`)))), `<ul><li>Item 0</li>\n<li>Item 1</li>\n<li>Item 2</li></ul>`); });
     it("ForEach range with start", () => { assert.strictEqual(render(Ul(ForEach(5, 8, idx => Li(`Item ${idx}`)))), `<ul><li>Item 5</li>\n<li>Item 6</li>\n<li>Item 7</li></ul>`); });
     it("Repeat", () => { assert.strictEqual(render(Div(Repeat(3, () => Span("*")))), `<div><span>*</span>\n<span>*</span>\n<span>*</span></div>`); });
+    it("ForEach large array (>8 items) renders correctly with newlines", () => {
+        const result = render(Ul(ForEach(20, idx => Li(`Item ${idx}`))));
+        const items = Array.from({ length: 20 }, (_, i) => `<li>Item ${i}</li>`).join('\n');
+        assert.strictEqual(result, `<ul>${items}</ul>`);
+    });
+    it("ForEach very large array (1000 items) renders all items", () => {
+        const result = render(Div(ForEach(1000, idx => Span(`${idx}`))));
+        assert.ok(result.startsWith('<div><span>0</span>'));
+        assert.ok(result.endsWith('<span>999</span></div>'));
+        assert.strictEqual((result.match(/<span>/g) ?? []).length, 1000);
+    });
+    it("ForEach single item array has no newlines", () => {
+        assert.strictEqual(render(Ul(ForEach(["only"], item => Li(item)))), `<ul><li>only</li></ul>`);
+    });
 });
 //# sourceMappingURL=control-flow.test.js.map
