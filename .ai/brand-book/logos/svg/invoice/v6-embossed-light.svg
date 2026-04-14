@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 48">
-  <rect width="80" height="48" fill="#0f172a"/>
-  <text x="40" y="28" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="24" font-weight="700" fill="#F59E0B" letter-spacing="3">JT</text>
-  <!-- Emboss: dark shadow offset down-right, lighter surface on top -->
-  <text x="40.4" y="38.4" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#060d1b" letter-spacing="4">DIGITAL</text>
-  <text x="40" y="38" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#1e293b" letter-spacing="4">DIGITAL</text>
-  <!-- Light edge on top-left to sell the emboss -->
-  <text x="39.7" y="37.7" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="7.5" font-weight="700" fill="#1e293b" opacity="0.5" letter-spacing="4">DIGITAL</text>
-</svg>
