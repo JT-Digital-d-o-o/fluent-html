@@ -80,6 +80,13 @@ Card(
   .rounded("xl")
   .shadow("lg")
 
+// Pseudo-classes with .on() and breakpoints with .at()
+Button("Save")
+  .background("blue-500").textColor("white").padding("x", "4").rounded()
+  .on("hover", t => t.background("blue-600"))
+  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
+  .at("md", t => t.padding("x", "8").textSize("lg"))
+
 // Or use traditional classes
 Div("Content").setClass("p-4 bg-white rounded-lg shadow")
 ```
@@ -983,6 +990,72 @@ The type system enforces valid Tailwind values — wrong values don't compile. F
 .opacity("50")                   // opacity-50
 .cursor("pointer")               // cursor-pointer
 .overflow("hidden")              // overflow-hidden
+```
+
+### Pseudo-Classes with `.on()`
+
+Use `.on(state, fn)` for hover, focus, active, disabled, and other pseudo-class variants. The callback receives the tag with the variant prefix active — every fluent method inside it produces prefixed classes.
+
+```typescript
+Button("Save")
+  .padding("x", "4").padding("y", "2")
+  .background("blue-500")
+  .textColor("white")
+  .rounded()
+  .on("hover", t => t.background("blue-600").scale("105"))
+  .on("focus", t => t.ring("2").ringColor("blue-300").outline("none"))
+  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
+// → px-4 py-2 bg-blue-500 text-white rounded
+//   hover:bg-blue-600 hover:scale-105
+//   focus:ring-2 focus:ring-blue-300 focus:outline-none
+//   disabled:opacity-50 disabled:cursor-not-allowed
+```
+
+**Supported states** (fully type-safe via `TailwindState`):
+
+| Category | Values |
+|---|---|
+| Interaction | `hover`, `focus`, `focus-within`, `focus-visible`, `active`, `visited` |
+| Form state | `disabled`, `enabled`, `checked`, `indeterminate`, `required`, `invalid`, `valid` |
+| Position | `first`, `last`, `odd`, `even`, `empty`, `first-of-type`, `last-of-type`, `only-child` |
+| Pseudo-elements | `placeholder`, `selection`, `marker`, `file`, `before`, `after` |
+| Theme | `dark` |
+| Group/peer | `group-hover`, `group-focus`, `group-active`, `group-disabled`, `peer-hover`, `peer-focus`, `peer-checked`, `peer-invalid` |
+
+### Responsive Breakpoints with `.at()`
+
+Use `.at(breakpoint, fn)` for responsive variants — same pattern as `.on()` but for screen sizes.
+
+```typescript
+Div("Sidebar")
+  .padding("4")
+  .textSize("sm")
+  .at("md", t => t.padding("6").textSize("base"))
+  .at("lg", t => t.padding("8").textSize("lg"))
+// → p-4 text-sm md:p-6 md:text-base lg:p-8 lg:text-lg
+```
+
+**Supported breakpoints:** `sm` | `md` | `lg` | `xl` | `2xl`
+
+### Composing Variants
+
+Variants compose naturally — nest `.on()` inside `.at()` (or vice versa) for combinations like "on hover, at medium screens":
+
+```typescript
+Button("Save")
+  .background("blue-500")
+  .at("md", t => t
+    .padding("x", "8")
+    .on("hover", t2 => t2.background("blue-700"))
+  )
+// → bg-blue-500 md:px-8 md:hover:bg-blue-700
+
+Card()
+  .on("dark", t => t
+    .background("gray-900")
+    .on("hover", t2 => t2.background("gray-800"))
+  )
+// → dark:bg-gray-900 dark:hover:bg-gray-800
 ```
 
 ### Real-World Example
