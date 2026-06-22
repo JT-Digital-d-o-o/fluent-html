@@ -1,0 +1,39 @@
+---
+rfc: RFC-D-01
+lens: dx
+verdict: survives-with-changes
+confidence: 0.72
+killer_objection: null
+required_changes:
+  - "Add a dev-mode misuse guard: when NODE_ENV !== 'production', Frozen() must detect re-entry/second-render-with-different-output (or, minimally, warn once if a FrozenView is constructed during an active render pass) so the module-scope contract is enforced by the runtime, not only by prose. The silent first-request-wins cache poisoning is the entire risk surface of this API and currently has zero non-doc backstop."
+  - "Correct the §11.8 self-claim. The Guidelines impact section teaches only Frozen(); isFrozen() and FrozenView are in api_surface but are NOT taught as usable symbols. State this honestly (they mirror isTag/isRawString, which the guidelines also do not teach — internal/advanced surface) rather than asserting 'covers every api_surface symbol'. The claim is the only false statement in the RFC."
+  - "Add one ✗ line to the fluent-html.md Frozen section forbidding Frozen() inside a component/render function body (the actual mechanical footgun), not only the abstract 'per-request data' rule. The cited misuse — Frozen(Div(`Hi ${user.name}`)) — only fails because it is constructed per-request; an author who freezes a genuinely-static subtree but does so inside the render function leaks nothing yet pays a fresh cache every request (a silent perf de-opt that looks correct). Name 'freeze at module scope, never in a render function' as its own check line."
+  - "Resolve the naming-vs-Object.freeze ambiguity before ship. 'Frozen' reads as structural immutability (Object.freeze), but the API means 'memoized once'. Either (a) keep Frozen and explicitly close open-question #1 as 'no Object.freeze' so the name never overloads two meanings, or (b) rename to a memo-flavored term. Do not ship with the Object.freeze open question still live — it makes the name's meaning undecided at the API contract level."
+---
+
+# Verdict: RFC-D-01 — dx lens
+
+> Adversary brief: kill RFC-D-01 through the dx failure mode. Default reject under uncertainty.
+
+## Attack
+
+The RFC is really two RFCs. The **de-recursion** half has zero public surface, no naming, no discoverability question, and a strictly-better behavior (crash → success), locked by the `stream-vs-render` fuzz. There is nothing to attack on dx grounds; it is invisible to app authors. So the entire dx verdict rides on **`Frozen()`**.
+
+- **dx failure mode 1 — the correctness contract is invisible at the call site (hard-to-misuse failure).** `Frozen(view)` has *identical* syntax whether written correctly (module scope, request-invariant) or catastrophically (inside a render function over `user`/`csrf`/`nonce`). The wrong usage does not throw, does not type-error, and does not even render wrong on the *first* request — it serves request #1's bytes (a logged-in user's name, a CSRF token, a per-response nonce) to every subsequent visitor. This is a cache-poisoning / session-bleed security bug wearing the costume of a perf helper, and the only thing standing between an app author and it is a prose ✗ in a guideline. Compare the library's own `Raw()`: its footgun (XSS) is at least *named in the type* (`RawString`) and the docstring screams it, but `Raw` only fails on *untrusted* input — `Frozen` fails on *any per-request* input, a far wider target. Guardrail §11.3 is asserted PASS on the basis that "Frozen caches the output of the same escaping render()" — true for escaping, but it sidesteps that the *cross-request identity* invariant (a brand-new invariant this API introduces) has no enforcement at all. For an SSR library whose entire value proposition is request-per-render, an API that silently caches request data across requests is the single most dangerous shape you can add, and "documented, user-enforced" is the weakest possible mitigation.
+
+- **dx failure mode 2 — the name overloads two meanings, and the RFC leaves the overload unresolved.** `Frozen` reads as `Object.freeze`-style structural immutability. The API actually means "render-once-and-memoize." Open question #1 explicitly floats *also* doing `Object.freeze` on the tree — which would make the name simultaneously mean both, and an author can't tell from `Frozen(x)` whether `x` is now mutation-protected or just cached. Shipping a public symbol whose semantics are still a live open question is a dx defect: the name's contract is undecided.
+
+- **dx failure mode 3 (the lighter, missed footgun).** The taught misuse is the *security* one (per-request data). But the *common* mistake is freezing a genuinely-static subtree from *inside* a render function — correct output, yet a fresh `FrozenView` is allocated and re-serialized every request, so the author gets a silent perf *de-opt* that looks like adoption. The guideline says "freeze at module scope" in passing but never makes "never inside a render function" a standalone ✗, so Claude Code will write the de-opted form and believe it succeeded.
+
+## Does it survive?
+
+**Survives-with-changes.** I cannot reject it: the underlying friction is real and evidenced (the `ttl` layout re-renders its `<head>` + 4 SVGs every request; the only prior workaround `Raw(render(nav))` is a documented fluent dead-end with no cache — `F-D-091`). An app author *would* reach for `Frozen` once taught, the factory mirrors `Raw(...)`/`Partial(...)` exactly, `isFrozen` mirrors `isTag`/`isRawString`, and the `_t: 3` discriminant is idiomatic. Discoverability is good (index + topic ref + performance.md). The naming is acceptable *if* the Object.freeze ambiguity is closed.
+
+But it does **not** survive unchanged, because the one thing the dx lens cares about most — *hard to misuse* — is where this API is weakest, and the misuse outcome is a cross-request data leak, not a cosmetic bug. A purely doc-enforced contract for an invariant this dangerous is below the bar for a shipped public symbol. The four required changes (above) close it: a dev-mode runtime guard converts the silent footgun into a loud one, the corrected §11.8 claim removes the only false statement in the RFC, the explicit "never in a render function" ✗ catches the mechanical mistake the security rule misses, and resolving the name/Object.freeze overload makes the contract decidable from the call site.
+
+## Guardrail check (§11.8 — guideline-sync, owned by dx)
+
+- **Insertion points are real and accurate.** Verified against the canonical `/Users/tony/jt-digital/guidelines/web-development/`: `CLAUDE.md:120` (Boolean attributes block — the index insert lands before §151 Fluent Tailwind Styling, as claimed); `fluent-html.md:5/13` (Element Creation, Raw line), `:172` (Rendering — new section lands after it), `:198/202` (Types block, `View =` comment to update); `performance.md:119` (Response Streaming subsection). Every cited line matches.
+- **House style:** the proposed edits are code-snippet-first, ✓/✗, LLM-reader-oriented, succinct. Conforms.
+- **Coverage claim is overstated.** §11.8 asserts the section "covers every `api_surface` symbol." It teaches `Frozen()` well; it does *not* teach `isFrozen()` or `FrozenView` as usable symbols — only `FrozenView` appears, as a type-comment token. This is actually *consistent* with house style (the guidelines teach neither `isTag`/`isRawString` nor `RawString`-as-symbol — confirmed by grep: only the `View =` type comment mentions `RawString`), so the omission is correct — but the RFC must not claim full coverage when it means "covers the user-facing symbol, mirrors precedent for the guards." Required change #2.
+- **Net:** the guideline edit is correct, minimal, in-style, and lands cleanly; the only defects are the overstated coverage claim and the missing standalone "never in a render function" ✗ line (required changes #2 and #3). Guideline-sync passes with those two edits.

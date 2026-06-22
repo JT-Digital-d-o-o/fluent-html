@@ -1,0 +1,45 @@
+---
+rfc: RFC-D-01
+lens: breaking-change
+verdict: survives-with-changes
+confidence: 0.78
+killer_objection: "Widening `View` with `FrozenView` silently breaks the public `ViewAlgebra<A>`/`ParaAlgebra<A>` contract: every existing user-written algebra has exactly four cases (text/raw/tag/list) and no `frozen` case. Either the RFC adds a `frozen` member (hard compile break to a public type — not additive) or it omits it (frozen subtrees become invisible to every fold-based analysis: countAlgebra, text extraction, link/security audits silently return wrong results). The RFC's frontmatter `breaking: additive` and its 'foldView de-recursed, behavior-identical' claim are both false for this case."
+required_changes:
+  - "Add a `frozen` member to the public `ViewAlgebra<A>` and `ParaAlgebra<A>` interfaces (`src/fold/types.ts`) AND a `{ type: 'frozen'; ... }` arm to `ViewLayer<S>` for `unfoldView`/`hyloView`. Because adding a required member breaks every existing user-supplied algebra at compile time, reclassify frontmatter `breaking: additive` -> `breaking: breaking`, add a `breaking-changes.md` entry, and provide a default: make `frozen` OPTIONAL with a documented default behavior (fold recurses into `node.view` so analysis algebras see through the cache). Optional-member + default = the only path that stays codemod-free; if it must be required, supply the codemod."
+  - "State explicitly what `foldView`/`paraView` do at a `FrozenView` node. The cache (`node.cached`) is an opaque HTML string, not a foldable structure — folds MUST descend into `node.view`, never the cached string, or every analysis algebra silently diverges from the pre-RFC tree. Add a fold-over-Frozen test (countAlgebra and textAlgebra over a tree containing `Frozen(...)` must equal the same tree with `Frozen` removed)."
+  - "Add an old-render-vs-new-render byte-identity fuzz, not only the stream-vs-render fuzz cited (`F-D-006`). The de-recursion rewrites the array `'\\n'`-separator logic (`render.ts:246-250`, `stream.ts:188`) and the script/style `RawCtx` transition; stream-vs-render parity proves the two NEW paths agree with each other, not that they agree with the v5 output. Lock the v5 byte-for-byte snapshot against the v6 work-stack across the full pattern corpus before merge."
+  - "Pin the cached-string production path: `render(node.view)` for a `Frozen` whose `view` is an array must use the identical `'\\n'`-join the inline array path uses, so freezing vs not-freezing an array is byte-identical. Add this to the parity fuzz (freeze every subtree, assert output unchanged)."
+  - "Document that `Frozen` defeats `applyNonce` AND `foldView`-based traversals (the same opacity affects both). The RFC only warns about `renderWithNonce`; extend the ✗ guideline to: 'a frozen subtree is invisible to renderWithNonce AND to any foldView/paraView analysis (text extraction, element counts, security audits) unless they implement the `frozen` algebra arm.'"
+file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-01-breaking-change.md
+---
+
+# Verdict: RFC-D-01 — breaking-change lens
+
+> You are an ADVERSARY. Your job is to KILL this RFC through the breaking-change lens.
+> Default to `reject` under uncertainty — a good API cut is cheaper than a bad API shipped.
+
+## Attack
+
+The RFC stamps itself `breaking: additive`, "no codemod needed," "no `breaking-changes.md` entry." The de-recursion half earns that label. The `Frozen` half does not — it widens a union that is woven into **two public type contracts** the RFC never opens.
+
+- **breaking-change failure mode 1 — the public `ViewAlgebra` contract is silently broken.**
+  `View = Tag | string | RawString | View[]` is the carrier for the fold layer. `foldView`/`paraView`/`unfoldView`/`hyloView` are public exports, and so is `ViewAlgebra<A>` (verified: `src/fold/index.ts:8`, `src/index.ts:352`). `ViewAlgebra<A>` (`src/fold/types.ts:21`) has **exactly one method per `View` member**: `text`, `raw`, `tag`, `list`. Adding `FrozenView` to `View` creates a fifth structural case with no handler. There is no additive resolution:
+  - **If the RFC adds `frozen: (...) => A` to `ViewAlgebra`/`ParaAlgebra`** (it must, or `foldView` can't dispatch it), then **every existing user-written algebra fails to compile** — TS2741 "missing property `frozen`." That is a hard breaking change to an exported interface. The CLAUDE.md house style actively pushes `assertNever` exhaustive discriminated-union handling, so any disciplined consumer that exhausts `View` also breaks. The RFC's "all existing `View` producers/consumers keep working" (line 200) is false for consumers of the fold surface.
+  - **If the RFC does NOT add `frozen`**, then `foldView` hits its fall-through (`return ''`-equivalent) or has to unwrap and re-walk `node.view`. The RFC says *nothing* about which. If it falls through, **a frozen subtree is invisible to every analysis algebra**: a `countAlgebra` undercounts, a `textAlgebra` drops the frozen text, a link-extraction or CSP-audit algebra misses everything inside `Frozen`. That is a silent correctness regression — the worst class of breaking change, because it compiles clean and ships wrong.
+  Either branch contradicts `breaking: additive`. The RFC picked neither and measured neither.
+
+- **breaking-change failure mode 2 — "foldView de-recursed, behavior-identical" is an unproven byte claim, and the only cited guard is the wrong fuzz.**
+  `api_surface` lists `foldView()/paraView()/unfoldView()/hyloView() (de-recursed)` and the prose says the de-recursion is "byte-for-byte" identical, "locked by the `stream-vs-render` fuzz (`F-D-006`)." But stream-vs-render parity proves the two **new** paths agree with **each other** — it cannot prove either agrees with the **v5 recursive output**. The rewrite touches genuinely behavior-bearing code: the array sibling separator is a literal `'\n'` (`render.ts:248`, `stream.ts:188`) and the script/style raw-context transition (`render.ts:238`) becomes a `RawCtx` literal. A work-stack that pushes children in the wrong order, or drops the `len===1` no-separator special-case, changes output without failing a self-consistent stream-vs-render check. The honest guard is an **old-vs-new** snapshot across the full corpus; it is not in the RFC.
+
+- **breaking-change failure mode 3 — freezing an array must be byte-identical to inlining it, and isn't guaranteed.**
+  `Frozen` integrates by calling `render(node.view)`. Top-level `render` joins arrays with `'\n'`; the inline array path also joins with `'\n'`. They *probably* match — but a `Frozen` of a single-element array hits the `len===1` short-circuit (no leading separator) on the inline path, and `render([x])` must do the same. This is exactly the kind of off-by-one-newline divergence that makes "wrap this in Frozen" a behavioral change rather than a pure cache. Unpinned, "additive" is a hope, not a fact.
+
+## Does it survive?
+
+**survives-with-changes.** The de-recursion is genuinely non-breaking at the *signature* level — `render`/`renderToStream`/`renderWithNonce` keep their types (verified: those are the only render exports, `src/index.ts:23-24`; `renderImpl` is internal so the `boolean|string` → `RawCtx` change is invisible to consumers). The crash→success change is strictly an improvement and needs no migration. That half is clean.
+
+What is NOT clean, and what stops this from being a `survives`, is the `Frozen`-induced union widening colliding with the public `ViewAlgebra`/`ParaAlgebra`/`ViewLayer` contract. The RFC's migration section reasons only about the *renderer* gaining "one dispatch branch" and never notices the **fold layer** also enumerates `View` exhaustively in a user-facing interface. That is a real, shippable break the frontmatter actively mislabels — exactly the "guardrail drift: a breaking API sneaks into a minor" failure §13 is meant to catch. It does not rise to `reject` because there is a concrete, bounded fix (optional `frozen` arm + documented descend-into-`view` default + the parity fuzz), and the core value (de-recursion) is independently sound. The required changes above must fold back in; with them, `breaking` must be re-stamped honestly.
+
+## Guardrail check (§11.5 backward-compat — this lens owns it)
+
+**FAIL as written.** §11.5 requires additive-by-default and that any break be (a) codemod-able where possible, (b) bundled into `breaking-changes.md`, (c) justified. The RFC claims additive but the `View` widening breaks the public `ViewAlgebra`/`ParaAlgebra` exhaustiveness contract (compile break) or fold completeness (silent break) — and carries no `breaking-changes.md` entry and no codemod. The frontmatter `breaking: additive` is incorrect for the `Frozen` surface; the de-recursion surface alone would be additive. Re-classify to `breaking: breaking` (or keep additive only if `frozen` is made an OPTIONAL member with a documented default that descends into `node.view`), add the migration entry, and gate merge on an old-vs-new byte-identity fuzz plus a fold-over-Frozen test. With those, §11.5 passes.

@@ -1,0 +1,40 @@
+---
+rfc: RFC-B-03
+lens: dx
+verdict: survives-with-changes
+confidence: 0.72
+killer_objection: null
+required_changes:
+  - "Drop `Tag.prototype.w() (fraction overload)` from api_surface entirely. `TailwindWidth` already includes every fraction key (1/2…11/12) AND a `(string & {})` escape, and `w(value: TailwindWidth)` already ships at tailwind-methods.ts:139. `w(\"3/4\")` compiles today. It is a phantom api_surface entry; remove it and the corresponding sentence in the Type-safety / Migration sections."
+  - "Rename or scope `.size()`. `.size(name: ButtonSize)` is added to EVERY Tag but is meaningful only on a Button, and the bare name `size` collides conceptually with `w/h/minW/maxW/textSize`. `Div().size(\"lg\")` autocompletes everywhere and silently does nothing useful — a discoverability footgun and idiom violation (§11.6). Fold sizing into `.variant()` (e.g. `.variant(\"primary\",\"md\")`), rename to `.btn(\"primary\",\"md\")`, or make variant return a button-scoped builder. Same concern, lower severity, for `.variant()` on the whole prototype."
+  - "Split `defineTypographyScale` (+ the `Text` factory, F-B-112) into a sibling RFC. It shares no types, no context, and no call convention with the status-component cluster (Alert/Callout/Badge/Card/StatCard/Skeleton). Bundling it inflates this RFC to 15 api_surface symbols (§13 idea-inflation guard) and couples an unrelated factory's verification/roadmap fate to the high-value semantic-color components."
+  - "Fix the gradient guideline contradiction. The existing fluent-html.md Fluent-Tailwind-Styling section lists `gradients (gradientTo, from, via, to)` as THE gradient API. The RFC's proposed ✗-block marks `background(\"gradient-to-r\").from().to()` wrong and downgrades `gradientTo().from().to()` to merely 'still valid'. The edit must PATCH/replace that existing clause, not append a section after it — otherwise the file teaches two contradictory gradient idioms. Show the exact replacement."
+  - "Match the house style of the insertion point. The section the RFC appends after ('Fluent Tailwind Styling') is terse prose-summary ('Key method categories: …'), NOT the import-block + ✓/✗ form the RFC's proposed fluent-html.md block uses. Convert the proposed block to the surrounding prose-summary register or justify the shift. (The CLAUDE.md index edit IS in correct ✓/✗ house style — keep it.)"
+  - "Show, don't assert, the Badge.of exhaustiveness for a union-typed value. The signature is a method generic `of<V extends string>(value: V, map: Record<V,…>)`, not a const type parameter; the missing-key compile error holds only because the param position preserves the literal union. State this in the type-safety story and note the failure case (a `string`-annotated value widens `V` and silently loses exhaustiveness) — this is the API's single most load-bearing claim over the raw-record anti-pattern."
+---
+
+# Verdict: RFC-B-03 — dx lens
+
+> ADVERSARY. Job: kill RFC-B-03 through the dx failure mode. Default reject under uncertainty.
+
+## Attack
+
+This RFC resolves a real, well-evidenced pain (88 Badge call sites, 7 Alert re-impls, extractor-invisible raw-class-string records). The *components* — `Alert`, `Callout`, `Badge.of`, `Card`, `StatCard`, `Skeleton` — are genuinely worth the surface area and an app author would reach for them. The kill attempts land on the *edges*: phantom surface, mis-scoped methods, an unrelated rider, and a guideline edit that contradicts and stylistically clashes with the file it patches.
+
+- **dx failure mode 1 — phantom API surface.** `Tag.prototype.w() (fraction overload)` is in `api_surface` and the proposed-API block (`w(fraction: TailwindWidth): this; // … this RFC guarantees fraction keys`). It is fully shipped: `TailwindWidth` at `tailwind-types.ts:22-26` enumerates `1/2 … 11/12` and ends in `(string & {})`, and `w(value: TailwindWidth)` exists at `tailwind-methods.ts:139`. `Span().w("3/4")` compiles on `main` today. Shipping a "new" method that already exists is the clearest signal the surface wasn't audited against source; it also dilutes the genuinely-new gradient/variant story. Cut it.
+
+- **dx failure mode 2 — `.size()` is a generic-name footgun on the wrong prototype.** `.variant()` and `.size()` are declared on `interface Tag`, i.e. every element. `.size("lg")` is meaningful only on a Button, yet autocompletes on `Div/Span/Img`, and the bare token `size` overlaps `w/h/minW/textSize`. `Card(...).size("lg")` gets autocomplete, no type error, and a silently-wrong button-padding class on a card. That is *hard to use correctly* — the inverse of the dx bar. Library idiom (§11.6) is specialized, intention-revealing methods; `.size()` is neither. `.variant()` shares the prototype-pollution smell at lower severity.
+
+- **dx failure mode 3 — scope inflation / unrelated rider.** 15 `api_surface` symbols in one RFC trips the §13 idea-inflation guard. `defineTypographyScale` + the returned `Text` factory (F-B-112) is a typography *role registry*; it shares no `SemanticTheme` type, no `StatusVariant`, no context, and a different call convention from the status components. It's here because both were "per-app boilerplate," not because they form one API. Coupling means a problem with the typography factory's ergonomics (e.g. the `el?: () => Tag` slot) stalls the high-value Badge/Alert work and blocks independent roadmap sequencing.
+
+- **dx failure mode 4 — the guideline edit contradicts and clashes with the file it patches.** §11.8 makes the guideline edit part of the deliverable and the dx lens owns auditing it. Two defects: (a) **Contradiction.** Live `fluent-html.md` lists `gradients (gradientTo, from, via, to)` as the gradient API; the RFC's ✗-block marks the `background("gradient-to-r").from().to()` workaround wrong and downgrades `gradientTo().from().to()` to "still valid." The RFC says "Add a new section after," so the file would teach `gradientTo` two contradictory ways. The edit must *patch the existing clause*. (b) **Style mismatch.** The insertion point is terse prose-summary ("Key method categories: …"); the proposed block is import-line + multi-line ✓/✗ — a different register dropped mid-file. The CLAUDE.md index edit is correctly ✓/✗ house style.
+
+- **dx failure mode 5 — the headline type-safety guarantee is asserted, not shown, for the `string` case.** `Badge.of`'s pitch over the raw-record anti-pattern is "omit a key → compile error," which depends on `V` inferring the literal union, not widening to `string`. The signature is a method generic `of<V extends string>`, not a `const` type parameter; it works only because the param position preserves the union. The RFC never states this; an author who writes `const s: string = status` loses exhaustiveness silently. For the most load-bearing claim, "show it" is the dx bar.
+
+## Does it survive?
+
+Yes — **survives-with-changes**. None of the five is a killer: the components are high-value, evidence-grounded, idiomatic (plain functions returning `Tag`, context single-sourcing, `.behavior()` for dismiss), and an author would reach for them. But the edges are real dx debt — a phantom method, a footgun method on every prototype, an unrelated rider doubling the surface, and a guideline edit that contradicts the file it lands in. Each folds back cleanly per required_changes. Confidence 0.72: the core is solid; the deductions are the spread between "good components" and "shippable RFC."
+
+## Guardrail check (dx owns §11.8 guideline-sync)
+
+§11.8 is **partially met → must amend.** Coverage: the `## Guidelines impact` section touches every status-component symbol and both `guideline_updates` files are listed — good. Failures: (1) the gradient ✗-block contradicts the existing `gradientTo` teaching rather than patching it; (2) the proposed `fluent-html.md` block breaks the surrounding prose-summary house style; (3) `.size()` is taught (`Button("Save").variant("primary").size("md")`) without warning it is button-only and a no-op elsewhere — the guideline must drop standalone `.size()` or carry a ✗ against `Div().size(...)`. The CLAUDE.md index edit is in correct house style and is kept.

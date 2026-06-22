@@ -1,0 +1,51 @@
+---
+rfc: RFC-C-01
+lens: type-safety
+verdict: survives-with-changes
+confidence: 0.78
+killer_objection: "The RFC redefines the existing exported `ExtractorOptions.onWarning` from `(message: string) => void` (fluent-html-tailwind-extractor/src/index.ts:13) to `(info: { file?; method; argText }) => void` while the legacy v3 code path at index.ts:735 still invokes it with a formatted *string*. This is a breaking shape change to a shipped public type, mislabeled `additive`/`no existing symbol changes shape`. Every current caller silently mistypes or breaks, and the single shared `ExtractorOptions` cannot be both the string-callback (v3 path) and the struct-callback (v4 path) at once — a type-level contradiction baked into the proposed surface."
+required_changes:
+  - "Do NOT mutate the existing `onWarning: (message: string) => void`. Either (a) keep `onWarning` exactly as-is and add a NEW field `onUnresolved` callback under a distinct name (e.g. `onUnresolvedArg?: (info: { file?: string; method: string; argText: string }) => void`), or (b) declare the signature change explicitly in frontmatter `breaking: minor|major` and in breaking-changes.md with a codemod — the current `breaking: additive` and the §11.5 'Pass' claim are false. Also fix the legacy callsite (index.ts:735) so the runtime payload matches whatever shape is chosen; today it passes a string."
+  - "Encode the target→default coupling in the type, not prose. Replace the flat `{ target?; onUnresolved? }` with a discriminated union so the v4 branch carries the safe default and illegal combos can't be written: `type ExtractorOptions = ({ target?: 'v3' } | { target: 'v4' }) & { onUnresolved?: UnresolvedPolicy; ... }` — or document explicitly that `onUnresolved` has no compile-time relationship to `target` and the 'v4 default error' is a runtime-only convention. The current text implies a type guarantee the flat interface does not provide."
+  - "Brand the class-string outputs and inputs. `extractDefaultClasses(content): string[]`, `staticManifest: readonly string[]`, and `files: readonly string[]` are three semantically distinct `string[]`s that are mutually assignable today. Introduce `type ClassName = string & { readonly __brand: 'ClassName' }` (or at minimum distinct nominal aliases) so a manifest cannot be passed where a file-list is expected and vice versa. As written, `generateFluentSafelist(themeManifest, { staticManifest: files })` compiles — exactly the misuse this RFC exists to prevent."
+  - "Drop the false narrowing claim or back it with a const generic. `readonly string[]` widens `as const` arrays; it does NOT 'preserve the exact token vocabulary end to end.' Either delete that sentence from the Type-safety story, or make `staticManifest` a `const`-generic parameter `<const M extends readonly string[]>` that actually captures the literal union, and thread `M` into the return type if the vocabulary is meant to be carried."
+  - "Resolve the Vite-vs-PostCSS return type before claiming both. `fluentHtmlPlugin(options?): import('vite').Plugin` cannot also be 'valid as a PostCSS plugin' — Vite's `Plugin` and PostCSS's `Plugin` are structurally incompatible. Either ship two typed exports (`fluentHtmlVitePlugin(): import('vite').Plugin`, `fluentHtmlPostcssPlugin(): import('postcss').Plugin`) or give `fluentHtmlPlugin` an overload set / discriminated `mode` param. A single `Plugin` return forces a PostCSS consumer into an `any`-cast, which is the any-leak §11.4 forbids. (Open question 1 must be closed, not deferred, for the type to be sound.)"
+  - "Type `target`'s threading into `METHOD_PATTERNS`. The RFC says `target` 'threads into METHOD_PATTERNS' but `METHOD_PATTERNS: MethodPattern[]` and `generateClass: (args: string[]) => string[]` (index.ts) take no target. Specify the typed mechanism (e.g. `generateClass: (args, target: TailwindTarget) => string[]`) so a pattern that forgets v4 handling is a compile error, not a silently-wrong class string — otherwise the §11.7 class-string contract is asserted, not enforced."
+file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-01-type-safety.md
+---
+
+# Verdict: RFC-C-01 — type-safety lens
+
+> Adversarial review. Goal: kill RFC-C-01 through the type-safety lens. Default to reject under uncertainty.
+
+## Attack
+
+I read the actual extractor (`fluent-html-tailwind-extractor/src/index.ts`) the RFC repurposes. The Type-safety story (lines 213–227) and the §11.4 'Pass' (line 354) do not survive contact with the shipped code.
+
+- **type-safety failure mode 1 — the "additive" claim is a breaking type change in disguise (KILLER).**
+  `ExtractorOptions.onWarning` already exists and is exported, typed `(message: string) => void` (index.ts:13), invoked with a *string* at index.ts:735. The RFC (lines 89–90, 224–225) redefines `onWarning` to `(info: { file?: string; method: string; argText: string }) => void`. The RFC simultaneously asserts (line 231) "No existing symbol changes shape" and (line 354) §11.4 "Pass" and (line 356) §11.5 "Pass … fluentHtmlExtractor unchanged." All three are false. A current caller `{ onWarning: (m) => logger.warn(m) }` now has `m` typed as a struct: `m.toUpperCase()` becomes a compile error, or — worse for the v3 path that still passes a string — the callback receives a runtime string while typed as an object, an `any`-grade unsoundness with no compiler signal. One shared `ExtractorOptions` cannot be both the v3 string-callback and the v4 struct-callback; the surface is internally contradictory.
+
+- **type-safety failure mode 2 — a wrong call compiles: the three-`string[]` swap.**
+  `extractDefaultClasses(content: string): string[]`, `generateFluentSafelist(files: readonly string[], …)`, and `staticManifest?: readonly string[]` are all bare/`readonly` `string[]`. Nothing is branded. `generateFluentSafelist(themeManifest, { staticManifest: files })` — files and manifest transposed — type-checks cleanly. The RFC's own raison d'être is that "a missed class is 100% absent" on v4; yet its API lets you feed the wrong array into the safelist generator with zero compile-time friction. This is the canonical §11.4 violation ("no bare `string` where a literal union/brand fits").
+
+- **type-safety failure mode 3 — value-coupled defaults the type cannot express.**
+  Lines 87, 393: `onUnresolved` defaults to `"error"` on v4 and `"warn"` on v3. `target` and `onUnresolved` are independent optionals on a flat interface; TypeScript cannot encode "default depends on the sibling's runtime value." `{ target: "v4" }` gives no type-level indication of the error default, and `{ target: "v3", onUnresolved: "error" }` (a likely-meaningless combo) compiles. The safety the RFC sells — "v4 fails the build on a dropped class" — lives entirely in runtime branching the types don't witness.
+
+- **type-safety failure mode 4 — false narrowing claim.**
+  Lines 222–223: `readonly` inputs "accept `as const` arrays … without widening, preserving the exact token vocabulary end to end." `readonly string[]` is a widened type; an `as const` tuple `["forest","moss"]` passed into it is immediately `readonly string[]`, losing every literal. There is no `const` generic capturing the union, and the return type is plain `string`. The "exact token vocabulary end to end" is marketing, not a type guarantee.
+
+- **type-safety failure mode 5 — the polymorphic plugin can't be typed, and Open Question 1 proves the author knows.**
+  `fluentHtmlPlugin(options?): import("vite").Plugin` is claimed (line 112) "also valid as a PostCSS plugin via the same factory." Vite `Plugin` ≠ PostCSS `Plugin` structurally; a value typed as the former is not assignable to the latter. A PostCSS consumer must `as any`-cast — an any-leak. Open Question 1 (lines 387–390) leaves the export shape unresolved, which means the most-used symbol in `api_surface` has no settled type. An RFC whose headline export lacks a sound signature is not ready to ship under the type-safety lens.
+
+- **type-safety failure mode 6 — `target` threading is asserted, not typed.**
+  Lines 132–136 say `target` "threads into `METHOD_PATTERNS`," but the shipped `MethodPattern.generateClass: (args: string[]) => string[]` takes no target. As described, a `generateClass` that forgets the v4 branch produces a wrong-but-valid `string` with no compile error — the §11.7 class-string contract (line 360 "Pass — this RFC *is* the coordination point") is claimed without a typed mechanism to enforce it.
+
+## Does it survive?
+
+**Survives with changes.** The *direction* is sound (literal unions for `target`/`onUnresolved`, `readonly` inputs, structured payload are all real improvements over the current bare-`string`-everywhere extractor), so a clean cut is not warranted. But the RFC as written ships (a) a mislabeled breaking change to an exported callback type, (b) a flat options bag that lets transposed `string[]`s and contradictory `target`/`onUnresolved` combos compile, (c) two unbacked narrowing/contract claims, and (d) an untyped polymorphic plugin export. Each is fixable; none is cosmetic. The six required changes (frontmatter) fold back into the RFC. Until the `onWarning` reshape is either reverted or honestly reclassified as breaking, the `breaking: additive` frontmatter and the §11.4/§11.5 self-checks are inaccurate and must not be trusted by Wave-4 merge.
+
+The confidence is 0.78 (not higher) because failures 1 and 5 are hard blockers, but the author may legitimately intend `onWarning` to be a *new* field they accidentally collided onto the existing name — a rename resolves it without rearchitecting. That contingency keeps this from a flat reject.
+
+## Guardrail check (type-safety, §11.4)
+
+**Fails as written.** The RFC's §11.4 self-check (line 354) claims "no bare `string`, no `any`." Contradicted by: bare/unbranded `string[]` on `files`/`staticManifest`/`extractDefaultClasses` return (failure 2); the implied `any`-cast for the PostCSS plugin path (failure 5); and a shape-changed exported callback that introduces runtime/type divergence (failure 1). The §11.5 backward-compat self-check (line 356) is also false given the `onWarning` reshape. Both self-checks must be corrected, not just the code.

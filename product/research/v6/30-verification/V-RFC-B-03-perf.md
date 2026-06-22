@@ -1,0 +1,46 @@
+---
+rfc: RFC-B-03
+lens: perf
+verdict: survives-with-changes
+confidence: 0.72
+killer_objection: "Every semantic component (Alert/Badge/Card/StatCard/Skeleton/Callout) reads SemanticThemeCtx.current and expands a 4-7 field token bundle into N separate addClass() calls at construction time — multiplying the per-node construction allocation that recon §2 flags as the #1 perf concern (~14.5KB/1000 nodes, paid every request). At ~88 Badge sites + the fold layer's per-node tax, this is a measurable hot-path regression with no bench proving it neutral. The RFC's §11.2 'pass' is asserted, not measured."
+required_changes:
+  - "Add a construction-allocation + ops/sec bench (Track-D bench harness) for a page saturated with Alert/Badge/Card/StatCard BEFORE the RFC ships; gate merge on the semantic-component page being within ~5% of the equivalent hand-rolled .background()/.textColor() chain. §11.2 'pass' must be measured, not asserted."
+  - "DEFAULT_SEMANTIC_THEME and every per-variant StatusColorSet/ButtonTokens object MUST be a single module-level frozen constant (Object.freeze), allocated once at import — never rebuilt per request, per component, or inside a factory. The worked examples show `{ ...DEFAULT_SEMANTIC_THEME, button: { ...DEFAULT_SEMANTIC_THEME.button, primary: {...} } }` at the scope() call site: that nested spread allocates a full theme clone per request. Mandate the scope override happens once at the layout root (already stated) AND document the spread is O(theme size) per request — keep the theme object small and flat."
+  - "Components must read SemanticThemeCtx.current at most ONCE per invocation and destructure locally — never re-read .current per fluent method or per token field. Specify this in the RFC so implementers don't write `t.background(SemanticThemeCtx.current.status[v].bg).textColor(SemanticThemeCtx.current.status[v].text)...` (one getter call is cheap; one-per-token-field across 88 sites is not)."
+  - "Token application must funnel through the existing single-addClass-per-class path with NO intermediate Tag allocation. Forbid building a sub-Tag per token set. Alert/Callout/Card may add ONE wrapper element; Badge/Skeleton/StatCard sub-parts must not add gratuitous nesting that inflates node count (recursion + per-node cost is the dominant render cost per §2)."
+  - "Badge.of(value, map): state explicitly that resolution is a single Record lookup (map[value], O(1)) allocating nothing beyond the one resolved Tag — no Object.keys/Object.entries scan, no runtime exhaustiveness check. Exhaustiveness is compile-time const-generic only."
+  - "defineTypographyScale: confirm the returned `{ [K]: (...children) => Tag }` factory is built ONCE at module load and each Text.role() applies its style via a single .apply(styleFn) with no per-call closure re-creation. Add a one-line note forbidding per-render defineTypographyScale() calls."
+  - "Skeleton with lines?: N must pre-size its children array (new Array(N), like ForEach in iteration.ts:40) rather than push-growing, consistent with the codebase's measured allocation discipline."
+---
+
+# Verdict: RFC-B-03 — perf lens
+
+> You are an ADVERSARY. Your job is to KILL this RFC through the perf lens.
+> Default to `reject` under uncertainty — a good API cut is cheaper than a bad API shipped.
+
+## Attack
+
+The RFC's guardrail self-check claims §11.2 (SSR-only / sync hot path) is a clean **pass** because "all components are synchronous `Tag` builders; no async, no ALS; theme read is a synchronous context `.current` lookup." That is the *necessary* condition, not the *sufficient* one. §11.2 requires the synchronous hot path to stay **fast** — and Track-D recon (`00-recon/04-performance.md` §2) already established that **construction allocation is paid on every request and is a first-class perf concern, not just render** (~14.5 KB / 1000 nodes for a flat page, ~65 KB for a realistic page, *before* a byte is rendered). This RFC adds construction-time work to the most replicated node classes in the fleet, and proves nothing with a bench.
+
+- **perf failure mode 1 — per-component context read × the fleet's highest call-site count.** `SemanticThemeCtx.current` is a getter (`context.ts:73-75`) returning `stack[stack.length-1]`. One call is cheap. But the RFC's own problem statement counts **~88 Badge call sites**, and Badge is the densest node type. Every `Alert`/`Callout`/`Badge`/`Card`/`CardHeader`/`StatCard`/`Skeleton` reads the context at construction. If the implementation reads `.current` once per *token field* — the natural way to write `t.background(SemanticThemeCtx.current.status[v].bg).textColor(SemanticThemeCtx.current.status[v].text)…` — that's 4 getter calls + 4 nested traversals (`status[v].bg`) **per badge**, on pages holding dozens. The RFC does not mandate single-read-and-destructure, so the default implementation is the slow one.
+
+- **perf failure mode 2 — token-bundle fan-out multiplies per-node `addClass` cost.** A `StatusColorSet` is 4 colors; `ButtonTokens` is up to 7 fields. `.variant("primary")` must emit all of them, several through the variant-prefixed `.on("hover", …)` path that recon §2 measured at **2× the cost** of plain `addClass` (14.4M → 7.1M ops/s — small absolute, now paid on every themed button × every request). Each field is a separate `+=`. This is exactly the per-node-cost-×-node-count workload dominating the two slowest benchmarks (flat-1000 at 6.4K ops/s, ForEach-5000 at 1.1K). The RFC ships a convenience that *increases* classes-per-node with zero measurement.
+
+- **perf failure mode 3 — the `scope()` override spread clones the whole theme per request.** The worked examples (RFC lines 236-238, 303, 348-351) override via `{ ...DEFAULT_SEMANTIC_THEME, button: { ...DEFAULT_SEMANTIC_THEME.button, primary: {...} } }`. This nested spread *rebuilds the entire theme object graph on every request* (the layout root runs per request). `context.ts` already pays a per-scope `Disposable` allocation (`context.ts:78-84` — the reason "1000 scopes" is the slowest context op at 4.2K). Now each request also clones a multi-field-per-variant nested record. For a fleet that themes once, this is pure waste and contradicts the "configure once" framing.
+
+- **perf failure mode 4 — `Badge.of` runtime cost is unspecified.** The const-generic `of<V>(value, map)` guarantees exhaustiveness *at compile time*. The RFC never states the runtime is a single `map[value]` lookup. A naive impl that re-validates at runtime (Object.keys scan) or normalizes the map turns the densest node type into an allocation hotspot. The `map` literal is itself allocated per call site per request (unavoidable) — but resolution must not iterate it.
+
+- **perf failure mode 5 — the §11.7 class flag hides a render-cost increase.** `.gradient()` emits the same 3 classes apps wrote before — neutral. But the new default palettes mean components previously stuck on `danger | success` (2 variants, often hand-trimmed to fewer classes) now ship the full 4-field `StatusColorSet` for every variant. More classes per node = more `+=` + more `escapeAttr` work on `class` (`render.ts:201-206`). Small per node, large node counts.
+
+None is individually fatal. Collectively they add construction allocation and per-node class count to exactly the node classes recon §2 flags as dominant — and the RFC asserts a §11.2 pass with **no bench**. Under the lens's default-reject posture, an asserted-not-measured hot-path claim on the fleet's densest components does not survive unchanged.
+
+## Does it survive?
+
+**survives-with-changes.** The API is fundamentally synchronous, allocation-free *if implemented carefully*, and the theme-once model is the right shape — the problems are all "the RFC permits the slow implementation and proves nothing." The fixes are implementation constraints + a mandatory bench gate, not an API redesign. With the seven required changes folded in (single context read per component; frozen module-level default theme; no per-request theme clone beyond the documented small spread; O(1) `Badge.of`; no gratuitous wrapper nesting; pre-sized Skeleton children; a measured bench gate before merge), the sync hot path is provably untouched and the common case does not pay for a rare feature.
+
+If the bench gate (required change #1) shows the semantic-component page regresses >5% vs the hand-rolled chain, this RFC flips to **reject** for v6.0 and ships behind the same measurement Track-D demands for every allocation change (§3 #4).
+
+## Guardrail check (perf owns §11.2)
+
+§11.2 "SSR-only, synchronous render path stays fast" — **conditionally satisfied, NOT as written.** The RFC correctly establishes there is no async and no AsyncLocalStorage: the sync path is structurally preserved. But "stays fast" is unproven — the RFC offers an assertion where Track-D recon (`04-performance.md` §2) insists construction allocation on dense nodes is a measured, per-request, first-class cost. The guardrail is satisfied **only after** required change #1 (the bench gate) shows the semantic components within tolerance of hand-rolled fluent chains. Until that bench exists, §11.2 is needs-mitigation — mirroring how the RFC itself honestly marked §11.7 as needs-mitigation rather than pass.
