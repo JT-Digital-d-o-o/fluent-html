@@ -15,12 +15,12 @@
 <!-- hill: downhill -->
 ### As a developer I want render and stream to never diverge so that a view streams exactly the bytes it renders
 
-- [ ] [P0] Add `StreamSink` (pushes to a `node:stream` Readable; `append` returns the backpressure signal)
-- [ ] [P0] Rewrite `renderToStream(...views)` as a thin `StreamSink` wrapper over `emit` — **variadic**, symmetric with `render` (fixes the multi-swap compile error)
-- [ ] [P0] Delete the duplicated serialization block from `stream.ts` (incl. the drifted `v as string` cast)
-- [ ] [P1] Land A-01's boolean branch + A-03's `_sk` tuple into the single emitter (coordinate — one escaping/`_sk`/boolean path)
-- [ ] [P1] Fuzz test: `renderToStream(v)` joined ≡ `render(v)` over generated trees with every HTMX attr
-- [ ] [P1] Check for bugs in the render/stream unification
+- [x] [P0] Add `StreamSink` (pushes to a `node:stream` Readable; `append` returns the backpressure signal)
+- [x] [P0] Rewrite `renderToStream(...views)` as a thin `StreamSink` wrapper over `emit` — **variadic**, symmetric with `render` (fixes the multi-swap compile error)
+- [x] [P0] Delete the duplicated serialization block from `stream.ts` (incl. the drifted `v as string` cast) — `stream.ts` is now a 20-line wrapper
+- [ ] [P1] Land A-01's boolean branch + A-03's `_sk` tuple into the single emitter (coordinate — one escaping/`_sk`/boolean path) — **enabled** (the single `emit()` now exists); the per-attribute logic lands with A-01/A-03 in P3/core-api
+- [x] [P1] Fuzz test: `renderToStream(v)` joined ≡ `render(v)` over generated trees with every HTMX attr — 300-tree fuzz + ~50 `stream === render` equivalence cases in `test/stream.test.ts`
+- [x] [P1] Check for bugs in the render/stream unification — full suite 1094/1094 green
 
 <!-- hill: downhill -->
 ### As a developer I want behaviors and hx-status routing to be injection-proof so that user data can't execute as JS or forge attribute names

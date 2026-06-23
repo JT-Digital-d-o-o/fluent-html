@@ -6,9 +6,13 @@ import { hx } from "../src/htmx.js";
  * Collect all chunks from renderToStream into a single string.
  */
 function streamToString(view) {
+    return streamArgsToString(view);
+}
+/** Collect a (variadic) renderToStream call into a single string. */
+function streamArgsToString(...views) {
     return new Promise((resolve, reject) => {
         const chunks = [];
-        const stream = renderToStream(view);
+        const stream = renderToStream(...views);
         stream.on("data", (chunk) => chunks.push(chunk.toString()));
         stream.on("end", () => resolve(chunks.join("")));
         stream.on("error", reject);
@@ -266,6 +270,56 @@ describe("Stream: Chunked output", () => {
         // Consume fully
         const html = await streamToString(Div("Test"));
         assert.ok(html.length > 0);
+    });
+});
+// ─── Variadic / multi-swap (D-03: symmetric with render) ────────────
+describe("Stream: variadic / multi-swap", () => {
+    it("streams two top-level views joined like render(a, b)", async () => {
+        const a = Div("A").setId("a");
+        const b = Span("B").setId("b");
+        assert.equal(await streamArgsToString(a, b), render(a, b));
+    });
+    it("matches render for a 3-view multi-swap response", async () => {
+        const v1 = Div(P("list")).setId("list");
+        const v2 = Span("42").setId("count");
+        const v3 = Div("toast").setId("toast");
+        assert.equal(await streamArgsToString(v1, v2, v3), render(v1, v2, v3));
+    });
+    it("single-arg call is unchanged (backward compatible)", async () => {
+        const v = Div(P("x"));
+        assert.equal(await streamArgsToString(v), render(v));
+    });
+});
+// ─── Fuzz: stream ≡ render over random trees ────────────────────────
+describe("Stream: fuzz equivalence with render", () => {
+    function randView(depth) {
+        const r = Math.random();
+        if (depth <= 0 || r < 0.35) {
+            const leaves = ["plain text", "<b>html</b>", `quote " and ' apos`, "amp & amp", "<script>x</script>"];
+            return leaves[Math.floor(Math.random() * leaves.length)];
+        }
+        if (r < 0.48)
+            return [randView(depth - 1), randView(depth - 1)];
+        if (r < 0.56)
+            return Img().setSrc("/x.png").setAlt("alt"); // void element
+        if (r < 0.64)
+            return Script("a < b; </script> end"); // raw (script) ctx
+        if (r < 0.72)
+            return Style("/* </style> */ body{margin:0}"); // raw (style) ctx
+        if (r < 0.82) {
+            return Button("go").setHtmx(hx("/api", {
+                method: "post", target: "#m", swap: "outerHTML", pushUrl: true,
+                vals: { k: "v" }, headers: { "X-Y": "z" }, confirm: "ok?", boost: true,
+            }));
+        }
+        const kids = Array.from({ length: 1 + Math.floor(Math.random() * 3) }, () => randView(depth - 1));
+        return Div(...kids).setId("x").setClass("c d").addAttribute("data-y", `z"<&`).toggle("hidden");
+    }
+    it("stream output equals render output over 300 random trees", async () => {
+        for (let i = 0; i < 300; i++) {
+            const v = randView(4);
+            assert.equal(await streamToString(v), render(v), `mismatch on tree #${i}`);
+        }
     });
 });
 //# sourceMappingURL=stream.test.js.map

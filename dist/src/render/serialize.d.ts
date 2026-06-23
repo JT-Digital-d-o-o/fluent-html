@@ -1,3 +1,4 @@
+import type { Readable } from "node:stream";
 import type { HTMX } from "../htmx.js";
 import type { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
@@ -22,6 +23,18 @@ export interface Sink {
 /** Accumulates into a string via `+=` (the measured-fastest accumulator). @internal */
 export declare class StringSink implements Sink {
     html: string;
+    append(s: string): boolean;
+}
+/**
+ * Pushes each chunk to a `node:stream` Readable; `append` forwards the stream's
+ * real backpressure signal (`push()` returns `false` when the buffer is full).
+ * The signal is not honored yet — `emit()` is still eager, matching the v5
+ * stream — but it is plumbed for the future incremental-streaming path (D-02).
+ * @internal
+ */
+export declare class StreamSink implements Sink {
+    private readonly stream;
+    constructor(stream: Readable);
     append(s: string): boolean;
 }
 /** Serialize an HTMX config to its attribute string. @internal */

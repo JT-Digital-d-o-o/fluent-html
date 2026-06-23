@@ -25,6 +25,21 @@ export class StringSink {
         return true;
     }
 }
+/**
+ * Pushes each chunk to a `node:stream` Readable; `append` forwards the stream's
+ * real backpressure signal (`push()` returns `false` when the buffer is full).
+ * The signal is not honored yet — `emit()` is still eager, matching the v5
+ * stream — but it is plumbed for the future incremental-streaming path (D-02).
+ * @internal
+ */
+export class StreamSink {
+    constructor(stream) {
+        this.stream = stream;
+    }
+    append(s) {
+        return this.stream.push(s);
+    }
+}
 // String attrs: escape the value, quote with "
 const str = (key) => ({
     key,

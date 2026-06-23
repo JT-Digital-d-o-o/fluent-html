@@ -1,3 +1,4 @@
+import type { Readable } from "node:stream";
 import type { HTMX, HxStatusConfig } from "../htmx.js";
 import { EMPTY_ATTRS } from "../core/tag.js";
 import type { Tag } from "../core/tag.js";
@@ -46,6 +47,20 @@ export class StringSink implements Sink {
   append(s: string): boolean {
     this.html += s;
     return true;
+  }
+}
+
+/**
+ * Pushes each chunk to a `node:stream` Readable; `append` forwards the stream's
+ * real backpressure signal (`push()` returns `false` when the buffer is full).
+ * The signal is not honored yet — `emit()` is still eager, matching the v5
+ * stream — but it is plumbed for the future incremental-streaming path (D-02).
+ * @internal
+ */
+export class StreamSink implements Sink {
+  constructor(private readonly stream: Readable) {}
+  append(s: string): boolean {
+    return this.stream.push(s);
   }
 }
 
