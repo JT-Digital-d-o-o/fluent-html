@@ -1,5 +1,9 @@
 # fluent-html v6 — Guidelines Update (Wave-4 patch set)
 
+> ⚠️ **§0 is shipped & valid; §1+ must be REGENERATED from the curated spec before applying.** The §0 ship-now edits already landed (guidelines repo `65b4969`). But §1/§2/§3 were written against the as-written RFCs and are now **stale** on the curated decisions: `.overlay()` fluent method (not `Overlay()`), `ForEachElse` (not `ForEachOr`), v4-native styling (no `.position(value)`/`.display(value)`/dual-target), `set*`=replace, **one `defineTheme()`**, **context + Fastify glue out of core** (§5), **most Track-B components cut to `@jtdigital/ui`** (§4), and the **fold layer deleted** (§6 — drop every `foldView`/`renderAlgebra`/`coalgebra` guideline). This is a **pre-release docs pass**: regenerate from [`v6-spec.md`](./v6-spec.md), don't apply §1+ as-written. Also covers the **library's own** README/FLUENT-STYLING/TAILWIND-SETUP(v4 rewrite)/examples/JSDoc, not just `guidelines/web-development/**` (memory: v6-docs-surface).
+>
+> ~~Original Wave-4 framing follows.~~
+
 > **One ordered, ready-to-apply patch set against `guidelines/web-development/**`.** Reader is an LLM (Claude Code). House style: succinct, ✓/✗, code-snippet-first, no prose paragraphs in the edits themselves.
 >
 > **How to apply.** Edits are grouped by milestone (§0 ship-now → §1 v6.0 → §2 v6.1 → §3 v6.x). Within a milestone, apply in listed order. Where multiple RFCs touch the **same anchor**, this doc gives ONE reconciled replacement (the contributing RFCs are listed) — do **not** also apply the per-RFC snippets from those RFC files; they are superseded here. Conflicts are called out in **§4 Conflict ledger**.

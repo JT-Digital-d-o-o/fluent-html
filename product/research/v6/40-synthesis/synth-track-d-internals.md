@@ -1,5 +1,7 @@
 # Track D — Internals: code & performance (v6 synthesis)
 
+> ⚠️ **Superseded by [`curation.md`](./curation.md) §6 + [`v6-spec.md`](./v6-spec.md) (Track D).** The **fold/recursion-schemes layer is CUT** (§6) — so the "third lossy serializer unified" win is now "`renderAlgebra` **deleted**," and D-01/D-03/D-05 are **reduced to their non-fold cores**: de-recurse render/stream only, dedup onto one `serialize.ts` emitter, `escapeJs`-across-behaviors + `HxStatusKey` (the fold-XSS/`rebuildTag` bulk is moot). `Frozen()` is **deferred** (unproven). `Context.push/pop` **moves to the framework** with the context system (§5). The de-recursion + non-mutating CSP nonce + streaming wins below still hold.
+
 Seven RFCs harden the render core. They are **all additive at the source level** (several carry tiny bug-fix output deltas), but they are **not independent**: D-01 is the structural foundation everything else stands on, and the render/stream entry points are a contested spine that must be serialized, not merged in parallel. The headline wins: deep trees stop crashing, static chrome renders once, the third (lossy, XSS-leaking) serializer is unified into the real one, streaming becomes real backpressure, and the CSP-nonce mutation footgun is gone.
 
 This narrative walks the changes in dependency order, then groups the surface by additive-vs-breaking and names the headline wins.

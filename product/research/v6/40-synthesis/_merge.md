@@ -1,5 +1,7 @@
 # Wave-4 Merge — fluent-html v6 reconciled survivor set
 
+> ⚠️ **SUPERSEDED by [`curation.md`](./curation.md) + [`v6-spec.md`](./v6-spec.md).** This file's premise — "all 37 RFCs survive, zero killed" — predates curation. Curation **cut** the fold layer (§6), **cut** most of Track B to user-land (§4), **moved** context + Fastify glue out of core (§5), went **v4-native** (§2, no dual-target), and is **greenfield** (§1, no migration). The ownership/conflict resolutions below are still useful *history*, but on any conflict the curated spec wins. Do not plan implementation from this file.
+
 **Barrier agent output.** Inputs: **37 surviving RFCs** (`20-design/`), **~165 verdict files** (`30-verification/`, 5 lenses for code RFCs, 2 for guideline/internal RFCs).
 
 **Result:** every RFC survives. Across all ~165 lens verdicts the outcome is `survives` or `survives-with-changes` — **zero `killed`**. The only fully-clean (`survives`, no required changes) verdicts are: A-04-security, A-07-security, A-G1-perf/security, A-G2-perf, A-G4-perf, C-03-security, D-03-breaking. Everything else carries `required_changes` folded into the per-RFC amendments in §4.

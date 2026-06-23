@@ -1,7 +1,8 @@
 # fluent-html v6 — Breaking Changes & Migration Guide
 
-> **Wave-4 deliverable.** One migration, run once. Every breaking change in v6 is concentrated in the **v6.0** release so adopters upgrade a single time; **v6.1+ is purely additive**.
-> Source of truth: `_merge.md` §7 (aggregate breaking surface) + §4 (per-RFC amendments). Each item names its codemod scope: **[mechanical]** (a codemod or `eslint --fix` does it), **[assisted]** (codemod flags sites for human review), or **[manual]** (no safe automation — hand-edit, with a checklist).
+> ⚠️ **REFRAMED by curation (§1 greenfield).** v6 is a **new line for new projects** — existing apps stay on v5 — so there is **no migration to run** and no "concentrate breaking in v6.0" bundle. This file is no longer a migration gate; it now serves only as a **v5→v6 diff reference**. The authoritative diff is [`v6-spec.md`](./v6-spec.md) → *"What v6 cuts vs v5"*. The codemod/[mechanical]/[assisted] annotations below are obsolete (greenfield deletes outright, no `@deprecated` aliases). Read for the v5-contrast only.
+>
+> ~~**Wave-4 deliverable.** One migration, run once. Every breaking change in v6 is concentrated in the **v6.0** release so adopters upgrade a single time; **v6.1+ is purely additive**.~~
 
 ## TL;DR — what breaks, by surface
 
