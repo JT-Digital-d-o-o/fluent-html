@@ -170,6 +170,7 @@ declare module "./tag.js" {
     gridAutoCols(value: TailwindGridAuto): this;
 
     // Borders
+    /** v4: a bare `.border()` uses `currentColor` — add an explicit `.borderColor(...)` for a specific color (v3's gray default is gone). */
     border(value?: TailwindBorderWidth | TailwindBorderStyle | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
     border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
     borderColor(color: TailwindColor): this;
@@ -228,6 +229,7 @@ declare module "./tag.js" {
     animate(value: TailwindAnimate): this;
 
     // Ring (Focus Rings)
+    /** v4: a bare `.ring()` is **1px** (was 3px in v3) and uses `currentColor` — pass a width and/or `.ringColor(...)` explicitly. */
     ring(value?: TailwindRingWidth): this;
     ringColor(color: TailwindColor): this;
 
@@ -256,12 +258,17 @@ declare module "./tag.js" {
 
     // Outline
     outline(value: TailwindOutline): this;
+    /** v4 a11y-safe focus-hiding: `outline-hidden` (keeps a visible outline in forced-colors mode). Prefer over `.outline("none")`. */
+    outlineHidden(): this;
 
     // Font Family
     fontFamily(family: TailwindFontFamily): this;
 
-    // Gradients
+    // Gradients (v4: bg-linear-* / bg-radial-* / bg-conic-*)
+    gradient(from: TailwindColor, to: TailwindColor, direction?: TailwindGradientDirection): this;
     gradientTo(direction: TailwindGradientDirection): this;
+    gradientRadial(): this;
+    gradientConic(): this;
     from(color: TailwindGradientStop): this;
     via(color: TailwindGradientStop): this;
     to(color: TailwindGradientStop): this;
@@ -567,14 +574,20 @@ p.srOnly = function () { return this.addClass("sr-only"); };
 // Outline
 
 p.outline = function (value: string) { return this.addClass(`outline-${value}`); };
+p.outlineHidden = function () { return this.addClass("outline-hidden"); };
 
 // Font Family
 
 p.fontFamily = function (family: string) { return this.addClass(`font-${family}`); };
 
-// Gradients
+// Gradients (v4-native: bg-linear-* replaces v3 bg-gradient-*; + radial/conic)
 
-p.gradientTo = function (direction: string) { return this.addClass(`bg-gradient-${direction}`); };
+p.gradient = function (from: string, to: string, direction: string = "to-r") {
+  return this.addClass(`bg-linear-${direction}`).addClass(`from-${from}`).addClass(`to-${to}`);
+};
+p.gradientTo = function (direction: string) { return this.addClass(`bg-linear-${direction}`); };
+p.gradientRadial = function () { return this.addClass("bg-radial"); };
+p.gradientConic = function () { return this.addClass("bg-conic"); };
 p.from = function (color: string) { return this.addClass(`from-${color}`); };
 p.via = function (color: string) { return this.addClass(`via-${color}`); };
 p.to = function (color: string) { return this.addClass(`to-${color}`); };

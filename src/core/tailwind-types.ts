@@ -100,15 +100,17 @@ export type TailwindLeading = "none" | "tight" | "snug" | "normal" | "relaxed" |
 export type TailwindTracking = "tighter" | "tight" | "normal" | "wide" | "wider" | "widest" | `[${string}]`;
 
 // Border radius (radius family). CLOSED (C-02): custom radii from FluentCustomRadius.
+// v4 (C-03): added the `xs` slot and `4xl`.
 export type TailwindRounded =
-  | "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full"
+  | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full"
   | (keyof FluentCustomRadius & string) | `[${string}]`;
 export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" | "bl" | "s" | "e" | "ss" | "se" | "es" | "ee";
 
 // Shadow (shadow family). CLOSED (C-02): custom shadows from FluentCustomShadow;
 // arbitrary `[…]` restated (was riding on the removed `(string & {})`).
+// v4 (C-03): added the `2xs`/`xs` slots (the scale shifted — old `shadow-sm` is now `shadow-xs`).
 export type TailwindShadow =
-  | "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none"
+  | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none"
   | (keyof FluentCustomShadow & string) | `[${string}]`;
 
 // Border width
@@ -171,8 +173,8 @@ export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow
 export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | (string & {});
 export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
 
-// Ring
-export type TailwindRingWidth = 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | (string & {});
+// Ring — v4 (C-03): added the `3` slot. Bare `ring` = 1px in v4 (was 3px).
+export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | (string & {});
 
 // Transforms
 export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | (string & {});
@@ -232,8 +234,8 @@ export type TailwindGradientDirection =
 // Gradient stop (color with optional opacity)
 export type TailwindGradientStop = TailwindColor;
 
-// Blur
-export type TailwindBlur = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | `[${string}]`;
+// Blur — v4 (C-03): added the `xs` slot.
+export type TailwindBlur = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | `[${string}]`;
 
 // Line clamp
 export type TailwindLineClamp = 1 | 2 | 3 | 4 | 5 | 6 | "none" | (string & {});

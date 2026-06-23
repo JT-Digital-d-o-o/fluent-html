@@ -109,6 +109,35 @@ describe("Text Decoration", () => {
 describe("Outline", () => {
   it("outline none", () => { assert.strictEqual(render(Button().outline("none")), '<button class="outline-none"></button>'); });
   it("outline dashed", () => { assert.strictEqual(render(Div().outline("dashed")), '<div class="outline-dashed"></div>'); });
+  it("outlineHidden (v4 a11y-safe)", () => { assert.strictEqual(render(Button().outlineHidden()), '<button class="outline-hidden"></button>'); });
+});
+
+describe("Gradients (v4: bg-linear / bg-radial / bg-conic)", () => {
+  it("gradient(from, to) defaults to-r", () => {
+    assert.strictEqual(render(Div().gradient("red-500", "blue-500")), '<div class="bg-linear-to-r from-red-500 to-blue-500"></div>');
+  });
+  it("gradient(from, to, dir)", () => {
+    assert.strictEqual(render(Div().gradient("red-500", "blue-500", "to-br")), '<div class="bg-linear-to-br from-red-500 to-blue-500"></div>');
+  });
+  it("gradientTo emits v4 bg-linear-*", () => {
+    assert.strictEqual(render(Div().gradientTo("to-tr")), '<div class="bg-linear-to-tr"></div>');
+  });
+  it("gradientRadial / gradientConic", () => {
+    assert.strictEqual(render(Div().gradientRadial()), '<div class="bg-radial"></div>');
+    assert.strictEqual(render(Div().gradientConic()), '<div class="bg-conic"></div>');
+  });
+  it("from / via / to stops compose", () => {
+    assert.strictEqual(render(Div().gradientTo("to-r").from("red-500").via("white").to("blue-500")), '<div class="bg-linear-to-r from-red-500 via-white to-blue-500"></div>');
+  });
+});
+
+describe("v4 type-value updates (xs slots, ring 3)", () => {
+  it("shadow xs / rounded xs / blur xs", () => {
+    assert.strictEqual(render(Div().shadow("xs")), '<div class="shadow-xs"></div>');
+    assert.strictEqual(render(Div().rounded("xs")), '<div class="rounded-xs"></div>');
+    assert.strictEqual(render(Div().blur("xs")), '<div class="blur-xs"></div>');
+  });
+  it("ring 3", () => { assert.strictEqual(render(Div().ring(3)), '<div class="ring-3"></div>'); });
 });
 
 describe("Variant Proxy - .on()", () => {

@@ -248,10 +248,16 @@ p.listStylePosition = function (value) { return this.addClass(`list-${value}`); 
 p.srOnly = function () { return this.addClass("sr-only"); };
 // Outline
 p.outline = function (value) { return this.addClass(`outline-${value}`); };
+p.outlineHidden = function () { return this.addClass("outline-hidden"); };
 // Font Family
 p.fontFamily = function (family) { return this.addClass(`font-${family}`); };
-// Gradients
-p.gradientTo = function (direction) { return this.addClass(`bg-gradient-${direction}`); };
+// Gradients (v4-native: bg-linear-* replaces v3 bg-gradient-*; + radial/conic)
+p.gradient = function (from, to, direction = "to-r") {
+    return this.addClass(`bg-linear-${direction}`).addClass(`from-${from}`).addClass(`to-${to}`);
+};
+p.gradientTo = function (direction) { return this.addClass(`bg-linear-${direction}`); };
+p.gradientRadial = function () { return this.addClass("bg-radial"); };
+p.gradientConic = function () { return this.addClass("bg-conic"); };
 p.from = function (color) { return this.addClass(`from-${color}`); };
 p.via = function (color) { return this.addClass(`via-${color}`); };
 p.to = function (color) { return this.addClass(`to-${color}`); };

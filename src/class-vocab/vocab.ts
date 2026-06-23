@@ -198,9 +198,13 @@ export const classVocab: readonly UtilityDef[] = [
 
   // Outline
   pre("outline", "outline"),
+  stat("outlineHidden", "outline-hidden"),
 
-  // Gradients (v4 rename to bg-linear-* lands in C-03)
-  pre("gradientTo", "bg-gradient"),
+  // Gradients (v4-native: bg-linear-* / bg-radial-* / bg-conic-*)
+  custom("gradient", (args) => (args.length >= 2 ? [`bg-linear-${args[2] ?? "to-r"}`, `from-${args[0]}`, `to-${args[1]}`] : []), [["red-500", "blue-500"], ["red-500", "blue-500", "to-br"]]),
+  pre("gradientTo", "bg-linear"),
+  stat("gradientRadial", "bg-radial"),
+  stat("gradientConic", "bg-conic"),
   pre("from", "from"),
   pre("via", "via"),
   pre("to", "to"),

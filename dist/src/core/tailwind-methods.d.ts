@@ -51,6 +51,7 @@ declare module "./tag.js" {
         gridAutoFlow(value: TailwindGridAutoFlow): this;
         gridAutoRows(value: TailwindGridAuto): this;
         gridAutoCols(value: TailwindGridAuto): this;
+        /** v4: a bare `.border()` uses `currentColor` — add an explicit `.borderColor(...)` for a specific color (v3's gray default is gone). */
         border(value?: TailwindBorderWidth | TailwindBorderStyle | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
         border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
         borderColor(color: TailwindColor): this;
@@ -95,6 +96,7 @@ declare module "./tag.js" {
         transition(value?: TailwindTransition): this;
         duration(value: TailwindDuration): this;
         animate(value: TailwindAnimate): this;
+        /** v4: a bare `.ring()` is **1px** (was 3px in v3) and uses `currentColor` — pass a width and/or `.ringColor(...)` explicitly. */
         ring(value?: TailwindRingWidth): this;
         ringColor(color: TailwindColor): this;
         scale(value: TailwindScale): this;
@@ -111,8 +113,13 @@ declare module "./tag.js" {
         listStylePosition(value: TailwindListStylePosition): this;
         srOnly(): this;
         outline(value: TailwindOutline): this;
+        /** v4 a11y-safe focus-hiding: `outline-hidden` (keeps a visible outline in forced-colors mode). Prefer over `.outline("none")`. */
+        outlineHidden(): this;
         fontFamily(family: TailwindFontFamily): this;
+        gradient(from: TailwindColor, to: TailwindColor, direction?: TailwindGradientDirection): this;
         gradientTo(direction: TailwindGradientDirection): this;
+        gradientRadial(): this;
+        gradientConic(): this;
         from(color: TailwindGradientStop): this;
         via(color: TailwindGradientStop): this;
         to(color: TailwindGradientStop): this;

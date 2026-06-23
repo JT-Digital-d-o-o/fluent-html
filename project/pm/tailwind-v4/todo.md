@@ -38,11 +38,11 @@
 <!-- hill: downhill -->
 ### As a developer I want v4 utilities and scales to be correct and taught so that I don't silently get v3 looks or a11y regressions
 
-- [ ] [P1] Add `.gradient(from,to,dir?)`/`.gradientRadial()`/`.gradientConic()`/`.gradientTo(dir)` (v4 `bg-linear-*`/`bg-radial-*`/`bg-conic-*`) + `.outlineHidden()` (a11y-safe)
-- [ ] [P1] Fold v4 type-value updates into `classVocab` — `xs` slots on shadow/rounded/blur, ring `3`, the `transition` transform-set change
-- [ ] [P1] Teach v4 semantics in guidelines/JSDoc — bare `ring`=1px, `border` needs explicit color, `Button()` has no default cursor (explicit `.cursor("pointer")`), `space-*` → `.flex().gap()`
-- [ ] [P1] Write tests for the new gradient/outline methods
-- [ ] [P1] Check for bugs in the v4 method survivors
+- [x] [P1] Added `.gradient(from,to,dir?)` (→ `bg-linear-{dir} from-{from} to-{to}`), `.gradientRadial()`/`.gradientConic()`, and changed `.gradientTo(dir)` v3 `bg-gradient-*` → v4 `bg-linear-*` + `.outlineHidden()` (a11y-safe). Vocab rows updated in lockstep → the **extractor's v4 emission updated with zero extractor changes** (runtime vocab import; smoke-confirmed)
+- [x] [P1] v4 type-value updates in `tailwind-types.ts` — `xs` slot on rounded/shadow/blur (+ shadow `2xs`, rounded `4xl`), ring `3`. (The `transition` change is CSS-level — bare `transition` animates a different property set in v4; no new type *value*, taught not typed)
+- [>] [P1] Teach v4 semantics — **JSDoc done** (bare `ring`=1px+currentColor, bare `border`=currentColor, `.outlineHidden()` over `.outline("none")`). **Cross-dir remaining:** `Button()` no default cursor + `space-*`→`.flex().gap()` go in guidelines (batched with the other cross-dir docs)
+- [x] [P1] Tests — gradient (linear/radial/conic + stops), outlineHidden, xs/ring-3 value tests in `fluent-styling-v2.ts`; lib-parity auto-validates the new vocab rows
+- [x] [P1] Check for bugs — lib-parity green + extractor smoke confirms `bg-linear`/`bg-radial` propagation; suite 1326 → 1338
 
 <!-- hill: downhill -->
 ### As a developer I want v4 variants typed so that container queries and new states type-check
