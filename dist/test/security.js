@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, renderWithNonce, Raw, Div, Span, Script, Style, Input, P, El, } from "../src/index.js";
+import { render, renderWithNonce, renderToStreamWithNonce, Raw, Div, Span, Script, Style, Input, P, El, } from "../src/index.js";
 // ------------------------------------
 // XSS via Text Content
 // ------------------------------------
@@ -153,6 +153,34 @@ describe("CSP Nonce", () => {
         const result = renderWithNonce('"><script>alert(1)</script>', Script("safe"));
         assert.ok(!result.includes('"><script>'));
         assert.ok(result.includes('&quot;&gt;&lt;script&gt;'));
+    });
+    // ── D-04: render-time, non-mutating ────────────────────────────
+    it("render(view, { nonce }) stamps script/style (option form)", () => {
+        const result = render(Div(Script("a"), Style(".b{}")), { nonce: "n1" });
+        assert.strictEqual((result.match(/nonce="n1"/g) || []).length, 2);
+    });
+    it("does NOT mutate the view tree — re-render without a nonce is clean", () => {
+        const page = Div(Script("console.log('hi')"), P("body"));
+        const withNonce = renderWithNonce("nonce-abc", page);
+        assert.ok(withNonce.includes('nonce="nonce-abc"'));
+        // Re-render the SAME view without a nonce — must be clean (no stale-nonce leak).
+        assert.ok(!render(page).includes("nonce"), render(page));
+    });
+    it("author-set nonce wins over the render-time nonce (no double nonce)", () => {
+        const result = render(Script("x").setNonce("author"), { nonce: "ambient" });
+        assert.ok(result.includes('nonce="author"'));
+        assert.ok(!result.includes('nonce="ambient"'));
+        assert.strictEqual((result.match(/nonce=/g) || []).length, 1);
+    });
+    it("renderToStreamWithNonce streams the nonce (parity)", async () => {
+        const chunks = [];
+        const stream = renderToStreamWithNonce("s1", Div(Script("a"), Style(".b{}")));
+        await new Promise((resolve, reject) => {
+            stream.on("data", (c) => chunks.push(c.toString()));
+            stream.on("end", () => resolve());
+            stream.on("error", reject);
+        });
+        assert.strictEqual((chunks.join("").match(/nonce="s1"/g) || []).length, 2);
     });
 });
 // ------------------------------------

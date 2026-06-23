@@ -37,6 +37,25 @@ export declare class StreamSink implements Sink {
     constructor(stream: Readable);
     append(s: string): boolean;
 }
+/** Per-render options bag. Re-exported publicly from the render barrel. */
+export type RenderOptions = {
+    /**
+     * CSP nonce stamped on every `<script>` and `<style>` that has no author-set
+     * nonce. Applied at RENDER time — the view tree is never mutated, so a shared
+     * layout is safe to reuse across requests. An author `.setNonce(...)` wins.
+     */
+    readonly nonce?: string;
+};
+/**
+ * Split variadic render args into the view + render options. The trailing arg is
+ * treated as `RenderOptions` iff it is a plain object — i.e. NOT a View (Tag,
+ * RawString, array, or string). Views are never plain objects, so this is
+ * unambiguous. @internal
+ */
+export declare function splitArgs(args: readonly unknown[]): {
+    view: View;
+    nonce: string | undefined;
+};
 /** Serialize an HTMX config to its attribute string. @internal */
 export declare function buildHtmx(htmx: HTMX): string;
 /** Sanitize raw context content by escaping closing tags that would break out. @internal */
@@ -45,7 +64,10 @@ export declare function sanitizeRawContent(content: string, element: 'script' | 
 export declare function buildAttrs(tag: Tag): string;
 /**
  * Serialize a view tree into `sink`, iteratively (no recursion). Byte-identical
- * to the v5 recursive renderer for the same input. @internal
+ * to the v5 recursive renderer for the same input.
+ *
+ * `nonce`, when set, is stamped on every `<script>`/`<style>` that has no
+ * author-set nonce — at render time, without mutating the tree. @internal
  */
-export declare function emit(sink: Sink, view: View, ctx: RenderCtx): void;
+export declare function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): void;
 //# sourceMappingURL=serialize.d.ts.map

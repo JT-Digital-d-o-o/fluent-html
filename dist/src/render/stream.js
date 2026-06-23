@@ -1,22 +1,22 @@
 import { Readable } from "node:stream";
-import { StreamSink, emit } from "./serialize.js";
-/**
- * Render one or more Views to a Node.js Readable stream.
- *
- * Variadic and symmetric with `render` — pass multiple views (e.g. `Partial`
- * elements) for a multi-swap response, no array wrapper needed. Routes through
- * the same `emit()` serializer as `render`, so the bytes are identical; chunks
- * are pushed at tag boundaries to flush early bytes for large SSR responses.
- *
- * @example
- * renderToStream(PageView())
- * renderToStream(Partial(ids.list, L()), Partial(ids.count, C()))  // multi-swap
- */
-export function renderToStream(...views) {
-    const view = views.length === 1 ? views[0] : views;
+import { StreamSink, emit, splitArgs } from "./serialize.js";
+export function renderToStream(...args) {
+    const { view, nonce } = splitArgs(args);
     return new Readable({
         read() {
-            emit(new StreamSink(this), view, 'escape');
+            emit(new StreamSink(this), view, 'escape', nonce);
+            this.push(null);
+        },
+    });
+}
+/**
+ * Streaming counterpart to `renderWithNonce` — applies a render-time CSP nonce to
+ * every `<script>`/`<style>` without an author nonce. Non-mutating.
+ */
+export function renderToStreamWithNonce(nonce, view) {
+    return new Readable({
+        read() {
+            emit(new StreamSink(this), view, 'escape', nonce);
             this.push(null);
         },
     });

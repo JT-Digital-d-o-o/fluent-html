@@ -40,6 +40,22 @@ export class StreamSink {
         return this.stream.push(s);
     }
 }
+/**
+ * Split variadic render args into the view + render options. The trailing arg is
+ * treated as `RenderOptions` iff it is a plain object — i.e. NOT a View (Tag,
+ * RawString, array, or string). Views are never plain objects, so this is
+ * unambiguous. @internal
+ */
+export function splitArgs(args) {
+    const n = args.length;
+    const last = n > 0 ? args[n - 1] : undefined;
+    if (last !== null && typeof last === 'object' && !isTag(last) && !isRawString(last) && !Array.isArray(last)) {
+        const views = args.slice(0, n - 1);
+        return { view: views.length === 1 ? views[0] : views, nonce: last.nonce };
+    }
+    const views = args;
+    return { view: views.length === 1 ? views[0] : views, nonce: undefined };
+}
 // String attrs: escape the value, quote with "
 const str = (key) => ({
     key,
@@ -188,11 +204,18 @@ export function buildAttrs(tag) {
     }
     return attrs;
 }
+/** True when the tag carries an author-set `nonce` (via `.setNonce(...)`). */
+function authorHasNonce(tag) {
+    return tag.attributes !== EMPTY_ATTRS && tag.attributes['nonce'] !== undefined;
+}
 /**
  * Serialize a view tree into `sink`, iteratively (no recursion). Byte-identical
- * to the v5 recursive renderer for the same input. @internal
+ * to the v5 recursive renderer for the same input.
+ *
+ * `nonce`, when set, is stamped on every `<script>`/`<style>` that has no
+ * author-set nonce — at render time, without mutating the tree. @internal
  */
-export function emit(sink, view, ctx) {
+export function emit(sink, view, ctx, nonce) {
     const stack = [{ v: view, c: ctx }];
     while (stack.length > 0) {
         const item = stack.pop();
@@ -218,7 +241,12 @@ export function emit(sink, view, ctx) {
         }
         if (isTag(v)) {
             const el = v.el;
-            const open = '<' + el + buildAttrs(v) + '>';
+            let open = '<' + el + buildAttrs(v);
+            // Render-time CSP nonce: stamp <script>/<style> that have no author nonce.
+            if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
+                open += ' nonce="' + escapeAttr(nonce) + '"';
+            }
+            open += '>';
             if (VOID_ELEMENTS.has(el)) {
                 sink.append(open);
                 continue;

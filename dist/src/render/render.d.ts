@@ -1,12 +1,11 @@
 import type { View } from "../core/types.js";
+import { type RenderOptions } from "./serialize.js";
 /**
  * Render one or more Views to an HTML string.
  *
  * All text content and attributes are automatically HTML-escaped for XSS protection.
- * Pass multiple views (e.g. `Partial` elements) for multi-swap responses.
- *
- * @param views - One or more View trees to render
- * @returns The rendered HTML string
+ * Pass multiple views (e.g. `Partial` elements) for multi-swap responses, or a
+ * single view plus `{ nonce }` to stamp a render-time CSP nonce.
  *
  * @example
  * render(Div(H1("Hello"), P("World")))
@@ -14,18 +13,18 @@ import type { View } from "../core/types.js";
  *
  * @example
  * // Multi-swap response
- * render(
- *   Partial(ids.list, UserList(users)),
- *   Partial(ids.count, Span(`${users.length}`)),
- * )
+ * render(Partial(ids.list, UserList(users)), Partial(ids.count, Span(`${users.length}`)))
+ *
+ * @example
+ * // Render-time CSP nonce (non-mutating)
+ * render(PageView(), { nonce: reply.cspNonce.script })
  */
 export declare function render(...views: View[]): string;
+export declare function render(view: View, opts: RenderOptions): string;
 /**
- * Apply a CSP nonce to all `<script>` and `<style>` tags in the view tree, then render.
- *
- * @param nonce - The CSP nonce string to inject
- * @param views - One or more View trees to render
- * @returns The rendered HTML string with nonce attributes applied
+ * Render with a CSP nonce applied to every `<script>` and `<style>` that has no
+ * author-set nonce. Render-time and **non-mutating** — the view tree is never
+ * written to, so a shared layout is safe to reuse across requests.
  *
  * @example
  * renderWithNonce("abc123", Script().setSrc("/app.js"), Style("body { margin: 0 }"))

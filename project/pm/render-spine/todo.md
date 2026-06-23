@@ -35,12 +35,13 @@
 <!-- hill: downhill -->
 ### As a developer I want CSP nonce applied at render time so that a shared layout doesn't leak a stale nonce across requests
 
-- [ ] [P0] Add `RenderOptions = { readonly nonce?: string }`; overload `render(view, opts)` (keep variadic `render(...views)`) + `renderToStream(view, opts)`
-- [ ] [P0] Thread `nonce` through `emit`; append `nonce="…"` inline at the `<script>`/`<style>` boundary when set and the tag has no author nonce — **no tree mutation**
-- [ ] [P0] Delete the `applyNonce` pre-pass + `setNonce` mutation from the render path; author `.setNonce()` still wins (explicit > ambient)
-- [ ] [P1] Add `renderWithNonce` (non-mutating wrapper) + `renderToStreamWithNonce` (streaming parity)
-- [ ] [P1] Write tests — reuse-corruption repro (render after renderWithNonce is clean), streaming nonce, author-nonce precedence
-- [ ] [P1] Check for bugs in the nonce path
+- [x] [P0] Add `RenderOptions = { readonly nonce?: string }`; overload `render(view, opts)` (keep variadic `render(...views)`) + `renderToStream(view, opts)` — trailing plain-object arg detected via `splitArgs`
+- [x] [P0] Thread `nonce` through `emit`; append `nonce="…"` inline at the `<script>`/`<style>` boundary when set and the tag has no author nonce — **no tree mutation**
+- [x] [P0] Delete the `applyNonce` pre-pass + `setNonce` mutation from the render path; author `.setNonce()` still wins (explicit > ambient)
+- [x] [P1] Add `renderWithNonce` (non-mutating wrapper) + `renderToStreamWithNonce` (streaming parity)
+- [x] [P1] Write tests — reuse-corruption repro (render after renderWithNonce is clean), streaming nonce, author-nonce precedence
+- [x] [P1] Check for bugs in the nonce path
+- [x] [P0] BUG: `test/security.js` (42 tests incl. all CSP nonce coverage) was never wired into `npm test` — added it to the `test`/`test:coverage` scripts (suite 1102 → 1144)
 
 <!-- hill: downhill -->
 ### As a developer I want streaming to bound memory under slow clients so that large pages don't buffer fully before the first byte

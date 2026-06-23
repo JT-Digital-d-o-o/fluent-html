@@ -64,6 +64,33 @@ export class StreamSink implements Sink {
   }
 }
 
+/** Per-render options bag. Re-exported publicly from the render barrel. */
+export type RenderOptions = {
+  /**
+   * CSP nonce stamped on every `<script>` and `<style>` that has no author-set
+   * nonce. Applied at RENDER time — the view tree is never mutated, so a shared
+   * layout is safe to reuse across requests. An author `.setNonce(...)` wins.
+   */
+  readonly nonce?: string;
+};
+
+/**
+ * Split variadic render args into the view + render options. The trailing arg is
+ * treated as `RenderOptions` iff it is a plain object — i.e. NOT a View (Tag,
+ * RawString, array, or string). Views are never plain objects, so this is
+ * unambiguous. @internal
+ */
+export function splitArgs(args: readonly unknown[]): { view: View; nonce: string | undefined } {
+  const n = args.length;
+  const last = n > 0 ? args[n - 1] : undefined;
+  if (last !== null && typeof last === 'object' && !isTag(last) && !isRawString(last) && !Array.isArray(last)) {
+    const views = args.slice(0, n - 1) as View[];
+    return { view: views.length === 1 ? views[0]! : views, nonce: (last as RenderOptions).nonce };
+  }
+  const views = args as View[];
+  return { view: views.length === 1 ? views[0]! : views, nonce: undefined };
+}
+
 // ── HTMX attribute serialization (single copy; was duplicated in render + stream)
 
 type AttrConfig = {
@@ -230,6 +257,11 @@ export function buildAttrs(tag: Tag): string {
   return attrs;
 }
 
+/** True when the tag carries an author-set `nonce` (via `.setNonce(...)`). */
+function authorHasNonce(tag: Tag): boolean {
+  return tag.attributes !== EMPTY_ATTRS && tag.attributes['nonce'] !== undefined;
+}
+
 // A work-stack item: a literal string to append verbatim, or a (view, ctx)
 // frame to expand. Text-node views are wrapped in a frame so they cannot be
 // confused with literals (open/close tags, separators).
@@ -237,9 +269,12 @@ type Frame = string | { v: View; c: RenderCtx };
 
 /**
  * Serialize a view tree into `sink`, iteratively (no recursion). Byte-identical
- * to the v5 recursive renderer for the same input. @internal
+ * to the v5 recursive renderer for the same input.
+ *
+ * `nonce`, when set, is stamped on every `<script>`/`<style>` that has no
+ * author-set nonce — at render time, without mutating the tree. @internal
  */
-export function emit(sink: Sink, view: View, ctx: RenderCtx): void {
+export function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): void {
   const stack: Frame[] = [{ v: view, c: ctx }];
 
   while (stack.length > 0) {
@@ -268,7 +303,12 @@ export function emit(sink: Sink, view: View, ctx: RenderCtx): void {
 
     if (isTag(v)) {
       const el = v.el;
-      const open = '<' + el + buildAttrs(v) + '>';
+      let open = '<' + el + buildAttrs(v);
+      // Render-time CSP nonce: stamp <script>/<style> that have no author nonce.
+      if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
+        open += ' nonce="' + escapeAttr(nonce) + '"';
+      }
+      open += '>';
 
       if (VOID_ELEMENTS.has(el)) {
         sink.append(open);
