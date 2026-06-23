@@ -305,7 +305,7 @@ Div().apply(card)                             // ✓ presets are user-land, NOT 
 ```
 
 - Tokens only: `colors` / `spacing` / `fontSize` / `radius` / `shadow`. Component presets are `.apply()` helpers, not `defineTheme`.
-- Wire the CSS + safelist once: `fluentHtmlPlugin({ theme })` (Vite/PostCSS) — emits the `@theme` block and the safelist.
+- Wire the CSS + safelist once: `fluentHtmlPlugin({ content, theme })` (Vite) writes a real `fluent-safelist.css` your CSS `@import`s; non-Vite, call `generateFluentSafelist(files, { theme })` in a prebuild. (Not a virtual module — `@tailwindcss/vite` only resolves `@import`s from disk.)
 - The themeable unions are **closed** (no `(string & {})`): a custom-token typo is a compile error, not an unstyled element.
 
 ## Notes
