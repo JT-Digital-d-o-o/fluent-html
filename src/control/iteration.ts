@@ -73,7 +73,9 @@ export function ForEach<T>(
     }
     return result;
   }
-  return Array.from(viewsOrLowOrHigh).map(fn);
+  // Single pass: Array.from's map arg avoids the throwaway intermediate array that
+  // `Array.from(iter).map(fn)` allocates (hits Map.values(), generators, paginators).
+  return Array.from(viewsOrLowOrHigh, fn);
 }
 
 /**

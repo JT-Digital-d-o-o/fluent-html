@@ -57,13 +57,13 @@
 <!-- hill: downhill -->
 ### As a developer I want .on()/.at() and construction to be exception-safe and lean so that a thrown callback can't corrupt later classes
 
-- [ ] [P0] Wrap `withVariant` (`src/core/tailwind-methods.ts`) in `try/finally` so a throw inside `.on(...)` can't leak the `hover:`/`md:` prefix onto later classes
-- [ ] [P1] Move `_variantPrefix` to a prototype default (`declare` + prototype write, not a field initializer) for a monomorphic Tag hidden class
-- [ ] [P1] Single-pass the `ForEach` generic-iterable fallback — `Array.from(iter, fn)` (`src/control/iteration.ts`)
-- [ ] [P1] Module-level kebab callback for `setStyles`/`setDataAttrs`/`setAria` (no per-call closure)
-- [ ] [P2] ~Specialize `escapeAttr` to `&`/`"` (double-quoted-attr-safe) + skip on non-string `_sk` — gated by the security/escape lens
-- [ ] [P1] Write tests — thrown `.on()` callback leaves later classes correct; `ForEach(Map.values())` single-pass
-- [ ] [P1] Check for bugs in the construction/variant fixes
+- [x] [P0] Wrap `withVariant` (`src/core/tailwind-methods.ts`) in `try/finally` so a throw inside `.on(...)` can't leak the `hover:`/`md:` prefix onto later classes
+- [-] [P1] ~~Move `_variantPrefix` to a prototype default for a monomorphic Tag hidden class~~ — **skipped:** it's a class-field initializer, so every Tag already gets the own property uniformly (monomorphic). The RFC's polymorphism claim only holds for code *without* the initializer; prototype-default+`delete` would be a marginal memory opt with V8 delete-deopt risk. Not worth it.
+- [x] [P1] Single-pass the `ForEach` generic-iterable fallback — `Array.from(iter, fn)` (`src/control/iteration.ts`)
+- [x] [P1] Module-level kebab callback for `setStyles`/`setDataAttrs`/`setAria` (no per-call closure) — `kebabCase()` shared helper (also DRYs 3 copies)
+- [ ] [P2] ~Specialize `escapeAttr` to `&`/`"` (double-quoted-attr-safe) + skip on non-string `_sk` — **deferred** (cuttable; security/escape-lens-gated; better as a focused change with a fuzz parity test)
+- [x] [P1] Write tests — thrown `.on()`/`.at()` callback leaves later classes correct; `ForEach(Map.values()/generator/Set)` single-pass
+- [x] [P1] Check for bugs in the construction/variant fixes — suite 1156/1156, bench unchanged
 
 <!-- hill: downhill -->
 ### As a maintainer I want typed internals and a CI bench so that prototype writes are safe and a render regression can't ship green

@@ -407,4 +407,21 @@ describe("Full Example (Plan Before/After)", () => {
             .at("md", t => t.padding("x", "8").textSize("lg"))), '<button class="px-4 py-2 bg-blue-500 text-white rounded transition duration-200 hover:bg-blue-600 hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-blue-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed md:px-8 md:text-lg"></button>');
     });
 });
+describe("Variant exception-safety (D-06)", () => {
+    it("a throw inside .on(...) does not leak the variant prefix onto later classes", () => {
+        const tag = Div();
+        assert.throws(() => tag.on("hover", (t) => { t.background("blue-600"); throw new Error("boom"); }));
+        // The prefix is restored even though the callback threw — the next class is unprefixed.
+        tag.textColor("white");
+        const html = render(tag);
+        assert.ok(html.includes("text-white"), html);
+        assert.ok(!html.includes("hover:text-white"), html);
+    });
+    it("a throw inside .at(...) does not leak the breakpoint prefix", () => {
+        const tag = Span();
+        assert.throws(() => tag.at("md", (t) => { t.padding("x", "8"); throw new Error("boom"); }));
+        tag.textColor("black");
+        assert.ok(!render(tag).includes("md:text-black"));
+    });
+});
 //# sourceMappingURL=fluent-styling-v2.js.map

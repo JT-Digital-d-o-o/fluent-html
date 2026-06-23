@@ -183,3 +183,19 @@ describe("Control Flow - ForEach", () => {
     assert.strictEqual(render(Ul(ForEach(["only"], item => Li(item)))), `<ul><li>only</li></ul>`);
   });
 });
+
+describe("ForEach: non-array iterables (D-06 single-pass)", () => {
+  it("maps a Map.values() iterator", () => {
+    const m = new Map([["a", 1], ["b", 2], ["c", 3]]);
+    assert.strictEqual(render(Ul(ForEach(m.values(), (v) => Li(String(v))))), `<ul><li>1</li>\n<li>2</li>\n<li>3</li></ul>`);
+  });
+
+  it("maps a generator with correct indices", () => {
+    function* gen() { yield "x"; yield "y"; }
+    assert.strictEqual(render(Ul(ForEach(gen(), (v, i) => Li(`${i}:${v}`)))), `<ul><li>0:x</li>\n<li>1:y</li></ul>`);
+  });
+
+  it("maps a Set", () => {
+    assert.strictEqual(render(Ul(ForEach(new Set(["p", "q"]), (v) => Li(v)))), `<ul><li>p</li>\n<li>q</li></ul>`);
+  });
+});

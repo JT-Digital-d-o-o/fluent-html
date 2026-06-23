@@ -7,6 +7,13 @@ const VALID_ATTR_KEY = /^[a-zA-Z_][a-zA-Z0-9\-_:.]*$/;
 const EVENT_HANDLER_RE = /^on[a-z]/i;
 // Prototype pollution keys
 const PROTO_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+// camelCase → kebab-case for style / data-* / aria-* keys.
+// Module-level regex + callback so no closure is allocated per call.
+const KEBAB_RE = /[A-Z]/g;
+const kebabReplacer = (letter) => '-' + letter.toLowerCase();
+function kebabCase(key) {
+    return key.replace(KEBAB_RE, kebabReplacer);
+}
 function validateAttributeKey(key) {
     if (PROTO_KEYS.has(key)) {
         throw new Error(`Attribute key "${key}" is blocked (prototype pollution)`);
@@ -202,11 +209,7 @@ export class Tag {
      */
     setStyles(styles) {
         const styleString = Object.entries(styles)
-            .map(([key, value]) => {
-            // Convert camelCase to kebab-case
-            const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-            return `${kebabKey}: ${value}`;
-        })
+            .map(([key, value]) => `${kebabCase(key)}: ${value}`)
             .join("; ");
         this.style = styleString;
         return this;
@@ -229,9 +232,7 @@ export class Tag {
         if (this.attributes === EMPTY_ATTRS)
             this.attributes = Object.create(null);
         for (const [key, value] of Object.entries(attrs)) {
-            // Convert camelCase to kebab-case
-            const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-            this.attributes[`data-${kebabKey}`] = value;
+            this.attributes[`data-${kebabCase(key)}`] = value;
         }
         return this;
     }
@@ -252,9 +253,7 @@ export class Tag {
         if (this.attributes === EMPTY_ATTRS)
             this.attributes = Object.create(null);
         for (const [key, value] of Object.entries(attrs)) {
-            // Convert camelCase to kebab-case
-            const kebabKey = key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-            this.attributes[`aria-${kebabKey}`] = String(value);
+            this.attributes[`aria-${kebabCase(key)}`] = String(value);
         }
         return this;
     }

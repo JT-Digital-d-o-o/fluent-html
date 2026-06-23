@@ -10,8 +10,14 @@ import { Tag } from "./tag.js";
 function withVariant(tag, prefix, fn) {
     const outer = tag._variantPrefix;
     tag._variantPrefix = outer ? `${outer}:${prefix}` : prefix;
-    fn(tag);
-    tag._variantPrefix = outer;
+    // try/finally so a throw inside the callback can't leak the variant prefix onto
+    // later classes on a reused tag (e.g. `hover:` bleeding into subsequent .addClass).
+    try {
+        fn(tag);
+    }
+    finally {
+        tag._variantPrefix = outer;
+    }
     return tag;
 }
 // ── Direction map (shared by padding/margin/border) ─────────────────
