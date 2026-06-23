@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 
-import { render, Div } from "../src/index.js";
+import { render, Div, Span } from "../src/index.js";
 
 function randomString(length: number): string {
   const bytes = randomBytes(length);
@@ -60,5 +60,31 @@ describe("Property-based fuzz: attribute escaping", () => {
       assert.ok(html.startsWith('<div '), `Expected <div start: ${html.slice(0, 50)}`);
       assert.ok(html.endsWith('</div>'), `Expected </div> end: ${html.slice(-20)}`);
     }
+  });
+});
+
+describe("De-recursed renderer: deep trees do not overflow the stack", () => {
+  // The v5 recursive renderer threw RangeError (call stack) around depth ~3500.
+  // The work-stack emitter has no recursion limit beyond available heap.
+  const DEPTH = 20000;
+
+  it(`renders a ${DEPTH}-deep nested tree without throwing`, () => {
+    let tree = Span("leaf");
+    for (let i = 0; i < DEPTH; i++) tree = Div(tree);
+
+    let html = "";
+    assert.doesNotThrow(() => { html = render(tree); });
+    assert.equal((html.match(/<div>/g) || []).length, DEPTH, "all nesting levels rendered");
+    assert.equal((html.match(/<\/div>/g) || []).length, DEPTH, "all closing tags rendered");
+    assert.ok(html.includes("<span>leaf</span>"), "innermost leaf present");
+  });
+
+  it(`renders ${DEPTH} flat siblings (array separators) without throwing`, () => {
+    const items = Array.from({ length: DEPTH }, (_, i) => Span(String(i)));
+
+    let html = "";
+    assert.doesNotThrow(() => { html = render(Div(...items)); });
+    assert.ok(html.startsWith("<div><span>0</span>\n<span>1</span>"), "leading siblings + separators");
+    assert.ok(html.endsWith(`<span>${DEPTH - 1}</span></div>`), "trailing sibling");
   });
 });
