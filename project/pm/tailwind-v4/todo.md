@@ -56,7 +56,8 @@
 <!-- hill: downhill -->
 ### As a developer I want lint to catch v4 mistakes so that removed utilities and gradient conflicts are flagged
 
-- [ ] [P1] Generate the ESLint v4 map from `classVocab` (renames/`xs` slots automatic)
-- [ ] [P1] Add `no-removed-v4-utilities` (`*-opacity-*` → `.background("black/50")`) + the gradient cross-family conflict group; one v4 `recommended` preset
-- [ ] [P1] Write rule tests (removed utilities, gradient conflicts)
-- [ ] [P1] Check for bugs in the ESLint v4 map
+<!-- DONE in eslint-plugin-fluent-html (commit 3443c27). -->
+- [x] [P1] Generated the ESLint vocab from `classVocab` — `src/vocab.generated.ts` via `scripts/gen-vocab.mjs` (`VOCAB_METHODS` 124 + `UNIT_METHODS` 14, derived from the emit shapes). The CJS plugin can't runtime-import the ESM vocab, so this is **codegen + drift test** (`test/vocab-drift.mjs`) — the spec's "derived tables match a fresh generation" model. `no-setclass-after-fluent-modifier` + `prefer-unit-overload` consume it (no drift; the hand-lists had already drifted — missing fontFamily/from/via/to/filters + the new C-03/C-06 methods)
+- [x] [P1] `no-removed-v4-utilities` (new rule, `recommended: error`) — flags the `*-opacity-*` family (bg/text/border/ring/divide/placeholder) → slash modifier. Gradient cross-family conflict group (bg-gradient/linear/radial/conic → one key, catches mixed types + v3→v4 artifacts, F-C-033). Auto-fix gains `bg-linear-*`→`.gradientTo`, `outline-hidden`→`.outlineHidden`. New rule wired into the one `recommended` preset
+- [x] [P1] Rule tests — removed-opacity (valid slash/backdrop-opacity; invalid bg/text/border/ring families + variant-prefixed) + gradient conflicts (mixed types, migration artifact, two directions). 207 → 222
+- [x] [P1] Check for bugs — drift test in sync (124 methods); full suite green
