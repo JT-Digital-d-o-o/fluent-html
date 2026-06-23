@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -120,9 +121,7 @@ export class InputTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(InputTag.prototype as any)._sk = ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list'];
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list']);
 
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {
@@ -229,9 +228,7 @@ export class TextareaTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(TextareaTag.prototype as any)._sk = ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly'];
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly']);
 
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children: View[]): TextareaTag {
@@ -283,9 +280,7 @@ export class ButtonTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(ButtonTag.prototype as any)._sk = ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod'];
+defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod']);
 
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children: View[]): ButtonTag {
@@ -301,9 +296,7 @@ export class LabelTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(LabelTag.prototype as any)._sk = ['for'];
+defineSchemaKeys(LabelTag, ['for']);
 
 export function Label(...children: View[]): LabelTag {
   return new LabelTag("label", ...children);
@@ -348,9 +341,7 @@ export class FormTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(FormTag.prototype as any)._sk = ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete'];
+defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete']);
 
 /** Create a `<form>` element with typed attribute methods. */
 export function Form(...children: View[]): FormTag {
@@ -390,9 +381,7 @@ export class SelectTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(SelectTag.prototype as any)._sk = ['name', 'multiple', 'size', 'disabled', 'autofocus'];
+defineSchemaKeys(SelectTag, ['name', 'multiple', 'size', 'disabled', 'autofocus']);
 
 export function Select(...children: View[]): SelectTag {
   return new SelectTag("select", ...children);
@@ -425,9 +414,7 @@ export class OptionTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(OptionTag.prototype as any)._sk = ['value', 'selected', 'disabled', 'label'];
+defineSchemaKeys(OptionTag, ['value', 'selected', 'disabled', 'label']);
 
 export function Option(...children: View[]): OptionTag {
   return new OptionTag("option", ...children);
@@ -448,9 +435,7 @@ export class OptgroupTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(OptgroupTag.prototype as any)._sk = ['label', 'disabled'];
+defineSchemaKeys(OptgroupTag, ['label', 'disabled']);
 
 export function Optgroup(...children: View[]): OptgroupTag {
   return new OptgroupTag("optgroup", ...children);
@@ -475,9 +460,7 @@ export class FieldsetTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(FieldsetTag.prototype as any)._sk = ['name', 'disabled'];
+defineSchemaKeys(FieldsetTag, ['name', 'disabled']);
 
 export function Fieldset(...children: View[]): FieldsetTag {
   return new FieldsetTag("fieldset", ...children);
@@ -502,9 +485,7 @@ export class OutputTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(OutputTag.prototype as any)._sk = ['for', 'name'];
+defineSchemaKeys(OutputTag, ['for', 'name']);
 
 export function Output(...children: View[]): OutputTag {
   return new OutputTag("output", ...children);

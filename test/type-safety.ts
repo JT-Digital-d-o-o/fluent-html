@@ -341,3 +341,23 @@ describe("Render pipeline with type guards", () => {
     assert.ok(html.includes('<button type="submit">Go</button>'));
   });
 });
+
+// -------------------------------------------------------
+// D-07: typed prototype writes (defineSchemaKeys / setDiscriminant)
+// -------------------------------------------------------
+
+describe("Typed prototype writes (D-07 migration)", () => {
+  it("defineSchemaKeys drives _sk attribute rendering across element files", () => {
+    // One element per migrated file family — proves the 51 defineSchemaKeys() calls landed.
+    assert.ok(render(Input().setType("email").setName("e")).includes('type="email" name="e"')); // forms.ts
+    assert.ok(render(A("x").setHref("/p")).includes('href="/p"'));                              // links.ts
+    assert.ok(render(Area().setHref("/a").setAlt("a")).includes('href="/a"'));                  // links.ts (void)
+  });
+
+  it("setDiscriminant keeps the _t node discriminants correct", () => {
+    assert.equal(isTag(Div()), true);          // Tag _t = 1
+    assert.equal(isRawString(Raw("<b>x</b>")), true); // RawString _t = 2
+    assert.equal(isTag(Raw("<b>x</b>")), false);
+    assert.equal(isRawString(Div()), false);
+  });
+});

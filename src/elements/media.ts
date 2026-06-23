@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -65,9 +66,7 @@ export class ImgTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(ImgTag.prototype as any)._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
+defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin']);
 
 /** Create an `<img>` element with typed attribute methods. */
 export function Img(): ImgTag {
@@ -111,9 +110,7 @@ export class SourceTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(SourceTag.prototype as any)._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
+defineSchemaKeys(SourceTag, ['src', 'srcset', 'media', 'sizes', 'type']);
 
 export function Source(): SourceTag {
   return new SourceTag("source");
@@ -182,9 +179,7 @@ export class VideoTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(VideoTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
+defineSchemaKeys(VideoTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height']);
 
 export function Video(...children: View[]): VideoTag {
   return new VideoTag("video", ...children);
@@ -229,9 +224,7 @@ export class AudioTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(AudioTag.prototype as any)._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
+defineSchemaKeys(AudioTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload']);
 
 export function Audio(...children: View[]): AudioTag {
   return new AudioTag("audio", ...children);
@@ -270,9 +263,7 @@ export class TrackTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(TrackTag.prototype as any)._sk = ['src', 'kind', 'srclang', 'label', 'default'];
+defineSchemaKeys(TrackTag, ['src', 'kind', 'srclang', 'label', 'default']);
 
 export function Track(): TrackTag {
   return new TrackTag("track");
@@ -293,9 +284,7 @@ export class CanvasTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(CanvasTag.prototype as any)._sk = ['width', 'height'];
+defineSchemaKeys(CanvasTag, ['width', 'height']);
 
 export function Canvas(...children: View[]): CanvasTag {
   return new CanvasTag("canvas", ...children);
@@ -346,9 +335,7 @@ export class SvgTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(SvgTag.prototype as any)._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width'];
+defineSchemaKeys(SvgTag, ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width']);
 
 export function Svg(...children: View[]): SvgTag {
   return new SvgTag("svg", ...children);

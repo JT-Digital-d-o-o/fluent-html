@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 /**
  * Specialized Tag for `<a>` (anchor) elements with typed attribute setters.
@@ -31,9 +32,7 @@ export class AnchorTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-AnchorTag.prototype._sk = ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy'];
+defineSchemaKeys(AnchorTag, ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy']);
 /** Create an `<a>` (anchor) element with typed attribute methods. */
 export function A(...children) {
     return new AnchorTag("a", ...children);
@@ -44,9 +43,7 @@ export class MapTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-MapTag.prototype._sk = ['name'];
+defineSchemaKeys(MapTag, ['name']);
 export function MapEl(...children) {
     return new MapTag("map", ...children);
 }
@@ -80,9 +77,7 @@ export class AreaTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-AreaTag.prototype._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
+defineSchemaKeys(AreaTag, ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download']);
 export function Area() {
     return new AreaTag("area");
 }

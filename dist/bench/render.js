@@ -154,6 +154,9 @@ const variantPage = benchVariantHeavy();
 printResult("Variant-heavy (100 buttons, 10+ variants)", measure("variants", () => render(variantPage), ITERATIONS));
 const largeForEach = benchLargeForEach();
 printResult("Large ForEach (5000 items)", measure("large-foreach", () => render(largeForEach), ITERATIONS));
+// Build AND render per op — real SSR rebuilds the tree every request (F-D-113;
+// the scenarios above render a pre-built tree, hiding construction cost).
+printResult("Build+render realistic (per req)", measure("build-render", () => render(benchRealisticPage()), ITERATIONS));
 console.log("");
 console.log("Fold & Context benchmarks:");
 console.log("─".repeat(72));
@@ -189,4 +192,33 @@ else {
     console.log("  (Run with --expose-gc for memory measurements)");
 }
 console.log("");
+// ── CI regression gate (BENCH_GATE=1) ───────────────────────────────────────
+// Catastrophic-only. Bench numbers are noisy (±6–40% observed) and vary 2–5× by
+// machine, so an absolute floor cannot catch subtle (≈2×) regressions without
+// flaking. The floors below sit ~8× under typical local numbers, so they survive
+// a slow CI box yet still fail on a crash or an order-of-magnitude regression.
+// Fine-grained gating needs a dedicated stable runner with historical baselines.
+if (process.env.BENCH_GATE) {
+    console.log("Bench gate (catastrophic-regression floors):");
+    console.log("─".repeat(72));
+    const FLOORS = [
+        ["render realistic page", () => realisticPage, 3000],
+        ["build+render realistic", () => benchRealisticPage(), 2000],
+        ["render flat (1000 divs)", () => flatPage, 1000],
+    ];
+    let failed = false;
+    for (const [name, make, floor] of FLOORS) {
+        const view = make();
+        const { opsPerSec } = measure(name, () => render(view), 500);
+        const ok = opsPerSec >= floor;
+        if (!ok)
+            failed = true;
+        console.log(`  ${ok ? "✓" : "✗"} ${name.padEnd(28)} ${formatOps(opsPerSec).padStart(10)} ops/sec  (floor ${floor})`);
+    }
+    if (failed) {
+        console.error("\nBENCH GATE FAILED — catastrophic perf regression or crash.");
+        process.exit(1);
+    }
+    console.log("\n✓ bench gate passed");
+}
 //# sourceMappingURL=render.js.map

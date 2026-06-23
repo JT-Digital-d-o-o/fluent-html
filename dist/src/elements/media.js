@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 /**
@@ -44,9 +45,7 @@ export class ImgTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-ImgTag.prototype._sk = ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin'];
+defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin']);
 /** Create an `<img>` element with typed attribute methods. */
 export function Img() {
     return new ImgTag("img");
@@ -76,9 +75,7 @@ export class SourceTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-SourceTag.prototype._sk = ['src', 'srcset', 'media', 'sizes', 'type'];
+defineSchemaKeys(SourceTag, ['src', 'srcset', 'media', 'sizes', 'type']);
 export function Source() {
     return new SourceTag("source");
 }
@@ -124,9 +121,7 @@ export class VideoTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-VideoTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height'];
+defineSchemaKeys(VideoTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height']);
 export function Video(...children) {
     return new VideoTag("video", ...children);
 }
@@ -156,9 +151,7 @@ export class AudioTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-AudioTag.prototype._sk = ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'];
+defineSchemaKeys(AudioTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload']);
 export function Audio(...children) {
     return new AudioTag("audio", ...children);
 }
@@ -184,9 +177,7 @@ export class TrackTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-TrackTag.prototype._sk = ['src', 'kind', 'srclang', 'label', 'default'];
+defineSchemaKeys(TrackTag, ['src', 'kind', 'srclang', 'label', 'default']);
 export function Track() {
     return new TrackTag("track");
 }
@@ -200,9 +191,7 @@ export class CanvasTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-CanvasTag.prototype._sk = ['width', 'height'];
+defineSchemaKeys(CanvasTag, ['width', 'height']);
 export function Canvas(...children) {
     return new CanvasTag("canvas", ...children);
 }
@@ -236,9 +225,7 @@ export class SvgTag extends Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-SvgTag.prototype._sk = ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width'];
+defineSchemaKeys(SvgTag, ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width']);
 export function Svg(...children) {
     return new SvgTag("svg", ...children);
 }

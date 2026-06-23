@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -43,9 +44,7 @@ export class ThTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(ThTag.prototype as any)._sk = ['colspan', 'rowspan', 'scope'];
+defineSchemaKeys(ThTag, ['colspan', 'rowspan', 'scope']);
 
 export function Th(...children: View[]): ThTag {
   return new ThTag("th", ...children);
@@ -66,9 +65,7 @@ export class TdTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(TdTag.prototype as any)._sk = ['colspan', 'rowspan'];
+defineSchemaKeys(TdTag, ['colspan', 'rowspan']);
 
 export function Td(...children: View[]): TdTag {
   return new TdTag("td", ...children);
@@ -87,9 +84,7 @@ export class ColgroupTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(ColgroupTag.prototype as any)._sk = ['span'];
+defineSchemaKeys(ColgroupTag, ['span']);
 
 export function Colgroup(...children: View[]): ColgroupTag {
   return new ColgroupTag("colgroup", ...children);
@@ -104,9 +99,7 @@ export class ColTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(ColTag.prototype as any)._sk = ['span'];
+defineSchemaKeys(ColTag, ['span']);
 
 export function Col(): ColTag {
   return new ColTag("col");

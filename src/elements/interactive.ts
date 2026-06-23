@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -17,9 +18,7 @@ export class DetailsTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(DetailsTag.prototype as any)._sk = ['open', 'name'];
+defineSchemaKeys(DetailsTag, ['open', 'name']);
 
 export function Details(...children: View[]): DetailsTag {
   return new DetailsTag("details", ...children);
@@ -38,9 +37,7 @@ export class DialogTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(DialogTag.prototype as any)._sk = ['open'];
+defineSchemaKeys(DialogTag, ['open']);
 
 export function Dialog(...children: View[]): DialogTag {
   return new DialogTag("dialog", ...children);

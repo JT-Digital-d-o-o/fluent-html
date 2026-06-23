@@ -1,3 +1,4 @@
+import { setDiscriminant } from "./proto.js";
 import { isId } from "../ids.js";
 /** @internal Shared empty attributes object — never mutate */
 export const EMPTY_ATTRS = Object.freeze(Object.create(null));
@@ -95,7 +96,11 @@ export class Tag {
         return this;
     }
     /**
-     * Set the element's inline `style` attribute.
+     * Set the element's inline `style` attribute, **replacing** any existing style.
+     *
+     * Per the library convention, `set*` methods override and `add*` methods
+     * accumulate — so `setStyle(...).setStyles(...)` keeps only the last call.
+     * (Class names are the opposite: `setClass` replaces, `addClass` appends.)
      *
      * @param style - CSS style string
      * @returns `this` for chaining
@@ -195,7 +200,8 @@ export class Tag {
         return this;
     }
     /**
-     * Set multiple inline styles from an object.
+     * Set multiple inline styles from an object, **replacing** any existing style
+     * (`set*` overrides; it does not merge). Build the full style in one call.
      *
      * @param styles - Object mapping CSS property names to values
      * @returns this (for chaining)
@@ -258,8 +264,6 @@ export class Tag {
         return this;
     }
 }
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype manipulation
-Tag.prototype._t = 1;
+setDiscriminant(Tag, 1);
 Tag.prototype.attributes = EMPTY_ATTRS;
 //# sourceMappingURL=tag.js.map

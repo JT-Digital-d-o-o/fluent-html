@@ -68,8 +68,8 @@
 <!-- hill: downhill -->
 ### As a maintainer I want typed internals and a CI bench so that prototype writes are safe and a render regression can't ship green
 
-- [ ] [P1] Add `defineSchemaKeys(ctor, keys)` + `setDiscriminant(ctor, n)` `@internal` helpers; replace the 54 `as any` `_sk`/`_t` prototype writes across `src/elements/*`
-- [ ] [P1] Confirm `setStyles`/`setStyle` both **replace** (no code change) and add the `set*`/`add*` convention to JSDoc
-- [ ] [P1] Wire `bench/` into CI with a regression gate (construction + render scenarios; the bench must measure build cost, not just `render(prebuilt)`)
-- [ ] [P1] Write tests for `defineSchemaKeys` (all element `_sk` round-trip through render)
-- [ ] [P1] Check for bugs in the typed-internals migration
+- [x] [P1] Add `defineSchemaKeys(ctor, keys)` + `setDiscriminant(ctor, n)` `@internal` helpers (`src/core/proto.ts`); replaced **53** `as any` `_sk`/`_t` prototype writes across `src/core` + `src/elements/*`. (The 1 remaining `as any` is the `.behavior` method-merge — a different pattern, intentionally kept.)
+- [x] [P1] Confirm `setStyles`/`setStyle` both **replace** (no code change) and add the `set*`/`add*` convention to JSDoc
+- [x] [P1] Wire `bench/` into CI with a regression gate — `bench:ci` (`BENCH_GATE=1`) + a build+render scenario (F-D-113, measures construction). **Catastrophic-only floors** (bench noise ±6–40% + 2–5× machine variance can't support fine-grained absolute gating without flaking; fine-grained gating needs a stable runner with baselines — deferred, documented in `bench/render.ts`).
+- [x] [P1] Write tests for `defineSchemaKeys` (representative `_sk` round-trip per file family + `setDiscriminant` `_t` discriminants) — plus the full element suite already exercises every `_sk`
+- [x] [P1] Check for bugs in the typed-internals migration — suite 1158/1158, lint-clean, bench gate passes

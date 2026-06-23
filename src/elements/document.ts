@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -17,9 +18,7 @@ export class HtmlTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(HtmlTag.prototype as any)._sk = ['lang', 'dir'];
+defineSchemaKeys(HtmlTag, ['lang', 'dir']);
 
 export function HTML(...children: View[]): HtmlTag {
   return new HtmlTag("html", ...children);
@@ -70,9 +69,7 @@ export class MetaTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(MetaTag.prototype as any)._sk = ['name', 'charset', 'httpEquiv', 'property', 'content'];
+defineSchemaKeys(MetaTag, ['name', 'charset', 'httpEquiv', 'property', 'content']);
 
 export function Meta(): MetaTag {
   return new MetaTag("meta");
@@ -129,9 +126,7 @@ export class LinkTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(LinkTag.prototype as any)._sk = ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity'];
+defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity']);
 
 export function Link(): LinkTag {
   return new LinkTag("link");
@@ -152,9 +147,7 @@ export class StyleTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(StyleTag.prototype as any)._sk = ['media', 'type'];
+defineSchemaKeys(StyleTag, ['media', 'type']);
 
 export function Style(css: string): StyleTag {
   return new StyleTag("style", css);
@@ -175,9 +168,7 @@ export class BaseTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(BaseTag.prototype as any)._sk = ['href', 'target'];
+defineSchemaKeys(BaseTag, ['href', 'target']);
 
 export function Base(): BaseTag {
   return new BaseTag("base");
@@ -236,9 +227,7 @@ export class ScriptTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(ScriptTag.prototype as any)._sk = ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule'];
+defineSchemaKeys(ScriptTag, ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule']);
 
 export function Script(js: string = ""): ScriptTag {
   return new ScriptTag("script", js);

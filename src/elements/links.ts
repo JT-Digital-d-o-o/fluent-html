@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { BrowsingContext, LinkRel, ReferrerPolicy } from "./html-types.js";
@@ -48,9 +49,7 @@ export class AnchorTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(AnchorTag.prototype as any)._sk = ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy'];
+defineSchemaKeys(AnchorTag, ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy']);
 
 /** Create an `<a>` (anchor) element with typed attribute methods. */
 export function A(...children: View[]): AnchorTag {
@@ -66,9 +65,7 @@ export class MapTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(MapTag.prototype as any)._sk = ['name'];
+defineSchemaKeys(MapTag, ['name']);
 
 export function MapEl(...children: View[]): MapTag {
   return new MapTag("map", ...children);
@@ -119,9 +116,7 @@ export class AreaTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(AreaTag.prototype as any)._sk = ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download'];
+defineSchemaKeys(AreaTag, ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download']);
 
 export function Area(): AreaTag {
   return new AreaTag("area");

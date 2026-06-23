@@ -1,3 +1,4 @@
+import { setDiscriminant } from "./proto.js";
 /**
  * Wrapper for raw HTML strings that bypass XSS escaping.
  * WARNING: Only use with trusted content. Never use with user input.
@@ -8,9 +9,7 @@ export class RawString {
   constructor(public readonly html: string) {}
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype manipulation
-(RawString.prototype as any)._t = 2;
+setDiscriminant(RawString, 2);
 
 /**
  * Creates a raw HTML string that will NOT be escaped during rendering.

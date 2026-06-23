@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -65,8 +66,7 @@ export class SvgShapeTag extends Tag {
 /** @internal */
 const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform'] as const;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(SvgShapeTag.prototype as any)._sk = [...SHAPE_SK];
+defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 
 // ─── Circle ─────────────────────────────────────────────────────────
 
@@ -91,9 +91,7 @@ export class CircleTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(CircleTag.prototype as any)._sk = ['cx', 'cy', 'r', ...SHAPE_SK];
+defineSchemaKeys(CircleTag, ['cx', 'cy', 'r', ...SHAPE_SK]);
 
 export function Circle(...children: View[]): CircleTag {
   return new CircleTag("circle", ...children);
@@ -140,9 +138,7 @@ export class RectTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(RectTag.prototype as any)._sk = ['x', 'y', 'width', 'height', 'rx', 'ry', ...SHAPE_SK];
+defineSchemaKeys(RectTag, ['x', 'y', 'width', 'height', 'rx', 'ry', ...SHAPE_SK]);
 
 export function Rect(...children: View[]): RectTag {
   return new RectTag("rect", ...children);
@@ -177,9 +173,7 @@ export class LineTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(LineTag.prototype as any)._sk = ['x1', 'y1', 'x2', 'y2', ...SHAPE_SK];
+defineSchemaKeys(LineTag, ['x1', 'y1', 'x2', 'y2', ...SHAPE_SK]);
 
 export function Line(...children: View[]): LineTag {
   return new LineTag("line", ...children);
@@ -208,9 +202,7 @@ export class PathTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(PathTag.prototype as any)._sk = ['d', 'fill-rule', 'clip-rule', ...SHAPE_SK];
+defineSchemaKeys(PathTag, ['d', 'fill-rule', 'clip-rule', ...SHAPE_SK]);
 
 export function Path(...children: View[]): PathTag {
   return new PathTag("path", ...children);
@@ -245,9 +237,7 @@ export class EllipseTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(EllipseTag.prototype as any)._sk = ['cx', 'cy', 'rx', 'ry', ...SHAPE_SK];
+defineSchemaKeys(EllipseTag, ['cx', 'cy', 'rx', 'ry', ...SHAPE_SK]);
 
 export function Ellipse(...children: View[]): EllipseTag {
   return new EllipseTag("ellipse", ...children);
@@ -266,9 +256,7 @@ export class PolygonTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(PolygonTag.prototype as any)._sk = ['points', ...SHAPE_SK];
+defineSchemaKeys(PolygonTag, ['points', ...SHAPE_SK]);
 
 export function Polygon(...children: View[]): PolygonTag {
   return new PolygonTag("polygon", ...children);
@@ -287,9 +275,7 @@ export class PolylineTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(PolylineTag.prototype as any)._sk = ['points', ...SHAPE_SK];
+defineSchemaKeys(PolylineTag, ['points', ...SHAPE_SK]);
 
 export function Polyline(...children: View[]): PolylineTag {
   return new PolylineTag("polyline", ...children);
@@ -372,9 +358,7 @@ export class SvgTextTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(SvgTextTag.prototype as any)._sk = ['x', 'y', 'dx', 'dy', 'text-anchor', 'dominant-baseline', 'font-size', 'font-family', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', ...SHAPE_SK];
+defineSchemaKeys(SvgTextTag, ['x', 'y', 'dx', 'dy', 'text-anchor', 'dominant-baseline', 'font-size', 'font-family', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', ...SHAPE_SK]);
 
 export function Text(...children: View[]): SvgTextTag {
   return new SvgTextTag("text", ...children);
@@ -445,9 +429,7 @@ export class TspanTag extends SvgShapeTag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(TspanTag.prototype as any)._sk = ['x', 'y', 'dx', 'dy', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', 'font-size', 'font-family', ...SHAPE_SK];
+defineSchemaKeys(TspanTag, ['x', 'y', 'dx', 'dy', 'font-weight', 'font-style', 'text-decoration', 'letter-spacing', 'font-size', 'font-family', ...SHAPE_SK]);
 
 export function Tspan(...children: View[]): TspanTag {
   return new TspanTag("tspan", ...children);
@@ -488,9 +470,7 @@ export class UseTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(UseTag.prototype as any)._sk = ['href', 'x', 'y', 'width', 'height'];
+defineSchemaKeys(UseTag, ['href', 'x', 'y', 'width', 'height']);
 
 export function Use(...children: View[]): UseTag {
   return new UseTag("use", ...children);

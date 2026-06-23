@@ -62,7 +62,11 @@ export declare class Tag {
      */
     addClass(c: string): this;
     /**
-     * Set the element's inline `style` attribute.
+     * Set the element's inline `style` attribute, **replacing** any existing style.
+     *
+     * Per the library convention, `set*` methods override and `add*` methods
+     * accumulate — so `setStyle(...).setStyles(...)` keeps only the last call.
+     * (Class names are the opposite: `setClass` replaces, `addClass` appends.)
      *
      * @param style - CSS style string
      * @returns `this` for chaining
@@ -141,7 +145,8 @@ export declare class Tag {
      */
     setClasses(classes: (string | false | null | undefined)[]): this;
     /**
-     * Set multiple inline styles from an object.
+     * Set multiple inline styles from an object, **replacing** any existing style
+     * (`set*` overrides; it does not merge). Build the full style in one call.
      *
      * @param styles - Object mapping CSS property names to values
      * @returns this (for chaining)

@@ -1,3 +1,4 @@
+import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 
@@ -11,9 +12,7 @@ export class TimeTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(TimeTag.prototype as any)._sk = ['datetime'];
+defineSchemaKeys(TimeTag, ['datetime']);
 
 export function Time(...children: View[]): TimeTag {
   return new TimeTag("time", ...children);
@@ -28,9 +27,7 @@ export class DataTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(DataTag.prototype as any)._sk = ['value'];
+defineSchemaKeys(DataTag, ['value']);
 
 export function Data(...children: View[]): DataTag {
   return new DataTag("data", ...children);
@@ -51,9 +48,7 @@ export class ProgressTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(ProgressTag.prototype as any)._sk = ['value', 'max'];
+defineSchemaKeys(ProgressTag, ['value', 'max']);
 
 export function Progress(...children: View[]): ProgressTag {
   return new ProgressTag("progress", ...children);
@@ -98,9 +93,7 @@ export class MeterTag extends Tag {
   }
 }
 
-/** @internal */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional prototype schema
-(MeterTag.prototype as any)._sk = ['value', 'min', 'max', 'low', 'high', 'optimum'];
+defineSchemaKeys(MeterTag, ['value', 'min', 'max', 'low', 'high', 'optimum']);
 
 export function Meter(...children: View[]): MeterTag {
   return new MeterTag("meter", ...children);
