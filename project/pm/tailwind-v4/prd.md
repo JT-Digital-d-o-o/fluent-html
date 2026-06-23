@@ -11,7 +11,7 @@ Large — **independent of P1**, buildable in parallel. `class-vocab` (C-05) is 
 ## Solution
 
 - **C-05** — `src/class-vocab/`: one `classVocab` (~120 `UtilityDef` rows, single v4 emit shape) + `prefixOf()`. Extractor + ESLint maps become **generated** from it; a CI drift test pins them.
-- **C-01** — `generateFluentSafelist` (emits `@source inline(...)`) + `fluentHtmlPlugin` (Vite/PostCSS) + `staticManifest` (fixes the v5 dynamic-arg footgun). `onUnresolved` defaults `"error"`.
+- **C-01** — `generateFluentSafelist` (emits `@theme` + `@source inline(...)`, written to a real `.css` file in a prebuild) + `globFiles` + `staticManifest`/`theme` (fixes the v5 dynamic-arg footgun). `onUnresolved` defaults `"error"`. _(No bundler plugin — verified e2e against `@tailwindcss/postcss`; a Vite plugin was shipped then removed as unused dead surface, our stack being Fastify SSR + PostCSS.)_
 - **C-02** — `defineTheme(tokens)` (design tokens only): closed themeable unions + `typeof`-derived `declare module` augmentation (01b), CSS + manifest emitted by the C-01 plugin. Converges `createInputTheme`/`SemanticThemeCtx`/`InputThemeCtx`/`defineTypographyScale`.
 - **C-03** — v4 method survivors: `.gradient(from,to,dir?)`/`.gradientRadial()`/`.gradientConic()`/`.outlineHidden()` + v4 type values (`xs` slots, ring `3`); teach v4 semantics.
 - **C-06** — v4 variant types (`not-*`, container queries `@sm`/`@max-lg`/`@[480px]`, `starting`/`open`/`inert`) + `.containerQuery()`.
