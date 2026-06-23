@@ -6,6 +6,9 @@
  * @module
  */
 import { Tag } from "./tag.js";
+// Shared with the class-vocab source of truth (C-05) — one home for these
+// constants (the extractor + ESLint maps derive from the same module).
+import { DIR_MAP, ROUNDED_CORNERS } from "../class-vocab/types.js";
 import type {
   TailwindSpacing,
   TailwindWidth,
@@ -96,13 +99,7 @@ function withVariant(tag: Tag, prefix: string, fn: (tag: Tag) => Tag): Tag {
   return tag;
 }
 
-// ── Direction map (shared by padding/margin/border) ─────────────────
-
-const DIR_MAP: Record<string, string> = {
-  x: "x", y: "y",
-  top: "t", bottom: "b", left: "l", right: "r",
-  t: "t", b: "b", l: "l", r: "r",
-};
+// `DIR_MAP` (padding/margin/border directions) is imported from class-vocab.
 
 // ── Declaration merging — adds types to Tag ─────────────────────────
 
@@ -443,7 +440,6 @@ p.borderColor = function (directionOrColor: string, color?: string) {
   return this.addClass(`border-${dir}-${color}`);
 };
 p.borderStyle = function (style: string) { return this.addClass(`border-${style}`); };
-const ROUNDED_CORNERS = new Set(["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]);
 p.rounded = function (cornerOrValue?: string, value?: string) {
   if (cornerOrValue === undefined) return this.addClass("rounded");
   if (ROUNDED_CORNERS.has(cornerOrValue)) {

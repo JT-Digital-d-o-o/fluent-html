@@ -6,6 +6,9 @@
  * @module
  */
 import { Tag } from "./tag.js";
+// Shared with the class-vocab source of truth (C-05) — one home for these
+// constants (the extractor + ESLint maps derive from the same module).
+import { DIR_MAP, ROUNDED_CORNERS } from "../class-vocab/types.js";
 // ── Variant helper (local, not on prototype) ────────────────────────
 function withVariant(tag, prefix, fn) {
     const outer = tag._variantPrefix;
@@ -20,12 +23,6 @@ function withVariant(tag, prefix, fn) {
     }
     return tag;
 }
-// ── Direction map (shared by padding/margin/border) ─────────────────
-const DIR_MAP = {
-    x: "x", y: "y",
-    top: "t", bottom: "b", left: "l", right: "r",
-    t: "t", b: "b", l: "l", r: "r",
-};
 // ── Prototype implementations ───────────────────────────────────────
 /* eslint-disable fluent-html/no-known-modifiers-in-setclass */
 const p = Tag.prototype;
@@ -143,7 +140,6 @@ p.borderColor = function (directionOrColor, color) {
     return this.addClass(`border-${dir}-${color}`);
 };
 p.borderStyle = function (style) { return this.addClass(`border-${style}`); };
-const ROUNDED_CORNERS = new Set(["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"]);
 p.rounded = function (cornerOrValue, value) {
     if (cornerOrValue === undefined)
         return this.addClass("rounded");
