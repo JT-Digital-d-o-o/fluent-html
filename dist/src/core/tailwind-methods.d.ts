@@ -125,6 +125,8 @@ declare module "./tag.js" {
         to(color: TailwindGradientStop): this;
         group(name?: string): this;
         peer(name?: string): this;
+        /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.at("@sm", …)`. */
+        containerQuery(name?: string): this;
         shadowColor(color: TailwindColor): this;
         blur(value?: TailwindBlur): this;
         backdropBlur(value?: TailwindBlur): this;

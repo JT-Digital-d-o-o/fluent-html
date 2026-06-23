@@ -277,6 +277,9 @@ declare module "./tag.js" {
     group(name?: string): this;
     peer(name?: string): this;
 
+    /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.at("@sm", …)`. */
+    containerQuery(name?: string): this;
+
     // Shadow Color
     shadowColor(color: TailwindColor): this;
 
@@ -599,6 +602,9 @@ p.group = function (name?: string) {
 };
 p.peer = function (name?: string) {
   return name === undefined ? this.addClass("peer") : this.addClass(`peer/${name}`);
+};
+p.containerQuery = function (name?: string) {
+  return name === undefined ? this.addClass("@container") : this.addClass(`@container/${name}`);
 };
 
 // Shadow Color

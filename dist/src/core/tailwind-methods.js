@@ -268,6 +268,9 @@ p.group = function (name) {
 p.peer = function (name) {
     return name === undefined ? this.addClass("peer") : this.addClass(`peer/${name}`);
 };
+p.containerQuery = function (name) {
+    return name === undefined ? this.addClass("@container") : this.addClass(`@container/${name}`);
+};
 // Shadow Color
 p.shadowColor = function (color) { return this.addClass(`shadow-${color}`); };
 // Filters

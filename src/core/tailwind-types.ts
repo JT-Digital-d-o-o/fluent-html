@@ -219,9 +219,18 @@ export type TailwindState =
   | "before" | "after"
   | "dark"
   | "group-hover" | "group-focus" | "group-active" | "group-disabled"
-  | "peer-hover" | "peer-focus" | "peer-checked" | "peer-invalid";
+  | "peer-hover" | "peer-focus" | "peer-checked" | "peer-invalid"
+  // v4 (C-06): new states + the `not-*` negation, `supports-[…]`, `nth-[…]` arms
+  | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape"
+  | "starting" | "open" | "inert"
+  | `not-${string}` | `supports-[${string}]` | `nth-[${string}]`;
 
-export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+// Container-query breakpoints (v4, C-06): `@sm` / `@max-lg` / `@[480px]` / `@sm/sidebar`.
+export type TailwindContainerBreakpoint =
+  | `@${string}` | `@max-${string}` | `@[${string}]` | `@${string}/${string}`;
+
+// Responsive breakpoints — folded with container queries so `.at("@sm", …)` type-checks.
+export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl" | TailwindContainerBreakpoint;
 
 // Font family
 export type TailwindFontFamily = "sans" | "serif" | "mono" | (string & {});

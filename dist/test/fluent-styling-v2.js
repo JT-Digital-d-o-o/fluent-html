@@ -106,6 +106,28 @@ describe("v4 type-value updates (xs slots, ring 3)", () => {
     });
     it("ring 3", () => { assert.strictEqual(render(Div().ring(3)), '<div class="ring-3"></div>'); });
 });
+describe("v4 variants (C-06): widened states + container queries", () => {
+    it("containerQuery marks a container", () => {
+        assert.strictEqual(render(Div().containerQuery()), '<div class="@container"></div>');
+        assert.strictEqual(render(Div().containerQuery("sidebar")), '<div class="@container/sidebar"></div>');
+    });
+    it(".at() accepts container-query breakpoints", () => {
+        assert.strictEqual(render(Div().at("@sm", t => t.padding("4"))), '<div class="@sm:p-4"></div>');
+        assert.strictEqual(render(Div().at("@max-lg", t => t.hidden())), '<div class="@max-lg:hidden"></div>');
+        assert.strictEqual(render(Div().at("@[480px]", t => t.flex())), '<div class="@[480px]:flex"></div>');
+    });
+    it(".on() accepts the widened v4 states", () => {
+        assert.strictEqual(render(Div().on("not-hover", t => t.opacity("50"))), '<div class="not-hover:opacity-50"></div>');
+        assert.strictEqual(render(Div().on("print", t => t.hidden())), '<div class="print:hidden"></div>');
+        assert.strictEqual(render(Div().on("starting", t => t.opacity("0"))), '<div class="starting:opacity-0"></div>');
+        assert.strictEqual(render(Div().on("open", t => t.rotate("90"))), '<div class="open:rotate-90"></div>');
+        assert.strictEqual(render(Div().on("motion-reduce", t => t.transition("none"))), '<div class="motion-reduce:transition-none"></div>');
+    });
+    it(".on() accepts arbitrary supports-[…] / nth-[…]", () => {
+        assert.strictEqual(render(Div().on("supports-[display:grid]", t => t.grid())), '<div class="supports-[display:grid]:grid"></div>');
+        assert.strictEqual(render(Div().on("nth-[3]", t => t.background("red-500"))), '<div class="nth-[3]:bg-red-500"></div>');
+    });
+});
 describe("Variant Proxy - .on()", () => {
     it("on hover - single property", () => {
         assert.strictEqual(render(Button().on("hover", t => t.background("blue-600"))), '<button class="hover:bg-blue-600"></button>');

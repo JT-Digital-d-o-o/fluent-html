@@ -47,11 +47,11 @@
 <!-- hill: downhill -->
 ### As a developer I want v4 variants typed so that container queries and new states type-check
 
-- [ ] [P1] Widen `TailwindState` — `not-${string}`, `print`, `motion-reduce`, `starting`, `open`, `inert`, `supports-[…]`, `nth-[…]`
-- [ ] [P1] Add `TailwindContainerBreakpoint` (`@sm`/`@max-lg`/`@[480px]`/`@${name}`) folded into `TailwindBreakpoint` so `.at("@sm", …)` checks; add `.containerQuery(name?)`
-- [ ] [P1] Drop the redundant `.onPointerHover()` (v4 `.on("hover")` is already pointer-gated); keep the hover↔focus-visible pairing guideline
-- [ ] [P1] Write tests for the widened variant types
-- [ ] [P1] Check for bugs in the variant table
+- [x] [P1] Widened `TailwindState` — `not-${string}`, `print`, `motion-reduce`/`motion-safe`, `portrait`/`landscape`, `starting`, `open`, `inert`, `supports-[${string}]`, `nth-[${string}]`
+- [x] [P1] Added `TailwindContainerBreakpoint` (`@${string}`/`@max-${string}`/`@[${string}]`/`@${name}/${string}`) folded into `TailwindBreakpoint` so `.at("@sm", …)` type-checks; added `.containerQuery(name?)` → `@container`/`@container/{name}` (+ vocab row)
+- [x] [P1] `.onPointerHover()` — **N/A** (doesn't exist; greenfield has nothing to drop). hover↔focus-visible pairing guideline kept
+- [x] [P1] Tests — containerQuery, `.at("@sm"/"@max-lg"/"@[480px]")`, widened `.on()` states (not-hover/print/starting/open/motion-reduce), arbitrary `supports-[…]`/`nth-[…]`. The build passing **is** the type check (an unaccepted variant would be a `.on()`/`.at()` compile error)
+- [x] [P1] Check for bugs — suite 1338 → 1343; lib-parity covers the new containerQuery row
 
 <!-- hill: downhill -->
 ### As a developer I want lint to catch v4 mistakes so that removed utilities and gradient conflicts are flagged

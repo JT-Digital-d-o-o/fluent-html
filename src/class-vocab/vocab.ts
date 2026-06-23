@@ -213,6 +213,9 @@ export const classVocab: readonly UtilityDef[] = [
   opt("group", "group", "/"),
   opt("peer", "peer", "/"),
 
+  // Container-query container (v4): @container / @container/{name}
+  opt("containerQuery", "@container", "/"),
+
   // Filters
   opt("blur", "blur"),
   opt("backdropBlur", "backdrop-blur"),
