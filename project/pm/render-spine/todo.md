@@ -1,0 +1,73 @@
+# Render Spine (P1) — Tasks
+
+<!-- hill: downhill -->
+### As a developer I want deep view trees to render without crashing so that large SSR pages don't stack-overflow
+
+- [x] [P0] Create `src/render/serialize.ts` — `Sink` interface (`append(s): boolean`), `StringSink` (`+=`, returns true), `RenderCtx = 'escape'|'raw'|'script'|'style'` union
+- [x] [P0] Move shared serialization helpers into `serialize.ts` — `VOID_ELEMENTS`, `buildHtmx` (the 20+-attr table, single copy), `sanitizeRawContent(s, 'script'|'style')`
+- [x] [P0] Implement `emit(sink, view, ctx)` as an explicit **work-stack** (no recursion) — byte-identical traversal + `\n`-join semantics
+- [x] [P0] Rewrite `render(...views)` as a thin `StringSink` wrapper over `emit`
+- [x] [P0] Replace the tri-typed `boolean|string` raw-context flag with the `RenderCtx` literal union (kill the `typeof === 'string'` guards + silent `true` fallthrough)
+- [x] [P1] Fuzz test: `render(v)` byte-identical to the v5 renderer over generated deep/mixed trees (incl. depth > 3500 no longer throws) — 1088 expected-output tests + new 20000-deep cases in `test/fuzz.ts`
+- [x] [P1] Write tests for the work-stack emitter (void elements, script/style, nesting, attribute ordering) — covered by existing `elements`/`attributes`/`security` suites (pass against the new emitter) + deep-tree cases
+- [x] [P1] Check for bugs in the de-recursed emitter
+
+<!-- hill: downhill -->
+### As a developer I want render and stream to never diverge so that a view streams exactly the bytes it renders
+
+- [ ] [P0] Add `StreamSink` (pushes to a `node:stream` Readable; `append` returns the backpressure signal)
+- [ ] [P0] Rewrite `renderToStream(...views)` as a thin `StreamSink` wrapper over `emit` — **variadic**, symmetric with `render` (fixes the multi-swap compile error)
+- [ ] [P0] Delete the duplicated serialization block from `stream.ts` (incl. the drifted `v as string` cast)
+- [ ] [P1] Land A-01's boolean branch + A-03's `_sk` tuple into the single emitter (coordinate — one escaping/`_sk`/boolean path)
+- [ ] [P1] Fuzz test: `renderToStream(v)` joined ≡ `render(v)` over generated trees with every HTMX attr
+- [ ] [P1] Check for bugs in the render/stream unification
+
+<!-- hill: downhill -->
+### As a developer I want behaviors and hx-status routing to be injection-proof so that user data can't execute as JS or forge attribute names
+
+- [ ] [P0] Promote `escapeJs` to a shared util; apply it in **every** behavior renderer that interpolates a string (`toggleClass` `class`, `el()`/`resolveId` ids — `src/core/behavior-methods.ts`)
+- [ ] [P0] Add `HxStatusKey = `${1|2|3|4|5}${Digit}${Digit}` | `${1|2|3|4|5}xx`` in `src/htmx.ts`; type `status` keys against it
+- [ ] [P0] Add a `buildHtmx` runtime guard rejecting malformed `hx-status` keys (defense for untyped callers)
+- [ ] [P1] Coordinate with A-08 (the `escapeJs` bug fix — adds `\n \r  <`) so escaping is correct before it's applied everywhere
+- [ ] [P1] Write security tests — `toggleClass` with `'`/`\`/`</script>` in the class; `hx-status` with an injected key
+- [ ] [P1] Check for bugs in behavior/hx-status escaping
+
+<!-- hill: downhill -->
+### As a developer I want CSP nonce applied at render time so that a shared layout doesn't leak a stale nonce across requests
+
+- [ ] [P0] Add `RenderOptions = { readonly nonce?: string }`; overload `render(view, opts)` (keep variadic `render(...views)`) + `renderToStream(view, opts)`
+- [ ] [P0] Thread `nonce` through `emit`; append `nonce="…"` inline at the `<script>`/`<style>` boundary when set and the tag has no author nonce — **no tree mutation**
+- [ ] [P0] Delete the `applyNonce` pre-pass + `setNonce` mutation from the render path; author `.setNonce()` still wins (explicit > ambient)
+- [ ] [P1] Add `renderWithNonce` (non-mutating wrapper) + `renderToStreamWithNonce` (streaming parity)
+- [ ] [P1] Write tests — reuse-corruption repro (render after renderWithNonce is clean), streaming nonce, author-nonce precedence
+- [ ] [P1] Check for bugs in the nonce path
+
+<!-- hill: downhill -->
+### As a developer I want streaming to bound memory under slow clients so that large pages don't buffer fully before the first byte
+
+- [ ] [P0] Implement `renderToIterable(view, opts?)` — a generator that suspends mid-tree and holds position between `.next()`
+- [ ] [P0] Make `renderToStream` a thin `Readable` driver over the generator that suspends on `push()===false`; flush the tail on completion; `stream.destroy(err)` on throw
+- [ ] [P0] Add `RenderStreamOptions = { chunkSize?, highWaterMark? }`
+- [ ] [P1] Update the chunk-boundary test (the `chunks.length >= 3` assertion was never a contract)
+- [ ] [P1] Write tests — backpressure (a slow sink pauses the walk), single-walk (no double-render), byte-equality with `render`
+- [ ] [P1] Check for bugs in the streaming generator
+
+<!-- hill: downhill -->
+### As a developer I want .on()/.at() and construction to be exception-safe and lean so that a thrown callback can't corrupt later classes
+
+- [ ] [P0] Wrap `withVariant` (`src/core/tailwind-methods.ts`) in `try/finally` so a throw inside `.on(...)` can't leak the `hover:`/`md:` prefix onto later classes
+- [ ] [P1] Move `_variantPrefix` to a prototype default (`declare` + prototype write, not a field initializer) for a monomorphic Tag hidden class
+- [ ] [P1] Single-pass the `ForEach` generic-iterable fallback — `Array.from(iter, fn)` (`src/control/iteration.ts`)
+- [ ] [P1] Module-level kebab callback for `setStyles`/`setDataAttrs`/`setAria` (no per-call closure)
+- [ ] [P2] ~Specialize `escapeAttr` to `&`/`"` (double-quoted-attr-safe) + skip on non-string `_sk` — gated by the security/escape lens
+- [ ] [P1] Write tests — thrown `.on()` callback leaves later classes correct; `ForEach(Map.values())` single-pass
+- [ ] [P1] Check for bugs in the construction/variant fixes
+
+<!-- hill: downhill -->
+### As a maintainer I want typed internals and a CI bench so that prototype writes are safe and a render regression can't ship green
+
+- [ ] [P1] Add `defineSchemaKeys(ctor, keys)` + `setDiscriminant(ctor, n)` `@internal` helpers; replace the 54 `as any` `_sk`/`_t` prototype writes across `src/elements/*`
+- [ ] [P1] Confirm `setStyles`/`setStyle` both **replace** (no code change) and add the `set*`/`add*` convention to JSDoc
+- [ ] [P1] Wire `bench/` into CI with a regression gate (construction + render scenarios; the bench must measure build cost, not just `render(prebuilt)`)
+- [ ] [P1] Write tests for `defineSchemaKeys` (all element `_sk` round-trip through render)
+- [ ] [P1] Check for bugs in the typed-internals migration
