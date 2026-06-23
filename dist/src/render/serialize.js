@@ -87,6 +87,8 @@ const HTMX_ATTRS = [
     boolVal('ignore'),
     jsonOrStr('config'),
 ];
+// A valid hx-status key: a 100–599 code or an Nxx wildcard (matches the HxStatusKey type).
+const STATUS_KEY_RE = /^(?:[1-5][0-9]{2}|[1-5]xx)$/;
 /** Serialize an HTMX config to its attribute string. @internal */
 export function buildHtmx(htmx) {
     let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
@@ -104,10 +106,16 @@ export function buildHtmx(htmx) {
             ? ' hx-preload="' + htmx.preload + '"'
             : ' hx-preload';
     }
-    // Status-code-specific swap behavior
+    // Status-code-specific swap behavior — the key becomes part of the attribute
+    // NAME (`hx-status:<code>`), so a malformed key would be attribute-name injection.
+    // The HxStatusKey type blocks it at compile time; this guards untyped callers.
     if (htmx.status) {
-        for (const code of Object.keys(htmx.status)) {
-            const cfg = htmx.status[code];
+        const statusMap = htmx.status;
+        for (const code of Object.keys(statusMap)) {
+            if (!STATUS_KEY_RE.test(code)) {
+                throw new Error(`Invalid hx-status key: "${code}" — expected a 100-599 code or an Nxx wildcard (e.g. 404 or "5xx").`);
+            }
+            const cfg = statusMap[code];
             const value = typeof cfg === 'string' ? cfg : buildStatusConfig(cfg);
             result += ' hx-status:' + code + '="' + escapeAttr(value) + '"';
         }

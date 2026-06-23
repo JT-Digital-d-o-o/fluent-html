@@ -63,6 +63,13 @@ export type HxStatusConfig = {
     replace?: boolean | string;
     transition?: boolean;
 };
+type StatusDigit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+/**
+ * A valid `hx-status` key — a numeric status code (`100`–`599`) or an `Nxx`
+ * wildcard (`"1xx"`–`"5xx"`). Bare strings are rejected at compile time so a
+ * malformed key cannot be concatenated into the attribute NAME (injection).
+ */
+export type HxStatusKey = `${1 | 2 | 3 | 4 | 5}${StatusDigit}${StatusDigit}` | `${1 | 2 | 3 | 4 | 5}xx`;
 export interface HTMX {
     endpoint: string;
     method: HxHttpMethod;
@@ -88,7 +95,7 @@ export interface HTMX {
     config?: HxConfig | string;
     optimistic?: boolean;
     preload?: 'mousedown' | 'mouseover' | boolean;
-    status?: Record<string, string | HxStatusConfig>;
+    status?: Partial<Record<HxStatusKey, string | HxStatusConfig>>;
 }
 /** Options for the `hx()` helper. Selector fields also accept `Id` objects. */
 export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 'select' | 'indicator' | 'disable' | 'include'>> & {

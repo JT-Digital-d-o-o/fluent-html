@@ -6,11 +6,12 @@
  */
 import { Tag, EMPTY_ATTRS } from "./tag.js";
 import { isId } from "../ids.js";
+import { escapeJs } from "../render/escape.js";
 function resolveId(value) {
     return isId(value) ? value.id : String(value);
 }
 function el(value) {
-    return `document.getElementById('${resolveId(value)}')`;
+    return `document.getElementById('${escapeJs(resolveId(value))}')`;
 }
 const renderers = {
     toggle: (opts) => [
@@ -19,7 +20,7 @@ const renderers = {
     ],
     toggleClass: (opts) => [
         "click",
-        `${el(opts.target)}.classList.toggle('${String(opts.class)}')`,
+        `${el(opts.target)}.classList.toggle('${escapeJs(String(opts.class))}')`,
     ],
     remove: (opts) => [
         "click",
@@ -50,9 +51,6 @@ const renderers = {
         "history.back()",
     ],
 };
-function escapeJs(str) {
-    return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-}
 // ── Implementation ───────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- runtime signature differs from typed overload
 Tag.prototype.behavior = function (name, options) {

@@ -6,6 +6,7 @@
  */
 import { Tag, EMPTY_ATTRS } from "./tag.js";
 import { isId, type Id } from "../ids.js";
+import { escapeJs } from "../render/escape.js";
 
 // ── Built-in behavior definitions ───────────────────────────────
 export type BehaviorMap = {
@@ -40,7 +41,7 @@ function resolveId(value: unknown): string {
 }
 
 function el(value: unknown): string {
-  return `document.getElementById('${resolveId(value)}')`;
+  return `document.getElementById('${escapeJs(resolveId(value))}')`;
 }
 
 const renderers: Record<BehaviorName, BehaviorRenderer> = {
@@ -50,7 +51,7 @@ const renderers: Record<BehaviorName, BehaviorRenderer> = {
   ],
   toggleClass: (opts) => [
     "click",
-    `${el(opts.target)}.classList.toggle('${String(opts.class)}')`,
+    `${el(opts.target)}.classList.toggle('${escapeJs(String(opts.class))}')`,
   ],
   remove: (opts) => [
     "click",
@@ -81,10 +82,6 @@ const renderers: Record<BehaviorName, BehaviorRenderer> = {
     "history.back()",
   ],
 };
-
-function escapeJs(str: string): string {
-  return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-}
 
 // ── Implementation ───────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- runtime signature differs from typed overload

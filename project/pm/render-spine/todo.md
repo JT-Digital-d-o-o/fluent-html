@@ -25,12 +25,12 @@
 <!-- hill: downhill -->
 ### As a developer I want behaviors and hx-status routing to be injection-proof so that user data can't execute as JS or forge attribute names
 
-- [ ] [P0] Promote `escapeJs` to a shared util; apply it in **every** behavior renderer that interpolates a string (`toggleClass` `class`, `el()`/`resolveId` ids — `src/core/behavior-methods.ts`)
-- [ ] [P0] Add `HxStatusKey = `${1|2|3|4|5}${Digit}${Digit}` | `${1|2|3|4|5}xx`` in `src/htmx.ts`; type `status` keys against it
-- [ ] [P0] Add a `buildHtmx` runtime guard rejecting malformed `hx-status` keys (defense for untyped callers)
-- [ ] [P1] Coordinate with A-08 (the `escapeJs` bug fix — adds `\n \r  <`) so escaping is correct before it's applied everywhere
-- [ ] [P1] Write security tests — `toggleClass` with `'`/`\`/`</script>` in the class; `hx-status` with an injected key
-- [ ] [P1] Check for bugs in behavior/hx-status escaping
+- [x] [P0] Promote `escapeJs` to a shared util; apply it in **every** behavior renderer that interpolates a string (`toggleClass` `class`, `el()`/`resolveId` ids — `src/core/behavior-methods.ts`) — moved to `src/render/escape.ts`
+- [x] [P0] Add `HxStatusKey = `${1|2|3|4|5}${Digit}${Digit}` | `${1|2|3|4|5}xx`` in `src/htmx.ts`; type `status` keys against it
+- [x] [P0] Add a `buildHtmx` runtime guard rejecting malformed `hx-status` keys (defense for untyped callers) — `STATUS_KEY_RE` throws in `serialize.ts`
+- [x] [P1] Coordinate with A-08 (the `escapeJs` bug fix — adds `\n \r`) so escaping is correct before it's applied everywhere — hardened `escapeJs` now escapes `\` `'` `\n` `\r` U+2028 U+2029 (the `<`→`\x3C` is only for the script-body path, not `hx-on:` attrs)
+- [x] [P1] Write security tests — `toggleClass` with `'`/`\`/newline in the class; target-id injection; `hx-status` with an injected key
+- [x] [P1] Check for bugs in behavior/hx-status escaping
 
 <!-- hill: downhill -->
 ### As a developer I want CSP nonce applied at render time so that a shared layout doesn't leak a stale nonce across requests

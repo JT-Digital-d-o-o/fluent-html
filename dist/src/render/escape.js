@@ -42,4 +42,23 @@ export function escapeHtml(unsafe) {
 export function escapeAttr(unsafe) {
     return escapeHtml(unsafe);
 }
+/**
+ * Escape a string for embedding inside a SINGLE-QUOTED JavaScript string literal
+ * — e.g. the JS the behavior system writes into `hx-on:*` attributes. Escapes the
+ * backslash and single quote (which would close/break the literal) plus the line
+ * terminators that are illegal inside a string literal (`\n`, `\r`, U+2028, U+2029).
+ * The renderer HTML-attribute-escapes the result on top, so both layers are covered.
+ *
+ * Note: this is for the `hx-on:*` ATTRIBUTE path. Content destined for a raw
+ * `<script>` body needs the `</script>` break-out guard (`sanitizeRawContent`) too.
+ */
+export function escapeJs(unsafe) {
+    return unsafe
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "\\r")
+        .replace(/\u2028/g, "\\u2028")
+        .replace(/\u2029/g, "\\u2029");
+}
 //# sourceMappingURL=escape.js.map

@@ -184,6 +184,16 @@ export type HxStatusConfig = {
   transition?: boolean;
 };
 
+type StatusDigit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+/**
+ * A valid `hx-status` key — a numeric status code (`100`–`599`) or an `Nxx`
+ * wildcard (`"1xx"`–`"5xx"`). Bare strings are rejected at compile time so a
+ * malformed key cannot be concatenated into the attribute NAME (injection).
+ */
+export type HxStatusKey =
+  | `${1 | 2 | 3 | 4 | 5}${StatusDigit}${StatusDigit}`
+  | `${1 | 2 | 3 | 4 | 5}xx`;
+
 // ------------------------------------
 // Main HTMX Interface
 // ------------------------------------
@@ -242,7 +252,7 @@ export interface HTMX {
   preload?: 'mousedown' | 'mouseover' | boolean;
 
   // Status-code-specific swap behavior
-  status?: Record<string, string | HxStatusConfig>;
+  status?: Partial<Record<HxStatusKey, string | HxStatusConfig>>;
 }
 
 // ------------------------------------
