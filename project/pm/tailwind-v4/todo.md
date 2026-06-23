@@ -6,19 +6,22 @@
 - [x] [P0] Create `src/class-vocab/` — `UtilityDef` type + `defineUtility` + `classVocab` (119 rows, single v4 `EmitShape` union: static/prefix/optional/spacing/sizing/value/custom). Shared `UNITS`/`DIR_MAP`/`ROUNDED_CORNERS` consts live here now (were duplicated in lib + extractor)
 - [x] [P0] Implement `prefixOf(method)` (precomputed `PREFIX_BY_METHOD` const, O(1) read; throws on value/custom/unknown) + `emitClasses(shape, args)` (total over the shape union)
 - [x] [P0] `static`/`value`/`custom` shapes shipped (value: display/position/neg; custom stragglers: border/borderColor/rounded/translate). **A-07 note (P3):** display/position are `value` rows here, faithful to the current passthroughs; A-07 converts them to dedicated `static` shortcut rows (the `static` shape is ready for it)
-- [ ] [P1] Generate the extractor + ESLint maps from `classVocab`; add a CI drift test asserting the derived tables match a fresh generation
+- [>] [P1] Generate the extractor + ESLint maps from `classVocab`. **Extractor: done** (C-01 imports `classVocab`/`emitClasses` at runtime — there's no materialized table to drift, so no drift test is needed; the 01b "derive, don't codegen" call). **ESLint map: pending C-04.**
 - [x] [P1] Write tests for vocab → emit (`test/class-vocab.test.ts`, 160 tests): per-shape exact `emitClasses` cases + **lib-parity** (renders every row through the real `tailwind-methods.ts` and asserts the class equals `emitClasses`) + `prefixOf` + integrity
 - [x] [P1] Check for bugs in the vocab codegen — the lib-parity test **caught** that `overflow`/`overscroll` have no unit overload and `translate` is strictly 2-arg (my initial `spacing` shape over-assumed units); fixed: `spacing` gained a `units` flag, `translate` became a `custom` row
 
 <!-- hill: downhill -->
 ### As a developer I want v4 builds to keep my fluent-styled markup styled so that nothing renders unstyled with no error
 
-- [ ] [P0] Implement `generateFluentSafelist(files, opts?)` → `@source inline(...)`; sanitizer allow-lists tokens (reject breakout chars; hostile-fixture test)
-- [ ] [P0] Implement `fluentHtmlPlugin(opts?)` — Vite/PostCSS wiring (virtual-module injection; incremental dev rebuild)
-- [ ] [P0] Add `staticManifest` + build-time error for unresolved dynamic args (fixes the v5 literal-only-regex silent miss); `onUnresolved` defaults `"error"`
-- [ ] [P0] Export `extractDefaultClasses` (the exact regex, was cargo-culted per app)
-- [ ] [P1] Write tests — safelist emission, hostile fixtures, dynamic-arg build error
-- [ ] [P1] Check for bugs in the extractor
+<!-- DONE in fluent-html-tailwind-extractor@2.0.0 (commit a78235d). v4-native rewrite, ESM,
+     vocab-driven (imports fluent-html/class-vocab — no local METHOD_PATTERNS, can't drift).
+     Greenfield: dropped the v3 `target` switch + the `fluentHtmlExtractor` content.extract callback. -->
+- [x] [P0] `generateFluentSafelist(files, opts?)` → one `@source inline("…")` block of the render-time-only classes (method + variant/breakpoint; excludes literal `class=`/`setClass` tokens Oxide already sees). Sanitizer allow-lists tokens (rejects quote/`;`/`\`/brace breakouts), skips-with-warning — hostile-fixture test
+- [x] [P0] `fluentHtmlPlugin(opts?)` — **polymorphic** Vite + PostCSS plugin via a virtual CSS module (`virtual:fluent-html-safelist.css`); re-globbed on dev change (`configureServer`). Zero-dep glob; vite/postcss typed structurally (no hard dep)
+- [x] [P0] `staticManifest` + `onUnresolved` (default `"error"` — a non-literal arg fails the build, naming method+file; fixes the v5 silent dynamic-arg miss via a precise `scan()` that captures unresolved arg text)
+- [x] [P0] `extractDefaultClasses` exported (was cargo-culted per app); plus `extractClasses`/`scan`/`scanFluent`
+- [x] [P1] Tests — 34 vitest (extraction incl. as-cast/variants/units, unresolved detection, safelist emission + onUnresolved policy + sanitizer hostile fixtures, plugin resolve/load/PostCSS-Once/glob)
+- [x] [P1] Check for bugs in the extractor — end-to-end smoke on a real view confirmed; the C-05 lib-parity guard already pinned the emit logic
 
 <!-- hill: downhill -->
 ### As a developer I want to define design tokens once and get typed autocomplete so that custom colors/spacing are first-class and typos are compile errors
