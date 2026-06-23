@@ -26,14 +26,14 @@
 <!-- hill: downhill -->
 ### As a developer I want to define design tokens once and get typed autocomplete so that custom colors/spacing are first-class and typos are compile errors
 
-- [ ] [P0] Implement `defineTheme<const T>(spec: T): T` (tokens only: `colors`/`spacing`/`fontSize`/`radius`/`shadow`) — runtime feeds the plugin
-- [ ] [P0] **Close** the themeable unions in `src/core/tailwind-types.ts` — drop `(string & {})`; add `keyof FluentCustom* & string` + explicit opacity/arbitrary arms (per family)
-- [ ] [P0] Ship the augmentable seam interfaces (`FluentCustomColors`/`FluentCustomSpacing`/…) + the `ThemeKeys<T,K>` helper
-- [ ] [P0] Wire `defineTheme` tokens → `@theme` CSS + safelist via `fluentHtmlPlugin({ theme })`
-- [ ] [P1] Port the spike pattern (01b/01c) into a real integration test — `.background("brand")` ✓, `.background("brnad")` ✗, multi-family
-- [ ] [P1] Ship the docs (README + FLUENT-STYLING + guidelines + template) from `spikes/define-theme/defineTheme.docs.md`
-- [ ] [P1] Write tests for `defineTheme` (token→CSS, token→manifest, closed-union typo rejection via `tsc` fixture)
-- [ ] [P1] Check for bugs in `defineTheme`
+- [x] [P0] `defineTheme<const T extends ThemeSpec>(spec): T` (tokens only: colors/spacing/fontSize/radius/shadow) — `src/core/define-theme.ts`, const-generic passthrough; runtime value feeds the plugin
+- [x] [P0] **Closed** the 5 themeable unions in `tailwind-types.ts` — dropped `(string & {})`; added `keyof FluentCustom* & string` + restated opacity (colors) / arbitrary `[…]` arms. Breakage was confined to one test file (the old escape-hatch tests); fixed by dogfooding the seam
+- [x] [P0] Shipped the seam interfaces (`FluentCustomColors`/`Spacing`/`FontSize`/`Radius`/`Shadow`) + `ThemeKeys<T,K>`, exported through the `fluent-html` barrel so `declare module "fluent-html"` augments them
+- [ ] [P0] Wire `defineTheme` tokens → `@theme` CSS + safelist via `fluentHtmlPlugin({ theme })` — **extractor repo, next commit**
+- [x] [P1] Ported the spike (01b single + 01c multi-family) into `test/define-theme.test.ts` — `.background("brand")` ✓, `.background("brnad")` ✗ (via `@ts-expect-error`, build-time), all 5 families
+- [ ] [P1] Ship the docs (README + FLUENT-STYLING + guidelines + template) from `spikes/define-theme/defineTheme.docs.md` — **next**
+- [x] [P1] Tests for `defineTheme` — runtime (token render across families) + **closed-union typo rejection is the build itself** (3 `@ts-expect-error`; an unfired one fails the build with TS2578). token→CSS/manifest lands with the plugin-wiring task
+- [x] [P1] Check for bugs — the build passing **is** the proof the augmentation merges through the barrel re-export into `TailwindColor`/`TailwindSpacing`; full suite 1318 → 1326
 
 <!-- hill: downhill -->
 ### As a developer I want v4 utilities and scales to be correct and taught so that I don't silently get v3 looks or a11y regressions

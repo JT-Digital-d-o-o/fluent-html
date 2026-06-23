@@ -3,6 +3,22 @@ import assert from "node:assert/strict";
 
 import { Div, Button, Span, render, Tag } from "../src/index.js";
 
+// C-02: the themeable unions are now CLOSED — undeclared custom strings no longer
+// compile. The "custom theme token" tests below declare their tokens through the
+// defineTheme seam (dogfooding the augmentation: it must reach TailwindColor /
+// TailwindSpacing through the `fluent-html` barrel re-export).
+declare module "../src/index.js" {
+  interface FluentCustomColors {
+    accent: true;
+    "accent-dark": true;
+    "accent-light": true;
+    "brand-500": true;
+  }
+  interface FluentCustomSpacing {
+    "18": true;
+  }
+}
+
 describe("Layout & Display", () => {
   it("display block", () => { assert.strictEqual(render(Div().display("block")), '<div class="block"></div>'); });
   it("display inline-flex", () => { assert.strictEqual(render(Div().display("inline-flex")), '<div class="inline-flex"></div>'); });
@@ -220,7 +236,7 @@ describe("Variant Proxy - Integration", () => {
   });
 });
 
-describe("Custom theme values via escape hatch", () => {
+describe("Custom theme tokens (defineTheme seam)", () => {
   it("custom color in background()", () => {
     assert.strictEqual(render(Div().background("accent")), '<div class="bg-accent"></div>');
   });

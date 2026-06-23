@@ -5,6 +5,19 @@ export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';
 
+// Theming — defineTheme + the augmentation seams (C-02).
+// Users augment the FluentCustom* interfaces via `declare module "fluent-html"`.
+export { defineTheme } from './core/index.js';
+export type {
+  ThemeSpec,
+  ThemeKeys,
+  FluentCustomColors,
+  FluentCustomSpacing,
+  FluentCustomFontSize,
+  FluentCustomRadius,
+  FluentCustomShadow,
+} from './core/index.js';
+
 // HTML attribute types
 export type {
   InputType,

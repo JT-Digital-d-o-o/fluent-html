@@ -167,7 +167,7 @@ describe("Variant Proxy - Integration", () => {
         assert.strictEqual(render(Div().addClass("hover:bg-blue-600")), '<div class="hover:bg-blue-600"></div>');
     });
 });
-describe("Custom theme values via escape hatch", () => {
+describe("Custom theme tokens (defineTheme seam)", () => {
     it("custom color in background()", () => {
         assert.strictEqual(render(Div().background("accent")), '<div class="bg-accent"></div>');
     });

@@ -5,18 +5,35 @@
 // Utility: allows both number literals and their string equivalents (e.g. 2 | "2")
 type Stringified<T extends number> = `${T}`;
 
-// Escape hatches:
-//   (string & {})   — accepts any string while preserving autocomplete.
-//                      Used where custom theme tokens are common (colors, spacing).
+// Escape hatch:
 //   `[${string}]`   — bracket-only escape hatch for arbitrary CSS values.
-//                      Stricter: forces explicit bracket syntax like "[13px]".
+//                      Forces explicit bracket syntax like "[13px]".
+//
+// NOTE (C-02): the five themeable families (colors, spacing, fontSize, radius,
+// shadow) are CLOSED — they no longer carry `(string & {})`. An open tail can't
+// typo-check (`.background("brnad")` would compile). Custom tokens instead come
+// from the augmentable seams below, populated by `defineTheme()`. The cost of
+// closing is the restated opacity/arbitrary arms. Proof: spikes/define-theme.
 
-// Spacing scale (used for padding, margin, gap, width, height)
-// Keeps (string & {}) — custom theme spacing tokens (e.g. "18") are common.
-export type TailwindSpacing =
+// ── defineTheme augmentation seams (C-02) ───────────────────────────
+// One EMPTY interface per themeable @theme family. A user's `defineTheme()`
+// augments these — deriving keys from their tokens const via `ThemeKeys` — so a
+// custom token becomes a real union member (autocomplete + typo-as-error).
+export interface FluentCustomColors {}
+export interface FluentCustomSpacing {}
+export interface FluentCustomFontSize {}
+export interface FluentCustomRadius {}
+export interface FluentCustomShadow {}
+
+/** Derive `{ [tokenName]: true }` from a tokens const for one family — shortens each augmentation line. */
+export type ThemeKeys<T, K extends keyof T> = Record<keyof T[K] & string, true>;
+
+// Spacing scale (used for padding, margin, gap, and — via derived types — width/
+// height/inset). CLOSED (C-02): custom spacing tokens come from FluentCustomSpacing.
+type BaseSpacing =
   | "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
-  | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96"
-  | (string & {});
+  | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96";
+export type TailwindSpacing = BaseSpacing | (keyof FluentCustomSpacing & string) | `[${string}]`;
 
 // Width values
 export type TailwindWidth =
@@ -54,15 +71,24 @@ export type TailwindColorName =
   | "slate" | "gray" | "zinc" | "neutral" | "stone"
   | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose";
 
-// Full color type — includes (string & {}) so custom theme colors
-// (e.g. "accent", "brand-500", "accent-dark") work with fluent methods.
-export type TailwindColor =
+// Full color type. CLOSED (C-02): custom colors come from FluentCustomColors
+// (defineTheme), not `(string & {})`. The opacity + arbitrary forms that the
+// open tail gave for free are restated as explicit arms.
+type BaseColor =
   | "inherit" | "current" | "transparent" | "black" | "white"
-  | `${TailwindColorName}-${TailwindShade}`
-  | (string & {});
+  | `${TailwindColorName}-${TailwindShade}`;
+type CustomColor = keyof FluentCustomColors & string;
+export type TailwindColor =
+  | BaseColor
+  | CustomColor
+  | `${BaseColor}/${number}`     // base + opacity   (e.g. blue-500/50)
+  | `${CustomColor}/${number}`   // custom + opacity (e.g. brand/50)
+  | `[${string}]`;               // arbitrary value  (e.g. [#1a2b3c])
 
-// Text size
-export type TailwindTextSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl" | `[${string}]`;
+// Text size (fontSize family). CLOSED (C-02): custom sizes from FluentCustomFontSize.
+export type TailwindTextSize =
+  | "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl"
+  | (keyof FluentCustomFontSize & string) | `[${string}]`;
 
 // Font weight
 export type TailwindFontWeight = "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black" | `[${string}]`;
@@ -73,12 +99,17 @@ export type TailwindLeading = "none" | "tight" | "snug" | "normal" | "relaxed" |
 // Tracking (letter-spacing)
 export type TailwindTracking = "tighter" | "tight" | "normal" | "wide" | "wider" | "widest" | `[${string}]`;
 
-// Border radius
-export type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | `[${string}]`;
+// Border radius (radius family). CLOSED (C-02): custom radii from FluentCustomRadius.
+export type TailwindRounded =
+  | "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full"
+  | (keyof FluentCustomRadius & string) | `[${string}]`;
 export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" | "bl" | "s" | "e" | "ss" | "se" | "es" | "ee";
 
-// Shadow
-export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | (string & {});
+// Shadow (shadow family). CLOSED (C-02): custom shadows from FluentCustomShadow;
+// arbitrary `[…]` restated (was riding on the removed `(string & {})`).
+export type TailwindShadow =
+  | "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none"
+  | (keyof FluentCustomShadow & string) | `[${string}]`;
 
 // Border width
 export type TailwindBorderWidth = 0 | 2 | 4 | 8 | Stringified<0 | 2 | 4 | 8> | `[${string}]`;

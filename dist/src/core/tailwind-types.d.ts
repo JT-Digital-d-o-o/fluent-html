@@ -1,5 +1,18 @@
 type Stringified<T extends number> = `${T}`;
-export type TailwindSpacing = "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | (string & {});
+export interface FluentCustomColors {
+}
+export interface FluentCustomSpacing {
+}
+export interface FluentCustomFontSize {
+}
+export interface FluentCustomRadius {
+}
+export interface FluentCustomShadow {
+}
+/** Derive `{ [tokenName]: true }` from a tokens const for one family — shortens each augmentation line. */
+export type ThemeKeys<T, K extends keyof T> = Record<keyof T[K] & string, true>;
+type BaseSpacing = "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96";
+export type TailwindSpacing = BaseSpacing | (keyof FluentCustomSpacing & string) | `[${string}]`;
 export type TailwindWidth = TailwindSpacing | "auto" | "full" | "screen" | "svw" | "lvw" | "dvw" | "min" | "max" | "fit" | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | "1/12" | "2/12" | "3/12" | "4/12" | "5/12" | "6/12" | "7/12" | "8/12" | "9/12" | "10/12" | "11/12" | (string & {});
 export type TailwindHeight = TailwindSpacing | "auto" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | (string & {});
 export type TailwindMaxWidth = "0" | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "full" | "min" | "max" | "fit" | "prose" | "screen-sm" | "screen-md" | "screen-lg" | "screen-xl" | "screen-2xl" | (string & {});
@@ -8,14 +21,16 @@ export type TailwindMaxHeight = TailwindSpacing | "none" | "full" | "screen" | "
 export type TailwindMinHeight = "0" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | (string & {});
 export type TailwindShade = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
 export type TailwindColorName = "slate" | "gray" | "zinc" | "neutral" | "stone" | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose";
-export type TailwindColor = "inherit" | "current" | "transparent" | "black" | "white" | `${TailwindColorName}-${TailwindShade}` | (string & {});
-export type TailwindTextSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl" | `[${string}]`;
+type BaseColor = "inherit" | "current" | "transparent" | "black" | "white" | `${TailwindColorName}-${TailwindShade}`;
+type CustomColor = keyof FluentCustomColors & string;
+export type TailwindColor = BaseColor | CustomColor | `${BaseColor}/${number}` | `${CustomColor}/${number}` | `[${string}]`;
+export type TailwindTextSize = "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | "8xl" | "9xl" | (keyof FluentCustomFontSize & string) | `[${string}]`;
 export type TailwindFontWeight = "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black" | `[${string}]`;
 export type TailwindLeading = "none" | "tight" | "snug" | "normal" | "relaxed" | "loose" | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | `[${string}]`;
 export type TailwindTracking = "tighter" | "tight" | "normal" | "wide" | "wider" | "widest" | `[${string}]`;
-export type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | `[${string}]`;
+export type TailwindRounded = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | (keyof FluentCustomRadius & string) | `[${string}]`;
 export type TailwindRoundedCorner = "t" | "r" | "b" | "l" | "tl" | "tr" | "br" | "bl" | "s" | "e" | "ss" | "se" | "es" | "ee";
-export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | (string & {});
+export type TailwindShadow = "sm" | "md" | "lg" | "xl" | "2xl" | "inner" | "none" | (keyof FluentCustomShadow & string) | `[${string}]`;
 export type TailwindBorderWidth = 0 | 2 | 4 | 8 | Stringified<0 | 2 | 4 | 8> | `[${string}]`;
 export type TailwindOpacity = 0 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 | 55 | 60 | 65 | 70 | 75 | 80 | 85 | 90 | 95 | 100 | Stringified<0 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50 | 55 | 60 | 65 | 70 | 75 | 80 | 85 | 90 | 95 | 100> | `[${string}]`;
 export type TailwindCursor = "auto" | "default" | "pointer" | "wait" | "text" | "move" | "help" | "not-allowed" | "none" | "context-menu" | "progress" | "cell" | "crosshair" | "vertical-text" | "alias" | "copy" | "no-drop" | "grab" | "grabbing" | "all-scroll" | "col-resize" | "row-resize" | "n-resize" | "e-resize" | "s-resize" | "w-resize" | "ne-resize" | "nw-resize" | "se-resize" | "sw-resize" | "ew-resize" | "ns-resize" | "nesw-resize" | "nwse-resize" | "zoom-in" | "zoom-out";

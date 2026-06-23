@@ -18,6 +18,18 @@ export { Empty, El } from "./utils.js";
 // Type guards
 export { isTag, isRawString } from "./guards.js";
 
+// Theming — defineTheme + the augmentation seams (C-02)
+export { defineTheme } from "./define-theme.js";
+export type { ThemeSpec } from "./define-theme.js";
+export type {
+  FluentCustomColors,
+  FluentCustomSpacing,
+  FluentCustomFontSize,
+  FluentCustomRadius,
+  FluentCustomShadow,
+  ThemeKeys,
+} from "./tailwind-types.js";
+
 // Tailwind types (re-export for consumers who need them)
 export type {
   TailwindSpacing,

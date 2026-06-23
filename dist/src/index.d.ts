@@ -3,6 +3,8 @@ export { Tag } from './core/index.js';
 export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';
+export { defineTheme } from './core/index.js';
+export type { ThemeSpec, ThemeKeys, FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, } from './core/index.js';
 export type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, LinkRel, ReferrerPolicy, BooleanAttribute, } from './elements/html-types.js';
 export { render, renderWithNonce } from './render/index.js';
 export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';

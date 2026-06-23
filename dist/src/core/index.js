@@ -10,4 +10,6 @@ export { RawString, Raw } from "./raw-string.js";
 export { Empty, El } from "./utils.js";
 // Type guards
 export { isTag, isRawString } from "./guards.js";
+// Theming — defineTheme + the augmentation seams (C-02)
+export { defineTheme } from "./define-theme.js";
 //# sourceMappingURL=index.js.map
