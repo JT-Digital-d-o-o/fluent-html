@@ -29,9 +29,9 @@
 - [x] [P0] `defineTheme<const T extends ThemeSpec>(spec): T` (tokens only: colors/spacing/fontSize/radius/shadow) — `src/core/define-theme.ts`, const-generic passthrough; runtime value feeds the plugin
 - [x] [P0] **Closed** the 5 themeable unions in `tailwind-types.ts` — dropped `(string & {})`; added `keyof FluentCustom* & string` + restated opacity (colors) / arbitrary `[…]` arms. Breakage was confined to one test file (the old escape-hatch tests); fixed by dogfooding the seam
 - [x] [P0] Shipped the seam interfaces (`FluentCustomColors`/`Spacing`/`FontSize`/`Radius`/`Shadow`) + `ThemeKeys<T,K>`, exported through the `fluent-html` barrel so `declare module "fluent-html"` augments them
-- [ ] [P0] Wire `defineTheme` tokens → `@theme` CSS + safelist via `fluentHtmlPlugin({ theme })` — **extractor repo, next commit**
+- [x] [P0] Wired `defineTheme` tokens → `@theme` CSS + safelist via `fluentHtmlPlugin({ theme })` (extractor `f9421ea`): `themeToCss` (family→`--color-*`/`--spacing-*`/`--text-*`/`--radius-*`/`--shadow-*`) + `themeToManifest` (token-utility safety net for variable usage), merged into `@source inline`
 - [x] [P1] Ported the spike (01b single + 01c multi-family) into `test/define-theme.test.ts` — `.background("brand")` ✓, `.background("brnad")` ✗ (via `@ts-expect-error`, build-time), all 5 families
-- [ ] [P1] Ship the docs (README + FLUENT-STYLING + guidelines + template) from `spikes/define-theme/defineTheme.docs.md` — **next**
+- [>] [P1] Ship the docs from `spikes/define-theme/defineTheme.docs.md`. **Done in-repo:** `README.md` (Theming — defineTheme section) + `FLUENT-STYLING.md` (Theming section). **Remaining (cross-dir):** `guidelines/web-development/**` + `projects-template` live theme files.
 - [x] [P1] Tests for `defineTheme` — runtime (token render across families) + **closed-union typo rejection is the build itself** (3 `@ts-expect-error`; an unfired one fails the build with TS2578). token→CSS/manifest lands with the plugin-wiring task
 - [x] [P1] Check for bugs — the build passing **is** the proof the augmentation merges through the barrel re-export into `TailwindColor`/`TailwindSpacing`; full suite 1318 → 1326
 

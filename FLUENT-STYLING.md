@@ -275,6 +275,39 @@ const Card = ({ title, body }: { title: string; body: string }) =>
     .on("dark", t => t.background("gray-800").borderColor("gray-700"))
 ```
 
+## Theming: `defineTheme()`
+
+Define design tokens **once** → typed autocomplete on the fluent methods + the v4 `@theme` CSS + the extractor safelist.
+
+```ts
+import { defineTheme, type ThemeKeys } from "fluent-html";
+
+const tokens = {
+  colors:  { brand: "#ff5500", forest: "#2d5016" },
+  spacing: { gutter: "1.5rem" },
+} as const;
+
+export const theme = defineTheme(tokens);
+
+// One line per family — written once, derives from `tokens` (add tokens freely).
+declare module "fluent-html" {
+  interface FluentCustomColors  extends ThemeKeys<typeof tokens, "colors"> {}
+  interface FluentCustomSpacing extends ThemeKeys<typeof tokens, "spacing"> {}
+}
+```
+
+```ts
+Div().background("brand").padding("gutter")   // ✓ your tokens, autocompleted
+Div().background("brnad")                     // ✗ compile error (closed unions)
+Div().background("blue-500")                  // ✓ built-ins still work
+const card = (t: Tag) => t.padding("6").rounded("lg").shadow("md");  // ✓ preset = composition
+Div().apply(card)                             // ✓ presets are user-land, NOT defineTheme
+```
+
+- Tokens only: `colors` / `spacing` / `fontSize` / `radius` / `shadow`. Component presets are `.apply()` helpers, not `defineTheme`.
+- Wire the CSS + safelist once: `fluentHtmlPlugin({ theme })` (Vite/PostCSS) — emits the `@theme` block and the safelist.
+- The themeable unions are **closed** (no `(string & {})`): a custom-token typo is a compile error, not an unstyled element.
+
 ## Notes
 
 - All methods append via `addClass()` — order doesn't affect specificity

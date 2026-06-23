@@ -1125,6 +1125,51 @@ Button("Click")
 
 The fluent API generates standard Tailwind CSS classes. Make sure Tailwind is included in your project. For a complete API reference, see the [styling documentation](https://github.com/your-repo/fluent-html/blob/main/STYLING.md).
 
+### Theming — `defineTheme()`
+
+Define your design tokens **once**. `defineTheme` gives you three things from that one source: typed autocomplete on the fluent methods, the Tailwind v4 `@theme` CSS, and the extractor safelist.
+
+```ts
+// theme.ts — the one place your tokens live
+import { defineTheme, type ThemeKeys } from "fluent-html";
+
+const tokens = {
+  colors:  { brand: "#ff5500", forest: "#2d5016" },
+  spacing: { gutter: "1.5rem", bleed: "2.5rem" },
+} as const;
+
+export const theme = defineTheme(tokens);
+
+// One line per token family. Written once — it derives from `tokens`, so adding
+// a token above needs NO edit here. Required for the typed autocomplete below.
+declare module "fluent-html" {
+  interface FluentCustomColors  extends ThemeKeys<typeof tokens, "colors"> {}
+  interface FluentCustomSpacing extends ThemeKeys<typeof tokens, "spacing"> {}
+}
+```
+
+Now your tokens are first-class on every fluent method — autocompleted, and typo-checked:
+
+```ts
+Div().background("brand").padding("gutter")   // ✓ autocompletes; both are your tokens
+Div().background("brnad")                     // ✗ compile error — caught at build, not at runtime
+Div().background("blue-500")                  // ✓ built-ins still work
+Div().background("[#1a2b3c]")                 // ✓ arbitrary values still work
+```
+
+Wire the CSS + safelist once (Vite/PostCSS):
+
+```ts
+import { fluentHtmlPlugin } from "fluent-html-tailwind-extractor";
+import { theme } from "./theme";
+
+export default { plugins: [fluentHtmlPlugin({ theme })] };  // emits @theme CSS + safelist
+```
+
+`defineTheme` takes **design tokens only** (`colors` / `spacing` / `fontSize` / `radius` / `shadow`). Component "presets" (card/button style bundles) are user-land `.apply()` helpers, not `defineTheme`. The themeable unions are **closed** — a typo is a compile error, not an unstyled element at runtime.
+
+> **Why the `declare module` block?** A runtime call can't add to a compile-time type, so the typed-token magic needs one module augmentation. It's written **once** and *derives* its keys from `tokens` via `ThemeKeys<typeof tokens, "…">` — add tokens freely, never touch it again. Skip the block and tokens still work at runtime (CSS/safelist), you just lose autocomplete + typo-checking.
+
 ---
 
 ## XSS Protection
