@@ -3,12 +3,12 @@
 <!-- hill: downhill -->
 ### As a maintainer I want one source for the class vocabulary so that the lib, extractor, and ESLint maps can't drift
 
-- [ ] [P0] Create `src/class-vocab/` — `UtilityDef` type + `defineUtility` + `classVocab` (the ~120 method↔class rows, single v4 `EmitShape`)
-- [ ] [P0] Implement `prefixOf(method)` (inlined per-method const) + `emitClasses(shape)` (build/test-only)
-- [ ] [P0] Make display/position dedicated `static` rows (consumed by A-07's shortcuts); add a `value` shape + single-sourced `custom` for genuine stragglers
+- [x] [P0] Create `src/class-vocab/` — `UtilityDef` type + `defineUtility` + `classVocab` (119 rows, single v4 `EmitShape` union: static/prefix/optional/spacing/sizing/value/custom). Shared `UNITS`/`DIR_MAP`/`ROUNDED_CORNERS` consts live here now (were duplicated in lib + extractor)
+- [x] [P0] Implement `prefixOf(method)` (precomputed `PREFIX_BY_METHOD` const, O(1) read; throws on value/custom/unknown) + `emitClasses(shape, args)` (total over the shape union)
+- [x] [P0] `static`/`value`/`custom` shapes shipped (value: display/position/neg; custom stragglers: border/borderColor/rounded/translate). **A-07 note (P3):** display/position are `value` rows here, faithful to the current passthroughs; A-07 converts them to dedicated `static` shortcut rows (the `static` shape is ready for it)
 - [ ] [P1] Generate the extractor + ESLint maps from `classVocab`; add a CI drift test asserting the derived tables match a fresh generation
-- [ ] [P1] Write tests for vocab → emit (every row round-trips to its v4 class)
-- [ ] [P1] Check for bugs in the vocab codegen
+- [x] [P1] Write tests for vocab → emit (`test/class-vocab.test.ts`, 160 tests): per-shape exact `emitClasses` cases + **lib-parity** (renders every row through the real `tailwind-methods.ts` and asserts the class equals `emitClasses`) + `prefixOf` + integrity
+- [x] [P1] Check for bugs in the vocab codegen — the lib-parity test **caught** that `overflow`/`overscroll` have no unit overload and `translate` is strictly 2-arg (my initial `spacing` shape over-assumed units); fixed: `spacing` gained a `units` flag, `translate` became a `custom` row
 
 <!-- hill: downhill -->
 ### As a developer I want v4 builds to keep my fluent-styled markup styled so that nothing renders unstyled with no error
