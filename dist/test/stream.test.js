@@ -1,7 +1,16 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, renderToStream, Div, P, H1, H2, Span, A, Ul, Li, Button, Form, Input, Img, Br, Hr, Meta, Link, Script, Style, Source, Col, Raw, Table, Tr, Td, Th, Thead, Tbody, Nav, Section, } from "../src/index.js";
+import { render, renderToStream, renderToIterable, Div, P, H1, H2, Span, A, Ul, Li, Button, Form, Input, Img, Br, Hr, Meta, Link, Script, Style, Source, Col, Raw, Table, Tr, Td, Th, Thead, Tbody, Nav, Section, } from "../src/index.js";
 import { hx } from "../src/htmx.js";
+/** Collect a stream's chunks (as strings) preserving boundaries. */
+function collectChunks(stream) {
+    return new Promise((resolve, reject) => {
+        const chunks = [];
+        stream.on("data", (c) => chunks.push(c.toString()));
+        stream.on("end", () => resolve(chunks));
+        stream.on("error", reject);
+    });
+}
 /**
  * Collect all chunks from renderToStream into a single string.
  */
@@ -251,25 +260,58 @@ describe("Stream: Complex structures", () => {
 });
 // ─── Stream-specific behavior ───────────────────────────────────
 describe("Stream: Chunked output", () => {
-    it("emits multiple chunks for a tag", async () => {
-        const chunks = [];
-        const stream = renderToStream(Div(P("Hello")));
-        await new Promise((resolve, reject) => {
-            stream.on("data", (chunk) => chunks.push(chunk.toString()));
-            stream.on("end", resolve);
-            stream.on("error", reject);
-        });
-        // At minimum: open div, open p, text, close p, close div
-        assert.ok(chunks.length >= 3, `Expected at least 3 chunks, got ${chunks.length}`);
+    it("batches small content into a single chunk (default chunkSize)", async () => {
+        // Small content fits in one ~16 KB chunk now — the old ">= 3 chunks" was never a contract.
+        const chunks = await collectChunks(renderToStream(Div(P("Hello"))));
+        assert.equal(chunks.length, 1);
         assert.equal(chunks.join(""), render(Div(P("Hello"))));
+    });
+    it("emits multiple chunks when content exceeds chunkSize", async () => {
+        const big = Div(...Array.from({ length: 300 }, (_, i) => P(`item ${i}`)));
+        const chunks = await collectChunks(renderToStream(big, { chunkSize: 64 }));
+        assert.ok(chunks.length > 1, `expected multiple chunks, got ${chunks.length}`);
+        assert.equal(chunks.join(""), render(big));
     });
     it("is a valid Readable stream", async () => {
         const stream = renderToStream(Div("Test"));
         assert.equal(typeof stream.read, "function");
         assert.equal(typeof stream.pipe, "function");
-        // Consume fully
-        const html = await streamToString(Div("Test"));
-        assert.ok(html.length > 0);
+        assert.ok((await streamToString(Div("Test"))).length > 0);
+    });
+});
+// ─── Backpressure + renderToIterable (D-02) ─────────────────────────
+describe("Stream: backpressure + renderToIterable", () => {
+    const big = Div(...Array.from({ length: 500 }, (_, i) => P(`item ${i}`).setId(`i${i}`)));
+    it("delivers complete, correct output under tight backpressure", async () => {
+        // Tiny chunkSize + highWaterMark force many push()===false suspend/resume cycles.
+        const out = (await collectChunks(renderToStream(big, { chunkSize: 16, highWaterMark: 16 }))).join("");
+        assert.equal(out, render(big)); // nothing dropped, nothing duplicated
+    });
+    it("walks the tree exactly once (no double-render)", async () => {
+        const out = await streamToString(big);
+        assert.equal(out.length, render(big).length); // a double-render would double the length
+    });
+    it("renderToIterable joins to the render output", () => {
+        const v = Div(P("a"), Span("b"), Raw("<hr>"));
+        assert.equal([...renderToIterable(v)].join(""), render(v));
+    });
+    it("renderToIterable chunks large content with a small chunkSize", () => {
+        const chunks = [...renderToIterable(big, { chunkSize: 32 })];
+        assert.ok(chunks.length > 1, `expected multiple chunks, got ${chunks.length}`);
+        assert.equal(chunks.join(""), render(big));
+    });
+    it("renderToIterable threads a nonce", () => {
+        const out = [...renderToIterable(Div(Script("a")), { nonce: "n9" })].join("");
+        assert.ok(out.includes('nonce="n9"'));
+    });
+    it("destroys the stream if the walk throws mid-stream (invalid hx-status key)", async () => {
+        const evil = hx("/x", { status: { "bad key": "swap:none" } });
+        const stream = renderToStream(Div().setHtmx(evil));
+        await assert.rejects(new Promise((resolve, reject) => {
+            stream.on("data", () => { });
+            stream.on("end", () => resolve());
+            stream.on("error", reject);
+        }), /Invalid hx-status key/);
     });
 });
 // ─── Variadic / multi-swap (D-03: symmetric with render) ────────────

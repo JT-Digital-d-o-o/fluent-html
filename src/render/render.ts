@@ -23,9 +23,9 @@ import { StringSink, emit, splitArgs, type RenderOptions } from "./serialize.js"
 export function render(...views: View[]): string;
 export function render(view: View, opts: RenderOptions): string;
 export function render(...args: (View | RenderOptions)[]): string {
-  const { view, nonce } = splitArgs(args);
+  const { view, opts } = splitArgs(args);
   const sink = new StringSink();
-  emit(sink, view, 'escape', nonce);
+  emit(sink, view, 'escape', opts?.nonce);
   return sink.html;
 }
 

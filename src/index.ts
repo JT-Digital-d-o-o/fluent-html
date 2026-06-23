@@ -21,8 +21,8 @@ export type {
 
 // Render
 export { render, renderWithNonce } from './render/index.js';
-export { renderToStream, renderToStreamWithNonce } from './render/index.js';
-export type { RenderOptions } from './render/index.js';
+export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';
+export type { RenderOptions, RenderStreamOptions } from './render/index.js';
 
 // Tag classes with typed attributes
 export {

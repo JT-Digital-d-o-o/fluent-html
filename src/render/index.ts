@@ -1,4 +1,4 @@
 export { render, renderWithNonce } from "./render.js";
-export { renderToStream, renderToStreamWithNonce } from "./stream.js";
+export { renderToStream, renderToStreamWithNonce, renderToIterable } from "./stream.js";
 export { escapeHtml, escapeAttr, htmlEscapes } from "./escape.js";
-export type { RenderOptions } from "./serialize.js";
+export type { RenderOptions, RenderStreamOptions } from "./serialize.js";

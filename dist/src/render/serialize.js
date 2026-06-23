@@ -40,6 +40,8 @@ export class StreamSink {
         return this.stream.push(s);
     }
 }
+/** Default streamed-chunk size (~16 KB) — batches tiny tag writes into useful TCP payloads. */
+export const DEFAULT_CHUNK_SIZE = 16384;
 /**
  * Split variadic render args into the view + render options. The trailing arg is
  * treated as `RenderOptions` iff it is a plain object — i.e. NOT a View (Tag,
@@ -51,10 +53,10 @@ export function splitArgs(args) {
     const last = n > 0 ? args[n - 1] : undefined;
     if (last !== null && typeof last === 'object' && !isTag(last) && !isRawString(last) && !Array.isArray(last)) {
         const views = args.slice(0, n - 1);
-        return { view: views.length === 1 ? views[0] : views, nonce: last.nonce };
+        return { view: views.length === 1 ? views[0] : views, opts: last };
     }
     const views = args;
-    return { view: views.length === 1 ? views[0] : views, nonce: undefined };
+    return { view: views.length === 1 ? views[0] : views, opts: undefined };
 }
 // String attrs: escape the value, quote with "
 const str = (key) => ({
@@ -209,17 +211,87 @@ function authorHasNonce(tag) {
     return tag.attributes !== EMPTY_ATTRS && tag.attributes['nonce'] !== undefined;
 }
 /**
- * Serialize a view tree into `sink`, iteratively (no recursion). Byte-identical
- * to the v5 recursive renderer for the same input.
+ * The single serializer, as a generator. Yields HTML in chunks of at least
+ * `chunkSize` characters; the explicit work-stack means the tree is walked exactly
+ * once (no recursion, no double-render), and the stack state is preserved between
+ * yields — so a stream driver can stop pulling when the consumer is full (true
+ * backpressure) and resume on the next `.next()`. Joined output is byte-identical
+ * to the v5 recursive renderer. @internal
+ */
+export function* emitChunks(view, ctx, nonce, chunkSize) {
+    const stack = [{ v: view, c: ctx }];
+    let buf = '';
+    while (stack.length > 0) {
+        const item = stack.pop();
+        // Literal: append verbatim (open tag, close tag, or array separator).
+        if (typeof item === 'string') {
+            buf += item;
+        }
+        else {
+            const v = item.v;
+            const c = item.c;
+            if (typeof v === 'string') {
+                buf += c === 'escape' ? escapeHtml(v) : c === 'raw' ? v : sanitizeRawContent(v, c);
+            }
+            else if (isRawString(v)) {
+                buf += c === 'script' || c === 'style' ? sanitizeRawContent(v.html, c) : v.html;
+            }
+            else if (isTag(v)) {
+                const el = v.el;
+                let open = '<' + el + buildAttrs(v);
+                // Render-time CSP nonce: stamp <script>/<style> that have no author nonce.
+                if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
+                    open += ' nonce="' + escapeAttr(nonce) + '"';
+                }
+                open += '>';
+                buf += open;
+                if (!VOID_ELEMENTS.has(el)) {
+                    const childCtx = el === 'script' ? 'script' : el === 'style' ? 'style' : c;
+                    // Push close first, child second — child pops (and fully expands) before close.
+                    stack.push('</' + el + '>');
+                    stack.push({ v: v.child, c: childCtx });
+                }
+            }
+            else if (Array.isArray(v)) {
+                const len = v.length;
+                if (len === 1) {
+                    stack.push({ v: v[0], c });
+                }
+                else if (len > 1) {
+                    // Emit v[0] '\n' v[1] '\n' … v[len-1]. Push reversed so v[0] pops first.
+                    for (let i = len - 1; i >= 0; i--) {
+                        stack.push({ v: v[i], c });
+                        if (i > 0)
+                            stack.push('\n');
+                    }
+                }
+                // len === 0 → emit nothing
+            }
+            // Unknown view kind → emit nothing (matches the v5 `return ''`).
+        }
+        if (buf.length >= chunkSize) {
+            yield buf;
+            buf = '';
+        }
+    }
+    if (buf.length > 0)
+        yield buf;
+}
+/**
+ * Serialize a view tree into `sink` eagerly (whole tree, one pass) — the in-memory
+ * string path used by `render()`.
  *
- * `nonce`, when set, is stamped on every `<script>`/`<style>` that has no
- * author-set nonce — at render time, without mutating the tree. @internal
+ * This deliberately duplicates the `emitChunks` work-stack rather than draining the
+ * generator: a generator forces its locals onto the heap (to survive suspension),
+ * which measured ~2–3× slower on this hot path. The two loops share all the volatile
+ * serialization logic (`buildAttrs`, escaping, nonce, `sanitizeRawContent`); only the
+ * low-churn traversal skeleton is repeated, and the `render` ≡ `renderToIterable`
+ * fuzz test guards against drift. @internal
  */
 export function emit(sink, view, ctx, nonce) {
     const stack = [{ v: view, c: ctx }];
     while (stack.length > 0) {
         const item = stack.pop();
-        // Literal: append verbatim (open tag, close tag, or array separator).
         if (typeof item === 'string') {
             sink.append(item);
             continue;
@@ -242,7 +314,6 @@ export function emit(sink, view, ctx, nonce) {
         if (isTag(v)) {
             const el = v.el;
             let open = '<' + el + buildAttrs(v);
-            // Render-time CSP nonce: stamp <script>/<style> that have no author nonce.
             if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
                 open += ' nonce="' + escapeAttr(nonce) + '"';
             }
@@ -253,7 +324,6 @@ export function emit(sink, view, ctx, nonce) {
             }
             sink.append(open);
             const childCtx = el === 'script' ? 'script' : el === 'style' ? 'style' : c;
-            // Push close first, child second — child pops (and fully expands) before close.
             stack.push('</' + el + '>');
             stack.push({ v: v.child, c: childCtx });
             continue;
@@ -266,7 +336,6 @@ export function emit(sink, view, ctx, nonce) {
                 stack.push({ v: v[0], c });
                 continue;
             }
-            // Emit v[0] '\n' v[1] '\n' … v[len-1]. Push reversed so v[0] pops first.
             for (let i = len - 1; i >= 0; i--) {
                 stack.push({ v: v[i], c });
                 if (i > 0)
@@ -274,7 +343,6 @@ export function emit(sink, view, ctx, nonce) {
             }
             continue;
         }
-        // Unknown view kind → emit nothing (matches the v5 `return ''`).
     }
 }
 //# sourceMappingURL=serialize.js.map

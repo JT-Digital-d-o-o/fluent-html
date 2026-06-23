@@ -1,8 +1,8 @@
 import { StringSink, emit, splitArgs } from "./serialize.js";
 export function render(...args) {
-    const { view, nonce } = splitArgs(args);
+    const { view, opts } = splitArgs(args);
     const sink = new StringSink();
-    emit(sink, view, 'escape', nonce);
+    emit(sink, view, 'escape', opts?.nonce);
     return sink.html;
 }
 /**

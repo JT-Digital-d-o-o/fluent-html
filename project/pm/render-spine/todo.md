@@ -46,12 +46,13 @@
 <!-- hill: downhill -->
 ### As a developer I want streaming to bound memory under slow clients so that large pages don't buffer fully before the first byte
 
-- [ ] [P0] Implement `renderToIterable(view, opts?)` — a generator that suspends mid-tree and holds position between `.next()`
-- [ ] [P0] Make `renderToStream` a thin `Readable` driver over the generator that suspends on `push()===false`; flush the tail on completion; `stream.destroy(err)` on throw
-- [ ] [P0] Add `RenderStreamOptions = { chunkSize?, highWaterMark? }`
-- [ ] [P1] Update the chunk-boundary test (the `chunks.length >= 3` assertion was never a contract)
-- [ ] [P1] Write tests — backpressure (a slow sink pauses the walk), single-walk (no double-render), byte-equality with `render`
-- [ ] [P1] Check for bugs in the streaming generator
+- [x] [P0] Implement `renderToIterable(view, opts?)` — the `emitChunks` generator suspends mid-tree and holds position between `.next()`
+- [x] [P0] Make `renderToStream` a thin `Readable` driver over the generator that suspends on `push()===false`; flush the tail on completion; `stream.destroy(err)` on throw
+- [x] [P0] Add `RenderStreamOptions = { chunkSize?, highWaterMark? }` (+ `nonce` — converged with D-04's options bag)
+- [x] [P1] Update the chunk-boundary test (the `chunks.length >= 3` assertion was never a contract) — now: small content = 1 chunk; multiple only past `chunkSize`
+- [x] [P1] Write tests — backpressure (tight HWM/chunkSize over 500 items), single-walk (length equality), byte-equality, destroy-on-throw
+- [x] [P1] Check for bugs in the streaming generator
+- [x] [P0] PERF: keep `render()` on the eager `emit` (generator regressed it ~2–3× — locals go to heap); see [decisions.md](decisions.md). A/B-confirmed parity with D-04
 
 <!-- hill: downhill -->
 ### As a developer I want .on()/.at() and construction to be exception-safe and lean so that a thrown callback can't corrupt later classes
