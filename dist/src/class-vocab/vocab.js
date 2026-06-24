@@ -209,5 +209,7 @@ export const classVocab = [
     space("overscroll", "overscroll", "-", false, false),
     // Negative value prefix
     val("neg", "-"),
+    // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
+    stat("htmxIndicator", "htmx-indicator"),
 ];
 //# sourceMappingURL=vocab.js.map

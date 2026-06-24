@@ -15,6 +15,7 @@ p.setHtmx = function (endpointOrHtmx, options) {
         : endpointOrHtmx;
     return this;
 };
+p.htmxIndicator = function () { return this.addClass("htmx-indicator"); };
 p.hxGet = function (endpoint, options) {
     this.htmx = hx(endpoint, { ...options, method: "get" });
     return this;

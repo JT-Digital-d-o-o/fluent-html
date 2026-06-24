@@ -50,6 +50,7 @@ describe("emitClasses — per-shape exact output", () => {
     ["static block", "block", [], ["block"]],
     ["static absolute", "absolute", [], ["absolute"]],
     ["static contents", "contents", [], ["contents"]],
+    ["static htmxIndicator", "htmxIndicator", [], ["htmx-indicator"]],
     ["prefix flexShorthand", "flexShorthand", ["1"], ["flex-1"]],
     // value
     ["value neg (dash prefix)", "neg", ["inset-px"], ["-inset-px"]],

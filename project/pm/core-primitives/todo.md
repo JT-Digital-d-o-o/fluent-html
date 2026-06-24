@@ -32,6 +32,6 @@
 <!-- hill: downhill -->
 ### As a developer I want .htmxIndicator() so that the loading-indicator class is sanctioned, not a raw string
 
-- [ ] [P1] Add `Tag.prototype.htmxIndicator()` (emits the library-known `htmx-indicator`); whitelist it in `class-vocab` (P2) so the extractor/ESLint accept it
-- [ ] [P1] Write a test — `.htmxIndicator()` emits the class; ESLint accepts it (not flagged as unknown)
-- [ ] [P1] Check for bugs in `.htmxIndicator()`
+- [x] [P1] Added `Tag.prototype.htmxIndicator()` (in `htmx-methods.ts`) → `addClass("htmx-indicator")`; registered as a `stat("htmxIndicator","htmx-indicator")` class-vocab row, so the extractor (runtime import) + ESLint (regenerated vocab, 133 → 134 methods) accept the class
+- [x] [P1] Tests — render emits `class="htmx-indicator"` (htmx.test) + composes with other utilities; class-vocab explicit case + lib-parity auto-validate; ESLint drift test in sync confirms recognition; extractor 34/34. Lib suite 1411 → 1414
+- [x] [P1] Check for bugs — tsc clean, full suite green, bench gate passes, lint clean; htmx.md guideline gains a Loading-indicators note
