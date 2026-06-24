@@ -55,8 +55,8 @@ describe("Forms - Input", () => {
       .setType("checkbox")
       .setName("agree")
       .setValue("yes")
-      .setChecked()),
-    `<input type="checkbox" name="agree" value="yes" checked="true">`);
+      .toggle("checked")),
+    `<input type="checkbox" name="agree" value="yes" checked>`);
   });
 
   it("Radio input", () => {
@@ -72,8 +72,8 @@ describe("Forms - Input", () => {
       .setType("file")
       .setName("document")
       .setAccept(".pdf,.doc")
-      .setMultiple()),
-    `<input type="file" name="document" accept=".pdf,.doc" multiple="true">`);
+      .toggle("multiple")),
+    `<input type="file" name="document" accept=".pdf,.doc" multiple>`);
   });
 
   it("Disabled input", () => {
@@ -81,8 +81,8 @@ describe("Forms - Input", () => {
       .setType("text")
       .setName("locked")
       .setValue("Cannot edit")
-      .setDisabled()),
-    `<input type="text" name="locked" value="Cannot edit" disabled="true">`);
+      .toggle("disabled")),
+    `<input type="text" name="locked" value="Cannot edit" disabled>`);
   });
 
   it("Readonly input", () => {
@@ -90,8 +90,8 @@ describe("Forms - Input", () => {
       .setType("text")
       .setName("readonly")
       .setValue("Read only")
-      .setReadonly()),
-    `<input type="text" name="readonly" value="Read only" readonly="true">`);
+      .toggle("readonly")),
+    `<input type="text" name="readonly" value="Read only" readonly>`);
   });
 
   it("Input factory sets type attribute", () => {
@@ -174,7 +174,7 @@ describe("Forms - Button", () => {
     `<button type="submit" name="action" value="save">Save</button>`);
   });
 
-  it("Disabled button", () => { assert.strictEqual(render(Button("Disabled").setDisabled()), `<button disabled="true">Disabled</button>`); });
+  it("Disabled button", () => { assert.strictEqual(render(Button("Disabled").toggle("disabled")), `<button disabled>Disabled</button>`); });
 
   it("Button with formaction", () => {
     assert.strictEqual(render(Button("Delete")
@@ -202,10 +202,10 @@ describe("Forms - Select", () => {
   it("Select with selected option", () => {
     assert.strictEqual(render(Select([
       Option("A").setValue("a"),
-      Option("B").setValue("b").setSelected(),
+      Option("B").setValue("b").toggle("selected"),
       Option("C").setValue("c"),
     ]).setName("letter")),
-    `<select name="letter"><option value="a">A</option>\n<option value="b" selected="true">B</option>\n<option value="c">C</option></select>`);
+    `<select name="letter"><option value="a">A</option>\n<option value="b" selected>B</option>\n<option value="c">C</option></select>`);
   });
 
   it("Select with optgroup", () => {
@@ -227,8 +227,8 @@ describe("Forms - Select", () => {
       Option("Red").setValue("red"),
       Option("Green").setValue("green"),
       Option("Blue").setValue("blue"),
-    ]).setName("colors").setMultiple().setSize(3)),
-    `<select name="colors" multiple="true" size="3"><option value="red">Red</option>\n<option value="green">Green</option>\n<option value="blue">Blue</option></select>`);
+    ]).setName("colors").toggle("multiple").setSize(3)),
+    `<select name="colors" size="3" multiple><option value="red">Red</option>\n<option value="green">Green</option>\n<option value="blue">Blue</option></select>`);
   });
 });
 
@@ -252,8 +252,8 @@ describe("Forms - Label, Fieldset, Form", () => {
     assert.strictEqual(render(Fieldset([
       Legend("Disabled Section"),
       Input().setType("text"),
-    ]).setDisabled()),
-    `<fieldset disabled="true"><legend>Disabled Section</legend>\n<input type="text"></fieldset>`);
+    ]).toggle("disabled")),
+    `<fieldset disabled><legend>Disabled Section</legend>\n<input type="text"></fieldset>`);
   });
 
   it("Form with method and action", () => {
@@ -274,8 +274,8 @@ describe("Forms - Label, Fieldset, Form", () => {
   it("Form with novalidate", () => {
     assert.strictEqual(render(Form([
       Input().setType("email").setName("email"),
-    ]).setNovalidate()),
-    `<form novalidate="true"><input type="email" name="email"></form>`);
+    ]).toggle("novalidate")),
+    `<form novalidate><input type="email" name="email"></form>`);
   });
 
   it("Output element", () => { assert.strictEqual(render(Output("100").setFor("a b").setName("result")), `<output for="a b" name="result">100</output>`); });

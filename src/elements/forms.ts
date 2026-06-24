@@ -23,11 +23,6 @@ export class InputTag extends Tag {
   minlength?: number;
   maxlength?: number;
   autocomplete?: AutocompleteHint;
-  autofocus?: boolean;
-  checked?: boolean;
-  disabled?: boolean;
-  readonly?: boolean;
-  multiple?: boolean;
   list?: string;
 
   setType(type?: InputType): this {
@@ -90,38 +85,13 @@ export class InputTag extends Tag {
     return this;
   }
 
-  setAutofocus(autofocus: boolean = true): this {
-    this.autofocus = autofocus;
-    return this;
-  }
-
-  setChecked(checked: boolean = true): this {
-    this.checked = checked;
-    return this;
-  }
-
-  setDisabled(disabled: boolean = true): this {
-    this.disabled = disabled;
-    return this;
-  }
-
-  setReadonly(readonly: boolean = true): this {
-    this.readonly = readonly;
-    return this;
-  }
-
-  setMultiple(multiple: boolean = true): this {
-    this.multiple = multiple;
-    return this;
-  }
-
   setList(list?: string): this {
     this.list = list;
     return this;
   }
 }
 
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'list']);
 
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {
@@ -168,9 +138,6 @@ export class TextareaTag extends Tag {
   maxlength?: number;
   wrap?: 'hard' | 'soft' | 'off';
   autocomplete?: AutocompleteHint;
-  autofocus?: boolean;
-  disabled?: boolean;
-  readonly?: boolean;
 
   setPlaceholder(placeholder?: string): this {
     this.placeholder = placeholder;
@@ -211,24 +178,9 @@ export class TextareaTag extends Tag {
     this.autocomplete = autocomplete;
     return this;
   }
-
-  setAutofocus(autofocus: boolean = true): this {
-    this.autofocus = autofocus;
-    return this;
-  }
-
-  setDisabled(disabled: boolean = true): this {
-    this.disabled = disabled;
-    return this;
-  }
-
-  setReadonly(readonly: boolean = true): this {
-    this.readonly = readonly;
-    return this;
-  }
 }
 
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete']);
 
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children: View[]): TextareaTag {
@@ -239,13 +191,12 @@ export function Textarea(...children: View[]): TextareaTag {
  * Specialized Tag for `<button>` elements with typed attribute setters.
  *
  * @example
- * Button("Submit").setType("submit").setDisabled(isLoading)
+ * Button("Submit").setType("submit").toggle("disabled", isLoading)
  */
 export class ButtonTag extends Tag {
   type?: 'submit' | 'reset' | 'button';
   name?: string;
   value?: string;
-  disabled?: boolean;
   formaction?: string;
   formmethod?: 'get' | 'post';
 
@@ -264,11 +215,6 @@ export class ButtonTag extends Tag {
     return this;
   }
 
-  setDisabled(disabled: boolean = true): this {
-    this.disabled = disabled;
-    return this;
-  }
-
   setFormaction(formaction?: string): this {
     this.formaction = formaction;
     return this;
@@ -280,7 +226,7 @@ export class ButtonTag extends Tag {
   }
 }
 
-defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod']);
+defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod']);
 
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children: View[]): ButtonTag {
@@ -307,7 +253,6 @@ export class FormTag extends Tag {
   method?: FormMethod;
   enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
   target?: BrowsingContext;
-  novalidate?: boolean;
   autocomplete?: 'on' | 'off';
 
   setAction(action?: string): this {
@@ -330,18 +275,13 @@ export class FormTag extends Tag {
     return this;
   }
 
-  setNovalidate(novalidate: boolean = true): this {
-    this.novalidate = novalidate;
-    return this;
-  }
-
   setAutocomplete(autocomplete?: 'on' | 'off'): this {
     this.autocomplete = autocomplete;
     return this;
   }
 }
 
-defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete']);
+defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplete']);
 
 /** Create a `<form>` element with typed attribute methods. */
 export function Form(...children: View[]): FormTag {
@@ -350,18 +290,10 @@ export function Form(...children: View[]): FormTag {
 
 export class SelectTag extends Tag {
   name?: string;
-  multiple?: boolean;
   size?: number;
-  disabled?: boolean;
-  autofocus?: boolean;
 
   setName(name?: string): this {
     this.name = name;
-    return this;
-  }
-
-  setMultiple(multiple: boolean = true): this {
-    this.multiple = multiple;
     return this;
   }
 
@@ -369,19 +301,9 @@ export class SelectTag extends Tag {
     this.size = size;
     return this;
   }
-
-  setDisabled(disabled: boolean = true): this {
-    this.disabled = disabled;
-    return this;
-  }
-
-  setAutofocus(autofocus: boolean = true): this {
-    this.autofocus = autofocus;
-    return this;
-  }
 }
 
-defineSchemaKeys(SelectTag, ['name', 'multiple', 'size', 'disabled', 'autofocus']);
+defineSchemaKeys(SelectTag, ['name', 'size']);
 
 export function Select(...children: View[]): SelectTag {
   return new SelectTag("select", ...children);
@@ -389,8 +311,6 @@ export function Select(...children: View[]): SelectTag {
 
 export class OptionTag extends Tag {
   value?: string;
-  selected?: boolean;
-  disabled?: boolean;
   label?: string;
 
   setValue(value: string): this {
@@ -398,23 +318,13 @@ export class OptionTag extends Tag {
     return this;
   }
 
-  setSelected(selected: boolean = true): this {
-    this.selected = selected;
-    return this;
-  }
-
-  setDisabled(disabled: boolean = true): this {
-    this.disabled = disabled;
-    return this;
-  }
-
   setLabel(label?: string): this {
     this.label = label;
     return this;
   }
 }
 
-defineSchemaKeys(OptionTag, ['value', 'selected', 'disabled', 'label']);
+defineSchemaKeys(OptionTag, ['value', 'label']);
 
 export function Option(...children: View[]): OptionTag {
   return new OptionTag("option", ...children);
@@ -422,20 +332,14 @@ export function Option(...children: View[]): OptionTag {
 
 export class OptgroupTag extends Tag {
   label?: string;
-  disabled?: boolean;
 
   setLabel(label?: string): this {
     this.label = label;
     return this;
   }
-
-  setDisabled(disabled: boolean = true): this {
-    this.disabled = disabled;
-    return this;
-  }
 }
 
-defineSchemaKeys(OptgroupTag, ['label', 'disabled']);
+defineSchemaKeys(OptgroupTag, ['label']);
 
 export function Optgroup(...children: View[]): OptgroupTag {
   return new OptgroupTag("optgroup", ...children);
@@ -447,20 +351,14 @@ export function Datalist(...children: View[]): Tag {
 
 export class FieldsetTag extends Tag {
   name?: string;
-  disabled?: boolean;
 
   setName(name?: string): this {
     this.name = name;
     return this;
   }
-
-  setDisabled(disabled: boolean = true): this {
-    this.disabled = disabled;
-    return this;
-  }
 }
 
-defineSchemaKeys(FieldsetTag, ['name', 'disabled']);
+defineSchemaKeys(FieldsetTag, ['name']);
 
 export function Fieldset(...children: View[]): FieldsetTag {
   return new FieldsetTag("fieldset", ...children);

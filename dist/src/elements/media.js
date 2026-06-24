@@ -88,24 +88,8 @@ export class VideoTag extends Tag {
         this.height = height;
         return this;
     }
-    setControls(enabled = true) {
-        this.controls = enabled;
-        return this;
-    }
     setSrc(src) {
         this.src = src;
-        return this;
-    }
-    setAutoplay(autoplay = true) {
-        this.autoplay = autoplay;
-        return this;
-    }
-    setLoop(loop = true) {
-        this.loop = loop;
-        return this;
-    }
-    setMuted(muted = true) {
-        this.muted = muted;
         return this;
     }
     setPreload(preload) {
@@ -116,12 +100,8 @@ export class VideoTag extends Tag {
         this.poster = poster;
         return this;
     }
-    setPlaysinline(playsinline = true) {
-        this.playsinline = playsinline;
-        return this;
-    }
 }
-defineSchemaKeys(VideoTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height']);
+defineSchemaKeys(VideoTag, ['src', 'poster', 'preload', 'width', 'height']);
 export function Video(...children) {
     return new VideoTag("video", ...children);
 }
@@ -130,28 +110,12 @@ export class AudioTag extends Tag {
         this.src = src;
         return this;
     }
-    setControls(controls = true) {
-        this.controls = controls;
-        return this;
-    }
-    setAutoplay(autoplay = true) {
-        this.autoplay = autoplay;
-        return this;
-    }
-    setLoop(loop = true) {
-        this.loop = loop;
-        return this;
-    }
-    setMuted(muted = true) {
-        this.muted = muted;
-        return this;
-    }
     setPreload(preload) {
         this.preload = preload;
         return this;
     }
 }
-defineSchemaKeys(AudioTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload']);
+defineSchemaKeys(AudioTag, ['src', 'preload']);
 export function Audio(...children) {
     return new AudioTag("audio", ...children);
 }
@@ -172,12 +136,8 @@ export class TrackTag extends Tag {
         this.label = label;
         return this;
     }
-    setDefault(isDefault = true) {
-        this.default = isDefault;
-        return this;
-    }
 }
-defineSchemaKeys(TrackTag, ['src', 'kind', 'srclang', 'label', 'default']);
+defineSchemaKeys(TrackTag, ['src', 'kind', 'srclang', 'label']);
 export function Track() {
     return new TrackTag("track");
 }

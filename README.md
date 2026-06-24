@@ -454,8 +454,8 @@ Form().hxPost("/users/create", {
   }
 })
 
-// Preload — prefetch on hover, cached by click time
-A("Dashboard").setHref("/dashboard").toggle("hx-boost").toggle("hx-preload")
+// Preload — prefetch on hover, cached by click time (boost + preload are htmx options, not boolean attrs)
+A("Dashboard").setHref("/dashboard").hxGet("/dashboard", { boost: true, preload: "mouseover" })
 
 // Explicit inheritance — htmx 4 does NOT inherit by default
 Div(
@@ -1120,7 +1120,7 @@ Button("Click")
   .padding("4")                  // Available on all Tags
   .setType("submit")             // Button-specific method
   .background("blue-500")        // Available on all Tags
-  .setDisabled(false);           // Button-specific method
+  .toggle("disabled", isLoading);// Boolean attributes — one .toggle() path
 ```
 
 The fluent API generates standard Tailwind CSS classes. Make sure Tailwind is included in your project. For a complete API reference, see the [styling documentation](https://github.com/your-repo/fluent-html/blob/main/STYLING.md).
@@ -1443,10 +1443,10 @@ Video(
     .setKind("subtitles")
     .setSrclang("en")
     .setLabel("English")
-    .setDefault(),
+    .toggle("default"),
   "Your browser does not support video."
 )
-  .setControls()
+  .toggle("controls")
   .setPoster("poster.jpg")
   .setPreload("metadata")
 
@@ -1499,7 +1499,7 @@ Svg(
 Details(
   Summary("Click to expand"),
   P("Hidden content revealed when opened."),
-).setOpen()
+).toggle("open")
 
 // Dialog (modal)
 Dialog(
@@ -1688,7 +1688,7 @@ function StyledButton(props: ButtonProps): View {
       ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''}
     `.replace(/\s+/g, ' ').trim());
   
-  if (props.disabled) button.setDisabled();
+  button.toggle("disabled", !!props.disabled);
   if (props.htmx) button.setHtmx(props.htmx);
   
   return button;

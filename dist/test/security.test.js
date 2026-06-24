@@ -65,4 +65,23 @@ describe("hx-status key injection prevention", () => {
         assert.throws(() => render(Div().setHtmx(hx("/x", evilOpts))), /Invalid hx-status key/);
     });
 });
+// ------------------------------------
+// toggle() boolean-attribute name injection (A-01)
+// ------------------------------------
+describe("toggle() name injection prevention", () => {
+    it("renders a valid boolean attribute bare (never `=\"true\"`)", () => {
+        const html = render(Div().toggle("hidden"));
+        assert.ok(html.includes(" hidden>"));
+        assert.ok(!html.includes('hidden="'));
+    });
+    it("throws at render on a toggle name that would break out of the tag", () => {
+        // The closed BooleanAttribute union blocks this at compile time; the `as never`
+        // mimics an untyped (JS / `as any`) caller, which the emitter guard must reject.
+        const evil = 'x" onmouseover="alert(1)';
+        assert.throws(() => render(Div().toggle(evil)), /Invalid boolean attribute name/);
+    });
+    it("throws on a toggle name with whitespace (smuggled second attribute)", () => {
+        assert.throws(() => render(Div().toggle('checked autofocus')), /Invalid boolean attribute name/);
+    });
+});
 //# sourceMappingURL=security.test.js.map

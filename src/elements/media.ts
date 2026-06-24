@@ -119,14 +119,9 @@ export function Source(): SourceTag {
 export class VideoTag extends Tag {
   width?: number;
   height?: number;
-  controls?: boolean;
   src?: string;
-  autoplay?: boolean;
-  loop?: boolean;
-  muted?: boolean;
   preload?: 'none' | 'metadata' | 'auto';
   poster?: string;
-  playsinline?: boolean;
 
   setWidth(width: number): this {
     this.width = width;
@@ -138,28 +133,8 @@ export class VideoTag extends Tag {
     return this;
   }
 
-  setControls(enabled: boolean = true): this {
-    this.controls = enabled;
-    return this;
-  }
-
   setSrc(src: string): this {
     this.src = src;
-    return this;
-  }
-
-  setAutoplay(autoplay: boolean = true): this {
-    this.autoplay = autoplay;
-    return this;
-  }
-
-  setLoop(loop: boolean = true): this {
-    this.loop = loop;
-    return this;
-  }
-
-  setMuted(muted: boolean = true): this {
-    this.muted = muted;
     return this;
   }
 
@@ -172,14 +147,9 @@ export class VideoTag extends Tag {
     this.poster = poster;
     return this;
   }
-
-  setPlaysinline(playsinline: boolean = true): this {
-    this.playsinline = playsinline;
-    return this;
-  }
 }
 
-defineSchemaKeys(VideoTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'preload', 'playsinline', 'width', 'height']);
+defineSchemaKeys(VideoTag, ['src', 'poster', 'preload', 'width', 'height']);
 
 export function Video(...children: View[]): VideoTag {
   return new VideoTag("video", ...children);
@@ -187,34 +157,10 @@ export function Video(...children: View[]): VideoTag {
 
 export class AudioTag extends Tag {
   src?: string;
-  controls?: boolean;
-  autoplay?: boolean;
-  loop?: boolean;
-  muted?: boolean;
   preload?: 'none' | 'metadata' | 'auto';
 
   setSrc(src?: string): this {
     this.src = src;
-    return this;
-  }
-
-  setControls(controls: boolean = true): this {
-    this.controls = controls;
-    return this;
-  }
-
-  setAutoplay(autoplay: boolean = true): this {
-    this.autoplay = autoplay;
-    return this;
-  }
-
-  setLoop(loop: boolean = true): this {
-    this.loop = loop;
-    return this;
-  }
-
-  setMuted(muted: boolean = true): this {
-    this.muted = muted;
     return this;
   }
 
@@ -224,7 +170,7 @@ export class AudioTag extends Tag {
   }
 }
 
-defineSchemaKeys(AudioTag, ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload']);
+defineSchemaKeys(AudioTag, ['src', 'preload']);
 
 export function Audio(...children: View[]): AudioTag {
   return new AudioTag("audio", ...children);
@@ -235,7 +181,6 @@ export class TrackTag extends Tag {
   kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
   srclang?: string;
   label?: string;
-  default?: boolean;
 
   setSrc(src?: string): this {
     this.src = src;
@@ -256,14 +201,9 @@ export class TrackTag extends Tag {
     this.label = label;
     return this;
   }
-
-  setDefault(isDefault: boolean = true): this {
-    this.default = isDefault;
-    return this;
-  }
 }
 
-defineSchemaKeys(TrackTag, ['src', 'kind', 'srclang', 'label', 'default']);
+defineSchemaKeys(TrackTag, ['src', 'kind', 'srclang', 'label']);
 
 export function Track(): TrackTag {
   return new TrackTag("track");

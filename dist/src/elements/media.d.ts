@@ -45,38 +45,20 @@ export declare function Source(): SourceTag;
 export declare class VideoTag extends Tag {
     width?: number;
     height?: number;
-    controls?: boolean;
     src?: string;
-    autoplay?: boolean;
-    loop?: boolean;
-    muted?: boolean;
     preload?: 'none' | 'metadata' | 'auto';
     poster?: string;
-    playsinline?: boolean;
     setWidth(width: number): this;
     setHeight(height: number): this;
-    setControls(enabled?: boolean): this;
     setSrc(src: string): this;
-    setAutoplay(autoplay?: boolean): this;
-    setLoop(loop?: boolean): this;
-    setMuted(muted?: boolean): this;
     setPreload(preload?: 'none' | 'metadata' | 'auto'): this;
     setPoster(poster?: string): this;
-    setPlaysinline(playsinline?: boolean): this;
 }
 export declare function Video(...children: View[]): VideoTag;
 export declare class AudioTag extends Tag {
     src?: string;
-    controls?: boolean;
-    autoplay?: boolean;
-    loop?: boolean;
-    muted?: boolean;
     preload?: 'none' | 'metadata' | 'auto';
     setSrc(src?: string): this;
-    setControls(controls?: boolean): this;
-    setAutoplay(autoplay?: boolean): this;
-    setLoop(loop?: boolean): this;
-    setMuted(muted?: boolean): this;
     setPreload(preload?: 'none' | 'metadata' | 'auto'): this;
 }
 export declare function Audio(...children: View[]): AudioTag;
@@ -85,12 +67,10 @@ export declare class TrackTag extends Tag {
     kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
     srclang?: string;
     label?: string;
-    default?: boolean;
     setSrc(src?: string): this;
     setKind(kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata'): this;
     setSrclang(srclang?: string): this;
     setLabel(label?: string): this;
-    setDefault(isDefault?: boolean): this;
 }
 export declare function Track(): TrackTag;
 export declare class CanvasTag extends Tag {

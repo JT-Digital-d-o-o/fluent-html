@@ -165,6 +165,12 @@ const HTMX_ATTRS: AttrConfig[] = [
 // A valid hx-status key: a 100–599 code or an Nxx wildcard (matches the HxStatusKey type).
 const STATUS_KEY_RE = /^(?:[1-5][0-9]{2}|[1-5]xx)$/;
 
+// A valid bare boolean-attribute name (set via `.toggle()`). The closed `BooleanAttribute`
+// union blocks malformed names at compile time; this guards untyped (JS / `as any`) callers
+// from injecting markup through a toggle name — anything with spaces, quotes, or `=` would
+// break out of the tag. A bare name is letters, digits, and hyphens only.
+const BOOLEAN_ATTR_RE = /^[a-zA-Z][a-zA-Z0-9-]*$/;
+
 /** Serialize an HTMX config to its attribute string. @internal */
 export function buildHtmx(htmx: HTMX): string {
   let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
@@ -260,8 +266,18 @@ export function buildAttrs(tag: Tag): string {
 
   if (tag.htmx) attrs += ' ' + buildHtmx(tag.htmx);
 
+  // Boolean attributes (the single `.toggle()` path) render bare — present when toggled
+  // on, absent otherwise — so they can never lie the way `checked="false"` did. Each name
+  // is validated here (the one choke point) to reject attribute-name injection from
+  // untyped callers, mirroring the `hx-status` guard above.
   const toggles = tag.toggles;
   if (toggles !== undefined && toggles.length > 0) {
+    for (let i = 0; i < toggles.length; i++) {
+      const name = toggles[i]!;
+      if (!BOOLEAN_ATTR_RE.test(name)) {
+        throw new Error(`Invalid boolean attribute name: "${name}" — expected a bare HTML attribute name (letters, digits, hyphens).`);
+      }
+    }
     attrs += ' ' + toggles.join(' ');
   }
 

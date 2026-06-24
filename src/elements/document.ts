@@ -185,11 +185,8 @@ export function Template(...children: View[]): Tag {
 export class ScriptTag extends Tag {
   src?: string;
   type?: string;
-  async?: boolean;
-  defer?: boolean;
   crossorigin?: 'anonymous' | 'use-credentials';
   integrity?: string;
-  nomodule?: boolean;
 
   setSrc(src?: string): this {
     this.src = src;
@@ -198,16 +195,6 @@ export class ScriptTag extends Tag {
 
   setType(type?: string): this {
     this.type = type;
-    return this;
-  }
-
-  setAsync(async: boolean = true): this {
-    this.async = async;
-    return this;
-  }
-
-  setDefer(defer: boolean = true): this {
-    this.defer = defer;
     return this;
   }
 
@@ -220,14 +207,9 @@ export class ScriptTag extends Tag {
     this.integrity = integrity;
     return this;
   }
-
-  setNomodule(nomodule: boolean = true): this {
-    this.nomodule = nomodule;
-    return this;
-  }
 }
 
-defineSchemaKeys(ScriptTag, ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule']);
+defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin']);
 
 export function Script(js: string = ""): ScriptTag {
   return new ScriptTag("script", js);

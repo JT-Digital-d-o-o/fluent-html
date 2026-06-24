@@ -18,7 +18,7 @@
 - [x] [P0] Add `StreamSink` (pushes to a `node:stream` Readable; `append` returns the backpressure signal)
 - [x] [P0] Rewrite `renderToStream(...views)` as a thin `StreamSink` wrapper over `emit` — **variadic**, symmetric with `render` (fixes the multi-swap compile error)
 - [x] [P0] Delete the duplicated serialization block from `stream.ts` (incl. the drifted `v as string` cast) — `stream.ts` is now a 20-line wrapper
-- [ ] [P1] Land A-01's boolean branch + A-03's `_sk` tuple into the single emitter (coordinate — one escaping/`_sk`/boolean path) — **enabled** (the single `emit()` now exists); the per-attribute logic lands with A-01/A-03 in P3/core-api
+- [~] [P1] Land A-01's boolean branch + A-03's `_sk` tuple into the single emitter (coordinate — one escaping/`_sk`/boolean path) — **A-01 half DONE** (toggle-name validation in `buildAttrs`; boolean attrs render bare; P3/core-api boolean story). A-03 `_sk` tuple half still pending with P3 story 3 (element-setter coverage)
 - [x] [P1] Fuzz test: `renderToStream(v)` joined ≡ `render(v)` over generated trees with every HTMX attr — 300-tree fuzz + ~50 `stream === render` equivalence cases in `test/stream.test.ts`
 - [x] [P1] Check for bugs in the render/stream unification — full suite 1094/1094 green
 

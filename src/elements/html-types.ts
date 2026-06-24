@@ -37,9 +37,15 @@ export type ReferrerPolicy =
   | 'origin-when-cross-origin' | 'same-origin' | 'strict-origin'
   | 'strict-origin-when-cross-origin' | 'unsafe-url';
 
+/**
+ * HTML boolean attributes — the values accepted by `.toggle()`. A **closed** union
+ * (no `(string & {})` escape hatch) so a typo like `.toggle("requried")` is a compile
+ * error. Covers the full set of standard HTML boolean attributes; `.toggle()` is the
+ * only way to set any of them (the named boolean setters were removed in v6).
+ */
 export type BooleanAttribute =
-  | 'disabled' | 'required' | 'checked' | 'readonly' | 'hidden'
-  | 'autofocus' | 'autoplay' | 'controls' | 'loop' | 'muted'
-  | 'multiple' | 'selected' | 'open' | 'novalidate' | 'defer'
-  | 'async' | 'allowfullscreen' | 'formnovalidate' | 'inert'
-  | (string & {});
+  | 'allowfullscreen' | 'async' | 'autofocus' | 'autoplay' | 'checked'
+  | 'controls' | 'default' | 'defer' | 'disabled' | 'formnovalidate'
+  | 'hidden' | 'inert' | 'ismap' | 'itemscope' | 'loop' | 'multiple'
+  | 'muted' | 'nomodule' | 'novalidate' | 'open' | 'playsinline'
+  | 'readonly' | 'required' | 'reversed' | 'selected';

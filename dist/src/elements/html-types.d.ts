@@ -10,5 +10,11 @@ export type FormMethod = 'get' | 'post' | 'dialog';
 export type BrowsingContext = '_self' | '_blank' | '_parent' | '_top' | (string & {});
 export type LinkRel = 'noopener' | 'noreferrer' | 'nofollow' | 'external' | 'author' | 'bookmark' | 'help' | 'license' | 'next' | 'prev' | 'search' | 'tag' | (string & {});
 export type ReferrerPolicy = 'no-referrer' | 'no-referrer-when-downgrade' | 'origin' | 'origin-when-cross-origin' | 'same-origin' | 'strict-origin' | 'strict-origin-when-cross-origin' | 'unsafe-url';
-export type BooleanAttribute = 'disabled' | 'required' | 'checked' | 'readonly' | 'hidden' | 'autofocus' | 'autoplay' | 'controls' | 'loop' | 'muted' | 'multiple' | 'selected' | 'open' | 'novalidate' | 'defer' | 'async' | 'allowfullscreen' | 'formnovalidate' | 'inert' | (string & {});
+/**
+ * HTML boolean attributes — the values accepted by `.toggle()`. A **closed** union
+ * (no `(string & {})` escape hatch) so a typo like `.toggle("requried")` is a compile
+ * error. Covers the full set of standard HTML boolean attributes; `.toggle()` is the
+ * only way to set any of them (the named boolean setters were removed in v6).
+ */
+export type BooleanAttribute = 'allowfullscreen' | 'async' | 'autofocus' | 'autoplay' | 'checked' | 'controls' | 'default' | 'defer' | 'disabled' | 'formnovalidate' | 'hidden' | 'inert' | 'ismap' | 'itemscope' | 'loop' | 'multiple' | 'muted' | 'nomodule' | 'novalidate' | 'open' | 'playsinline' | 'readonly' | 'required' | 'reversed' | 'selected';
 //# sourceMappingURL=html-types.d.ts.map

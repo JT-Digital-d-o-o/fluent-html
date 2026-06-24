@@ -3,12 +3,12 @@
 <!-- hill: downhill -->
 ### As a developer I want boolean attributes to render truthfully via one .toggle() path so that checkboxes/disabled states work
 
-- [ ] [P0] Land the boolean render fix in the P1 emitter — `true` → bare attribute, `false`/`null`/`undefined` → omitted (gated on a boolean-FIELD registry, not `typeof`)
-- [ ] [P0] Remove all named boolean setters (`setChecked`/`setDisabled`/`setReadonly`/`setMultiple`/`setAutofocus`/`setAsync`/`setDefer`/`setOpen`/…) — `.toggle()` only
-- [ ] [P1] Close `BooleanAttribute` (drop the `(string & {})` tail) so `.toggle("requried")` is a compile error
-- [ ] [P1] Update `prefer-set-method` (drop the boolean block) + add `prefer-toggle` (auto-fix)
-- [ ] [P1] Write tests — `checked="false"` no longer renders checked; `.toggle(cond)` on/off
-- [ ] [P1] Check for bugs in the boolean path
+- [x] [P0] Land the boolean render fix in the P1 emitter — `.toggle()` renders bare; the emitter validates toggle names via `BOOLEAN_ATTR_RE` in `buildAttrs` (the A-01 "boolean branch", mirrors `STATUS_KEY_RE`). All boolean `_sk` keys removed ⇒ no API produces a boolean `_sk` value, so `checked="false"` is impossible by construction. See [decisions.md](decisions.md)
+- [x] [P0] Removed every named boolean setter (`setChecked`/`setDisabled`/`setReadonly`/`setMultiple`/`setAutofocus`/`setAsync`/`setDefer`/`setNomodule`/`setControls`/`setAutoplay`/`setLoop`/`setMuted`/`setPlaysinline`/`setOpen`/`setSelected`/`setNovalidate`/`setAllowfullscreen`/`setDefault`) + their boolean `_sk` keys across forms/media/document/interactive/embedded — `.toggle()` only
+- [x] [P1] Closed `BooleanAttribute` (dropped `(string & {})`; restated as the full 25-attr standard set) so `.toggle("requried")` is a compile error
+- [x] [P1] `prefer-set-method` boolean block dropped + new `prefer-toggle` rule (auto-fix static `addAttribute(<bool>,…)` → `.toggle()`, reports dynamic without fix); wired into `recommended`. Plugin suite 222 → 232
+- [x] [P1] Tests — forms/elements expected output now bare (`checked` not `checked="true"`); toggle-name injection throws (security.test.ts); closed-union typo `@ts-expect-error`; `.toggle(cond)` on/off. Lib suite 1343 → 1346
+- [x] [P1] Check for bugs — tsc clean, full suite green, bench gate (no regression), one shared `buildAttrs` so render≡stream parity holds; README hx-boost example fixed to `hxGet({boost,preload})`
 
 <!-- hill: downhill -->
 ### As a developer I want typed accessibility setters so that I stop reaching for addAttribute("aria-*")

@@ -56,32 +56,12 @@ export class InputTag extends Tag {
         this.autocomplete = autocomplete;
         return this;
     }
-    setAutofocus(autofocus = true) {
-        this.autofocus = autofocus;
-        return this;
-    }
-    setChecked(checked = true) {
-        this.checked = checked;
-        return this;
-    }
-    setDisabled(disabled = true) {
-        this.disabled = disabled;
-        return this;
-    }
-    setReadonly(readonly = true) {
-        this.readonly = readonly;
-        return this;
-    }
-    setMultiple(multiple = true) {
-        this.multiple = multiple;
-        return this;
-    }
     setList(list) {
         this.list = list;
         return this;
     }
 }
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'autofocus', 'checked', 'disabled', 'readonly', 'multiple', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'list']);
 export function Input(type) {
     const tag = new InputTag("input");
     if (type)
@@ -127,20 +107,8 @@ export class TextareaTag extends Tag {
         this.autocomplete = autocomplete;
         return this;
     }
-    setAutofocus(autofocus = true) {
-        this.autofocus = autofocus;
-        return this;
-    }
-    setDisabled(disabled = true) {
-        this.disabled = disabled;
-        return this;
-    }
-    setReadonly(readonly = true) {
-        this.readonly = readonly;
-        return this;
-    }
 }
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'autofocus', 'disabled', 'readonly']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete']);
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children) {
     return new TextareaTag("textarea", ...children);
@@ -149,7 +117,7 @@ export function Textarea(...children) {
  * Specialized Tag for `<button>` elements with typed attribute setters.
  *
  * @example
- * Button("Submit").setType("submit").setDisabled(isLoading)
+ * Button("Submit").setType("submit").toggle("disabled", isLoading)
  */
 export class ButtonTag extends Tag {
     setType(type) {
@@ -164,10 +132,6 @@ export class ButtonTag extends Tag {
         this.value = value;
         return this;
     }
-    setDisabled(disabled = true) {
-        this.disabled = disabled;
-        return this;
-    }
     setFormaction(formaction) {
         this.formaction = formaction;
         return this;
@@ -177,7 +141,7 @@ export class ButtonTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'disabled', 'formaction', 'formmethod']);
+defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod']);
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children) {
     return new ButtonTag("button", ...children);
@@ -209,16 +173,12 @@ export class FormTag extends Tag {
         this.target = target;
         return this;
     }
-    setNovalidate(novalidate = true) {
-        this.novalidate = novalidate;
-        return this;
-    }
     setAutocomplete(autocomplete) {
         this.autocomplete = autocomplete;
         return this;
     }
 }
-defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'novalidate', 'autocomplete']);
+defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplete']);
 /** Create a `<form>` element with typed attribute methods. */
 export function Form(...children) {
     return new FormTag("form", ...children);
@@ -228,24 +188,12 @@ export class SelectTag extends Tag {
         this.name = name;
         return this;
     }
-    setMultiple(multiple = true) {
-        this.multiple = multiple;
-        return this;
-    }
     setSize(size) {
         this.size = size;
         return this;
     }
-    setDisabled(disabled = true) {
-        this.disabled = disabled;
-        return this;
-    }
-    setAutofocus(autofocus = true) {
-        this.autofocus = autofocus;
-        return this;
-    }
 }
-defineSchemaKeys(SelectTag, ['name', 'multiple', 'size', 'disabled', 'autofocus']);
+defineSchemaKeys(SelectTag, ['name', 'size']);
 export function Select(...children) {
     return new SelectTag("select", ...children);
 }
@@ -254,20 +202,12 @@ export class OptionTag extends Tag {
         this.value = value;
         return this;
     }
-    setSelected(selected = true) {
-        this.selected = selected;
-        return this;
-    }
-    setDisabled(disabled = true) {
-        this.disabled = disabled;
-        return this;
-    }
     setLabel(label) {
         this.label = label;
         return this;
     }
 }
-defineSchemaKeys(OptionTag, ['value', 'selected', 'disabled', 'label']);
+defineSchemaKeys(OptionTag, ['value', 'label']);
 export function Option(...children) {
     return new OptionTag("option", ...children);
 }
@@ -276,12 +216,8 @@ export class OptgroupTag extends Tag {
         this.label = label;
         return this;
     }
-    setDisabled(disabled = true) {
-        this.disabled = disabled;
-        return this;
-    }
 }
-defineSchemaKeys(OptgroupTag, ['label', 'disabled']);
+defineSchemaKeys(OptgroupTag, ['label']);
 export function Optgroup(...children) {
     return new OptgroupTag("optgroup", ...children);
 }
@@ -293,12 +229,8 @@ export class FieldsetTag extends Tag {
         this.name = name;
         return this;
     }
-    setDisabled(disabled = true) {
-        this.disabled = disabled;
-        return this;
-    }
 }
-defineSchemaKeys(FieldsetTag, ['name', 'disabled']);
+defineSchemaKeys(FieldsetTag, ['name']);
 export function Fieldset(...children) {
     return new FieldsetTag("fieldset", ...children);
 }

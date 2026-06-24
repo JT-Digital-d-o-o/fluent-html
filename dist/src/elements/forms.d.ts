@@ -20,11 +20,6 @@ export declare class InputTag extends Tag {
     minlength?: number;
     maxlength?: number;
     autocomplete?: AutocompleteHint;
-    autofocus?: boolean;
-    checked?: boolean;
-    disabled?: boolean;
-    readonly?: boolean;
-    multiple?: boolean;
     list?: string;
     setType(type?: InputType): this;
     setPlaceholder(placeholder?: string): this;
@@ -38,11 +33,6 @@ export declare class InputTag extends Tag {
     setMinlength(minlength?: number): this;
     setMaxlength(maxlength?: number): this;
     setAutocomplete(autocomplete?: AutocompleteHint): this;
-    setAutofocus(autofocus?: boolean): this;
-    setChecked(checked?: boolean): this;
-    setDisabled(disabled?: boolean): this;
-    setReadonly(readonly?: boolean): this;
-    setMultiple(multiple?: boolean): this;
     setList(list?: string): this;
 }
 /** InputTag narrowed for numeric input types (number, range). */
@@ -81,9 +71,6 @@ export declare class TextareaTag extends Tag {
     maxlength?: number;
     wrap?: 'hard' | 'soft' | 'off';
     autocomplete?: AutocompleteHint;
-    autofocus?: boolean;
-    disabled?: boolean;
-    readonly?: boolean;
     setPlaceholder(placeholder?: string): this;
     setName(name?: string): this;
     setRows(rows?: number): this;
@@ -92,9 +79,6 @@ export declare class TextareaTag extends Tag {
     setMaxlength(maxlength?: number): this;
     setWrap(wrap?: 'hard' | 'soft' | 'off'): this;
     setAutocomplete(autocomplete?: AutocompleteHint): this;
-    setAutofocus(autofocus?: boolean): this;
-    setDisabled(disabled?: boolean): this;
-    setReadonly(readonly?: boolean): this;
 }
 /** Create a `<textarea>` element with typed attribute methods. */
 export declare function Textarea(...children: View[]): TextareaTag;
@@ -102,19 +86,17 @@ export declare function Textarea(...children: View[]): TextareaTag;
  * Specialized Tag for `<button>` elements with typed attribute setters.
  *
  * @example
- * Button("Submit").setType("submit").setDisabled(isLoading)
+ * Button("Submit").setType("submit").toggle("disabled", isLoading)
  */
 export declare class ButtonTag extends Tag {
     type?: 'submit' | 'reset' | 'button';
     name?: string;
     value?: string;
-    disabled?: boolean;
     formaction?: string;
     formmethod?: 'get' | 'post';
     setType(type?: 'submit' | 'reset' | 'button'): this;
     setName(name?: string): this;
     setValue(value?: string): this;
-    setDisabled(disabled?: boolean): this;
     setFormaction(formaction?: string): this;
     setFormmethod(formmethod?: 'get' | 'post'): this;
 }
@@ -130,54 +112,38 @@ export declare class FormTag extends Tag {
     method?: FormMethod;
     enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
     target?: BrowsingContext;
-    novalidate?: boolean;
     autocomplete?: 'on' | 'off';
     setAction(action?: string): this;
     setMethod(method?: FormMethod): this;
     setEnctype(enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'): this;
     setTarget(target?: BrowsingContext): this;
-    setNovalidate(novalidate?: boolean): this;
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
 }
 /** Create a `<form>` element with typed attribute methods. */
 export declare function Form(...children: View[]): FormTag;
 export declare class SelectTag extends Tag {
     name?: string;
-    multiple?: boolean;
     size?: number;
-    disabled?: boolean;
-    autofocus?: boolean;
     setName(name?: string): this;
-    setMultiple(multiple?: boolean): this;
     setSize(size?: number): this;
-    setDisabled(disabled?: boolean): this;
-    setAutofocus(autofocus?: boolean): this;
 }
 export declare function Select(...children: View[]): SelectTag;
 export declare class OptionTag extends Tag {
     value?: string;
-    selected?: boolean;
-    disabled?: boolean;
     label?: string;
     setValue(value: string): this;
-    setSelected(selected?: boolean): this;
-    setDisabled(disabled?: boolean): this;
     setLabel(label?: string): this;
 }
 export declare function Option(...children: View[]): OptionTag;
 export declare class OptgroupTag extends Tag {
     label?: string;
-    disabled?: boolean;
     setLabel(label?: string): this;
-    setDisabled(disabled?: boolean): this;
 }
 export declare function Optgroup(...children: View[]): OptgroupTag;
 export declare function Datalist(...children: View[]): Tag;
 export declare class FieldsetTag extends Tag {
     name?: string;
-    disabled?: boolean;
     setName(name?: string): this;
-    setDisabled(disabled?: boolean): this;
 }
 export declare function Fieldset(...children: View[]): FieldsetTag;
 export declare function Legend(...children: View[]): Tag;

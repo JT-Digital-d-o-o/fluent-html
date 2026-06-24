@@ -9,7 +9,6 @@ export class IframeTag extends Tag {
   width?: string;
   height?: string;
   allow?: string;
-  allowfullscreen?: boolean;
   loading?: 'lazy' | 'eager';
   sandbox?: string;
   name?: string;
@@ -40,11 +39,6 @@ export class IframeTag extends Tag {
     return this;
   }
 
-  setAllowfullscreen(allowfullscreen: boolean = true): this {
-    this.allowfullscreen = allowfullscreen;
-    return this;
-  }
-
   setLoading(loading?: 'lazy' | 'eager'): this {
     this.loading = loading;
     return this;
@@ -66,7 +60,7 @@ export class IframeTag extends Tag {
   }
 }
 
-defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'allowfullscreen', 'sandbox', 'loading', 'name', 'referrerpolicy']);
+defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'sandbox', 'loading', 'name', 'referrerpolicy']);
 
 export function Iframe(...children: View[]): IframeTag {
   return new IframeTag("iframe", ...children);

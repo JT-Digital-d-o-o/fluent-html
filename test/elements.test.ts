@@ -201,8 +201,8 @@ describe("Interactive Elements", () => {
     assert.strictEqual(render(Details([
       Summary("Expanded"),
       P("Visible content"),
-    ]).setOpen()),
-    `<details open="true"><summary>Expanded</summary>\n<p>Visible content</p></details>`);
+    ]).toggle("open")),
+    `<details open><summary>Expanded</summary>\n<p>Visible content</p></details>`);
   });
 
   it("Details with name (accordion)", () => {
@@ -221,7 +221,7 @@ describe("Interactive Elements", () => {
     ])), `<dialog><h2>Dialog Title</h2>\n<p>Dialog content</p>\n<button>Close</button></dialog>`);
   });
 
-  it("Dialog open", () => { assert.strictEqual(render(Dialog("Open dialog").setOpen()), `<dialog open="true">Open dialog</dialog>`); });
+  it("Dialog open", () => { assert.strictEqual(render(Dialog("Open dialog").toggle("open")), `<dialog open>Open dialog</dialog>`); });
 });
 
 // ------------------------------------
@@ -268,38 +268,38 @@ describe("Media Elements", () => {
     ])), `<picture><source srcset="large.webp" media="(min-width: 800px)" type="image/webp">\n<source srcset="small.webp" type="image/webp">\n<img src="fallback.jpg" alt="Picture"></picture>`);
   });
 
-  it("Video with controls", () => { assert.strictEqual(render(Video().setSrc("video.mp4").setControls().setWidth(640).setHeight(360)), `<video src="video.mp4" controls="true" width="640" height="360"></video>`); });
+  it("Video with controls", () => { assert.strictEqual(render(Video().setSrc("video.mp4").toggle("controls").setWidth(640).setHeight(360)), `<video src="video.mp4" width="640" height="360" controls></video>`); });
 
   it("Video with multiple sources", () => {
     assert.strictEqual(render(Video([
       Source().setSrc("video.webm").setType("video/webm"),
       Source().setSrc("video.mp4").setType("video/mp4"),
       "Your browser does not support video.",
-    ]).setControls()),
-    `<video controls="true"><source src="video.webm" type="video/webm">\n<source src="video.mp4" type="video/mp4">\nYour browser does not support video.</video>`);
+    ]).toggle("controls")),
+    `<video controls><source src="video.webm" type="video/webm">\n<source src="video.mp4" type="video/mp4">\nYour browser does not support video.</video>`);
   });
 
   it("Video with all options", () => {
     assert.strictEqual(render(Video()
       .setSrc("video.mp4")
-      .setControls()
-      .setAutoplay()
-      .setLoop()
-      .setMuted()
+      .toggle("controls")
+      .toggle("autoplay")
+      .toggle("loop")
+      .toggle("muted")
       .setPoster("poster.jpg")
       .setPreload("metadata")
-      .setPlaysinline()),
-    `<video src="video.mp4" controls="true" autoplay="true" loop="true" muted="true" poster="poster.jpg" preload="metadata" playsinline="true"></video>`);
+      .toggle("playsinline")),
+    `<video src="video.mp4" poster="poster.jpg" preload="metadata" controls autoplay loop muted playsinline></video>`);
   });
 
-  it("Audio", () => { assert.strictEqual(render(Audio().setSrc("audio.mp3").setControls()), `<audio src="audio.mp3" controls="true"></audio>`); });
+  it("Audio", () => { assert.strictEqual(render(Audio().setSrc("audio.mp3").toggle("controls")), `<audio src="audio.mp3" controls></audio>`); });
 
   it("Audio with preload", () => {
     assert.strictEqual(render(Audio()
       .setSrc("audio.mp3")
-      .setControls()
+      .toggle("controls")
       .setPreload("none")),
-    `<audio src="audio.mp3" controls="true" preload="none"></audio>`);
+    `<audio src="audio.mp3" preload="none" controls></audio>`);
   });
 
   it("Video with Track", () => {
@@ -310,9 +310,9 @@ describe("Media Elements", () => {
         .setKind("subtitles")
         .setSrclang("en")
         .setLabel("English")
-        .setDefault(),
-    ]).setControls()),
-    `<video controls="true"><source src="video.mp4" type="video/mp4">\n<track src="captions.vtt" kind="subtitles" srclang="en" label="English" default="true"></video>`);
+        .toggle("default"),
+    ]).toggle("controls")),
+    `<video controls><source src="video.mp4" type="video/mp4">\n<track src="captions.vtt" kind="subtitles" srclang="en" label="English" default></video>`);
   });
 
   it("Canvas", () => { assert.strictEqual(render(Canvas().setWidth(800).setHeight(600).setId("myCanvas")), `<canvas id="myCanvas" width="800" height="600"></canvas>`); });
@@ -434,8 +434,8 @@ describe("Embedded Content", () => {
     assert.strictEqual(render(Iframe()
       .setSrc("https://youtube.com/embed/xyz")
       .setAllow("accelerometer; autoplay; clipboard-write")
-      .setAllowfullscreen()),
-    `<iframe src="https://youtube.com/embed/xyz" allow="accelerometer; autoplay; clipboard-write" allowfullscreen="true"></iframe>`);
+      .toggle("allowfullscreen")),
+    `<iframe src="https://youtube.com/embed/xyz" allow="accelerometer; autoplay; clipboard-write" allowfullscreen></iframe>`);
   });
 
   it("Embed", () => { assert.strictEqual(render(Embed().setSrc("game.swf").setType("application/x-shockwave-flash").setWidth("400").setHeight("300")), `<embed src="game.swf" type="application/x-shockwave-flash" width="400" height="300">`); });
@@ -485,7 +485,7 @@ describe("Script and Style (Raw Content)", () => {
 
   it("Script with special chars (not escaped)", () => { assert.strictEqual(render(Script("if (a < b && c > d) { alert('<test>'); }")), "<script>if (a < b && c > d) { alert('<test>'); }</script>"); });
 
-  it("Script external", () => { assert.strictEqual(render(Script().setSrc("app.js").setDefer()), `<script src="app.js" defer="true"></script>`); });
+  it("Script external", () => { assert.strictEqual(render(Script().setSrc("app.js").toggle("defer")), `<script src="app.js" defer></script>`); });
 
   it("Script module", () => { assert.strictEqual(render(Script().setSrc("module.js").setType("module")), `<script src="module.js" type="module"></script>`); });
 

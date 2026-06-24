@@ -213,8 +213,14 @@ describe("toggle() with BooleanAttribute", () => {
     it("conditional toggle false", () => {
         assert.ok(!render(Input().toggle("checked", false)).includes("checked"));
     });
-    it("accepts custom boolean attr via escape hatch", () => {
-        assert.ok(render(Div().toggle("hx-boost")).includes("hx-boost"));
+    it("rejects an unknown boolean attr (closed union)", () => {
+        // The BooleanAttribute union is closed (no `(string & {})` tail) — a non-boolean
+        // attribute name is a compile error. This `@ts-expect-error` IS the test: if the
+        // union ever reopened, the unfired directive would fail the build (TS2578).
+        // @ts-expect-error — "hx-boost" is not an HTML boolean attribute
+        render(Div().toggle("hx-boost"));
+        // a real boolean attribute still type-checks and renders bare
+        assert.ok(render(Div().toggle("hidden")).includes("hidden"));
     });
     it("chains multiple toggles", () => {
         const html = render(Input().toggle("required").toggle("autofocus"));

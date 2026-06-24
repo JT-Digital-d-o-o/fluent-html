@@ -131,14 +131,6 @@ export class ScriptTag extends Tag {
         this.type = type;
         return this;
     }
-    setAsync(async = true) {
-        this.async = async;
-        return this;
-    }
-    setDefer(defer = true) {
-        this.defer = defer;
-        return this;
-    }
     setCrossorigin(crossorigin) {
         this.crossorigin = crossorigin;
         return this;
@@ -147,12 +139,8 @@ export class ScriptTag extends Tag {
         this.integrity = integrity;
         return this;
     }
-    setNomodule(nomodule = true) {
-        this.nomodule = nomodule;
-        return this;
-    }
 }
-defineSchemaKeys(ScriptTag, ['src', 'type', 'async', 'defer', 'integrity', 'crossorigin', 'nomodule']);
+defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin']);
 export function Script(js = "") {
     return new ScriptTag("script", js);
 }

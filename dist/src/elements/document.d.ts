@@ -61,18 +61,12 @@ export declare function Template(...children: View[]): Tag;
 export declare class ScriptTag extends Tag {
     src?: string;
     type?: string;
-    async?: boolean;
-    defer?: boolean;
     crossorigin?: 'anonymous' | 'use-credentials';
     integrity?: string;
-    nomodule?: boolean;
     setSrc(src?: string): this;
     setType(type?: string): this;
-    setAsync(async?: boolean): this;
-    setDefer(defer?: boolean): this;
     setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this;
     setIntegrity(integrity?: string): this;
-    setNomodule(nomodule?: boolean): this;
 }
 export declare function Script(js?: string): ScriptTag;
 //# sourceMappingURL=document.d.ts.map

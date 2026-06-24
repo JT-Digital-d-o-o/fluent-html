@@ -4,13 +4,7 @@ import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
 export class DetailsTag extends Tag {
-  open?: boolean;
   name?: string;
-
-  setOpen(open: boolean = true): this {
-    this.open = open;
-    return this;
-  }
 
   setName(name?: string): this {
     this.name = name;
@@ -18,7 +12,7 @@ export class DetailsTag extends Tag {
   }
 }
 
-defineSchemaKeys(DetailsTag, ['open', 'name']);
+defineSchemaKeys(DetailsTag, ['name']);
 
 export function Details(...children: View[]): DetailsTag {
   return new DetailsTag("details", ...children);
@@ -29,15 +23,9 @@ export function Summary(...children: View[]): Tag {
 }
 
 export class DialogTag extends Tag {
-  open?: boolean;
-
-  setOpen(open: boolean = true): this {
-    this.open = open;
-    return this;
-  }
 }
 
-defineSchemaKeys(DialogTag, ['open']);
+defineSchemaKeys(DialogTag, []);
 
 export function Dialog(...children: View[]): DialogTag {
   return new DialogTag("dialog", ...children);

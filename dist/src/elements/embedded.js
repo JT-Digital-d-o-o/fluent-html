@@ -21,10 +21,6 @@ export class IframeTag extends Tag {
         this.allow = allow;
         return this;
     }
-    setAllowfullscreen(allowfullscreen = true) {
-        this.allowfullscreen = allowfullscreen;
-        return this;
-    }
     setLoading(loading) {
         this.loading = loading;
         return this;
@@ -42,7 +38,7 @@ export class IframeTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'allowfullscreen', 'sandbox', 'loading', 'name', 'referrerpolicy']);
+defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'sandbox', 'loading', 'name', 'referrerpolicy']);
 export function Iframe(...children) {
     return new IframeTag("iframe", ...children);
 }

@@ -6,7 +6,6 @@ export declare class IframeTag extends Tag {
     width?: string;
     height?: string;
     allow?: string;
-    allowfullscreen?: boolean;
     loading?: 'lazy' | 'eager';
     sandbox?: string;
     name?: string;
@@ -16,7 +15,6 @@ export declare class IframeTag extends Tag {
     setWidth(width?: string): this;
     setHeight(height?: string): this;
     setAllow(allow?: string): this;
-    setAllowfullscreen(allowfullscreen?: boolean): this;
     setLoading(loading?: 'lazy' | 'eager'): this;
     setSandbox(sandbox?: string): this;
     setName(name?: string): this;

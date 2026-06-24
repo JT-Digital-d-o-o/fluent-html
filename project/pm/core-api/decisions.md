@@ -1,0 +1,8 @@
+# Core API / DX (P3) — Decisions
+
+## `.toggle()` + `toggles[]` is the single boolean path; the emitter validates names (A-01)
+**Date:** 24. 06. 26
+**Context:** A-01 removes all named boolean setters (`setChecked`/`setDisabled`/…) and unifies on `.toggle()`. The spec describes "a boolean `_sk` field renders bare when true / omitted when false, gated on a boolean-FIELD registry" plus "`.toggle()` name escaped + validated in the shared emitter."
+**Decision:** `.toggle()` keeps writing to the existing `toggles[]` array (already rendered bare by `buildAttrs`). All named boolean setters **and their boolean `_sk` keys** are removed. The emitter gains **toggle-name validation** (a `BOOLEAN_ATTR_RE` guard in `buildAttrs`, mirroring `STATUS_KEY_RE`) — this is the "A-01 boolean branch" the P1 render-spine todo deferred here.
+**Reasoning:** Once every named boolean setter and its boolean `_sk` key are removed, **no API can produce a boolean `_sk` value**, so the `checked="false"` bug is eliminated by construction — a boolean-field registry in the emitter would gate dead code. `.toggle()` cannot write typed per-subclass fields anyway (it's generic over `BooleanAttribute`), so `toggles[]` is the natural store. The real residual risk is an untyped (JS / `as any`) caller injecting a malformed name into `toggles[]` (e.g. `'x="y" onload="…"'`); the closed `BooleanAttribute` union blocks typed callers, and the emitter guard blocks the rest. One choke point, consistent with the existing `hx-status` guard.
+**Consequences:** `toggles[]` stays as a distinct field (not folded into `_sk`). Malformed toggle names now throw at render time. Every boolean attribute is set only via `.toggle("name")`.
