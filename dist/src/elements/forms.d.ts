@@ -21,6 +21,7 @@ export declare class InputTag extends Tag {
     maxlength?: number;
     autocomplete?: AutocompleteHint;
     inputmode?: InputMode;
+    capture?: 'user' | 'environment';
     list?: string;
     setType(type?: InputType): this;
     setPlaceholder(placeholder?: string): this;
@@ -35,6 +36,8 @@ export declare class InputTag extends Tag {
     setMaxlength(maxlength?: number): this;
     setAutocomplete(autocomplete?: AutocompleteHint): this;
     setInputmode(inputmode?: InputMode): this;
+    /** Set `capture` — hints the camera/mic source for file inputs on mobile. */
+    setCapture(capture?: 'user' | 'environment'): this;
     setList(list?: string): this;
 }
 /** InputTag narrowed for numeric input types (number, range). */
@@ -122,9 +125,40 @@ export declare class FormTag extends Tag {
     setEnctype(enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'): this;
     setTarget(target?: BrowsingContext): this;
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
+    /** Set `enctype="multipart/form-data"` (required for file uploads). */
+    multipart(): this;
+}
+/** A `{ field: "message" }` map of validation errors, keyed by `T`'s fields. */
+export type ErrorBag<T> = Partial<Record<keyof T & string, string>>;
+/** Prefill values + validation errors that `Form<T>` auto-wires into its controls. */
+export type FormState<T> = {
+    values?: Partial<T>;
+    errors?: ErrorBag<T>;
+};
+/** A `<select>` option descriptor — `Form<T>` builds the `<option>`s and marks the selected one. */
+export type SelectOption = {
+    value: string;
+    label: string;
+};
+/**
+ * Typed control factories given to the `Form<T>` builder. Each field name is
+ * constrained to `keyof T`, so a typo is a compile error; values/errors are wired
+ * from the form's `state`.
+ */
+export interface FormBinding<T> {
+    input(name: keyof T & string, type?: InputType): InputTag;
+    textarea(name: keyof T & string): TextareaTag;
+    select(name: keyof T & string, options: readonly SelectOption[]): SelectTag;
+    hidden(name: keyof T & string, value: string): InputTag;
+    /** The field's error message (an unstyled `<span>`), or nothing when there's no error. */
+    error(name: keyof T & string): View;
 }
 /** Create a `<form>` element with typed attribute methods. */
 export declare function Form(...children: View[]): FormTag;
+/** Typed-binding form: the builder gets control factories constrained to `keyof T` (no prefill). */
+export declare function Form<T>(build: (f: FormBinding<T>) => View): FormTag;
+/** Typed-binding form with `state` — values/errors auto-wire into the controls. */
+export declare function Form<T>(state: FormState<T> | undefined, build: (f: FormBinding<T>) => View): FormTag;
 export declare class SelectTag extends Tag {
     name?: string;
     size?: number;

@@ -262,8 +262,8 @@ export {
   Slot,
 } from './elements/index.js';
 
-// Type-safe form factory
-export { formFor } from './form.js';
+// Typed form binding (B-01) — `Form<T>(state?, f => …)`; types for `state`/builder
+export type { FormState, FormBinding, ErrorBag, SelectOption } from './elements/index.js';
 
 // Overlay — Tag.prototype.overlay() (the method is registered via the control barrel)
 export type { OverlayPosition } from './control/index.js';

@@ -37,17 +37,23 @@ Button("Save").setType("submit")         // ✓
 Button().addAttribute("type", "submit")  // ✗
 ```
 
-**`formFor<T>()`** — type-safe form fields constrained to schema keys (never untyped `.setName()` when a schema exists):
+**`Form<T>(state?, build)`** — typed form binding; field names constrained to schema keys, values/errors auto-wired (never untyped `.setName()` when a schema exists):
 ```typescript
 type CreateUserReq = { email: string; name: string; role: "admin" | "viewer" };
-const f = formFor<CreateUserReq>();
 
-f.input("email", "email")   // ✓ InputTag with typed name
-f.input("nmae", "text")     // ✗ compile error
-f.textarea("name")          // ✓ TextareaTag
-f.select("role", ...)       // ✓ SelectTag
-f.hidden("role", "admin")   // ✓ hidden input with value
+Form<CreateUserReq>({ values: user, errors }, (f) => [
+  f.input("email", "email"),            // ✓ InputTag with typed name + wired value
+  f.input("nmae", "text"),              // ✗ compile error
+  f.error("email"),                     // ✓ field error <span> from state.errors
+  f.textarea("name"),                   // ✓ TextareaTag (value = text content)
+  f.select("role", [                    // ✓ SelectTag; marks the wired value selected
+    { value: "admin", label: "Admin" },
+    { value: "viewer", label: "Viewer" },
+  ]),
+  f.hidden("role", "admin"),            // ✓ hidden input with value
+]).multipart()                          // chainable like any FormTag
 ```
+State is optional — `Form<T>(f => …)` gives typed names without prefill. Plain `Form(...children)` (no builder) still makes an untyped `<form>`.
 
 **Control flow:**
 ```typescript

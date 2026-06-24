@@ -3,13 +3,13 @@
 <!-- hill: downhill -->
 ### As a developer I want typed form binding so that field names are constrained to my schema and values/errors auto-wire
 
-- [ ] [P0] Implement `Form<T>(state?, build: (f) => View): FormTag` HOF (chainable `.setHtmx()`/`.multipart()`)
-- [ ] [P0] Implement `FormState<T> = { values?: Partial<T>; errors?: ErrorBag<T> }` + the `FormBinding<T>` factories `input/textarea/select/hidden(name: keyof T & string)` (value auto-wired from `state.values`)
-- [ ] [P0] Implement `f.error(name: keyof T & string)` typed error accessor (reads `state.errors`)
-- [ ] [P1] Add `FormTag.multipart()` + `InputTag.setCapture("user"|"environment")`
-- [ ] [P1] Route all label/value/error text through escaped paths
-- [ ] [P1] Write tests — `keyof T` rejects a typo'd name (tsc fixture), value/error wiring, multipart
-- [ ] [P1] Check for bugs in `Form<T>`
+- [x] [P0] Implemented `Form<T>` as overloads of the existing `Form` (in `elements/forms.ts`): `Form<T>(build)` / `Form<T>(state, build)` (typed binding) + `Form(...children)` (plain element factory, kept). HOF detected by `typeof args[0]/args[1] === "function"`; returns a chainable `FormTag`. Deleted the old `formFor` (`src/form.ts`)
+- [x] [P0] `FormState<T> = { values?; errors? }` + `ErrorBag<T>` + `FormBinding<T>` factories `input/textarea/select/hidden(name: keyof T & string)` — values auto-wire (input→`value`, textarea→text content, select→marks the matching option `selected` via `.toggle("selected")`). `select` takes a `SelectOption[]` descriptor so it can build + wire the options
+- [x] [P0] `f.error(name: keyof T & string)` — unstyled `<span>message` from `state.errors`, or `Empty()` (the styled FieldError shell stays cut to @jtdigital/ui)
+- [x] [P1] `FormTag.multipart()` (sets `enctype=multipart/form-data`) + `InputTag.setCapture("user"|"environment")` (field + `_sk` + setter)
+- [x] [P1] Escaped paths — values via `setValue` (attr→escapeAttr), textarea/error via text content (escapeHtml). Locked by a test rendering `"><script>` / `<b>x</b>`
+- [x] [P1] Tests — `keyof T` typo `@ts-expect-error`, value/error/select-selected/textarea wiring, escaping, multipart, setCapture, plain element-factory still works. Lib suite 1393 → 1400
+- [x] [P1] Check for bugs — tsc clean, full suite green, bench gate passes (clean run); CLAUDE.md `formFor` section retaught as `Form<T>`
 
 <!-- hill: downhill -->
 ### As a developer I want native dialog behaviors so that modals get free backdrop/Esc/focus-trap without hand-rolled JS

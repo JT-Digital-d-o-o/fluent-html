@@ -4,6 +4,7 @@ export { Strong, Em, B, I, U, S, Mark, Small, Sub, Sup, Abbr, Cite, Q, Dfn, Kbd,
 export { Ul, Ol, Li, Dl, Dt, Dd, Menu, } from "./lists.js";
 export { Table, Thead, Tbody, Tfoot, Tr, Th, ThTag, Td, TdTag, Caption, Colgroup, ColgroupTag, Col, ColTag, } from "./tables.js";
 export { Form, FormTag, Input, InputTag, NumericInputTag, DateTimeInputTag, NoMinMaxInputTag, Textarea, TextareaTag, Button, ButtonTag, Label, LabelTag, Select, SelectTag, Option, OptionTag, Optgroup, OptgroupTag, Datalist, Fieldset, FieldsetTag, Legend, Output, OutputTag, } from "./forms.js";
+export type { FormState, FormBinding, ErrorBag, SelectOption, } from "./forms.js";
 export { Details, DetailsTag, Summary, Dialog, DialogTag, } from "./interactive.js";
 export { Img, ImgTag, Picture, Source, SourceTag, Video, VideoTag, Audio, AudioTag, Track, TrackTag, Canvas, CanvasTag, Svg, SvgTag, } from "./media.js";
 export { SvgShapeTag, Path, PathTag, Circle, CircleTag, Rect, RectTag, Line, LineTag, Polygon, PolygonTag, Polyline, PolylineTag, Ellipse, EllipseTag, G, Defs, Use, UseTag, Text, SvgTextTag, Tspan, TspanTag, } from "./svg.js";

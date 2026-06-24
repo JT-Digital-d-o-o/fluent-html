@@ -1,6 +1,6 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
-import { El } from "../core/utils.js";
+import { El, Empty } from "../core/utils.js";
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
  *
@@ -60,12 +60,17 @@ export class InputTag extends Tag {
         this.inputmode = inputmode;
         return this;
     }
+    /** Set `capture` — hints the camera/mic source for file inputs on mobile. */
+    setCapture(capture) {
+        this.capture = capture;
+        return this;
+    }
     setList(list) {
         this.list = list;
         return this;
     }
 }
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list']);
 export function Input(type) {
     const tag = new InputTag("input");
     if (type)
@@ -185,11 +190,66 @@ export class FormTag extends Tag {
         this.autocomplete = autocomplete;
         return this;
     }
+    /** Set `enctype="multipart/form-data"` (required for file uploads). */
+    multipart() {
+        this.enctype = 'multipart/form-data';
+        return this;
+    }
 }
 defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplete']);
-/** Create a `<form>` element with typed attribute methods. */
-export function Form(...children) {
-    return new FormTag("form", ...children);
+function createFormBinding(state) {
+    const values = (state?.values ?? {});
+    const errors = (state?.errors ?? {});
+    return {
+        input(name, type) {
+            // Cast past Input's narrowed overloads — the binding accepts any InputType.
+            const tag = type ? Input(type) : Input();
+            tag.setName(name);
+            const v = values[name];
+            if (v !== undefined && v !== null)
+                tag.setValue(String(v));
+            return tag;
+        },
+        textarea(name) {
+            const v = values[name];
+            // A textarea's value is its text content, not a `value` attribute.
+            const tag = v !== undefined && v !== null ? Textarea(String(v)) : Textarea();
+            return tag.setName(name);
+        },
+        select(name, options) {
+            const selected = values[name];
+            const opts = options.map((o) => {
+                const opt = Option(o.label).setValue(o.value);
+                if (selected !== undefined && String(selected) === o.value)
+                    opt.toggle("selected");
+                return opt;
+            });
+            return Select(...opts).setName(name);
+        },
+        hidden(name, value) {
+            return Input("hidden").setName(name).setValue(value);
+        },
+        error(name) {
+            const message = errors[name];
+            // Unstyled span — the styled FieldError shell lives in @jtdigital/ui.
+            return message ? El("span", message) : Empty();
+        },
+    };
+}
+export function Form(...args) {
+    // Form(build) — typed binding, no state
+    if (typeof args[0] === "function") {
+        const build = args[0];
+        return new FormTag("form", build(createFormBinding()));
+    }
+    // Form(state, build) — typed binding with prefill
+    if (args.length === 2 && typeof args[1] === "function") {
+        const state = args[0];
+        const build = args[1];
+        return new FormTag("form", build(createFormBinding(state)));
+    }
+    // Form(...children) — plain element factory
+    return new FormTag("form", ...args);
 }
 export class SelectTag extends Tag {
     setName(name) {

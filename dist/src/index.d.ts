@@ -25,7 +25,7 @@ export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta,
 export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 export { Slot, } from './elements/index.js';
-export { formFor } from './form.js';
+export type { FormState, FormBinding, ErrorBag, SelectOption } from './elements/index.js';
 export type { OverlayPosition } from './control/index.js';
 export { IfThen, IfThenElse, Match, ForEach, ForEachElse, Repeat, createContext, createRequiredContext, } from './control/index.js';
 export type { Context } from './control/index.js';

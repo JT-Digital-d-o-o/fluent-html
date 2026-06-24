@@ -40,8 +40,6 @@ export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 // Web Components
 export { Slot, } from './elements/index.js';
-// Type-safe form factory
-export { formFor } from './form.js';
 // Control flow
 export { IfThen, IfThenElse, Match, ForEach, ForEachElse, Repeat, createContext, createRequiredContext, } from './control/index.js';
 // HTMX

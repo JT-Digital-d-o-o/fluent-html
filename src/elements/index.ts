@@ -109,6 +109,14 @@ export {
   OutputTag,
 } from "./forms.js";
 
+// Typed form binding (B-01)
+export type {
+  FormState,
+  FormBinding,
+  ErrorBag,
+  SelectOption,
+} from "./forms.js";
+
 // Interactive elements
 export {
   Details,

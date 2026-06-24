@@ -1,6 +1,6 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
-import { El } from "../core/utils.js";
+import { El, Empty } from "../core/utils.js";
 import type { View } from "../core/types.js";
 import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, InputMode } from "./html-types.js";
 
@@ -24,6 +24,7 @@ export class InputTag extends Tag {
   maxlength?: number;
   autocomplete?: AutocompleteHint;
   inputmode?: InputMode;
+  capture?: 'user' | 'environment';
   list?: string;
 
   setType(type?: InputType): this {
@@ -91,13 +92,19 @@ export class InputTag extends Tag {
     return this;
   }
 
+  /** Set `capture` — hints the camera/mic source for file inputs on mobile. */
+  setCapture(capture?: 'user' | 'environment'): this {
+    this.capture = capture;
+    return this;
+  }
+
   setList(list?: string): this {
     this.list = list;
     return this;
   }
 }
 
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list']);
 
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {
@@ -291,13 +298,99 @@ export class FormTag extends Tag {
     this.autocomplete = autocomplete;
     return this;
   }
+
+  /** Set `enctype="multipart/form-data"` (required for file uploads). */
+  multipart(): this {
+    this.enctype = 'multipart/form-data';
+    return this;
+  }
 }
 
 defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplete']);
 
+// ── Typed form binding (B-01) ───────────────────────────────────────
+
+/** A `{ field: "message" }` map of validation errors, keyed by `T`'s fields. */
+export type ErrorBag<T> = Partial<Record<keyof T & string, string>>;
+
+/** Prefill values + validation errors that `Form<T>` auto-wires into its controls. */
+export type FormState<T> = { values?: Partial<T>; errors?: ErrorBag<T> };
+
+/** A `<select>` option descriptor — `Form<T>` builds the `<option>`s and marks the selected one. */
+export type SelectOption = { value: string; label: string };
+
+/**
+ * Typed control factories given to the `Form<T>` builder. Each field name is
+ * constrained to `keyof T`, so a typo is a compile error; values/errors are wired
+ * from the form's `state`.
+ */
+export interface FormBinding<T> {
+  input(name: keyof T & string, type?: InputType): InputTag;
+  textarea(name: keyof T & string): TextareaTag;
+  select(name: keyof T & string, options: readonly SelectOption[]): SelectTag;
+  hidden(name: keyof T & string, value: string): InputTag;
+  /** The field's error message (an unstyled `<span>`), or nothing when there's no error. */
+  error(name: keyof T & string): View;
+}
+
+function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
+  const values = (state?.values ?? {}) as Record<string, unknown>;
+  const errors = (state?.errors ?? {}) as Record<string, string | undefined>;
+  return {
+    input(name, type) {
+      // Cast past Input's narrowed overloads — the binding accepts any InputType.
+      const tag = type ? (Input as (t: InputType) => InputTag)(type) : Input();
+      tag.setName(name);
+      const v = values[name];
+      if (v !== undefined && v !== null) tag.setValue(String(v));
+      return tag;
+    },
+    textarea(name) {
+      const v = values[name];
+      // A textarea's value is its text content, not a `value` attribute.
+      const tag = v !== undefined && v !== null ? Textarea(String(v)) : Textarea();
+      return tag.setName(name);
+    },
+    select(name, options) {
+      const selected = values[name];
+      const opts = options.map((o) => {
+        const opt = Option(o.label).setValue(o.value);
+        if (selected !== undefined && String(selected) === o.value) opt.toggle("selected");
+        return opt;
+      });
+      return Select(...opts).setName(name);
+    },
+    hidden(name, value) {
+      return Input("hidden").setName(name).setValue(value);
+    },
+    error(name) {
+      const message = errors[name];
+      // Unstyled span — the styled FieldError shell lives in @jtdigital/ui.
+      return message ? El("span", message) : Empty();
+    },
+  };
+}
+
 /** Create a `<form>` element with typed attribute methods. */
-export function Form(...children: View[]): FormTag {
-  return new FormTag("form", ...children);
+export function Form(...children: View[]): FormTag;
+/** Typed-binding form: the builder gets control factories constrained to `keyof T` (no prefill). */
+export function Form<T>(build: (f: FormBinding<T>) => View): FormTag;
+/** Typed-binding form with `state` — values/errors auto-wire into the controls. */
+export function Form<T>(state: FormState<T> | undefined, build: (f: FormBinding<T>) => View): FormTag;
+export function Form(...args: unknown[]): FormTag {
+  // Form(build) — typed binding, no state
+  if (typeof args[0] === "function") {
+    const build = args[0] as (f: FormBinding<unknown>) => View;
+    return new FormTag("form", build(createFormBinding()));
+  }
+  // Form(state, build) — typed binding with prefill
+  if (args.length === 2 && typeof args[1] === "function") {
+    const state = args[0] as FormState<unknown> | undefined;
+    const build = args[1] as (f: FormBinding<unknown>) => View;
+    return new FormTag("form", build(createFormBinding(state)));
+  }
+  // Form(...children) — plain element factory
+  return new FormTag("form", ...(args as View[]));
 }
 
 export class SelectTag extends Tag {
