@@ -84,6 +84,36 @@ describe("behavior()", () => {
     const html = render(Input().behavior("dismissOnEscape"));
     assert.ok(html.includes(`hx-on:keyup="if(event.key===${q}Escape${q})this.remove()"`));
   });
+
+  it("openDialog — calls native showModal()", () => {
+    const html = render(Button("Open").behavior("openDialog", { target: ids.panel }));
+    assert.ok(html.includes(`hx-on:click="document.getElementById(${q}panel${q}).showModal()"`));
+  });
+
+  it("closeDialog — calls native close()", () => {
+    const html = render(Button("Close").behavior("closeDialog", { target: ids.panel }));
+    assert.ok(html.includes(`hx-on:click="document.getElementById(${q}panel${q}).close()"`));
+  });
+
+  it("toggle with event? — uses the custom event", () => {
+    const html = render(Button("Hover").behavior("toggle", { target: ids.panel, event: "mouseenter" }));
+    assert.ok(html.includes(`hx-on:mouseenter="document.getElementById(${q}panel${q}).classList.toggle(${q}hidden${q})"`));
+  });
+
+  it("toggleClass with force? — passes the boolean to classList.toggle", () => {
+    const html = render(Button("On").behavior("toggleClass", { target: ids.panel, class: "active", force: true }));
+    assert.ok(html.includes(`.classList.toggle(${q}active${q}, true)"`));
+  });
+
+  it("remove with animateOut? — adds the class then removes on transitionend", () => {
+    const html = render(Button("X").behavior("remove", { target: ids.banner, animateOut: "fade-out" }));
+    const elJs = `document.getElementById(${q}banner${q})`;
+    assert.ok(html.includes(`${elJs}.classList.add(${q}fade-out${q});${elJs}.addEventListener(${q}transitionend${q},()=&gt;${elJs}.remove(),{once:true})`));
+  });
+
+  it("throws on an injected behavior event option", () => {
+    assert.throws(() => render(Button("X").behavior("toggle", { target: ids.panel, event: 'click" onload="x' as "click" })), /Invalid behavior event/);
+  });
 });
 
 describe(".hxOn()", () => {

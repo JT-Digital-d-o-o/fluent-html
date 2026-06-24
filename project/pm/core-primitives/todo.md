@@ -14,11 +14,11 @@
 <!-- hill: downhill -->
 ### As a developer I want native dialog behaviors so that modals get free backdrop/Esc/focus-trap without hand-rolled JS
 
-- [ ] [P0] Add `behavior("openDialog", { target })` / `behavior("closeDialog", { target })` — call native `<dialog>.showModal()`/`.close()`; ids route through `escapeJs` (P1/D-05)
-- [ ] [P1] Widen behavior options — `event?`/`force?` on `toggle`/`toggleClass`, `animateOut?` on `remove`
-- [ ] [P1] Fix the behavior-catalog docs (index showed 4/9; htmx.md had none)
-- [ ] [P1] Write tests — open/close emit the right `hx-on`, option widening honored
-- [ ] [P1] Check for bugs in the dialog behaviors
+- [x] [P0] Added `behavior("openDialog"/"closeDialog", { target })` — emit native `<dialog>.showModal()`/`.close()`; the id routes through `el()`→`escapeJs` (P1/D-05)
+- [x] [P1] Widened behavior options — `event?` on `toggle`/`toggleClass`/`remove` (default `"click"`, via the new `ev()` helper), `force?` on `toggle`/`toggleClass` (→ `classList.toggle(cls, force)`), `animateOut?` on `remove` (add class + remove on `transitionend`). The user-supplied event is validated in the `behavior` impl (`HX_ON_EVENT_RE`, shared with `.hxOn()`) — attribute-name injection guard
+- [x] [P1] Fixed the behavior-catalog docs — CLAUDE.md now lists all 13 (+ option widening + `.hxOn()` pointer); README adds open/close + widening examples; added a full **Client-side behaviors** table to `guidelines/web-development/htmx.md` (had none)
+- [x] [P1] Tests — open/close emit `showModal()`/`close()`, `event?`/`force?`/`animateOut?` honored, injected event throws. Lib suite 1400 → 1406
+- [x] [P1] Check for bugs — tsc clean, full suite green, bench gate passes, lint clean; `el()` escapes the target id, event names validated
 
 <!-- hill: downhill -->
 ### As a developer I want complete SVG coverage so that icons are typed Views, not Raw(string) injection

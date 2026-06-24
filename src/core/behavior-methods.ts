@@ -10,9 +10,9 @@ import { escapeJs } from "../render/escape.js";
 
 // ── Built-in behavior definitions ───────────────────────────────
 export type BehaviorMap = {
-  toggle:     { target: Id };
-  toggleClass:{ target: Id; class: string };
-  remove:     { target: Id };
+  toggle:     { target: Id; event?: HxOnEvent; force?: boolean };
+  toggleClass:{ target: Id; class: string; event?: HxOnEvent; force?: boolean };
+  remove:     { target: Id; event?: HxOnEvent; animateOut?: string };
   clipboard:  { value: string };
   disable:    void;
   focus:      { target: Id };
@@ -21,6 +21,8 @@ export type BehaviorMap = {
   back:       void;
   formResetOnSwap: void;
   dismissOnEscape: void;
+  openDialog:  { target: Id };
+  closeDialog: { target: Id };
 };
 
 type BehaviorName = keyof BehaviorMap;
@@ -69,19 +71,33 @@ function el(value: unknown): string {
   return `document.getElementById('${escapeJs(resolveId(value))}')`;
 }
 
+/** The trigger event for an option-widened behavior (`event?`), defaulting to `fallback`. */
+function ev(opts: Record<string, unknown>, fallback: string): string {
+  return typeof opts.event === "string" ? opts.event : fallback;
+}
+
+/** The optional second `classList.toggle(cls, force)` argument (` , true`/` , false`), or empty. */
+function forceArg(opts: Record<string, unknown>): string {
+  return opts.force !== undefined ? (opts.force ? ", true" : ", false") : "";
+}
+
 const renderers: Record<BehaviorName, BehaviorRenderer> = {
   toggle: (opts) => [
-    "click",
-    `${el(opts.target)}.classList.toggle('hidden')`,
+    ev(opts, "click"),
+    `${el(opts.target)}.classList.toggle('hidden'${forceArg(opts)})`,
   ],
   toggleClass: (opts) => [
-    "click",
-    `${el(opts.target)}.classList.toggle('${escapeJs(String(opts.class))}')`,
+    ev(opts, "click"),
+    `${el(opts.target)}.classList.toggle('${escapeJs(String(opts.class))}'${forceArg(opts)})`,
   ],
-  remove: (opts) => [
-    "click",
-    `${el(opts.target)}.remove()`,
-  ],
+  remove: (opts) => {
+    const target = el(opts.target);
+    if (opts.animateOut !== undefined) {
+      const cls = escapeJs(String(opts.animateOut));
+      return [ev(opts, "click"), `${target}.classList.add('${cls}');${target}.addEventListener('transitionend',()=>${target}.remove(),{once:true})`];
+    }
+    return [ev(opts, "click"), `${target}.remove()`];
+  },
   clipboard: (opts) => [
     "click",
     `navigator.clipboard.writeText('${escapeJs(String(opts.value))}')`,
@@ -114,6 +130,14 @@ const renderers: Record<BehaviorName, BehaviorRenderer> = {
     "keyup",
     "if(event.key==='Escape')this.remove()",
   ],
+  openDialog: (opts) => [
+    "click",
+    `${el(opts.target)}.showModal()`,
+  ],
+  closeDialog: (opts) => [
+    "click",
+    `${el(opts.target)}.close()`,
+  ],
 };
 
 // ── Implementation ───────────────────────────────────────────────
@@ -123,6 +147,12 @@ const renderers: Record<BehaviorName, BehaviorRenderer> = {
 
   const renderer = renderers[name as BehaviorName];
   const [event, js] = renderer(options ?? {});
+
+  // `event` may now come from a user `event?` option, so it becomes part of the
+  // attribute NAME — validate it the same way `.hxOn()` does.
+  if (!HX_ON_EVENT_RE.test(event)) {
+    throw new Error(`Invalid behavior event: "${event}" — expected an event name (letters, digits, ':' '-' '_').`);
+  }
 
   const attr = `hx-on:${event}`;
   const existing = this.attributes[attr];

@@ -166,9 +166,10 @@ A("Settings").setHtmx(settingsRoutes.index({
 Button("Toggle").behavior("toggle", { target: ids.filterPanel })
 Button("Copy").behavior("clipboard", { value: apiKey })
 Button("Submit").behavior("disable")
+Button("Open").behavior("openDialog", { target: ids.modal })   // native <dialog>.showModal()
 A("Back").behavior("back").cursor("pointer")
 ```
-Built-in: `toggle`, `toggleClass`, `remove`, `clipboard`, `disable`, `focus`, `scrollTo`, `selectAll`, `back`.
+Built-in (13): `toggle`, `toggleClass`, `remove`, `clipboard`, `disable`, `focus`, `scrollTo`, `selectAll`, `back`, `formResetOnSwap`, `dismissOnEscape`, `openDialog`, `closeDialog`. `toggle`/`toggleClass`/`remove` take an optional `event?` (default `"click"`); `toggle`/`toggleClass` take `force?`; `remove` takes `animateOut?` (class added, removed on `transitionend`). For one-offs with no built-in, `.hxOn(event, js)`.
 
 ---
 

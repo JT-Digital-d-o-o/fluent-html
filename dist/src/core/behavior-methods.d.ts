@@ -2,13 +2,19 @@ import { type Id } from "../ids.js";
 export type BehaviorMap = {
     toggle: {
         target: Id;
+        event?: HxOnEvent;
+        force?: boolean;
     };
     toggleClass: {
         target: Id;
         class: string;
+        event?: HxOnEvent;
+        force?: boolean;
     };
     remove: {
         target: Id;
+        event?: HxOnEvent;
+        animateOut?: string;
     };
     clipboard: {
         value: string;
@@ -24,6 +30,12 @@ export type BehaviorMap = {
     back: void;
     formResetOnSwap: void;
     dismissOnEscape: void;
+    openDialog: {
+        target: Id;
+    };
+    closeDialog: {
+        target: Id;
+    };
 };
 type BehaviorName = keyof BehaviorMap;
 /** Events accepted by `.hxOn(event, js)` — standard DOM events plus any `htmx:*` event. */

@@ -843,6 +843,12 @@ Button("Top").behavior("scrollTo", { target: ids.section })
 Input().behavior("selectAll")
 Form().behavior("formResetOnSwap")          // reset after an htmx swap
 Div("Toast").behavior("dismissOnEscape")    // remove on Escape
+Button("Open").behavior("openDialog", { target: ids.modal })   // native <dialog>.showModal()
+Button("Close").behavior("closeDialog", { target: ids.modal }) // .close()
+
+// Option widening:
+Button("Hover").behavior("toggle", { target: ids.panel, event: "mouseenter" })  // custom event
+Button("X").behavior("remove", { target: ids.toast, animateOut: "fade-out" })   // exit animation
 
 // One-off raw handler (typed event, escaped) — when no built-in fits:
 Button("Inc").hxOn("click", "this.dataset.n = (+this.dataset.n||0)+1")

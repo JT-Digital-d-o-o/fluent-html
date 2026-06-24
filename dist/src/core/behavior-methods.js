@@ -16,19 +16,31 @@ function resolveId(value) {
 function el(value) {
     return `document.getElementById('${escapeJs(resolveId(value))}')`;
 }
+/** The trigger event for an option-widened behavior (`event?`), defaulting to `fallback`. */
+function ev(opts, fallback) {
+    return typeof opts.event === "string" ? opts.event : fallback;
+}
+/** The optional second `classList.toggle(cls, force)` argument (` , true`/` , false`), or empty. */
+function forceArg(opts) {
+    return opts.force !== undefined ? (opts.force ? ", true" : ", false") : "";
+}
 const renderers = {
     toggle: (opts) => [
-        "click",
-        `${el(opts.target)}.classList.toggle('hidden')`,
+        ev(opts, "click"),
+        `${el(opts.target)}.classList.toggle('hidden'${forceArg(opts)})`,
     ],
     toggleClass: (opts) => [
-        "click",
-        `${el(opts.target)}.classList.toggle('${escapeJs(String(opts.class))}')`,
+        ev(opts, "click"),
+        `${el(opts.target)}.classList.toggle('${escapeJs(String(opts.class))}'${forceArg(opts)})`,
     ],
-    remove: (opts) => [
-        "click",
-        `${el(opts.target)}.remove()`,
-    ],
+    remove: (opts) => {
+        const target = el(opts.target);
+        if (opts.animateOut !== undefined) {
+            const cls = escapeJs(String(opts.animateOut));
+            return [ev(opts, "click"), `${target}.classList.add('${cls}');${target}.addEventListener('transitionend',()=>${target}.remove(),{once:true})`];
+        }
+        return [ev(opts, "click"), `${target}.remove()`];
+    },
     clipboard: (opts) => [
         "click",
         `navigator.clipboard.writeText('${escapeJs(String(opts.value))}')`,
@@ -61,6 +73,14 @@ const renderers = {
         "keyup",
         "if(event.key==='Escape')this.remove()",
     ],
+    openDialog: (opts) => [
+        "click",
+        `${el(opts.target)}.showModal()`,
+    ],
+    closeDialog: (opts) => [
+        "click",
+        `${el(opts.target)}.close()`,
+    ],
 };
 // ── Implementation ───────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- runtime signature differs from typed overload
@@ -69,6 +89,11 @@ Tag.prototype.behavior = function (name, options) {
         this.attributes = Object.create(null);
     const renderer = renderers[name];
     const [event, js] = renderer(options ?? {});
+    // `event` may now come from a user `event?` option, so it becomes part of the
+    // attribute NAME — validate it the same way `.hxOn()` does.
+    if (!HX_ON_EVENT_RE.test(event)) {
+        throw new Error(`Invalid behavior event: "${event}" — expected an event name (letters, digits, ':' '-' '_').`);
+    }
     const attr = `hx-on:${event}`;
     const existing = this.attributes[attr];
     this.attributes[attr] = existing ? existing + ";" + js : js;
