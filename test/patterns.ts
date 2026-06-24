@@ -43,11 +43,32 @@ describe("Utility Methods", () => {
       label: "Open menu",
       expanded: false,
       controls: "menu-panel",
-      hasPopup: true,
+      haspopup: true,
     }));
     assert.ok(html.includes('aria-label="Open menu"'));
     assert.ok(html.includes('aria-expanded="false"'));
-    assert.ok(html.includes('aria-has-popup="true"'));
+    // single-token name stays correct — NOT the kebab-mangled aria-has-popup
+    assert.ok(html.includes('aria-haspopup="true"'));
+  });
+
+  it("setRole / setTabindex / setTitle render correctly", () => {
+    const html = render(
+      Div("Alert").setRole("alert").setTabindex(0).setTitle("Heads up"),
+    );
+    assert.ok(html.includes('role="alert"'));
+    assert.ok(html.includes('tabindex="0"'));
+    assert.ok(html.includes('title="Heads up"'));
+  });
+
+  it("setAria accepts the tristate 'mixed' and a number value", () => {
+    const html = render(Div().setAria({ checked: "mixed", level: 3 }));
+    assert.ok(html.includes('aria-checked="mixed"'));
+    assert.ok(html.includes('aria-level="3"'));
+  });
+
+  it("setAria escape arm passes a full aria-* key verbatim", () => {
+    const html = render(Div().setAria({ "aria-rowcount": "5" }));
+    assert.ok(html.includes('aria-rowcount="5"'));
   });
 });
 

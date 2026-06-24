@@ -112,3 +112,18 @@ describe("toggle() name injection prevention", () => {
     assert.throws(() => render(Div().toggle('checked autofocus' as never)), /Invalid boolean attribute name/);
   });
 });
+
+// ------------------------------------
+// setAria escape-arm key injection (A-02)
+// ------------------------------------
+
+describe("setAria key injection prevention", () => {
+  it("rejects a malicious aria-* escape key at set time", () => {
+    // The `aria-${string}` escape arm types this as valid, but validateAttributeKey
+    // (run inside setAria) rejects the smuggled attribute/handler.
+    assert.throws(
+      () => Div().setAria({ 'aria-x" onmouseover="alert(1)': "y" } as never),
+      /Invalid attribute key/,
+    );
+  });
+});

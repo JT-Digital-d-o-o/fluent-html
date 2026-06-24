@@ -6,6 +6,7 @@ import "./behavior-methods.js";
 export { RawString, Raw } from "./raw-string.js";
 export { Empty, El } from "./utils.js";
 export { isTag, isRawString } from "./guards.js";
+export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from "./aria-types.js";
 export { defineTheme } from "./define-theme.js";
 export type { ThemeSpec } from "./define-theme.js";
 export type { FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, ThemeKeys, } from "./tailwind-types.js";

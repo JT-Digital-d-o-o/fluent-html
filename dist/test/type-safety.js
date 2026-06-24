@@ -229,6 +229,18 @@ describe("toggle() with BooleanAttribute", () => {
     });
 });
 // -------------------------------------------------------
+// setAria — closed AriaAttributeName (A-02)
+// -------------------------------------------------------
+describe("setAria typed keys", () => {
+    it("rejects a misspelled aria key (closed union)", () => {
+        // The AriaAttributeName union is closed — a typo is a compile error. This
+        // `@ts-expect-error` IS the test (an unfired directive fails the build, TS2578).
+        // @ts-expect-error — "labeledby" is misspelled; the real key is "labelledby"
+        render(Div().setAria({ labeledby: "x" }));
+        assert.ok(render(Div().setAria({ labelledby: "x" })).includes('aria-labelledby="x"'));
+    });
+});
+// -------------------------------------------------------
 // Integration: type guards in render pipeline
 // -------------------------------------------------------
 describe("Render pipeline with type guards", () => {

@@ -18,6 +18,9 @@ export { Empty, El } from "./utils.js";
 // Type guards
 export { isTag, isRawString } from "./guards.js";
 
+// ARIA types — for setRole / setAria (A-02)
+export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from "./aria-types.js";
+
 // Theming — defineTheme + the augmentation seams (C-02)
 export { defineTheme } from "./define-theme.js";
 export type { ThemeSpec } from "./define-theme.js";

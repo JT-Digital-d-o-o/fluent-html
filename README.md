@@ -1850,12 +1850,16 @@ Button("Click").setDataAttrs({
 
 **Accessibility Attributes:**
 ```typescript
-Button("Menu").setAria({
-  label: "Open menu",
-  expanded: false,          // Converts boolean to string
-  controls: "menu-panel",
-  hasPopup: true            // → aria-has-popup
-})
+Button("Menu")
+  .setRole("button")          // role attribute (typed AriaRole)
+  .setTabindex(0)             // tabindex (number)
+  .setTitle("Open the menu")  // title ATTRIBUTE (tooltip), not <title>
+  .setAria({
+    label: "Open menu",
+    expanded: false,          // boolean / "mixed" tristate — no `? "true" : "false"`
+    controls: "menu-panel",
+    haspopup: true            // single-token key → aria-haspopup (keys are closed/typed)
+  })
 ```
 
 ### HTMX Patterns
@@ -2219,7 +2223,10 @@ See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-tai
 | `.setStyles({})`             | Set inline styles as object (camelCase support)       |
 | `.addAttribute(key, value)`  | Add custom attribute                                  |
 | `.setDataAttrs({})`          | Set multiple data-* attributes                        |
-| `.setAria({})`               | Set multiple aria-* attributes                        |
+| `.setAria({})`               | Set aria-* attributes (typed keys, boolean/tristate)  |
+| `.setRole(role)`             | Set the `role` attribute (typed `AriaRole`)           |
+| `.setTabindex(n)`            | Set the `tabindex` attribute                          |
+| `.setTitle(text)`            | Set the `title` attribute (tooltip, not `<title>`)    |
 | `.setHtmx(hx(...))`          | Add HTMX behavior (pre-built object)                  |
 | `.setHtmx(endpoint, opts?)`  | Add HTMX behavior (inline args)                       |
 | `.hxGet(endpoint, opts?)`    | Shorthand for GET request                              |

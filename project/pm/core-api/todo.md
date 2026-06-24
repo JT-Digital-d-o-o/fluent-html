@@ -13,10 +13,10 @@
 <!-- hill: downhill -->
 ### As a developer I want typed accessibility setters so that I stop reaching for addAttribute("aria-*")
 
-- [ ] [P0] Add `setRole(AriaRole)`/`setTabindex(number)`/`setTitle(string)` + typed `setAria(AriaAttrs)` (closed `AriaAttributeName`, boolean/tristate values) — write into the attrs bag (COW), `validateAttributeKey` on derived `aria-*`
-- [ ] [P1] Extend `prefer-set-method` to flag `addAttribute("aria-*"/"data-*"/"style")` (A-G2)
-- [ ] [P1] Write tests — aria key derivation (`haspopup`), tristate `"mixed"`, role/tabindex/title
-- [ ] [P1] Check for bugs in the ARIA setters
+- [x] [P0] Added `setRole(AriaRole)`/`setTabindex(number)`/`setTitle(string)` (delegate to `addAttribute` → COW + key validation) + rewrote `setAria(AriaAttrs)` — closed `AriaAttributeName` (lowercase single-token, NO kebab so `haspopup` → `aria-haspopup` not `aria-has-popup`), `AriaValue = string|number|boolean` (tristate `"mixed"` is a string), `aria-${string}` escape arm, `validateAttributeKey` on the derived key. Types in `src/core/aria-types.ts`, exported via barrel
+- [x] [P1] Extended `prefer-set-method` — `role`/`title` auto-fix (1:1); `aria-*`/`data-*`/`style`/`tabindex` report-only (`preferTypedSetter`, no unsafe fix). Plugin suite 232 → 238
+- [x] [P1] Tests — `haspopup`→`aria-haspopup` (the kebab bug, fixed in `test/patterns.ts`), tristate `"mixed"` + number value, role/tabindex/title render, escape-arm verbatim, closed-union `@ts-expect-error`, malicious escape-key rejection (security.test.ts). Lib suite 1346 → 1351
+- [x] [P1] Check for bugs — tsc clean, full suite green, lint-clean; escape-arm key runs through `validateAttributeKey` (injection blocked at set time); `undefined` values skipped; `kebabCase` still used by setStyles/setDataAttrs
 
 <!-- hill: downhill -->
 ### As a developer I want complete, consistently named element setters so that no attribute is silently dead

@@ -4,6 +4,7 @@ import type { Id} from "../ids.js";
 import { isId } from "../ids.js";
 import type { View } from "./types.js";
 import type { BooleanAttribute } from "../elements/html-types.js";
+import type { AriaRole, AriaAttrs } from "./aria-types.js";
 
 /** @internal Shared empty attributes object — never mutate */
 export const EMPTY_ATTRS: Record<string, string> = Object.freeze(Object.create(null)) as Record<string, string>;
@@ -291,22 +292,59 @@ export class Tag {
   }
 
   /**
-   * Set ARIA attributes for accessibility.
+   * Set the ARIA `role` attribute (the role goes on `role=`, not `aria-role`).
    *
-   * @param attrs - Object with ARIA attribute names (without 'aria-' prefix)
-   * @returns this (for chaining)
+   * @example
+   * Div("Alert").setRole("alert")
+   * Ul().setRole("menu")
+   */
+  setRole(role: AriaRole): this {
+    return this.addAttribute("role", role);
+  }
+
+  /**
+   * Set the `tabindex` attribute (focus order). `0` makes a non-interactive
+   * element focusable; `-1` makes it programmatically focusable but not tabbable.
+   *
+   * @example
+   * Div("Focusable").setTabindex(0)
+   */
+  setTabindex(index: number): this {
+    return this.addAttribute("tabindex", String(index));
+  }
+
+  /**
+   * Set the `title` **attribute** (the native tooltip) — NOT the `<title>` element.
+   *
+   * @example
+   * Button("?").setTitle("Show help")
+   */
+  setTitle(title: string): this {
+    return this.addAttribute("title", title);
+  }
+
+  /**
+   * Set ARIA state/property attributes for accessibility. Keys are the bare ARIA
+   * names (`label`, `haspopup`, `labelledby`) and are prefixed with `aria-` — they
+   * are NOT kebab-cased, so single-token names stay correct (`aria-haspopup`, not
+   * `aria-has-popup`). State values accept a real `boolean` or the tristate
+   * `"mixed"`. A full `aria-*` key may be passed verbatim for non-standard attributes.
    *
    * @example
    * Button("Menu").setAria({
    *   label: "Open menu",
-   *   expanded: "false",
+   *   expanded: false,
+   *   haspopup: true,
    *   controls: "menu-panel"
    * })
    */
-  setAria(attrs: Record<string, string | boolean>): this {
+  setAria(attrs: AriaAttrs): this {
     if (this.attributes === EMPTY_ATTRS) this.attributes = Object.create(null) as Record<string, string>;
     for (const [key, value] of Object.entries(attrs)) {
-      this.attributes[`aria-${kebabCase(key)}`] = String(value);
+      if (value === undefined) continue;
+      const attrKey = key.startsWith("aria-") ? key : `aria-${key}`;
+      validateAttributeKey(attrKey);
+      this.attributes[attrKey] = String(value);
     }
     return this;
   }

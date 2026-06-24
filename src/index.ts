@@ -5,6 +5,9 @@ export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';
 
+// ARIA types — for setRole / setAria (A-02)
+export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from './core/index.js';
+
 // Theming — defineTheme + the augmentation seams (C-02).
 // Users augment the FluentCustom* interfaces via `declare module "fluent-html"`.
 export { defineTheme } from './core/index.js';

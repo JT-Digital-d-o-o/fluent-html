@@ -2,6 +2,7 @@ import type { HTMX } from "../htmx.js";
 import type { Id } from "../ids.js";
 import type { View } from "./types.js";
 import type { BooleanAttribute } from "../elements/html-types.js";
+import type { AriaRole, AriaAttrs } from "./aria-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
 /**
@@ -175,19 +176,44 @@ export declare class Tag {
      */
     setDataAttrs(attrs: Record<string, string>): this;
     /**
-     * Set ARIA attributes for accessibility.
+     * Set the ARIA `role` attribute (the role goes on `role=`, not `aria-role`).
      *
-     * @param attrs - Object with ARIA attribute names (without 'aria-' prefix)
-     * @returns this (for chaining)
+     * @example
+     * Div("Alert").setRole("alert")
+     * Ul().setRole("menu")
+     */
+    setRole(role: AriaRole): this;
+    /**
+     * Set the `tabindex` attribute (focus order). `0` makes a non-interactive
+     * element focusable; `-1` makes it programmatically focusable but not tabbable.
+     *
+     * @example
+     * Div("Focusable").setTabindex(0)
+     */
+    setTabindex(index: number): this;
+    /**
+     * Set the `title` **attribute** (the native tooltip) — NOT the `<title>` element.
+     *
+     * @example
+     * Button("?").setTitle("Show help")
+     */
+    setTitle(title: string): this;
+    /**
+     * Set ARIA state/property attributes for accessibility. Keys are the bare ARIA
+     * names (`label`, `haspopup`, `labelledby`) and are prefixed with `aria-` — they
+     * are NOT kebab-cased, so single-token names stay correct (`aria-haspopup`, not
+     * `aria-has-popup`). State values accept a real `boolean` or the tristate
+     * `"mixed"`. A full `aria-*` key may be passed verbatim for non-standard attributes.
      *
      * @example
      * Button("Menu").setAria({
      *   label: "Open menu",
-     *   expanded: "false",
+     *   expanded: false,
+     *   haspopup: true,
      *   controls: "menu-panel"
      * })
      */
-    setAria(attrs: Record<string, string | boolean>): this;
+    setAria(attrs: AriaAttrs): this;
     /** @internal Variant prefix state — used by tailwind-methods mixin */
     _variantPrefix: string | null;
 }
