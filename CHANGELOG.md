@@ -182,7 +182,7 @@ All SVG elements now have typed tag classes with fluent attribute setters:
 
 ---
 
-## [6.0.0] - Greenfield v6 (Unreleased)
+## [6.0.0] - Greenfield v6
 
 A greenfield, v4-native, instruction-set rewrite of the contract for new projects. Beyond the HTMX 4 migration, v6 reworks the everyday authoring surface (P3) and the keeper primitives (P4): one `.toggle()` boolean path, typed ARIA, complete/consistent setters, layout shortcuts, `.overlay()`, first-class control-flow/document APIs, typed `Form<T>` binding, native dialog behaviors, full SVG coverage, and `.htmxIndicator()`.
 
