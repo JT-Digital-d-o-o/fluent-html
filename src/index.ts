@@ -361,31 +361,3 @@ export type {
 
 // Behavior system
 export type { BehaviorMap, HxOnEvent } from './core/behavior-methods.js';
-
-// Fold / Recursion schemes
-export {
-  foldView,
-  paraView,
-  unfoldView,
-  hyloView,
-  countAlgebra,
-  textAlgebra,
-  linksAlgebra,
-  renderAlgebra,
-  createTransformAlgebra,
-  addClassToMatching,
-  ariaDescribeAlgebra,
-  tocCoalgebra,
-  linkedTocCoalgebra,
-} from './fold/index.js';
-
-export type {
-  ViewAlgebra,
-  ParaAlgebra,
-  TagAttrs,
-  ViewCoalgebra,
-  ViewLayer,
-  LinkInfo,
-  TocEntry,
-  TocSeed,
-} from './fold/index.js';

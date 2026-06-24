@@ -62,6 +62,4 @@ hxResponse, HxResponse, } from './patterns.js';
 export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
 // Type-safe Routes
 export { defineRoutes, } from './routes.js';
-// Fold / Recursion schemes
-export { foldView, paraView, unfoldView, hyloView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra, createTransformAlgebra, addClassToMatching, ariaDescribeAlgebra, tocCoalgebra, linkedTocCoalgebra, } from './fold/index.js';
 //# sourceMappingURL=index.js.map

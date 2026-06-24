@@ -221,6 +221,10 @@ Form<CreateUserReq>({ values, errors }, (f) => [
 
 The `Overlay(content, overlay, position)` function is replaced by the `Tag.prototype.overlay(position?, ...content)` method (works on void elements, e.g. `Img().overlay("bottom-right", Badge("3"))`).
 
+#### Removed the fold / recursion-schemes layer
+
+The fold layer is gone — `foldView`/`paraView`/`unfoldView`/`hyloView`, all algebras/coalgebras (`countAlgebra`/`textAlgebra`/`linksAlgebra`/`renderAlgebra`/`ariaDescribeAlgebra`/`createTransformAlgebra`/`addClassToMatching`/`tocCoalgebra`/`linkedTocCoalgebra`), the `fluent-html/fold` subpath, and their types. It was demo-only (~1000 LOC) and a disproportionate source of Track-D bugs; the real needs (a11y audit / TOC / link extraction) are short plain recursive `View` walks in app-land. `FOLD.md` and `functional-patterns.md` are deleted.
+
 #### HTMX 4 Compatibility
 
 Updated the HTMX integration from v2 to v4. This is a major update that aligns with htmx 4's new defaults and removed features.

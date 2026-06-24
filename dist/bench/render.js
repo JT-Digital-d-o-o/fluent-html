@@ -52,8 +52,6 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 import { performance } from "node:perf_hooks";
 import { render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article, Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td, Img, Main, ForEach, createContext, } from "../src/index.js";
-import { foldView } from "../src/fold/index.js";
-import { countAlgebra } from "../src/fold/algebras/index.js";
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -158,9 +156,8 @@ printResult("Large ForEach (5000 items)", measure("large-foreach", () => render(
 // the scenarios above render a pre-built tree, hiding construction cost).
 printResult("Build+render realistic (per req)", measure("build-render", () => render(benchRealisticPage()), ITERATIONS));
 console.log("");
-console.log("Fold & Context benchmarks:");
+console.log("Context benchmarks:");
 console.log("─".repeat(72));
-printResult("foldView count (realistic page)", measure("fold-count", () => foldView(countAlgebra, realisticPage), ITERATIONS));
 const ThemeCtx = createContext("light");
 printResult("Context scope/read (1000 scopes)", measure("context", () => {
     for (let i = 0; i < 1000; i++) {

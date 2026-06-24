@@ -57,7 +57,6 @@ render(page);
 - **Full autocomplete** - Every method, attribute, and value suggested by your IDE
 - **First-class HTMX 4** - Type-safe routes with typed params, triggers, swaps, targets, morph strategies, and more
 - **100+ Tailwind methods** - Gradients, filters, group/peer, arbitrary values with unit overloads, and more
-- **Functional patterns** - Fold, para, ana, hylo recursion schemes for View tree processing ([docs](functional-patterns.md))
 - **Scoped context** - `createContext` / `createRequiredContext` for implicit values without prop drilling
 - **XSS protection** - All content escaped automatically
 - **Zero dependencies** - Pure TypeScript, ~15KB minified
@@ -219,7 +218,6 @@ render(
 - [Global HTMX Config](#global-htmx-config) - Type-safe global htmx configuration
 - [HTML Elements](#html-elements) - 60+ typed elements with generic `Input()` factory
 - [Control Flow](#control-flow-1) - IfThen, Match, ForEach
-- [Functional Patterns](functional-patterns.md) - Fold, para, ana, hylo recursion schemes, control flow, context
 - [Common Patterns](#common-patterns) - Layouts, partial swaps, response helpers
 - [ESLint Plugin](#eslint-plugin) - 16 rules catching style overwrites, class conflicts, HTMX pitfalls & more
 - [Tailwind CSS Extractor](#tailwind-css-extractor) - Generate CSS from fluent method calls
@@ -2064,35 +2062,6 @@ Div(
   ).flex().justifyContent("end").gap("2"),
 ).flex().flexDirection("col").gap("6")
 ```
-
----
-
-## Functional Patterns
-
-Fluent HTML provides four recursion schemes for View tree processing:
-
-```typescript
-import { foldView, paraView, unfoldView, hyloView, countAlgebra, textAlgebra } from 'fluent-html';
-
-// Catamorphism — collapse tree to value
-foldView(countAlgebra, Div(P("Hello"), P("World")));  // 3
-foldView(textAlgebra, H1("Welcome"));                  // "Welcome\n"
-
-// Paramorphism — fold with access to original subtree
-paraView(ariaDescribeAlgebra, Nav(A("Home").setHref("/")));
-// "nav containing: link 'Home' (href: /)"
-
-// Anamorphism — build tree from seed
-unfoldView(tocCoalgebra, { type: "list", entries: headings });
-// <ul><li>Introduction</li><li>Getting Started</li></ul>
-
-// Hylomorphism — fused unfold+fold, no intermediate tree
-hyloView(nestCoalg, countAlgebra, { depth: 3 });  // 3
-```
-
-Pre-built algebras: `countAlgebra`, `textAlgebra`, `linksAlgebra`, `renderAlgebra`, `ariaDescribeAlgebra`. Transform helpers: `createTransformAlgebra`, `addClassToMatching`. Coalgebras: `tocCoalgebra`, `linkedTocCoalgebra`.
-
-See the **[full documentation](functional-patterns.md)** for in-depth explanations, all four recursion schemes, and custom algebra examples.
 
 ---
 
