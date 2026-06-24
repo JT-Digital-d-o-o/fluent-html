@@ -1,5 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { CrossOrigin, HttpEquiv } from "./html-types.js";
 export declare class HtmlTag extends Tag {
     lang?: string;
     dir?: 'ltr' | 'rtl' | 'auto';
@@ -19,7 +20,8 @@ export declare class MetaTag extends Tag {
     setName(name?: string): this;
     setContent(content?: string): this;
     setCharset(charset?: string): this;
-    setHttpEquiv(httpEquiv?: string): this;
+    /** Set `http-equiv` (emits the real `http-equiv` attribute, not the dead `httpEquiv`). */
+    setHttpEquiv(httpEquiv?: HttpEquiv): this;
     setProperty(property?: string): this;
 }
 export declare function Meta(): MetaTag;
@@ -29,15 +31,18 @@ export declare class LinkTag extends Tag {
     type?: string;
     media?: string;
     sizes?: string;
-    crossorigin?: 'anonymous' | 'use-credentials';
+    crossorigin?: CrossOrigin | '';
     integrity?: string;
     as?: string;
+    hreflang?: string;
     setRel(rel?: string): this;
+    setHreflang(hreflang?: string): this;
     setHref(href?: string): this;
     setType(type?: string): this;
     setMedia(media?: string): this;
     setSizes(sizes?: string): this;
-    setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this;
+    /** Set `crossorigin`. The bare `""` overload is for preconnect / Google Fonts. */
+    setCrossOrigin(crossorigin?: CrossOrigin | ''): this;
     setIntegrity(integrity?: string): this;
     setAs(as?: string): this;
 }
@@ -61,11 +66,11 @@ export declare function Template(...children: View[]): Tag;
 export declare class ScriptTag extends Tag {
     src?: string;
     type?: string;
-    crossorigin?: 'anonymous' | 'use-credentials';
+    crossorigin?: CrossOrigin | '';
     integrity?: string;
     setSrc(src?: string): this;
     setType(type?: string): this;
-    setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this;
+    setCrossOrigin(crossorigin?: CrossOrigin | ''): this;
     setIntegrity(integrity?: string): this;
 }
 export declare function Script(js?: string): ScriptTag;

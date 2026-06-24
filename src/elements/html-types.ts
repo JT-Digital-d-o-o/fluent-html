@@ -37,6 +37,18 @@ export type ReferrerPolicy =
   | 'origin-when-cross-origin' | 'same-origin' | 'strict-origin'
   | 'strict-origin-when-cross-origin' | 'unsafe-url';
 
+/** `crossorigin` attribute values. The bare `""` overload is for preconnect / Google Fonts. */
+export type CrossOrigin = 'anonymous' | 'use-credentials';
+
+/** `inputmode` hint — which virtual keyboard a mobile browser shows. */
+export type InputMode =
+  | 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
+
+/** `http-equiv` pragma directive (meta). */
+export type HttpEquiv =
+  | 'content-type' | 'content-security-policy' | 'default-style'
+  | 'x-ua-compatible' | 'refresh' | (string & {});
+
 /**
  * HTML boolean attributes — the values accepted by `.toggle()`. A **closed** union
  * (no `(string & {})` escape hatch) so a typo like `.toggle("requried")` is a compile

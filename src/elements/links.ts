@@ -17,9 +17,15 @@ export class AnchorTag extends Tag {
   download?: string | boolean;
   type?: string;
   referrerpolicy?: ReferrerPolicy;
+  hreflang?: string;
 
   setHref(href?: string): this {
     this.href = href;
+    return this;
+  }
+
+  setHreflang(hreflang?: string): this {
+    this.hreflang = hreflang;
     return this;
   }
 
@@ -43,13 +49,13 @@ export class AnchorTag extends Tag {
     return this;
   }
 
-  setReferrerpolicy(referrerpolicy?: ReferrerPolicy): this {
+  setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
     this.referrerpolicy = referrerpolicy;
     return this;
   }
 }
 
-defineSchemaKeys(AnchorTag, ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy']);
+defineSchemaKeys(AnchorTag, ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy', 'hreflang']);
 
 /** Create an `<a>` (anchor) element with typed attribute methods. */
 export function A(...children: View[]): AnchorTag {

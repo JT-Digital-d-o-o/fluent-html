@@ -2,6 +2,7 @@ import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
+import type { CrossOrigin, HttpEquiv } from "./html-types.js";
 
 export class HtmlTag extends Tag {
   lang?: string;
@@ -58,7 +59,8 @@ export class MetaTag extends Tag {
     return this;
   }
 
-  setHttpEquiv(httpEquiv?: string): this {
+  /** Set `http-equiv` (emits the real `http-equiv` attribute, not the dead `httpEquiv`). */
+  setHttpEquiv(httpEquiv?: HttpEquiv): this {
     this.httpEquiv = httpEquiv;
     return this;
   }
@@ -69,7 +71,7 @@ export class MetaTag extends Tag {
   }
 }
 
-defineSchemaKeys(MetaTag, ['name', 'charset', 'httpEquiv', 'property', 'content']);
+defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content']);
 
 export function Meta(): MetaTag {
   return new MetaTag("meta");
@@ -81,12 +83,18 @@ export class LinkTag extends Tag {
   type?: string;
   media?: string;
   sizes?: string;
-  crossorigin?: 'anonymous' | 'use-credentials';
+  crossorigin?: CrossOrigin | '';
   integrity?: string;
   as?: string;
+  hreflang?: string;
 
   setRel(rel?: string): this {
     this.rel = rel;
+    return this;
+  }
+
+  setHreflang(hreflang?: string): this {
+    this.hreflang = hreflang;
     return this;
   }
 
@@ -110,7 +118,8 @@ export class LinkTag extends Tag {
     return this;
   }
 
-  setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this {
+  /** Set `crossorigin`. The bare `""` overload is for preconnect / Google Fonts. */
+  setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
     this.crossorigin = crossorigin;
     return this;
   }
@@ -126,7 +135,7 @@ export class LinkTag extends Tag {
   }
 }
 
-defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity']);
+defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang']);
 
 export function Link(): LinkTag {
   return new LinkTag("link");
@@ -185,7 +194,7 @@ export function Template(...children: View[]): Tag {
 export class ScriptTag extends Tag {
   src?: string;
   type?: string;
-  crossorigin?: 'anonymous' | 'use-credentials';
+  crossorigin?: CrossOrigin | '';
   integrity?: string;
 
   setSrc(src?: string): this {
@@ -198,7 +207,7 @@ export class ScriptTag extends Tag {
     return this;
   }
 
-  setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this {
+  setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
     this.crossorigin = crossorigin;
     return this;
   }

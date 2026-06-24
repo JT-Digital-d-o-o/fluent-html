@@ -185,10 +185,23 @@ export function buildAttrs(tag) {
         attrs += ' style="' + escapeAttr(tsty) + '"';
     const sk = tag._sk;
     if (sk !== undefined) {
+        const bag = tag;
         for (let i = 0; i < sk.length; i++) {
-            const value = tag[sk[i]];
+            const entry = sk[i];
+            // A `[prop, attr]` tuple decouples the JS field from the emitted attribute name
+            // (e.g. `httpEquiv` → `http-equiv`); a plain string uses the same name for both.
+            let prop, attr;
+            if (typeof entry === 'string') {
+                prop = entry;
+                attr = entry;
+            }
+            else {
+                prop = entry[0];
+                attr = entry[1];
+            }
+            const value = bag[prop];
             if (value !== undefined && value !== null) {
-                attrs += ' ' + sk[i] + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
+                attrs += ' ' + attr + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
             }
         }
     }

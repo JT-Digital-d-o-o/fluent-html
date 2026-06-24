@@ -11,6 +11,10 @@ export class AnchorTag extends Tag {
         this.href = href;
         return this;
     }
+    setHreflang(hreflang) {
+        this.hreflang = hreflang;
+        return this;
+    }
     setTarget(target) {
         this.target = target;
         return this;
@@ -27,12 +31,12 @@ export class AnchorTag extends Tag {
         this.type = type;
         return this;
     }
-    setReferrerpolicy(referrerpolicy) {
+    setReferrerPolicy(referrerpolicy) {
         this.referrerpolicy = referrerpolicy;
         return this;
     }
 }
-defineSchemaKeys(AnchorTag, ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy']);
+defineSchemaKeys(AnchorTag, ['href', 'target', 'rel', 'download', 'type', 'referrerpolicy', 'hreflang']);
 /** Create an `<a>` (anchor) element with typed attribute methods. */
 export function A(...children) {
     return new AnchorTag("a", ...children);

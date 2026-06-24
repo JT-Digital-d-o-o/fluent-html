@@ -21,11 +21,11 @@
 <!-- hill: downhill -->
 ### As a developer I want complete, consistently named element setters so that no attribute is silently dead
 
-- [ ] [P0] Add the `_sk` tuple form `[prop, attr]` (coordinate with the P1 emitter + A-01 boolean branch)
-- [ ] [P1] Fix `setHttpEquiv` (emit `http-equiv`); add `setInputmode`/`setHreflang`/`setCrossOrigin(""|CrossOrigin)`/SVG `setOpacity`/`setFilter`/`OptionTag.setValue(value?)`
-- [ ] [P1] Outright camelCase renames — `setReadOnly`/`setAutoFocus`/`setCrossOrigin`/`setReferrerPolicy`/`setNoValidate`/`setAllowFullscreen`; update the ESLint map in lockstep
-- [ ] [P1] Write tests — `http-equiv` emits, each new setter round-trips through `_sk`
-- [ ] [P1] Check for bugs in the setter coverage
+- [x] [P0] Added the `_sk` tuple form `SchemaKey = string | readonly [prop, attr]` (`proto.ts`) + tuple-aware `buildAttrs` loop (one `typeof` per key, bench-clean). This is the A-03 half of the render-spine deferred emitter item. First real use: `['httpEquiv', 'http-equiv']` and SVG `['svgOpacity', 'opacity']` (decouples the field from the Tailwind `.opacity()` method)
+- [x] [P1] Fixed `setHttpEquiv` (typed `HttpEquiv`, tuple → real `http-equiv`); added `setInputmode` (Input/Textarea, `InputMode`), `setHreflang` (Link/Anchor), `setCrossOrigin(CrossOrigin|"")` (widened + `""` for preconnect), SVG `setOpacity`/`setFilter` rerouted through `_sk` (dropped deprecated `setSvgOpacity` + the addAttribute path), `OptionTag.setValue(value?)` now optional
+- [x] [P1] Renames — `setCrossorigin`→`setCrossOrigin` (Img/Link/Script), `setReferrerpolicy`→`setReferrerPolicy` (Anchor/Iframe). (The other spec'd renames — setReadonly/setAutofocus/setNovalidate/setAllowfullscreen — were boolean setters already deleted in A-01.) ESLint map updated in lockstep + new `hreflang`/`inputmode`/`http-equiv` entries
+- [x] [P1] Tests — `http-equiv` emits the real name (was the `httpEquiv` bug), SVG opacity/filter via `_sk`, inputmode (Input+Textarea), anchor hreflang, bare `crossorigin=""`, `Option().setValue()`, renamed setters. Lib suite 1351 → 1358
+- [x] [P1] Check for bugs — tsc clean project-wide, full suite green, bench gate passed; tuple verified through the real renderer (render≡stream via shared `buildAttrs`); attr NAMES are library literals (no injection), values escaped; `""` passes the emit guard intentionally
 
 <!-- hill: downhill -->
 ### As a developer I want negative transforms and position/display shortcuts so that Tailwind transforms aren't silently dropped

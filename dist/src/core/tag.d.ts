@@ -1,3 +1,4 @@
+import type { SchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id } from "../ids.js";
 import type { View } from "./types.js";
@@ -29,7 +30,7 @@ export declare class Tag {
     /** @internal type discriminant for fast render checks */
     readonly _t: 1;
     /** @internal Schema keys for element-specific attributes */
-    readonly _sk?: readonly string[];
+    readonly _sk?: readonly SchemaKey[];
     constructor(element: string, ...children: View[]);
     /**
      * Set the element's `id` attribute. Accepts a string or a type-safe `Id` object.

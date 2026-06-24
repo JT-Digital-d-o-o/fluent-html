@@ -88,8 +88,8 @@ describe("AnchorTag typed setters", () => {
     it("setRel accepts space-separated combo via escape hatch", () => {
         assert.ok(render(A("Link").setRel("noopener noreferrer")).includes('rel="noopener noreferrer"'));
     });
-    it("setReferrerpolicy renders typed value", () => {
-        assert.ok(render(A("Link").setReferrerpolicy("no-referrer")).includes('referrerpolicy="no-referrer"'));
+    it("setReferrerPolicy renders typed value", () => {
+        assert.ok(render(A("Link").setReferrerPolicy("no-referrer")).includes('referrerpolicy="no-referrer"'));
     });
 });
 describe("AreaTag typed setters", () => {

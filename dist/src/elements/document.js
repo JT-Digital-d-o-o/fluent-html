@@ -37,6 +37,7 @@ export class MetaTag extends Tag {
         this.charset = charset;
         return this;
     }
+    /** Set `http-equiv` (emits the real `http-equiv` attribute, not the dead `httpEquiv`). */
     setHttpEquiv(httpEquiv) {
         this.httpEquiv = httpEquiv;
         return this;
@@ -46,13 +47,17 @@ export class MetaTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(MetaTag, ['name', 'charset', 'httpEquiv', 'property', 'content']);
+defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content']);
 export function Meta() {
     return new MetaTag("meta");
 }
 export class LinkTag extends Tag {
     setRel(rel) {
         this.rel = rel;
+        return this;
+    }
+    setHreflang(hreflang) {
+        this.hreflang = hreflang;
         return this;
     }
     setHref(href) {
@@ -71,7 +76,8 @@ export class LinkTag extends Tag {
         this.sizes = sizes;
         return this;
     }
-    setCrossorigin(crossorigin) {
+    /** Set `crossorigin`. The bare `""` overload is for preconnect / Google Fonts. */
+    setCrossOrigin(crossorigin) {
         this.crossorigin = crossorigin;
         return this;
     }
@@ -84,7 +90,7 @@ export class LinkTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity']);
+defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang']);
 export function Link() {
     return new LinkTag("link");
 }
@@ -131,7 +137,7 @@ export class ScriptTag extends Tag {
         this.type = type;
         return this;
     }
-    setCrossorigin(crossorigin) {
+    setCrossOrigin(crossorigin) {
         this.crossorigin = crossorigin;
         return this;
     }

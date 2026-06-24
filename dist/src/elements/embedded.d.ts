@@ -18,7 +18,7 @@ export declare class IframeTag extends Tag {
     setLoading(loading?: 'lazy' | 'eager'): this;
     setSandbox(sandbox?: string): this;
     setName(name?: string): this;
-    setReferrerpolicy(referrerpolicy?: string): this;
+    setReferrerPolicy(referrerpolicy?: string): this;
 }
 export declare function Iframe(...children: View[]): IframeTag;
 export declare class ObjectTag extends Tag {

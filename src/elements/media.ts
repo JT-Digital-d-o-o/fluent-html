@@ -2,6 +2,7 @@ import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
+import type { CrossOrigin } from "./html-types.js";
 
 /**
  * Specialized Tag for `<img>` elements with typed attribute setters.
@@ -18,7 +19,7 @@ export class ImgTag extends Tag {
   decoding?: 'sync' | 'async' | 'auto';
   srcset?: string;
   sizes?: string;
-  crossorigin?: 'anonymous' | 'use-credentials';
+  crossorigin?: CrossOrigin | '';
 
   setSrc(src?: string): this {
     this.src = src;
@@ -60,7 +61,7 @@ export class ImgTag extends Tag {
     return this;
   }
 
-  setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this {
+  setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
     this.crossorigin = crossorigin;
     return this;
   }

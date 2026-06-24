@@ -8,17 +8,25 @@ import type { Tag } from "./tag.js";
  * @module
  */
 
+/**
+ * A schema key the renderer emits as an attribute. Either a plain `string` (the JS
+ * field name == the emitted attribute name), or a `[prop, attr]` tuple that decouples
+ * them — so a camelCased field can emit a kebab/colon attribute name (e.g.
+ * `['httpEquiv', 'http-equiv']`). @internal
+ */
+export type SchemaKey = string | readonly [prop: string, attr: string];
+
 /** @internal The shape we write onto node prototypes. */
 interface NodeProto {
   _t?: number;
-  _sk?: readonly string[];
+  _sk?: readonly SchemaKey[];
 }
 
 /**
  * Set the readonly `_sk` schema-key array on a Tag-subclass prototype — the keys
  * whose values the renderer emits as attributes. @internal
  */
-export function defineSchemaKeys(ctor: abstract new (...args: never[]) => Tag, keys: readonly string[]): void {
+export function defineSchemaKeys(ctor: abstract new (...args: never[]) => Tag, keys: readonly SchemaKey[]): void {
   (ctor.prototype as unknown as NodeProto)._sk = keys;
 }
 

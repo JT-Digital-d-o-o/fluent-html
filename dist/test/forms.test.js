@@ -71,6 +71,9 @@ describe("Forms - Input", () => {
     it("Input factory sets type attribute", () => {
         assert.strictEqual(render(Input("email").setName("email")), `<input type="email" name="email">`);
     });
+    it("Input with inputmode", () => {
+        assert.strictEqual(render(Input().setType("text").setName("otp").setInputmode("numeric")), `<input type="text" name="otp" inputmode="numeric">`);
+    });
     it("Number input via factory with min/max", () => {
         assert.strictEqual(render(Input("number").setName("qty").setMin(1).setMax(100).setStep(5)), `<input type="number" name="qty" min="1" max="100" step="5">`);
     });
@@ -105,6 +108,8 @@ describe("Forms - Textarea", () => {
             .setCols(40)), `<textarea name="bio" rows="5" cols="40"></textarea>`);
     });
     it("Textarea with content", () => { assert.strictEqual(render(Textarea("Default text").setName("notes")), `<textarea name="notes">Default text</textarea>`); });
+    it("Textarea with inputmode", () => { assert.strictEqual(render(Textarea().setName("msg").setInputmode("text")), `<textarea name="msg" inputmode="text"></textarea>`); });
+    it("Option with no value (uses text content)", () => { assert.strictEqual(render(Option("Any").setValue()), `<option>Any</option>`); });
     it("Textarea with validation", () => {
         assert.strictEqual(render(Textarea()
             .setName("essay")

@@ -144,9 +144,9 @@ describe("AnchorTag typed setters", () => {
     );
   });
 
-  it("setReferrerpolicy renders typed value", () => {
+  it("setReferrerPolicy renders typed value", () => {
     assert.ok(
-      render(A("Link").setReferrerpolicy("no-referrer")).includes('referrerpolicy="no-referrer"')
+      render(A("Link").setReferrerPolicy("no-referrer")).includes('referrerpolicy="no-referrer"')
     );
   });
 });

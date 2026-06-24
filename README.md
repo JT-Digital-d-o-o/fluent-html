@@ -1464,7 +1464,7 @@ Picture(
 
 ### SVG Elements with Typed Setters
 
-All SVG shape elements extend `SvgShapeTag` with shared methods: `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setSvgOpacity()`, `setTransform()`.
+All SVG shape elements extend `SvgShapeTag` with shared methods: `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setOpacity()`, `setFilter()`, `setTransform()`.
 
 ```typescript
 // Circle with typed setters
@@ -1473,7 +1473,7 @@ Svg(
     .setFill("none").setStroke("blue").setStrokeWidth("2"),
 
   Rect().setX("10").setY("10").setWidth("80").setHeight("80")
-    .setRx("5").setFill("red-500").setSvgOpacity("0.5"),
+    .setRx("5").setFill("red-500").setOpacity("0.5"),
 
   Path().setD("M10 80 C40 10, 65 10, 95 80").setFill("none").setStroke("black"),
 
@@ -1490,7 +1490,7 @@ Svg(
 )
 ```
 
-> **Note:** SVG uses `setSvgOpacity()` instead of `setOpacity()` to avoid conflict with Tailwind's `.opacity()` method.
+> **Note:** `setOpacity()` sets the SVG `opacity` presentation attribute. It routes through an internal `_sk` field so it doesn't collide with Tailwind's `.opacity()` styling method.
 
 ### Interactive Elements
 

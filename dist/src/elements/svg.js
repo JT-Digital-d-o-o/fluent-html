@@ -28,22 +28,20 @@ export class SvgShapeTag extends Tag {
         return this;
     }
     setOpacity(opacity) {
-        return this.addAttribute('opacity', opacity);
-    }
-    /** @deprecated Use `setOpacity` instead. */
-    setSvgOpacity(opacity) {
-        return this.setOpacity(opacity);
+        this.svgOpacity = opacity;
+        return this;
     }
     setTransform(transform) {
         this.transform = transform;
         return this;
     }
     setFilter(filter) {
-        return this.addAttribute('filter', filter);
+        this.filter = filter;
+        return this;
     }
 }
 /** @internal */
-const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform'];
+const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform', ['svgOpacity', 'opacity'], 'filter'];
 defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 // ─── Circle ─────────────────────────────────────────────────────────
 export class CircleTag extends SvgShapeTag {

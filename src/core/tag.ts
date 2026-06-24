@@ -1,4 +1,5 @@
 import { setDiscriminant } from "./proto.js";
+import type { SchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id} from "../ids.js";
 import { isId } from "../ids.js";
@@ -64,7 +65,7 @@ export class Tag {
   /** @internal type discriminant for fast render checks */
   declare readonly _t: 1;
   /** @internal Schema keys for element-specific attributes */
-  declare readonly _sk?: readonly string[];
+  declare readonly _sk?: readonly SchemaKey[];
 
   constructor(element: string, ...children: View[]) {
     this.el = element;

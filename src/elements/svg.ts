@@ -13,6 +13,10 @@ export class SvgShapeTag extends Tag {
   'stroke-linejoin'?: 'miter' | 'round' | 'bevel';
   'stroke-dasharray'?: string;
   transform?: string;
+  // Named `svgOpacity` (not `opacity`) to avoid clashing with the Tailwind `.opacity()`
+  // method; the `_sk` tuple emits it as the `opacity` presentation attribute.
+  svgOpacity?: string;
+  filter?: string;
 
   setFill(fill: string): this {
     this.fill = fill;
@@ -45,12 +49,8 @@ export class SvgShapeTag extends Tag {
   }
 
   setOpacity(opacity: string): this {
-    return this.addAttribute('opacity', opacity);
-  }
-
-  /** @deprecated Use `setOpacity` instead. */
-  setSvgOpacity(opacity: string): this {
-    return this.setOpacity(opacity);
+    this.svgOpacity = opacity;
+    return this;
   }
 
   setTransform(transform: string): this {
@@ -59,12 +59,13 @@ export class SvgShapeTag extends Tag {
   }
 
   setFilter(filter: string): this {
-    return this.addAttribute('filter', filter);
+    this.filter = filter;
+    return this;
   }
 }
 
 /** @internal */
-const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform'] as const;
+const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform', ['svgOpacity', 'opacity'], 'filter'] as const;
 
 defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 

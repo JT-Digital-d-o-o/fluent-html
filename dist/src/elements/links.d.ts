@@ -14,12 +14,14 @@ export declare class AnchorTag extends Tag {
     download?: string | boolean;
     type?: string;
     referrerpolicy?: ReferrerPolicy;
+    hreflang?: string;
     setHref(href?: string): this;
+    setHreflang(hreflang?: string): this;
     setTarget(target?: BrowsingContext): this;
     setRel(rel?: LinkRel): this;
     setDownload(download?: string | boolean): this;
     setType(type?: string): this;
-    setReferrerpolicy(referrerpolicy?: ReferrerPolicy): this;
+    setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this;
 }
 /** Create an `<a>` (anchor) element with typed attribute methods. */
 export declare function A(...children: View[]): AnchorTag;

@@ -56,12 +56,16 @@ export class InputTag extends Tag {
         this.autocomplete = autocomplete;
         return this;
     }
+    setInputmode(inputmode) {
+        this.inputmode = inputmode;
+        return this;
+    }
     setList(list) {
         this.list = list;
         return this;
     }
 }
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'list']);
 export function Input(type) {
     const tag = new InputTag("input");
     if (type)
@@ -107,8 +111,12 @@ export class TextareaTag extends Tag {
         this.autocomplete = autocomplete;
         return this;
     }
+    setInputmode(inputmode) {
+        this.inputmode = inputmode;
+        return this;
+    }
 }
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode']);
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children) {
     return new TextareaTag("textarea", ...children);

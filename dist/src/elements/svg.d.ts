@@ -8,6 +8,8 @@ export declare class SvgShapeTag extends Tag {
     'stroke-linejoin'?: 'miter' | 'round' | 'bevel';
     'stroke-dasharray'?: string;
     transform?: string;
+    svgOpacity?: string;
+    filter?: string;
     setFill(fill: string): this;
     setStroke(stroke: string): this;
     setStrokeWidth(width: string | number): this;
@@ -15,8 +17,6 @@ export declare class SvgShapeTag extends Tag {
     setStrokeLinejoin(linejoin: 'miter' | 'round' | 'bevel'): this;
     setStrokeDasharray(dasharray: string): this;
     setOpacity(opacity: string): this;
-    /** @deprecated Use `setOpacity` instead. */
-    setSvgOpacity(opacity: string): this;
     setTransform(transform: string): this;
     setFilter(filter: string): this;
 }

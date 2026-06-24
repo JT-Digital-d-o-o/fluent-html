@@ -2,7 +2,7 @@ import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
-import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
+import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, InputMode } from "./html-types.js";
 
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
@@ -23,6 +23,7 @@ export class InputTag extends Tag {
   minlength?: number;
   maxlength?: number;
   autocomplete?: AutocompleteHint;
+  inputmode?: InputMode;
   list?: string;
 
   setType(type?: InputType): this {
@@ -85,13 +86,18 @@ export class InputTag extends Tag {
     return this;
   }
 
+  setInputmode(inputmode?: InputMode): this {
+    this.inputmode = inputmode;
+    return this;
+  }
+
   setList(list?: string): this {
     this.list = list;
     return this;
   }
 }
 
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'list']);
 
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {
@@ -138,6 +144,7 @@ export class TextareaTag extends Tag {
   maxlength?: number;
   wrap?: 'hard' | 'soft' | 'off';
   autocomplete?: AutocompleteHint;
+  inputmode?: InputMode;
 
   setPlaceholder(placeholder?: string): this {
     this.placeholder = placeholder;
@@ -178,9 +185,14 @@ export class TextareaTag extends Tag {
     this.autocomplete = autocomplete;
     return this;
   }
+
+  setInputmode(inputmode?: InputMode): this {
+    this.inputmode = inputmode;
+    return this;
+  }
 }
 
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode']);
 
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children: View[]): TextareaTag {
@@ -313,7 +325,7 @@ export class OptionTag extends Tag {
   value?: string;
   label?: string;
 
-  setValue(value: string): this {
+  setValue(value?: string): this {
     this.value = value;
     return this;
   }

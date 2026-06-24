@@ -40,7 +40,7 @@ export class ImgTag extends Tag {
         this.sizes = sizes;
         return this;
     }
-    setCrossorigin(crossorigin) {
+    setCrossOrigin(crossorigin) {
         this.crossorigin = crossorigin;
         return this;
     }

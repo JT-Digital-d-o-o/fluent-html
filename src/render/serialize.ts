@@ -244,10 +244,17 @@ export function buildAttrs(tag: Tag): string {
 
   const sk = tag._sk;
   if (sk !== undefined) {
+    const bag = tag as unknown as Record<string, unknown>;
     for (let i = 0; i < sk.length; i++) {
-      const value = (tag as unknown as Record<string, unknown>)[sk[i]!];
+      const entry = sk[i]!;
+      // A `[prop, attr]` tuple decouples the JS field from the emitted attribute name
+      // (e.g. `httpEquiv` → `http-equiv`); a plain string uses the same name for both.
+      let prop: string, attr: string;
+      if (typeof entry === 'string') { prop = entry; attr = entry; }
+      else { prop = entry[0]; attr = entry[1]; }
+      const value = bag[prop];
       if (value !== undefined && value !== null) {
-        attrs += ' ' + sk[i]! + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
+        attrs += ' ' + attr + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
       }
     }
   }

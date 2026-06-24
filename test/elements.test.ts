@@ -238,6 +238,8 @@ describe("Links", () => {
   it("Download link", () => { assert.strictEqual(render(A("Download PDF").setHref("/file.pdf").setDownload("document.pdf")), `<a href="/file.pdf" download="document.pdf">Download PDF</a>`); });
 
   it("Email link", () => { assert.strictEqual(render(A("Contact us").setHref("mailto:info@example.com")), `<a href="mailto:info@example.com">Contact us</a>`); });
+
+  it("Anchor with hreflang + referrerPolicy", () => { assert.strictEqual(render(A("FR").setHref("/fr").setHreflang("fr").setReferrerPolicy("no-referrer")), `<a href="/fr" referrerpolicy="no-referrer" hreflang="fr">FR</a>`); });
 });
 
 // ------------------------------------
@@ -409,9 +411,14 @@ describe("SVG", () => {
     `<circle stroke-linejoin="bevel" stroke-dasharray="5 3" transform="rotate(45)"></circle>`);
   });
 
-  it("setSvgOpacity uses addAttribute", () => {
-    assert.strictEqual(render(Rect().setSvgOpacity("0.5")),
+  it("setOpacity emits the opacity attribute via the _sk tuple", () => {
+    assert.strictEqual(render(Rect().setOpacity("0.5")),
     `<rect opacity="0.5"></rect>`);
+  });
+
+  it("setFilter emits the filter attribute", () => {
+    assert.strictEqual(render(Rect().setFilter("url(#blur)")),
+    `<rect filter="url(#blur)"></rect>`);
   });
 });
 
@@ -463,11 +470,20 @@ describe("Document Structure", () => {
 
   it("Meta og:title", () => { assert.strictEqual(render(Meta().setProperty("og:title").setContent("My Page")), `<meta property="og:title" content="My Page">`); });
 
+  it("Meta http-equiv emits the real attribute name (not httpEquiv)", () => {
+    assert.strictEqual(
+      render(Meta().setHttpEquiv("x-ua-compatible").setContent("IE=edge")),
+      `<meta http-equiv="x-ua-compatible" content="IE=edge">`,
+    );
+  });
+
   it("Link stylesheet", () => { assert.strictEqual(render(Link().setRel("stylesheet").setHref("styles.css")), `<link rel="stylesheet" href="styles.css">`); });
 
   it("Link favicon", () => { assert.strictEqual(render(Link().setRel("icon").setHref("favicon.ico").setType("image/x-icon")), `<link rel="icon" href="favicon.ico" type="image/x-icon">`); });
 
-  it("Link preload", () => { assert.strictEqual(render(Link().setRel("preload").setHref("font.woff2").setAs("font").setCrossorigin("anonymous")), `<link rel="preload" href="font.woff2" as="font" crossorigin="anonymous">`); });
+  it("Link preload", () => { assert.strictEqual(render(Link().setRel("preload").setHref("font.woff2").setAs("font").setCrossOrigin("anonymous")), `<link rel="preload" href="font.woff2" as="font" crossorigin="anonymous">`); });
+
+  it("Link preconnect with bare crossorigin", () => { assert.strictEqual(render(Link().setRel("preconnect").setHref("https://fonts.gstatic.com").setCrossOrigin("")), `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">`); });
 
   it("Base", () => { assert.strictEqual(render(Base().setHref("https://example.com/").setTarget("_blank")), `<base href="https://example.com/" target="_blank">`); });
 
@@ -493,7 +509,7 @@ describe("Script and Style (Raw Content)", () => {
     assert.strictEqual(render(Script()
       .setSrc("https://cdn.example.com/lib.js")
       .setIntegrity("sha384-abc123")
-      .setCrossorigin("anonymous")),
+      .setCrossOrigin("anonymous")),
     `<script src="https://cdn.example.com/lib.js" integrity="sha384-abc123" crossorigin="anonymous"></script>`);
   });
 

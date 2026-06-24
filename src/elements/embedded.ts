@@ -54,7 +54,7 @@ export class IframeTag extends Tag {
     return this;
   }
 
-  setReferrerpolicy(referrerpolicy?: string): this {
+  setReferrerPolicy(referrerpolicy?: string): this {
     this.referrerpolicy = referrerpolicy;
     return this;
   }

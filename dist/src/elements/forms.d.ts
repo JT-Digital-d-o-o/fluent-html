@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext } from "./html-types.js";
+import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, InputMode } from "./html-types.js";
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
  *
@@ -20,6 +20,7 @@ export declare class InputTag extends Tag {
     minlength?: number;
     maxlength?: number;
     autocomplete?: AutocompleteHint;
+    inputmode?: InputMode;
     list?: string;
     setType(type?: InputType): this;
     setPlaceholder(placeholder?: string): this;
@@ -33,6 +34,7 @@ export declare class InputTag extends Tag {
     setMinlength(minlength?: number): this;
     setMaxlength(maxlength?: number): this;
     setAutocomplete(autocomplete?: AutocompleteHint): this;
+    setInputmode(inputmode?: InputMode): this;
     setList(list?: string): this;
 }
 /** InputTag narrowed for numeric input types (number, range). */
@@ -71,6 +73,7 @@ export declare class TextareaTag extends Tag {
     maxlength?: number;
     wrap?: 'hard' | 'soft' | 'off';
     autocomplete?: AutocompleteHint;
+    inputmode?: InputMode;
     setPlaceholder(placeholder?: string): this;
     setName(name?: string): this;
     setRows(rows?: number): this;
@@ -79,6 +82,7 @@ export declare class TextareaTag extends Tag {
     setMaxlength(maxlength?: number): this;
     setWrap(wrap?: 'hard' | 'soft' | 'off'): this;
     setAutocomplete(autocomplete?: AutocompleteHint): this;
+    setInputmode(inputmode?: InputMode): this;
 }
 /** Create a `<textarea>` element with typed attribute methods. */
 export declare function Textarea(...children: View[]): TextareaTag;
@@ -131,7 +135,7 @@ export declare function Select(...children: View[]): SelectTag;
 export declare class OptionTag extends Tag {
     value?: string;
     label?: string;
-    setValue(value: string): this;
+    setValue(value?: string): this;
     setLabel(label?: string): this;
 }
 export declare function Option(...children: View[]): OptionTag;

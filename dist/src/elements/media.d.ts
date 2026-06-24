@@ -1,5 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { CrossOrigin } from "./html-types.js";
 /**
  * Specialized Tag for `<img>` elements with typed attribute setters.
  *
@@ -15,7 +16,7 @@ export declare class ImgTag extends Tag {
     decoding?: 'sync' | 'async' | 'auto';
     srcset?: string;
     sizes?: string;
-    crossorigin?: 'anonymous' | 'use-credentials';
+    crossorigin?: CrossOrigin | '';
     setSrc(src?: string): this;
     setAlt(alt?: string): this;
     setWidth(width?: string): this;
@@ -24,7 +25,7 @@ export declare class ImgTag extends Tag {
     setDecoding(decoding?: 'sync' | 'async' | 'auto'): this;
     setSrcset(srcset?: string): this;
     setSizes(sizes?: string): this;
-    setCrossorigin(crossorigin?: 'anonymous' | 'use-credentials'): this;
+    setCrossOrigin(crossorigin?: CrossOrigin | ''): this;
 }
 /** Create an `<img>` element with typed attribute methods. */
 export declare function Img(): ImgTag;
