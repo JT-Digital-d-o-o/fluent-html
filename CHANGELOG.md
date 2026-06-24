@@ -182,9 +182,44 @@ All SVG elements now have typed tag classes with fluent attribute setters:
 
 ---
 
-## [6.0.0] - HTMX 4 Migration (Unreleased)
+## [6.0.0] - Greenfield v6 (Unreleased)
+
+A greenfield, v4-native, instruction-set rewrite of the contract for new projects. Beyond the HTMX 4 migration, v6 reworks the everyday authoring surface (P3) and the keeper primitives (P4): one `.toggle()` boolean path, typed ARIA, complete/consistent setters, layout shortcuts, `.overlay()`, first-class control-flow/document APIs, typed `Form<T>` binding, native dialog behaviors, full SVG coverage, and `.htmxIndicator()`.
 
 ### 🚀 Breaking Changes
+
+#### Boolean attributes — `.toggle()` only (P3)
+
+Every named boolean setter is **removed** — `setChecked`, `setDisabled`, `setReadonly`, `setMultiple`, `setAutofocus`, `setSelected`, `setOpen`, `setNovalidate`, `setControls`, `setAutoplay`, `setLoop`, `setMuted`, `setPlaysinline`, `setAsync`, `setDefer`, `setNomodule`, `setAllowfullscreen`, `setDefault`. Use `.toggle("name")`, which renders the attribute **bare** — fixing the old `checked="false"` → browser-sees-checked bug. `BooleanAttribute` is now a closed union, so a typo is a compile error.
+
+```typescript
+Input().setChecked()          // ✗ removed
+Input().toggle("checked")     // ✓ → <input checked>
+Button().toggle("disabled", isLoading)
+```
+
+#### Setter renames + fixes (P3)
+
+No aliases (greenfield): `setCrossorigin` → `setCrossOrigin` (now also accepts `""` for preconnect / Google Fonts), `setReferrerpolicy` → `setReferrerPolicy`, `setSvgOpacity` → `setOpacity`. `setHttpEquiv` now emits the real `http-equiv` attribute (was the silently-dead `httpEquiv`).
+
+#### Position/display passthroughs → shortcuts (P3)
+
+`.position(v)`, `.display(v)`, and `.flex1()` are removed in favor of dedicated zero-arg shortcuts: `.absolute()`/`.relative()`/`.fixed()`/`.sticky()`/`.static()`, `.block()`/`.inline()`/`.inlineBlock()`/`.inlineFlex()`/`.inlineGrid()`/`.contents()`, and `.flexShorthand("1"|"auto"|"initial"|"none")`.
+
+#### `formFor` → `Form<T>(state?, build)` (P4)
+
+The `formFor<T>()` factory is replaced by the `Form<T>` HOF, which additionally auto-wires values/errors from `state`:
+
+```typescript
+Form<CreateUserReq>({ values, errors }, (f) => [
+  f.input("email", "email"),   // value wired from state; name typed to keyof T
+  f.error("email"),            // error <span> from state.errors
+])
+```
+
+#### `Overlay()` → `.overlay()` (P3)
+
+The `Overlay(content, overlay, position)` function is replaced by the `Tag.prototype.overlay(position?, ...content)` method (works on void elements, e.g. `Img().overlay("bottom-right", Badge("3"))`).
 
 #### HTMX 4 Compatibility
 
@@ -332,6 +367,51 @@ Form().hxPost("/users/create", {
 
 - `preload` — prefetch responses on hover before click
 - `optimistic` — show expected content before server responds
+
+#### Typed accessibility setters (P3)
+
+`setRole(AriaRole)`, `setTabindex(number)`, `setTitle(string)`, and a retyped `setAria(AriaAttrs)` with closed `AriaAttributeName` keys + boolean/tristate values. `setAria({ haspopup: true })` now emits the correct `aria-haspopup` (was the mangled `aria-has-popup`).
+
+#### Expanded element setters + `_sk` tuple (P3)
+
+`setInputmode` (Input/Textarea), `setHreflang` (Link/Anchor), `setCapture` (Input), SVG `setStrokeDashoffset`/`setStrokeOpacity`, and an optional `OptionTag.setValue()`. Internally, `_sk` schema keys gained a `[prop, attr]` tuple form so a JS field can emit a differently-named attribute (e.g. `httpEquiv` → `http-equiv`).
+
+#### Negative transforms + layout shortcuts (P3)
+
+`.translate`/`.rotate`/`.skewX`/`.skewY` accept negatives and emit them correctly (`-translate-y-1`, not the dropped `translate-y--1`). Plus the position/display shortcuts and `.flexShorthand()` noted in Breaking Changes.
+
+#### Control-flow & document APIs (P3)
+
+- `ForEachElse(items, renderItem, emptyView)` — list with an empty fallback.
+- `Tag.whenElse(cond|value, then, else)` — two-branch modifier (mirrors `IfThenElse`, not truthiness — `""`/`0` take the `then` branch).
+- `Document(...)` / `Doctype()` — a full document that emits `<!DOCTYPE html>` (`DocumentTag extends HtmlTag`, chainable); plain `HTML(...)` stays byte-identical.
+- `.hxOn(event, js)` — typed one-off `hx-on:*` handler (event validated, js attribute-escaped).
+
+#### `.overlay()` + type-only exports (P3)
+
+SwiftUI-style `.overlay()` (see Breaking Changes). The 15 HTMX/`Id` type re-exports are now `export type` — TS1205-safe under `verbatimModuleSyntax`.
+
+#### Typed form binding — `Form<T>` (P4)
+
+`Form<T>(state?, build)` (see Breaking Changes), with `FormState<T>`/`FormBinding<T>`/`ErrorBag<T>` types, value/error auto-wiring (including `<select>` selected state), and `FormTag.multipart()`.
+
+#### Native dialog behaviors + behavior widening (P4)
+
+- `behavior("openDialog"/"closeDialog", { target })` — call native `<dialog>.showModal()`/`.close()` (free backdrop / Esc / focus-trap / top-layer).
+- `toggle`/`toggleClass`/`remove` gained `event?`, `force?`, and `animateOut?`.
+- New `formResetOnSwap` / `dismissOnEscape` behaviors.
+
+#### Complete SVG coverage (P4)
+
+Typed container builders — `LinearGradient`/`RadialGradient`/`Stop`, `ClipPath`, `Mask`, `Filter`/`FeGaussianBlur` — plus the missing stroke setters, so icons and effects are typed Views instead of `Raw("<svg…>")` strings.
+
+#### `.htmxIndicator()` (P4)
+
+Sanctioned method emitting the library-known `htmx-indicator` class, recognised by the Tailwind extractor and ESLint (unlike a raw `.setClass("htmx-indicator")`).
+
+#### New & updated ESLint rules
+
+`prefer-toggle` (boolean `addAttribute` → `.toggle()`), `no-removed-v4-utilities`, `no-raw-icon-string`, and an extended `prefer-set-method` (drops the removed boolean setters; flags `aria-*`/`data-*`/`style`/role/title/tabindex).
 
 ---
 
