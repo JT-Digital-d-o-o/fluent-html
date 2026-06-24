@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import {
   render,
   Div, P, Span, Ul, Li,
-  IfThen, IfThenElse, Match, ForEach, Repeat,
+  IfThen, IfThenElse, Match, ForEach, ForEachElse, Repeat, Button,
 } from "../src/index.js";
 
 // ------------------------------------
@@ -166,6 +166,18 @@ describe("Control Flow - ForEach", () => {
 
   it("Repeat", () => { assert.strictEqual(render(Div(Repeat(3, () => Span("*")))), `<div><span>*</span>\n<span>*</span>\n<span>*</span></div>`); });
 
+  it("ForEachElse non-empty renders items", () => {
+    assert.strictEqual(render(Ul(ForEachElse(["A", "B"], item => Li(item), () => Li("None")))), `<ul><li>A</li>\n<li>B</li></ul>`);
+  });
+
+  it("ForEachElse empty renders the fallback (thunk)", () => {
+    assert.strictEqual(render(Ul(ForEachElse([], item => Li(item as string), () => Li("None")))), `<ul><li>None</li></ul>`);
+  });
+
+  it("ForEachElse empty renders the fallback (plain view)", () => {
+    assert.strictEqual(render(Ul(ForEachElse([], item => Li(item as string), Li("Empty")))), `<ul><li>Empty</li></ul>`);
+  });
+
   it("ForEach large array (>8 items) renders correctly with newlines", () => {
     const result = render(Ul(ForEach(20, idx => Li(`Item ${idx}`))));
     const items = Array.from({ length: 20 }, (_, i) => `<li>Item ${i}</li>`).join('\n');
@@ -197,5 +209,34 @@ describe("ForEach: non-array iterables (D-06 single-pass)", () => {
 
   it("maps a Set", () => {
     assert.strictEqual(render(Ul(ForEach(new Set(["p", "q"]), (v) => Li(v)))), `<ul><li>p</li>\n<li>q</li></ul>`);
+  });
+});
+
+// ------------------------------------
+// Tag.whenElse
+// ------------------------------------
+
+describe("Tag.whenElse", () => {
+  it("boolean true takes thenFn", () => {
+    assert.strictEqual(render(Button("X").whenElse(true, t => t.toggle("disabled"), t => t.background("blue-500"))), `<button disabled>X</button>`);
+  });
+
+  it("boolean false takes elseFn", () => {
+    assert.strictEqual(render(Button("X").whenElse(false, t => t.toggle("disabled"), t => t.addClass("idle"))), `<button class="idle">X</button>`);
+  });
+
+  it("nullable value narrows the non-null value into thenFn", () => {
+    const name: string | null = "Ada";
+    assert.strictEqual(render(Span().whenElse(name, (t, n) => t.setClass(n), t => t.setClass("anon"))), `<span class="Ada"></span>`);
+  });
+
+  it("null takes elseFn", () => {
+    const name: string | null = null;
+    assert.strictEqual(render(Span().whenElse(name, (t, n) => t.setClass(n), t => t.setClass("anon"))), `<span class="anon"></span>`);
+  });
+
+  it("a present-but-falsy value ('') takes thenFn (not truthiness)", () => {
+    const v: string | null = "";
+    assert.strictEqual(render(Span().whenElse(v, (t) => t.addClass("present"), t => t.addClass("absent"))), `<span class="present"></span>`);
   });
 });

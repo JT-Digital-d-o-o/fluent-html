@@ -23,7 +23,7 @@ function validateAttributeKey(key) {
         throw new Error(`Invalid attribute key: "${key}"`);
     }
     if (EVENT_HANDLER_RE.test(key)) {
-        throw new Error(`Event handler attribute "${key}" is blocked — use client-side JS or HTMX instead`);
+        throw new Error(`Event handler attribute "${key}" is blocked — use .behavior() or .hxOn() instead of an inline on* handler`);
     }
 }
 /**
@@ -166,6 +166,11 @@ export class Tag {
     }
     when(condition, fn) {
         return condition ? fn(this, condition) : this;
+    }
+    whenElse(condition, thenFn, elseFn) {
+        if (typeof condition === "boolean")
+            return condition ? thenFn(this) : elseFn(this);
+        return condition != null ? thenFn(this, condition) : elseFn(this);
     }
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,

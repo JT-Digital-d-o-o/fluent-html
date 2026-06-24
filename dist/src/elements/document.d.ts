@@ -8,6 +8,18 @@ export declare class HtmlTag extends Tag {
     setDir(dir?: 'ltr' | 'rtl' | 'auto'): this;
 }
 export declare function HTML(...children: View[]): HtmlTag;
+/**
+ * A full-page `<html>` root that the renderer prefixes with `<!DOCTYPE html>`.
+ * Extends `HtmlTag` (chainable — `.setLang(...)`). The DOCTYPE is discriminated on
+ * the `_doc` brand in the emitter, so plain `HTML(...)` stays byte-identical.
+ */
+export declare class DocumentTag extends HtmlTag {
+    readonly _doc: true;
+}
+/** Create a full HTML document — emits `<!DOCTYPE html>` then `<html>…</html>`. */
+export declare function Document(...children: View[]): DocumentTag;
+/** The standalone `<!DOCTYPE html>` declaration, for hand-assembled documents. */
+export declare function Doctype(): View;
 export declare function Head(...children: View[]): Tag;
 export declare function Body(...children: View[]): Tag;
 export declare function Title(...children: View[]): Tag;

@@ -230,6 +230,9 @@ export {
 export {
   HTML,
   HtmlTag,
+  Document,
+  DocumentTag,
+  Doctype,
   Head,
   Body,
   Title,
@@ -271,6 +274,7 @@ export {
   IfThenElse,
   Match,
   ForEach,
+  ForEachElse,
   Repeat,
   createContext,
   createRequiredContext,
@@ -348,7 +352,7 @@ export type {
 } from './routes.js';
 
 // Behavior system
-export type { BehaviorMap } from './core/behavior-methods.js';
+export type { BehaviorMap, HxOnEvent } from './core/behavior-methods.js';
 
 // Fold / Recursion schemes
 export {

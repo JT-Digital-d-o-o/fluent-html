@@ -7,6 +7,9 @@
 import { Tag, EMPTY_ATTRS } from "./tag.js";
 import { isId } from "../ids.js";
 import { escapeJs } from "../render/escape.js";
+// A safe hx-on event name (it becomes part of the `hx-on:<event>` attribute NAME, so a
+// malformed value would be attribute-name injection — the typed union guards typed callers).
+const HX_ON_EVENT_RE = /^[a-zA-Z][a-zA-Z0-9:_-]*$/;
 function resolveId(value) {
     return isId(value) ? value.id : String(value);
 }
@@ -50,6 +53,14 @@ const renderers = {
         "click",
         "history.back()",
     ],
+    formResetOnSwap: () => [
+        "htmx:after-swap",
+        "this.reset()",
+    ],
+    dismissOnEscape: () => [
+        "keyup",
+        "if(event.key==='Escape')this.remove()",
+    ],
 };
 // ── Implementation ───────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- runtime signature differs from typed overload
@@ -58,6 +69,22 @@ Tag.prototype.behavior = function (name, options) {
         this.attributes = Object.create(null);
     const renderer = renderers[name];
     const [event, js] = renderer(options ?? {});
+    const attr = `hx-on:${event}`;
+    const existing = this.attributes[attr];
+    this.attributes[attr] = existing ? existing + ";" + js : js;
+    return this;
+};
+// ── .hxOn(event, js) ─────────────────────────────────────────────
+// The js is author-authored and stored verbatim; the renderer HTML-attribute-escapes
+// it, so it can't break out of the `hx-on:<event>="…"` attribute. The event name is
+// validated (it becomes part of the attribute name).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- runtime signature differs from typed overload
+Tag.prototype.hxOn = function (event, js) {
+    if (!HX_ON_EVENT_RE.test(event)) {
+        throw new Error(`Invalid hx-on event: "${event}" — expected an event name (letters, digits, ':' '-' '_').`);
+    }
+    if (this.attributes === EMPTY_ATTRS)
+        this.attributes = Object.create(null);
     const attr = `hx-on:${event}`;
     const existing = this.attributes[attr];
     this.attributes[attr] = existing ? existing + ";" + js : js;

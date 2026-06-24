@@ -47,9 +47,9 @@
 <!-- hill: downhill -->
 ### As a developer I want for-else, when-else, Document(), and typed .hxOn() so that common patterns have first-class APIs
 
-- [ ] [P1] Add `ForEachElse(items, renderItem, emptyView)` (separate fn) + `Tag.whenElse(cond|value, then, else)` (mirrors `IfThenElse`, not truthiness)
-- [ ] [P1] Add `Document(...children)` (emits `<!DOCTYPE html>`; `DocumentTag extends HtmlTag`) + `Doctype()`; discriminate on the `_doc` brand so `HTML(...)` stays byte-identical
-- [ ] [P1] Add `.hxOn(event, js)` (typed `HxOnEvent`, concat with `;`, escaped) + `formResetOnSwap`/`dismissOnEscape` behaviors + fix `escapeJs` (`\n \r  <`)
-- [ ] [P1] Realign display/variant teaching to A-07 methods; rename the blocked-event error to name `.behavior()` (preserve the asserted substring)
-- [ ] [P1] Write tests — `ForEachElse` empty/non-empty, `whenElse` falsy-not-null, `Document` DOCTYPE, `.hxOn` concat + escaping
-- [ ] [P1] Check for bugs in control-flow/Document/hxOn
+- [x] [P1] Added `ForEachElse(items, renderItem, emptyView)` (separate fn, thunk-or-view fallback) + `Tag.whenElse(cond|value, then, else)` — branches on `typeof === "boolean"` / `!= null` (a present-but-falsy `""`/`0` takes `thenFn`, not truthiness), nullable value narrowed into `thenFn`
+- [x] [P1] Added `Document(...children): DocumentTag` (extends `HtmlTag`, chainable) + `Doctype()`. The emitter prefixes `<!DOCTYPE html>\n` gated on `el === 'html' && _doc` (cheap short-circuit, bench-clean) in **both** `emit` + `emitChunks` — render≡stream verified; plain `HTML()` byte-identical (no `_doc`)
+- [x] [P1] Added `.hxOn(event: HxOnEvent, js)` — concatenates `;` per event, validates the event name (attribute-name injection guard), js HTML-attribute-escaped at render. Added `formResetOnSwap`/`dismissOnEscape` behaviors. (`escapeJs` was already hardened in P1/D-05 — `\n`/`\r` present; `<`→`\x3C` is intentionally script-body-only, not the `hx-on:` path)
+- [x] [P1] Display/variant teaching realigned to A-07 in that story (README/FLUENT-STYLING); blocked-event error now names `.behavior()`/`.hxOn()` (asserted `"is blocked"` substring preserved; new assertion locks the `.behavior()` mention)
+- [x] [P1] Tests — `ForEachElse` empty(thunk+view)/non-empty, `whenElse` boolean/nullable/`""`-not-null, `Document` DOCTYPE + chainable + HTML-byte-identical + stream parity, `Doctype()`, `.hxOn` concat/escape/injection, both new behaviors. Lib suite 1376 → 1393
+- [x] [P1] Check for bugs — tsc clean, full suite green, bench gate passed, src lint 0 errors; DOCTYPE branch verified identical across render + stream (the "never diverge" contract)

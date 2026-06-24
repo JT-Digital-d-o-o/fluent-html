@@ -190,6 +190,10 @@ Match(state, "status", {
 // Iteration
 Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
 Div(ForEach(5, i => Star()))  // Repeat 5 times
+Ul(ForEachElse(items, item => Li(item.name), () => Li("Nothing here")))  // empty fallback
+
+// Two-branch tag modifier (mirrors IfThenElse, not truthiness)
+Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
 ```
 
 ### Partial Multi-Swap (HTMX 4)
@@ -652,6 +656,24 @@ Partial(ids.notifications, Div("New!"), "append")  // append instead of morph
 
 ---
 
+## Full HTML Document
+
+`Document(...)` renders a complete page — it prefixes `<!DOCTYPE html>` and is chainable like `HTML()` (`.setLang(...)`). Plain `HTML(...)` stays byte-identical (no DOCTYPE), and `Doctype()` emits just the declaration.
+
+```typescript
+import { Document, Head, Body, Title, Meta, P } from 'fluent-html';
+
+Document(
+  Head(Title("My App"), Meta().setCharset("UTF-8")),
+  Body(P("Hello")),
+).setLang("en")
+// <!DOCTYPE html>
+// <html lang="en"><head><title>My App</title><meta charset="UTF-8"></head>
+// <body><p>Hello</p></body></html>
+```
+
+---
+
 ## Global HTMX Config
 
 Configure HTMX 4 globally via a type-safe `<meta>` tag:
@@ -819,6 +841,11 @@ Button("Submit").behavior("disable")
 Button("Go").behavior("focus", { target: ids.search })
 Button("Top").behavior("scrollTo", { target: ids.section })
 Input().behavior("selectAll")
+Form().behavior("formResetOnSwap")          // reset after an htmx swap
+Div("Toast").behavior("dismissOnEscape")    // remove on Escape
+
+// One-off raw handler (typed event, escaped) — when no built-in fits:
+Button("Inc").hxOn("click", "this.dataset.n = (+this.dataset.n||0)+1")
 
 // Compile errors:
 Button("x").behavior("togle", { target: ids.panel })  // ❌ typo

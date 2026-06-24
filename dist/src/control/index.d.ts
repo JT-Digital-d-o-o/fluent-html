@@ -1,5 +1,5 @@
 export { IfThen, IfThenElse, Match, } from "./conditionals.js";
-export { ForEach, Repeat, } from "./iteration.js";
+export { ForEach, ForEachElse, Repeat, } from "./iteration.js";
 export { createContext, createRequiredContext, } from "./context.js";
 export type { Context } from "./context.js";
 import "./overlay.js";

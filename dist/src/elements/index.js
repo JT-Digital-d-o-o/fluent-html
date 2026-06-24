@@ -21,7 +21,7 @@ export { Iframe, IframeTag, ObjectEl, ObjectTag, Embed, EmbedTag, } from "./embe
 // Links
 export { A, AnchorTag, MapEl, MapTag, Area, AreaTag, } from "./links.js";
 // Document metadata / Head elements
-export { HTML, HtmlTag, Head, Body, Title, Meta, MetaTag, Link, LinkTag, Style, StyleTag, Script, ScriptTag, Base, BaseTag, Noscript, Template, } from "./document.js";
+export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta, MetaTag, Link, LinkTag, Style, StyleTag, Script, ScriptTag, Base, BaseTag, Noscript, Template, } from "./document.js";
 // Data / Time elements
 export { Time, TimeTag, Data, DataTag, } from "./data.js";
 // Progress / Meter

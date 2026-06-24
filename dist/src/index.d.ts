@@ -21,13 +21,13 @@ export { Details, Summary, Dialog, } from './elements/index.js';
 export { Img, Picture, Source, Video, Audio, Track, Canvas, Svg, Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, } from './elements/index.js';
 export { Iframe, ObjectEl, Embed, } from './elements/index.js';
 export { A, MapEl, Area, } from './elements/index.js';
-export { HTML, HtmlTag, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';
+export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';
 export { Time, Data, } from './elements/index.js';
 export { Progress, Meter, } from './elements/index.js';
 export { Slot, } from './elements/index.js';
 export { formFor } from './form.js';
 export type { OverlayPosition } from './control/index.js';
-export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, createRequiredContext, } from './control/index.js';
+export { IfThen, IfThenElse, Match, ForEach, ForEachElse, Repeat, createContext, createRequiredContext, } from './control/index.js';
 export type { Context } from './control/index.js';
 export { hx, resolveSelector, id, clss, closest, find, next, previous, } from './htmx.js';
 export type { HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, HxOptions, HxConfig, HxStatusConfig, } from './htmx.js';
@@ -37,7 +37,7 @@ export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js
 export type { Id } from './ids.js';
 export { defineRoutes, } from './routes.js';
 export type { RouteDef, RouteHxOptions, QueryParams, QueryParamValue, ParamTypeName, } from './routes.js';
-export type { BehaviorMap } from './core/behavior-methods.js';
+export type { BehaviorMap, HxOnEvent } from './core/behavior-methods.js';
 export { foldView, paraView, unfoldView, hyloView, countAlgebra, textAlgebra, linksAlgebra, renderAlgebra, createTransformAlgebra, addClassToMatching, ariaDescribeAlgebra, tocCoalgebra, linkedTocCoalgebra, } from './fold/index.js';
 export type { ViewAlgebra, ParaAlgebra, TagAttrs, ViewCoalgebra, ViewLayer, LinkInfo, TocEntry, TocSeed, } from './fold/index.js';
 //# sourceMappingURL=index.d.ts.map

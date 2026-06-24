@@ -1,6 +1,7 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
+import { Raw } from "../core/raw-string.js";
 export class HtmlTag extends Tag {
     setLang(lang) {
         this.lang = lang;
@@ -14,6 +15,22 @@ export class HtmlTag extends Tag {
 defineSchemaKeys(HtmlTag, ['lang', 'dir']);
 export function HTML(...children) {
     return new HtmlTag("html", ...children);
+}
+/**
+ * A full-page `<html>` root that the renderer prefixes with `<!DOCTYPE html>`.
+ * Extends `HtmlTag` (chainable — `.setLang(...)`). The DOCTYPE is discriminated on
+ * the `_doc` brand in the emitter, so plain `HTML(...)` stays byte-identical.
+ */
+export class DocumentTag extends HtmlTag {
+}
+DocumentTag.prototype._doc = true;
+/** Create a full HTML document — emits `<!DOCTYPE html>` then `<html>…</html>`. */
+export function Document(...children) {
+    return new DocumentTag("html", ...children);
+}
+/** The standalone `<!DOCTYPE html>` declaration, for hand-assembled documents. */
+export function Doctype() {
+    return Raw("<!DOCTYPE html>");
 }
 export function Head(...children) {
     return El("head", ...children);

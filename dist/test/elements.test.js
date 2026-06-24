@@ -18,7 +18,7 @@ Iframe, Embed,
 // Links
 A, 
 // Document
-HTML, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, 
+HTML, Document, Doctype, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, 
 // Data/Time
 Time, Data, Progress, Meter, 
 // Web Components
@@ -312,6 +312,18 @@ describe("Document Structure", () => {
     });
     it("HTML with lang", () => { assert.strictEqual(render(HTML(Head(), Body()).setLang("en")), `<html lang="en"><head></head>\n<body></body></html>`); });
     it("HTML with lang and dir", () => { assert.strictEqual(render(HTML(Head(), Body()).setLang("ar").setDir("rtl")), `<html lang="ar" dir="rtl"><head></head>\n<body></body></html>`); });
+    it("Document() prefixes <!DOCTYPE html>", () => {
+        assert.strictEqual(render(Document(Head(Title("T")), Body(P("C")))), `<!DOCTYPE html>\n<html><head><title>T</title></head>\n<body><p>C</p></body></html>`);
+    });
+    it("Document() is chainable like HtmlTag", () => {
+        assert.strictEqual(render(Document(Head(), Body()).setLang("en")), `<!DOCTYPE html>\n<html lang="en"><head></head>\n<body></body></html>`);
+    });
+    it("plain HTML() stays byte-identical (no DOCTYPE)", () => {
+        assert.ok(!render(HTML(Head(), Body())).startsWith("<!DOCTYPE"));
+    });
+    it("Doctype() renders the standalone declaration", () => {
+        assert.strictEqual(render(Doctype()), `<!DOCTYPE html>`);
+    });
     it("Meta charset", () => { assert.strictEqual(render(Meta().setCharset("UTF-8")), `<meta charset="UTF-8">`); });
     it("Meta viewport", () => { assert.strictEqual(render(Meta().setName("viewport").setContent("width=device-width, initial-scale=1")), `<meta name="viewport" content="width=device-width, initial-scale=1">`); });
     it("Meta og:title", () => { assert.strictEqual(render(Meta().setProperty("og:title").setContent("My Page")), `<meta property="og:title" content="My Page">`); });

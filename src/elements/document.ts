@@ -1,6 +1,7 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
+import { Raw } from "../core/raw-string.js";
 import type { View } from "../core/types.js";
 import type { CrossOrigin, HttpEquiv } from "./html-types.js";
 
@@ -23,6 +24,26 @@ defineSchemaKeys(HtmlTag, ['lang', 'dir']);
 
 export function HTML(...children: View[]): HtmlTag {
   return new HtmlTag("html", ...children);
+}
+
+/**
+ * A full-page `<html>` root that the renderer prefixes with `<!DOCTYPE html>`.
+ * Extends `HtmlTag` (chainable — `.setLang(...)`). The DOCTYPE is discriminated on
+ * the `_doc` brand in the emitter, so plain `HTML(...)` stays byte-identical.
+ */
+export class DocumentTag extends HtmlTag {
+  declare readonly _doc: true;
+}
+(DocumentTag.prototype as unknown as { _doc: true })._doc = true;
+
+/** Create a full HTML document — emits `<!DOCTYPE html>` then `<html>…</html>`. */
+export function Document(...children: View[]): DocumentTag {
+  return new DocumentTag("html", ...children);
+}
+
+/** The standalone `<!DOCTYPE html>` declaration, for hand-assembled documents. */
+export function Doctype(): View {
+  return Raw("<!DOCTYPE html>");
 }
 
 export function Head(...children: View[]): Tag {

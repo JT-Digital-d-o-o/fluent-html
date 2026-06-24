@@ -31,6 +31,8 @@ export declare class Tag {
     readonly _t: 1;
     /** @internal Schema keys for element-specific attributes */
     readonly _sk?: readonly SchemaKey[];
+    /** @internal `Document()` brand — when true, the emitter prefixes `<!DOCTYPE html>`. */
+    readonly _doc?: true;
     constructor(element: string, ...children: View[]);
     /**
      * Set the element's `id` attribute. Accepts a string or a type-safe `Id` object.
@@ -121,6 +123,17 @@ export declare class Tag {
      */
     when<T>(condition: T | null | undefined, fn: (tag: this, value: NonNullable<T>) => this): this;
     when(condition: boolean, fn: (tag: this) => this): this;
+    /**
+     * Two-branch conditional modifier — mirrors `IfThenElse`, NOT truthiness. With a
+     * boolean it runs `thenFn`/`elseFn`; with a nullable value it narrows the non-null
+     * value into `thenFn`. Falsy-but-present values (`""`, `0`) take the `thenFn` branch.
+     *
+     * @example
+     * Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
+     * Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
+     */
+    whenElse(condition: boolean, thenFn: (tag: this) => this, elseFn: (tag: this) => this): this;
+    whenElse<T>(value: T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => this, elseFn: (tag: this) => this): this;
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,
      * composable styling and behavior.

@@ -7,6 +7,7 @@ import {
   Div, P, H1, H2, Span, A, Ul, Li, Button, Form, Input,
   Img, Br, Hr, Meta, Link, Script, Style, Source, Col,
   Raw, Table, Tr, Td, Th, Thead, Tbody, Nav, Section,
+  Document, Head, Body, Title,
 } from "../src/index.js";
 
 import { hx } from "../src/htmx.js";
@@ -50,6 +51,13 @@ describe("Stream: Basic elements", () => {
   it("renders nested elements", async () => {
     const view = Div(P("Paragraph"), Span("Inline"));
     assert.equal(await streamToString(view), render(view));
+  });
+
+  it("Document() DOCTYPE prefix is identical streamed vs rendered", async () => {
+    const view = Document(Head(Title("T")), Body(P("C"))).setLang("en");
+    const out = await streamToString(view);
+    assert.equal(out, render(view));
+    assert.ok(out.startsWith("<!DOCTYPE html>\n<html lang=\"en\">"));
   });
 
   it("renders deeply nested", async () => {

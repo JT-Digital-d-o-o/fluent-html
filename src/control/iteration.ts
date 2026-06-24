@@ -79,6 +79,31 @@ export function ForEach<T>(
 }
 
 /**
+ * Iterate over items, or render a fallback when the list is empty. A separate
+ * function from `ForEach` (mirrors `IfThen`→`IfThenElse`) — keeps `ForEach`'s
+ * count/range overloads unambiguous.
+ *
+ * @param items - The items to map over
+ * @param renderItem - Callback receiving each item (and index) to produce a View
+ * @param emptyView - A View, or a thunk returning one, rendered when `items` is empty
+ *
+ * @example
+ * Ul(ForEachElse(users, (u) => Li(u.name), () => Li("No users yet")))
+ */
+export function ForEachElse<T>(
+  items: readonly T[],
+  renderItem: (item: T, index: number) => View,
+  emptyView: View | (() => View),
+): View {
+  if (items.length === 0) {
+    return typeof emptyView === "function" ? (emptyView as () => View)() : emptyView;
+  }
+  const result: View[] = new Array(items.length);
+  for (let i = 0; i < items.length; i++) result[i] = renderItem(items[i]!, i);
+  return result;
+}
+
+/**
  * Repeat a view a fixed number of times.
  *
  * @param times - How many times to repeat

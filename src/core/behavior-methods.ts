@@ -19,9 +19,25 @@ export type BehaviorMap = {
   scrollTo:   { target: Id };
   selectAll:  void;
   back:       void;
+  formResetOnSwap: void;
+  dismissOnEscape: void;
 };
 
 type BehaviorName = keyof BehaviorMap;
+
+/** Events accepted by `.hxOn(event, js)` — standard DOM events plus any `htmx:*` event. */
+export type HxOnEvent =
+  | "click" | "dblclick" | "change" | "input" | "submit" | "reset"
+  | "keydown" | "keyup" | "keypress"
+  | "focus" | "blur" | "focusin" | "focusout"
+  | "mouseenter" | "mouseleave" | "mouseover" | "mouseout" | "mousedown" | "mouseup"
+  | "load" | "scroll"
+  | `htmx:${string}`
+  | (string & {});
+
+// A safe hx-on event name (it becomes part of the `hx-on:<event>` attribute NAME, so a
+// malformed value would be attribute-name injection — the typed union guards typed callers).
+const HX_ON_EVENT_RE = /^[a-zA-Z][a-zA-Z0-9:_-]*$/;
 
 // ── Declaration merging on Tag ───────────────────────────────────
 declare module "./tag.js" {
@@ -30,6 +46,15 @@ declare module "./tag.js" {
       name: K,
       ...args: BehaviorMap[K] extends void ? [] : [options: BehaviorMap[K]]
     ): this;
+    /**
+     * Attach raw JS to an `hx-on:<event>` handler (typed event, concatenated with
+     * `;` if called more than once, HTML-attribute-escaped at render). Prefer
+     * `.behavior()` for the built-ins; reach for `.hxOn()` only for one-offs.
+     *
+     * @example
+     * Button("Count").hxOn("click", "this.dataset.n = (+this.dataset.n||0)+1")
+     */
+    hxOn(event: HxOnEvent, js: string): this;
   }
 }
 
@@ -81,6 +106,14 @@ const renderers: Record<BehaviorName, BehaviorRenderer> = {
     "click",
     "history.back()",
   ],
+  formResetOnSwap: () => [
+    "htmx:after-swap",
+    "this.reset()",
+  ],
+  dismissOnEscape: () => [
+    "keyup",
+    "if(event.key==='Escape')this.remove()",
+  ],
 };
 
 // ── Implementation ───────────────────────────────────────────────
@@ -95,5 +128,21 @@ const renderers: Record<BehaviorName, BehaviorRenderer> = {
   const existing = this.attributes[attr];
   this.attributes[attr] = existing ? existing + ";" + js : js;
 
+  return this;
+};
+
+// ── .hxOn(event, js) ─────────────────────────────────────────────
+// The js is author-authored and stored verbatim; the renderer HTML-attribute-escapes
+// it, so it can't break out of the `hx-on:<event>="…"` attribute. The event name is
+// validated (it becomes part of the attribute name).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- runtime signature differs from typed overload
+(Tag.prototype as any).hxOn = function (event: string, js: string) {
+  if (!HX_ON_EVENT_RE.test(event)) {
+    throw new Error(`Invalid hx-on event: "${event}" — expected an event name (letters, digits, ':' '-' '_').`);
+  }
+  if (this.attributes === EMPTY_ATTRS) this.attributes = Object.create(null) as Record<string, string>;
+  const attr = `hx-on:${event}`;
+  const existing = this.attributes[attr];
+  this.attributes[attr] = existing ? existing + ";" + js : js;
   return this;
 };

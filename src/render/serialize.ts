@@ -340,6 +340,8 @@ export function* emitChunks(
           open += ' nonce="' + escapeAttr(nonce) + '"';
         }
         open += '>';
+        // Document() prefixes <!DOCTYPE html> (branded on `_doc`; plain HTML() is unaffected).
+        if (el === 'html' && v._doc === true) buf += '<!DOCTYPE html>\n';
         buf += open;
 
         if (!VOID_ELEMENTS.has(el)) {
@@ -417,6 +419,8 @@ export function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): vo
         open += ' nonce="' + escapeAttr(nonce) + '"';
       }
       open += '>';
+      // Document() prefixes <!DOCTYPE html> (branded on `_doc`; plain HTML() is unaffected).
+      if (el === 'html' && v._doc === true) sink.append('<!DOCTYPE html>\n');
 
       if (VOID_ELEMENTS.has(el)) {
         sink.append(open);

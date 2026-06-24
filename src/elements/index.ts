@@ -188,6 +188,9 @@ export {
 export {
   HTML,
   HtmlTag,
+  Document,
+  DocumentTag,
+  Doctype,
   Head,
   Body,
   Title,

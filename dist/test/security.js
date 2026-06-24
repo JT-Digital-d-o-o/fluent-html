@@ -43,6 +43,9 @@ describe("XSS — Attribute Keys", () => {
     it("Blocks onclick attribute", () => {
         assert.throws(() => Div().addAttribute("onclick", "alert(1)"), /Event handler attribute "onclick" is blocked/);
     });
+    it("the blocked-event error points to .behavior()/.hxOn()", () => {
+        assert.throws(() => Div().addAttribute("onload", "x()"), /\.behavior\(\) or \.hxOn\(\)/);
+    });
     it("Blocks onerror attribute", () => {
         assert.throws(() => Input().addAttribute("onerror", "alert(1)"), /Event handler attribute "onerror" is blocked/);
     });

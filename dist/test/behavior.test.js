@@ -56,5 +56,35 @@ describe("behavior()", () => {
         assert.ok(html.includes(`hx-on:focus="this.select()"`));
         assert.ok(html.includes(`hx-on:click="this.disabled=true"`));
     });
+    it("formResetOnSwap — resets the form after an htmx swap", () => {
+        const html = render(Input().behavior("formResetOnSwap"));
+        assert.ok(html.includes(`hx-on:htmx:after-swap="this.reset()"`));
+    });
+    it("dismissOnEscape — removes on Escape keyup", () => {
+        const html = render(Input().behavior("dismissOnEscape"));
+        assert.ok(html.includes(`hx-on:keyup="if(event.key===${q}Escape${q})this.remove()"`));
+    });
+});
+describe(".hxOn()", () => {
+    it("emits a typed hx-on:<event> handler", () => {
+        const html = render(Button("Inc").hxOn("click", "this.dataset.n=1"));
+        assert.ok(html.includes(`hx-on:click="this.dataset.n=1"`));
+    });
+    it("concatenates repeated calls on the same event with ;", () => {
+        const html = render(Button("X").hxOn("click", "a()").hxOn("click", "b()"));
+        assert.ok(html.includes(`hx-on:click="a();b()"`));
+    });
+    it("HTML-attribute-escapes the js (can't break out of the attribute)", () => {
+        const html = render(Button("X").hxOn("click", `alert('hi')`));
+        assert.ok(html.includes(`hx-on:click="alert(${q}hi${q})"`));
+    });
+    it("coexists with .behavior() on a different event", () => {
+        const html = render(Input().behavior("selectAll").hxOn("input", "v()"));
+        assert.ok(html.includes(`hx-on:focus="this.select()"`));
+        assert.ok(html.includes(`hx-on:input="v()"`));
+    });
+    it("throws on an injected event name (attribute-name safety)", () => {
+        assert.throws(() => render(Button("X").hxOn('click" onload="alert(1)', "x()")), /Invalid hx-on event/);
+    });
 });
 //# sourceMappingURL=behavior.test.js.map

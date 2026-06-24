@@ -8,6 +8,7 @@ export {
 // Control flow - Iteration
 export {
   ForEach,
+  ForEachElse,
   Repeat,
 } from "./iteration.js";
 

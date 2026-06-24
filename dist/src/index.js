@@ -33,7 +33,7 @@ export { Iframe, ObjectEl, Embed, } from './elements/index.js';
 // Links
 export { A, MapEl, Area, } from './elements/index.js';
 // Document metadata / Head elements
-export { HTML, HtmlTag, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';
+export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';
 // Data / Time elements
 export { Time, Data, } from './elements/index.js';
 // Progress / Meter
@@ -43,7 +43,7 @@ export { Slot, } from './elements/index.js';
 // Type-safe form factory
 export { formFor } from './form.js';
 // Control flow
-export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, createRequiredContext, } from './control/index.js';
+export { IfThen, IfThenElse, Match, ForEach, ForEachElse, Repeat, createContext, createRequiredContext, } from './control/index.js';
 // HTMX
 export { hx, resolveSelector, 
 // Selector helpers

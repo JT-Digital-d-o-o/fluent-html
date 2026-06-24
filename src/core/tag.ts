@@ -35,7 +35,7 @@ function validateAttributeKey(key: string): void {
     throw new Error(`Invalid attribute key: "${key}"`);
   }
   if (EVENT_HANDLER_RE.test(key)) {
-    throw new Error(`Event handler attribute "${key}" is blocked — use client-side JS or HTMX instead`);
+    throw new Error(`Event handler attribute "${key}" is blocked — use .behavior() or .hxOn() instead of an inline on* handler`);
   }
 }
 
@@ -66,6 +66,8 @@ export class Tag {
   declare readonly _t: 1;
   /** @internal Schema keys for element-specific attributes */
   declare readonly _sk?: readonly SchemaKey[];
+  /** @internal `Document()` brand — when true, the emitter prefixes `<!DOCTYPE html>`. */
+  declare readonly _doc?: true;
 
   constructor(element: string, ...children: View[]) {
     this.el = element;
@@ -213,6 +215,22 @@ export class Tag {
   when(condition: boolean, fn: (tag: this) => this): this;
   when<T>(condition: T | null | undefined | boolean, fn: (tag: this, value: NonNullable<T>) => this): this {
     return condition ? fn(this, condition as NonNullable<T>) : this;
+  }
+
+  /**
+   * Two-branch conditional modifier — mirrors `IfThenElse`, NOT truthiness. With a
+   * boolean it runs `thenFn`/`elseFn`; with a nullable value it narrows the non-null
+   * value into `thenFn`. Falsy-but-present values (`""`, `0`) take the `thenFn` branch.
+   *
+   * @example
+   * Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
+   * Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
+   */
+  whenElse(condition: boolean, thenFn: (tag: this) => this, elseFn: (tag: this) => this): this;
+  whenElse<T>(value: T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => this, elseFn: (tag: this) => this): this;
+  whenElse<T>(condition: T | null | undefined | boolean, thenFn: (tag: this, value: NonNullable<T>) => this, elseFn: (tag: this) => this): this {
+    if (typeof condition === "boolean") return condition ? (thenFn as (tag: this) => this)(this) : elseFn(this);
+    return condition != null ? thenFn(this, condition as NonNullable<T>) : elseFn(this);
   }
 
   /**
