@@ -8,6 +8,19 @@ import {
 } from "../src/index.js";
 import { createId } from "../src/ids.js";
 
+// A-09: the 15 type-only re-exports must stay importable as TYPES (split to
+// `export type` for verbatimModuleSyntax / TS1205). This `import type` + union is a
+// compile-time lock — if any stops being an exported type, the build fails.
+import type {
+  HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod,
+  HxSync, HxOptions, HxConfig, HxStatusConfig, HtmxGlobalConfig,
+  HxResponseResult, HxLocationConfig, Id, OverlayPosition,
+} from "../src/index.js";
+export type _TypeOnlyExportSurface =
+  | HTMX | HxSwap | HxSwapStyle | HxTrigger | HxEncoding | HxTarget | HxHttpMethod
+  | HxSync | HxOptions | HxConfig | HxStatusConfig | HtmxGlobalConfig
+  | HxResponseResult | HxLocationConfig | Id | OverlayPosition;
+
 // -------------------------------------------------------
 // Phase 1: String literal unions render correctly
 // -------------------------------------------------------

@@ -262,11 +262,8 @@ export {
 // Type-safe form factory
 export { formFor } from './form.js';
 
-// Utilities
-export {
-  Overlay,
-  OverlayPosition,
-} from './control/index.js';
+// Overlay — Tag.prototype.overlay() (the method is registered via the control barrel)
+export type { OverlayPosition } from './control/index.js';
 
 // Control flow
 export {
@@ -285,6 +282,16 @@ export type { Context } from './control/index.js';
 export {
   hx,
   resolveSelector,
+  // Selector helpers
+  id,
+  clss,
+  closest,
+  find,
+  next,
+  previous,
+} from './htmx.js';
+// Type-only re-exports (`export type` — TS1205-safe under verbatimModuleSyntax).
+export type {
   HTMX,
   HxSwap,
   HxSwapStyle,
@@ -296,13 +303,6 @@ export {
   HxOptions,
   HxConfig,
   HxStatusConfig,
-  // Selector helpers
-  id,
-  clss,
-  closest,
-  find,
-  next,
-  previous,
 } from './htmx.js';
 
 // Common Patterns
@@ -314,23 +314,25 @@ export {
   Partial,
   // Global config helper (htmx 4)
   HtmxConfig,
-  HtmxGlobalConfig,
   // Response helpers
   hxResponse,
   HxResponse,
+} from './patterns.js';
+export type {
+  HtmxGlobalConfig,
   HxResponseResult,
   HxLocationConfig,
 } from './patterns.js';
 
 // Type-safe IDs
 export {
-  Id,
   createId,
   defineIds,
   isId,
   extractId,
   extractSelector,
 } from './ids.js';
+export type { Id } from './ids.js';
 
 // Type-safe Routes
 export {

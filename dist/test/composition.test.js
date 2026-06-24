@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Div, Main, Header, Footer, Section, Article, Nav, P, H1, H2, Span, Strong, Ul, Li, Table, Thead, Tbody, Tr, Th, Td, Form, Input, Button, Label, Select, Option, Details, Summary, A, Img, El, Empty, Overlay, } from "../src/index.js";
+import { render, Div, Main, Header, Footer, Section, Article, Nav, P, H1, H2, Span, Strong, Ul, Li, Table, Thead, Tbody, Tr, Th, Td, Form, Input, Button, Label, Select, Option, Details, Summary, A, Img, El, Empty, } from "../src/index.js";
 // ------------------------------------
 // render() variadic
 // ------------------------------------
@@ -40,11 +40,11 @@ describe("Nested Structures", () => {
 // Overlay Utility
 // ------------------------------------
 describe("Overlay Utility", () => {
-    it("Overlay center", () => {
-        assert.strictEqual(render(Overlay(Img().setSrc("bg.jpg").setAlt("Background"), Span("Centered text"))), `<div style="position: relative"><img src="bg.jpg" alt="Background">\n<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10"><span>Centered text</span></div></div>`);
+    it(".overlay() center", () => {
+        assert.strictEqual(render(Img().setSrc("bg.jpg").setAlt("Background").overlay(Span("Centered text"))), `<div class="relative"><img src="bg.jpg" alt="Background">\n<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"><span>Centered text</span></div></div>`);
     });
-    it("Overlay top-right", () => {
-        assert.strictEqual(render(Overlay(Div("Card"), Span("Badge"), "top-right")), `<div style="position: relative"><div>Card</div>\n<div style="position: absolute; top: 0; right: 0; z-index: 10"><span>Badge</span></div></div>`);
+    it(".overlay() top-right", () => {
+        assert.strictEqual(render(Div("Card").overlay("top-right", Span("Badge"))), `<div class="relative"><div>Card</div>\n<div class="absolute top-0 right-0 z-10"><span>Badge</span></div></div>`);
     });
 });
 // ------------------------------------

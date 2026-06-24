@@ -19,8 +19,6 @@ export {
 
 export type { Context } from "./context.js";
 
-// Overlay utility
-export {
-  Overlay,
-  OverlayPosition,
-} from "./overlay.js";
+// Overlay — registers Tag.prototype.overlay() (side-effecting), like the core method mixins
+import "./overlay.js";
+export type { OverlayPosition } from "./overlay.js";

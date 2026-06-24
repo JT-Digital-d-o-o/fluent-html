@@ -39,10 +39,10 @@
 <!-- hill: downhill -->
 ### As a developer I want .overlay() and clean type-only exports so that overlays compose fluently and verbatimModuleSyntax compiles
 
-- [ ] [P1] Split the 15 type-only re-exports to `export type` (fixes TS1205)
-- [ ] [P1] Implement `Tag.prototype.overlay(position?, ...content)` (default `"center"`; works on void elements) — replace the `Overlay()` function; uses A-07's `.absolute()`/`.relative()`
-- [ ] [P1] Write tests — `.overlay()` on `Img()`, position vs content arg disambiguation, type-only export compile check
-- [ ] [P1] Check for bugs in `.overlay()`/exports
+- [x] [P1] Split the 15 type-only re-exports to `export type` — htmx (11: HTMX/HxSwap/HxSwapStyle/HxTrigger/HxEncoding/HxTarget/HxHttpMethod/HxSync/HxOptions/HxConfig/HxStatusConfig), patterns (3: HtmxGlobalConfig/HxResponseResult/HxLocationConfig), `Id` (1) + `OverlayPosition`. tsc validates the value/type split (a misclassified value would error)
+- [x] [P1] Implemented `Tag.prototype.overlay(position?, ...content): Tag` (replaces the `Overlay()` function) — wraps `this` in a `.relative()` container + an `.absolute()` layer with per-position inset/translate classes; `args[0]` is the position iff it's a known position word, else content + `"center"`. Uses `El()` (no elements-import cycle); works on void elements. Side-effect-registered via the control barrel
+- [x] [P1] Tests — `test/overlay.ts` rewritten (void `Img()`, position-vs-content disambiguation, all 9 positions, base-styling-preserved); composition test migrated; type-only export compile-lock in `type-safety.ts`. Lib suite 1376 → 1372 (overlay 10→6 focused cases)
+- [x] [P1] Check for bugs — tsc clean, suite green, bench + lint clean. **Known limitation (documented in JSDoc):** `.overlay()`'s positioning utilities are render-time, so the extractor's source scan can't safelist them — apps using centered/edge overlays must safelist the ~6 fractional inset/translate classes. Deep auto-safelisting of composition-helper output is a broader extractor concern (follow-up, not A-09)
 
 <!-- hill: downhill -->
 ### As a developer I want for-else, when-else, Document(), and typed .hxOn() so that common patterns have first-class APIs

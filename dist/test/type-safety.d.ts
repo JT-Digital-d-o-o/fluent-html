@@ -1,2 +1,3 @@
-export {};
+import type { HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, HxOptions, HxConfig, HxStatusConfig, HtmxGlobalConfig, HxResponseResult, HxLocationConfig, Id, OverlayPosition } from "../src/index.js";
+export type _TypeOnlyExportSurface = HTMX | HxSwap | HxSwapStyle | HxTrigger | HxEncoding | HxTarget | HxHttpMethod | HxSync | HxOptions | HxConfig | HxStatusConfig | HtmxGlobalConfig | HxResponseResult | HxLocationConfig | Id | OverlayPosition;
 //# sourceMappingURL=type-safety.d.ts.map

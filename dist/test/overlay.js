@@ -1,50 +1,49 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Overlay, Span } from "../src/index.js";
-describe("Overlay", () => {
-    it("renders with default center position", () => {
-        const html = render(Overlay(Span("Content"), Span("Badge")));
-        assert.ok(html.includes("position: relative"));
-        assert.ok(html.includes("position: absolute"));
-        assert.ok(html.includes("translate(-50%, -50%)"));
-        assert.ok(html.includes("Content"));
-        assert.ok(html.includes("Badge"));
+import { render, Span, Img, Div } from "../src/index.js";
+describe("Tag.prototype.overlay()", () => {
+    it("wraps in relative + absolute with default center position", () => {
+        const html = render(Span("Content").overlay(Span("Badge")));
+        assert.ok(html.startsWith('<div class="relative">'));
+        assert.ok(html.includes("<span>Content</span>"));
+        assert.ok(html.includes('class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"'));
+        assert.ok(html.includes("<span>Badge</span>"));
     });
-    it("renders with top position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "top"));
-        assert.ok(html.includes("top: 0; left: 50%; transform: translateX(-50%)"));
+    it("treats a known position word as the position", () => {
+        const html = render(Div("C").overlay("top", Span("O")));
+        assert.ok(html.includes('class="absolute top-0 left-1/2 -translate-x-1/2 z-10"'));
+        assert.ok(html.includes("<span>O</span>"));
     });
-    it("renders with bottom position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "bottom"));
-        assert.ok(html.includes("bottom: 0; left: 50%; transform: translateX(-50%)"));
+    it("emits the right utilities per position", () => {
+        const cases = [
+            ["bottom", "absolute bottom-0 left-1/2 -translate-x-1/2 z-10"],
+            ["left", "absolute top-1/2 left-0 -translate-y-1/2 z-10"],
+            ["right", "absolute top-1/2 right-0 -translate-y-1/2 z-10"],
+            ["top-left", "absolute top-0 left-0 z-10"],
+            ["top-right", "absolute top-0 right-0 z-10"],
+            ["bottom-left", "absolute bottom-0 left-0 z-10"],
+            ["bottom-right", "absolute bottom-0 right-0 z-10"],
+        ];
+        for (const [pos, expected] of cases) {
+            const html = render(Div("C").overlay(pos, Span("O")));
+            assert.ok(html.includes(`class="${expected}"`), `${pos} → ${expected}`);
+        }
     });
-    it("renders with top-left position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "top-left"));
-        assert.ok(html.includes("top: 0; left: 0;"));
+    it("works on a void element (Img)", () => {
+        const html = render(Img().setSrc("/a.png").overlay(Span("Badge")));
+        assert.ok(html.startsWith('<div class="relative">'));
+        assert.ok(html.includes('<img src="/a.png">'));
+        assert.ok(html.includes("<span>Badge</span>"));
     });
-    it("renders with top-right position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "top-right"));
-        assert.ok(html.includes("top: 0; right: 0;"));
+    it("a non-position first arg is content (center)", () => {
+        const html = render(Div("C").overlay(Span("A"), Span("B")));
+        assert.ok(html.includes("-translate-x-1/2 -translate-y-1/2"));
+        assert.ok(html.includes("<span>A</span>"));
+        assert.ok(html.includes("<span>B</span>"));
     });
-    it("renders with bottom-left position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "bottom-left"));
-        assert.ok(html.includes("bottom: 0; left: 0;"));
-    });
-    it("renders with bottom-right position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "bottom-right"));
-        assert.ok(html.includes("bottom: 0; right: 0;"));
-    });
-    it("renders with left position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "left"));
-        assert.ok(html.includes("top: 50%; left: 0; transform: translateY(-50%)"));
-    });
-    it("renders with right position", () => {
-        const html = render(Overlay(Span("C"), Span("O"), "right"));
-        assert.ok(html.includes("top: 50%; right: 0; transform: translateY(-50%)"));
-    });
-    it("includes z-index on overlay", () => {
-        const html = render(Overlay(Span("C"), Span("O")));
-        assert.ok(html.includes("z-index: 10"));
+    it("preserves base styling applied before overlay()", () => {
+        const html = render(Img().setSrc("/a.png").rounded("full").overlay(Span("X")));
+        assert.ok(html.includes('class="rounded-full"'));
     });
 });
 //# sourceMappingURL=overlay.js.map

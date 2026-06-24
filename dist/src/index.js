@@ -42,8 +42,6 @@ export { Progress, Meter, } from './elements/index.js';
 export { Slot, } from './elements/index.js';
 // Type-safe form factory
 export { formFor } from './form.js';
-// Utilities
-export { Overlay, } from './control/index.js';
 // Control flow
 export { IfThen, IfThenElse, Match, ForEach, Repeat, createContext, createRequiredContext, } from './control/index.js';
 // HTMX

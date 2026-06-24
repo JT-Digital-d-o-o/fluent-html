@@ -12,7 +12,7 @@ import {
   Details, Summary,
   A,
   Img,
-  El, Empty, Overlay,
+  El, Empty,
 } from "../src/index.js";
 
 // ------------------------------------
@@ -74,19 +74,16 @@ describe("Nested Structures", () => {
 // ------------------------------------
 
 describe("Overlay Utility", () => {
-  it("Overlay center", () => {
-    assert.strictEqual(render(Overlay(
-      Img().setSrc("bg.jpg").setAlt("Background"),
-      Span("Centered text")
-    )), `<div style="position: relative"><img src="bg.jpg" alt="Background">\n<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10"><span>Centered text</span></div></div>`);
+  it(".overlay() center", () => {
+    assert.strictEqual(render(
+      Img().setSrc("bg.jpg").setAlt("Background").overlay(Span("Centered text"))
+    ), `<div class="relative"><img src="bg.jpg" alt="Background">\n<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"><span>Centered text</span></div></div>`);
   });
 
-  it("Overlay top-right", () => {
-    assert.strictEqual(render(Overlay(
-      Div("Card"),
-      Span("Badge"),
-      "top-right"
-    )), `<div style="position: relative"><div>Card</div>\n<div style="position: absolute; top: 0; right: 0; z-index: 10"><span>Badge</span></div></div>`);
+  it(".overlay() top-right", () => {
+    assert.strictEqual(render(
+      Div("Card").overlay("top-right", Span("Badge"))
+    ), `<div class="relative"><div>Card</div>\n<div class="absolute top-0 right-0 z-10"><span>Badge</span></div></div>`);
   });
 });
 
