@@ -7,7 +7,7 @@ export { Form, FormTag, Input, InputTag, NumericInputTag, DateTimeInputTag, NoMi
 export type { FormState, FormBinding, ErrorBag, SelectOption, } from "./forms.js";
 export { Details, DetailsTag, Summary, Dialog, DialogTag, } from "./interactive.js";
 export { Img, ImgTag, Picture, Source, SourceTag, Video, VideoTag, Audio, AudioTag, Track, TrackTag, Canvas, CanvasTag, Svg, SvgTag, } from "./media.js";
-export { SvgShapeTag, Path, PathTag, Circle, CircleTag, Rect, RectTag, Line, LineTag, Polygon, PolygonTag, Polyline, PolylineTag, Ellipse, EllipseTag, G, Defs, Use, UseTag, Text, SvgTextTag, Tspan, TspanTag, } from "./svg.js";
+export { SvgShapeTag, Path, PathTag, Circle, CircleTag, Rect, RectTag, Line, LineTag, Polygon, PolygonTag, Polyline, PolylineTag, Ellipse, EllipseTag, G, Defs, Use, UseTag, Text, SvgTextTag, Tspan, TspanTag, LinearGradient, LinearGradientTag, RadialGradient, RadialGradientTag, Stop, StopTag, ClipPath, ClipPathTag, Mask, MaskTag, Filter, FilterTag, FeGaussianBlur, FeGaussianBlurTag, } from "./svg.js";
 export { Iframe, IframeTag, ObjectEl, ObjectTag, Embed, EmbedTag, } from "./embedded.js";
 export { A, AnchorTag, MapEl, MapTag, Area, AreaTag, } from "./links.js";
 export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta, MetaTag, Link, LinkTag, Style, StyleTag, Script, ScriptTag, Base, BaseTag, Noscript, Template, } from "./document.js";

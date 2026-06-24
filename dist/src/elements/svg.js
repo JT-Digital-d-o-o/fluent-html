@@ -27,6 +27,14 @@ export class SvgShapeTag extends Tag {
         this['stroke-dasharray'] = dasharray;
         return this;
     }
+    setStrokeDashoffset(offset) {
+        this['stroke-dashoffset'] = String(offset);
+        return this;
+    }
+    setStrokeOpacity(opacity) {
+        this['stroke-opacity'] = String(opacity);
+        return this;
+    }
     setOpacity(opacity) {
         this.svgOpacity = opacity;
         return this;
@@ -41,7 +49,7 @@ export class SvgShapeTag extends Tag {
     }
 }
 /** @internal */
-const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform', ['svgOpacity', 'opacity'], 'filter'];
+const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity', 'transform', ['svgOpacity', 'opacity'], 'filter'];
 defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 // ─── Circle ─────────────────────────────────────────────────────────
 export class CircleTag extends SvgShapeTag {
@@ -319,5 +327,83 @@ export function G(...children) {
 }
 export function Defs(...children) {
     return El("defs", ...children);
+}
+export class LinearGradientTag extends Tag {
+    setX1(v) { this.x1 = String(v); return this; }
+    setY1(v) { this.y1 = String(v); return this; }
+    setX2(v) { this.x2 = String(v); return this; }
+    setY2(v) { this.y2 = String(v); return this; }
+    setGradientUnits(v) { this.gradientUnits = v; return this; }
+    setGradientTransform(v) { this.gradientTransform = v; return this; }
+    setSpreadMethod(v) { this.spreadMethod = v; return this; }
+}
+defineSchemaKeys(LinearGradientTag, ['x1', 'y1', 'x2', 'y2', 'gradientUnits', 'gradientTransform', 'spreadMethod']);
+export function LinearGradient(...children) {
+    return new LinearGradientTag("linearGradient", ...children);
+}
+export class RadialGradientTag extends Tag {
+    setCx(v) { this.cx = String(v); return this; }
+    setCy(v) { this.cy = String(v); return this; }
+    setR(v) { this.r = String(v); return this; }
+    setFx(v) { this.fx = String(v); return this; }
+    setFy(v) { this.fy = String(v); return this; }
+    setGradientUnits(v) { this.gradientUnits = v; return this; }
+    setGradientTransform(v) { this.gradientTransform = v; return this; }
+    setSpreadMethod(v) { this.spreadMethod = v; return this; }
+}
+defineSchemaKeys(RadialGradientTag, ['cx', 'cy', 'r', 'fx', 'fy', 'gradientUnits', 'gradientTransform', 'spreadMethod']);
+export function RadialGradient(...children) {
+    return new RadialGradientTag("radialGradient", ...children);
+}
+export class StopTag extends Tag {
+    setOffset(v) { this.offset = String(v); return this; }
+    setStopColor(v) { this['stop-color'] = v; return this; }
+    setStopOpacity(v) { this['stop-opacity'] = String(v); return this; }
+}
+defineSchemaKeys(StopTag, ['offset', 'stop-color', 'stop-opacity']);
+export function Stop(...children) {
+    return new StopTag("stop", ...children);
+}
+// ─── Clipping, masking, filters ────────────────────────────────────
+export class ClipPathTag extends Tag {
+    setClipPathUnits(v) { this.clipPathUnits = v; return this; }
+}
+defineSchemaKeys(ClipPathTag, ['clipPathUnits']);
+export function ClipPath(...children) {
+    return new ClipPathTag("clipPath", ...children);
+}
+export class MaskTag extends Tag {
+    setMaskUnits(v) { this.maskUnits = v; return this; }
+    setMaskContentUnits(v) { this.maskContentUnits = v; return this; }
+    setX(v) { this.x = String(v); return this; }
+    setY(v) { this.y = String(v); return this; }
+    setWidth(v) { this.width = String(v); return this; }
+    setHeight(v) { this.height = String(v); return this; }
+}
+defineSchemaKeys(MaskTag, ['maskUnits', 'maskContentUnits', 'x', 'y', 'width', 'height']);
+export function Mask(...children) {
+    return new MaskTag("mask", ...children);
+}
+export class FilterTag extends Tag {
+    setX(v) { this.x = String(v); return this; }
+    setY(v) { this.y = String(v); return this; }
+    setWidth(v) { this.width = String(v); return this; }
+    setHeight(v) { this.height = String(v); return this; }
+    setFilterUnits(v) { this.filterUnits = v; return this; }
+    setPrimitiveUnits(v) { this.primitiveUnits = v; return this; }
+}
+defineSchemaKeys(FilterTag, ['x', 'y', 'width', 'height', 'filterUnits', 'primitiveUnits']);
+export function Filter(...children) {
+    return new FilterTag("filter", ...children);
+}
+export class FeGaussianBlurTag extends Tag {
+    setIn(v) { this.in = v; return this; }
+    setStdDeviation(v) { this.stdDeviation = String(v); return this; }
+    setResult(v) { this.result = v; return this; }
+    setEdgeMode(v) { this.edgeMode = v; return this; }
+}
+defineSchemaKeys(FeGaussianBlurTag, ['in', 'stdDeviation', 'result', 'edgeMode']);
+export function FeGaussianBlur(...children) {
+    return new FeGaussianBlurTag("feGaussianBlur", ...children);
 }
 //# sourceMappingURL=svg.js.map

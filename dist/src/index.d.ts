@@ -18,7 +18,7 @@ export { Ul, Ol, Li, Dl, Dt, Dd, Menu, } from './elements/index.js';
 export { Table, Thead, Tbody, Tfoot, Tr, Th, Td, Caption, Colgroup, Col, } from './elements/index.js';
 export { Form, Input, Textarea, Button, Label, Select, Option, Optgroup, Datalist, Fieldset, Legend, Output, } from './elements/index.js';
 export { Details, Summary, Dialog, } from './elements/index.js';
-export { Img, Picture, Source, Video, Audio, Track, Canvas, Svg, Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, } from './elements/index.js';
+export { Img, Picture, Source, Video, Audio, Track, Canvas, Svg, Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, LinearGradient, RadialGradient, Stop, ClipPath, Mask, Filter, FeGaussianBlur, } from './elements/index.js';
 export { Iframe, ObjectEl, Embed, } from './elements/index.js';
 export { A, MapEl, Area, } from './elements/index.js';
 export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';

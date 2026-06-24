@@ -23,11 +23,11 @@
 <!-- hill: downhill -->
 ### As a developer I want complete SVG coverage so that icons are typed Views, not Raw(string) injection
 
-- [ ] [P1] Add `SvgTag`/`SvgShapeTag` stroke setters — `setStrokeLinecap`/`setStrokeLinejoin`/`setStrokeDasharray`/`setStrokeDashoffset`/`setTransform`/`setStrokeOpacity` (extend each class's `_sk`)
-- [ ] [P1] Add typed SVG container tags — `LinearGradient`/`RadialGradient`/`Stop`/`ClipPath`/`Mask`/`Filter`/`FeGaussianBlur`
-- [ ] [P1] Add the `no-raw-icon-string` lint (retire the `Raw(icon)` sink)
-- [ ] [P1] Write tests — each setter round-trips through `_sk`; container tags render
-- [ ] [P1] Check for bugs in SVG coverage
+- [x] [P1] Added the missing `SvgShapeTag` stroke setters — `setStrokeDashoffset`/`setStrokeOpacity` (the linecap/linejoin/dasharray/transform setters already existed); both via kebab `_sk` fields (`stroke-dashoffset`/`stroke-opacity`, no collision so no tuple needed)
+- [x] [P1] Added the typed SVG container tags — `LinearGradient`/`RadialGradient` (+`Stop`), `ClipPath`, `Mask`, `Filter` (+`FeGaussianBlur`), each a `Tag` subclass with typed setters + `_sk` + factory, exported through the barrel (factory functions, matching the existing SVG convention)
+- [x] [P1] Added `no-raw-icon-string` ESLint rule (`recommended: warn`) — flags `Raw("<svg…>")` (string + template-literal args), points to the typed builders. Plugin suite 238 → 243
+- [x] [P1] Tests — `setStrokeDashoffset`/`setStrokeOpacity` round-trip; LinearGradient+Stop, RadialGradient, ClipPath/Mask, Filter+FeGaussianBlur render; rule valid/invalid. Lib suite 1406 → 1411
+- [x] [P1] Check for bugs — tsc clean (incl. the reserved-word `in` field on FeGaussianBlur), full suite green, bench gate passes, lint clean; README SVG section updated with the new setters + a gradient example
 
 <!-- hill: downhill -->
 ### As a developer I want .htmxIndicator() so that the loading-indicator class is sanctioned, not a raw string

@@ -1498,7 +1498,7 @@ Picture(
 
 ### SVG Elements with Typed Setters
 
-All SVG shape elements extend `SvgShapeTag` with shared methods: `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setOpacity()`, `setFilter()`, `setTransform()`.
+All SVG shape elements extend `SvgShapeTag` with shared methods: `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setStrokeDashoffset()`, `setStrokeOpacity()`, `setOpacity()`, `setFilter()`, `setTransform()`.
 
 ```typescript
 // Circle with typed setters
@@ -1525,6 +1525,20 @@ Svg(
 ```
 
 > **Note:** `setOpacity()` sets the SVG `opacity` presentation attribute. It routes through an internal `_sk` field so it doesn't collide with Tailwind's `.opacity()` styling method.
+
+Gradients, clipping, masking, and filters have typed builders too — `LinearGradient`/`RadialGradient` + `Stop`, `ClipPath`, `Mask`, and `Filter` + `FeGaussianBlur` — so icons and effects are typed Views, never `Raw("<svg…>")` strings:
+
+```typescript
+Svg(
+  Defs(
+    LinearGradient(
+      Stop().setOffset("0%").setStopColor("var(--brand)"),
+      Stop().setOffset("100%").setStopColor("var(--forest)"),
+    ).setId("g").setX1("0").setY1("0").setX2("1").setY2("1"),
+  ),
+  Rect().setWidth("100").setHeight("100").setFill("url(#g)"),
+)
+```
 
 ### Interactive Elements
 

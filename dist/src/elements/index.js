@@ -15,7 +15,7 @@ export { Details, DetailsTag, Summary, Dialog, DialogTag, } from "./interactive.
 // Media elements
 export { Img, ImgTag, Picture, Source, SourceTag, Video, VideoTag, Audio, AudioTag, Track, TrackTag, Canvas, CanvasTag, Svg, SvgTag, } from "./media.js";
 // SVG elements
-export { SvgShapeTag, Path, PathTag, Circle, CircleTag, Rect, RectTag, Line, LineTag, Polygon, PolygonTag, Polyline, PolylineTag, Ellipse, EllipseTag, G, Defs, Use, UseTag, Text, SvgTextTag, Tspan, TspanTag, } from "./svg.js";
+export { SvgShapeTag, Path, PathTag, Circle, CircleTag, Rect, RectTag, Line, LineTag, Polygon, PolygonTag, Polyline, PolylineTag, Ellipse, EllipseTag, G, Defs, Use, UseTag, Text, SvgTextTag, Tspan, TspanTag, LinearGradient, LinearGradientTag, RadialGradient, RadialGradientTag, Stop, StopTag, ClipPath, ClipPathTag, Mask, MaskTag, Filter, FilterTag, FeGaussianBlur, FeGaussianBlurTag, } from "./svg.js";
 // Embedded content
 export { Iframe, IframeTag, ObjectEl, ObjectTag, Embed, EmbedTag, } from "./embedded.js";
 // Links

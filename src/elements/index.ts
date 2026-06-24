@@ -170,6 +170,20 @@ export {
   SvgTextTag,
   Tspan,
   TspanTag,
+  LinearGradient,
+  LinearGradientTag,
+  RadialGradient,
+  RadialGradientTag,
+  Stop,
+  StopTag,
+  ClipPath,
+  ClipPathTag,
+  Mask,
+  MaskTag,
+  Filter,
+  FilterTag,
+  FeGaussianBlur,
+  FeGaussianBlurTag,
 } from "./svg.js";
 
 // Embedded content

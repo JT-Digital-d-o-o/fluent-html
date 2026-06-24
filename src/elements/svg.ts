@@ -12,6 +12,8 @@ export class SvgShapeTag extends Tag {
   'stroke-linecap'?: 'butt' | 'round' | 'square';
   'stroke-linejoin'?: 'miter' | 'round' | 'bevel';
   'stroke-dasharray'?: string;
+  'stroke-dashoffset'?: string;
+  'stroke-opacity'?: string;
   transform?: string;
   // Named `svgOpacity` (not `opacity`) to avoid clashing with the Tailwind `.opacity()`
   // method; the `_sk` tuple emits it as the `opacity` presentation attribute.
@@ -48,6 +50,16 @@ export class SvgShapeTag extends Tag {
     return this;
   }
 
+  setStrokeDashoffset(offset: string | number): this {
+    this['stroke-dashoffset'] = String(offset);
+    return this;
+  }
+
+  setStrokeOpacity(opacity: string | number): this {
+    this['stroke-opacity'] = String(opacity);
+    return this;
+  }
+
   setOpacity(opacity: string): this {
     this.svgOpacity = opacity;
     return this;
@@ -65,7 +77,7 @@ export class SvgShapeTag extends Tag {
 }
 
 /** @internal */
-const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'transform', ['svgOpacity', 'opacity'], 'filter'] as const;
+const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity', 'transform', ['svgOpacity', 'opacity'], 'filter'] as const;
 
 defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 
@@ -485,4 +497,130 @@ export function G(...children: View[]): SvgShapeTag {
 
 export function Defs(...children: View[]): Tag {
   return El("defs", ...children);
+}
+
+// ─── Gradients & paint servers ─────────────────────────────────────
+
+type GradientUnits = 'userSpaceOnUse' | 'objectBoundingBox';
+type SpreadMethod = 'pad' | 'reflect' | 'repeat';
+
+export class LinearGradientTag extends Tag {
+  x1?: string; y1?: string; x2?: string; y2?: string;
+  gradientUnits?: GradientUnits;
+  gradientTransform?: string;
+  spreadMethod?: SpreadMethod;
+
+  setX1(v: string | number): this { this.x1 = String(v); return this; }
+  setY1(v: string | number): this { this.y1 = String(v); return this; }
+  setX2(v: string | number): this { this.x2 = String(v); return this; }
+  setY2(v: string | number): this { this.y2 = String(v); return this; }
+  setGradientUnits(v: GradientUnits): this { this.gradientUnits = v; return this; }
+  setGradientTransform(v: string): this { this.gradientTransform = v; return this; }
+  setSpreadMethod(v: SpreadMethod): this { this.spreadMethod = v; return this; }
+}
+defineSchemaKeys(LinearGradientTag, ['x1', 'y1', 'x2', 'y2', 'gradientUnits', 'gradientTransform', 'spreadMethod']);
+
+export function LinearGradient(...children: View[]): LinearGradientTag {
+  return new LinearGradientTag("linearGradient", ...children);
+}
+
+export class RadialGradientTag extends Tag {
+  cx?: string; cy?: string; r?: string; fx?: string; fy?: string;
+  gradientUnits?: GradientUnits;
+  gradientTransform?: string;
+  spreadMethod?: SpreadMethod;
+
+  setCx(v: string | number): this { this.cx = String(v); return this; }
+  setCy(v: string | number): this { this.cy = String(v); return this; }
+  setR(v: string | number): this { this.r = String(v); return this; }
+  setFx(v: string | number): this { this.fx = String(v); return this; }
+  setFy(v: string | number): this { this.fy = String(v); return this; }
+  setGradientUnits(v: GradientUnits): this { this.gradientUnits = v; return this; }
+  setGradientTransform(v: string): this { this.gradientTransform = v; return this; }
+  setSpreadMethod(v: SpreadMethod): this { this.spreadMethod = v; return this; }
+}
+defineSchemaKeys(RadialGradientTag, ['cx', 'cy', 'r', 'fx', 'fy', 'gradientUnits', 'gradientTransform', 'spreadMethod']);
+
+export function RadialGradient(...children: View[]): RadialGradientTag {
+  return new RadialGradientTag("radialGradient", ...children);
+}
+
+export class StopTag extends Tag {
+  offset?: string;
+  'stop-color'?: string;
+  'stop-opacity'?: string;
+
+  setOffset(v: string | number): this { this.offset = String(v); return this; }
+  setStopColor(v: string): this { this['stop-color'] = v; return this; }
+  setStopOpacity(v: string | number): this { this['stop-opacity'] = String(v); return this; }
+}
+defineSchemaKeys(StopTag, ['offset', 'stop-color', 'stop-opacity']);
+
+export function Stop(...children: View[]): StopTag {
+  return new StopTag("stop", ...children);
+}
+
+// ─── Clipping, masking, filters ────────────────────────────────────
+
+export class ClipPathTag extends Tag {
+  clipPathUnits?: GradientUnits;
+  setClipPathUnits(v: GradientUnits): this { this.clipPathUnits = v; return this; }
+}
+defineSchemaKeys(ClipPathTag, ['clipPathUnits']);
+
+export function ClipPath(...children: View[]): ClipPathTag {
+  return new ClipPathTag("clipPath", ...children);
+}
+
+export class MaskTag extends Tag {
+  maskUnits?: GradientUnits;
+  maskContentUnits?: GradientUnits;
+  x?: string; y?: string; width?: string; height?: string;
+
+  setMaskUnits(v: GradientUnits): this { this.maskUnits = v; return this; }
+  setMaskContentUnits(v: GradientUnits): this { this.maskContentUnits = v; return this; }
+  setX(v: string | number): this { this.x = String(v); return this; }
+  setY(v: string | number): this { this.y = String(v); return this; }
+  setWidth(v: string | number): this { this.width = String(v); return this; }
+  setHeight(v: string | number): this { this.height = String(v); return this; }
+}
+defineSchemaKeys(MaskTag, ['maskUnits', 'maskContentUnits', 'x', 'y', 'width', 'height']);
+
+export function Mask(...children: View[]): MaskTag {
+  return new MaskTag("mask", ...children);
+}
+
+export class FilterTag extends Tag {
+  x?: string; y?: string; width?: string; height?: string;
+  filterUnits?: GradientUnits;
+  primitiveUnits?: GradientUnits;
+
+  setX(v: string | number): this { this.x = String(v); return this; }
+  setY(v: string | number): this { this.y = String(v); return this; }
+  setWidth(v: string | number): this { this.width = String(v); return this; }
+  setHeight(v: string | number): this { this.height = String(v); return this; }
+  setFilterUnits(v: GradientUnits): this { this.filterUnits = v; return this; }
+  setPrimitiveUnits(v: GradientUnits): this { this.primitiveUnits = v; return this; }
+}
+defineSchemaKeys(FilterTag, ['x', 'y', 'width', 'height', 'filterUnits', 'primitiveUnits']);
+
+export function Filter(...children: View[]): FilterTag {
+  return new FilterTag("filter", ...children);
+}
+
+export class FeGaussianBlurTag extends Tag {
+  in?: string;
+  stdDeviation?: string;
+  result?: string;
+  edgeMode?: 'duplicate' | 'wrap' | 'none';
+
+  setIn(v: string): this { this.in = v; return this; }
+  setStdDeviation(v: string | number): this { this.stdDeviation = String(v); return this; }
+  setResult(v: string): this { this.result = v; return this; }
+  setEdgeMode(v: 'duplicate' | 'wrap' | 'none'): this { this.edgeMode = v; return this; }
+}
+defineSchemaKeys(FeGaussianBlurTag, ['in', 'stdDeviation', 'result', 'edgeMode']);
+
+export function FeGaussianBlur(...children: View[]): FeGaussianBlurTag {
+  return new FeGaussianBlurTag("feGaussianBlur", ...children);
 }

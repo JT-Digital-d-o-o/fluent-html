@@ -7,6 +7,8 @@ export declare class SvgShapeTag extends Tag {
     'stroke-linecap'?: 'butt' | 'round' | 'square';
     'stroke-linejoin'?: 'miter' | 'round' | 'bevel';
     'stroke-dasharray'?: string;
+    'stroke-dashoffset'?: string;
+    'stroke-opacity'?: string;
     transform?: string;
     svgOpacity?: string;
     filter?: string;
@@ -16,6 +18,8 @@ export declare class SvgShapeTag extends Tag {
     setStrokeLinecap(linecap: 'butt' | 'round' | 'square'): this;
     setStrokeLinejoin(linejoin: 'miter' | 'round' | 'bevel'): this;
     setStrokeDasharray(dasharray: string): this;
+    setStrokeDashoffset(offset: string | number): this;
+    setStrokeOpacity(opacity: string | number): this;
     setOpacity(opacity: string): this;
     setTransform(transform: string): this;
     setFilter(filter: string): this;
@@ -150,4 +154,98 @@ export declare class UseTag extends Tag {
 export declare function Use(...children: View[]): UseTag;
 export declare function G(...children: View[]): SvgShapeTag;
 export declare function Defs(...children: View[]): Tag;
+type GradientUnits = 'userSpaceOnUse' | 'objectBoundingBox';
+type SpreadMethod = 'pad' | 'reflect' | 'repeat';
+export declare class LinearGradientTag extends Tag {
+    x1?: string;
+    y1?: string;
+    x2?: string;
+    y2?: string;
+    gradientUnits?: GradientUnits;
+    gradientTransform?: string;
+    spreadMethod?: SpreadMethod;
+    setX1(v: string | number): this;
+    setY1(v: string | number): this;
+    setX2(v: string | number): this;
+    setY2(v: string | number): this;
+    setGradientUnits(v: GradientUnits): this;
+    setGradientTransform(v: string): this;
+    setSpreadMethod(v: SpreadMethod): this;
+}
+export declare function LinearGradient(...children: View[]): LinearGradientTag;
+export declare class RadialGradientTag extends Tag {
+    cx?: string;
+    cy?: string;
+    r?: string;
+    fx?: string;
+    fy?: string;
+    gradientUnits?: GradientUnits;
+    gradientTransform?: string;
+    spreadMethod?: SpreadMethod;
+    setCx(v: string | number): this;
+    setCy(v: string | number): this;
+    setR(v: string | number): this;
+    setFx(v: string | number): this;
+    setFy(v: string | number): this;
+    setGradientUnits(v: GradientUnits): this;
+    setGradientTransform(v: string): this;
+    setSpreadMethod(v: SpreadMethod): this;
+}
+export declare function RadialGradient(...children: View[]): RadialGradientTag;
+export declare class StopTag extends Tag {
+    offset?: string;
+    'stop-color'?: string;
+    'stop-opacity'?: string;
+    setOffset(v: string | number): this;
+    setStopColor(v: string): this;
+    setStopOpacity(v: string | number): this;
+}
+export declare function Stop(...children: View[]): StopTag;
+export declare class ClipPathTag extends Tag {
+    clipPathUnits?: GradientUnits;
+    setClipPathUnits(v: GradientUnits): this;
+}
+export declare function ClipPath(...children: View[]): ClipPathTag;
+export declare class MaskTag extends Tag {
+    maskUnits?: GradientUnits;
+    maskContentUnits?: GradientUnits;
+    x?: string;
+    y?: string;
+    width?: string;
+    height?: string;
+    setMaskUnits(v: GradientUnits): this;
+    setMaskContentUnits(v: GradientUnits): this;
+    setX(v: string | number): this;
+    setY(v: string | number): this;
+    setWidth(v: string | number): this;
+    setHeight(v: string | number): this;
+}
+export declare function Mask(...children: View[]): MaskTag;
+export declare class FilterTag extends Tag {
+    x?: string;
+    y?: string;
+    width?: string;
+    height?: string;
+    filterUnits?: GradientUnits;
+    primitiveUnits?: GradientUnits;
+    setX(v: string | number): this;
+    setY(v: string | number): this;
+    setWidth(v: string | number): this;
+    setHeight(v: string | number): this;
+    setFilterUnits(v: GradientUnits): this;
+    setPrimitiveUnits(v: GradientUnits): this;
+}
+export declare function Filter(...children: View[]): FilterTag;
+export declare class FeGaussianBlurTag extends Tag {
+    in?: string;
+    stdDeviation?: string;
+    result?: string;
+    edgeMode?: 'duplicate' | 'wrap' | 'none';
+    setIn(v: string): this;
+    setStdDeviation(v: string | number): this;
+    setResult(v: string): this;
+    setEdgeMode(v: 'duplicate' | 'wrap' | 'none'): this;
+}
+export declare function FeGaussianBlur(...children: View[]): FeGaussianBlurTag;
+export {};
 //# sourceMappingURL=svg.d.ts.map

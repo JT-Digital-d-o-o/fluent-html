@@ -210,6 +210,14 @@ export {
   Use,
   Text,
   Tspan,
+  // SVG gradients / paint servers / filters
+  LinearGradient,
+  RadialGradient,
+  Stop,
+  ClipPath,
+  Mask,
+  Filter,
+  FeGaussianBlur,
 } from './elements/index.js';
 
 // Embedded content

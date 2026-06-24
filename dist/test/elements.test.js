@@ -12,7 +12,7 @@ Ul, Ol, Li, Dl, Dt, Dd, Menu,
 // Interactive
 Details, Summary, Dialog, 
 // Media
-Img, Picture, Source, Video, Audio, Track, Canvas, Svg, Path, Circle, Rect, Line, Ellipse, Polygon, Polyline, G, Use, Text, Tspan, 
+Img, Picture, Source, Video, Audio, Track, Canvas, Svg, Path, Circle, Rect, Line, Ellipse, Polygon, Polyline, G, Use, Text, Tspan, Defs, LinearGradient, RadialGradient, Stop, ClipPath, Mask, Filter, FeGaussianBlur, 
 // Embedded
 Iframe, Embed, 
 // Links
@@ -279,6 +279,22 @@ describe("SVG", () => {
     });
     it("setFilter emits the filter attribute", () => {
         assert.strictEqual(render(Rect().setFilter("url(#blur)")), `<rect filter="url(#blur)"></rect>`);
+    });
+    it("setStrokeDashoffset / setStrokeOpacity round-trip", () => {
+        assert.strictEqual(render(Circle().setStrokeDashoffset(8).setStrokeOpacity("0.4")), `<circle stroke-dashoffset="8" stroke-opacity="0.4"></circle>`);
+    });
+    it("LinearGradient with Stops", () => {
+        assert.strictEqual(render(LinearGradient(Stop().setOffset("0%").setStopColor("red"), Stop().setOffset("100%").setStopColor("blue").setStopOpacity("0.5")).setId("g").setX1("0").setY1("0").setX2("1").setY2("1")), `<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="red"></stop>\n<stop offset="100%" stop-color="blue" stop-opacity="0.5"></stop></linearGradient>`);
+    });
+    it("RadialGradient typed setters", () => {
+        assert.strictEqual(render(RadialGradient().setId("r").setCx("50%").setCy("50%").setR("50%").setSpreadMethod("reflect")), `<radialGradient id="r" cx="50%" cy="50%" r="50%" spreadMethod="reflect"></radialGradient>`);
+    });
+    it("ClipPath / Mask containers", () => {
+        assert.strictEqual(render(ClipPath(Rect().setWidth("10").setHeight("10")).setId("c").setClipPathUnits("objectBoundingBox")), `<clipPath id="c" clipPathUnits="objectBoundingBox"><rect width="10" height="10"></rect></clipPath>`);
+        assert.strictEqual(render(Mask().setId("m").setMaskUnits("userSpaceOnUse")), `<mask id="m" maskUnits="userSpaceOnUse"></mask>`);
+    });
+    it("Filter with FeGaussianBlur", () => {
+        assert.strictEqual(render(Defs(Filter(FeGaussianBlur().setIn("SourceGraphic").setStdDeviation(3).setResult("blur")).setId("f"))), `<defs><filter id="f"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"></feGaussianBlur></filter></defs>`);
     });
 });
 // ------------------------------------

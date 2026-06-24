@@ -27,7 +27,9 @@ export { Details, Summary, Dialog, } from './elements/index.js';
 // Media elements
 export { Img, Picture, Source, Video, Audio, Track, Canvas, Svg, 
 // SVG elements
-Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, } from './elements/index.js';
+Path, Circle, Rect, Line, Polygon, Polyline, Ellipse, G, Defs, Use, Text, Tspan, 
+// SVG gradients / paint servers / filters
+LinearGradient, RadialGradient, Stop, ClipPath, Mask, Filter, FeGaussianBlur, } from './elements/index.js';
 // Embedded content
 export { Iframe, ObjectEl, Embed, } from './elements/index.js';
 // Links
