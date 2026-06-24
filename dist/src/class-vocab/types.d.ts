@@ -23,6 +23,13 @@ export declare const UNITS: ReadonlySet<string>;
 export declare const DIR_MAP: Readonly<Record<string, string>>;
 /** Corner tokens accepted by `.rounded(corner, value?)`. */
 export declare const ROUNDED_CORNERS: ReadonlySet<string>;
+/**
+ * Relocate a leading `-` from the value to the front of the whole utility, so a
+ * negative transform emits Tailwind's `-translate-y-1` / `-rotate-45`, not the
+ * silently-dropped `translate-y--1` / `rotate--45`. Shared by the lib emitter and
+ * the vocab so lib-parity holds. A bracketed arbitrary value is left untouched.
+ */
+export declare function signNeg(prefix: string, value: string): string;
 /** Which generated artifact(s) a row should be excluded from. */
 export type VocabTarget = "lib" | "extractor" | "eslint";
 /**

@@ -8,7 +8,7 @@
 import { Tag } from "./tag.js";
 // Shared with the class-vocab source of truth (C-05) — one home for these
 // constants (the extractor + ESLint maps derive from the same module).
-import { DIR_MAP, ROUNDED_CORNERS } from "../class-vocab/types.js";
+import { DIR_MAP, ROUNDED_CORNERS, signNeg } from "../class-vocab/types.js";
 // ── Variant helper (local, not on prototype) ────────────────────────
 function withVariant(tag, prefix, fn) {
     const outer = tag._variantPrefix;
@@ -103,7 +103,7 @@ p.minH = function (unitOrValue, amount) {
 p.flex = function (value) {
     return value === undefined ? this.addClass("flex") : this.addClass(`flex-${value}`);
 };
-p.flex1 = function () { return this.addClass("flex-1"); };
+p.flexShorthand = function (value) { return this.addClass(`flex-${value}`); };
 p.flexDirection = function (direction) { return this.addClass(`flex-${direction}`); };
 p.justifyContent = function (justify) { return this.addClass(`justify-${justify}`); };
 p.alignItems = function (align) { return this.addClass(`items-${align}`); };
@@ -156,7 +156,11 @@ p.shadow = function (value) {
 // Effects & Appearance
 p.opacity = function (value) { return this.addClass(`opacity-${value}`); };
 p.cursor = function (value) { return this.addClass(`cursor-${value}`); };
-p.position = function (value) { return this.addClass(value); };
+p.absolute = function () { return this.addClass("absolute"); };
+p.relative = function () { return this.addClass("relative"); };
+p.fixed = function () { return this.addClass("fixed"); };
+p.sticky = function () { return this.addClass("sticky"); };
+p.static = function () { return this.addClass("static"); };
 p.zIndex = function (value) { return this.addClass(`z-${value}`); };
 p.overflow = function (directionOrValue, value) {
     if (value === undefined)
@@ -165,7 +169,12 @@ p.overflow = function (directionOrValue, value) {
 };
 p.objectFit = function (value) { return this.addClass(`object-${value}`); };
 // Layout & Display
-p.display = function (value) { return this.addClass(value); };
+p.block = function () { return this.addClass("block"); };
+p.inlineBlock = function () { return this.addClass("inline-block"); };
+p.inline = function () { return this.addClass("inline"); };
+p.inlineFlex = function () { return this.addClass("inline-flex"); };
+p.inlineGrid = function () { return this.addClass("inline-grid"); };
+p.contents = function () { return this.addClass("contents"); };
 p.hidden = function () { return this.addClass("hidden"); };
 p.inset = function (unitOrValue, amount) {
     if (amount !== undefined)
@@ -230,12 +239,12 @@ p.ring = function (value) {
 p.ringColor = function (color) { return this.addClass(`ring-${color}`); };
 // Transforms
 p.scale = function (value) { return this.addClass(`scale-${value}`); };
-p.rotate = function (value) { return this.addClass(`rotate-${value}`); };
+p.rotate = function (value) { return this.addClass(signNeg("rotate", String(value))); };
 p.translate = function (direction, value) {
-    return this.addClass(`translate-${direction}-${value}`);
+    return this.addClass(signNeg(`translate-${direction}`, String(value)));
 };
-p.skewX = function (value) { return this.addClass(`skew-x-${value}`); };
-p.skewY = function (value) { return this.addClass(`skew-y-${value}`); };
+p.skewX = function (value) { return this.addClass(signNeg("skew-x", String(value))); };
+p.skewY = function (value) { return this.addClass(signNeg("skew-y", String(value))); };
 // Interactivity
 p.select = function (value) { return this.addClass(`select-${value}`); };
 p.pointerEvents = function (value) { return this.addClass(`pointer-events-${value}`); };

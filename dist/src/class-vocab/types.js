@@ -31,6 +31,15 @@ export const DIR_MAP = {
 export const ROUNDED_CORNERS = new Set([
     "t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee",
 ]);
+/**
+ * Relocate a leading `-` from the value to the front of the whole utility, so a
+ * negative transform emits Tailwind's `-translate-y-1` / `-rotate-45`, not the
+ * silently-dropped `translate-y--1` / `rotate--45`. Shared by the lib emitter and
+ * the vocab so lib-parity holds. A bracketed arbitrary value is left untouched.
+ */
+export function signNeg(prefix, value) {
+    return value.startsWith("-") ? `-${prefix}-${value.slice(1)}` : `${prefix}-${value}`;
+}
 /** Identity passthrough that pins a row to {@link UtilityDef} at the definition site. */
 export function defineUtility(def) {
     return def;

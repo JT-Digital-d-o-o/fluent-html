@@ -16,7 +16,8 @@ describe("emitClasses — per-shape exact output", () => {
         // prefix
         ["prefix background", "background", ["blue-500"], ["bg-blue-500"]],
         ["prefix gridCols", "gridCols", ["3"], ["grid-cols-3"]],
-        ["prefix skewX", "skewX", ["6"], ["skew-x-6"]],
+        ["custom skewX", "skewX", ["6"], ["skew-x-6"]],
+        ["custom skewX negative", "skewX", ["-6"], ["-skew-x-6"]],
         // optional
         ["optional shadow bare", "shadow", [], ["shadow"]],
         ["optional shadow value", "shadow", ["md"], ["shadow-md"]],
@@ -35,13 +36,18 @@ describe("emitClasses — per-shape exact output", () => {
         ["spacing overflow value (no units)", "overflow", ["hidden"], ["overflow-hidden"]],
         ["spacing overflow axis (no units)", "overflow", ["x", "auto"], ["overflow-x-auto"]],
         ["custom translate axis", "translate", ["x", "2"], ["translate-x-2"]],
+        ["custom translate negative", "translate", ["y", "-1"], ["-translate-y-1"]],
+        ["custom rotate negative", "rotate", ["-45"], ["-rotate-45"]],
         // sizing
         ["sizing w value", "w", ["full"], ["w-full"]],
         ["sizing w unit", "w", ["px", "180"], ["w-[180px]"]],
         ["sizing minH unit", "minH", ["px", "180"], ["min-h-[180px]"]],
+        // static shortcuts (A-07: replaced the display/position passthroughs)
+        ["static block", "block", [], ["block"]],
+        ["static absolute", "absolute", [], ["absolute"]],
+        ["static contents", "contents", [], ["contents"]],
+        ["prefix flexShorthand", "flexShorthand", ["1"], ["flex-1"]],
         // value
-        ["value display", "display", ["block"], ["block"]],
-        ["value position", "position", ["absolute"], ["absolute"]],
         ["value neg (dash prefix)", "neg", ["inset-px"], ["-inset-px"]],
         // custom
         ["custom border bare", "border", [], ["border"]],

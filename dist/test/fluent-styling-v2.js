@@ -2,16 +2,38 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { Div, Button, Span, render, Tag } from "../src/index.js";
 describe("Layout & Display", () => {
-    it("display block", () => { assert.strictEqual(render(Div().display("block")), '<div class="block"></div>'); });
-    it("display inline-flex", () => { assert.strictEqual(render(Div().display("inline-flex")), '<div class="inline-flex"></div>'); });
+    it("block", () => { assert.strictEqual(render(Div().block()), '<div class="block"></div>'); });
+    it("inlineFlex", () => { assert.strictEqual(render(Div().inlineFlex()), '<div class="inline-flex"></div>'); });
+    it("inlineBlock / inline / inlineGrid / contents", () => {
+        assert.strictEqual(render(Div().inlineBlock()), '<div class="inline-block"></div>');
+        assert.strictEqual(render(Div().inline()), '<div class="inline"></div>');
+        assert.strictEqual(render(Div().inlineGrid()), '<div class="inline-grid"></div>');
+        assert.strictEqual(render(Div().contents()), '<div class="contents"></div>');
+    });
     it("hidden", () => { assert.strictEqual(render(Div().hidden()), '<div class="hidden"></div>'); });
     it("inset", () => { assert.strictEqual(render(Div().inset("0")), '<div class="inset-0"></div>'); });
     it("top", () => { assert.strictEqual(render(Div().top("4")), '<div class="top-4"></div>'); });
     it("right", () => { assert.strictEqual(render(Div().right("0")), '<div class="right-0"></div>'); });
     it("bottom", () => { assert.strictEqual(render(Div().bottom("0")), '<div class="bottom-0"></div>'); });
     it("left", () => { assert.strictEqual(render(Div().left("0")), '<div class="left-0"></div>'); });
-    it("position with inset", () => { assert.strictEqual(render(Div().position("absolute").inset("0")), '<div class="absolute inset-0"></div>'); });
-    it("position with top/left", () => { assert.strictEqual(render(Div().position("absolute").top("0").left("0")), '<div class="absolute top-0 left-0"></div>'); });
+    it("absolute with inset", () => { assert.strictEqual(render(Div().absolute().inset("0")), '<div class="absolute inset-0"></div>'); });
+    it("absolute with top/left", () => { assert.strictEqual(render(Div().absolute().top("0").left("0")), '<div class="absolute top-0 left-0"></div>'); });
+    it("relative / fixed / sticky / static", () => {
+        assert.strictEqual(render(Div().relative()), '<div class="relative"></div>');
+        assert.strictEqual(render(Div().fixed()), '<div class="fixed"></div>');
+        assert.strictEqual(render(Div().sticky()), '<div class="sticky"></div>');
+        assert.strictEqual(render(Div().static()), '<div class="static"></div>');
+    });
+    it("flexShorthand", () => {
+        assert.strictEqual(render(Div().flexShorthand("1")), '<div class="flex-1"></div>');
+        assert.strictEqual(render(Div().flexShorthand("none")), '<div class="flex-none"></div>');
+    });
+    it("negative transforms relocate the sign", () => {
+        assert.strictEqual(render(Div().rotate(-45)), '<div class="-rotate-45"></div>');
+        assert.strictEqual(render(Div().translate("y", "-1")), '<div class="-translate-y-1"></div>');
+        assert.strictEqual(render(Div().skewX(-6)), '<div class="-skew-x-6"></div>');
+        assert.strictEqual(render(Div().rotate(45)), '<div class="rotate-45"></div>');
+    });
 });
 describe("Flexbox & Grid Extensions", () => {
     it("shrink default", () => { assert.strictEqual(render(Div().shrink()), '<div class="shrink"></div>'); });

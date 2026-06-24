@@ -582,25 +582,25 @@ section("Position & Layout");
 test(
   "position relative",
   '<div class="relative"></div>',
-  render(Div().position("relative"))
+  render(Div().relative())
 );
 
 test(
   "position absolute",
   '<div class="absolute"></div>',
-  render(Div().position("absolute"))
+  render(Div().absolute())
 );
 
 test(
   "position fixed",
   '<div class="fixed"></div>',
-  render(Div().position("fixed"))
+  render(Div().fixed())
 );
 
 test(
   "position sticky",
   '<div class="sticky"></div>',
-  render(Div().position("sticky"))
+  render(Div().sticky())
 );
 
 test(
@@ -807,7 +807,7 @@ test(
 test(
   "sticky header",
   '<div class="sticky z-50 bg-white shadow"></div>',
-  render(Div().position("sticky").zIndex(50).background("white").shadow())
+  render(Div().sticky().zIndex(50).background("white").shadow())
 );
 
 test(

@@ -30,11 +30,11 @@
 <!-- hill: downhill -->
 ### As a developer I want negative transforms and position/display shortcuts so that Tailwind transforms aren't silently dropped
 
-- [ ] [P0] Fix the sign relocation — `.translate(axis,v)`/`.rotate`/`.skewX`/`.skewY` emit `-translate-y-1` not `translate-y--1` (via `signNeg`); widen the rotate/skew types to admit negatives
-- [ ] [P1] Add the dedicated shortcuts — `.absolute()`/`.relative()`/`.fixed()`/`.block()`/`.inlineFlex()`/… + `.flexShorthand("1"|"auto"|"initial"|"none")`; document `.neg()`
-- [ ] [P1] Register the new utilities as `class-vocab` rows (P2 lockstep → extractor + ESLint)
-- [ ] [P1] Write tests — negative transforms emit correctly; each shortcut emits its utility
-- [ ] [P1] Check for bugs in transforms/shortcuts
+- [x] [P0] Fixed the sign relocation — added `signNeg(prefix, value)` (shared in `class-vocab/types.ts`); `.translate`/`.rotate`/`.skewX`/`.skewY` now emit `-translate-y-1`/`-rotate-45`, not the dropped `translate-y--1`. Widened `TailwindRotate`/`TailwindSkew` with negative literals + added `TailwindTranslate`
+- [x] [P1] Added dedicated shortcuts — position `.absolute()`/`.relative()`/`.fixed()`/`.sticky()`/`.static()` + display `.block()`/`.inlineBlock()`/`.inline()`/`.inlineFlex()`/`.inlineGrid()`/`.contents()` + `.flexShorthand("1"|"auto"|"initial"|"none")`. Dropped the `.position(v)`/`.display(v)` passthroughs + `.flex1()`. `.neg()` now has JSDoc
+- [x] [P1] Vocab lockstep — removed `position`/`display`/`flex1` rows, added the static shortcuts + `flexShorthand`, made rotate/skew/translate `custom` rows using the shared `signNeg`. Extractor (runtime vocab import) auto-picks-up: 34/34. ESLint vocab regenerated (`gen:vocab` → 124 → 133 methods), drift test in sync
+- [x] [P1] Tests — negative transforms (`-rotate-45`/`-translate-y-1`/`-skew-x-6`) + every shortcut emit, via `fluent-styling-v2.ts` + class-vocab explicit cases; lib-parity auto-validates the new rows. Lib suite 1358 → 1376
+- [x] [P1] Check for bugs — tsc clean, full suite green, bench gate passed (signNeg is build-time, not render-hot); bracketed arbitrary values pass through signNeg untouched; README + FLUENT-STYLING migrated
 
 <!-- hill: downhill -->
 ### As a developer I want .overlay() and clean type-only exports so that overlays compose fluently and verbatimModuleSyntax compiles

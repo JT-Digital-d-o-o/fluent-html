@@ -984,8 +984,9 @@ The type system enforces valid Tailwind values — wrong values don't compile. F
 
 **Position & Display:**
 ```typescript
-.position("relative")            // relative
-.position("absolute")            // absolute
+.relative()                      // relative
+.absolute()                      // absolute  (also .fixed() .sticky() .static())
+.block()                         // block     (also .inline() .inlineFlex() .inlineGrid() .contents())
 .zIndex("10")                    // z-10
 .opacity("50")                   // opacity-50
 .cursor("pointer")               // cursor-pointer
@@ -2272,7 +2273,9 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | `.border()` / `.border(width)`   | Border (`border`, `border-2`)                       |
 | `.rounded()` / `.rounded(size)`  | Border radius (`rounded`, `rounded-lg`)             |
 | `.shadow()` / `.shadow(size)`    | Box shadow (`shadow`, `shadow-lg`)                  |
-| `.position(pos)`                 | Position (`relative`, `absolute`, `fixed`)          |
+| `.absolute()` / `.relative()` / `.fixed()` / `.sticky()` / `.static()` | Position shortcuts |
+| `.block()` / `.inline()` / `.inlineFlex()` / `.inlineGrid()` / `.contents()` | Display shortcuts |
+| `.flexShorthand(v)`              | `flex` shorthand (`flex-1`, `flex-auto`, `flex-none`) |
 | `.zIndex(value)`                 | Z-index (`z-10`, `z-50`)                            |
 | `.opacity(value)`                | Opacity (`opacity-50`)                              |
 | `.cursor(value)`                 | Cursor (`cursor-pointer`)                           |

@@ -8,7 +8,7 @@
  *
  * @module
  */
-import { DIR_MAP, ROUNDED_CORNERS, defineUtility } from "./types.js";
+import { DIR_MAP, ROUNDED_CORNERS, signNeg, defineUtility } from "./types.js";
 import type { UtilityDef } from "./types.js";
 
 // ── Row constructors (keep the table terse + uniform) ───────────────
@@ -65,11 +65,6 @@ const custom = (method: string, emit: (args: readonly string[]) => string[], sam
   defineUtility({ method, emit: { kind: "custom", emit }, samples });
 
 // ── The vocabulary ──────────────────────────────────────────────────
-//
-// NOTE (A-07, P3): `display`/`position` are `value` rows here, faithful to the
-// current `.display(v)`/`.position(v)` passthroughs. A-07 replaces them with
-// dedicated `static` rows (`.block()`/`.absolute()`/…) — the `static` shape is
-// already provided for that. C-05 stays validated against today's lib surface.
 
 export const classVocab: readonly UtilityDef[] = [
   // Spacing
@@ -120,7 +115,7 @@ export const classVocab: readonly UtilityDef[] = [
 
   // Flexbox
   opt("flex", "flex"),
-  stat("flex1", "flex-1"),
+  pre("flexShorthand", "flex"),
   pre("flexDirection", "flex"),
   pre("flexWrap", "flex"),
   pre("justifyContent", "justify"),
@@ -155,13 +150,23 @@ export const classVocab: readonly UtilityDef[] = [
   opt("shadow", "shadow"),
   pre("opacity", "opacity"),
   pre("cursor", "cursor"),
-  val("position"),
+  // Position — dedicated shortcuts (A-07, replaced the `.position(value)` passthrough).
+  stat("absolute", "absolute"),
+  stat("relative", "relative"),
+  stat("fixed", "fixed"),
+  stat("sticky", "sticky"),
+  stat("static", "static"),
   pre("zIndex", "z"),
   space("overflow", "overflow", "-", false, false),
   pre("objectFit", "object"),
 
-  // Layout & Display
-  val("display"),
+  // Layout & Display — dedicated shortcuts (A-07; `.flex()`/`.grid()`/`.hidden()` cover the rest).
+  stat("block", "block"),
+  stat("inlineBlock", "inline-block"),
+  stat("inline", "inline"),
+  stat("inlineFlex", "inline-flex"),
+  stat("inlineGrid", "inline-grid"),
+  stat("contents", "contents"),
   stat("hidden", "hidden"),
   size("inset", "inset"),
   size("top", "top"),
@@ -178,12 +183,13 @@ export const classVocab: readonly UtilityDef[] = [
   // Ring
   opt("ring", "ring"),
 
-  // Transforms (translate is strictly 2-arg: `translate-${axis}-${value}`, no unit/bare form)
+  // Transforms (A-07: rotate/skew/translate relocate a leading `-` via signNeg, so
+  // `.rotate(-45)` → `-rotate-45`; translate is strictly 2-arg `translate-${axis}-${value}`)
   pre("scale", "scale"),
-  pre("rotate", "rotate"),
-  custom("translate", (args) => (args.length === 2 ? [`translate-${args[0]}-${args[1]}`] : []), [["x", "2"], ["y", "4"]]),
-  pre("skewX", "skew-x"),
-  pre("skewY", "skew-y"),
+  custom("rotate", (args) => [signNeg("rotate", args[0]!)], [["45"], ["-45"]]),
+  custom("translate", (args) => (args.length === 2 ? [signNeg(`translate-${args[0]}`, args[1]!)] : []), [["x", "2"], ["y", "-4"]]),
+  custom("skewX", (args) => [signNeg("skew-x", args[0]!)], [["6"], ["-6"]]),
+  custom("skewY", (args) => [signNeg("skew-y", args[0]!)], [["6"], ["-6"]]),
 
   // Interactivity
   pre("select", "select"),

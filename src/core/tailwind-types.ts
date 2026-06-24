@@ -178,7 +178,14 @@ export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 
 
 // Transforms
 export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | (string & {});
-export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | Stringified<0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180> | `[${string}]`;
+// v4 (A-07): admit negatives — `.rotate(-45)` emits `-rotate-45` (sign relocated).
+export type TailwindRotate =
+  | 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180
+  | -1 | -2 | -3 | -6 | -12 | -45 | -90 | -180
+  | Stringified<0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | -1 | -2 | -3 | -6 | -12 | -45 | -90 | -180>
+  | `[${string}]`;
+/** Translate distance — the spacing scale plus its negatives (`-translate-y-1`). */
+export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${number}` | "-full" | "-px";
 
 // Interactivity
 export type TailwindSelect = "none" | "text" | "all" | "auto";
@@ -273,7 +280,12 @@ export type TailwindGridAuto = "auto" | "min" | "max" | "fr" | `[${string}]`;
 export type TailwindOrder = "first" | "last" | "none" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Stringified<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12> | `[${string}]`;
 
 // Modern features
-export type TailwindSkew = 0 | 1 | 2 | 3 | 6 | 12 | Stringified<0 | 1 | 2 | 3 | 6 | 12> | `[${string}]`;
+// v4 (A-07): admit negatives — `.skewX(-12)` emits `-skew-x-12`.
+export type TailwindSkew =
+  | 0 | 1 | 2 | 3 | 6 | 12
+  | -1 | -2 | -3 | -6 | -12
+  | Stringified<0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12>
+  | `[${string}]`;
 export type TailwindWillChange = "auto" | "scroll" | "contents" | "transform" | `[${string}]`;
 export type TailwindOverscroll = "auto" | "contain" | "none";
 

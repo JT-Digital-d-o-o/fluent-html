@@ -1,4 +1,4 @@
-import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindDisplay, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindPosition, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll } from "./tailwind-types.js";
+import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindTranslate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll } from "./tailwind-types.js";
 declare module "./tag.js" {
     interface Tag {
         on(state: TailwindState, fn: (tag: this) => this): this;
@@ -38,7 +38,8 @@ declare module "./tag.js" {
         minH(value: TailwindMinHeight): this;
         minH(unit: TailwindUnit, amount: number): this;
         flex(value?: TailwindFlex): this;
-        flex1(): this;
+        /** `flex` shorthand — `flex-1` | `flex-auto` | `flex-initial` | `flex-none`. */
+        flexShorthand(value: "1" | "auto" | "initial" | "none"): this;
         flexDirection(direction: TailwindFlexDirection): this;
         justifyContent(justify: TailwindJustifyContent): this;
         alignItems(align: TailwindAlignItems): this;
@@ -62,12 +63,21 @@ declare module "./tag.js" {
         shadow(value?: TailwindShadow): this;
         opacity(value: TailwindOpacity): this;
         cursor(value: TailwindCursor): this;
-        position(value: TailwindPosition): this;
+        absolute(): this;
+        relative(): this;
+        fixed(): this;
+        sticky(): this;
+        static(): this;
         zIndex(value: TailwindZIndex): this;
         overflow(value: TailwindOverflow): this;
         overflow(direction: "x" | "y", value: TailwindOverflow): this;
         objectFit(value: TailwindObjectFit): this;
-        display(value: TailwindDisplay): this;
+        block(): this;
+        inlineBlock(): this;
+        inline(): this;
+        inlineFlex(): this;
+        inlineGrid(): this;
+        contents(): this;
         hidden(): this;
         inset(value: TailwindInset): this;
         inset(unit: TailwindUnit, amount: number): this;
@@ -101,7 +111,7 @@ declare module "./tag.js" {
         ringColor(color: TailwindColor): this;
         scale(value: TailwindScale): this;
         rotate(value: TailwindRotate): this;
-        translate(direction: "x" | "y", value: TailwindSpacing): this;
+        translate(direction: "x" | "y", value: TailwindTranslate): this;
         skewX(value: TailwindSkew): this;
         skewY(value: TailwindSkew): this;
         select(value: TailwindSelect): this;
@@ -154,6 +164,14 @@ declare module "./tag.js" {
         willChange(value: TailwindWillChange): this;
         overscroll(value: TailwindOverscroll): this;
         overscroll(direction: "x" | "y", value: TailwindOverscroll): this;
+        /**
+         * Negative-value escape hatch — prepends `-` to an arbitrary utility for cases
+         * the typed setters don't cover. Prefer the typed negatives where they exist
+         * (`.translate("y", "-1")`, `.rotate(-45)`).
+         * @example
+         * Div().neg("inset-px")   // -inset-px
+         * Div().neg("mt-2")       // -mt-2
+         */
         neg(cls: string): this;
     }
 }

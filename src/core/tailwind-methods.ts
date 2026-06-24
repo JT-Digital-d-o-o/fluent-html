@@ -8,7 +8,7 @@
 import { Tag } from "./tag.js";
 // Shared with the class-vocab source of truth (C-05) — one home for these
 // constants (the extractor + ESLint maps derive from the same module).
-import { DIR_MAP, ROUNDED_CORNERS } from "../class-vocab/types.js";
+import { DIR_MAP, ROUNDED_CORNERS, signNeg } from "../class-vocab/types.js";
 import type {
   TailwindSpacing,
   TailwindWidth,
@@ -35,7 +35,6 @@ import type {
   TailwindFlex,
   TailwindOverflow,
   TailwindObjectFit,
-  TailwindDisplay,
   TailwindInset,
   TailwindFlexWrap,
   TailwindAlignSelf,
@@ -47,13 +46,13 @@ import type {
   TailwindRingWidth,
   TailwindScale,
   TailwindRotate,
+  TailwindTranslate,
   TailwindSelect,
   TailwindPointerEvents,
   TailwindWhitespace,
   TailwindListStyleType,
   TailwindListStylePosition,
   TailwindOutline,
-  TailwindPosition,
   TailwindTextAlign,
   TailwindFlexDirection,
   TailwindJustifyContent,
@@ -153,7 +152,8 @@ declare module "./tag.js" {
 
     // Flexbox
     flex(value?: TailwindFlex): this;
-    flex1(): this;
+    /** `flex` shorthand — `flex-1` | `flex-auto` | `flex-initial` | `flex-none`. */
+    flexShorthand(value: "1" | "auto" | "initial" | "none"): this;
     flexDirection(direction: TailwindFlexDirection): this;
     justifyContent(justify: TailwindJustifyContent): this;
     alignItems(align: TailwindAlignItems): this;
@@ -183,14 +183,24 @@ declare module "./tag.js" {
     // Effects & Appearance
     opacity(value: TailwindOpacity): this;
     cursor(value: TailwindCursor): this;
-    position(value: TailwindPosition): this;
+    // Position — dedicated shortcuts (mirror .flex()/.grid()/.hidden()).
+    absolute(): this;
+    relative(): this;
+    fixed(): this;
+    sticky(): this;
+    static(): this;
     zIndex(value: TailwindZIndex): this;
     overflow(value: TailwindOverflow): this;
     overflow(direction: "x" | "y", value: TailwindOverflow): this;
     objectFit(value: TailwindObjectFit): this;
 
-    // Layout & Display
-    display(value: TailwindDisplay): this;
+    // Layout & Display — dedicated shortcuts (`.flex()`/`.grid()`/`.hidden()` already cover flex/grid/none).
+    block(): this;
+    inlineBlock(): this;
+    inline(): this;
+    inlineFlex(): this;
+    inlineGrid(): this;
+    contents(): this;
     hidden(): this;
     inset(value: TailwindInset): this;
     inset(unit: TailwindUnit, amount: number): this;
@@ -236,7 +246,7 @@ declare module "./tag.js" {
     // Transforms
     scale(value: TailwindScale): this;
     rotate(value: TailwindRotate): this;
-    translate(direction: "x" | "y", value: TailwindSpacing): this;
+    translate(direction: "x" | "y", value: TailwindTranslate): this;
     skewX(value: TailwindSkew): this;
     skewY(value: TailwindSkew): this;
 
@@ -323,7 +333,14 @@ declare module "./tag.js" {
     overscroll(value: TailwindOverscroll): this;
     overscroll(direction: "x" | "y", value: TailwindOverscroll): this;
 
-    // Negative value prefix
+    /**
+     * Negative-value escape hatch — prepends `-` to an arbitrary utility for cases
+     * the typed setters don't cover. Prefer the typed negatives where they exist
+     * (`.translate("y", "-1")`, `.rotate(-45)`).
+     * @example
+     * Div().neg("inset-px")   // -inset-px
+     * Div().neg("mt-2")       // -mt-2
+     */
     neg(cls: string): this;
   }
 }
@@ -413,7 +430,7 @@ p.minH = function (unitOrValue: string, amount?: number) {
 p.flex = function (value?: string) {
   return value === undefined ? this.addClass("flex") : this.addClass(`flex-${value}`);
 };
-p.flex1 = function () { return this.addClass("flex-1"); };
+p.flexShorthand = function (value: string) { return this.addClass(`flex-${value}`); };
 p.flexDirection = function (direction: string) { return this.addClass(`flex-${direction}`); };
 p.justifyContent = function (justify: string) { return this.addClass(`justify-${justify}`); };
 p.alignItems = function (align: string) { return this.addClass(`items-${align}`); };
@@ -467,7 +484,11 @@ p.shadow = function (value?: string) {
 
 p.opacity = function (value: string | number) { return this.addClass(`opacity-${value}`); };
 p.cursor = function (value: string) { return this.addClass(`cursor-${value}`); };
-p.position = function (value: string) { return this.addClass(value); };
+p.absolute = function () { return this.addClass("absolute"); };
+p.relative = function () { return this.addClass("relative"); };
+p.fixed = function () { return this.addClass("fixed"); };
+p.sticky = function () { return this.addClass("sticky"); };
+p.static = function () { return this.addClass("static"); };
 p.zIndex = function (value: string | number) { return this.addClass(`z-${value}`); };
 p.overflow = function (directionOrValue: string, value?: string) {
   if (value === undefined) return this.addClass(`overflow-${directionOrValue}`);
@@ -477,7 +498,12 @@ p.objectFit = function (value: string) { return this.addClass(`object-${value}`)
 
 // Layout & Display
 
-p.display = function (value: string) { return this.addClass(value); };
+p.block = function () { return this.addClass("block"); };
+p.inlineBlock = function () { return this.addClass("inline-block"); };
+p.inline = function () { return this.addClass("inline"); };
+p.inlineFlex = function () { return this.addClass("inline-flex"); };
+p.inlineGrid = function () { return this.addClass("inline-grid"); };
+p.contents = function () { return this.addClass("contents"); };
 p.hidden = function () { return this.addClass("hidden"); };
 p.inset = function (unitOrValue: string, amount?: number) {
   if (amount !== undefined) return this.addClass(`inset-[${amount}${unitOrValue}]`);
@@ -549,12 +575,12 @@ p.ringColor = function (color: string) { return this.addClass(`ring-${color}`); 
 // Transforms
 
 p.scale = function (value: string | number) { return this.addClass(`scale-${value}`); };
-p.rotate = function (value: string | number) { return this.addClass(`rotate-${value}`); };
-p.translate = function (direction: string, value: string) {
-  return this.addClass(`translate-${direction}-${value}`);
+p.rotate = function (value: string | number) { return this.addClass(signNeg("rotate", String(value))); };
+p.translate = function (direction: string, value: string | number) {
+  return this.addClass(signNeg(`translate-${direction}`, String(value)));
 };
-p.skewX = function (value: string | number) { return this.addClass(`skew-x-${value}`); };
-p.skewY = function (value: string | number) { return this.addClass(`skew-y-${value}`); };
+p.skewX = function (value: string | number) { return this.addClass(signNeg("skew-x", String(value))); };
+p.skewY = function (value: string | number) { return this.addClass(signNeg("skew-y", String(value))); };
 
 // Interactivity
 

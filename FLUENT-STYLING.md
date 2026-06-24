@@ -173,8 +173,8 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 ### Position & Layout
 
 ```typescript
-.position("relative")      // relative
-.display("block")          // block
+.relative()                // relative  (.absolute() .fixed() .sticky() .static())
+.block()                   // block     (.inline() .inlineFlex() .inlineGrid() .contents())
 .hidden()                  // hidden
 .zIndex("10")              // z-10
 .inset("0")                // inset-0
@@ -236,7 +236,7 @@ Use with `.on()` for group/peer state variants:
 ```typescript
 Div(
   Input().peer(),
-  Span("Error").on("peer-invalid", t => t.display("block")),
+  Span("Error").on("peer-invalid", t => t.block()),
 ).group()
 ```
 
