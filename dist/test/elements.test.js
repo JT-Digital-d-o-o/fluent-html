@@ -179,6 +179,7 @@ describe("Media Elements", () => {
             .setSrcset("small.jpg 480w, medium.jpg 800w, large.jpg 1200w")
             .setSizes("(max-width: 600px) 480px, 800px")), `<img src="small.jpg" alt="Responsive" srcset="small.jpg 480w, medium.jpg 800w, large.jpg 1200w" sizes="(max-width: 600px) 480px, 800px">`);
     });
+    it("Image with fetchpriority (LCP promotion)", () => { assert.strictEqual(render(Img().setSrc("/hero.avif").setAlt("").setFetchPriority("high")), `<img src="/hero.avif" alt="" fetchpriority="high">`); });
     it("Picture element", () => {
         assert.strictEqual(render(Picture([
             Source().setSrcset("large.webp").setMedia("(min-width: 800px)").setType("image/webp"),
@@ -314,6 +315,7 @@ describe("Embedded Content", () => {
             .setAllow("accelerometer; autoplay; clipboard-write")
             .toggle("allowfullscreen")), `<iframe src="https://youtube.com/embed/xyz" allow="accelerometer; autoplay; clipboard-write" allowfullscreen></iframe>`);
     });
+    it("Iframe with fetchpriority", () => { assert.strictEqual(render(Iframe().setSrc("https://example.com").setFetchPriority("low")), `<iframe src="https://example.com" fetchpriority="low"></iframe>`); });
     it("Embed", () => { assert.strictEqual(render(Embed().setSrc("game.swf").setType("application/x-shockwave-flash").setWidth("400").setHeight("300")), `<embed src="game.swf" type="application/x-shockwave-flash" width="400" height="300">`); });
 });
 // ------------------------------------
@@ -350,6 +352,8 @@ describe("Document Structure", () => {
     it("Link favicon", () => { assert.strictEqual(render(Link().setRel("icon").setHref("favicon.ico").setType("image/x-icon")), `<link rel="icon" href="favicon.ico" type="image/x-icon">`); });
     it("Link preload", () => { assert.strictEqual(render(Link().setRel("preload").setHref("font.woff2").setAs("font").setCrossOrigin("anonymous")), `<link rel="preload" href="font.woff2" as="font" crossorigin="anonymous">`); });
     it("Link preconnect with bare crossorigin", () => { assert.strictEqual(render(Link().setRel("preconnect").setHref("https://fonts.gstatic.com").setCrossOrigin("")), `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">`); });
+    it("Link modulepreload with fetchpriority", () => { assert.strictEqual(render(Link().setRel("modulepreload").setHref("/app.js").setFetchPriority("low")), `<link rel="modulepreload" href="/app.js" fetchpriority="low">`); });
+    it("Link rel/as/type stay open unions (custom values still compile + render)", () => { assert.strictEqual(render(Link().setRel("custom-rel").setAs("font").setType("font/woff2")), `<link rel="custom-rel" type="font/woff2" as="font">`); });
     it("Base", () => { assert.strictEqual(render(Base().setHref("https://example.com/").setTarget("_blank")), `<base href="https://example.com/" target="_blank">`); });
     it("Noscript", () => { assert.strictEqual(render(Noscript(P("JavaScript is required"))), `<noscript><p>JavaScript is required</p></noscript>`); });
     it("Template", () => { assert.strictEqual(render(Template(Div("Template content"))), `<template><div>Template content</div></template>`); });
@@ -362,6 +366,7 @@ describe("Script and Style (Raw Content)", () => {
     it("Script with special chars (not escaped)", () => { assert.strictEqual(render(Script("if (a < b && c > d) { alert('<test>'); }")), "<script>if (a < b && c > d) { alert('<test>'); }</script>"); });
     it("Script external", () => { assert.strictEqual(render(Script().setSrc("app.js").toggle("defer")), `<script src="app.js" defer></script>`); });
     it("Script module", () => { assert.strictEqual(render(Script().setSrc("module.js").setType("module")), `<script src="module.js" type="module"></script>`); });
+    it("Script with fetchpriority", () => { assert.strictEqual(render(Script().setSrc("/app.js").setType("module").setFetchPriority("high")), `<script src="/app.js" type="module" fetchpriority="high"></script>`); });
     it("Script with integrity", () => {
         assert.strictEqual(render(Script()
             .setSrc("https://cdn.example.com/lib.js")

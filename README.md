@@ -626,6 +626,28 @@ Document(
 // <body><p>Hello</p></body></html>
 ```
 
+### Head-element types & resource hints
+
+The head-element setters are typed with **open unions** — the canonical set autocompletes, custom/vendor values still compile via the `(string & {})` tail. `setFetchPriority` is the typed Core Web Vitals priority hint (closed `'high' | 'low' | 'auto'`); promote the LCP resource with `'high'`, de-prioritise below-the-fold work with `'low'`.
+
+```typescript
+import { Head, Meta, Link, Script, Img } from 'fluent-html';
+
+Head(
+  Meta().setCharset("utf-8"),
+  Meta().setName("viewport").setContent("width=device-width, initial-scale=1"),
+  Meta().setName("theme-color").setContent("#0b0b0b"),
+  Link().setRel("preconnect").setHref("https://fonts.gstatic.com").setCrossOrigin(""),
+  Link().setRel("preload").setHref("/fonts/inter.woff2").setAs("font").setType("font/woff2").setCrossOrigin(""),
+  Link().setRel("modulepreload").setHref("/app.js").setFetchPriority("low"),
+  Script().setSrc("/app.js").setType("module"),
+);
+
+Img().setSrc("/hero.avif").setAlt("").setFetchPriority("high");   // LCP image promotion
+```
+
+Exported types: `FetchPriority` (closed), `LinkElementRel` (distinct from the anchor-rel `LinkRel`), `LinkAs`, `LinkType`, `ScriptType`, `MetaName`, `Charset` — plus `Base().setTarget` reuses `BrowsingContext`.
+
 ---
 
 ## Global HTMX Config
@@ -833,6 +855,42 @@ Button("Delete")
   .behavior("remove", { target: ids.banner })
 // hx-on:click="this.disabled=true;document.getElementById('banner').remove()"
 ```
+
+### Native Interactivity (Popover · Commands · anchor positioning)
+
+For open/close and placement, prefer the platform over hand-written JS — these emit **zero JavaScript** and need **no CSP nonce**. All targets are `Id`-typed.
+
+**Invoker Commands** — a JS-free `<button>` that drives a `<dialog>` or popover:
+
+```typescript
+Button("Edit").setCommand("show-modal").setCommandfor(ids.dialog)   // <button command="show-modal" commandfor="dialog">
+Button("Done").setCommand("close").setCommandfor(ids.dialog)
+```
+
+| `command` | acts on |
+| --- | --- |
+| `show-modal` / `close` / `request-close` | `<dialog>` |
+| `show-popover` / `hide-popover` / `toggle-popover` | popover |
+| `--name` | author command (fires a `CommandEvent`) |
+
+**Popover** — `setPopover()` defaults to `"auto"` (light-dismiss, Esc, top-layer):
+
+```typescript
+Button("Filters").setPopovertarget(ids.panel)            // invoker
+Div(/* … */).setId(ids.panel).setPopover()               // popover="auto"
+Div(/* … */).setPopover("manual")                        // explicit dismiss only
+```
+
+**Anchor positioning** — name an anchor, place a popover against it (reuse one `Id`):
+
+```typescript
+const menu = ids.userMenu;
+Button("Account").setPopovertarget(menu).anchorName(menu)         // [anchor-name:--user-menu]
+Div(/* … */).setId(menu).setPopover().positionAnchor(menu).positionArea("bottom")
+//   class="[position-anchor:--user-menu] position-area-bottom"
+```
+
+> The `openDialog`/`closeDialog` behaviors **remain** — reach for them when an htmx *event* (not a click) must trigger the open/close. Because `anchorName(id)`/`positionAnchor(id)` take an `Id` *variable*, the tailwind-extractor reports those classes as **unresolved** (safelist them); `positionArea("bottom")` resolves statically.
 
 ---
 

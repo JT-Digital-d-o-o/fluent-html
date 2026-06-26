@@ -9,6 +9,7 @@ import { Tag } from "./tag.js";
 // Shared with the class-vocab source of truth (C-05) — one home for these
 // constants (the extractor + ESLint maps derive from the same module).
 import { DIR_MAP, ROUNDED_CORNERS, signNeg } from "../class-vocab/types.js";
+import { extractId } from "../ids.js";
 // ── Variant helper (local, not on prototype) ────────────────────────
 function withVariant(tag, prefix, fn) {
     const outer = tag._variantPrefix;
@@ -338,4 +339,12 @@ p.overscroll = function (directionOrValue, value) {
 };
 // Negative value prefix
 p.neg = function (cls) { return this.addClass(`-${cls}`); };
+// CSS Anchor Positioning (B-010) — runtime accepts `string | Id` (the class-vocab
+// parity harness drives these with raw string samples); `extractId` is the same
+// `isId(x) ? x.id : x` bridge `setId` uses (tag.ts). The public type narrows to `Id`.
+// The dashed-ident is emitted verbatim (defineIds does NOT validate id chars) and is
+// `escapeAttr`'d at render via the `class` attribute — authors must use ID-safe ids.
+p.anchorName = function (name) { return this.addClass(`[anchor-name:--${extractId(name)}]`); };
+p.positionAnchor = function (name) { return this.addClass(`[position-anchor:--${extractId(name)}]`); };
+p.positionArea = function (area) { return this.addClass(`position-area-${area}`); };
 //# sourceMappingURL=tailwind-methods.js.map

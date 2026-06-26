@@ -211,5 +211,13 @@ export const classVocab = [
     val("neg", "-"),
     // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
     stat("htmxIndicator", "htmx-indicator"),
+    // CSS Anchor Positioning (B-010). Samples are plain strings — the lib methods accept
+    // `string | Id` and extract `.id`, so the string-based parity harness exercises them
+    // directly. NOTE: anchorName/positionAnchor are called with an `Id` VARIABLE in real
+    // code, so the extractor classifies those sites UNRESOLVED (force-safelisted), not
+    // statically resolved; only `positionArea("literal")` resolves cleanly.
+    custom("anchorName", (a) => [`[anchor-name:--${a[0]}]`], [["panel"]]),
+    custom("positionAnchor", (a) => [`[position-anchor:--${a[0]}]`], [["panel"]]),
+    custom("positionArea", (a) => [`position-area-${a[0]}`], [["bottom"], ["[top span-left]"]]),
 ];
 //# sourceMappingURL=vocab.js.map

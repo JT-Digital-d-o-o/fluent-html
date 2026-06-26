@@ -2,9 +2,9 @@ import { setDiscriminant } from "./proto.js";
 import type { SchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id} from "../ids.js";
-import { isId } from "../ids.js";
+import { isId, extractId } from "../ids.js";
 import type { View } from "./types.js";
-import type { BooleanAttribute } from "../elements/html-types.js";
+import type { BooleanAttribute, PopoverState, PopoverAction } from "../elements/html-types.js";
 import type { AriaRole, AriaAttrs } from "./aria-types.js";
 
 /** @internal Shared empty attributes object — never mutate */
@@ -370,6 +370,42 @@ export class Tag {
       this.attributes[attrKey] = String(value);
     }
     return this;
+  }
+
+  /**
+   * Mark this element a popover (native Popover API — top-layer, zero JS). A bare
+   * call defaults to `"auto"` (light-dismiss: click-outside + Esc, one-open-per-group);
+   * `"manual"` requires an explicit invoker to dismiss.
+   *
+   * @example
+   * Div(...).setId(ids.menu).setPopover()          // popover="auto"
+   * Div(...).setPopover("manual")                  // popover="manual"
+   */
+  setPopover(state: PopoverState = "auto"): this {
+    return this.addAttribute("popover", state);
+  }
+
+  /**
+   * Wire this element (any invoker — `<button>`/`<a>`/…) to a popover by `Id`,
+   * rendering `popovertarget="<id>"`. Reuse the popover's own `Id` so the link is
+   * provable. The id is `escapeAttr`'d at render like every attribute value.
+   *
+   * @example
+   * Button("Account").setPopovertarget(ids.userMenu)
+   */
+  setPopovertarget(target: Id): this {
+    return this.addAttribute("popovertarget", extractId(target));
+  }
+
+  /**
+   * Set the invoker action (`"show"` | `"hide"` | `"toggle"`). Omit the argument to
+   * emit no attribute and rely on the native default (`toggle`) — never a `=""`.
+   *
+   * @example
+   * Button("Open").setPopovertarget(ids.menu).setPopovertargetaction("show")
+   */
+  setPopovertargetaction(action?: PopoverAction): this {
+    return action === undefined ? this : this.addAttribute("popovertargetaction", action);
   }
 
   /** @internal Variant prefix state — used by tailwind-methods mixin */

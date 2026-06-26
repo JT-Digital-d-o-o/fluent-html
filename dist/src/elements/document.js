@@ -42,6 +42,11 @@ export function Title(...children) {
     return El("title", ...children);
 }
 export class MetaTag extends Tag {
+    /**
+     * Set the `<meta name>` (named-meta grammar: `viewport`/`description`/`theme-color`/…).
+     * `MetaName` is meta-specific — do **not** reuse it for the unrelated `name` on
+     * `<iframe>`/`<object>`/`<map>` (browsing-context / form-association grammar).
+     */
     setName(name) {
         this.name = name;
         return this;
@@ -50,6 +55,7 @@ export class MetaTag extends Tag {
         this.content = content;
         return this;
     }
+    /** Set `charset` — canonical lowercase `"utf-8"`; custom values stay legal via the open tail. */
     setCharset(charset) {
         this.charset = charset;
         return this;
@@ -69,6 +75,7 @@ export function Meta() {
     return new MetaTag("meta");
 }
 export class LinkTag extends Tag {
+    /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
     setRel(rel) {
         this.rel = rel;
         return this;
@@ -106,8 +113,13 @@ export class LinkTag extends Tag {
         this.as = as;
         return this;
     }
+    /** Core Web Vitals priority hint — promote the LCP resource (`'high'`) or de-prioritise (`'low'`). */
+    setFetchPriority(fetchpriority) {
+        this.fetchpriority = fetchpriority;
+        return this;
+    }
 }
-defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang']);
+defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang', 'fetchpriority']);
 export function Link() {
     return new LinkTag("link");
 }
@@ -162,8 +174,13 @@ export class ScriptTag extends Tag {
         this.integrity = integrity;
         return this;
     }
+    /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) script fetching. */
+    setFetchPriority(fetchpriority) {
+        this.fetchpriority = fetchpriority;
+        return this;
+    }
 }
-defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin']);
+defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin', 'fetchpriority']);
 export function Script(js = "") {
     return new ScriptTag("script", js);
 }

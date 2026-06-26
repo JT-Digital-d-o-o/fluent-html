@@ -1,6 +1,7 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { FetchPriority } from "./html-types.js";
 
 
 export class IframeTag extends Tag {
@@ -13,6 +14,7 @@ export class IframeTag extends Tag {
   sandbox?: string;
   name?: string;
   referrerpolicy?: string;
+  fetchpriority?: FetchPriority;
 
   setSrc(src?: string): this {
     this.src = src;
@@ -58,9 +60,15 @@ export class IframeTag extends Tag {
     this.referrerpolicy = referrerpolicy;
     return this;
   }
+
+  /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) iframe loading. */
+  setFetchPriority(fetchpriority?: FetchPriority): this {
+    this.fetchpriority = fetchpriority;
+    return this;
+  }
 }
 
-defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'sandbox', 'loading', 'name', 'referrerpolicy']);
+defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'sandbox', 'loading', 'name', 'referrerpolicy', 'fetchpriority']);
 
 export function Iframe(...children: View[]): IframeTag {
   return new IframeTag("iframe", ...children);

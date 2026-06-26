@@ -1,5 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { FetchPriority } from "./html-types.js";
 export declare class IframeTag extends Tag {
     src?: string;
     srcdoc?: string;
@@ -10,6 +11,7 @@ export declare class IframeTag extends Tag {
     sandbox?: string;
     name?: string;
     referrerpolicy?: string;
+    fetchpriority?: FetchPriority;
     setSrc(src?: string): this;
     setSrcdoc(srcdoc?: string): this;
     setWidth(width?: string): this;
@@ -19,6 +21,8 @@ export declare class IframeTag extends Tag {
     setSandbox(sandbox?: string): this;
     setName(name?: string): this;
     setReferrerPolicy(referrerpolicy?: string): this;
+    /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) iframe loading. */
+    setFetchPriority(fetchpriority?: FetchPriority): this;
 }
 export declare function Iframe(...children: View[]): IframeTag;
 export declare class ObjectTag extends Tag {

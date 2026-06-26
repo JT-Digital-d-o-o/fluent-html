@@ -81,7 +81,10 @@ import type {
   TailwindSkew,
   TailwindWillChange,
   TailwindOverscroll,
+  TailwindPositionArea,
 } from "./tailwind-types.js";
+import type { Id } from "../ids.js";
+import { extractId } from "../ids.js";
 
 // ── Variant helper (local, not on prototype) ────────────────────────
 
@@ -342,6 +345,21 @@ declare module "./tag.js" {
      * Div().neg("mt-2")       // -mt-2
      */
     neg(cls: string): this;
+
+    // CSS Anchor Positioning (B-010) — `Id`-typed so an anchor name can never drift
+    // from the element it references. (Public type is `Id` only — a deliberate
+    // tightening over `setId`'s `string | Id`, since these are pure cross-references
+    // that should never be free strings.)
+    /** Register this element as an anchor: emits `[anchor-name:--<id>]`. */
+    anchorName(name: Id): this;
+    /** Position this element against a named anchor: emits `[position-anchor:--<id>]`. */
+    positionAnchor(name: Id): this;
+    /**
+     * Place against the active anchor: emits `position-area-<area>`. The `[${string}]`
+     * arm is emitted verbatim and `escapeAttr`'d but NOT validated as position-area
+     * grammar — same contract as `.textSize("[13px]")`.
+     */
+    positionArea(area: TailwindPositionArea): this;
   }
 }
 
@@ -707,3 +725,13 @@ p.overscroll = function (directionOrValue: string, value?: string) {
 // Negative value prefix
 
 p.neg = function (cls: string) { return this.addClass(`-${cls}`); };
+
+// CSS Anchor Positioning (B-010) — runtime accepts `string | Id` (the class-vocab
+// parity harness drives these with raw string samples); `extractId` is the same
+// `isId(x) ? x.id : x` bridge `setId` uses (tag.ts). The public type narrows to `Id`.
+// The dashed-ident is emitted verbatim (defineIds does NOT validate id chars) and is
+// `escapeAttr`'d at render via the `class` attribute — authors must use ID-safe ids.
+
+p.anchorName = function (name: string | Id) { return this.addClass(`[anchor-name:--${extractId(name)}]`); };
+p.positionAnchor = function (name: string | Id) { return this.addClass(`[position-anchor:--${extractId(name)}]`); };
+p.positionArea = function (area: string) { return this.addClass(`position-area-${area}`); };

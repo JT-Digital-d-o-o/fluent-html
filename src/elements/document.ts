@@ -3,7 +3,18 @@ import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import { Raw } from "../core/raw-string.js";
 import type { View } from "../core/types.js";
-import type { CrossOrigin, HttpEquiv } from "./html-types.js";
+import type {
+  BrowsingContext,
+  Charset,
+  CrossOrigin,
+  FetchPriority,
+  HttpEquiv,
+  LinkAs,
+  LinkElementRel,
+  LinkType,
+  MetaName,
+  ScriptType,
+} from "./html-types.js";
 
 export class HtmlTag extends Tag {
   lang?: string;
@@ -59,13 +70,18 @@ export function Title(...children: View[]): Tag {
 }
 
 export class MetaTag extends Tag {
-  name?: string;
+  name?: MetaName;
   content?: string;
-  charset?: string;
+  charset?: Charset;
   httpEquiv?: string;
   property?: string;
 
-  setName(name?: string): this {
+  /**
+   * Set the `<meta name>` (named-meta grammar: `viewport`/`description`/`theme-color`/…).
+   * `MetaName` is meta-specific — do **not** reuse it for the unrelated `name` on
+   * `<iframe>`/`<object>`/`<map>` (browsing-context / form-association grammar).
+   */
+  setName(name?: MetaName): this {
     this.name = name;
     return this;
   }
@@ -75,7 +91,8 @@ export class MetaTag extends Tag {
     return this;
   }
 
-  setCharset(charset?: string): this {
+  /** Set `charset` — canonical lowercase `"utf-8"`; custom values stay legal via the open tail. */
+  setCharset(charset?: Charset): this {
     this.charset = charset;
     return this;
   }
@@ -99,17 +116,19 @@ export function Meta(): MetaTag {
 }
 
 export class LinkTag extends Tag {
-  rel?: string;
+  rel?: LinkElementRel;
   href?: string;
-  type?: string;
+  type?: LinkType;
   media?: string;
   sizes?: string;
   crossorigin?: CrossOrigin | '';
   integrity?: string;
-  as?: string;
+  as?: LinkAs;
   hreflang?: string;
+  fetchpriority?: FetchPriority;
 
-  setRel(rel?: string): this {
+  /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
+  setRel(rel?: LinkElementRel): this {
     this.rel = rel;
     return this;
   }
@@ -124,7 +143,7 @@ export class LinkTag extends Tag {
     return this;
   }
 
-  setType(type?: string): this {
+  setType(type?: LinkType): this {
     this.type = type;
     return this;
   }
@@ -150,13 +169,19 @@ export class LinkTag extends Tag {
     return this;
   }
 
-  setAs(as?: string): this {
+  setAs(as?: LinkAs): this {
     this.as = as;
+    return this;
+  }
+
+  /** Core Web Vitals priority hint — promote the LCP resource (`'high'`) or de-prioritise (`'low'`). */
+  setFetchPriority(fetchpriority?: FetchPriority): this {
+    this.fetchpriority = fetchpriority;
     return this;
   }
 }
 
-defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang']);
+defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang', 'fetchpriority']);
 
 export function Link(): LinkTag {
   return new LinkTag("link");
@@ -185,14 +210,14 @@ export function Style(css: string): StyleTag {
 
 export class BaseTag extends Tag {
   href?: string;
-  target?: string;
+  target?: BrowsingContext;
 
   setHref(href?: string): this {
     this.href = href;
     return this;
   }
 
-  setTarget(target?: string): this {
+  setTarget(target?: BrowsingContext): this {
     this.target = target;
     return this;
   }
@@ -214,16 +239,17 @@ export function Template(...children: View[]): Tag {
 
 export class ScriptTag extends Tag {
   src?: string;
-  type?: string;
+  type?: ScriptType;
   crossorigin?: CrossOrigin | '';
   integrity?: string;
+  fetchpriority?: FetchPriority;
 
   setSrc(src?: string): this {
     this.src = src;
     return this;
   }
 
-  setType(type?: string): this {
+  setType(type?: ScriptType): this {
     this.type = type;
     return this;
   }
@@ -237,9 +263,15 @@ export class ScriptTag extends Tag {
     this.integrity = integrity;
     return this;
   }
+
+  /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) script fetching. */
+  setFetchPriority(fetchpriority?: FetchPriority): this {
+    this.fetchpriority = fetchpriority;
+    return this;
+  }
 }
 
-defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin']);
+defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin', 'fetchpriority']);
 
 export function Script(js: string = ""): ScriptTag {
   return new ScriptTag("script", js);

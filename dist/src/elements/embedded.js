@@ -37,8 +37,13 @@ export class IframeTag extends Tag {
         this.referrerpolicy = referrerpolicy;
         return this;
     }
+    /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) iframe loading. */
+    setFetchPriority(fetchpriority) {
+        this.fetchpriority = fetchpriority;
+        return this;
+    }
 }
-defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'sandbox', 'loading', 'name', 'referrerpolicy']);
+defineSchemaKeys(IframeTag, ['src', 'srcdoc', 'width', 'height', 'allow', 'sandbox', 'loading', 'name', 'referrerpolicy', 'fetchpriority']);
 export function Iframe(...children) {
     return new IframeTag("iframe", ...children);
 }

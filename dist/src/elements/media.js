@@ -44,8 +44,13 @@ export class ImgTag extends Tag {
         this.crossorigin = crossorigin;
         return this;
     }
+    /** Core Web Vitals priority hint — promote the LCP image (`'high'`) or de-prioritise (`'low'`). */
+    setFetchPriority(fetchpriority) {
+        this.fetchpriority = fetchpriority;
+        return this;
+    }
 }
-defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin']);
+defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin', 'fetchpriority']);
 /** Create an `<img>` element with typed attribute methods. */
 export function Img() {
     return new ImgTag("img");

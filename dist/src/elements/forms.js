@@ -1,6 +1,7 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El, Empty } from "../core/utils.js";
+import { extractId } from "../ids.js";
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
  *
@@ -137,6 +138,25 @@ export class ButtonTag extends Tag {
         this.type = type;
         return this;
     }
+    /**
+     * Set the invoker `command` (Commands API) — a JS-free, nonce-free way to drive a
+     * `<dialog>` or popover from a `<button>`. Closed over the native verbs
+     * (`show-modal`/`close`/`request-close`/`show-popover`/`hide-popover`/`toggle-popover`);
+     * a `--`-prefixed value is an author command that fires a `CommandEvent`. Pair with
+     * `setCommandfor`. The `openDialog`/`closeDialog` behaviors remain for htmx-event cases.
+     *
+     * @example
+     * Button("Edit").setCommand("show-modal").setCommandfor(ids.dialog)
+     */
+    setCommand(command) {
+        this.command = command;
+        return this;
+    }
+    /** Wire this invoker to its target element by `Id`, rendering `commandfor="<id>"`. */
+    setCommandfor(target) {
+        this.commandfor = extractId(target);
+        return this;
+    }
     setName(name) {
         this.name = name;
         return this;
@@ -154,7 +174,7 @@ export class ButtonTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod']);
+defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod', 'command', 'commandfor']);
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children) {
     return new ButtonTag("button", ...children);

@@ -2,7 +2,7 @@ import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
-import type { CrossOrigin } from "./html-types.js";
+import type { CrossOrigin, FetchPriority } from "./html-types.js";
 
 /**
  * Specialized Tag for `<img>` elements with typed attribute setters.
@@ -20,6 +20,7 @@ export class ImgTag extends Tag {
   srcset?: string;
   sizes?: string;
   crossorigin?: CrossOrigin | '';
+  fetchpriority?: FetchPriority;
 
   setSrc(src?: string): this {
     this.src = src;
@@ -65,9 +66,15 @@ export class ImgTag extends Tag {
     this.crossorigin = crossorigin;
     return this;
   }
+
+  /** Core Web Vitals priority hint — promote the LCP image (`'high'`) or de-prioritise (`'low'`). */
+  setFetchPriority(fetchpriority?: FetchPriority): this {
+    this.fetchpriority = fetchpriority;
+    return this;
+  }
 }
 
-defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin']);
+defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin', 'fetchpriority']);
 
 /** Create an `<img>` element with typed attribute methods. */
 export function Img(): ImgTag {

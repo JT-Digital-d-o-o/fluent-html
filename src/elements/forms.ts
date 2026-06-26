@@ -2,7 +2,9 @@ import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El, Empty } from "../core/utils.js";
 import type { View } from "../core/types.js";
-import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, InputMode } from "./html-types.js";
+import type { Id } from "../ids.js";
+import { extractId } from "../ids.js";
+import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, InputMode, CommandFor } from "./html-types.js";
 
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
@@ -218,9 +220,32 @@ export class ButtonTag extends Tag {
   value?: string;
   formaction?: string;
   formmethod?: 'get' | 'post';
+  command?: CommandFor;
+  commandfor?: string;
 
   setType(type?: 'submit' | 'reset' | 'button'): this {
     this.type = type;
+    return this;
+  }
+
+  /**
+   * Set the invoker `command` (Commands API) — a JS-free, nonce-free way to drive a
+   * `<dialog>` or popover from a `<button>`. Closed over the native verbs
+   * (`show-modal`/`close`/`request-close`/`show-popover`/`hide-popover`/`toggle-popover`);
+   * a `--`-prefixed value is an author command that fires a `CommandEvent`. Pair with
+   * `setCommandfor`. The `openDialog`/`closeDialog` behaviors remain for htmx-event cases.
+   *
+   * @example
+   * Button("Edit").setCommand("show-modal").setCommandfor(ids.dialog)
+   */
+  setCommand(command: CommandFor): this {
+    this.command = command;
+    return this;
+  }
+
+  /** Wire this invoker to its target element by `Id`, rendering `commandfor="<id>"`. */
+  setCommandfor(target: Id): this {
+    this.commandfor = extractId(target);
     return this;
   }
 
@@ -245,7 +270,7 @@ export class ButtonTag extends Tag {
   }
 }
 
-defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod']);
+defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod', 'command', 'commandfor']);
 
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children: View[]): ButtonTag {

@@ -182,11 +182,38 @@ All SVG elements now have typed tag classes with fluent attribute setters:
 
 ---
 
-## [6.1.0] - Control-Flow Combinators
+## [6.1.0] - Native Interactivity, Resource Hints & Control-Flow Combinators
 
-Additive — two new combinators, the value/iteration analogues of `Match`/`ForEach`. Nothing existing changes.
+Additive only — new setters, new exported types, and two new combinators. Open-union widenings keep every v6.0.0 caller compiling; rendered output is byte-identical for values that were already valid.
 
 ### ✨ Added
+
+- **Native interactivity — Popover API, invoker Commands, and CSS anchor positioning** (zero JS, no CSP nonce):
+  - **Popover API** — `setPopover(state?)` (defaults `"auto"`: light-dismiss + top-layer; `"manual"` for explicit dismiss), `setPopovertarget(id)`, `setPopovertargetaction(action?)` on any element. `PopoverState` / `PopoverAction` are closed unions; the target is `Id`-typed. Omitting the action emits no attribute (relies on the native `toggle` default).
+  - **Invoker Commands** — `Button().setCommand(command)` / `setCommandfor(id)` — a JS-free, nonce-free alternative to the `openDialog`/`closeDialog` behaviors (which **remain**). `CommandFor` is closed over the native verbs (`show-modal`/`close`/`request-close`/`show-popover`/`hide-popover`/`toggle-popover`) plus a `` `--${string}` `` author-command arm.
+  - **CSS anchor positioning** — `anchorName(id)` / `positionAnchor(id)` emit `[anchor-name:--<id>]` / `[position-anchor:--<id>]`; `positionArea(area)` emits `position-area-<area>` (`TailwindPositionArea`). Registered in the class-vocab so the extractor + eslint stay in lockstep. (Called with an `Id` variable, the two `[…:--<id>]` emitters are surfaced as *unresolved* by the extractor — safelist them; only `positionArea("literal")` resolves statically.)
+
+  ```typescript
+  Button("Open").setCommand("show-modal").setCommandfor(ids.dialog)   // <button command commandfor> — no hx-on, no nonce
+  const menu = ids.userMenu;
+  Button("Account").setPopovertarget(menu).anchorName(menu);
+  Div(/* items */).setId(menu).setPopover().positionAnchor(menu).positionArea("bottom");
+  ```
+
+- **`setFetchPriority('high' | 'low' | 'auto')`** on `Img`, `Link`, `Script`, and `Iframe` — the typed Core Web Vitals priority hint (previously reachable only via `addAttribute`). Promote the LCP image/resource with `'high'` or de-prioritise a below-the-fold preload with `'low'`. `FetchPriority` is a **closed** union, so a typo is a compile error.
+
+  ```typescript
+  Img().setSrc("/hero.avif").setAlt("").setFetchPriority("high");          // LCP promotion
+  Link().setRel("modulepreload").setHref("/app.js").setFetchPriority("low");
+  ```
+
+- **Typed open unions for head-element attributes**, replacing bare `string`: `LinkElementRel` (`<link rel>` resource hints + document relations — distinct from the anchor-rel `LinkRel`), `LinkAs`, `LinkType`, `ScriptType`, `MetaName`, and `Charset`. Each retypes its setter — `Link().setRel/setAs/setType`, `Script().setType`, `Meta().setName/setCharset` — and `Base().setTarget` now reuses the existing `BrowsingContext` union. Additive: custom/vendor values still compile via the `(string & {})` open tail; the canonical set autocompletes.
+
+  ```typescript
+  Link().setRel("preconnect").setHref("https://fonts.gstatic.com").setCrossOrigin("");
+  Meta().setName("theme-color").setContent("#0b0b0b");
+  Script().setSrc("/app.js").setType("module");
+  ```
 
 - **`MatchValue(value, cases, default?)`** — the value-returning sibling of `Match`: maps a value to another **value** (keeping its literal union) via a plain-value case record. Exhaustive without a default; supply a default to match a subset. Recovers the union a ternary erases to `string`. The result assigns into a fluent styling method only when every case value is a real Tailwind token (the closed `TailwindColor` union, or a `defineTheme()`-registered token):
 

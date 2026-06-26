@@ -2,7 +2,7 @@ import type { SchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id } from "../ids.js";
 import type { View } from "./types.js";
-import type { BooleanAttribute } from "../elements/html-types.js";
+import type { BooleanAttribute, PopoverState, PopoverAction } from "../elements/html-types.js";
 import type { AriaRole, AriaAttrs } from "./aria-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
@@ -230,6 +230,33 @@ export declare class Tag {
      * })
      */
     setAria(attrs: AriaAttrs): this;
+    /**
+     * Mark this element a popover (native Popover API — top-layer, zero JS). A bare
+     * call defaults to `"auto"` (light-dismiss: click-outside + Esc, one-open-per-group);
+     * `"manual"` requires an explicit invoker to dismiss.
+     *
+     * @example
+     * Div(...).setId(ids.menu).setPopover()          // popover="auto"
+     * Div(...).setPopover("manual")                  // popover="manual"
+     */
+    setPopover(state?: PopoverState): this;
+    /**
+     * Wire this element (any invoker — `<button>`/`<a>`/…) to a popover by `Id`,
+     * rendering `popovertarget="<id>"`. Reuse the popover's own `Id` so the link is
+     * provable. The id is `escapeAttr`'d at render like every attribute value.
+     *
+     * @example
+     * Button("Account").setPopovertarget(ids.userMenu)
+     */
+    setPopovertarget(target: Id): this;
+    /**
+     * Set the invoker action (`"show"` | `"hide"` | `"toggle"`). Omit the argument to
+     * emit no attribute and rely on the native default (`toggle`) — never a `=""`.
+     *
+     * @example
+     * Button("Open").setPopovertarget(ids.menu).setPopovertargetaction("show")
+     */
+    setPopovertargetaction(action?: PopoverAction): this;
     /** @internal Variant prefix state — used by tailwind-methods mixin */
     _variantPrefix: string | null;
 }

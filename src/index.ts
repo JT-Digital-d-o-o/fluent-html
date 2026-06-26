@@ -33,6 +33,18 @@ export type {
   LinkRel,
   ReferrerPolicy,
   BooleanAttribute,
+  // Head-element / resource-hint unions (B-008)
+  FetchPriority,
+  LinkElementRel,
+  LinkAs,
+  LinkType,
+  ScriptType,
+  MetaName,
+  Charset,
+  // Native interactivity (B-010)
+  PopoverState,
+  PopoverAction,
+  CommandFor,
 } from './elements/html-types.js';
 
 // Render

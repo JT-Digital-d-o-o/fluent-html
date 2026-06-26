@@ -87,6 +87,12 @@ export type TailwindPlaceSelf = "auto" | "start" | "end" | "center" | "stretch";
 export type TailwindGridAutoFlow = "row" | "col" | "dense" | "row-dense" | "col-dense";
 export type TailwindGridAuto = "auto" | "min" | "max" | "fr" | `[${string}]`;
 export type TailwindOrder = "first" | "last" | "none" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Stringified<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12> | `[${string}]`;
+/**
+ * `position-area` grid placement (CSS anchor positioning, B-010). The common
+ * single- and two-axis cells, plus the `[${string}]` arbitrary hatch for the full
+ * grammar (`[top span-left]`) — emitted verbatim, same contract as `.textSize("[13px]")`.
+ */
+export type TailwindPositionArea = "top" | "bottom" | "left" | "right" | "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right" | "top-span-left" | "top-span-right" | "bottom-span-left" | "bottom-span-right" | `[${string}]`;
 export type TailwindSkew = 0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12 | Stringified<0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12> | `[${string}]`;
 export type TailwindWillChange = "auto" | "scroll" | "contents" | "transform" | `[${string}]`;
 export type TailwindOverscroll = "auto" | "contain" | "none";
