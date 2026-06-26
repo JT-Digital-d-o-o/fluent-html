@@ -43,7 +43,7 @@ export { Progress, Meter, } from './elements/index.js';
 // Web Components
 export { Slot, } from './elements/index.js';
 // Control flow
-export { IfThen, IfThenElse, Match, ForEach, ForEachElse, Repeat, createContext, createRequiredContext, } from './control/index.js';
+export { IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, Repeat, Intersperse, } from './control/index.js';
 // HTMX
 export { hx, resolveSelector, 
 // Selector helpers

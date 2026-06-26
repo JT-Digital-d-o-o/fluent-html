@@ -94,4 +94,40 @@ describe("setAria key injection prevention", () => {
         assert.throws(() => Div().setAria({ 'aria-x" onmouseover="alert(1)': "y" }), /Invalid attribute key/);
     });
 });
+// ------------------------------------
+// A-006 — escape/injection holes (6.0.1)
+// ------------------------------------
+describe("hx-preload string injection prevention (A-006)", () => {
+    it("escapes a preload string crafted to break out of the attribute", () => {
+        const html = render(Div().setHtmx(hx("/p", { preload: 'mouseover" onload="alert(1)' })));
+        assert.ok(!html.includes('" onload="'), html);
+        assert.ok(html.includes(`hx-preload="mouseover&quot; onload=&quot;alert(1)"`), html);
+    });
+    it("leaves a typed preload value byte-identical", () => {
+        assert.strictEqual(render(Div().setHtmx(hx("/p", { preload: "mouseover" }))), `<div hx-get="/p" hx-preload="mouseover"></div>`);
+    });
+});
+describe("setDataAttrs key injection prevention (A-006)", () => {
+    it("throws on a data-* key that would break out of the tag", () => {
+        assert.throws(() => render(Div().setDataAttrs({ ['x" onmouseover="alert(1)']: "v" })), /Invalid attribute key/);
+    });
+    it("emits a well-formed key unchanged", () => {
+        assert.strictEqual(render(Div().setDataAttrs({ userId: "123" })), `<div data-user-id="123"></div>`);
+    });
+});
+describe("script break-out prevention (A-006)", () => {
+    it("neutralizes a bare </script closer", () => {
+        assert.ok(!render(Script("x='</script>'")).includes("</script>'"));
+    });
+    it("leaves benign script byte-identical", () => {
+        assert.strictEqual(render(Script("if (x < 10 && y > 5) return;")), "<script>if (x < 10 && y > 5) return;</script>");
+    });
+    it("does NOT mangle benign JS containing <script / <!-- / <scripts (closer-only sanitizer)", () => {
+        // These contain the double-escaped-state openers but are legal JS; a `\` before them would
+        // corrupt the regex / be a syntax error (the reverted F-A-900 footgun). Must be byte-identical.
+        assert.strictEqual(render(Script("const re = /<script/;")), "<script>const re = /<script/;</script>");
+        assert.strictEqual(render(Script("x = 1 <!-- legacy\n;")), "<script>x = 1 <!-- legacy\n;</script>");
+        assert.strictEqual(render(Script("if (count<scripts) go();")), "<script>if (count<scripts) go();</script>");
+    });
+});
 //# sourceMappingURL=security.test.js.map

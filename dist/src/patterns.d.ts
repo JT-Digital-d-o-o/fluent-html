@@ -116,9 +116,11 @@ export interface HxResponseResult {
 export declare class HxResponse {
     private _content;
     private _headers;
+    private _triggers;
     constructor(content: View);
     /**
-     * Trigger a client-side event after the response is processed.
+     * Trigger a client-side event after the response is processed. Repeatable — events
+     * accumulate in order and serialize once at `build()`/`getHeaders()`.
      *
      * @param event - Event name to trigger
      * @param detail - Optional event detail data
@@ -128,6 +130,8 @@ export declare class HxResponse {
      * hxResponse(content).trigger("showMessage", { text: "Saved!", type: "success" })
      */
     trigger(event: string, detail?: Record<string, unknown>): this;
+    /** Comma-joined event names when all are bare, else the JSON object form htmx accepts. */
+    private serializeTriggers;
     /**
      * Push a URL onto the browser history stack.
      *

@@ -102,7 +102,6 @@ const HTMX_ATTRS = [
     str('sync'),
     boolVal('preserve'),
     boolVal('boost'),
-    boolVal('ignore'),
     jsonOrStr('config'),
 ];
 // A valid hx-status key: a 100–599 code or an Nxx wildcard (matches the HxStatusKey type).
@@ -112,6 +111,10 @@ const STATUS_KEY_RE = /^(?:[1-5][0-9]{2}|[1-5]xx)$/;
 // from injecting markup through a toggle name — anything with spaces, quotes, or `=` would
 // break out of the tag. A bare name is letters, digits, and hyphens only.
 const BOOLEAN_ATTR_RE = /^[a-zA-Z][a-zA-Z0-9-]*$/;
+// id/class/style belong to their dedicated setters. Precedence on collision: dedicated field
+// (when set) > generic bag > bare toggle. The bag loop gates on field-presence; this set guards
+// the toggle loop against a reserved bare toggle (unreachable via the typed BooleanAttribute).
+const RESERVED_BAG_KEYS = new Set(['id', 'class', 'style']);
 /** Serialize an HTMX config to its attribute string. @internal */
 export function buildHtmx(htmx) {
     let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
@@ -124,9 +127,14 @@ export function buildHtmx(htmx) {
     // Special cases: boolean-only attrs
     if (htmx.optimistic !== undefined)
         result += ' hx-optimistic';
+    // `ignore` emits htmx 4's bare-boolean disable-processing attribute `hx-ignore`. (htmx 4
+    // renamed htmx 2's `hx-disable` boolean to `hx-ignore`; in htmx 4 `hx-disable` is the
+    // disabled-ELEMENTS selector — the `disable` field — so the two must not collide.)
+    if (htmx.ignore)
+        result += ' hx-ignore';
     if (htmx.preload !== undefined) {
         result += typeof htmx.preload === 'string'
-            ? ' hx-preload="' + htmx.preload + '"'
+            ? ' hx-preload="' + escapeAttr(htmx.preload) + '"'
             : ' hx-preload';
     }
     // Status-code-specific swap behavior — the key becomes part of the attribute
@@ -161,10 +169,15 @@ function buildStatusConfig(cfg) {
         parts.push('transition:' + cfg.transition);
     return parts.join(' ');
 }
-// Regex patterns for closing tags inside script/style (case-insensitive)
+// Closing tags inside script/style (case-insensitive). Only the closer is neutralized:
+// `<\/script` is byte-safe (the `\` lands before `/`, harmless in a JS string/regex, and
+// `</script>` is never valid JS). Neutralizing the `<!--`/`<script` OPENERS (to defeat the
+// HTML script-data-double-escaped state) was tried and reverted — a `\` before `!`/`script`
+// corrupts benign JS (`/<script/` → whitespace regex; `<!--`/`a<scripts` → syntax errors).
+// That hardening needs a byte-safe transform; parked (it only matters inside the raw-JS escape hatch).
 const SCRIPT_CLOSE_RE = /<\/script/gi;
 const STYLE_CLOSE_RE = /<\/style/gi;
-/** Sanitize raw context content by escaping closing tags that would break out. @internal */
+/** Sanitize raw context content by escaping the closing tag that would break out. @internal */
 export function sanitizeRawContent(content, element) {
     if (element === 'script') {
         return content.replace(SCRIPT_CLOSE_RE, '<\\/script');
@@ -210,6 +223,10 @@ export function buildAttrs(tag) {
         const extraKeys = Object.keys(extraAttrs);
         for (let i = 0; i < extraKeys.length; i++) {
             const key = extraKeys[i];
+            // A reserved key is skipped ONLY when its dedicated setter was also used — the dedicated
+            // field wins. With no setter, the bag value IS the attribute (never silently dropped).
+            if ((key === 'id' && tid !== undefined) || (key === 'class' && tcls !== undefined) || (key === 'style' && tsty !== undefined))
+                continue;
             const value = extraAttrs[key];
             if (value !== undefined && value !== null) {
                 attrs += ' ' + key + '="' + escapeAttr(String(value)) + '"';
@@ -218,19 +235,25 @@ export function buildAttrs(tag) {
     }
     if (tag.htmx)
         attrs += ' ' + buildHtmx(tag.htmx);
-    // Boolean attributes (the single `.toggle()` path) render bare — present when toggled
-    // on, absent otherwise — so they can never lie the way `checked="false"` did. Each name
-    // is validated here (the one choke point) to reject attribute-name injection from
-    // untyped callers, mirroring the `hx-status` guard above.
+    // Boolean attributes (the single `.toggle()` path) render bare. Each name is validated
+    // here (the one choke point against attribute-name injection from untyped callers) and
+    // emitted at most once — skipping a name already set via a dedicated field or the bag.
     const toggles = tag.toggles;
     if (toggles !== undefined && toggles.length > 0) {
+        const seen = new Set();
+        const hasBag = extraAttrs !== EMPTY_ATTRS;
         for (let i = 0; i < toggles.length; i++) {
             const name = toggles[i];
             if (!BOOLEAN_ATTR_RE.test(name)) {
                 throw new Error(`Invalid boolean attribute name: "${name}" — expected a bare HTML attribute name (letters, digits, hyphens).`);
             }
+            if (seen.has(name) || RESERVED_BAG_KEYS.has(name))
+                continue;
+            if (hasBag && extraAttrs[name] !== undefined)
+                continue;
+            seen.add(name);
+            attrs += ' ' + name;
         }
-        attrs += ' ' + toggles.join(' ');
     }
     return attrs;
 }

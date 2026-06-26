@@ -182,6 +182,55 @@ All SVG elements now have typed tag classes with fluent attribute setters:
 
 ---
 
+## [6.1.0] - Control-Flow Combinators
+
+Additive — two new combinators, the value/iteration analogues of `Match`/`ForEach`. Nothing existing changes.
+
+### ✨ Added
+
+- **`MatchValue(value, cases, default?)`** — the value-returning sibling of `Match`: maps a value to another **value** (keeping its literal union) via a plain-value case record. Exhaustive without a default; supply a default to match a subset. Recovers the union a ternary erases to `string`. The result assigns into a fluent styling method only when every case value is a real Tailwind token (the closed `TailwindColor` union, or a `defineTheme()`-registered token):
+
+  ```typescript
+  const trend = MatchValue(omtm.trend, { up: "↑", down: "↓" }, "→");        // "↑" | "↓" | "→"
+  Div().background(MatchValue(tone, { ok: "green-100", err: "red-100" }, "gray-100"));
+  ```
+
+- **`Intersperse(items, renderItem, separator)`** — places a separator *between* mapped Views, never after the last (the View analogue of `Array.join`). The thunk separator form is called once per gap, so callers return fresh Tag instances:
+
+  ```typescript
+  Nav(Intersperse(crumbs, (c) => A(c.label).setHtmx(c.route), () => Span("/").textColor("gray-400")));
+  ```
+
+---
+
+## [6.0.1] - Correctness & Security Patch
+
+Behavior-only fixes — no public API changes shape. Output differs **only** for inputs that were already malformed, malicious, or incorrect; well-typed, benign inputs are byte-identical.
+
+### 🔒 Security
+
+- **`hx-preload` string values are now attribute-escaped**, like every other `hx-*` string attribute. Closes an attribute break-out reachable from untyped callers (the typed `"mousedown" | "mouseover"` path is unchanged).
+- **`setDataAttrs` now validates the computed `data-*` key** (the same attribute-name guard as `setAria`/`addAttribute`): a markup-breaking key — quotes, spaces, `=` — throws instead of emitting injectable HTML.
+
+### 🐛 Fixed
+
+- **Duplicate-attribute emission eliminated.** Every attribute name is now emitted at most once.
+  - `.toggle("x").toggle("x")` (or two `.toggle("x", cond)` calls both true) now renders a single `x`, not `x x`.
+  - `id`, `class`, and `style` are reserved to their dedicated setters: when a setter (`setId`/`setClass`/`setStyle`/fluent class) **and** `addAttribute("id"|"class"|"style", …)` are both used on a tag, the dedicated setter wins and the bag value is skipped (precedence: dedicated field > generic bag > bare toggle). With no dedicated setter, `addAttribute("id", …)` still emits the attribute.
+  - A `.toggle("x")` whose name is also set via `addAttribute("x", …)` is dropped in favor of the value form.
+- **Route params:** `defineRoutes()` callables and `.resolve()` now substitute each `:param` with a boundary-aware match in one shared helper. A param name that is a prefix of another (e.g. `:id` next to `:idCard`) no longer corrupts the URL, and a path that repeats a param now resolves all occurrences instead of throwing.
+- **`HxResponse.trigger`:** multiple triggers are now accumulated in a structured map and serialized once at `build()`/`getHeaders()` — bare events as a comma list (`"a, b"`), detailed events as the JSON object form. An event name that parses as JSON (e.g. `"123"`) no longer drops earlier triggers.
+- **htmx `ignore`:** `{ ignore: true }` now emits the bare boolean `hx-ignore` (htmx 4's disable-processing attribute) instead of the valued `hx-ignore="true"` — and never `hx-disable`, which in htmx 4 is the disabled-elements selector (the `disable` field), so the two no longer collide.
+
+### 🔧 Tooling (extractor / eslint / class-vocab)
+
+- **Extractor:** no longer emits spurious un-prefixed / partial-prefix classes for nested `.on()`/`.at()` variants — a class written only as `hover:focus:bg-red-500` no longer also safelists `hover:bg-red-500` and `bg-red-500`.
+- **Extractor:** `extractDefaultClasses` no longer swallows a fluent call expression (`setHtmx(routes.list)`) as a class token; a `(...)` group is matched only inside an arbitrary `[...]` value.
+- **ESLint `prefer-unit-overload`:** the CSS unit list is now generated from the library's `UNITS` (via `VOCAB_UNITS` in `vocab.generated.ts`) and drift-guarded, instead of being hardcoded in the rule.
+- **Reverse class-vocab parity test:** every class-emitting `Tag.prototype` method must now appear in `classVocab` — catches a new emitter that forgets to register (as `htmxIndicator` once did) and would otherwise emit a class no extractor safelists.
+
+---
+
 ## [6.0.0] - Greenfield v6
 
 A greenfield, v4-native, instruction-set rewrite of the contract for new projects. Beyond the HTMX 4 migration, v6 reworks the everyday authoring surface (P3) and the keeper primitives (P4): one `.toggle()` boolean path, typed ARIA, complete/consistent setters, layout shortcuts, `.overlay()`, first-class control-flow/document APIs, typed `Form<T>` binding, native dialog behaviors, full SVG coverage, and `.htmxIndicator()`.
@@ -224,6 +273,10 @@ The `Overlay(content, overlay, position)` function is replaced by the `Tag.proto
 #### Removed the fold / recursion-schemes layer
 
 The fold layer is gone — `foldView`/`paraView`/`unfoldView`/`hyloView`, all algebras/coalgebras (`countAlgebra`/`textAlgebra`/`linksAlgebra`/`renderAlgebra`/`ariaDescribeAlgebra`/`createTransformAlgebra`/`addClassToMatching`/`tocCoalgebra`/`linkedTocCoalgebra`), the `fluent-html/fold` subpath, and their types. It was demo-only (~1000 LOC) and a disproportionate source of Track-D bugs; the real needs (a11y audit / TOC / link extraction) are short plain recursive `View` walks in app-land. `FOLD.md` and `functional-patterns.md` are deleted.
+
+#### No context/DI in core
+
+`createContext` / `createRequiredContext` / `Context` (added on the v5 line) are **not** part of v6 core. Scoped context is a request-lifecycle concern that belongs to the framework layer (an `@fluent-html/fastify`-style package), where async isolation can be handled correctly — a pure HTML builder has no business owning a process-global DI stack. Render is fully decoupled from context (values are baked into the tree at construction; `render()` never reads context), so it leaves cleanly.
 
 #### HTMX 4 Compatibility
 
@@ -287,26 +340,6 @@ Button("Page 2").setHtmx(userRoutes.list({ query: { page: "2" } }))
 ```
 
 Supports `string`, `number`, and `boolean` values. Keys and values are properly encoded via `encodeURIComponent`.
-
-#### Scoped Context (`createContext`)
-
-New `createContext()` for implicit, request-safe values without prop drilling. Uses TC39 Explicit Resource Management (`using`) for automatic cleanup:
-
-```typescript
-const ThemeCtx = createContext<"light" | "dark">("light");
-
-function Page(theme: "light" | "dark") {
-  using _ = ThemeCtx.scope(theme);
-  return Div(Header(), Content());
-}
-
-function Header() {
-  const theme = ThemeCtx.current;  // reads innermost scope
-  return Nav().background(theme === "dark" ? "gray-900" : "white");
-}
-```
-
-Stack-based: nested `scope()` calls compose safely, disposal pops automatically.
 
 #### Morph Swap Strategies
 

@@ -284,3 +284,17 @@ describe("hx Shorthand Methods", () => {
     assert.strictEqual(render(Div("Saving").padding("4").htmxIndicator()), `<div class="p-4 htmx-indicator">Saving</div>`);
   });
 });
+
+// ------------------------------------
+// hx ignore → bare hx-disable (A-007)
+// ------------------------------------
+
+describe("HTMX ignore (A-007)", () => {
+  it("emits bare hx-ignore for { ignore: true } (htmx 4 disable-processing boolean)", () => {
+    assert.strictEqual(render(Div().setHtmx(hx("/x", { ignore: true }))), `<div hx-get="/x" hx-ignore></div>`);
+  });
+
+  it("omits the attribute when ignore is false", () => {
+    assert.strictEqual(render(Div().setHtmx(hx("/x", { ignore: false }))), `<div hx-get="/x"></div>`);
+  });
+});

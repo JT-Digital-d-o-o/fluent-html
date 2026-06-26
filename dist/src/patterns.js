@@ -96,10 +96,12 @@ export function HtmxConfig(config) {
 export class HxResponse {
     constructor(content) {
         this._headers = {};
+        this._triggers = new Map();
         this._content = content;
     }
     /**
-     * Trigger a client-side event after the response is processed.
+     * Trigger a client-side event after the response is processed. Repeatable — events
+     * accumulate in order and serialize once at `build()`/`getHeaders()`.
      *
      * @param event - Event name to trigger
      * @param detail - Optional event detail data
@@ -109,35 +111,26 @@ export class HxResponse {
      * hxResponse(content).trigger("showMessage", { text: "Saved!", type: "success" })
      */
     trigger(event, detail) {
-        const existing = this._headers["HX-Trigger"];
-        if (existing) {
-            // If we already have triggers, merge them
-            try {
-                const parsed = JSON.parse(existing);
-                if (detail) {
-                    parsed[event] = detail;
-                }
-                else {
-                    parsed[event] = {};
-                }
-                this._headers["HX-Trigger"] = JSON.stringify(parsed);
-            }
-            catch {
-                // Was a simple string, convert to object
-                const obj = { [existing]: {} };
-                obj[event] = detail ?? {};
-                this._headers["HX-Trigger"] = JSON.stringify(obj);
-            }
-        }
-        else {
-            if (detail) {
-                this._headers["HX-Trigger"] = JSON.stringify({ [event]: detail });
-            }
-            else {
-                this._headers["HX-Trigger"] = event;
-            }
-        }
+        // A later detail upgrades a bare event; a bare call never clobbers an existing detail.
+        this._triggers.set(event, detail ?? this._triggers.get(event) ?? null);
         return this;
+    }
+    /** Comma-joined event names when all are bare, else the JSON object form htmx accepts. */
+    serializeTriggers() {
+        if (this._triggers.size === 0)
+            return undefined;
+        let allBare = true;
+        for (const v of this._triggers.values())
+            if (v !== null) {
+                allBare = false;
+                break;
+            }
+        if (allBare)
+            return [...this._triggers.keys()].join(", ");
+        const obj = {};
+        for (const [k, v] of this._triggers)
+            obj[k] = v ?? {};
+        return JSON.stringify(obj);
     }
     /**
      * Push a URL onto the browser history stack.
@@ -245,7 +238,7 @@ export class HxResponse {
     build() {
         return {
             html: render(this._content),
-            headers: { ...this._headers },
+            headers: this.getHeaders(),
         };
     }
     /**
@@ -253,7 +246,11 @@ export class HxResponse {
      * Useful when you want to render the content separately.
      */
     getHeaders() {
-        return { ...this._headers };
+        const headers = { ...this._headers };
+        const triggers = this.serializeTriggers();
+        if (triggers !== undefined)
+            headers["HX-Trigger"] = triggers;
+        return headers;
     }
 }
 /**

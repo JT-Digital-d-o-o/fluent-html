@@ -67,7 +67,7 @@ export declare function splitArgs(args: readonly unknown[]): {
 };
 /** Serialize an HTMX config to its attribute string. @internal */
 export declare function buildHtmx(htmx: HTMX): string;
-/** Sanitize raw context content by escaping closing tags that would break out. @internal */
+/** Sanitize raw context content by escaping the closing tag that would break out. @internal */
 export declare function sanitizeRawContent(content: string, element: 'script' | 'style'): string;
 /** Build the attribute string for a tag's open element. @internal */
 export declare function buildAttrs(tag: Tag): string;

@@ -104,6 +104,34 @@ export function ForEachElse<T>(
 }
 
 /**
+ * Map each item to a View and place `separator` *between* them — never after the
+ * last (the View analogue of `Array.join`). The thunk form of `separator` is called
+ * once per gap, so callers can return fresh Tag instances (Tags are mutable — a
+ * single shared instance would be aliased across every gap).
+ *
+ * @param items - The items to map over
+ * @param renderItem - Callback receiving each item (and index) to produce a View
+ * @param separator - A View, or a thunk returning one, emitted between items
+ *
+ * @example
+ * Nav(Intersperse(crumbs, (c) => A(c.label).setHtmx(c.route), () => Span("/").textColor("gray-400")))
+ */
+export function Intersperse<T>(
+  items: Iterable<T>,
+  renderItem: (item: T, index: number) => View,
+  separator: View | (() => View),
+): View {
+  const result: View[] = [];
+  let i = 0;
+  for (const item of items) {
+    if (i > 0) result.push(typeof separator === "function" ? (separator as () => View)() : separator);
+    result.push(renderItem(item, i));
+    i++;
+  }
+  return result;
+}
+
+/**
  * Repeat a view a fixed number of times.
  *
  * @param times - How many times to repeat

@@ -1,5 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { render, Div } from "../src/index.js";
 import { Tag } from "../src/core/index.js";
 import { classVocab, emitClasses, prefixOf } from "../src/class-vocab/index.js";
@@ -173,6 +175,39 @@ describe("classVocab integrity", () => {
                 assert.ok(def.samples && def.samples.length > 0, `custom row "${def.method}" needs samples`);
             }
         }
+    });
+});
+// ---------------------------------------------------------------------------
+// 5. Reverse parity (F-A-163) — every class-emitting prototype method must be in
+//    classVocab, or the extractor/eslint will never know about the class it emits.
+//    (The forward loop above checks every vocab row HAS a method; this is the mirror.)
+// ---------------------------------------------------------------------------
+describe("reverse class-vocab parity", () => {
+    // Non-utility class touchers that legitimately call addClass but aren't vocab rows.
+    const STRUCTURAL = new Set(["setClass", "addClass", "setClasses", "on", "at", "apply", "when", "whenElse"]);
+    const SOURCES = ["tailwind-methods.ts", "htmx-methods.ts"].map((f) => readFileSync(fileURLToPath(new URL(`../../src/core/${f}`, import.meta.url)), "utf8"));
+    /** `p.<name> = function … { … }` defs whose body emits a class-shaped literal via addClass. */
+    function scanEmitters() {
+        const out = [];
+        const defRe = /(?:^|\n)\s*p\.([A-Za-z_$][\w$]*)\s*=\s*function\b([\s\S]*?)(?=(?:\n\s*p\.[A-Za-z_$][\w$]*\s*=)|$)/g;
+        for (const src of SOURCES) {
+            let m;
+            while ((m = defRe.exec(src)) !== null) {
+                out.push({ name: m[1], emits: /this\.addClass\(\s*[`"'][:\w[-]/.test(m[2]) });
+            }
+        }
+        return out;
+    }
+    it("the source scan has teeth (finds the class emitters)", () => {
+        const emitters = scanEmitters().filter((e) => e.emits);
+        assert.ok(emitters.length >= 100, `expected the scan to find ≥100 class emitters, got ${emitters.length}`);
+    });
+    it("every class-emitting prototype method is registered in classVocab", () => {
+        const vocab = new Set(classVocab.map((d) => d.method));
+        const missing = scanEmitters()
+            .filter((e) => e.emits && !vocab.has(e.name) && !STRUCTURAL.has(e.name))
+            .map((e) => e.name);
+        assert.deepEqual(missing, [], `class emitters missing from classVocab: ${JSON.stringify(missing)}`);
     });
 });
 //# sourceMappingURL=class-vocab.test.js.map

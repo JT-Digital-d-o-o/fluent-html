@@ -42,6 +42,10 @@ export type Context<T> = {
  * The context maintains a stack: each `scope()` call pushes a value,
  * and disposal pops it. This makes nested overrides safe and automatic.
  *
+ * **Sync-only contract.** The value stack is process-global with no async isolation.
+ * Resolve every `await` *before* opening a scope; never hold an await open while a scope
+ * is live — under concurrency another request can otherwise read your scoped value.
+ *
  * @param defaultValue - The value returned by `current` when no scope is active
  * @returns A Context object with `current` and `scope()` members
  *
@@ -66,6 +70,10 @@ export declare function createContext<T>(defaultValue: T): Context<T>;
  *
  * Accessing `current` outside an active `scope()` throws an error.
  * Use this for values that have no valid default (auth, nonce, request-specific data).
+ *
+ * **Sync-only contract.** The value stack is process-global with no async isolation.
+ * Resolve every `await` *before* opening a scope; never hold an await open while a scope
+ * is live — under concurrency another request can otherwise read your scoped value.
  *
  * @param name - A descriptive name used in the error message when accessed outside a scope
  * @returns A Context object with `current` and `scope()` members

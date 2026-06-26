@@ -175,7 +175,9 @@ export declare class Tag {
      */
     setStyles(styles: Record<string, string | number>): this;
     /**
-     * Set multiple data-* attributes at once.
+     * Set multiple data-* attributes at once. Each computed `data-*` key is validated:
+     * a markup-breaking key (quotes, spaces, `=`) throws, like `setAria`/`addAttribute`.
+     * (The `data-` prefix makes `__proto__`/`on*` keys valid-but-inert, so those don't throw.)
      *
      * @param attrs - Object mapping data attribute names (without 'data-' prefix) to values
      * @returns this (for chaining)

@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Div, Input, El, } from "../src/index.js";
+import { render, renderToIterable, Div, Input, El, } from "../src/index.js";
 // ------------------------------------
 // ID, Class, Style Attributes
 // ------------------------------------
@@ -46,6 +46,46 @@ describe("Toggles (Boolean Attributes)", () => {
             .setType("email")
             .setName("email")
             .toggle("required")), `<input type="email" name="email" required>`);
+    });
+});
+// ------------------------------------
+// Duplicate-attribute emission (A-003)
+// ------------------------------------
+describe("Duplicate-attribute emission (A-003)", () => {
+    it("dedupes a repeated toggle", () => {
+        assert.strictEqual(render(Input().toggle("disabled").toggle("disabled")), `<input disabled>`);
+    });
+    it("dedupes a repeated conditional toggle", () => {
+        assert.strictEqual(render(Input().toggle("readonly", true).toggle("readonly", true)), `<input readonly>`);
+    });
+    it("dedicated id setter wins over an addAttribute id", () => {
+        assert.strictEqual(render(Div("x").setId("a").addAttribute("id", "b")), `<div id="a">x</div>`);
+    });
+    it("fluent class wins over an addAttribute class", () => {
+        assert.strictEqual(render(Div("x").setClass("btn").addAttribute("class", "danger")), `<div class="btn">x</div>`);
+    });
+    it("dedicated style setter wins over an addAttribute style", () => {
+        assert.strictEqual(render(Div("x").setStyle("color:red").addAttribute("style", "color:blue")), `<div style="color:red">x</div>`);
+    });
+    it("a valued attribute wins over a bare toggle of the same name", () => {
+        assert.strictEqual(render(Input().toggle("required").addAttribute("required", "")), `<input required="">`);
+    });
+    it("addAttribute id/class/style with NO dedicated setter still emits (regression)", () => {
+        assert.strictEqual(render(Div().addAttribute("id", "b")), `<div id="b"></div>`);
+        assert.strictEqual(render(Div().addAttribute("class", "c")), `<div class="c"></div>`);
+        assert.strictEqual(render(Div().addAttribute("style", "color:red")), `<div style="color:red"></div>`);
+    });
+    it("setId(undefined) leaves the bag id intact", () => {
+        assert.strictEqual(render(Div().setId(undefined).addAttribute("id", "b")), `<div id="b"></div>`);
+    });
+    it("render ≡ renderToIterable for the reserved-key bag/collision cases", () => {
+        for (const v of [
+            Div().addAttribute("id", "b"),
+            Div().setId("a").addAttribute("id", "b"),
+            Div().setClass("btn").addAttribute("class", "danger"),
+        ]) {
+            assert.strictEqual([...renderToIterable(v)].join(""), render(v));
+        }
     });
 });
 //# sourceMappingURL=attributes.test.js.map

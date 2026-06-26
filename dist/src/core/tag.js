@@ -226,7 +226,9 @@ export class Tag {
         return this;
     }
     /**
-     * Set multiple data-* attributes at once.
+     * Set multiple data-* attributes at once. Each computed `data-*` key is validated:
+     * a markup-breaking key (quotes, spaces, `=`) throws, like `setAria`/`addAttribute`.
+     * (The `data-` prefix makes `__proto__`/`on*` keys valid-but-inert, so those don't throw.)
      *
      * @param attrs - Object mapping data attribute names (without 'data-' prefix) to values
      * @returns this (for chaining)
@@ -243,7 +245,9 @@ export class Tag {
         if (this.attributes === EMPTY_ATTRS)
             this.attributes = Object.create(null);
         for (const [key, value] of Object.entries(attrs)) {
-            this.attributes[`data-${kebabCase(key)}`] = value;
+            const attrKey = `data-${kebabCase(key)}`;
+            validateAttributeKey(attrKey);
+            this.attributes[attrKey] = value;
         }
         return this;
     }

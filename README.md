@@ -57,7 +57,6 @@ render(page);
 - **Full autocomplete** - Every method, attribute, and value suggested by your IDE
 - **First-class HTMX 4** - Type-safe routes with typed params, triggers, swaps, targets, morph strategies, and more
 - **100+ Tailwind methods** - Gradients, filters, group/peer, arbitrary values with unit overloads, and more
-- **Scoped context** - `createContext` / `createRequiredContext` for implicit values without prop drilling
 - **XSS protection** - All content escaped automatically
 - **Zero dependencies** - Pure TypeScript, ~15KB minified
 - **SSR-ready** - Built for server-side rendering, optimized render path
@@ -190,6 +189,10 @@ Match(state, "status", {
 Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
 Div(ForEach(5, i => Star()))  // Repeat 5 times
 Ul(ForEachElse(items, item => Li(item.name), () => Li("Nothing here")))  // empty fallback
+Nav(Intersperse(crumbs, c => A(c.label), () => Span("/")))  // separator between, never after the last
+
+// Value mapping — the value analogue of Match (keeps the literal union)
+MatchValue(trend, { up: "↑", down: "↓" }, "→")          // "↑" | "↓" | "→"
 
 // Two-branch tag modifier (mirrors IfThenElse, not truthiness)
 Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
@@ -213,7 +216,6 @@ render(
 - [Fluent Styling API](#fluent-styling-api) - Chainable Tailwind-friendly methods
 - [HTMX Integration](#type-safe-htmx) - Requests, triggers, swaps, all typed
 - [Type-Safe Routes](#type-safe-routes) - Compile-time-safe HTMX endpoints with typed params
-- [Scoped Context](#scoped-context) - `createContext` / `createRequiredContext` for implicit values
 - [Partial Multi-Swap](#partial-multi-swap) - Update multiple page sections in one response
 - [Global HTMX Config](#global-htmx-config) - Type-safe global htmx configuration
 - [HTML Elements](#html-elements) - 60+ typed elements with generic `Input()` factory
@@ -580,52 +582,6 @@ userRoutes.detail.resolve({ id: "42" })       // ✗ compile error — number ex
 ```
 
 The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method`, `.path` (with prefix applied), and `.resolve()` (for param + query substitution). Views and controllers always stay in sync.
-
----
-
-## Scoped Context
-
-`createContext()` provides implicit, request-safe values without prop drilling — ideal for cross-cutting concerns like theme, locale, auth, and nonce. Uses TC39 Explicit Resource Management (`using`) for automatic cleanup.
-
-```typescript
-import { createContext } from 'fluent-html';
-
-const ThemeCtx = createContext<"light" | "dark">("light");
-const LocaleCtx = createContext("en-US");
-
-function Page(theme: "light" | "dark") {
-  using _t = ThemeCtx.scope(theme);
-  using _l = LocaleCtx.scope("de");
-  return Div(Header(), Content());
-}
-
-function Header() {
-  const theme = ThemeCtx.current;  // "dark" — reads the innermost scope
-  return Nav().background(theme === "dark" ? "gray-900" : "white");
-}
-```
-
-Contexts are stack-based: each `scope()` pushes a value, and disposal pops it. Nested overrides compose safely. Default value is returned when no scope is active.
-
-### Required Context
-
-Use `createRequiredContext()` when a missing scope is always a bug (e.g., auth, request-specific data). It throws instead of returning a default:
-
-```typescript
-import { createRequiredContext } from 'fluent-html';
-
-const AuthCtx = createRequiredContext<User>("AuthCtx");
-
-function handler(user: User) {
-  using _ = AuthCtx.scope(user);
-  return Page();
-}
-
-function Page() {
-  const user = AuthCtx.current;  // User — throws if no scope active
-  return Div(`Hello, ${user.name}`);
-}
-```
 
 ---
 
@@ -2423,7 +2379,7 @@ previous()           // → "previous"
 import {
   SearchInput, InfiniteScroll,
   Partial, HtmxConfig,
-  defineRoutes, createContext, hxResponse,
+  defineRoutes, hxResponse,
   FormField, KeyedList
 } from 'fluent-html';
 ```
@@ -2433,8 +2389,6 @@ import {
 | `Partial(target, content, swap?)` | Multi-swap partial element (HTMX 4) |
 | `HtmxConfig(options)` | Global HTMX configuration via `<meta>` tag |
 | `defineRoutes(prefix?, routes)` | Type-safe route definitions for HTMX + server |
-| `createContext(defaultValue)` | Scoped context for implicit values (theme, locale, auth) |
-| `createRequiredContext(name)` | Scoped context that throws if accessed outside a scope |
 | `hxResponse(content)` | Build HTMX response with headers |
 | `SearchInput(options)` | Debounced search input with HTMX |
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
@@ -2458,7 +2412,7 @@ Raw(html: string): RawString  // Create unescaped HTML content
 ### Type-Safe IDs & Routes
 
 ```typescript
-import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes, createContext, createRequiredContext } from 'fluent-html';
+import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes } from 'fluent-html';
 ```
 
 | Function | Description |
@@ -2469,8 +2423,6 @@ import { defineIds, createId, Id, isId, extractId, extractSelector, defineRoutes
 | `extractId(value)` | Extract ID string from string or Id |
 | `extractSelector(value)` | Extract selector string from string or Id |
 | `defineRoutes(prefix?, routes)` | Create type-safe route definitions with params |
-| `createContext(defaultValue)` | Create a scoped context with stack-based overrides |
-| `createRequiredContext(name)` | Create a scoped context that throws if accessed outside a scope |
 
 **Route Callable Object:**
 

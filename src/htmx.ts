@@ -239,7 +239,7 @@ export interface HTMX {
   // Boosting (for links/forms)
   boost?: boolean;
 
-  // Ignore htmx processing (was disable)
+  // Ignore htmx processing — emits the bare `hx-ignore` boolean (htmx 4; was htmx 2's `hx-disable`)
   ignore?: boolean;
 
   // Per-element request configuration (replaces hx-request)

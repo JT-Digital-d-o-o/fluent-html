@@ -473,6 +473,31 @@ describe("Unresolved param runtime guard", () => {
   });
 });
 
+describe("Boundary-aware param substitution (A-001)", () => {
+  const r = defineRoutes({
+    card:   { method: "get", path: "/orgs/:id/users/:idCard" },
+    swap:   { method: "get", path: "/users/:idCard/x/:id" },
+    mirror: { method: "get", path: "/a/:id/b/:id" },
+  } as const);
+
+  it("does not match a param name inside a longer placeholder", () => {
+    assert.strictEqual(r.card.resolve({ id: "42", idCard: "AB-9" }), "/orgs/42/users/AB-9");
+  });
+
+  it("resolves longer-before-shorter prefix params without throwing (the genuine v6.0.0 defect)", () => {
+    // shipped v6.0.0 `replace(":id", …)` first hit `:id` INSIDE `:idCard` → mangled, then threw on the leftover `:id`
+    assert.strictEqual(r.swap.resolve({ id: "9", idCard: "C" }), "/users/C/x/9");
+  });
+
+  it("resolves a repeated param at every occurrence", () => {
+    assert.strictEqual(r.mirror.resolve({ id: "7" }), "/a/7/b/7");
+  });
+
+  it("the route callable substitutes the same way", () => {
+    assert.strictEqual(r.card({ id: "42", idCard: "AB-9" }).endpoint, "/orgs/42/users/AB-9");
+  });
+});
+
 // --- Typed params ---
 
 const typedRoutes = defineRoutes("/items", {

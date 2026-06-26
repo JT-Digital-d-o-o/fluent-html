@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Div, P, Span, Ul, Li, IfThen, IfThenElse, Match, ForEach, ForEachElse, Repeat, Button, } from "../src/index.js";
+import { render, Div, P, Span, Ul, Li, IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, Repeat, Intersperse, Button, } from "../src/index.js";
 // ------------------------------------
 // Control Flow - IfThen / IfThenElse
 // ------------------------------------
@@ -154,6 +154,46 @@ describe("Tag.whenElse", () => {
     it("a present-but-falsy value ('') takes thenFn (not truthiness)", () => {
         const v = "";
         assert.strictEqual(render(Span().whenElse(v, (t) => t.addClass("present"), t => t.addClass("absent"))), `<span class="present"></span>`);
+    });
+});
+// ------------------------------------
+// MatchValue / Intersperse (C-005)
+// ------------------------------------
+describe("MatchValue", () => {
+    it("exhaustive form returns the matched value", () => {
+        assert.strictEqual(MatchValue("up", { up: "↑", down: "↓" }), "↑");
+    });
+    it("partial form falls back to the default", () => {
+        assert.strictEqual(MatchValue("sideways", { up: "↑", down: "↓" }, "→"), "→");
+    });
+    it("numeric keys work", () => {
+        assert.strictEqual(MatchValue(2, { 1: "a", 2: "b", 3: "c" }), "b");
+    });
+    it("the value flows straight into a fluent method", () => {
+        const bg = MatchValue("err", { ok: "green-100", err: "red-100" });
+        assert.strictEqual(render(Div().background(bg)), `<div class="bg-red-100"></div>`);
+    });
+    it("a present key whose value is falsy is returned (not the default)", () => {
+        assert.strictEqual(MatchValue("z", { z: "" }, "fallback"), "");
+    });
+});
+describe("Intersperse", () => {
+    it("places the separator between items, never after the last", () => {
+        assert.strictEqual(render(Div(Intersperse(["a", "b", "c"], (c) => Span(c), () => Span("/")))), `<div><span>a</span>\n<span>/</span>\n<span>b</span>\n<span>/</span>\n<span>c</span></div>`);
+    });
+    it("a single item emits no separator", () => {
+        assert.strictEqual(render(Div(Intersperse(["only"], (c) => Span(c), () => Span("/")))), `<div><span>only</span></div>`);
+    });
+    it("an empty iterable emits nothing", () => {
+        assert.strictEqual(render(Div(Intersperse([], (c) => Span(c), () => Span("/")))), `<div></div>`);
+    });
+    it("accepts a plain View separator", () => {
+        assert.strictEqual(render(Div(Intersperse(["a", "b"], (c) => Span(c), Span("·")))), `<div><span>a</span>\n<span>·</span>\n<span>b</span></div>`);
+    });
+    it("calls the thunk separator once per gap", () => {
+        let calls = 0;
+        render(Div(Intersperse(["a", "b", "c"], (c) => Span(c), () => { calls++; return Span("/"); })));
+        assert.strictEqual(calls, 2);
     });
 });
 //# sourceMappingURL=control-flow.test.js.map

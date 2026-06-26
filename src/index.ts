@@ -281,14 +281,12 @@ export {
   IfThen,
   IfThenElse,
   Match,
+  MatchValue,
   ForEach,
   ForEachElse,
   Repeat,
-  createContext,
-  createRequiredContext,
+  Intersperse,
 } from './control/index.js';
-
-export type { Context } from './control/index.js';
 
 // HTMX
 export {

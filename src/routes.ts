@@ -166,6 +166,25 @@ function assertNoUnresolvedParams(resolved: string, template: string): void {
   }
 }
 
+/** Internal: escape RegExp metacharacters in a literal param name (names are normally identifiers). */
+function escapeRegExp(literal: string): string {
+  return literal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Internal: substitute every `:name` placeholder with its encoded value. Boundary-aware
+ * (`:id` never matches inside `:idCard`) and replaces all occurrences; the trailing
+ * lookahead mirrors the identifier grammar used by `assertNoUnresolvedParams`.
+ */
+function substituteParams(template: string, params: Record<string, string | number>): string {
+  let out = template;
+  for (const [key, value] of Object.entries(params)) {
+    const pattern = new RegExp(`:${escapeRegExp(key)}(?![A-Za-z0-9_])`, "g");
+    out = out.replace(pattern, encodeURIComponent(String(value)));
+  }
+  return out;
+}
+
 /** Internal: serialize a query-params bag into a `?key=value&…` string. Skips nullish entries. */
 function buildQueryString(query: QueryParams): string {
   const parts: string[] = [];
@@ -260,10 +279,7 @@ export function defineRoutes(
 
     const routeFn = hasParams
       ? function (params: Record<string, string | number>, options?: RouteHxOptions): HTMX {
-          let resolvedPath = fullPath;
-          for (const [key, value] of Object.entries(params)) {
-            resolvedPath = resolvedPath.replace(`:${key}`, encodeURIComponent(String(value)));
-          }
+          const resolvedPath = substituteParams(fullPath, params);
           assertNoUnresolvedParams(resolvedPath, fullPath);
           return buildHtmxFromRoute(resolvedPath, method, options);
         }
@@ -273,10 +289,7 @@ export function defineRoutes(
 
     const resolve = hasParams
       ? function (params: Record<string, string | number>, query?: QueryParams): string {
-          let resolved = fullPath;
-          for (const [key, value] of Object.entries(params)) {
-            resolved = resolved.replace(`:${key}`, encodeURIComponent(String(value)));
-          }
+          const resolved = substituteParams(fullPath, params);
           assertNoUnresolvedParams(resolved, fullPath);
           return query ? resolved + buildQueryString(query) : resolved;
         }

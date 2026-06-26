@@ -127,6 +127,14 @@ describe("HTMX Patterns", () => {
         const response = hxResponse(Div("")).location({ path: "/dashboard", target: "#main" }).build();
         assert.ok(response.headers["HX-Location"].includes("dashboard"));
     });
+    it("hxResponse accumulates multiple bare triggers as a comma list (A-007)", () => {
+        const response = hxResponse(Div("")).trigger("123").trigger("itemSaved").build();
+        assert.strictEqual(response.headers["HX-Trigger"], "123, itemSaved");
+    });
+    it("hxResponse serializes a detailed trigger as the JSON object form (A-007)", () => {
+        const response = hxResponse(Div("")).trigger("saved", { id: 7 }).trigger("toast").build();
+        assert.strictEqual(response.headers["HX-Trigger"], `{"saved":{"id":7},"toast":{}}`);
+    });
 });
 describe("Partial (htmx 4)", () => {
     it("creates hx-partial element with string target", () => {

@@ -3,7 +3,7 @@ import {
   render, Div, H1, H2, P, Span, Nav, Header, Footer, Section, Article,
   Ul, Li, A, Button, Table, Thead, Tbody, Tr, Th, Td,
   Img, Main,
-  ForEach, createContext,
+  ForEach,
 } from "../src/index.js";
 import type { View } from "../src/index.js";
 
@@ -209,19 +209,6 @@ printResult("Large ForEach (5000 items)", measure("large-foreach", () => render(
 // Build AND render per op — real SSR rebuilds the tree every request (F-D-113;
 // the scenarios above render a pre-built tree, hiding construction cost).
 printResult("Build+render realistic (per req)", measure("build-render", () => render(benchRealisticPage()), ITERATIONS));
-
-console.log("");
-console.log("Context benchmarks:");
-console.log("─".repeat(72));
-
-const ThemeCtx = createContext("light");
-printResult("Context scope/read (1000 scopes)", measure("context", () => {
-  for (let i = 0; i < 1000; i++) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    using _s = ThemeCtx.scope("dark");
-    void ThemeCtx.current;
-  }
-}, ITERATIONS));
 
 console.log("");
 console.log("Memory usage:");
