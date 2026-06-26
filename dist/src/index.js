@@ -43,16 +43,14 @@ export { Progress, Meter, } from './elements/index.js';
 // Web Components
 export { Slot, } from './elements/index.js';
 // Control flow
-export { IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, Repeat, Intersperse, } from './control/index.js';
+export { IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, ForEachKeyed, Repeat, Intersperse, } from './control/index.js';
 // HTMX
 export { hx, resolveSelector, 
 // Selector helpers
 id, clss, closest, find, next, previous, } from './htmx.js';
 // Common Patterns
 export { 
-// OOB helpers (deprecated — use Partial)
-OOB, withOOB, 
-// Partial helpers (htmx 4)
+// Partial helpers (htmx 4) — replaced the removed OOB/withOOB
 Partial, 
 // Global config helper (htmx 4)
 HtmxConfig, 

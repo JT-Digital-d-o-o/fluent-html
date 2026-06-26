@@ -67,7 +67,7 @@ export class InputTag extends Tag {
         return this;
     }
     setList(list) {
-        this.list = list;
+        this.list = list === undefined ? undefined : extractId(list);
         return this;
     }
 }
@@ -169,6 +169,7 @@ export class ButtonTag extends Tag {
         this.formaction = formaction;
         return this;
     }
+    /** Override the form's method for this submit button. `"dialog"` closes an ancestor `<dialog>` with the button's value. */
     setFormmethod(formmethod) {
         this.formmethod = formmethod;
         return this;
@@ -181,7 +182,7 @@ export function Button(...children) {
 }
 export class LabelTag extends Tag {
     setFor(forId) {
-        this.for = forId;
+        this.for = forId === undefined ? undefined : extractId(forId);
         return this;
     }
 }
@@ -217,9 +218,18 @@ export class FormTag extends Tag {
     }
 }
 defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplete']);
+/** The conventional id of a field's error span — links the control's `aria-describedby` to `f.error(name)`. */
+const fieldErrorId = (name) => `${name}-error`;
 function createFormBinding(state) {
     const values = (state?.values ?? {});
     const errors = (state?.errors ?? {});
+    // When the field has a bound error, mark the control invalid and link it to its message span,
+    // so assistive tech and the `aria-invalid:`/`invalid:` Tailwind variant both see the error state.
+    const markInvalid = (tag, name) => {
+        if (errors[name] !== undefined)
+            tag.setAria({ invalid: true, describedby: fieldErrorId(name) });
+        return tag;
+    };
     return {
         input(name, type) {
             // Cast past Input's narrowed overloads — the binding accepts any InputType.
@@ -228,13 +238,13 @@ function createFormBinding(state) {
             const v = values[name];
             if (v !== undefined && v !== null)
                 tag.setValue(String(v));
-            return tag;
+            return markInvalid(tag, name);
         },
         textarea(name) {
             const v = values[name];
             // A textarea's value is its text content, not a `value` attribute.
             const tag = v !== undefined && v !== null ? Textarea(String(v)) : Textarea();
-            return tag.setName(name);
+            return markInvalid(tag.setName(name), name);
         },
         select(name, options) {
             const selected = values[name];
@@ -244,15 +254,27 @@ function createFormBinding(state) {
                     opt.toggle("selected");
                 return opt;
             });
-            return Select(...opts).setName(name);
+            return markInvalid(Select(...opts).setName(name), name);
+        },
+        checkbox(name, value) {
+            const tag = Input("checkbox").setName(name);
+            if (value !== undefined)
+                tag.setValue(value);
+            // checked reflects a boolean field (terms-accepted, is-active, …)
+            return markInvalid(tag.toggle("checked", Boolean(values[name])), name);
+        },
+        radio(name, value) {
+            // checked when this radio's value matches the bound field across the shared name group
+            return markInvalid(Input("radio").setName(name).setValue(value).toggle("checked", String(values[name]) === value), name);
         },
         hidden(name, value) {
             return Input("hidden").setName(name).setValue(value);
         },
         error(name) {
             const message = errors[name];
-            // Unstyled span — the styled FieldError shell lives in @jtdigital/ui.
-            return message ? El("span", message) : Empty();
+            // Unstyled span (the styled FieldError shell lives in @jtdigital/ui), id-linked to the
+            // control via `aria-describedby` so the message and its input are wired as one unit.
+            return message ? El("span", message).setId(fieldErrorId(name)) : Empty();
         },
     };
 }
@@ -327,7 +349,7 @@ export function Legend(...children) {
 }
 export class OutputTag extends Tag {
     setFor(forId) {
-        this.for = forId;
+        this.for = forId === undefined ? undefined : extractId(forId);
         return this;
     }
     setName(name) {

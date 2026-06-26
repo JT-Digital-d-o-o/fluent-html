@@ -12,6 +12,7 @@ export { MatchValue } from "./match-value.js";
 export {
   ForEach,
   ForEachElse,
+  ForEachKeyed,
   Repeat,
   Intersperse,
 } from "./iteration.js";

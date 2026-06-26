@@ -45,6 +45,12 @@ export type {
   PopoverState,
   PopoverAction,
   CommandFor,
+  ClosedBy,
+  // Global editing / keyboard attributes
+  EnterKeyHint,
+  ContentEditable,
+  Autocapitalize,
+  Spellcheck,
 } from './elements/html-types.js';
 
 // Render
@@ -296,6 +302,7 @@ export {
   MatchValue,
   ForEach,
   ForEachElse,
+  ForEachKeyed,
   Repeat,
   Intersperse,
 } from './control/index.js';
@@ -329,10 +336,7 @@ export type {
 
 // Common Patterns
 export {
-  // OOB helpers (deprecated — use Partial)
-  OOB,
-  withOOB,
-  // Partial helpers (htmx 4)
+  // Partial helpers (htmx 4) — replaced the removed OOB/withOOB
   Partial,
   // Global config helper (htmx 4)
   HtmxConfig,
@@ -367,6 +371,7 @@ export type {
   QueryParams,
   QueryParamValue,
   ParamTypeName,
+  ParamType,
 } from './routes.js';
 
 // Behavior system

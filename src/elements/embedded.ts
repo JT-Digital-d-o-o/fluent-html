@@ -1,7 +1,7 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import type { FetchPriority } from "./html-types.js";
+import type { FetchPriority, ReferrerPolicy } from "./html-types.js";
 
 
 export class IframeTag extends Tag {
@@ -13,7 +13,7 @@ export class IframeTag extends Tag {
   loading?: 'lazy' | 'eager';
   sandbox?: string;
   name?: string;
-  referrerpolicy?: string;
+  referrerpolicy?: ReferrerPolicy;
   fetchpriority?: FetchPriority;
 
   setSrc(src?: string): this {
@@ -56,7 +56,7 @@ export class IframeTag extends Tag {
     return this;
   }
 
-  setReferrerPolicy(referrerpolicy?: string): this {
+  setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
     this.referrerpolicy = referrerpolicy;
     return this;
   }

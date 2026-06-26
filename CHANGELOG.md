@@ -182,6 +182,81 @@ All SVG elements now have typed tag classes with fluent attribute setters:
 
 ---
 
+## [6.1.1] - Composition, Typed Forms, Morph Keys & Modern-Platform Hooks
+
+Mostly additive, plus two intentional type-narrowing breaks and a couple of behavior alignments (all listed below). Folded into 6.1.1 because v6 is greenfield with no published consumers to break. Benign, well-typed inputs render unchanged.
+
+### 💥 Breaking
+
+- **The six sizing unions are now closed** (`TailwindWidth`/`Height`/`MaxWidth`/`MinWidth`/`MaxHeight`/`MinHeight`) — the `(string & {})` open tail is removed, so `.w("brnad")` is a **compile error** instead of silently emitting a dead `w-brnad` class. This finishes the v6 union-closure that colors/spacing/fontSize/radius/shadow already got. Arbitrary values are unaffected — use the bracket arm (`.w("[37px]")`) or the `(unit, amount)` overload (`.w("px", 37)`); `MaxWidth`/`MinWidth`/`MinHeight` gained an explicit `` `[${string}]` `` arm.
+- **Removed the deprecated `OOB` / `withOOB` helpers** — replaced by `Partial()` (htmx 4's `<hx-partial>`) since 6.0. Migrate `OOB(id, content)` → `Partial(id, content)`; `withOOB(main, ...oob)` → a plain array `[main, ...partials]`.
+
+### ✨ Added
+
+- **`Tag.addChild(...views)`** — append children during fluent composition, the structural counterpart to `apply`/`when` (which only touch classes/attrs). Normalizes the scalar/array `child` union and escapes appended children like constructor children. (The `.when()` JSDoc previously referenced a `t.children(...)` method that never existed — now it points at the real `addChild`.)
+
+  ```typescript
+  Button("Save").when(isLoading, t => t.addChild(Spinner()));
+  ```
+
+- **Native dialog dismiss (completes the 6.1.0 interactivity surface)** — `DialogTag.setClosedby("any" | "closerequest" | "none")` + the exported `ClosedBy` type give native `<dialog>` light-dismiss (`"any"` = click-outside + Esc), the standards-track replacement for hand-rolled backdrop/Escape handlers. `Button().setFormmethod` now also accepts `"dialog"` (widened to the existing `FormMethod` union) — a submit button that closes its ancestor `<dialog>` with its value. Together with `setCommand("show-modal")`, a modal now opens, dismisses, and closes with zero JS.
+
+  ```typescript
+  Dialog(EditForm(), Button("Cancel").setType("submit").setFormmethod("dialog"))
+    .setId(ids.modal).setClosedby("any");
+  Button("Edit").setCommand("show-modal").setCommandfor(ids.modal);   // opens it
+  ```
+
+- **`f.checkbox(name, value?)` / `f.radio(name, value)`** on the `Form<T>` builder — typed `checked`-wiring for the two controls whose state binding is most error-prone. `checkbox` reflects `Boolean(state.values[name])`; `radio` is checked when `String(state.values[name])` equals its `value`. Previously `f.input("agree", "checkbox")` silently emitted `value="true"` and never `checked`.
+
+  ```typescript
+  Form<SettingsReq>({ values: user }, (f) => [f.checkbox("notify"), f.radio("plan", "pro")]);
+  ```
+
+- **`apply` / `when` / `whenElse` accept `(tag) => unknown`** modifiers (return value was always discarded). A reusable style-fn typed against the base `Tag` — `const card = (t: Tag) => …` — now composes onto element subclasses (`Button`, `Input`, `A`, `Img`, …), and void-returning modifiers are accepted.
+
+- **`ForEachKeyed(items, keyOf, renderItem)`** — keyed iteration that stamps each row's root tag with a stable `id` from `keyOf(item)`, so HTMX/idiomorph matches rows **by key** on reorder/insert/delete (positional matching otherwise loses focus, scroll, and in-progress transitions on a morph swap). `renderItem` must return a `Tag`.
+
+  ```typescript
+  Ul(ForEachKeyed(users, (u) => u.id, (u) => Li(u.name)))   // <li id="42">…</li>
+  ```
+
+- **TW4 relational state hooks** on `.on()` — `has-[…]`, `group-has-[…]`, `peer-has-[…]`, and the implicit-ancestor `in-[…]` arms added to `TailwindState`, so `.on("has-[:checked]", t => t.ring("2"))` type-checks and emits the prefix (was raw `.addClass` only). Pure type add — no emitter/vocab change.
+
+- **`viewTransitionName(name | Id)`** — emits the v4 arbitrary-property class `[view-transition-name:<name>]` so a hero element morphs across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on. Registered in the class-vocab (extractor + eslint lockstep).
+
+- **`defineRoutes` typed params — enum + path-checked keys.** A param can now be an enum (a `readonly` literal tuple → its member union): `params: { status: ["open", "paid"] as const }` makes `route({ status: "shipped" })` a compile error. And a `params` key that is **not** a `:param` in the path is now a compile error (was a silent no-op that re-widened the param to `string`). Exported `ParamType`.
+
+  ```typescript
+  defineRoutes("/orders", { byStatus: { method: "get", path: "/:status", params: { status: ["open","paid"] as const } } });
+  ```
+
+- **Compile-only type tests** (`test/types/*.test-d.ts`) — positive/negative `@ts-expect-error` assertions for the closed/open unions, `Form<T>` field-name narrowing, and the new route-param typing, checked by `tsc` in the build. Locks "a typo is a compile error" as an enforced contract.
+
+- **Global editing / keyboard setters on `Tag`** — `setEnterkeyhint`, `setContenteditable` (`"true"`/`"false"`/`"plaintext-only"`, bare call ⇒ `"true"`), `setSpellcheck`, `setAutocapitalize`, `setLang`/`setDir`/`setTranslate` (on any element, not just `<html>`), and `setHidden("until-found")` (find-in-page-revealable hidden content). New closed unions `EnterKeyHint`/`ContentEditable`/`Autocapitalize`/`Spellcheck`.
+
+- **`setMicrodata({ type?, prop?, ref?, id? })`** on `Tag` — typed schema.org structured-data attributes (`itemtype`/`itemprop`/`itemref`/`itemid`); setting `type` also marks the element an `itemscope`. The value-bearing counterpart to the `itemscope` boolean toggle.
+
+- **`setForm(id)`** on `Tag` — associate a form-associated control with a `<form>` elsewhere in the document by `id` (string or `Id`). `Input().setList(...)`, `Label().setFor(...)`, and `Output().setFor(...)` now also accept an `Id`.
+
+- **Scalar `(unit, amount)` overloads** for `textSize` / `leading` / `tracking` / `underlineOffset` — `.textSize("px", 13)` → `text-[13px]` (the value overload is byte-identical). The `prefer-unit-overload` ESLint rule now covers and autofixes them. The raw `[…]` string remains the escape hatch.
+
+- **`IframeTag.referrerpolicy`** retyped from bare `string` to the closed `ReferrerPolicy` union (matching `AnchorTag`), and **`AriaRole`** gained the WAI-ARIA 1.2/1.3 roles (`mark`, `comment`, `suggestion`, `meter`, `code`, `emphasis`, `strong`, …; additive — the union stays open).
+
+### 🐛 Fixed
+
+- **`Tag.when()` now branches on `!= null`**, matching `whenElse` and `IfThen`. A present-but-falsy value (`0`, `""`) takes the run branch and is narrowed to `NonNullable<T>`, instead of being silently skipped by JS truthiness. The boolean overload is unchanged (`when(false, …)` still skips).
+
+- **`Form<T>` error wiring is now complete (a11y).** When `state.errors[name]` is set, the bound control (`f.input`/`textarea`/`select`/`checkbox`/`radio`) emits `aria-invalid="true"` and `aria-describedby="<name>-error"`, and `f.error(name)` renders its span with the matching `id="<name>-error"` — so the control and its message are wired as one unit for assistive tech and the `aria-invalid:` Tailwind variant. **Output change:** errored controls now carry these two ARIA attributes (well-formed/non-errored forms are byte-identical).
+
+- **`setAria` values are now per-key typed** (was flat `string | number | boolean`). The enumerable states carry their token unions — `current`, `haspopup`, `live`, `sort`, `autocomplete`, `orientation`, `invalid` — so `setAria({ live: "polit" })` is now a compile error; tristate states accept `boolean | "mixed"`, numeric states accept `number`. **Narrowing:** only previously-broken token strings start erroring; every valid call still compiles.
+
+### 📝 Docs
+
+- Corrected the `defineRoutes` examples in the guidelines/`CLAUDE.md` to use **lowercase** HTTP methods (`method: "get"`/`"post"`) — uppercase `"GET"`/`"POST"` does not type-check against the `HxHttpMethod` union, so scaffolded routes were born non-building.
+
+---
+
 ## [6.1.0] - Native Interactivity, Resource Hints & Control-Flow Combinators
 
 Additive only — new setters, new exported types, and two new combinators. Open-union widenings keep every v6.0.0 caller compiling; rendered output is byte-identical for values that were already valid.

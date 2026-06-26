@@ -82,7 +82,7 @@ export const classVocab: readonly UtilityDef[] = [
   pre("shadowColor", "shadow"),
 
   // Typography
-  pre("textSize", "text"),
+  size("textSize", "text"),
   pre("textAlign", "text"),
   pre("fontWeight", "font"),
   pre("fontFamily", "font"),
@@ -98,10 +98,10 @@ export const classVocab: readonly UtilityDef[] = [
   stat("antialiased", "antialiased"),
   stat("tabularNums", "tabular-nums"),
   stat("breakAll", "break-all"),
-  pre("leading", "leading"),
-  pre("tracking", "tracking"),
+  size("leading", "leading"),
+  size("tracking", "tracking"),
   pre("whitespace", "whitespace"),
-  pre("underlineOffset", "underline-offset"),
+  size("underlineOffset", "underline-offset"),
   pre("lineClamp", "line-clamp"),
 
   // Sizing
@@ -259,4 +259,9 @@ export const classVocab: readonly UtilityDef[] = [
   custom("anchorName", (a) => [`[anchor-name:--${a[0]}]`], [["panel"]]),
   custom("positionAnchor", (a) => [`[position-anchor:--${a[0]}]`], [["panel"]]),
   custom("positionArea", (a) => [`position-area-${a[0]}`], [["bottom"], ["[top span-left]"]]),
+
+  // View Transitions (F-B-181). Same string-sample bridge as the anchor emitters: the lib
+  // method accepts string|Id and extracts .id; called with an Id variable it's unresolved-
+  // by-design in the extractor (force-safelist), a literal name resolves statically.
+  custom("viewTransitionName", (a) => [`[view-transition-name:${a[0]}]`], [["hero"]]),
 ];

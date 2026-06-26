@@ -46,7 +46,7 @@ describe("Form<T> binding", () => {
   it("error() renders the field's message, or nothing", () => {
     assert.strictEqual(
       render(Form<CreateUserReq>({ errors: { email: "Required" } }, (f) => f.error("email"))),
-      `<form><span>Required</span></form>`,
+      `<form><span id="email-error">Required</span></form>`,
     );
     assert.strictEqual(
       render(Form<CreateUserReq>({ errors: {} }, (f) => f.error("email"))),
@@ -60,7 +60,7 @@ describe("Form<T> binding", () => {
       (f) => [f.input("name"), f.error("name")],
     ));
     assert.ok(html.includes(`value="&quot;&gt;&lt;script&gt;"`));
-    assert.ok(html.includes(`<span>&lt;b&gt;x&lt;/b&gt;</span>`));
+    assert.ok(html.includes(`<span id="name-error">&lt;b&gt;x&lt;/b&gt;</span>`));
   });
 
   it("hidden input with name and value", () => {
@@ -95,5 +95,69 @@ describe("Form<T> binding", () => {
       // @ts-expect-error — "emial" is not a key of CreateUserReq
       f.input("emial", "email"),
     ));
+  });
+});
+
+type SettingsReq = { terms: boolean; notify: boolean; role: "admin" | "viewer" };
+
+describe("Form<T> checkbox / radio binding (F-C-140)", () => {
+  it("checkbox reflects a true boolean field as `checked` (not value=\"true\")", () => {
+    const html = render(Form<SettingsReq>({ values: { terms: true } }, (f) => f.checkbox("terms")));
+    assert.strictEqual(html, `<form><input type="checkbox" name="terms" checked></form>`);
+  });
+
+  it("checkbox with a false field is unchecked", () => {
+    const html = render(Form<SettingsReq>({ values: { terms: false } }, (f) => f.checkbox("terms")));
+    assert.strictEqual(html, `<form><input type="checkbox" name="terms"></form>`);
+  });
+
+  it("checkbox without state is unchecked", () => {
+    assert.strictEqual(render(Form<SettingsReq>((f) => f.checkbox("notify"))), `<form><input type="checkbox" name="notify"></form>`);
+  });
+
+  it("checkbox accepts an explicit submitted value", () => {
+    const html = render(Form<SettingsReq>({ values: { terms: true } }, (f) => f.checkbox("terms", "yes")));
+    assert.strictEqual(html, `<form><input type="checkbox" name="terms" value="yes" checked></form>`);
+  });
+
+  it("radio is checked when the field matches its value, across the shared name group", () => {
+    const html = render(Form<SettingsReq>({ values: { role: "admin" } }, (f) => [
+      f.radio("role", "admin"),
+      f.radio("role", "viewer"),
+    ]));
+    assert.strictEqual(
+      html,
+      `<form><input type="radio" name="role" value="admin" checked>\n<input type="radio" name="role" value="viewer"></form>`,
+    );
+  });
+
+  it("rejects a typo'd checkbox field name (keyof T)", () => {
+    render(Form<SettingsReq>((f) =>
+      // @ts-expect-error — "term" is not a key of SettingsReq
+      f.checkbox("term"),
+    ));
+  });
+});
+
+describe("Form<T> aria-invalid wiring (F-C-143)", () => {
+  it("an errored input gets aria-invalid + aria-describedby, and error() id-links it", () => {
+    const html = render(Form<CreateUserReq>({ errors: { email: "Required" } }, (f) => [
+      f.input("email", "email"),
+      f.error("email"),
+    ]));
+    assert.strictEqual(
+      html,
+      `<form><input type="email" name="email" aria-invalid="true" aria-describedby="email-error">\n<span id="email-error">Required</span></form>`,
+    );
+  });
+
+  it("a field without a bound error gets no aria-invalid", () => {
+    const html = render(Form<CreateUserReq>({ errors: { email: "Required" } }, (f) => f.input("name")));
+    assert.strictEqual(html, `<form><input name="name"></form>`);
+  });
+
+  it("errored select/textarea/checkbox also mark invalid", () => {
+    const html = render(Form<SettingsReq>({ errors: { terms: "Must accept" } }, (f) => f.checkbox("terms")));
+    assert.strictEqual(html, `<form><input type="checkbox" name="terms" aria-invalid="true" aria-describedby="terms-error"></form>`);
   });
 });

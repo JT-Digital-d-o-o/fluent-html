@@ -1,9 +1,8 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { render, Div, Button, Span } from "../src/index.js";
+import { render, Div, Button, Span, Partial } from "../src/index.js";
 import { hx } from "../src/htmx.js";
-import { OOB, withOOB } from "../src/patterns.js";
 import { createId, defineIds, isId, extractId, extractSelector } from "../src/ids.js";
 
 describe("createId()", () => {
@@ -223,36 +222,6 @@ describe("hxGet/hxPost shorthands with Id fields", () => {
   });
 });
 
-describe("OOB() with Id objects", () => {
-  const ids = defineIds([
-    "user-list",
-    "user-count",
-    "notification-area",
-    "modal",
-  ] as const);
-
-  it("accepts Id object", () => {
-    assert.strictEqual(
-      render(OOB(ids.userCount, Span("42"))),
-      '<span id="user-count" hx-swap-oob="true">42</span>'
-    );
-  });
-
-  it("still accepts string", () => {
-    assert.strictEqual(
-      render(OOB("user-count", Span("42"))),
-      '<span id="user-count" hx-swap-oob="true">42</span>'
-    );
-  });
-
-  it("with Id and swap strategy", () => {
-    assert.strictEqual(
-      render(OOB(ids.notificationArea, Div("New!"), "beforeend")),
-      '<div id="notification-area" hx-swap-oob="beforeend:#notification-area">New!</div>'
-    );
-  });
-});
-
 describe("Full Integration: Type-safe page and controller", () => {
   const PageIds = defineIds([
     "main-content",
@@ -273,10 +242,10 @@ describe("Full Integration: Type-safe page and controller", () => {
   }
 
   function ControllerResponse() {
-    return withOOB(
+    return [
       Div("Updated content"),
-      OOB(PageIds.notificationCount, Span("5"))
-    );
+      Partial(PageIds.notificationCount, Span("5")),
+    ];
   }
 
   it("Page layout uses typed IDs", () => {
@@ -287,7 +256,7 @@ describe("Full Integration: Type-safe page and controller", () => {
     assert.strictEqual(render(PageLayout()).includes('hx-target="#main-content"'), true);
   });
 
-  it("Controller OOB uses same typed ID", () => {
-    assert.strictEqual(render(ControllerResponse()).includes('id="notification-count"'), true);
+  it("Controller Partial targets the same typed ID", () => {
+    assert.strictEqual(render(ControllerResponse()).includes('hx-target="#notification-count"'), true);
   });
 });

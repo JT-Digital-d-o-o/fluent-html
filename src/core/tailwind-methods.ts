@@ -125,6 +125,7 @@ declare module "./tag.js" {
 
     // Typography
     textSize(size: TailwindTextSize): this;
+    textSize(unit: TailwindUnit, amount: number): this;
     textAlign(align: TailwindTextAlign): this;
     fontWeight(weight: TailwindFontWeight): this;
     bold(): this;
@@ -137,7 +138,9 @@ declare module "./tag.js" {
     lineThrough(): this;
     truncate(): this;
     leading(value: TailwindLeading): this;
+    leading(unit: TailwindUnit, amount: number): this;
     tracking(value: TailwindTracking): this;
+    tracking(unit: TailwindUnit, amount: number): this;
 
     // Sizing
     w(value: TailwindWidth): this;
@@ -321,6 +324,7 @@ declare module "./tag.js" {
     antialiased(): this;
     tabularNums(): this;
     underlineOffset(value: TailwindUnderlineOffset): this;
+    underlineOffset(unit: TailwindUnit, amount: number): this;
     breakAll(): this;
 
     // Timing function
@@ -360,6 +364,18 @@ declare module "./tag.js" {
      * grammar — same contract as `.textSize("[13px]")`.
      */
     positionArea(area: TailwindPositionArea): this;
+
+    /**
+     * Name this element for the View Transitions API — emits the v4 arbitrary-property
+     * class `[view-transition-name:<name>]` (purge-safe, single class) so a hero element
+     * morphs across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on.
+     * Accepts a raw name or an `Id`. The name is emitted verbatim (not validated).
+     *
+     * @example
+     * Img().setSrc("/hero.avif").viewTransitionName("hero")
+     * Div().viewTransitionName(ids.card)
+     */
+    viewTransitionName(name: string | Id): this;
   }
 }
 
@@ -401,7 +417,10 @@ p.textColor = function (color: string) { return this.addClass(`text-${color}`); 
 
 // Typography
 
-p.textSize = function (size: string) { return this.addClass(`text-${size}`); };
+p.textSize = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`text-[${amount}${unitOrValue}]`);
+  return this.addClass(`text-${unitOrValue}`);
+};
 p.textAlign = function (align: string) { return this.addClass(`text-${align}`); };
 p.fontWeight = function (weight: string) { return this.addClass(`font-${weight}`); };
 p.bold = function () { return this.addClass("font-bold"); };
@@ -413,8 +432,14 @@ p.underline = function () { return this.addClass("underline"); };
 p.noUnderline = function () { return this.addClass("no-underline"); };
 p.lineThrough = function () { return this.addClass("line-through"); };
 p.truncate = function () { return this.addClass("truncate"); };
-p.leading = function (value: string | number) { return this.addClass(`leading-${value}`); };
-p.tracking = function (value: string) { return this.addClass(`tracking-${value}`); };
+p.leading = function (unitOrValue: string | number, amount?: number) {
+  if (amount !== undefined) return this.addClass(`leading-[${amount}${unitOrValue}]`);
+  return this.addClass(`leading-${unitOrValue}`);
+};
+p.tracking = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`tracking-[${amount}${unitOrValue}]`);
+  return this.addClass(`tracking-${unitOrValue}`);
+};
 
 // Sizing
 
@@ -698,7 +723,10 @@ p.lineClamp = function (value: string | number) { return this.addClass(`line-cla
 
 p.antialiased = function () { return this.addClass("antialiased"); };
 p.tabularNums = function () { return this.addClass("tabular-nums"); };
-p.underlineOffset = function (value: string | number) { return this.addClass(`underline-offset-${value}`); };
+p.underlineOffset = function (unitOrValue: string | number, amount?: number) {
+  if (amount !== undefined) return this.addClass(`underline-offset-[${amount}${unitOrValue}]`);
+  return this.addClass(`underline-offset-${unitOrValue}`);
+};
 p.breakAll = function () { return this.addClass("break-all"); };
 
 // Timing function
@@ -735,3 +763,4 @@ p.neg = function (cls: string) { return this.addClass(`-${cls}`); };
 p.anchorName = function (name: string | Id) { return this.addClass(`[anchor-name:--${extractId(name)}]`); };
 p.positionAnchor = function (name: string | Id) { return this.addClass(`[position-anchor:--${extractId(name)}]`); };
 p.positionArea = function (area: string) { return this.addClass(`position-area-${area}`); };
+p.viewTransitionName = function (name: string | Id) { return this.addClass(`[view-transition-name:${extractId(name)}]`); };

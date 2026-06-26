@@ -100,8 +100,8 @@ export class InputTag extends Tag {
     return this;
   }
 
-  setList(list?: string): this {
-    this.list = list;
+  setList(list?: string | Id): this {
+    this.list = list === undefined ? undefined : extractId(list);
     return this;
   }
 }
@@ -219,7 +219,7 @@ export class ButtonTag extends Tag {
   name?: string;
   value?: string;
   formaction?: string;
-  formmethod?: 'get' | 'post';
+  formmethod?: FormMethod;
   command?: CommandFor;
   commandfor?: string;
 
@@ -264,7 +264,8 @@ export class ButtonTag extends Tag {
     return this;
   }
 
-  setFormmethod(formmethod?: 'get' | 'post'): this {
+  /** Override the form's method for this submit button. `"dialog"` closes an ancestor `<dialog>` with the button's value. */
+  setFormmethod(formmethod?: FormMethod): this {
     this.formmethod = formmethod;
     return this;
   }
@@ -280,8 +281,8 @@ export function Button(...children: View[]): ButtonTag {
 export class LabelTag extends Tag {
   for?: string;
 
-  setFor(forId?: string): this {
-    this.for = forId;
+  setFor(forId?: string | Id): this {
+    this.for = forId === undefined ? undefined : extractId(forId);
     return this;
   }
 }
@@ -353,14 +354,30 @@ export interface FormBinding<T> {
   input(name: keyof T & string, type?: InputType): InputTag;
   textarea(name: keyof T & string): TextareaTag;
   select(name: keyof T & string, options: readonly SelectOption[]): SelectTag;
+  /**
+   * A checkbox bound to a boolean field — `checked` reflects `Boolean(state.values[name])`.
+   * Pass `value` for the submitted value (HTML defaults to `"on"` when omitted).
+   */
+  checkbox(name: keyof T & string, value?: string): InputTag;
+  /** A radio in the `name` group — `checked` when `String(state.values[name])` equals `value`. */
+  radio(name: keyof T & string, value: string): InputTag;
   hidden(name: keyof T & string, value: string): InputTag;
   /** The field's error message (an unstyled `<span>`), or nothing when there's no error. */
   error(name: keyof T & string): View;
 }
 
+/** The conventional id of a field's error span — links the control's `aria-describedby` to `f.error(name)`. */
+const fieldErrorId = (name: string): string => `${name}-error`;
+
 function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
   const values = (state?.values ?? {}) as Record<string, unknown>;
   const errors = (state?.errors ?? {}) as Record<string, string | undefined>;
+  // When the field has a bound error, mark the control invalid and link it to its message span,
+  // so assistive tech and the `aria-invalid:`/`invalid:` Tailwind variant both see the error state.
+  const markInvalid = <E extends Tag>(tag: E, name: string): E => {
+    if (errors[name] !== undefined) tag.setAria({ invalid: true, describedby: fieldErrorId(name) });
+    return tag;
+  };
   return {
     input(name, type) {
       // Cast past Input's narrowed overloads — the binding accepts any InputType.
@@ -368,13 +385,13 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
       tag.setName(name);
       const v = values[name];
       if (v !== undefined && v !== null) tag.setValue(String(v));
-      return tag;
+      return markInvalid(tag, name);
     },
     textarea(name) {
       const v = values[name];
       // A textarea's value is its text content, not a `value` attribute.
       const tag = v !== undefined && v !== null ? Textarea(String(v)) : Textarea();
-      return tag.setName(name);
+      return markInvalid(tag.setName(name), name);
     },
     select(name, options) {
       const selected = values[name];
@@ -383,15 +400,26 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
         if (selected !== undefined && String(selected) === o.value) opt.toggle("selected");
         return opt;
       });
-      return Select(...opts).setName(name);
+      return markInvalid(Select(...opts).setName(name), name);
+    },
+    checkbox(name, value) {
+      const tag = Input("checkbox").setName(name);
+      if (value !== undefined) tag.setValue(value);
+      // checked reflects a boolean field (terms-accepted, is-active, …)
+      return markInvalid(tag.toggle("checked", Boolean(values[name])), name);
+    },
+    radio(name, value) {
+      // checked when this radio's value matches the bound field across the shared name group
+      return markInvalid(Input("radio").setName(name).setValue(value).toggle("checked", String(values[name]) === value), name);
     },
     hidden(name, value) {
       return Input("hidden").setName(name).setValue(value);
     },
     error(name) {
       const message = errors[name];
-      // Unstyled span — the styled FieldError shell lives in @jtdigital/ui.
-      return message ? El("span", message) : Empty();
+      // Unstyled span (the styled FieldError shell lives in @jtdigital/ui), id-linked to the
+      // control via `aria-describedby` so the message and its input are wired as one unit.
+      return message ? El("span", message).setId(fieldErrorId(name)) : Empty();
     },
   };
 }
@@ -502,8 +530,8 @@ export class OutputTag extends Tag {
   for?: string;
   name?: string;
 
-  setFor(forId?: string): this {
-    this.for = forId;
+  setFor(forId?: string | Id): this {
+    this.for = forId === undefined ? undefined : extractId(forId);
     return this;
   }
 

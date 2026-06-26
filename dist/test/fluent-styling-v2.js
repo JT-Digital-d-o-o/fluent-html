@@ -495,4 +495,33 @@ describe("Variant exception-safety (D-06)", () => {
         assert.ok(!render(tag).includes("md:text-black"));
     });
 });
+// ------------------------------------
+// TW4 relational hooks + View Transitions (F-B-180 / F-B-181)
+// ------------------------------------
+describe("TW4 relational hooks & View Transitions", () => {
+    it(".on(\"has-[:checked]\", …) emits the has- variant prefix", () => {
+        assert.strictEqual(render(Div().on("has-[:checked]", (t) => t.background("blue-50"))), `<div class="has-[:checked]:bg-blue-50"></div>`);
+    });
+    it(".on(\"group-has-[:invalid]\", …) and in-[…] compile and emit", () => {
+        assert.strictEqual(render(Div().on("group-has-[:invalid]", (t) => t.textColor("red-600"))), `<div class="group-has-[:invalid]:text-red-600"></div>`);
+        assert.strictEqual(render(Div().on("in-[.dark]", (t) => t.textColor("white"))), `<div class="in-[.dark]:text-white"></div>`);
+    });
+    it("viewTransitionName emits the arbitrary-property class (string + Id)", () => {
+        assert.strictEqual(render(Div().viewTransitionName("hero")), `<div class="[view-transition-name:hero]"></div>`);
+    });
+});
+// ------------------------------------
+// Scalar unit overloads (F-C-160)
+// ------------------------------------
+describe("Scalar unit overloads", () => {
+    it("textSize / leading / tracking / underlineOffset accept (unit, amount)", () => {
+        assert.strictEqual(render(Div().textSize("px", 13)), `<div class="text-[13px]"></div>`);
+        assert.strictEqual(render(Div().leading("px", 24)), `<div class="leading-[24px]"></div>`);
+        assert.strictEqual(render(Div().tracking("em", 0.05)), `<div class="tracking-[0.05em]"></div>`);
+        assert.strictEqual(render(Div().underlineOffset("px", 2)), `<div class="underline-offset-[2px]"></div>`);
+    });
+    it("the value overload is unchanged (byte-identical)", () => {
+        assert.strictEqual(render(Div().textSize("lg").leading("relaxed")), `<div class="text-lg leading-relaxed"></div>`);
+    });
+});
 //# sourceMappingURL=fluent-styling-v2.js.map

@@ -15,8 +15,20 @@ export function Summary(...children) {
     return El("summary", ...children);
 }
 export class DialogTag extends Tag {
+    /**
+     * Set `closedby` — how the dialog light-dismisses: `"any"` (click-outside + Esc),
+     * `"closerequest"` (Esc only), `"none"` (explicit close only). The native replacement
+     * for hand-rolled backdrop/Escape handling; pairs with `Button().setCommand("close")`.
+     *
+     * @example
+     * Dialog(...).setClosedby("any").setId(ids.modal)
+     */
+    setClosedby(closedby) {
+        this.closedby = closedby;
+        return this;
+    }
 }
-defineSchemaKeys(DialogTag, []);
+defineSchemaKeys(DialogTag, ['closedby']);
 export function Dialog(...children) {
     return new DialogTag("dialog", ...children);
 }

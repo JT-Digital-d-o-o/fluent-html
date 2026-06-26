@@ -174,5 +174,39 @@ describe("when() and apply()", () => {
         const user = { name: "Alice" };
         assert.strictEqual(render(Span().when(user, (t, u) => t.addClass(u.name))), `<span class="Alice"></span>`);
     });
+    // F-C-103 -- present-but-falsy values run the modifier (!= null, matching whenElse/IfThen)
+    it("when(0) runs the modifier (present-but-falsy)", () => {
+        const count = 0;
+        assert.strictEqual(render(Span().when(count, (t, n) => t.setTitle(String(n)))), `<span title="0"></span>`);
+    });
+    it('when("") runs the modifier (present-but-falsy)', () => {
+        const label = "";
+        assert.strictEqual(render(Span().when(label, (t) => t.addClass("empty"))), `<span class="empty"></span>`);
+    });
+    it("whenElse(0) takes the then-branch (present-but-falsy)", () => {
+        const n = 0;
+        assert.strictEqual(render(Span().whenElse(n, (t, v) => t.setTitle(String(v)), (t) => t.addClass("none"))), `<span title="0"></span>`);
+    });
+    // F-C-120 -- a base-Tag style-fn composes onto an element subclass, and void-returning modifiers are accepted
+    it("apply() accepts a base-Tag style-fn on a subclass (Button)", () => {
+        const card = (t) => t.padding("4");
+        assert.strictEqual(render(Button("Save").apply(card)), `<button class="p-4">Save</button>`);
+    });
+    it("when()/apply() accept a void-returning modifier", () => {
+        const sideEffect = (t) => { t.addClass("x"); };
+        assert.strictEqual(render(Div().apply(sideEffect).when(true, sideEffect)), `<div class="x x"></div>`);
+    });
+});
+// ------------------------------------
+// addChild() — F-C-121
+// ------------------------------------
+describe("addChild()", () => {
+    it("appends to an empty element", () => { assert.strictEqual(render(Div().addChild(P("a"))), `<div><p>a</p></div>`); });
+    it("appends to a single scalar child (scalar → array)", () => { assert.strictEqual(render(Div(P("a")).addChild(P("b"))), `<div><p>a</p>\n<p>b</p></div>`); });
+    it("appends to an array child (push)", () => { assert.strictEqual(render(Div(P("a"), P("b")).addChild(P("c"))), `<div><p>a</p>\n<p>b</p>\n<p>c</p></div>`); });
+    it("appends multiple children at once", () => { assert.strictEqual(render(Ul(Li("a")).addChild(Li("b"), Li("c"))), `<ul><li>a</li>\n<li>b</li>\n<li>c</li></ul>`); });
+    it("no-op with no args", () => { assert.strictEqual(render(Div(P("a")).addChild()), `<div><p>a</p></div>`); });
+    it("escapes appended text like constructor children", () => { assert.strictEqual(render(Div().addChild("<x>")), `<div>&lt;x&gt;</div>`); });
+    it("composes conditionally inside when()", () => { assert.strictEqual(render(Button("Save").when(true, t => t.addChild(Span("!")))), `<button>Save\n<span>!</span></button>`); });
 });
 //# sourceMappingURL=composition.test.js.map

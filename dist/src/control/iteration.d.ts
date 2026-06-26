@@ -1,4 +1,5 @@
 import type { View } from "../core/types.js";
+import type { Tag } from "../core/tag.js";
 /**
  * Iterate over items, a count, or a range to produce views.
  *
@@ -38,6 +39,18 @@ export declare function ForEach(low: number, high: number, renderItem: (index: n
  * Ul(ForEachElse(users, (u) => Li(u.name), () => Li("No users yet")))
  */
 export declare function ForEachElse<T>(items: readonly T[], renderItem: (item: T, index: number) => View, emptyView: View | (() => View)): View;
+/**
+ * Keyed iteration — like `ForEach`, but stamps each item's root tag with a stable
+ * `id` from `keyOf(item)` so HTMX/idiomorph matches rows **by key** on
+ * reorder/insert/delete instead of by position (positional matching loses focus,
+ * scroll, and in-progress CSS transitions on a morph swap). `renderItem` must return
+ * a `Tag` — the row root to key. The key must be unique within the page; bake a
+ * prefix into `keyOf` if multiple keyed lists could share raw ids.
+ *
+ * @example
+ * Ul(ForEachKeyed(users, (u) => u.id, (u) => Li(u.name)))   // <li id="42">…</li>
+ */
+export declare function ForEachKeyed<T>(items: Iterable<T>, keyOf: (item: T) => string | number, renderItem: (item: T, index: number) => Tag): View;
 /**
  * Map each item to a View and place `separator` *between* them — never after the
  * last (the View analogue of `Array.join`). The thunk form of `separator` is called

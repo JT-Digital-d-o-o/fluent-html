@@ -39,7 +39,7 @@ export declare class InputTag extends Tag {
     setInputmode(inputmode?: InputMode): this;
     /** Set `capture` — hints the camera/mic source for file inputs on mobile. */
     setCapture(capture?: 'user' | 'environment'): this;
-    setList(list?: string): this;
+    setList(list?: string | Id): this;
 }
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {
@@ -101,7 +101,7 @@ export declare class ButtonTag extends Tag {
     name?: string;
     value?: string;
     formaction?: string;
-    formmethod?: 'get' | 'post';
+    formmethod?: FormMethod;
     command?: CommandFor;
     commandfor?: string;
     setType(type?: 'submit' | 'reset' | 'button'): this;
@@ -121,13 +121,14 @@ export declare class ButtonTag extends Tag {
     setName(name?: string): this;
     setValue(value?: string): this;
     setFormaction(formaction?: string): this;
-    setFormmethod(formmethod?: 'get' | 'post'): this;
+    /** Override the form's method for this submit button. `"dialog"` closes an ancestor `<dialog>` with the button's value. */
+    setFormmethod(formmethod?: FormMethod): this;
 }
 /** Create a `<button>` element with typed attribute methods. */
 export declare function Button(...children: View[]): ButtonTag;
 export declare class LabelTag extends Tag {
     for?: string;
-    setFor(forId?: string): this;
+    setFor(forId?: string | Id): this;
 }
 export declare function Label(...children: View[]): LabelTag;
 export declare class FormTag extends Tag {
@@ -165,6 +166,13 @@ export interface FormBinding<T> {
     input(name: keyof T & string, type?: InputType): InputTag;
     textarea(name: keyof T & string): TextareaTag;
     select(name: keyof T & string, options: readonly SelectOption[]): SelectTag;
+    /**
+     * A checkbox bound to a boolean field — `checked` reflects `Boolean(state.values[name])`.
+     * Pass `value` for the submitted value (HTML defaults to `"on"` when omitted).
+     */
+    checkbox(name: keyof T & string, value?: string): InputTag;
+    /** A radio in the `name` group — `checked` when `String(state.values[name])` equals `value`. */
+    radio(name: keyof T & string, value: string): InputTag;
     hidden(name: keyof T & string, value: string): InputTag;
     /** The field's error message (an unstyled `<span>`), or nothing when there's no error. */
     error(name: keyof T & string): View;
@@ -204,7 +212,7 @@ export declare function Legend(...children: View[]): Tag;
 export declare class OutputTag extends Tag {
     for?: string;
     name?: string;
-    setFor(forId?: string): this;
+    setFor(forId?: string | Id): this;
     setName(name?: string): this;
 }
 export declare function Output(...children: View[]): OutputTag;

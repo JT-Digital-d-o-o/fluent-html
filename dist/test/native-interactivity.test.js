@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Div, Button, A, Span } from "../src/index.js";
+import { render, Div, Button, A, Span, Dialog, P } from "../src/index.js";
 import { defineIds, createId } from "../src/index.js";
 const ids = defineIds(["user-menu", "dialog"]);
 // ---------------------------------------------------------------------------
@@ -35,6 +35,17 @@ describe("Invoker Commands (<button>)", () => {
     });
     it("author command (--name) is allowed", () => {
         assert.equal(render(Button("Go").setCommand("--my-cmd").setCommandfor(ids.dialog)), `<button command="--my-cmd" commandfor="dialog">Go</button>`);
+    });
+});
+describe("Dialog light-dismiss + formmethod (B-010 completion)", () => {
+    it("setClosedby renders the closedby attribute", () => {
+        assert.equal(render(Dialog(P("hi")).setClosedby("any")), `<dialog closedby="any"><p>hi</p></dialog>`);
+    });
+    it("closedby + id + open render in schema order", () => {
+        assert.equal(render(Dialog().setId(ids.dialog).setClosedby("closerequest").toggle("open")), `<dialog id="dialog" closedby="closerequest" open></dialog>`);
+    });
+    it("a submit button closes an ancestor <dialog> via formmethod=dialog", () => {
+        assert.equal(render(Button("Cancel").setType("submit").setFormmethod("dialog")), `<button type="submit" formmethod="dialog">Cancel</button>`);
     });
 });
 describe("CSS anchor positioning", () => {

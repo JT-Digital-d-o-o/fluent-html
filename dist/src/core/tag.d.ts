@@ -2,7 +2,7 @@ import type { SchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id } from "../ids.js";
 import type { View } from "./types.js";
-import type { BooleanAttribute, PopoverState, PopoverAction } from "../elements/html-types.js";
+import type { BooleanAttribute, PopoverState, PopoverAction, EnterKeyHint, ContentEditable, Autocapitalize, Spellcheck } from "../elements/html-types.js";
 import type { AriaRole, AriaAttrs } from "./aria-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
@@ -109,20 +109,21 @@ export declare class Tag {
      */
     toggle(name: BooleanAttribute, condition?: boolean): this;
     /**
-     * Conditionally modify this tag. When condition is true, the modifier
-     * function is called with the tag. Otherwise the tag is returned unchanged.
-     *
-     * When condition is a nullable value, the callback receives the narrowed
-     * non-null value as a second argument.
+     * Conditionally modify this tag. With a boolean, the modifier runs when it is
+     * `true`. With a nullable value, the modifier runs when the value is **non-null**
+     * (`!= null`) — mirroring `whenElse`/`IfThen` — and the callback receives the
+     * narrowed non-null value. Falsy-but-present values (`0`, `""`) take the run branch.
+     * The modifier's return value is ignored, so a base-`Tag` style-fn composes onto any
+     * subclass.
      *
      * @example
      * Button("Save")
-     *   .when(isLoading, t => t.toggle("disabled").opacity(50))
+     *   .when(isLoading, t => t.toggle("disabled").opacity("50"))
      *   .when(isPrimary, t => t.background("blue-500").textColor("white"))
-     *   .when(user.avatar, (t, avatar) => t.children(Img().setSrc(avatar)))
+     *   .when(user.avatar, (t, avatar) => t.addChild(Img().setSrc(avatar)))
      */
-    when<T>(condition: T | null | undefined, fn: (tag: this, value: NonNullable<T>) => this): this;
-    when(condition: boolean, fn: (tag: this) => this): this;
+    when<T>(condition: T | null | undefined, fn: (tag: this, value: NonNullable<T>) => unknown): this;
+    when(condition: boolean, fn: (tag: this) => unknown): this;
     /**
      * Two-branch conditional modifier — mirrors `IfThenElse`, NOT truthiness. With a
      * boolean it runs `thenFn`/`elseFn`; with a nullable value it narrows the non-null
@@ -132,8 +133,8 @@ export declare class Tag {
      * Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
      * Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
      */
-    whenElse(condition: boolean, thenFn: (tag: this) => this, elseFn: (tag: this) => this): this;
-    whenElse<T>(value: T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => this, elseFn: (tag: this) => this): this;
+    whenElse(condition: boolean, thenFn: (tag: this) => unknown, elseFn: (tag: this) => unknown): this;
+    whenElse<T>(value: T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => unknown, elseFn: (tag: this) => unknown): this;
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,
      * composable styling and behavior.
@@ -144,7 +145,18 @@ export declare class Tag {
      *
      * Div("Warning").apply(card, danger)
      */
-    apply(...fns: ((tag: this) => this)[]): this;
+    apply(...fns: ((tag: this) => unknown)[]): this;
+    /**
+     * Append one or more children, normalizing the scalar/array `child` union. The
+     * structural counterpart to `apply`/`when` (which mutate classes/attrs, not children) —
+     * lets you build a tag and then conditionally add children during fluent composition.
+     * Appended children are escaped by default, exactly like constructor children.
+     *
+     * @example
+     * Button("Save").when(isLoading, t => t.addChild(Spinner()))
+     * Ul().apply(list).addChild(...users.map(u => Li(u.name)))
+     */
+    addChild(...views: View[]): this;
     /**
      * Set multiple CSS classes, filtering out falsy values.
      *
@@ -257,6 +269,46 @@ export declare class Tag {
      * Button("Open").setPopovertarget(ids.menu).setPopovertargetaction("show")
      */
     setPopovertargetaction(action?: PopoverAction): this;
+    /** Set `lang` (subtree language) on any element. `HtmlTag` keeps its own document-level setter. */
+    setLang(lang?: string): this;
+    /** Set `dir` (text direction) on any element. */
+    setDir(dir?: 'ltr' | 'rtl' | 'auto'): this;
+    /** Set `translate` — whether this element's text is translated when the page is localized. */
+    setTranslate(value?: 'yes' | 'no'): this;
+    /** Set `enterkeyhint` — the action label on a mobile virtual keyboard's Enter key. */
+    setEnterkeyhint(hint: EnterKeyHint): this;
+    /** Make the element editable. Bare call defaults to `"true"`; `"plaintext-only"` strips rich formatting. */
+    setContenteditable(value?: ContentEditable): this;
+    /** Set `spellcheck` (the enumerated `"true"`/`"false"` string, not a boolean attribute). */
+    setSpellcheck(value?: Spellcheck): this;
+    /** Set `autocapitalize` for on-screen-keyboard input. */
+    setAutocapitalize(value: Autocapitalize): this;
+    /**
+     * `hidden="until-found"` — hidden, but revealable by in-page find (Ctrl-F) and
+     * scroll-to-text-fragment (it expands and fires `beforematch`). Plain hiding is `.toggle("hidden")`.
+     */
+    setHidden(value: "until-found"): this;
+    /**
+     * Schema.org microdata (`itemtype`/`itemprop`/`itemref`/`itemid`) for structured-data SEO —
+     * the value-bearing counterpart to the `itemscope` boolean (`.toggle("itemscope")`). Setting
+     * `type` also marks the element an item scope (an `itemtype` without `itemscope` is invalid).
+     *
+     * @example
+     * Article().setMicrodata({ type: "https://schema.org/Article" })  // itemscope itemtype="…"
+     * Span(author).setMicrodata({ prop: "author" })
+     */
+    setMicrodata(attrs: {
+        type?: string;
+        prop?: string;
+        ref?: string;
+        id?: string;
+    }): this;
+    /**
+     * Associate a form-associated control (`input`/`button`/`select`/`textarea`/`output`/`fieldset`)
+     * with a `<form>` elsewhere in the document by its `id` — e.g. a submit button in a sticky
+     * footer outside the `<form>`. Accepts a string or `Id`.
+     */
+    setForm(form?: string | Id): this;
     /** @internal Variant prefix state — used by tailwind-methods mixin */
     _variantPrefix: string | null;
 }

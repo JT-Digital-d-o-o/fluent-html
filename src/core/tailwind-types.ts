@@ -35,33 +35,32 @@ type BaseSpacing =
   | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96";
 export type TailwindSpacing = BaseSpacing | (keyof FluentCustomSpacing & string) | `[${string}]`;
 
-// Width values
+// Width values. CLOSED (F-D-900): a typo like `.w("brnad")` is a compile error. Arbitrary
+// values route through `TailwindSpacing`'s `[${string}]` arm and the `(unit, amount)` overload.
 export type TailwindWidth =
   | TailwindSpacing | "auto" | "full" | "screen" | "svw" | "lvw" | "dvw" | "min" | "max" | "fit"
   | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5"
-  | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | "1/12" | "2/12" | "3/12" | "4/12" | "5/12" | "6/12" | "7/12" | "8/12" | "9/12" | "10/12" | "11/12"
-  | (string & {});
+  | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | "1/12" | "2/12" | "3/12" | "4/12" | "5/12" | "6/12" | "7/12" | "8/12" | "9/12" | "10/12" | "11/12";
 
-// Height values
+// Height values. CLOSED — arbitrary via TailwindSpacing's `[${string}]` + the `(unit, amount)` overload.
 export type TailwindHeight =
   | TailwindSpacing | "auto" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit"
-  | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6"
-  | (string & {});
+  | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6";
 
-// Max-width values
+// Max-width values. CLOSED — explicit `[${string}]` arm (this union does not embed TailwindSpacing).
 export type TailwindMaxWidth =
   | "0" | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"
   | "full" | "min" | "max" | "fit" | "prose" | "screen-sm" | "screen-md" | "screen-lg" | "screen-xl" | "screen-2xl"
-  | (string & {});
+  | `[${string}]`;
 
-// Min-width values
-export type TailwindMinWidth = "0" | "full" | "min" | "max" | "fit" | (string & {});
+// Min-width values. CLOSED — explicit `[${string}]` arm.
+export type TailwindMinWidth = "0" | "full" | "min" | "max" | "fit" | `[${string}]`;
 
-// Max-height values
-export type TailwindMaxHeight = TailwindSpacing | "none" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | (string & {});
+// Max-height values. CLOSED — arbitrary via TailwindSpacing's `[${string}]`.
+export type TailwindMaxHeight = TailwindSpacing | "none" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit";
 
-// Min-height values
-export type TailwindMinHeight = "0" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | (string & {});
+// Min-height values. CLOSED — explicit `[${string}]` arm.
+export type TailwindMinHeight = "0" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit" | `[${string}]`;
 
 // Color shades
 export type TailwindShade = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
@@ -230,7 +229,9 @@ export type TailwindState =
   // v4 (C-06): new states + the `not-*` negation, `supports-[…]`, `nth-[…]` arms
   | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape"
   | "starting" | "open" | "inert"
-  | `not-${string}` | `supports-[${string}]` | `nth-[${string}]`;
+  | `not-${string}` | `supports-[${string}]` | `nth-[${string}]`
+  // v4 relational hooks (F-B-180): `:has()` (self + group/peer scopes) and the implicit-ancestor `in-*`
+  | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]`;
 
 // Container-query breakpoints (v4, C-06): `@sm` / `@max-lg` / `@[480px]` / `@sm/sidebar`.
 export type TailwindContainerBreakpoint =

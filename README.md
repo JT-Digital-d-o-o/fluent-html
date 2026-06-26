@@ -141,11 +141,16 @@ Button("Save")
   .when(isPrimary, t => t.addClass("btn-primary"))
 ```
 
-When the condition is false, the tag passes through unchanged.
+A boolean condition runs the modifier when `true`; a **nullable value** runs it when non-null (`!= null`, like `IfThen`) and passes the narrowed value — so a present-but-falsy `0` or `""` still runs. Use `.addChild(...)` inside a modifier to conditionally append children (the structural counterpart to `.apply`/`.when`):
+
+```typescript
+Button("Save").when(isLoading, t => t.addChild(Spinner()))
+Ul().addChild(...users.map(u => Li(u.name)))   // append after construction
+```
 
 ### Reusable Modifiers
 
-Use `.apply()` to compose reusable modifier functions:
+Use `.apply()` to compose reusable modifier functions. A style-fn typed against the base `Tag` composes onto any element subclass (`Button`, `Input`, `A`, …) and may return anything:
 
 ```typescript
 const card = (t: Tag) => t.setClass("rounded shadow p-4 bg-white");
@@ -153,6 +158,7 @@ const danger = (t: Tag) => t.addClass("border-red-500 text-red-700");
 
 // Apply single or multiple modifiers
 Div("Warning").apply(card, danger)
+Button("Delete").apply(card, danger)   // base-Tag style-fns work on subclasses
 
 // Combine with .when() for conditional composition
 Div("Alert")
@@ -189,6 +195,7 @@ Match(state, "status", {
 Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
 Div(ForEach(5, i => Star()))  // Repeat 5 times
 Ul(ForEachElse(items, item => Li(item.name), () => Li("Nothing here")))  // empty fallback
+Ul(ForEachKeyed(items, item => item.id, item => Li(item.name)))  // stamps id=<key> so HTMX morph matches by key on reorder
 Nav(Intersperse(crumbs, c => A(c.label), () => Span("/")))  // separator between, never after the last
 
 // Value mapping — the value analogue of Match (keeps the literal union)
@@ -567,18 +574,20 @@ Button("Page 2").setHtmx(userRoutes.list({ query: { page: "2" } }))
 
 ### Typed Route Parameters
 
-Route params can be typed as `string`, `number`, or `uuid`. The type is enforced at compile time:
+Route params can be typed as `string`, `number`, `uuid`, or an **enum** — a `readonly` literal tuple that constrains the segment to a token set. The type is enforced at compile time, and a `params` key that isn't a `:param` in the path is itself a compile error:
 
 ```typescript
 export const userRoutes = defineRoutes("/users", {
-  detail: { method: "get", path: "/:id",   params: { id: "number" } as const },
-  bySlug: { method: "get", path: "/:slug", params: { slug: "string" } as const },
-  byUuid: { method: "get", path: "/:uuid", params: { uuid: "uuid" } as const },
+  detail:   { method: "get", path: "/:id",     params: { id: "number" } as const },
+  bySlug:   { method: "get", path: "/:slug",   params: { slug: "string" } as const },
+  byStatus: { method: "get", path: "/:status", params: { status: ["active", "archived"] as const } },
 } as const);
 
-userRoutes.detail.resolve({ id: 42 })        // "/users/42" — id must be number
-userRoutes.bySlug.resolve({ slug: "hello" })  // "/users/hello"
-userRoutes.detail.resolve({ id: "42" })       // ✗ compile error — number expected
+userRoutes.detail.resolve({ id: 42 })              // "/users/42" — id must be number
+userRoutes.detail.resolve({ id: "42" })            // ✗ compile error — number expected
+userRoutes.byStatus.resolve({ status: "active" })  // ✓ — one of "active" | "archived"
+userRoutes.byStatus.resolve({ status: "deleted" }) // ✗ compile error — not in the enum
+// { path: "/:id", params: { ic: "number" } }       // ✗ compile error — "ic" is not a :param in the path
 ```
 
 The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method`, `.path` (with prefix applied), and `.resolve()` (for param + query substitution). Views and controllers always stay in sync.
@@ -606,7 +615,7 @@ Each `Partial` targets a specific element by ID and uses `outerMorph` by default
 Partial(ids.notifications, Div("New!"), "append")  // append instead of morph
 ```
 
-> **Note:** `OOB()` and `withOOB()` still exist but are deprecated. Migrate to `Partial()`.
+> **Note:** the old `OOB()` / `withOOB()` helpers were **removed** in 6.1.1 (htmx 4 replaced OOB swaps). Migrate `OOB(id, content)` → `Partial(id, content)`, and `withOOB(main, ...oob)` → a plain array `[main, ...partials]`.
 
 ---
 
@@ -872,6 +881,16 @@ Button("Done").setCommand("close").setCommandfor(ids.dialog)
 | `show-modal` / `close` / `request-close` | `<dialog>` |
 | `show-popover` / `hide-popover` / `toggle-popover` | popover |
 | `--name` | author command (fires a `CommandEvent`) |
+
+**Dialogs** — `setClosedby("any")` gives native light-dismiss (click-outside + Esc); a submit button with `formmethod="dialog"` closes the dialog with its value:
+
+```typescript
+Dialog(
+  EditForm(),
+  Button("Cancel").setType("submit").setFormmethod("dialog"),     // close on submit
+).setId(ids.dialog).setClosedby("any")                            // <dialog closedby="any">
+Button("Edit").setCommand("show-modal").setCommandfor(ids.dialog) // opens it
+```
 
 **Popover** — `setPopover()` defaults to `"auto"` (light-dismiss, Esc, top-layer):
 
@@ -1918,8 +1937,19 @@ Button("Menu")
     label: "Open menu",
     expanded: false,          // boolean / "mixed" tristate — no `? "true" : "false"`
     controls: "menu-panel",
-    haspopup: true            // single-token key → aria-haspopup (keys are closed/typed)
+    haspopup: "menu",         // enumerable states are token-typed (current/live/sort/haspopup/…)
+    live: "polite"            // ✗ "polit" would be a compile error
   })
+```
+
+**Global editing / keyboard & structured data** (on any element):
+```typescript
+Div("Notes").setContenteditable().setSpellcheck("false")    // contenteditable="true" spellcheck="false"
+Input().setEnterkeyhint("send").setAutocapitalize("words")
+Span("…").setLang("fr").setDir("rtl")                        // lang/dir on any element, not just <html>
+Section(/* … */).setHidden("until-found")                   // collapsed but Ctrl-F-revealable
+Article(/* … */).setMicrodata({ type: "https://schema.org/Article" })  // itemscope + itemtype
+Button("Save").setType("submit").setForm("checkout-form")   // associate a control with a <form> by id
 ```
 
 ### HTMX Patterns
@@ -2452,8 +2482,6 @@ import {
 | `InfiniteScroll(options)` | Infinite scroll trigger element |
 | `FormField(options)` | Form field with label and error |
 | `KeyedList(items, getKey, render)` | List with keyed items |
-| `OOB(target, content, swap?)` | *Deprecated* — use `Partial` instead |
-| `withOOB(main, ...oob)` | *Deprecated* — use `render()` with `Partial` instead |
 
 ### Raw HTML
 

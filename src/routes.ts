@@ -39,28 +39,41 @@ type HasParams<Path extends string> =
 // Param Type Metadata
 // ------------------------------------
 
-/** Supported param type names. Determines the TypeScript type required at call sites. */
+/** Supported scalar param type names. Determines the TypeScript type required at call sites. */
 export type ParamTypeName = "string" | "number" | "uuid";
 
-/** Maps param type names to the TypeScript types accepted at call sites. */
+/**
+ * A param's declared type: a scalar kind, **or** a readonly literal tuple whose member
+ * union constrains the segment to an enum (`["active", "archived"] as const`), so the
+ * call site requires one of the tokens and a typo is a compile error.
+ */
+export type ParamType = ParamTypeName | readonly [string, ...string[]];
+
+/** Maps scalar param type names to the TypeScript types accepted at call sites. */
 type ParamTypeMap = {
   string: string;
   number: number;
   uuid: string;
 };
 
+/** Resolve one declared param type to the TS type accepted at call sites (tuple → its member union). */
+type ResolveParam<P> =
+  P extends ParamTypeName ? ParamTypeMap[P]
+  : P extends readonly string[] ? P[number]
+  : string;
+
 /**
  * Resolve the TypeScript type for each extracted path param.
- * When a `params` map is provided, each param uses its declared type.
+ * When a `params` map is provided, each param uses its declared type (scalar or enum tuple).
  * Params not listed in the map (or routes without `params`) default to `string`.
  */
 type ResolveParamTypes<
   Path extends string,
-  Params extends Readonly<Record<string, ParamTypeName>> | undefined,
+  Params extends Readonly<Record<string, ParamType>> | undefined,
 > = {
-  [K in ExtractParams<Path>]: Params extends Readonly<Record<string, ParamTypeName>>
+  [K in ExtractParams<Path>]: Params extends Readonly<Record<string, ParamType>>
     ? K extends keyof Params
-      ? Params[K] extends ParamTypeName ? ParamTypeMap[Params[K]] : string
+      ? ResolveParam<Params[K]>
       : string
     : string;
 };
@@ -73,12 +86,26 @@ type ResolveParamTypes<
 export type RouteDef = {
   readonly method: HxHttpMethod;
   readonly path: `/${string}`;
-  readonly params?: Readonly<Record<string, ParamTypeName>>;
+  readonly params?: Readonly<Record<string, ParamType>>;
 };
 
 /** Input object for defineRoutes(). */
 type RouteDefinitions = {
   readonly [name: string]: RouteDef;
+};
+
+/**
+ * Path-key validation (F-D-141). For each route, forces a `params` key that is NOT a
+ * `:param` in that route's `path` to type `never`, so a typo'd/stale entry is a compile
+ * error instead of a silently-ignored no-op. Intersected with the inferred definitions in
+ * `defineRoutes` — the `never` survives the intersection, rejecting the bad value.
+ */
+type CheckRouteParams<T extends RouteDefinitions> = {
+  readonly [K in keyof T]: {
+    readonly params?: {
+      readonly [P in keyof T[K]['params']]: P extends ExtractParams<T[K]['path']> ? ParamType : never;
+    };
+  };
 };
 
 // ------------------------------------
@@ -257,11 +284,11 @@ function buildHtmxFromRoute(
  * server.delete(userRoutes.delete.path, handler)   // "/users/:id"
  */
 export function defineRoutes<const T extends RouteDefinitions>(
-  definitions: T
+  definitions: T & CheckRouteParams<T>
 ): RouteRegistry<T>;
 export function defineRoutes<const P extends `/${string}`, const T extends RouteDefinitions>(
   prefix: P,
-  definitions: T
+  definitions: T & CheckRouteParams<T>
 ): RouteRegistry<PrefixedRouteDefs<P, T>>;
 export function defineRoutes(
   prefixOrDefinitions: string | RouteDefinitions,

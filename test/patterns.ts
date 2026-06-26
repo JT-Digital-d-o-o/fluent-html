@@ -3,8 +3,6 @@ import assert from "node:assert/strict";
 
 import { render, Div, Button, Span } from "../src/index.js";
 import {
-  OOB,
-  withOOB,
   Partial,
   HtmxConfig,
   hxResponse,
@@ -73,36 +71,6 @@ describe("Utility Methods", () => {
 });
 
 describe("HTMX Patterns", () => {
-  it("OOB creates out-of-band swap element", () => {
-    const html = render(OOB("toast", Div("Message")));
-    assert.ok(html.includes('id="toast"'));
-    assert.ok(html.includes('hx-swap-oob="true"'));
-  });
-
-  it("OOB handles # prefix in target", () => {
-    const html = render(OOB("#notification", Span("Alert")));
-    assert.ok(html.includes('id="notification"'));
-  });
-
-  it("OOB supports custom swap strategies", () => {
-    const html = render(OOB("list", Div("New item"), "beforeend"));
-    assert.ok(html.includes('hx-swap-oob="beforeend:#list"'));
-  });
-
-  it("withOOB combines main content with OOB elements", () => {
-    const combined = withOOB(
-      Div("Main").setId("main"),
-      OOB("sidebar", Span("Updated")),
-      OOB("footer", Span("Footer"))
-    );
-    assert.ok(Array.isArray(combined));
-    assert.strictEqual(combined.length, 3);
-    const html = render(combined);
-    assert.ok(html.includes('id="main"'));
-    assert.ok(html.includes('id="sidebar"'));
-    assert.ok(html.includes('id="footer"'));
-  });
-
   it("hxResponse builds response with html and headers", () => {
     const response = hxResponse(Div("Content")).build();
     assert.ok(response.html.includes("<div>Content</div>"));

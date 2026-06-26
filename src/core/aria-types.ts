@@ -26,6 +26,10 @@ export type AriaRole =
   | "alert" | "log" | "marquee" | "status" | "timer"
   // Window
   | "alertdialog" | "dialog"
+  // WAI-ARIA 1.2 / 1.3 additions (F-B-143)
+  | "mark" | "comment" | "suggestion" | "meter" | "code" | "emphasis" | "strong"
+  | "deletion" | "insertion" | "paragraph" | "generic" | "blockquote" | "caption"
+  | "subscript" | "superscript" | "time" | "associationlist"
   | (string & {});
 
 /**
@@ -45,17 +49,56 @@ export type AriaAttributeName =
   | "valuemin" | "valuenow" | "valuetext";
 
 /**
- * A single aria value. `boolean` and the tristate `"mixed"` (a `string`) cover state
- * attributes (`aria-checked`, `aria-pressed`, …) so you write `expanded: true` instead
- * of `expanded: on ? "true" : "false"`; `number` covers `aria-level`/`aria-posinset`/….
+ * A single aria value (kept for back-compat / general use). `boolean` and the tristate
+ * `"mixed"` cover state attributes; `number` covers `aria-level`/`aria-posinset`/….
+ * Per-attribute types now live on `AriaAttrs` (F-D-103) — enumerable states carry their
+ * token unions there, so this broad alias is only the fallback shape.
  */
 export type AriaValue = string | number | boolean;
 
 /**
- * Typed argument for `setAria`. Standard keys are bare (`label`, `haspopup`) and get
- * the `aria-` prefix added on render; the `aria-${string}` escape arm passes a full,
- * non-standard attribute name through verbatim.
+ * Typed argument for `setAria`. Standard keys are bare (`label`, `haspopup`) and get the
+ * `aria-` prefix added on render. **Per-key types (F-D-103):** the enumerable states
+ * (`current`/`haspopup`/`live`/`sort`/`autocomplete`/`orientation`/`invalid`) carry their
+ * literal token unions, tristate states accept `boolean | "mixed"`, numeric states accept
+ * `number`, and the rest are `string` (idrefs / labels). The `aria-${string}` escape arm
+ * passes a full, non-standard attribute name through verbatim.
  */
 export type AriaAttrs =
-  & Partial<Record<AriaAttributeName, AriaValue>>
+  & {
+    // Enumerated token states
+    current?: 'page' | 'step' | 'location' | 'date' | 'time' | boolean;
+    haspopup?: 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | boolean;
+    live?: 'off' | 'polite' | 'assertive';
+    sort?: 'ascending' | 'descending' | 'other' | 'none';
+    autocomplete?: 'inline' | 'list' | 'both' | 'none';
+    orientation?: 'horizontal' | 'vertical';
+    invalid?: 'grammar' | 'spelling' | boolean;
+    // Tristate / boolean states
+    checked?: boolean | 'mixed';
+    pressed?: boolean | 'mixed';
+    expanded?: boolean;
+    selected?: boolean;
+    disabled?: boolean;
+    hidden?: boolean;
+    modal?: boolean;
+    multiline?: boolean;
+    multiselectable?: boolean;
+    readonly?: boolean;
+    required?: boolean;
+    atomic?: boolean;
+    busy?: boolean;
+    // Numeric states
+    level?: number;
+    colcount?: number; colindex?: number; colspan?: number;
+    rowcount?: number; rowindex?: number; rowspan?: number;
+    posinset?: number; setsize?: number;
+    valuemax?: number; valuemin?: number; valuenow?: number;
+    // ID-reference / text / token-list (strings)
+    activedescendant?: string; controls?: string; describedby?: string;
+    description?: string; details?: string; errormessage?: string;
+    flowto?: string; keyshortcuts?: string; label?: string; labelledby?: string;
+    owns?: string; placeholder?: string; relevant?: string;
+    roledescription?: string; valuetext?: string;
+  }
   & Record<`aria-${string}`, string>;

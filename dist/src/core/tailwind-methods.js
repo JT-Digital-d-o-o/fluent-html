@@ -55,7 +55,11 @@ p.margin = function (directionOrValue, value) {
 p.background = function (color) { return this.addClass(`bg-${color}`); };
 p.textColor = function (color) { return this.addClass(`text-${color}`); };
 // Typography
-p.textSize = function (size) { return this.addClass(`text-${size}`); };
+p.textSize = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`text-[${amount}${unitOrValue}]`);
+    return this.addClass(`text-${unitOrValue}`);
+};
 p.textAlign = function (align) { return this.addClass(`text-${align}`); };
 p.fontWeight = function (weight) { return this.addClass(`font-${weight}`); };
 p.bold = function () { return this.addClass("font-bold"); };
@@ -67,8 +71,16 @@ p.underline = function () { return this.addClass("underline"); };
 p.noUnderline = function () { return this.addClass("no-underline"); };
 p.lineThrough = function () { return this.addClass("line-through"); };
 p.truncate = function () { return this.addClass("truncate"); };
-p.leading = function (value) { return this.addClass(`leading-${value}`); };
-p.tracking = function (value) { return this.addClass(`tracking-${value}`); };
+p.leading = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`leading-[${amount}${unitOrValue}]`);
+    return this.addClass(`leading-${unitOrValue}`);
+};
+p.tracking = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`tracking-[${amount}${unitOrValue}]`);
+    return this.addClass(`tracking-${unitOrValue}`);
+};
 // Sizing
 p.w = function (unitOrValue, amount) {
     if (amount !== undefined)
@@ -321,7 +333,11 @@ p.lineClamp = function (value) { return this.addClass(`line-clamp-${value}`); };
 // Typography extras
 p.antialiased = function () { return this.addClass("antialiased"); };
 p.tabularNums = function () { return this.addClass("tabular-nums"); };
-p.underlineOffset = function (value) { return this.addClass(`underline-offset-${value}`); };
+p.underlineOffset = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`underline-offset-[${amount}${unitOrValue}]`);
+    return this.addClass(`underline-offset-${unitOrValue}`);
+};
 p.breakAll = function () { return this.addClass("break-all"); };
 // Timing function
 p.ease = function (value) { return this.addClass(`ease-${value}`); };
@@ -347,4 +363,5 @@ p.neg = function (cls) { return this.addClass(`-${cls}`); };
 p.anchorName = function (name) { return this.addClass(`[anchor-name:--${extractId(name)}]`); };
 p.positionAnchor = function (name) { return this.addClass(`[position-anchor:--${extractId(name)}]`); };
 p.positionArea = function (area) { return this.addClass(`position-area-${area}`); };
+p.viewTransitionName = function (name) { return this.addClass(`[view-transition-name:${extractId(name)}]`); };
 //# sourceMappingURL=tailwind-methods.js.map

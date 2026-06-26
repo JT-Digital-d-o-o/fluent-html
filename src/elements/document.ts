@@ -20,12 +20,12 @@ export class HtmlTag extends Tag {
   lang?: string;
   dir?: 'ltr' | 'rtl' | 'auto';
 
-  setLang(lang?: string): this {
+  override setLang(lang?: string): this {
     this.lang = lang;
     return this;
   }
 
-  setDir(dir?: 'ltr' | 'rtl' | 'auto'): this {
+  override setDir(dir?: 'ltr' | 'rtl' | 'auto'): this {
     this.dir = dir;
     return this;
   }

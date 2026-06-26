@@ -99,6 +99,20 @@ export type MetaName =
 /** `charset` — practically always lowercase `utf-8`. Open for the rare legacy case. */
 export type Charset = 'utf-8' | (string & {});
 
+// ── Global editing / keyboard attributes (F-B-120 / F-B-123 / F-B-900) ─────
+
+/** `enterkeyhint` — the action label on a mobile virtual-keyboard Enter key. Closed. */
+export type EnterKeyHint = 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send';
+
+/** `contenteditable` — enumerated, not boolean (`""`/`"true"` both mean editable). Closed. */
+export type ContentEditable = 'true' | 'false' | 'plaintext-only';
+
+/** `autocapitalize` — virtual-keyboard autocapitalization behavior. Closed. */
+export type Autocapitalize = 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
+
+/** `spellcheck` — enumerated `"true"`/`"false"` string (not a boolean attribute). */
+export type Spellcheck = 'true' | 'false';
+
 // ── Native interactivity (B-010): Popover API + invoker Commands ──────
 // Closed unions — these map 1:1 to a fixed native enum, so a typo should be a
 // compile error (no `(string & {})` escape hatch). The escape guarantee for the
@@ -109,6 +123,13 @@ export type PopoverState = "auto" | "manual";
 
 /** `popovertargetaction` — what an invoker does to its popover target. Omit ⇒ native default `toggle`. */
 export type PopoverAction = "show" | "hide" | "toggle";
+
+/**
+ * `<dialog closedby>` — how a dialog light-dismisses. `"any"` = click-outside + Esc
+ * (the standards-track replacement for hand-rolled backdrop/Esc handlers), `"closerequest"`
+ * = Esc only, `"none"` = explicit close only. Closed union.
+ */
+export type ClosedBy = "any" | "closerequest" | "none";
 
 /**
  * `command` values for `<button command commandfor>`. Closed over the native set;

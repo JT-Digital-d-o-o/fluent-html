@@ -57,6 +57,26 @@ export function ForEachElse(items, renderItem, emptyView) {
     return result;
 }
 /**
+ * Keyed iteration — like `ForEach`, but stamps each item's root tag with a stable
+ * `id` from `keyOf(item)` so HTMX/idiomorph matches rows **by key** on
+ * reorder/insert/delete instead of by position (positional matching loses focus,
+ * scroll, and in-progress CSS transitions on a morph swap). `renderItem` must return
+ * a `Tag` — the row root to key. The key must be unique within the page; bake a
+ * prefix into `keyOf` if multiple keyed lists could share raw ids.
+ *
+ * @example
+ * Ul(ForEachKeyed(users, (u) => u.id, (u) => Li(u.name)))   // <li id="42">…</li>
+ */
+export function ForEachKeyed(items, keyOf, renderItem) {
+    const result = [];
+    let i = 0;
+    for (const item of items) {
+        result.push(renderItem(item, i).setId(String(keyOf(item))));
+        i++;
+    }
+    return result;
+}
+/**
  * Map each item to a View and place `separator` *between* them — never after the
  * last (the View analogue of `Array.join`). The thunk form of `separator` is called
  * once per gap, so callers can return fresh Tag instances (Tags are mutable — a

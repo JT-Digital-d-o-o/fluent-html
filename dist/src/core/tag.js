@@ -165,12 +165,29 @@ export class Tag {
         return this;
     }
     when(condition, fn) {
-        return condition ? fn(this, condition) : this;
+        if (typeof condition === "boolean") {
+            if (condition)
+                fn(this);
+        }
+        else if (condition != null) {
+            fn(this, condition);
+        }
+        return this;
     }
     whenElse(condition, thenFn, elseFn) {
-        if (typeof condition === "boolean")
-            return condition ? thenFn(this) : elseFn(this);
-        return condition != null ? thenFn(this, condition) : elseFn(this);
+        if (typeof condition === "boolean") {
+            if (condition)
+                thenFn(this);
+            else
+                elseFn(this);
+        }
+        else if (condition != null) {
+            thenFn(this, condition);
+        }
+        else {
+            elseFn(this);
+        }
+        return this;
     }
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,
@@ -185,6 +202,31 @@ export class Tag {
     apply(...fns) {
         for (const fn of fns)
             fn(this);
+        return this;
+    }
+    /**
+     * Append one or more children, normalizing the scalar/array `child` union. The
+     * structural counterpart to `apply`/`when` (which mutate classes/attrs, not children) —
+     * lets you build a tag and then conditionally add children during fluent composition.
+     * Appended children are escaped by default, exactly like constructor children.
+     *
+     * @example
+     * Button("Save").when(isLoading, t => t.addChild(Spinner()))
+     * Ul().apply(list).addChild(...users.map(u => Li(u.name)))
+     */
+    addChild(...views) {
+        if (views.length === 0)
+            return this;
+        const current = this.child;
+        if (current === "" || current === undefined || current === null) {
+            this.child = views.length === 1 ? views[0] : views;
+        }
+        else if (Array.isArray(current)) {
+            current.push(...views);
+        }
+        else {
+            this.child = [current, ...views];
+        }
         return this;
     }
     /**
@@ -339,6 +381,71 @@ export class Tag {
      */
     setPopovertargetaction(action) {
         return action === undefined ? this : this.addAttribute("popovertargetaction", action);
+    }
+    /** Set `lang` (subtree language) on any element. `HtmlTag` keeps its own document-level setter. */
+    setLang(lang) {
+        return lang === undefined ? this : this.addAttribute("lang", lang);
+    }
+    /** Set `dir` (text direction) on any element. */
+    setDir(dir) {
+        return dir === undefined ? this : this.addAttribute("dir", dir);
+    }
+    /** Set `translate` — whether this element's text is translated when the page is localized. */
+    setTranslate(value) {
+        return value === undefined ? this : this.addAttribute("translate", value);
+    }
+    /** Set `enterkeyhint` — the action label on a mobile virtual keyboard's Enter key. */
+    setEnterkeyhint(hint) {
+        return this.addAttribute("enterkeyhint", hint);
+    }
+    /** Make the element editable. Bare call defaults to `"true"`; `"plaintext-only"` strips rich formatting. */
+    setContenteditable(value = "true") {
+        return this.addAttribute("contenteditable", value);
+    }
+    /** Set `spellcheck` (the enumerated `"true"`/`"false"` string, not a boolean attribute). */
+    setSpellcheck(value = "true") {
+        return this.addAttribute("spellcheck", value);
+    }
+    /** Set `autocapitalize` for on-screen-keyboard input. */
+    setAutocapitalize(value) {
+        return this.addAttribute("autocapitalize", value);
+    }
+    /**
+     * `hidden="until-found"` — hidden, but revealable by in-page find (Ctrl-F) and
+     * scroll-to-text-fragment (it expands and fires `beforematch`). Plain hiding is `.toggle("hidden")`.
+     */
+    setHidden(value) {
+        return this.addAttribute("hidden", value);
+    }
+    /**
+     * Schema.org microdata (`itemtype`/`itemprop`/`itemref`/`itemid`) for structured-data SEO —
+     * the value-bearing counterpart to the `itemscope` boolean (`.toggle("itemscope")`). Setting
+     * `type` also marks the element an item scope (an `itemtype` without `itemscope` is invalid).
+     *
+     * @example
+     * Article().setMicrodata({ type: "https://schema.org/Article" })  // itemscope itemtype="…"
+     * Span(author).setMicrodata({ prop: "author" })
+     */
+    setMicrodata(attrs) {
+        if (attrs.type !== undefined) {
+            this.toggle("itemscope");
+            this.addAttribute("itemtype", attrs.type);
+        }
+        if (attrs.prop !== undefined)
+            this.addAttribute("itemprop", attrs.prop);
+        if (attrs.ref !== undefined)
+            this.addAttribute("itemref", attrs.ref);
+        if (attrs.id !== undefined)
+            this.addAttribute("itemid", attrs.id);
+        return this;
+    }
+    /**
+     * Associate a form-associated control (`input`/`button`/`select`/`textarea`/`output`/`fieldset`)
+     * with a `<form>` elsewhere in the document by its `id` — e.g. a submit button in a sticky
+     * footer outside the `<form>`. Accepts a string or `Id`.
+     */
+    setForm(form) {
+        return form === undefined ? this : this.addAttribute("form", extractId(form));
     }
 }
 setDiscriminant(Tag, 1);

@@ -3,23 +3,6 @@ import type { View } from "./core/types.js";
 import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
 import type { Id } from "./ids.js";
 /**
- * Create an out-of-band swap element.
- *
- * @deprecated Use `Partial()` instead for htmx 4+. OOB swaps are replaced by `<hx-partial>`.
- *
- * @param target - CSS selector (with #) or element ID (without #)
- * @param content - Content to swap in
- * @param swap - Optional swap strategy (default: "true" which uses innerHTML)
- * @returns Tag with hx-swap-oob attribute
- */
-export declare function OOB(target: string | Id, content: View, swap?: HxSwapStyle): Tag;
-/**
- * Combine main response content with out-of-band swap elements.
- *
- * @deprecated Use `Partial()` instead for htmx 4+.
- */
-export declare function withOOB(main: View, ...oob: View[]): View[];
-/**
  * Create an `<hx-partial>` element for multi-swap responses.
  *
  * Each partial independently declares its target and swap strategy.

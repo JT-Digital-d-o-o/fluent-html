@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import {
   render,
   Div, P, Span, Ul, Li,
-  IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, Repeat, Intersperse, Button,
+  IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, ForEachKeyed, Repeat, Intersperse, Button,
 } from "../src/index.js";
 
 // ------------------------------------
@@ -165,6 +165,21 @@ describe("Control Flow - ForEach", () => {
   it("ForEach range with start", () => { assert.strictEqual(render(Ul(ForEach(5, 8, idx => Li(`Item ${idx}`)))), `<ul><li>Item 5</li>\n<li>Item 6</li>\n<li>Item 7</li></ul>`); });
 
   it("Repeat", () => { assert.strictEqual(render(Div(Repeat(3, () => Span("*")))), `<div><span>*</span>\n<span>*</span>\n<span>*</span></div>`); });
+
+  it("ForEachKeyed stamps a stable id from the key (for idiomorph)", () => {
+    const users = [{ id: 42, name: "A" }, { id: 7, name: "B" }];
+    assert.strictEqual(
+      render(Ul(ForEachKeyed(users, (u) => u.id, (u) => Li(u.name)))),
+      `<ul><li id="42">A</li>\n<li id="7">B</li></ul>`,
+    );
+  });
+
+  it("ForEachKeyed accepts a string key and passes the index", () => {
+    assert.strictEqual(
+      render(Ul(ForEachKeyed(["x", "y"], (s) => `row-${s}`, (s, i) => Li(`${i}:${s}`)))),
+      `<ul><li id="row-x">0:x</li>\n<li id="row-y">1:y</li></ul>`,
+    );
+  });
 
   it("ForEachElse non-empty renders items", () => {
     assert.strictEqual(render(Ul(ForEachElse(["A", "B"], item => Li(item), () => Li("None")))), `<ul><li>A</li>\n<li>B</li></ul>`);

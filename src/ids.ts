@@ -97,8 +97,8 @@ type IdRegistry<T extends readonly string[]> = {
  *   target: ids.userList.selector
  * }))
  *
- * // Use in OOB swaps
- * OOB(ids.userCount, Span("42 users"))
+ * // Use in partial multi-swap responses
+ * Partial(ids.userCount, Span("42 users"))
  */
 export function defineIds<const T extends readonly string[]>(
   names: T

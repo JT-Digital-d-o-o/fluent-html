@@ -56,8 +56,8 @@ export function createId(name) {
  *   target: ids.userList.selector
  * }))
  *
- * // Use in OOB swaps
- * OOB(ids.userCount, Span("42 users"))
+ * // Use in partial multi-swap responses
+ * Partial(ids.userCount, Span("42 users"))
  */
 export function defineIds(names) {
     const registry = {};

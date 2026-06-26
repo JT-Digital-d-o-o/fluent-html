@@ -88,4 +88,26 @@ describe("Duplicate-attribute emission (A-003)", () => {
         }
     });
 });
+// ------------------------------------
+// Global editing/keyboard attributes + microdata (Tier 3b)
+// ------------------------------------
+describe("Global editing/keyboard + microdata", () => {
+    it("setEnterkeyhint", () => { assert.strictEqual(render(Input().setEnterkeyhint("send")), `<input enterkeyhint="send">`); });
+    it("setContenteditable defaults to true; plaintext-only explicit", () => {
+        assert.strictEqual(render(Div("x").setContenteditable()), `<div contenteditable="true">x</div>`);
+        assert.strictEqual(render(Div("x").setContenteditable("plaintext-only")), `<div contenteditable="plaintext-only">x</div>`);
+    });
+    it("setSpellcheck / setAutocapitalize", () => {
+        assert.strictEqual(render(Input().setSpellcheck("false").setAutocapitalize("words")), `<input spellcheck="false" autocapitalize="words">`);
+    });
+    it("setLang / setDir / setTranslate on any element", () => {
+        assert.strictEqual(render(Div("x").setLang("fr").setDir("rtl").setTranslate("no")), `<div lang="fr" dir="rtl" translate="no">x</div>`);
+    });
+    it("setHidden('until-found')", () => { assert.strictEqual(render(Div("x").setHidden("until-found")), `<div hidden="until-found">x</div>`); });
+    it("setForm by string id", () => { assert.strictEqual(render(Input().setName("q").setForm("search-form")), `<input name="q" form="search-form">`); });
+    it("setMicrodata sets itemscope+itemtype (with id), and bare itemprop", () => {
+        assert.strictEqual(render(Div().setMicrodata({ type: "https://schema.org/Product", id: "/p/1" })), `<div itemtype="https://schema.org/Product" itemid="/p/1" itemscope></div>`);
+        assert.strictEqual(render(Div("Jane").setMicrodata({ prop: "author" })), `<div itemprop="author">Jane</div>`);
+    });
+});
 //# sourceMappingURL=attributes.test.js.map

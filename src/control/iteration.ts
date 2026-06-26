@@ -1,4 +1,5 @@
 import type { View } from "../core/types.js";
+import type { Tag } from "../core/tag.js";
 
 /**
  * Iterate over items, a count, or a range to produce views.
@@ -100,6 +101,31 @@ export function ForEachElse<T>(
   }
   const result: View[] = new Array(items.length);
   for (let i = 0; i < items.length; i++) result[i] = renderItem(items[i]!, i);
+  return result;
+}
+
+/**
+ * Keyed iteration — like `ForEach`, but stamps each item's root tag with a stable
+ * `id` from `keyOf(item)` so HTMX/idiomorph matches rows **by key** on
+ * reorder/insert/delete instead of by position (positional matching loses focus,
+ * scroll, and in-progress CSS transitions on a morph swap). `renderItem` must return
+ * a `Tag` — the row root to key. The key must be unique within the page; bake a
+ * prefix into `keyOf` if multiple keyed lists could share raw ids.
+ *
+ * @example
+ * Ul(ForEachKeyed(users, (u) => u.id, (u) => Li(u.name)))   // <li id="42">…</li>
+ */
+export function ForEachKeyed<T>(
+  items: Iterable<T>,
+  keyOf: (item: T) => string | number,
+  renderItem: (item: T, index: number) => Tag,
+): View {
+  const result: View[] = [];
+  let i = 0;
+  for (const item of items) {
+    result.push(renderItem(item, i).setId(String(keyOf(item))));
+    i++;
+  }
   return result;
 }
 

@@ -39,7 +39,7 @@ Button().addAttribute("type", "submit")  // ✗
 
 **`Form<T>(state?, build)`** — typed form binding; field names constrained to schema keys, values/errors auto-wired (never untyped `.setName()` when a schema exists):
 ```typescript
-type CreateUserReq = { email: string; name: string; role: "admin" | "viewer" };
+type CreateUserReq = { email: string; name: string; role: "admin" | "viewer"; notify: boolean };
 
 Form<CreateUserReq>({ values: user, errors }, (f) => [
   f.input("email", "email"),            // ✓ InputTag with typed name + wired value
@@ -51,6 +51,8 @@ Form<CreateUserReq>({ values: user, errors }, (f) => [
     { value: "viewer", label: "Viewer" },
   ]),
   f.hidden("role", "admin"),            // ✓ hidden input with value
+  f.checkbox("notify"),                 // ✓ checked from a boolean field (never f.input(_, "checkbox"))
+  f.radio("role", "admin"),             // ✓ checked on value-match across the name group
 ]).multipart()                          // chainable like any FormTag
 ```
 State is optional — `Form<T>(f => …)` gives typed names without prefill. Plain `Form(...children)` (no builder) still makes an untyped `<form>`.
@@ -142,9 +144,9 @@ Critical rules:
 ```typescript
 export const ids = defineIds(["mainContent", "userList", "userCount"] as const);
 export const userRoutes = defineRoutes("/users", {
-  list:   { method: "GET",  path: "/" },
-  create: { method: "POST", path: "/" },
-  detail: { method: "GET",  path: "/:id", params: { id: "number" } as const },
+  list:   { method: "get",  path: "/" },
+  create: { method: "post", path: "/" },
+  detail: { method: "get",  path: "/:id", params: { id: "number" } as const },
 } as const);
 ```
 

@@ -13,6 +13,7 @@ declare module "./tag.js" {
         background(color: TailwindColor): this;
         textColor(color: TailwindColor): this;
         textSize(size: TailwindTextSize): this;
+        textSize(unit: TailwindUnit, amount: number): this;
         textAlign(align: TailwindTextAlign): this;
         fontWeight(weight: TailwindFontWeight): this;
         bold(): this;
@@ -25,7 +26,9 @@ declare module "./tag.js" {
         lineThrough(): this;
         truncate(): this;
         leading(value: TailwindLeading): this;
+        leading(unit: TailwindUnit, amount: number): this;
         tracking(value: TailwindTracking): this;
+        tracking(unit: TailwindUnit, amount: number): this;
         w(value: TailwindWidth): this;
         w(unit: TailwindUnit, amount: number): this;
         h(value: TailwindHeight): this;
@@ -159,6 +162,7 @@ declare module "./tag.js" {
         antialiased(): this;
         tabularNums(): this;
         underlineOffset(value: TailwindUnderlineOffset): this;
+        underlineOffset(unit: TailwindUnit, amount: number): this;
         breakAll(): this;
         ease(value: TailwindEase): this;
         resize(value?: TailwindResize): this;
@@ -184,6 +188,17 @@ declare module "./tag.js" {
          * grammar — same contract as `.textSize("[13px]")`.
          */
         positionArea(area: TailwindPositionArea): this;
+        /**
+         * Name this element for the View Transitions API — emits the v4 arbitrary-property
+         * class `[view-transition-name:<name>]` (purge-safe, single class) so a hero element
+         * morphs across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on.
+         * Accepts a raw name or an `Id`. The name is emitted verbatim (not validated).
+         *
+         * @example
+         * Img().setSrc("/hero.avif").viewTransitionName("hero")
+         * Div().viewTransitionName(ids.card)
+         */
+        viewTransitionName(name: string | Id): this;
     }
 }
 //# sourceMappingURL=tailwind-methods.d.ts.map

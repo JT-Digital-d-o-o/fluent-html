@@ -7,54 +7,10 @@
 
 import { Tag } from "./core/tag.js";
 import type { View } from "./core/types.js";
-import { Div } from "./elements/structural.js";
 import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
 import type { Id} from "./ids.js";
 import { isId } from "./ids.js";
 import { render } from "./render/render.js";
-
-// ------------------------------------
-// HTMX Out-of-Band (OOB) Helpers
-// ------------------------------------
-
-/**
- * Create an out-of-band swap element.
- *
- * @deprecated Use `Partial()` instead for htmx 4+. OOB swaps are replaced by `<hx-partial>`.
- *
- * @param target - CSS selector (with #) or element ID (without #)
- * @param content - Content to swap in
- * @param swap - Optional swap strategy (default: "true" which uses innerHTML)
- * @returns Tag with hx-swap-oob attribute
- */
-export function OOB(
-  target: string | Id,
-  content: View,
-  swap?: HxSwapStyle
-): Tag {
-  // Normalize target: extract ID from Id object or string
-  const elementId = isId(target) ? target.id : (target.startsWith('#') ? target.slice(1) : target);
-
-  // Build OOB value: "true" for default innerHTML, or "strategy:#id" for specific strategy
-  const oobValue = swap ? `${swap}:#${elementId}` : "true";
-
-  // If content is already a Tag, add the OOB attributes directly
-  if (content instanceof Tag) {
-    return content.setId(elementId).addAttribute("hx-swap-oob", oobValue);
-  }
-
-  // Otherwise wrap in a div
-  return Div(content).setId(elementId).addAttribute("hx-swap-oob", oobValue);
-}
-
-/**
- * Combine main response content with out-of-band swap elements.
- *
- * @deprecated Use `Partial()` instead for htmx 4+.
- */
-export function withOOB(main: View, ...oob: View[]): View[] {
-  return [main, ...oob];
-}
 
 // ------------------------------------
 // HTMX Partial Helpers (htmx 4)
