@@ -178,10 +178,10 @@ declare module "./tag.js" {
          * Div().neg("mt-2")       // -mt-2
          */
         neg(cls: string): this;
-        /** Register this element as an anchor: emits `[anchor-name:--<id>]`. */
-        anchorName(name: Id): this;
-        /** Position this element against a named anchor: emits `[position-anchor:--<id>]`. */
-        positionAnchor(name: Id): this;
+        /** Register this element as an anchor: emits `[anchor-name:--<name>]`. */
+        anchorName(name: string | Id): this;
+        /** Position this element against a named anchor: emits `[position-anchor:--<name>]`. */
+        positionAnchor(name: string | Id): this;
         /**
          * Place against the active anchor: emits `position-area-<area>`. The `[${string}]`
          * arm is emitted verbatim and `escapeAttr`'d but NOT validated as position-area

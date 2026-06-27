@@ -350,14 +350,15 @@ declare module "./tag.js" {
      */
     neg(cls: string): this;
 
-    // CSS Anchor Positioning (B-010) — `Id`-typed so an anchor name can never drift
-    // from the element it references. (Public type is `Id` only — a deliberate
-    // tightening over `setId`'s `string | Id`, since these are pure cross-references
-    // that should never be free strings.)
-    /** Register this element as an anchor: emits `[anchor-name:--<id>]`. */
-    anchorName(name: Id): this;
-    /** Position this element against a named anchor: emits `[position-anchor:--<id>]`. */
-    positionAnchor(name: Id): this;
+    // CSS Anchor Positioning (B-010). Accepts `string | Id` (the impl normalizes via
+    // `extractId`). An `Id` ties the name to a `defineIds` entry, but it's a *variable*
+    // the Tailwind extractor can't statically read — so for extractor-visible classes
+    // pass a literal, ideally a literal union (`type Anchor = "a" | "b"`) which keeps the
+    // same drift-safety (a typo is a compile error) while staying statically resolvable.
+    /** Register this element as an anchor: emits `[anchor-name:--<name>]`. */
+    anchorName(name: string | Id): this;
+    /** Position this element against a named anchor: emits `[position-anchor:--<name>]`. */
+    positionAnchor(name: string | Id): this;
     /**
      * Place against the active anchor: emits `position-area-<area>`. The `[${string}]`
      * arm is emitted verbatim and `escapeAttr`'d but NOT validated as position-area
