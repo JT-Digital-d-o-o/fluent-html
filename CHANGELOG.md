@@ -2,186 +2,6 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [5.11.0] - Type-Safe Routes & Contexts
-
-### ✨ New Features
-
-#### Typed Route Parameters
-
-`defineRoutes()` now supports typed path parameters — `string`, `number`, and `uuid`. The type is enforced at compile time and validated at resolve time:
-
-```typescript
-export const userRoutes = defineRoutes("/users", {
-  list:   { method: "get",  path: "/" },
-  detail: { method: "get",  path: "/:id", params: { id: "number" } as const },
-  bySlug: { method: "get",  path: "/:slug", params: { slug: "string" } as const },
-  byUuid: { method: "get",  path: "/:uuid", params: { uuid: "uuid" } as const },
-} as const);
-
-userRoutes.detail.resolve({ id: 42 })      // "/users/42" — id must be number
-userRoutes.bySlug.resolve({ slug: "hello" }) // "/users/hello" — slug must be string
-```
-
-#### Required Context (`createRequiredContext`)
-
-New `createRequiredContext()` for values that **must** have an active scope — throws if accessed outside one. Use for values like request-specific auth where a missing scope is always a bug:
-
-```typescript
-const AuthCtx = createRequiredContext<User>("AuthCtx");
-
-function handler(user: User) {
-  using _ = AuthCtx.scope(user);
-  return Page();
-}
-
-function Page() {
-  const user = AuthCtx.current;  // User — throws if no scope active
-  return Div(`Hello, ${user.name}`);
-}
-```
-
-Compare with `createContext(defaultValue)` which returns the default silently.
-
-#### Strict `HxSwap` Type
-
-`HxSwap` is now a strict union type — invalid swap values are compile errors instead of being silently accepted.
-
----
-
-## [5.10.0] - Performance, Inputs & Styling
-
-### ✨ New Features
-
-#### Generic `Input()` Factory
-
-`Input()` now accepts an optional type argument that locks `min`, `max`, and `step` to the correct types:
-
-```typescript
-Input("number").setMin(0).setMax(100).setStep(5)   // min/max: number
-Input("date").setMin("2024-01-01")                   // min/max: string
-Input("range").setMin(0).setMax(10).setStep(0.5)    // min/max: number
-Input("email")                                       // no min/max/step
-Input()                                              // all types allowed
-```
-
-#### 29 New Tailwind Fluent Methods
-
-Added fluent methods for gradients, filters, typography, and more:
-
-- **Gradients:** `gradientTo(direction)`, `from(color)`, `via(color)`, `to(color)`
-- **Filters:** `blur()`, `brightness()`, `contrast()`, `grayscale()`, `hueRotate()`, `invert()`, `saturate()`, `sepia()` — plus `backdrop*` variants for all
-- **Group/Peer:** `group(name?)`, `peer(name?)` — support named variants like `group/form`
-- **Typography:** `fontFamily()`, `antialiased()`, `tabularNums()`, `underlineOffset()`, `lineClamp()`, `breakAll()`, `listStyleType()`, `listStylePosition()`
-- **Colors:** `shadowColor()`
-- **Layout:** `gridAutoFlow()`, `gridAutoRows()`, `gridAutoCols()`, `placeContent()`, `placeItems()`, `placeSelf()`
-- **Other:** `ease()`, `skewX()`, `skewY()`, `willChange()`, `overscroll()`, `resize()`, `neg(cls)`
-
-#### Arbitrary Value Unit Overloads
-
-Sizing, spacing, and position methods now accept a `(unit, amount)` overload for arbitrary values:
-
-```typescript
-Div().w("px", 180)        // → w-[180px]
-Div().h("rem", 2.5)       // → h-[2.5rem]
-Div().minH("vh", 50)      // → min-h-[50vh]
-Div().padding("px", 12)   // → p-[12px]
-Div().top("em", 1.5)      // → top-[1.5em]
-```
-
-Units: `px`, `rem`, `em`, `%`, `vh`, `vw`, `dvh`, `svh`, `lvh`. Available on `w`, `h`, `minW`, `maxW`, `minH`, `maxH`, `padding`, `margin`, `gap`, `top`, `right`, `bottom`, `left`, `inset`.
-
-#### Recursion Schemes
-
-Three new recursion schemes for View tree processing, complementing the existing `foldView`:
-
-- **`paraView(alg, view)`** — Paramorphism: like `foldView`, but the `tag` handler also receives the original subtree
-- **`unfoldView(coalg, seed)`** — Anamorphism: builds a View tree by recursively expanding a seed
-- **`hyloView(coalg, alg, seed)`** — Hylomorphism: fused unfold-then-fold in a single pass without intermediate allocation
-
-Built-in algebras: `ariaDescribeAlgebra` (paramorphism for accessibility audit). Built-in coalgebras: `tocCoalgebra`, `linkedTocCoalgebra` (generate `<ul>/<li>` TOC from flat heading list).
-
-See [functional-patterns.md](functional-patterns.md) for full documentation.
-
-### 🔧 Improvements
-
-#### Render Performance
-
-Optimized the render path: **+47% throughput** on flat pages, **+20%** on realistic nested pages. No API changes.
-
-#### SVG Improvements
-
-- `setStrokeWidth()` added to `SvgTag` (not just shape elements)
-- `setWidth()`, `setHeight()`, `setStrokeWidth()` now accept `string | number` on `SvgTag`, `RectTag`, and `ForeignObjectTag`
-- `setOpacity()` added to `SvgShapeTag`
-- `G()` now returns `SvgShapeTag` (gains fill, stroke, transform methods)
-
----
-
-## [5.9.1]
-
-### 🔧 Improvements
-
-- Updated codebase analysis: API Design now 10/10 (all dimensions at 10/10)
-
----
-
-## [5.9.0] - Strict Types & API Cleanup
-
-### 🚀 Breaking Changes
-
-#### Strict Tailwind Types
-
-The `Autocomplete<T> = T | (string & {})` escape hatch has been replaced with strict union types on all Tailwind method signatures. Wrong values don't compile. For arbitrary Tailwind values (e.g., `p-[37px]`), use `addClass()`.
-
-#### `.toggle()` Only
-
-`setToggles()` has been replaced by `.toggle()`:
-
-```typescript
-Input().toggle("required").toggle("disabled")
-Input().toggle("required", isRequired)  // conditional
-```
-
-#### `Match()` Only
-
-The deprecated `SwitchCase` export has been replaced by `Match()`.
-
-#### Void Elements Reject Children
-
-Void element factories (`Input`, `Img`, `Hr`, `Br`, `Source`, `Track`, `Col`, `Embed`, `Area`, `Wbr`, `Meta`, `Link`, `Base`) now accept zero arguments. Children passed to void elements are silently ignored at render time.
-
-### ✨ New Features
-
-#### Named Tailwind Types
-
-Extracted 5 named types for better consumer DX:
-- `TailwindPosition` — `"static" | "fixed" | "absolute" | "relative" | "sticky"`
-- `TailwindTextAlign` — `"left" | "center" | "right" | "justify"`
-- `TailwindFlexDirection` — `"row" | "col" | "row-reverse" | "col-reverse"`
-- `TailwindJustifyContent` — `"start" | "end" | "center" | "between" | "around" | "evenly"`
-- `TailwindAlignItems` — `"start" | "end" | "center" | "baseline" | "stretch"`
-
-All types re-exported from `core/index.ts`.
-
-#### Typed SVG Attribute Setters
-
-All SVG elements now have typed tag classes with fluent attribute setters:
-
-- **`SvgShapeTag`** (shared base) — `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setSvgOpacity()`, `setTransform()`
-- **`CircleTag`** — `setCx()`, `setCy()`, `setR()`
-- **`RectTag`** — `setX()`, `setY()`, `setWidth()`, `setHeight()`, `setRx()`, `setRy()`
-- **`LineTag`** — `setX1()`, `setY1()`, `setX2()`, `setY2()`
-- **`PathTag`** — `setD()`, `setFillRule()`, `setClipRule()`
-- **`EllipseTag`** — `setCx()`, `setCy()`, `setRx()`, `setRy()`
-- **`PolygonTag`** / **`PolylineTag`** — `setPoints()`
-- **`SvgTextTag`** — `setX()`, `setY()`, `setDx()`, `setDy()`, `setTextAnchor()`, `setDominantBaseline()`, `setFontSize()`, `setFontFamily()`
-- **`TspanTag`** — `setX()`, `setY()`, `setDx()`, `setDy()`
-- **`UseTag`** — `setHref()`, `setX()`, `setY()`, `setWidth()`, `setHeight()`
-
-> `setSvgOpacity()` is used instead of `setOpacity()` to avoid conflict with Tailwind's `.opacity()`.
-
----
-
 ## [6.1.1] - Composition, Typed Forms, Morph Keys & Modern-Platform Hooks
 
 Mostly additive, plus two intentional type-narrowing breaks and a couple of behavior alignments (all listed below). Folded into 6.1.1 because v6 is greenfield with no published consumers to break. Benign, well-typed inputs render unchanged.
@@ -551,6 +371,186 @@ Sanctioned method emitting the library-known `htmx-indicator` class, recognised 
 #### New & updated ESLint rules
 
 `prefer-toggle` (boolean `addAttribute` → `.toggle()`), `no-removed-v4-utilities`, `no-raw-icon-string`, and an extended `prefer-set-method` (drops the removed boolean setters; flags `aria-*`/`data-*`/`style`/role/title/tabindex).
+
+---
+
+## [5.11.0] - Type-Safe Routes & Contexts
+
+### ✨ New Features
+
+#### Typed Route Parameters
+
+`defineRoutes()` now supports typed path parameters — `string`, `number`, and `uuid`. The type is enforced at compile time and validated at resolve time:
+
+```typescript
+export const userRoutes = defineRoutes("/users", {
+  list:   { method: "get",  path: "/" },
+  detail: { method: "get",  path: "/:id", params: { id: "number" } as const },
+  bySlug: { method: "get",  path: "/:slug", params: { slug: "string" } as const },
+  byUuid: { method: "get",  path: "/:uuid", params: { uuid: "uuid" } as const },
+} as const);
+
+userRoutes.detail.resolve({ id: 42 })      // "/users/42" — id must be number
+userRoutes.bySlug.resolve({ slug: "hello" }) // "/users/hello" — slug must be string
+```
+
+#### Required Context (`createRequiredContext`)
+
+New `createRequiredContext()` for values that **must** have an active scope — throws if accessed outside one. Use for values like request-specific auth where a missing scope is always a bug:
+
+```typescript
+const AuthCtx = createRequiredContext<User>("AuthCtx");
+
+function handler(user: User) {
+  using _ = AuthCtx.scope(user);
+  return Page();
+}
+
+function Page() {
+  const user = AuthCtx.current;  // User — throws if no scope active
+  return Div(`Hello, ${user.name}`);
+}
+```
+
+Compare with `createContext(defaultValue)` which returns the default silently.
+
+#### Strict `HxSwap` Type
+
+`HxSwap` is now a strict union type — invalid swap values are compile errors instead of being silently accepted.
+
+---
+
+## [5.10.0] - Performance, Inputs & Styling
+
+### ✨ New Features
+
+#### Generic `Input()` Factory
+
+`Input()` now accepts an optional type argument that locks `min`, `max`, and `step` to the correct types:
+
+```typescript
+Input("number").setMin(0).setMax(100).setStep(5)   // min/max: number
+Input("date").setMin("2024-01-01")                   // min/max: string
+Input("range").setMin(0).setMax(10).setStep(0.5)    // min/max: number
+Input("email")                                       // no min/max/step
+Input()                                              // all types allowed
+```
+
+#### 29 New Tailwind Fluent Methods
+
+Added fluent methods for gradients, filters, typography, and more:
+
+- **Gradients:** `gradientTo(direction)`, `from(color)`, `via(color)`, `to(color)`
+- **Filters:** `blur()`, `brightness()`, `contrast()`, `grayscale()`, `hueRotate()`, `invert()`, `saturate()`, `sepia()` — plus `backdrop*` variants for all
+- **Group/Peer:** `group(name?)`, `peer(name?)` — support named variants like `group/form`
+- **Typography:** `fontFamily()`, `antialiased()`, `tabularNums()`, `underlineOffset()`, `lineClamp()`, `breakAll()`, `listStyleType()`, `listStylePosition()`
+- **Colors:** `shadowColor()`
+- **Layout:** `gridAutoFlow()`, `gridAutoRows()`, `gridAutoCols()`, `placeContent()`, `placeItems()`, `placeSelf()`
+- **Other:** `ease()`, `skewX()`, `skewY()`, `willChange()`, `overscroll()`, `resize()`, `neg(cls)`
+
+#### Arbitrary Value Unit Overloads
+
+Sizing, spacing, and position methods now accept a `(unit, amount)` overload for arbitrary values:
+
+```typescript
+Div().w("px", 180)        // → w-[180px]
+Div().h("rem", 2.5)       // → h-[2.5rem]
+Div().minH("vh", 50)      // → min-h-[50vh]
+Div().padding("px", 12)   // → p-[12px]
+Div().top("em", 1.5)      // → top-[1.5em]
+```
+
+Units: `px`, `rem`, `em`, `%`, `vh`, `vw`, `dvh`, `svh`, `lvh`. Available on `w`, `h`, `minW`, `maxW`, `minH`, `maxH`, `padding`, `margin`, `gap`, `top`, `right`, `bottom`, `left`, `inset`.
+
+#### Recursion Schemes
+
+Three new recursion schemes for View tree processing, complementing the existing `foldView`:
+
+- **`paraView(alg, view)`** — Paramorphism: like `foldView`, but the `tag` handler also receives the original subtree
+- **`unfoldView(coalg, seed)`** — Anamorphism: builds a View tree by recursively expanding a seed
+- **`hyloView(coalg, alg, seed)`** — Hylomorphism: fused unfold-then-fold in a single pass without intermediate allocation
+
+Built-in algebras: `ariaDescribeAlgebra` (paramorphism for accessibility audit). Built-in coalgebras: `tocCoalgebra`, `linkedTocCoalgebra` (generate `<ul>/<li>` TOC from flat heading list).
+
+See [functional-patterns.md](functional-patterns.md) for full documentation.
+
+### 🔧 Improvements
+
+#### Render Performance
+
+Optimized the render path: **+47% throughput** on flat pages, **+20%** on realistic nested pages. No API changes.
+
+#### SVG Improvements
+
+- `setStrokeWidth()` added to `SvgTag` (not just shape elements)
+- `setWidth()`, `setHeight()`, `setStrokeWidth()` now accept `string | number` on `SvgTag`, `RectTag`, and `ForeignObjectTag`
+- `setOpacity()` added to `SvgShapeTag`
+- `G()` now returns `SvgShapeTag` (gains fill, stroke, transform methods)
+
+---
+
+## [5.9.1]
+
+### 🔧 Improvements
+
+- Updated codebase analysis: API Design now 10/10 (all dimensions at 10/10)
+
+---
+
+## [5.9.0] - Strict Types & API Cleanup
+
+### 🚀 Breaking Changes
+
+#### Strict Tailwind Types
+
+The `Autocomplete<T> = T | (string & {})` escape hatch has been replaced with strict union types on all Tailwind method signatures. Wrong values don't compile. For arbitrary Tailwind values (e.g., `p-[37px]`), use `addClass()`.
+
+#### `.toggle()` Only
+
+`setToggles()` has been replaced by `.toggle()`:
+
+```typescript
+Input().toggle("required").toggle("disabled")
+Input().toggle("required", isRequired)  // conditional
+```
+
+#### `Match()` Only
+
+The deprecated `SwitchCase` export has been replaced by `Match()`.
+
+#### Void Elements Reject Children
+
+Void element factories (`Input`, `Img`, `Hr`, `Br`, `Source`, `Track`, `Col`, `Embed`, `Area`, `Wbr`, `Meta`, `Link`, `Base`) now accept zero arguments. Children passed to void elements are silently ignored at render time.
+
+### ✨ New Features
+
+#### Named Tailwind Types
+
+Extracted 5 named types for better consumer DX:
+- `TailwindPosition` — `"static" | "fixed" | "absolute" | "relative" | "sticky"`
+- `TailwindTextAlign` — `"left" | "center" | "right" | "justify"`
+- `TailwindFlexDirection` — `"row" | "col" | "row-reverse" | "col-reverse"`
+- `TailwindJustifyContent` — `"start" | "end" | "center" | "between" | "around" | "evenly"`
+- `TailwindAlignItems` — `"start" | "end" | "center" | "baseline" | "stretch"`
+
+All types re-exported from `core/index.ts`.
+
+#### Typed SVG Attribute Setters
+
+All SVG elements now have typed tag classes with fluent attribute setters:
+
+- **`SvgShapeTag`** (shared base) — `setFill()`, `setStroke()`, `setStrokeWidth()`, `setStrokeLinecap()`, `setStrokeLinejoin()`, `setStrokeDasharray()`, `setSvgOpacity()`, `setTransform()`
+- **`CircleTag`** — `setCx()`, `setCy()`, `setR()`
+- **`RectTag`** — `setX()`, `setY()`, `setWidth()`, `setHeight()`, `setRx()`, `setRy()`
+- **`LineTag`** — `setX1()`, `setY1()`, `setX2()`, `setY2()`
+- **`PathTag`** — `setD()`, `setFillRule()`, `setClipRule()`
+- **`EllipseTag`** — `setCx()`, `setCy()`, `setRx()`, `setRy()`
+- **`PolygonTag`** / **`PolylineTag`** — `setPoints()`
+- **`SvgTextTag`** — `setX()`, `setY()`, `setDx()`, `setDy()`, `setTextAnchor()`, `setDominantBaseline()`, `setFontSize()`, `setFontFamily()`
+- **`TspanTag`** — `setX()`, `setY()`, `setDx()`, `setDy()`
+- **`UseTag`** — `setHref()`, `setX()`, `setY()`, `setWidth()`, `setHeight()`
+
+> `setSvgOpacity()` is used instead of `setOpacity()` to avoid conflict with Tailwind's `.opacity()`.
 
 ---
 
