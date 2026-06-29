@@ -92,17 +92,17 @@ describe("Dialog light-dismiss + formmethod (B-010 completion)", () => {
 });
 
 describe("CSS anchor positioning", () => {
-  it("anchorName emits the [anchor-name:--id] class", () => {
+  it("anchorName emits inline anchor-name style (dynamic-ident safe)", () => {
     assert.equal(
       render(A("Account").setPopovertarget(ids.userMenu).anchorName(ids.userMenu)),
-      `<a class="[anchor-name:--user-menu]" popovertarget="user-menu">Account</a>`,
+      `<a style="anchor-name: --user-menu" popovertarget="user-menu">Account</a>`,
     );
   });
 
-  it("positionAnchor + positionArea place a popover against its anchor", () => {
+  it("positionAnchor (inline style) + positionArea (class) place a popover against its anchor", () => {
     assert.equal(
       render(Div("menu").setId(ids.userMenu).setPopover().positionAnchor(ids.userMenu).positionArea("bottom")),
-      `<div id="user-menu" class="[position-anchor:--user-menu] position-area-bottom" popover="auto">menu</div>`,
+      `<div id="user-menu" class="position-area-bottom" style="position-anchor: --user-menu" popover="auto">menu</div>`,
     );
   });
 
@@ -113,8 +113,9 @@ describe("CSS anchor positioning", () => {
 
 // The verdict's required breakout test (security/escape lens): an Id whose raw `.id`
 // carries HTML-special + CSS-grammar chars, driven through all four Id sinks, must be
-// entity-escaped in BOTH the class="…" and the attribute outputs — no double-quote /
-// angle-bracket break-out. defineIds does NOT validate id chars; escapeAttr is the backstop.
+// entity-escaped in BOTH the style="…" (anchorName/positionAnchor) and the attribute
+// outputs — no double-quote / angle-bracket break-out. defineIds does NOT validate id
+// chars; escapeAttr is the backstop.
 describe("anchor/command/popover Id sinks ride the escapeAttr choke point", () => {
   const evil = createId(`x"] ;color:red[ &<>'`);
 
@@ -126,9 +127,9 @@ describe("anchor/command/popover Id sinks ride the escapeAttr choke point", () =
     assert.ok(!html.includes(`x"]`), "raw unescaped id must not survive");
   });
 
-  it("anchorName / positionAnchor escape the id inside class", () => {
+  it("anchorName / positionAnchor escape the id inside the style attr", () => {
     const html = render(Span("z").anchorName(evil).positionAnchor(evil));
     assert.ok(html.includes("&quot;") && html.includes("&lt;") && html.includes("&gt;") && html.includes("&#39;"));
-    assert.ok(!html.includes(`x"]`), "raw unescaped id must not survive in class");
+    assert.ok(!html.includes(`x"]`), "raw unescaped id must not survive in style");
   });
 });

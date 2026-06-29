@@ -24,6 +24,14 @@ describe("ID, Class, Style", () => {
 
   it("setStyle", () => { assert.strictEqual(render(Div().setStyle("color: red; font-size: 16px")), `<div style="color: red; font-size: 16px"></div>`); });
 
+  it("addStyle accumulates onto setStyle (vs setStyle which replaces)", () => {
+    assert.strictEqual(render(Div().setStyle("color: red").addStyle("anchor-name: --menu")), `<div style="color: red; anchor-name: --menu"></div>`);
+  });
+  it("addStyle alone, and chained, with trailing-semicolon dedupe", () => {
+    assert.strictEqual(render(Div().addStyle("anchor-name: --a")), `<div style="anchor-name: --a"></div>`);
+    assert.strictEqual(render(Div().setStyle("color: red;").addStyle("gap: 4px").addStyle("top: 0")), `<div style="color: red; gap: 4px; top: 0"></div>`);
+  });
+
   it("Combined id, class, style", () => {
     assert.strictEqual(render(Div("Content")
       .setId("box")

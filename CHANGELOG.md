@@ -27,6 +27,13 @@ Mostly additive, plus two intentional type-narrowing breaks and a couple of beha
   Button("Save").when(isLoading, t => t.addChild(Spinner()));
   ```
 
+- **`Tag.addStyle(decl)`** — the accumulating `add*` counterpart to `setStyle` (which replaces): appends a `prop: value` declaration to the inline `style` attr, merging with any existing style. With it, **`anchorName` / `positionAnchor` / `viewTransitionName` now emit inline style instead of a Tailwind arbitrary-property class** (`anchor-name: --x`, …). Their values are arbitrary custom-idents — often a per-instance variable — and the arbitrary-property class was a pure passthrough the safelist extractor can't resolve for a dynamic ident, so a runtime `Id` was an `onUnresolved` build error. As inline style they're extractor-opaque and just work; the three methods leave the class vocab accordingly (`positionArea` stays a class — closed grammar). Method signatures are unchanged.
+
+  ```typescript
+  A("Account").setPopovertarget(ids.menu).anchorName(ids.menu);   // style="anchor-name: --menu"
+  Div().setPopover().positionAnchor(rowId);                       // dynamic id — no build error
+  ```
+
 - **Native dialog dismiss (completes the 6.1.0 interactivity surface)** — `DialogTag.setClosedby("any" | "closerequest" | "none")` + the exported `ClosedBy` type give native `<dialog>` light-dismiss (`"any"` = click-outside + Esc), the standards-track replacement for hand-rolled backdrop/Escape handlers. `Button().setFormmethod` now also accepts `"dialog"` (widened to the existing `FormMethod` union) — a submit button that closes its ancestor `<dialog>` with its value. Together with `setCommand("show-modal")`, a modal now opens, dismisses, and closes with zero JS.
 
   ```typescript

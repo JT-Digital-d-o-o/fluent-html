@@ -113,6 +113,25 @@ export class Tag {
         return this;
     }
     /**
+     * Append a CSS declaration to the inline `style` attribute, **accumulating** onto
+     * any existing style (the `add*` counterpart to `setStyle`, which replaces). Pass a
+     * single `prop: value` string; declarations are joined with `; `. Use for one-off
+     * inline declarations that aren't Tailwind utilities — e.g. CSS anchor idents, whose
+     * dynamic values a static class extractor can't resolve.
+     *
+     * @param declaration - A CSS declaration, e.g. `"anchor-name: --menu"`
+     * @returns `this` for chaining
+     *
+     * @example
+     * Div().setStyle("color: red").addStyle("anchor-name: --menu")
+     * // → style="color: red; anchor-name: --menu"
+     */
+    addStyle(declaration) {
+        const existing = this.style?.trim().replace(/;+$/, "");
+        this.style = existing ? `${existing}; ${declaration}` : declaration;
+        return this;
+    }
+    /**
      * Add a custom HTML attribute. Validates the key against XSS and prototype pollution.
      * Prefer typed setter methods (e.g. `.setType()`, `.setPlaceholder()`) over this.
      *

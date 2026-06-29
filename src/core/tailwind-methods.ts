@@ -351,13 +351,13 @@ declare module "./tag.js" {
     neg(cls: string): this;
 
     // CSS Anchor Positioning (B-010). Accepts `string | Id` (the impl normalizes via
-    // `extractId`). An `Id` ties the name to a `defineIds` entry, but it's a *variable*
-    // the Tailwind extractor can't statically read — so for extractor-visible classes
-    // pass a literal, ideally a literal union (`type Anchor = "a" | "b"`) which keeps the
-    // same drift-safety (a typo is a compile error) while staying statically resolvable.
-    /** Register this element as an anchor: emits `[anchor-name:--<name>]`. */
+    // `extractId`). anchor-name / position-anchor take arbitrary custom-idents — often a
+    // per-instance variable — so they emit *inline style*, not a Tailwind class: the
+    // arbitrary-property class is a pure passthrough the extractor can't resolve for a
+    // dynamic ident. So a runtime `Id` just works. positionArea stays a class (closed grammar).
+    /** Register this element as an anchor: emits inline `anchor-name: --<name>`. */
     anchorName(name: string | Id): this;
-    /** Position this element against a named anchor: emits `[position-anchor:--<name>]`. */
+    /** Position this element against a named anchor: emits inline `position-anchor: --<name>`. */
     positionAnchor(name: string | Id): this;
     /**
      * Place against the active anchor: emits `position-area-<area>`. The `[${string}]`
@@ -367,9 +367,9 @@ declare module "./tag.js" {
     positionArea(area: TailwindPositionArea): this;
 
     /**
-     * Name this element for the View Transitions API — emits the v4 arbitrary-property
-     * class `[view-transition-name:<name>]` (purge-safe, single class) so a hero element
-     * morphs across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on.
+     * Name this element for the View Transitions API — emits inline `view-transition-name:
+     * <name>` style (extractor-opaque, so a dynamic name is safe) so a hero element morphs
+     * across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on.
      * Accepts a raw name or an `Id`. The name is emitted verbatim (not validated).
      *
      * @example
@@ -758,10 +758,12 @@ p.neg = function (cls: string) { return this.addClass(`-${cls}`); };
 // CSS Anchor Positioning (B-010) — runtime accepts `string | Id` (the class-vocab
 // parity harness drives these with raw string samples); `extractId` is the same
 // `isId(x) ? x.id : x` bridge `setId` uses (tag.ts). The public type narrows to `Id`.
-// The dashed-ident is emitted verbatim (defineIds does NOT validate id chars) and is
-// `escapeAttr`'d at render via the `class` attribute — authors must use ID-safe ids.
-
-p.anchorName = function (name: string | Id) { return this.addClass(`[anchor-name:--${extractId(name)}]`); };
-p.positionAnchor = function (name: string | Id) { return this.addClass(`[position-anchor:--${extractId(name)}]`); };
+// anchor-name / position-anchor / view-transition-name take arbitrary custom-idents
+// (often dynamic), and their arbitrary-property class would be a pure passthrough the
+// extractor can't resolve — so emit *inline style* (`escapeAttr`'d in the `style` attr),
+// not a class. positionArea stays a class (closed grammar). defineIds does NOT validate
+// id chars, so authors must use ID-safe ids.
+p.anchorName = function (name: string | Id) { return this.addStyle(`anchor-name: --${extractId(name)}`); };
+p.positionAnchor = function (name: string | Id) { return this.addStyle(`position-anchor: --${extractId(name)}`); };
 p.positionArea = function (area: string) { return this.addClass(`position-area-${area}`); };
-p.viewTransitionName = function (name: string | Id) { return this.addClass(`[view-transition-name:${extractId(name)}]`); };
+p.viewTransitionName = function (name: string | Id) { return this.addStyle(`view-transition-name: ${extractId(name)}`); };

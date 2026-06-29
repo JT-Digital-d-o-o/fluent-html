@@ -617,8 +617,8 @@ describe("TW4 relational hooks & View Transitions", () => {
     assert.strictEqual(render(Div().on("in-[.dark]", (t) => t.textColor("white"))), `<div class="in-[.dark]:text-white"></div>`);
   });
 
-  it("viewTransitionName emits the arbitrary-property class (string + Id)", () => {
-    assert.strictEqual(render(Div().viewTransitionName("hero")), `<div class="[view-transition-name:hero]"></div>`);
+  it("viewTransitionName emits inline view-transition-name style (dynamic-ident safe)", () => {
+    assert.strictEqual(render(Div().viewTransitionName("hero")), `<div style="view-transition-name: hero"></div>`);
   });
 });
 

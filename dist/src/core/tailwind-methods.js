@@ -358,10 +358,13 @@ p.neg = function (cls) { return this.addClass(`-${cls}`); };
 // CSS Anchor Positioning (B-010) — runtime accepts `string | Id` (the class-vocab
 // parity harness drives these with raw string samples); `extractId` is the same
 // `isId(x) ? x.id : x` bridge `setId` uses (tag.ts). The public type narrows to `Id`.
-// The dashed-ident is emitted verbatim (defineIds does NOT validate id chars) and is
-// `escapeAttr`'d at render via the `class` attribute — authors must use ID-safe ids.
-p.anchorName = function (name) { return this.addClass(`[anchor-name:--${extractId(name)}]`); };
-p.positionAnchor = function (name) { return this.addClass(`[position-anchor:--${extractId(name)}]`); };
+// anchor-name / position-anchor / view-transition-name take arbitrary custom-idents
+// (often dynamic), and their arbitrary-property class would be a pure passthrough the
+// extractor can't resolve — so emit *inline style* (`escapeAttr`'d in the `style` attr),
+// not a class. positionArea stays a class (closed grammar). defineIds does NOT validate
+// id chars, so authors must use ID-safe ids.
+p.anchorName = function (name) { return this.addStyle(`anchor-name: --${extractId(name)}`); };
+p.positionAnchor = function (name) { return this.addStyle(`position-anchor: --${extractId(name)}`); };
 p.positionArea = function (area) { return this.addClass(`position-area-${area}`); };
-p.viewTransitionName = function (name) { return this.addClass(`[view-transition-name:${extractId(name)}]`); };
+p.viewTransitionName = function (name) { return this.addStyle(`view-transition-name: ${extractId(name)}`); };
 //# sourceMappingURL=tailwind-methods.js.map

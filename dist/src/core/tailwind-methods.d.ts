@@ -178,9 +178,9 @@ declare module "./tag.js" {
          * Div().neg("mt-2")       // -mt-2
          */
         neg(cls: string): this;
-        /** Register this element as an anchor: emits `[anchor-name:--<name>]`. */
+        /** Register this element as an anchor: emits inline `anchor-name: --<name>`. */
         anchorName(name: string | Id): this;
-        /** Position this element against a named anchor: emits `[position-anchor:--<name>]`. */
+        /** Position this element against a named anchor: emits inline `position-anchor: --<name>`. */
         positionAnchor(name: string | Id): this;
         /**
          * Place against the active anchor: emits `position-area-<area>`. The `[${string}]`
@@ -189,9 +189,9 @@ declare module "./tag.js" {
          */
         positionArea(area: TailwindPositionArea): this;
         /**
-         * Name this element for the View Transitions API — emits the v4 arbitrary-property
-         * class `[view-transition-name:<name>]` (purge-safe, single class) so a hero element
-         * morphs across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on.
+         * Name this element for the View Transitions API — emits inline `view-transition-name:
+         * <name>` style (extractor-opaque, so a dynamic name is safe) so a hero element morphs
+         * across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on.
          * Accepts a raw name or an `Id`. The name is emitted verbatim (not validated).
          *
          * @example

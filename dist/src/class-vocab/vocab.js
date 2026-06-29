@@ -211,17 +211,10 @@ export const classVocab = [
     val("neg", "-"),
     // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
     stat("htmxIndicator", "htmx-indicator"),
-    // CSS Anchor Positioning (B-010). Samples are plain strings — the lib methods accept
-    // `string | Id` and extract `.id`, so the string-based parity harness exercises them
-    // directly. NOTE: anchorName/positionAnchor are called with an `Id` VARIABLE in real
-    // code, so the extractor classifies those sites UNRESOLVED (force-safelisted), not
-    // statically resolved; only `positionArea("literal")` resolves cleanly.
-    custom("anchorName", (a) => [`[anchor-name:--${a[0]}]`], [["panel"]]),
-    custom("positionAnchor", (a) => [`[position-anchor:--${a[0]}]`], [["panel"]]),
+    // CSS Anchor Positioning (B-010). Only positionArea is a class (closed grammar, a real
+    // utility). anchorName/positionAnchor (and viewTransitionName, F-B-181) take arbitrary
+    // custom-idents — often a runtime variable — so they emit *inline style*, not a class,
+    // and are deliberately NOT in the class vocab. See tailwind-methods.ts.
     custom("positionArea", (a) => [`position-area-${a[0]}`], [["bottom"], ["[top span-left]"]]),
-    // View Transitions (F-B-181). Same string-sample bridge as the anchor emitters: the lib
-    // method accepts string|Id and extracts .id; called with an Id variable it's unresolved-
-    // by-design in the extractor (force-safelist), a literal name resolves statically.
-    custom("viewTransitionName", (a) => [`[view-transition-name:${a[0]}]`], [["hero"]]),
 ];
 //# sourceMappingURL=vocab.js.map
