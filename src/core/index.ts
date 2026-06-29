@@ -3,6 +3,7 @@ export type { View, Thunk } from "./types.js";
 
 // Tag class
 export { Tag } from "./tag.js";
+export type { FluentCustomMethods } from "./tag.js";
 
 // Mixins — add methods to Tag.prototype via declaration merging
 import "./tailwind-methods.js";

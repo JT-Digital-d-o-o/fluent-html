@@ -1,6 +1,7 @@
 // Core types and classes
 export type { View, Thunk } from './core/index.js';
 export { Tag } from './core/index.js';
+export type { FluentCustomMethods } from './core/index.js';
 export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';

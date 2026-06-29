@@ -13,6 +13,14 @@ Mostly additive, plus two intentional type-narrowing breaks and a couple of beha
 
 ### ✨ Added
 
+- **`FluentCustomMethods` augmentation seam** — an empty interface that `Tag extends`, so an app can type chainable methods it registers on `Tag.prototype` (the same C-02 pattern `FluentCustomColors` et al. use to open the token unions). Declare the signatures through the barrel and they land on every `Tag`/subclass; `this` returns keep the fluent chain typed. Needed because `Tag` is a class re-exported through the barrel, so `declare module "fluent-html" { interface Tag }` cannot merge into it directly.
+
+  ```typescript
+  declare module "fluent-html" {
+    interface FluentCustomMethods { nav(route: HTMX): this }
+  }
+  ```
+
 - **`Tag.addChild(...views)`** — append children during fluent composition, the structural counterpart to `apply`/`when` (which only touch classes/attrs). Normalizes the scalar/array `child` union and escapes appended children like constructor children. (The `.when()` JSDoc previously referenced a `t.children(...)` method that never existed — now it points at the real `addChild`.)
 
   ```typescript

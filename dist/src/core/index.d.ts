@@ -1,5 +1,6 @@
 export type { View, Thunk } from "./types.js";
 export { Tag } from "./tag.js";
+export type { FluentCustomMethods } from "./tag.js";
 import "./tailwind-methods.js";
 import "./htmx-methods.js";
 import "./behavior-methods.js";

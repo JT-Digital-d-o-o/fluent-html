@@ -6,6 +6,10 @@ import type { BooleanAttribute, PopoverState, PopoverAction, EnterKeyHint, Conte
 import type { AriaRole, AriaAttrs } from "./aria-types.js";
 /** @internal Shared empty attributes object — never mutate */
 export declare const EMPTY_ATTRS: Record<string, string>;
+export interface FluentCustomMethods {
+}
+export interface Tag extends FluentCustomMethods {
+}
 /**
  * The core HTML element builder. All element factories (`Div`, `Button`, `Input`, etc.)
  * create `Tag` instances. Provides chainable methods for attributes, classes, styles,

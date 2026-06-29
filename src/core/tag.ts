@@ -39,6 +39,16 @@ function validateAttributeKey(key: string): void {
   }
 }
 
+// ── method augmentation seam (C-02 sibling) ─────────────────────────
+// EMPTY interface an app augments to type chainable methods it registers on
+// `Tag.prototype`. `Tag extends FluentCustomMethods`, so the methods land on
+// every Tag (and subclass); `this` returns keep the chain typed:
+//   declare module "fluent-html" {
+//     interface FluentCustomMethods { nav(route: HTMX): this }
+//   }
+export interface FluentCustomMethods {}
+export interface Tag extends FluentCustomMethods {}
+
 /**
  * The core HTML element builder. All element factories (`Div`, `Button`, `Input`, etc.)
  * create `Tag` instances. Provides chainable methods for attributes, classes, styles,
