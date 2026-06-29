@@ -52,11 +52,14 @@ describe("CSS anchor positioning", () => {
     it("anchorName emits inline anchor-name style (dynamic-ident safe)", () => {
         assert.equal(render(A("Account").setPopovertarget(ids.userMenu).anchorName(ids.userMenu)), `<a style="anchor-name: --user-menu" popovertarget="user-menu">Account</a>`);
     });
-    it("positionAnchor (inline style) + positionArea (class) place a popover against its anchor", () => {
-        assert.equal(render(Div("menu").setId(ids.userMenu).setPopover().positionAnchor(ids.userMenu).positionArea("bottom")), `<div id="user-menu" class="position-area-bottom" style="position-anchor: --user-menu" popover="auto">menu</div>`);
+    it("positionAnchor + positionArea (both inline style) place a popover against its anchor", () => {
+        assert.equal(render(Div("menu").setId(ids.userMenu).setPopover().positionAnchor(ids.userMenu).positionArea("bottom")), `<div id="user-menu" style="position-anchor: --user-menu; position-area: bottom" popover="auto">menu</div>`);
     });
-    it("positionArea arbitrary [..] value is emitted verbatim", () => {
-        assert.equal(render(Div().positionArea("[top span-left]")), `<div class="position-area-[top span-left]"></div>`);
+    it("positionArea maps a closed multi-keyword token to its spaced CSS value", () => {
+        assert.equal(render(Div().positionArea("bottom-span-right")), `<div style="position-area: bottom span-right"></div>`);
+    });
+    it("positionArea arbitrary [..] value is unwrapped into the inline style", () => {
+        assert.equal(render(Div().positionArea("[top span-left]")), `<div style="position-area: top span-left"></div>`);
     });
 });
 // The verdict's required breakout test (security/escape lens): an Id whose raw `.id`

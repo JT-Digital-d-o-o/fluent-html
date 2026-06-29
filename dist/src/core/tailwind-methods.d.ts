@@ -183,9 +183,10 @@ declare module "./tag.js" {
         /** Position this element against a named anchor: emits inline `position-anchor: --<name>`. */
         positionAnchor(name: string | Id): this;
         /**
-         * Place against the active anchor: emits `position-area-<area>`. The `[${string}]`
-         * arm is emitted verbatim and `escapeAttr`'d but NOT validated as position-area
-         * grammar — same contract as `.textSize("[13px]")`.
+         * Place against the active anchor: emits inline `position-area: <area>`. The closed
+         * tokens map to their space-separated CSS values (`"bottom-span-right"` → `bottom
+         * span-right`); the `[${string}]` arm is unwrapped verbatim (`"[top span-left]"` → `top
+         * span-left`), the same escape-hatch contract as `.textSize("[13px]")`.
          */
         positionArea(area: TailwindPositionArea): this;
         /**

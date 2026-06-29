@@ -251,9 +251,8 @@ export const classVocab: readonly UtilityDef[] = [
   // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
   stat("htmxIndicator", "htmx-indicator"),
 
-  // CSS Anchor Positioning (B-010). Only positionArea is a class (closed grammar, a real
-  // utility). anchorName/positionAnchor (and viewTransitionName, F-B-181) take arbitrary
-  // custom-idents — often a runtime variable — so they emit *inline style*, not a class,
-  // and are deliberately NOT in the class vocab. See tailwind-methods.ts.
-  custom("positionArea", (a) => [`position-area-${a[0]}`], [["bottom"], ["[top span-left]"]]),
+  // CSS Anchor Positioning (B-010) emits *inline style*, never a class — anchorName /
+  // positionAnchor / positionArea (and viewTransitionName, F-B-181) all take arbitrary
+  // custom-idents or multi-keyword grammar the extractor can't resolve and Tailwind has no
+  // native utility for, so they are deliberately NOT in the class vocab. See tailwind-methods.ts.
 ];

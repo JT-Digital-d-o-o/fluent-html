@@ -350,19 +350,21 @@ declare module "./tag.js" {
      */
     neg(cls: string): this;
 
-    // CSS Anchor Positioning (B-010). Accepts `string | Id` (the impl normalizes via
-    // `extractId`). anchor-name / position-anchor take arbitrary custom-idents — often a
-    // per-instance variable — so they emit *inline style*, not a Tailwind class: the
-    // arbitrary-property class is a pure passthrough the extractor can't resolve for a
-    // dynamic ident. So a runtime `Id` just works. positionArea stays a class (closed grammar).
+    // CSS Anchor Positioning (B-010). `anchorName`/`positionAnchor` accept `string | Id`
+    // (normalized via `extractId`). All three emitters write *inline style*, not a Tailwind
+    // class: their values are arbitrary custom-idents / multi-keyword grammar — often a
+    // per-instance variable — that the safelist extractor can't resolve and Tailwind v4 has
+    // no native utility for. As inline style they're extractor-opaque and dynamic-safe, so a
+    // runtime `Id` (or any value) just works.
     /** Register this element as an anchor: emits inline `anchor-name: --<name>`. */
     anchorName(name: string | Id): this;
     /** Position this element against a named anchor: emits inline `position-anchor: --<name>`. */
     positionAnchor(name: string | Id): this;
     /**
-     * Place against the active anchor: emits `position-area-<area>`. The `[${string}]`
-     * arm is emitted verbatim and `escapeAttr`'d but NOT validated as position-area
-     * grammar — same contract as `.textSize("[13px]")`.
+     * Place against the active anchor: emits inline `position-area: <area>`. The closed
+     * tokens map to their space-separated CSS values (`"bottom-span-right"` → `bottom
+     * span-right`); the `[${string}]` arm is unwrapped verbatim (`"[top span-left]"` → `top
+     * span-left`), the same escape-hatch contract as `.textSize("[13px]")`.
      */
     positionArea(area: TailwindPositionArea): this;
 
@@ -755,15 +757,29 @@ p.overscroll = function (directionOrValue: string, value?: string) {
 
 p.neg = function (cls: string) { return this.addClass(`-${cls}`); };
 
-// CSS Anchor Positioning (B-010) — runtime accepts `string | Id` (the class-vocab
-// parity harness drives these with raw string samples); `extractId` is the same
-// `isId(x) ? x.id : x` bridge `setId` uses (tag.ts). The public type narrows to `Id`.
-// anchor-name / position-anchor / view-transition-name take arbitrary custom-idents
-// (often dynamic), and their arbitrary-property class would be a pure passthrough the
-// extractor can't resolve — so emit *inline style* (`escapeAttr`'d in the `style` attr),
-// not a class. positionArea stays a class (closed grammar). defineIds does NOT validate
-// id chars, so authors must use ID-safe ids.
+// CSS Anchor Positioning (B-010) — `anchorName`/`positionAnchor` accept `string | Id`
+// (the public type narrows to `Id`; the parity harness drives the runtime with raw
+// strings). `extractId` is the same `isId(x) ? x.id : x` bridge `setId` uses (tag.ts).
+// All three anchor emitters (+ view-transition-name) write *inline style* (`escapeAttr`'d
+// in the `style` attr), not a class: their values are arbitrary custom-idents / multi-keyword
+// grammar the extractor can't resolve and Tailwind v4 has no native utility for. defineIds
+// does NOT validate id chars, so authors must use ID-safe ids.
+
+// Closed position-area tokens → their space-separated CSS values (the class form hyphenated
+// what CSS spaces). The `Exclude<…, `[…]`>` key set forces a mapping for every named token —
+// adding one to the union without a CSS value is a compile error. The `[…]` arm is unwrapped.
+const POSITION_AREA_CSS: Record<Exclude<TailwindPositionArea, `[${string}]`>, string> = {
+  top: "top", bottom: "bottom", left: "left", right: "right", center: "center",
+  "top-left": "top left", "top-right": "top right",
+  "bottom-left": "bottom left", "bottom-right": "bottom right",
+  "top-span-left": "top span-left", "top-span-right": "top span-right",
+  "bottom-span-left": "bottom span-left", "bottom-span-right": "bottom span-right",
+};
+
 p.anchorName = function (name: string | Id) { return this.addStyle(`anchor-name: --${extractId(name)}`); };
 p.positionAnchor = function (name: string | Id) { return this.addStyle(`position-anchor: --${extractId(name)}`); };
-p.positionArea = function (area: string) { return this.addClass(`position-area-${area}`); };
+p.positionArea = function (area: string) {
+  const value = area.startsWith("[") && area.endsWith("]") ? area.slice(1, -1) : (POSITION_AREA_CSS as Record<string, string>)[area] ?? area;
+  return this.addStyle(`position-area: ${value}`);
+};
 p.viewTransitionName = function (name: string | Id) { return this.addStyle(`view-transition-name: ${extractId(name)}`); };

@@ -27,11 +27,13 @@ Mostly additive, plus two intentional type-narrowing breaks and a couple of beha
   Button("Save").when(isLoading, t => t.addChild(Spinner()));
   ```
 
-- **`Tag.addStyle(decl)`** — the accumulating `add*` counterpart to `setStyle` (which replaces): appends a `prop: value` declaration to the inline `style` attr, merging with any existing style. With it, **`anchorName` / `positionAnchor` / `viewTransitionName` now emit inline style instead of a Tailwind arbitrary-property class** (`anchor-name: --x`, …). Their values are arbitrary custom-idents — often a per-instance variable — and the arbitrary-property class was a pure passthrough the safelist extractor can't resolve for a dynamic ident, so a runtime `Id` was an `onUnresolved` build error. As inline style they're extractor-opaque and just work; the three methods leave the class vocab accordingly (`positionArea` stays a class — closed grammar). Method signatures are unchanged.
+- **`Tag.addStyle(decl)`** — the accumulating `add*` counterpart to `setStyle` (which replaces): appends a `prop: value` declaration to the inline `style` attr, merging with any existing style. With it, **all four CSS-custom-ident emitters — `anchorName` / `positionAnchor` / `positionArea` / `viewTransitionName` — now emit inline style instead of a Tailwind class** (`anchor-name: --x`, `position-area: bottom span-right`, …). Tailwind v4 has no native utility for any of them and the arbitrary-property/`position-area-*` classes were pure passthroughs the safelist extractor can't resolve (a dynamic ident was even an `onUnresolved` build error), so the classes silently rendered nothing. As inline style they're extractor-opaque and just work. `positionArea` stays fully type-safe via its closed `TailwindPositionArea` union — the hyphenated tokens map to their spaced CSS values (`"bottom-span-right"` → `position-area: bottom span-right`) and the `[…]` arm is unwrapped verbatim. The four methods are not in the class vocab; method signatures are unchanged.
 
   ```typescript
   A("Account").setPopovertarget(ids.menu).anchorName(ids.menu);   // style="anchor-name: --menu"
   Div().setPopover().positionAnchor(rowId);                       // dynamic id — no build error
+  Div().setPopover().positionAnchor(menu).positionArea("bottom-span-right");
+  //   style="position-anchor: --…; position-area: bottom span-right"  — no safelist needed
   ```
 
 - **Native dialog dismiss (completes the 6.1.0 interactivity surface)** — `DialogTag.setClosedby("any" | "closerequest" | "none")` + the exported `ClosedBy` type give native `<dialog>` light-dismiss (`"any"` = click-outside + Esc), the standards-track replacement for hand-rolled backdrop/Escape handlers. `Button().setFormmethod` now also accepts `"dialog"` (widened to the existing `FormMethod` union) — a submit button that closes its ancestor `<dialog>` with its value. Together with `setCommand("show-modal")`, a modal now opens, dismisses, and closes with zero JS.

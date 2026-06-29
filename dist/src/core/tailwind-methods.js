@@ -355,16 +355,28 @@ p.overscroll = function (directionOrValue, value) {
 };
 // Negative value prefix
 p.neg = function (cls) { return this.addClass(`-${cls}`); };
-// CSS Anchor Positioning (B-010) — runtime accepts `string | Id` (the class-vocab
-// parity harness drives these with raw string samples); `extractId` is the same
-// `isId(x) ? x.id : x` bridge `setId` uses (tag.ts). The public type narrows to `Id`.
-// anchor-name / position-anchor / view-transition-name take arbitrary custom-idents
-// (often dynamic), and their arbitrary-property class would be a pure passthrough the
-// extractor can't resolve — so emit *inline style* (`escapeAttr`'d in the `style` attr),
-// not a class. positionArea stays a class (closed grammar). defineIds does NOT validate
-// id chars, so authors must use ID-safe ids.
+// CSS Anchor Positioning (B-010) — `anchorName`/`positionAnchor` accept `string | Id`
+// (the public type narrows to `Id`; the parity harness drives the runtime with raw
+// strings). `extractId` is the same `isId(x) ? x.id : x` bridge `setId` uses (tag.ts).
+// All three anchor emitters (+ view-transition-name) write *inline style* (`escapeAttr`'d
+// in the `style` attr), not a class: their values are arbitrary custom-idents / multi-keyword
+// grammar the extractor can't resolve and Tailwind v4 has no native utility for. defineIds
+// does NOT validate id chars, so authors must use ID-safe ids.
+// Closed position-area tokens → their space-separated CSS values (the class form hyphenated
+// what CSS spaces). The `Exclude<…, `[…]`>` key set forces a mapping for every named token —
+// adding one to the union without a CSS value is a compile error. The `[…]` arm is unwrapped.
+const POSITION_AREA_CSS = {
+    top: "top", bottom: "bottom", left: "left", right: "right", center: "center",
+    "top-left": "top left", "top-right": "top right",
+    "bottom-left": "bottom left", "bottom-right": "bottom right",
+    "top-span-left": "top span-left", "top-span-right": "top span-right",
+    "bottom-span-left": "bottom span-left", "bottom-span-right": "bottom span-right",
+};
 p.anchorName = function (name) { return this.addStyle(`anchor-name: --${extractId(name)}`); };
 p.positionAnchor = function (name) { return this.addStyle(`position-anchor: --${extractId(name)}`); };
-p.positionArea = function (area) { return this.addClass(`position-area-${area}`); };
+p.positionArea = function (area) {
+    const value = area.startsWith("[") && area.endsWith("]") ? area.slice(1, -1) : POSITION_AREA_CSS[area] ?? area;
+    return this.addStyle(`position-area: ${value}`);
+};
 p.viewTransitionName = function (name) { return this.addStyle(`view-transition-name: ${extractId(name)}`); };
 //# sourceMappingURL=tailwind-methods.js.map

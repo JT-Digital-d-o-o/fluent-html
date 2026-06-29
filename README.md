@@ -904,12 +904,12 @@ Div(/* … */).setPopover("manual")                        // explicit dismiss o
 
 ```typescript
 const menu = ids.userMenu;
-Button("Account").setPopovertarget(menu).anchorName(menu)         // [anchor-name:--user-menu]
-Div(/* … */).setId(menu).setPopover().positionAnchor(menu).positionArea("bottom")
-//   class="[position-anchor:--user-menu] position-area-bottom"
+Button("Account").setPopovertarget(menu).anchorName(menu)         // style="anchor-name: --user-menu"
+Div(/* … */).setId(menu).setPopover().positionAnchor(menu).positionArea("bottom-span-right")
+//   style="position-anchor: --user-menu; position-area: bottom span-right"
 ```
 
-> The `openDialog`/`closeDialog` behaviors **remain** — reach for them when an htmx *event* (not a click) must trigger the open/close. Because `anchorName(id)`/`positionAnchor(id)` take an `Id` *variable*, the tailwind-extractor reports those classes as **unresolved** (safelist them); `positionArea("bottom")` resolves statically.
+> The `openDialog`/`closeDialog` behaviors **remain** — reach for them when an htmx *event* (not a click) must trigger the open/close. All three anchor-positioning methods emit **inline style**, not classes: their values are arbitrary custom-idents (`anchorName`/`positionAnchor` take a per-instance `Id`) or the multi-keyword `position-area` grammar — none of which Tailwind v4 has a native utility for, so a class would silently render nothing. `positionArea` stays type-safe via a closed token union (`"bottom-span-right"` → `position-area: bottom span-right`), with a `[…]` arm for the full grammar; nothing needs safelisting.
 
 ---
 
