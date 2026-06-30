@@ -80,8 +80,12 @@ export class AreaTag extends Tag {
         this.download = download;
         return this;
     }
+    setReferrerPolicy(referrerpolicy) {
+        this.referrerpolicy = referrerpolicy;
+        return this;
+    }
 }
-defineSchemaKeys(AreaTag, ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download']);
+defineSchemaKeys(AreaTag, ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download', 'referrerpolicy']);
 export function Area() {
     return new AreaTag("area");
 }

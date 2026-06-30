@@ -98,3 +98,45 @@ defineSchemaKeys(MeterTag, ['value', 'min', 'max', 'low', 'high', 'optimum']);
 export function Meter(...children: View[]): MeterTag {
   return new MeterTag("meter", ...children);
 }
+
+export class InsTag extends Tag {
+  cite?: string;
+  datetime?: string;
+
+  setCite(cite?: string): this {
+    this.cite = cite;
+    return this;
+  }
+
+  setDatetime(datetime?: string): this {
+    this.datetime = datetime;
+    return this;
+  }
+}
+
+defineSchemaKeys(InsTag, ['cite', 'datetime']);
+
+export function Ins(...children: View[]): InsTag {
+  return new InsTag("ins", ...children);
+}
+
+export class DelTag extends Tag {
+  cite?: string;
+  datetime?: string;
+
+  setCite(cite?: string): this {
+    this.cite = cite;
+    return this;
+  }
+
+  setDatetime(datetime?: string): this {
+    this.datetime = datetime;
+    return this;
+  }
+}
+
+defineSchemaKeys(DelTag, ['cite', 'datetime']);
+
+export function Del(...children: View[]): DelTag {
+  return new DelTag("del", ...children);
+}

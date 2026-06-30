@@ -49,8 +49,12 @@ export class ImgTag extends Tag {
         this.fetchpriority = fetchpriority;
         return this;
     }
+    setReferrerPolicy(referrerpolicy) {
+        this.referrerpolicy = referrerpolicy;
+        return this;
+    }
 }
-defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin', 'fetchpriority']);
+defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin', 'fetchpriority', 'referrerpolicy']);
 /** Create an `<img>` element with typed attribute methods. */
 export function Img() {
     return new ImgTag("img");
@@ -79,8 +83,16 @@ export class SourceTag extends Tag {
         this.media = media;
         return this;
     }
+    setWidth(width) {
+        this.width = String(width);
+        return this;
+    }
+    setHeight(height) {
+        this.height = String(height);
+        return this;
+    }
 }
-defineSchemaKeys(SourceTag, ['src', 'srcset', 'media', 'sizes', 'type']);
+defineSchemaKeys(SourceTag, ['src', 'srcset', 'media', 'sizes', 'type', 'width', 'height']);
 export function Source() {
     return new SourceTag("source");
 }
@@ -105,8 +117,12 @@ export class VideoTag extends Tag {
         this.poster = poster;
         return this;
     }
+    setCrossOrigin(crossorigin) {
+        this.crossorigin = crossorigin;
+        return this;
+    }
 }
-defineSchemaKeys(VideoTag, ['src', 'poster', 'preload', 'width', 'height']);
+defineSchemaKeys(VideoTag, ['src', 'poster', 'preload', 'width', 'height', 'crossorigin']);
 export function Video(...children) {
     return new VideoTag("video", ...children);
 }
@@ -119,8 +135,12 @@ export class AudioTag extends Tag {
         this.preload = preload;
         return this;
     }
+    setCrossOrigin(crossorigin) {
+        this.crossorigin = crossorigin;
+        return this;
+    }
 }
-defineSchemaKeys(AudioTag, ['src', 'preload']);
+defineSchemaKeys(AudioTag, ['src', 'preload', 'crossorigin']);
 export function Audio(...children) {
     return new AudioTag("audio", ...children);
 }

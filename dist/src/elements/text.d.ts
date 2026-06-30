@@ -1,4 +1,4 @@
-import type { Tag } from "../core/tag.js";
+import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 export declare function P(...children: View[]): Tag;
 export declare function H1(...children: View[]): Tag;
@@ -8,7 +8,11 @@ export declare function H4(...children: View[]): Tag;
 export declare function H5(...children: View[]): Tag;
 export declare function H6(...children: View[]): Tag;
 export declare function Span(...children: View[]): Tag;
-export declare function Blockquote(...children: View[]): Tag;
+export declare class BlockquoteTag extends Tag {
+    cite?: string;
+    setCite(cite?: string): this;
+}
+export declare function Blockquote(...children: View[]): BlockquoteTag;
 export declare function Pre(...children: View[]): Tag;
 export declare function Code(...children: View[]): Tag;
 export declare function Hr(): Tag;

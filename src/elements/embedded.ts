@@ -1,7 +1,7 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import type { FetchPriority, ReferrerPolicy } from "./html-types.js";
+import type { FetchPriority, PermissionsPolicyDirective, ReferrerPolicy, SandboxToken } from "./html-types.js";
 
 
 export class IframeTag extends Tag {
@@ -36,8 +36,15 @@ export class IframeTag extends Tag {
     return this;
   }
 
-  setAllow(allow?: string): this {
-    this.allow = allow;
+  setAllow(policy?: Partial<Record<PermissionsPolicyDirective, string>>): this {
+    if (policy === undefined) {
+      this.allow = undefined;
+      return this;
+    }
+    this.allow = Object.entries(policy)
+      .filter(([, v]) => v !== undefined)
+      .map(([k, v]) => (v === '' ? k : `${k} ${v}`))
+      .join('; ');
     return this;
   }
 
@@ -46,8 +53,9 @@ export class IframeTag extends Tag {
     return this;
   }
 
-  setSandbox(sandbox?: string): this {
-    this.sandbox = sandbox;
+  /** Set `sandbox` from closed `SandboxToken`s; each call replaces the list. No args → `sandbox=""` (fully locked). */
+  setSandbox(...tokens: SandboxToken[]): this {
+    this.sandbox = tokens.join(' ');
     return this;
   }
 

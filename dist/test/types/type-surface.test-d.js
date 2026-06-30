@@ -3,7 +3,7 @@
 // stops erroring (e.g. a closed union gets widened, or Form<T>/route-param narrowing
 // breaks) becomes an "unused directive" error and FAILS the build. This makes
 // "a typo is a compile error" an enforced contract, not a comment.
-import { Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, } from "../../src/index.js";
+import { Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, Video, Audio, Source, Meta, Script, Area, Th, Td, Ins, Del, Q, Blockquote, } from "../../src/index.js";
 const ids = defineIds(["card"]);
 // `_`-prefixed param is exempt from noUnusedParameters; statements below are expressions, not bindings.
 const expectType = (_v) => undefined;
@@ -210,4 +210,55 @@ Div().maskType("luminance");
 Div().maskFrom("top", "50%");
 // @ts-expect-error — TailwindMaskType closed
 Div().maskType("alfa");
+// ── Accessible tables (RFC-B-04) ───────────────────────────────────────────
+Th("x").setScope("col");
+Th("x").setHeaders(ids.card).addHeaders("raw-id").setAbbr("Short");
+Td("x").setHeaders(ids.card, "raw-id");
+// @ts-expect-error — TableCellScope is closed; "colspan" is not a scope value
+Th("x").setScope("colspan");
+// @ts-expect-error — setAbbr is th-only; TdTag does not expose it
+Td("x").setAbbr("nope");
+// @ts-expect-error — `nope` is not a key in the defineIds registry
+Td("x").setHeaders(ids.nope);
+// ── Iframe security (RFC-B-03) ─────────────────────────────────────────────
+Iframe().setSandbox("allow-scripts", "allow-same-origin");
+Iframe().setSandbox(); // no args → sandbox=""
+Iframe().setAllow({ geolocation: "'self'", camera: "*" });
+Iframe().setAllow({}); // deny all
+Iframe().setAllow(); // clear
+// @ts-expect-error — SandboxToken is closed; "allow-form" is a typo
+Iframe().setSandbox("allow-form");
+// @ts-expect-error — a space-joined multi-token string is not a single SandboxToken
+Iframe().setSandbox("allow-scripts allow-same-origin");
+// @ts-expect-error — setAllow is record-only; the raw-string arm was removed
+Iframe().setAllow("camera 'self'");
+// ── Media completeness (RFC-B-01) ──────────────────────────────────────────
+// crossorigin reuses the closed CrossOrigin | '' union; referrerpolicy the closed ReferrerPolicy.
+Video().setCrossOrigin("anonymous");
+Audio().setCrossOrigin("use-credentials");
+Source().setWidth(1280).setHeight(720); // string | number → String
+Source().setWidth("1280");
+Img().setReferrerPolicy("no-referrer");
+Link().setReferrerPolicy("origin").setImagesrcset("a 1x").setImagesizes("100vw");
+Script().setReferrerPolicy("origin");
+Area().setReferrerPolicy("no-referrer");
+Meta().setMedia("(prefers-color-scheme: dark)");
+// @ts-expect-error — CrossOrigin is closed; "anonymouss" is not a member
+Video().setCrossOrigin("anonymouss");
+// @ts-expect-error — ReferrerPolicy is closed; "orig" is a typo
+Img().setReferrerPolicy("orig");
+// @ts-expect-error — setReferrerPolicy is deliberately NOT on SourceTag (<source> has no referrerpolicy)
+Source().setReferrerPolicy("origin");
+// ── Edit & quotation cite/datetime (RFC-B-02) ──────────────────────────────
+// Factory return types are the narrow subclass, not widened to Tag, and chain via `this`.
+expectType(Ins("x").setCite("/a").setDatetime("2026-06-29T10:00"));
+expectType(Del("x").setCite("/a").setDatetime("2026-06-29"));
+expectType(Q("x").setCite("https://e.com/s"));
+expectType(Blockquote("x").setCite("https://e.com/a"));
+// Negative: the quotation elements have no `datetime` attribute — locks the
+// cite-only vs cite+datetime split against a future copy-paste widening.
+// @ts-expect-error — QTag exposes only setCite, not setDatetime
+Q("x").setDatetime("2026-06-29");
+// @ts-expect-error — BlockquoteTag exposes only setCite, not setDatetime
+Blockquote("x").setDatetime("2026-06-29");
 //# sourceMappingURL=type-surface.test-d.js.map

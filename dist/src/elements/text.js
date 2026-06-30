@@ -1,3 +1,5 @@
+import { Tag } from "../core/tag.js";
+import { defineSchemaKeys } from "../core/proto.js";
 import { El } from "../core/utils.js";
 export function P(...children) {
     return El("p", ...children);
@@ -23,8 +25,15 @@ export function H6(...children) {
 export function Span(...children) {
     return El("span", ...children);
 }
+export class BlockquoteTag extends Tag {
+    setCite(cite) {
+        this.cite = cite;
+        return this;
+    }
+}
+defineSchemaKeys(BlockquoteTag, ['cite']);
 export function Blockquote(...children) {
-    return El("blockquote", ...children);
+    return new BlockquoteTag("blockquote", ...children);
 }
 export function Pre(...children) {
     return El("pre", ...children);

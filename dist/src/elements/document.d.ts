@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import type { BrowsingContext, Charset, CrossOrigin, FetchPriority, HttpEquiv, LinkAs, LinkElementRel, LinkType, MetaName, ScriptType } from "./html-types.js";
+import type { BrowsingContext, Charset, CrossOrigin, FetchPriority, HttpEquiv, LinkAs, LinkElementRel, LinkType, MetaName, ReferrerPolicy, ScriptType } from "./html-types.js";
 export declare class HtmlTag extends Tag {
     lang?: string;
     dir?: 'ltr' | 'rtl' | 'auto';
@@ -29,6 +29,7 @@ export declare class MetaTag extends Tag {
     charset?: Charset;
     httpEquiv?: string;
     property?: string;
+    media?: string;
     /**
      * Set the `<meta name>` (named-meta grammar: `viewport`/`description`/`theme-color`/…).
      * `MetaName` is meta-specific — do **not** reuse it for the unrelated `name` on
@@ -41,6 +42,7 @@ export declare class MetaTag extends Tag {
     /** Set `http-equiv` (emits the real `http-equiv` attribute, not the dead `httpEquiv`). */
     setHttpEquiv(httpEquiv?: HttpEquiv): this;
     setProperty(property?: string): this;
+    setMedia(media?: string): this;
 }
 export declare function Meta(): MetaTag;
 export declare class LinkTag extends Tag {
@@ -54,6 +56,9 @@ export declare class LinkTag extends Tag {
     as?: LinkAs;
     hreflang?: string;
     fetchpriority?: FetchPriority;
+    referrerpolicy?: ReferrerPolicy;
+    imagesrcset?: string;
+    imagesizes?: string;
     /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
     setRel(rel?: LinkElementRel): this;
     setHreflang(hreflang?: string): this;
@@ -67,6 +72,10 @@ export declare class LinkTag extends Tag {
     setAs(as?: LinkAs): this;
     /** Core Web Vitals priority hint — promote the LCP resource (`'high'`) or de-prioritise (`'low'`). */
     setFetchPriority(fetchpriority?: FetchPriority): this;
+    setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this;
+    /** `<link rel=preload as=image>` responsive srcset — distinct from `setSizes` (the icon `sizes` grammar). */
+    setImagesrcset(imagesrcset?: string): this;
+    setImagesizes(imagesizes?: string): this;
 }
 export declare function Link(): LinkTag;
 export declare class StyleTag extends Tag {
@@ -91,12 +100,14 @@ export declare class ScriptTag extends Tag {
     crossorigin?: CrossOrigin | '';
     integrity?: string;
     fetchpriority?: FetchPriority;
+    referrerpolicy?: ReferrerPolicy;
     setSrc(src?: string): this;
     setType(type?: ScriptType): this;
     setCrossOrigin(crossorigin?: CrossOrigin | ''): this;
     setIntegrity(integrity?: string): this;
     /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) script fetching. */
     setFetchPriority(fetchpriority?: FetchPriority): this;
+    setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this;
 }
 export declare function Script(js?: string): ScriptTag;
 //# sourceMappingURL=document.d.ts.map

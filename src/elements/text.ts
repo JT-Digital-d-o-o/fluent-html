@@ -1,4 +1,5 @@
-import type { Tag } from "../core/tag.js";
+import { Tag } from "../core/tag.js";
+import { defineSchemaKeys } from "../core/proto.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
@@ -34,8 +35,19 @@ export function Span(...children: View[]): Tag {
   return El("span", ...children);
 }
 
-export function Blockquote(...children: View[]): Tag {
-  return El("blockquote", ...children);
+export class BlockquoteTag extends Tag {
+  cite?: string;
+
+  setCite(cite?: string): this {
+    this.cite = cite;
+    return this;
+  }
+}
+
+defineSchemaKeys(BlockquoteTag, ['cite']);
+
+export function Blockquote(...children: View[]): BlockquoteTag {
+  return new BlockquoteTag("blockquote", ...children);
 }
 
 export function Pre(...children: View[]): Tag {

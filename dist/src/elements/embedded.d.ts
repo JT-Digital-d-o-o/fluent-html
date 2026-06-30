@@ -1,6 +1,6 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
-import type { FetchPriority, ReferrerPolicy } from "./html-types.js";
+import type { FetchPriority, PermissionsPolicyDirective, ReferrerPolicy, SandboxToken } from "./html-types.js";
 export declare class IframeTag extends Tag {
     src?: string;
     srcdoc?: string;
@@ -16,9 +16,10 @@ export declare class IframeTag extends Tag {
     setSrcdoc(srcdoc?: string): this;
     setWidth(width?: string): this;
     setHeight(height?: string): this;
-    setAllow(allow?: string): this;
+    setAllow(policy?: Partial<Record<PermissionsPolicyDirective, string>>): this;
     setLoading(loading?: 'lazy' | 'eager'): this;
-    setSandbox(sandbox?: string): this;
+    /** Set `sandbox` from closed `SandboxToken`s; each call replaces the list. No args → `sandbox=""` (fully locked). */
+    setSandbox(...tokens: SandboxToken[]): this;
     setName(name?: string): this;
     setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this;
     /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) iframe loading. */

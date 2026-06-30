@@ -1,3 +1,5 @@
+import { Tag } from "../core/tag.js";
+import { defineSchemaKeys } from "../core/proto.js";
 import { El } from "../core/utils.js";
 export function Strong(...children) {
     return El("strong", ...children);
@@ -35,8 +37,15 @@ export function Abbr(...children) {
 export function Cite(...children) {
     return El("cite", ...children);
 }
+export class QTag extends Tag {
+    setCite(cite) {
+        this.cite = cite;
+        return this;
+    }
+}
+defineSchemaKeys(QTag, ['cite']);
 export function Q(...children) {
-    return El("q", ...children);
+    return new QTag("q", ...children);
 }
 export function Dfn(...children) {
     return El("dfn", ...children);

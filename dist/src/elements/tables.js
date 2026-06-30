@@ -1,6 +1,10 @@
 import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
+import { extractId } from "../ids.js";
+function joinHeaderIds(ids) {
+    return ids.map(extractId).map(s => s.trim()).filter(Boolean);
+}
 export function Table(...children) {
     return El("table", ...children);
 }
@@ -29,8 +33,23 @@ export class ThTag extends Tag {
         this.scope = scope;
         return this;
     }
+    setHeaders(...ids) {
+        const j = joinHeaderIds(ids);
+        this.headers = j.length ? j.join(' ') : undefined;
+        return this;
+    }
+    addHeaders(...ids) {
+        const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+        const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
+        this.headers = merged.length ? merged.join(' ') : undefined;
+        return this;
+    }
+    setAbbr(abbr) {
+        this.abbr = abbr;
+        return this;
+    }
 }
-defineSchemaKeys(ThTag, ['colspan', 'rowspan', 'scope']);
+defineSchemaKeys(ThTag, ['colspan', 'rowspan', 'scope', 'headers', 'abbr']);
 export function Th(...children) {
     return new ThTag("th", ...children);
 }
@@ -43,8 +62,19 @@ export class TdTag extends Tag {
         this.rowspan = rowspan;
         return this;
     }
+    setHeaders(...ids) {
+        const j = joinHeaderIds(ids);
+        this.headers = j.length ? j.join(' ') : undefined;
+        return this;
+    }
+    addHeaders(...ids) {
+        const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+        const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
+        this.headers = merged.length ? merged.join(' ') : undefined;
+        return this;
+    }
 }
-defineSchemaKeys(TdTag, ['colspan', 'rowspan']);
+defineSchemaKeys(TdTag, ['colspan', 'rowspan', 'headers']);
 export function Td(...children) {
     return new TdTag("td", ...children);
 }

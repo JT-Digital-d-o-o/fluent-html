@@ -2,6 +2,16 @@ import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
+import { extractId } from "../ids.js";
+import type { Id } from "../ids.js";
+
+/** `<th scope>` value. Use `scope` for simple/regular tables; for irregular or
+ *  spanning header layouts use `setHeaders` (cell-to-header id association). */
+export type TableCellScope = 'row' | 'col' | 'rowgroup' | 'colgroup';
+
+function joinHeaderIds(ids: (string | Id)[]): string[] {
+  return ids.map(extractId).map(s => s.trim()).filter(Boolean);
+}
 
 export function Table(...children: View[]): Tag {
   return El("table", ...children);
@@ -26,7 +36,9 @@ export function Tr(...children: View[]): Tag {
 export class ThTag extends Tag {
   colspan?: number;
   rowspan?: number;
-  scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
+  scope?: TableCellScope;
+  headers?: string;
+  abbr?: string;
 
   setColspan(colspan: number): this {
     this.colspan = colspan;
@@ -38,13 +50,31 @@ export class ThTag extends Tag {
     return this;
   }
 
-  setScope(scope: 'row' | 'col' | 'rowgroup' | 'colgroup'): this {
+  setScope(scope: TableCellScope): this {
     this.scope = scope;
+    return this;
+  }
+
+  setHeaders(...ids: (string | Id)[]): this {
+    const j = joinHeaderIds(ids);
+    this.headers = j.length ? j.join(' ') : undefined;
+    return this;
+  }
+
+  addHeaders(...ids: (string | Id)[]): this {
+    const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+    const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
+    this.headers = merged.length ? merged.join(' ') : undefined;
+    return this;
+  }
+
+  setAbbr(abbr: string): this {
+    this.abbr = abbr;
     return this;
   }
 }
 
-defineSchemaKeys(ThTag, ['colspan', 'rowspan', 'scope']);
+defineSchemaKeys(ThTag, ['colspan', 'rowspan', 'scope', 'headers', 'abbr']);
 
 export function Th(...children: View[]): ThTag {
   return new ThTag("th", ...children);
@@ -53,6 +83,7 @@ export function Th(...children: View[]): ThTag {
 export class TdTag extends Tag {
   colspan?: number;
   rowspan?: number;
+  headers?: string;
 
   setColspan(colspan: number): this {
     this.colspan = colspan;
@@ -63,9 +94,22 @@ export class TdTag extends Tag {
     this.rowspan = rowspan;
     return this;
   }
+
+  setHeaders(...ids: (string | Id)[]): this {
+    const j = joinHeaderIds(ids);
+    this.headers = j.length ? j.join(' ') : undefined;
+    return this;
+  }
+
+  addHeaders(...ids: (string | Id)[]): this {
+    const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+    const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
+    this.headers = merged.length ? merged.join(' ') : undefined;
+    return this;
+  }
 }
 
-defineSchemaKeys(TdTag, ['colspan', 'rowspan']);
+defineSchemaKeys(TdTag, ['colspan', 'rowspan', 'headers']);
 
 export function Td(...children: View[]): TdTag {
   return new TdTag("td", ...children);

@@ -57,6 +57,45 @@ export type HttpEquiv =
 export type FetchPriority = 'high' | 'low' | 'auto';
 
 /**
+ * `sandbox` token — the fixed WHATWG enumerated set. **Closed** (no `(string & {})`
+ * tail): a typo (`'allow-form'`) is a compile error, since a misspelled token
+ * silently *weakens* the policy rather than no-opping.
+ */
+export type SandboxToken =
+  | 'allow-downloads'
+  | 'allow-forms'
+  | 'allow-modals'
+  | 'allow-orientation-lock'
+  | 'allow-pointer-lock'
+  | 'allow-popups'
+  | 'allow-popups-to-escape-sandbox'
+  | 'allow-presentation'
+  | 'allow-same-origin'
+  | 'allow-scripts'
+  | 'allow-top-navigation'
+  | 'allow-top-navigation-by-user-activation'
+  | 'allow-top-navigation-to-custom-protocols';
+
+/**
+ * Permissions-Policy directive *name* (the `allow` attribute keys). Known names
+ * autocomplete; the `(string & {})` tail stays OPEN for new directives (matching
+ * `LinkRel`/`HttpEquiv`). Trade-off: a misspelled directive name still compiles —
+ * weaker than `SandboxToken`. Directive *values* are freeform allowlist strings.
+ */
+export type PermissionsPolicyDirective =
+  | 'accelerometer' | 'ambient-light-sensor' | 'attribution-reporting'
+  | 'autoplay' | 'bluetooth' | 'camera' | 'ch-ua' | 'clipboard-read'
+  | 'clipboard-write' | 'cross-origin-isolated' | 'display-capture'
+  | 'encrypted-media' | 'fullscreen' | 'gamepad' | 'geolocation'
+  | 'gyroscope' | 'hid' | 'identity-credentials-get' | 'idle-detection'
+  | 'local-fonts' | 'magnetometer' | 'microphone' | 'midi'
+  | 'otp-credentials' | 'payment' | 'picture-in-picture'
+  | 'publickey-credentials-create' | 'publickey-credentials-get'
+  | 'screen-wake-lock' | 'serial' | 'storage-access' | 'usb'
+  | 'web-share' | 'window-management' | 'xr-spatial-tracking'
+  | (string & {});
+
+/**
  * `<link rel>` — resource hints + document relations. **Distinct from `LinkRel`**,
  * which is the *anchor* rel grammar (`noopener`/`nofollow`/…) shared with `AnchorTag`.
  * Open: custom/vendor rel tokens are legal.

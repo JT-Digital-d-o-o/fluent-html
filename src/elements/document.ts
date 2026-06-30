@@ -13,6 +13,7 @@ import type {
   LinkElementRel,
   LinkType,
   MetaName,
+  ReferrerPolicy,
   ScriptType,
 } from "./html-types.js";
 
@@ -75,6 +76,7 @@ export class MetaTag extends Tag {
   charset?: Charset;
   httpEquiv?: string;
   property?: string;
+  media?: string;
 
   /**
    * Set the `<meta name>` (named-meta grammar: `viewport`/`description`/`theme-color`/…).
@@ -107,9 +109,14 @@ export class MetaTag extends Tag {
     this.property = property;
     return this;
   }
+
+  setMedia(media?: string): this {
+    this.media = media;
+    return this;
+  }
 }
 
-defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content']);
+defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content', 'media']);
 
 export function Meta(): MetaTag {
   return new MetaTag("meta");
@@ -126,6 +133,9 @@ export class LinkTag extends Tag {
   as?: LinkAs;
   hreflang?: string;
   fetchpriority?: FetchPriority;
+  referrerpolicy?: ReferrerPolicy;
+  imagesrcset?: string;
+  imagesizes?: string;
 
   /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
   setRel(rel?: LinkElementRel): this {
@@ -179,9 +189,25 @@ export class LinkTag extends Tag {
     this.fetchpriority = fetchpriority;
     return this;
   }
+
+  setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
+    this.referrerpolicy = referrerpolicy;
+    return this;
+  }
+
+  /** `<link rel=preload as=image>` responsive srcset — distinct from `setSizes` (the icon `sizes` grammar). */
+  setImagesrcset(imagesrcset?: string): this {
+    this.imagesrcset = imagesrcset;
+    return this;
+  }
+
+  setImagesizes(imagesizes?: string): this {
+    this.imagesizes = imagesizes;
+    return this;
+  }
 }
 
-defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang', 'fetchpriority']);
+defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang', 'fetchpriority', 'referrerpolicy', 'imagesrcset', 'imagesizes']);
 
 export function Link(): LinkTag {
   return new LinkTag("link");
@@ -243,6 +269,7 @@ export class ScriptTag extends Tag {
   crossorigin?: CrossOrigin | '';
   integrity?: string;
   fetchpriority?: FetchPriority;
+  referrerpolicy?: ReferrerPolicy;
 
   setSrc(src?: string): this {
     this.src = src;
@@ -269,9 +296,14 @@ export class ScriptTag extends Tag {
     this.fetchpriority = fetchpriority;
     return this;
   }
+
+  setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
+    this.referrerpolicy = referrerpolicy;
+    return this;
+  }
 }
 
-defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin', 'fetchpriority']);
+defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin', 'fetchpriority', 'referrerpolicy']);
 
 export function Script(js: string = ""): ScriptTag {
   return new ScriptTag("script", js);

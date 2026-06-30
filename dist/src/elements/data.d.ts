@@ -32,4 +32,18 @@ export declare class MeterTag extends Tag {
     setOptimum(optimum?: number): this;
 }
 export declare function Meter(...children: View[]): MeterTag;
+export declare class InsTag extends Tag {
+    cite?: string;
+    datetime?: string;
+    setCite(cite?: string): this;
+    setDatetime(datetime?: string): this;
+}
+export declare function Ins(...children: View[]): InsTag;
+export declare class DelTag extends Tag {
+    cite?: string;
+    datetime?: string;
+    setCite(cite?: string): this;
+    setDatetime(datetime?: string): this;
+}
+export declare function Del(...children: View[]): DelTag;
 //# sourceMappingURL=data.d.ts.map

@@ -85,6 +85,7 @@ export class AreaTag extends Tag {
   target?: BrowsingContext;
   rel?: LinkRel;
   download?: string;
+  referrerpolicy?: ReferrerPolicy;
 
   setShape(shape?: 'rect' | 'circle' | 'poly' | 'default'): this {
     this.shape = shape;
@@ -120,9 +121,14 @@ export class AreaTag extends Tag {
     this.download = download;
     return this;
   }
+
+  setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
+    this.referrerpolicy = referrerpolicy;
+    return this;
+  }
 }
 
-defineSchemaKeys(AreaTag, ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download']);
+defineSchemaKeys(AreaTag, ['shape', 'coords', 'href', 'alt', 'target', 'rel', 'download', 'referrerpolicy']);
 
 export function Area(): AreaTag {
   return new AreaTag("area");

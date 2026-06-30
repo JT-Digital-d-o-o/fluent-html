@@ -1,5 +1,9 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { Id } from "../ids.js";
+/** `<th scope>` value. Use `scope` for simple/regular tables; for irregular or
+ *  spanning header layouts use `setHeaders` (cell-to-header id association). */
+export type TableCellScope = 'row' | 'col' | 'rowgroup' | 'colgroup';
 export declare function Table(...children: View[]): Tag;
 export declare function Thead(...children: View[]): Tag;
 export declare function Tbody(...children: View[]): Tag;
@@ -8,17 +12,25 @@ export declare function Tr(...children: View[]): Tag;
 export declare class ThTag extends Tag {
     colspan?: number;
     rowspan?: number;
-    scope?: 'row' | 'col' | 'rowgroup' | 'colgroup';
+    scope?: TableCellScope;
+    headers?: string;
+    abbr?: string;
     setColspan(colspan: number): this;
     setRowspan(rowspan: number): this;
-    setScope(scope: 'row' | 'col' | 'rowgroup' | 'colgroup'): this;
+    setScope(scope: TableCellScope): this;
+    setHeaders(...ids: (string | Id)[]): this;
+    addHeaders(...ids: (string | Id)[]): this;
+    setAbbr(abbr: string): this;
 }
 export declare function Th(...children: View[]): ThTag;
 export declare class TdTag extends Tag {
     colspan?: number;
     rowspan?: number;
+    headers?: string;
     setColspan(colspan: number): this;
     setRowspan(rowspan: number): this;
+    setHeaders(...ids: (string | Id)[]): this;
+    addHeaders(...ids: (string | Id)[]): this;
 }
 export declare function Td(...children: View[]): TdTag;
 export declare function Caption(...children: View[]): Tag;

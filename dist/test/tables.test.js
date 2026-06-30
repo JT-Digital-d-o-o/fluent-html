@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Caption, Colgroup, Col, } from "../src/index.js";
+import { render, Table, Thead, Tbody, Tfoot, Tr, Th, Td, Caption, Colgroup, Col, defineIds, } from "../src/index.js";
 // ------------------------------------
 // Tables
 // ------------------------------------
@@ -39,5 +39,15 @@ describe("Tables", () => {
             Tr([Td("A"), Td("B"), Td("C")]),
         ])), `<table><colgroup><col class="highlight" span="2">\n<col></colgroup>\n<tr><td>A</td>\n<td>B</td>\n<td>C</td></tr></table>`);
     });
+});
+describe("Accessible tables (headers / abbr)", () => {
+    const ids = defineIds(["price-col", "q3-row"]);
+    it("Td headers via Id", () => { assert.strictEqual(render(Td("$42").setHeaders(ids.priceCol, ids.q3Row)), `<td headers="price-col q3-row">$42</td>`); });
+    it("Td headers via raw strings", () => { assert.strictEqual(render(Td("$42").setHeaders("price-col", "q3-row")), `<td headers="price-col q3-row">$42</td>`); });
+    it("addHeaders accumulates and de-dups", () => { assert.strictEqual(render(Td("$42").setHeaders(ids.priceCol).addHeaders(ids.q3Row, ids.priceCol)), `<td headers="price-col q3-row">$42</td>`); });
+    it("Th with abbr + id", () => { assert.strictEqual(render(Th("Price (USD)").setId(ids.priceCol).setAbbr("Price")), `<th id="price-col" abbr="Price">Price (USD)</th>`); });
+    it("Th headers + scope", () => { assert.strictEqual(render(Th("Total").setHeaders("r1", "r2").setScope("rowgroup")), `<th scope="rowgroup" headers="r1 r2">Total</th>`); });
+    it("setHeaders() with no args clears (no attribute)", () => { assert.strictEqual(render(Td("x").setHeaders()), `<td>x</td>`); });
+    it("setHeaders with whitespace-only clears", () => { assert.strictEqual(render(Td("x").setHeaders("  ")), `<td>x</td>`); });
 });
 //# sourceMappingURL=tables.test.js.map

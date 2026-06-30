@@ -17,16 +17,24 @@ export class IframeTag extends Tag {
         this.height = height;
         return this;
     }
-    setAllow(allow) {
-        this.allow = allow;
+    setAllow(policy) {
+        if (policy === undefined) {
+            this.allow = undefined;
+            return this;
+        }
+        this.allow = Object.entries(policy)
+            .filter(([, v]) => v !== undefined)
+            .map(([k, v]) => (v === '' ? k : `${k} ${v}`))
+            .join('; ');
         return this;
     }
     setLoading(loading) {
         this.loading = loading;
         return this;
     }
-    setSandbox(sandbox) {
-        this.sandbox = sandbox;
+    /** Set `sandbox` from closed `SandboxToken`s; each call replaces the list. No args → `sandbox=""` (fully locked). */
+    setSandbox(...tokens) {
+        this.sandbox = tokens.join(' ');
         return this;
     }
     setName(name) {

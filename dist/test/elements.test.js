@@ -16,11 +16,11 @@ Img, Picture, Source, Video, Audio, Track, Canvas, Svg, Path, Circle, Rect, Line
 // Embedded
 Iframe, Embed, 
 // Links
-A, 
+A, Area, 
 // Document
 HTML, Document, Doctype, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, 
 // Data/Time
-Time, Data, Progress, Meter, 
+Time, Data, Ins, Del, Progress, Meter, 
 // Web Components
 Slot, 
 // Utilities
@@ -164,6 +164,7 @@ describe("Links", () => {
     it("Download link", () => { assert.strictEqual(render(A("Download PDF").setHref("/file.pdf").setDownload("document.pdf")), `<a href="/file.pdf" download="document.pdf">Download PDF</a>`); });
     it("Email link", () => { assert.strictEqual(render(A("Contact us").setHref("mailto:info@example.com")), `<a href="mailto:info@example.com">Contact us</a>`); });
     it("Anchor with hreflang + referrerPolicy", () => { assert.strictEqual(render(A("FR").setHref("/fr").setHreflang("fr").setReferrerPolicy("no-referrer")), `<a href="/fr" referrerpolicy="no-referrer" hreflang="fr">FR</a>`); });
+    it("Area with referrerpolicy", () => { assert.strictEqual(render(Area().setShape("rect").setCoords("0,0,80,80").setHref("/a").setReferrerPolicy("no-referrer-when-downgrade")), `<area shape="rect" coords="0,0,80,80" href="/a" referrerpolicy="no-referrer-when-downgrade">`); });
 });
 // ------------------------------------
 // Media Elements
@@ -225,6 +226,11 @@ describe("Media Elements", () => {
         ]).toggle("controls")), `<video controls><source src="video.mp4" type="video/mp4">\n<track src="captions.vtt" kind="subtitles" srclang="en" label="English" default></video>`);
     });
     it("Canvas", () => { assert.strictEqual(render(Canvas().setWidth(800).setHeight(600).setId("myCanvas")), `<canvas id="myCanvas" width="800" height="600"></canvas>`); });
+    it("Video with crossorigin", () => { assert.strictEqual(render(Video().setSrc("video.mp4").setCrossOrigin("anonymous")), `<video src="video.mp4" crossorigin="anonymous"></video>`); });
+    it("Audio with crossorigin", () => { assert.strictEqual(render(Audio().setSrc("audio.mp3").setCrossOrigin("use-credentials")), `<audio src="audio.mp3" crossorigin="use-credentials"></audio>`); });
+    it("Source with width/height (CLS box reservation)", () => { assert.strictEqual(render(Source().setSrcset("/hero.avif").setMedia("(min-width:768px)").setWidth(1280).setHeight(720)), `<source srcset="/hero.avif" media="(min-width:768px)" width="1280" height="720">`); });
+    it("Source width accepts string", () => { assert.strictEqual(render(Source().setSrcset("/x.avif").setWidth("1280")), `<source srcset="/x.avif" width="1280">`); });
+    it("Image with referrerpolicy", () => { assert.strictEqual(render(Img().setSrc("/avatar.jpg").setReferrerPolicy("no-referrer")), `<img src="/avatar.jpg" referrerpolicy="no-referrer">`); });
 });
 // ------------------------------------
 // SVG
@@ -306,15 +312,21 @@ describe("Embedded Content", () => {
     it("Iframe with sandbox", () => {
         assert.strictEqual(render(Iframe()
             .setSrc("https://example.com")
-            .setSandbox("allow-scripts allow-same-origin")
+            .setSandbox("allow-scripts", "allow-same-origin")
             .setLoading("lazy")), `<iframe src="https://example.com" sandbox="allow-scripts allow-same-origin" loading="lazy"></iframe>`);
     });
+    it("Iframe fully locked (setSandbox no args)", () => { assert.strictEqual(render(Iframe().setSandbox()), `<iframe sandbox=""></iframe>`); });
     it("Iframe with allow", () => {
         assert.strictEqual(render(Iframe()
             .setSrc("https://youtube.com/embed/xyz")
-            .setAllow("accelerometer; autoplay; clipboard-write")
+            .setAllow({ accelerometer: "", autoplay: "", "clipboard-write": "" })
             .toggle("allowfullscreen")), `<iframe src="https://youtube.com/embed/xyz" allow="accelerometer; autoplay; clipboard-write" allowfullscreen></iframe>`);
     });
+    it("Iframe allow with values (record)", () => { assert.strictEqual(render(Iframe().setSrc("/m").setAllow({ geolocation: "'self'", camera: "*" })), `<iframe src="/m" allow="geolocation &#39;self&#39;; camera *"></iframe>`); });
+    it("Iframe allow multi-origin value", () => { assert.strictEqual(render(Iframe().setAllow({ geolocation: "'self' https://a.example" })), `<iframe allow="geolocation &#39;self&#39; https://a.example"></iframe>`); });
+    it("Iframe allow deny-all (empty record) emits allow=\"\"", () => { assert.strictEqual(render(Iframe().setAllow({})), `<iframe allow=""></iframe>`); });
+    it("Iframe allow cleared (no args) omits attribute", () => { assert.strictEqual(render(Iframe().setSrc("/x").setAllow()), `<iframe src="/x"></iframe>`); });
+    it("Iframe allow value is escaped (no breakout)", () => { assert.strictEqual(render(Iframe().setAllow({ geolocation: '"onerror=alert(1)' })), `<iframe allow="geolocation &quot;onerror=alert(1)"></iframe>`); });
     it("Iframe with fetchpriority", () => { assert.strictEqual(render(Iframe().setSrc("https://example.com").setFetchPriority("low")), `<iframe src="https://example.com" fetchpriority="low"></iframe>`); });
     it("Embed", () => { assert.strictEqual(render(Embed().setSrc("game.swf").setType("application/x-shockwave-flash").setWidth("400").setHeight("300")), `<embed src="game.swf" type="application/x-shockwave-flash" width="400" height="300">`); });
 });
@@ -354,6 +366,9 @@ describe("Document Structure", () => {
     it("Link preconnect with bare crossorigin", () => { assert.strictEqual(render(Link().setRel("preconnect").setHref("https://fonts.gstatic.com").setCrossOrigin("")), `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">`); });
     it("Link modulepreload with fetchpriority", () => { assert.strictEqual(render(Link().setRel("modulepreload").setHref("/app.js").setFetchPriority("low")), `<link rel="modulepreload" href="/app.js" fetchpriority="low">`); });
     it("Link rel/as/type stay open unions (custom values still compile + render)", () => { assert.strictEqual(render(Link().setRel("custom-rel").setAs("font").setType("font/woff2")), `<link rel="custom-rel" type="font/woff2" as="font">`); });
+    it("Link responsive image preload (imagesrcset/imagesizes)", () => { assert.strictEqual(render(Link().setRel("preload").setAs("image").setImagesrcset("/hero-480.jpg 480w, /hero-1080.jpg 1080w").setImagesizes("100vw")), `<link rel="preload" as="image" imagesrcset="/hero-480.jpg 480w, /hero-1080.jpg 1080w" imagesizes="100vw">`); });
+    it("Link with referrerpolicy", () => { assert.strictEqual(render(Link().setRel("stylesheet").setHref("/s.css").setReferrerPolicy("strict-origin-when-cross-origin")), `<link rel="stylesheet" href="/s.css" referrerpolicy="strict-origin-when-cross-origin">`); });
+    it("Meta theme-color per color scheme (media)", () => { assert.strictEqual(render(Meta().setName("theme-color").setContent("#0b0b0b").setMedia("(prefers-color-scheme: dark)")), `<meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)">`); });
     it("Base", () => { assert.strictEqual(render(Base().setHref("https://example.com/").setTarget("_blank")), `<base href="https://example.com/" target="_blank">`); });
     it("Noscript", () => { assert.strictEqual(render(Noscript(P("JavaScript is required"))), `<noscript><p>JavaScript is required</p></noscript>`); });
     it("Template", () => { assert.strictEqual(render(Template(Div("Template content"))), `<template><div>Template content</div></template>`); });
@@ -366,6 +381,7 @@ describe("Script and Style (Raw Content)", () => {
     it("Script with special chars (not escaped)", () => { assert.strictEqual(render(Script("if (a < b && c > d) { alert('<test>'); }")), "<script>if (a < b && c > d) { alert('<test>'); }</script>"); });
     it("Script external", () => { assert.strictEqual(render(Script().setSrc("app.js").toggle("defer")), `<script src="app.js" defer></script>`); });
     it("Script module", () => { assert.strictEqual(render(Script().setSrc("module.js").setType("module")), `<script src="module.js" type="module"></script>`); });
+    it("Script with referrerpolicy", () => { assert.strictEqual(render(Script().setSrc("/a.js").setReferrerPolicy("origin")), `<script src="/a.js" referrerpolicy="origin"></script>`); });
     it("Script with fetchpriority", () => { assert.strictEqual(render(Script().setSrc("/app.js").setType("module").setFetchPriority("high")), `<script src="/app.js" type="module" fetchpriority="high"></script>`); });
     it("Script with integrity", () => {
         assert.strictEqual(render(Script()
@@ -392,6 +408,17 @@ describe("Data and Time Elements", () => {
             .setHigh(7)
             .setOptimum(5)), `<meter value="6" min="0" max="10" low="3" high="7" optimum="5"></meter>`);
     });
+});
+// ------------------------------------
+// Edit & Quotation (cite / datetime)
+// ------------------------------------
+describe("Edit and Quotation Elements", () => {
+    it("Ins with cite and datetime", () => { assert.strictEqual(render(Ins("new text").setCite("/edits/42").setDatetime("2026-06-29T10:00")), `<ins cite="/edits/42" datetime="2026-06-29T10:00">new text</ins>`); });
+    it("Del with datetime", () => { assert.strictEqual(render(Del("old text").setDatetime("2026-06-29")), `<del datetime="2026-06-29">old text</del>`); });
+    it("Ins with no setters is a bare element", () => { assert.strictEqual(render(Ins("x")), `<ins>x</ins>`); });
+    it("Q with cite", () => { assert.strictEqual(render(Q("quoted").setCite("https://example.com/src")), `<q cite="https://example.com/src">quoted</q>`); });
+    it("Blockquote with cite", () => { assert.strictEqual(render(Blockquote(P("excerpt")).setCite("https://example.com/article")), `<blockquote cite="https://example.com/article"><p>excerpt</p></blockquote>`); });
+    it("cite is breakout-escaped", () => { assert.strictEqual(render(Q("x").setCite('"><script>')), `<q cite="&quot;&gt;&lt;script&gt;">x</q>`); });
 });
 // ------------------------------------
 // Web Components

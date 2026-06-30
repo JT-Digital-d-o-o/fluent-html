@@ -1,4 +1,5 @@
-import type { Tag } from "../core/tag.js";
+import { Tag } from "../core/tag.js";
+import { defineSchemaKeys } from "../core/proto.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 
@@ -50,8 +51,19 @@ export function Cite(...children: View[]): Tag {
   return El("cite", ...children);
 }
 
-export function Q(...children: View[]): Tag {
-  return El("q", ...children);
+export class QTag extends Tag {
+  cite?: string;
+
+  setCite(cite?: string): this {
+    this.cite = cite;
+    return this;
+  }
+}
+
+defineSchemaKeys(QTag, ['cite']);
+
+export function Q(...children: View[]): QTag {
+  return new QTag("q", ...children);
 }
 
 export function Dfn(...children: View[]): Tag {

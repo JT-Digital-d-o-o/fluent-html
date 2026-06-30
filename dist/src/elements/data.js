@@ -64,4 +64,32 @@ defineSchemaKeys(MeterTag, ['value', 'min', 'max', 'low', 'high', 'optimum']);
 export function Meter(...children) {
     return new MeterTag("meter", ...children);
 }
+export class InsTag extends Tag {
+    setCite(cite) {
+        this.cite = cite;
+        return this;
+    }
+    setDatetime(datetime) {
+        this.datetime = datetime;
+        return this;
+    }
+}
+defineSchemaKeys(InsTag, ['cite', 'datetime']);
+export function Ins(...children) {
+    return new InsTag("ins", ...children);
+}
+export class DelTag extends Tag {
+    setCite(cite) {
+        this.cite = cite;
+        return this;
+    }
+    setDatetime(datetime) {
+        this.datetime = datetime;
+        return this;
+    }
+}
+defineSchemaKeys(DelTag, ['cite', 'datetime']);
+export function Del(...children) {
+    return new DelTag("del", ...children);
+}
 //# sourceMappingURL=data.js.map

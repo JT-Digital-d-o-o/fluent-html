@@ -2,14 +2,16 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [6.2.0] - Tailwind v4 Method Surface
+## [6.2.0] - Tailwind v4 Method Surface + HTML Element Completeness
 
-63 new fluent Tailwind methods (plus pure type-union additions on `.on()`/`.at()`) that previously forced a raw `.setClass(...)` escape hatch — covering SVG paint, text effects, shadows/filters/blending, v4 gradients, 3D transforms, attribute/structural variants, layout, and v4.1 masks. Additive apart from two intentional type-narrowing breaks listed below; benign, well-typed inputs render unchanged. Every method is in the shared class vocabulary, so the extractor (safelist) and ESLint plugin (`134 → 197` methods) pick them up in lockstep.
+Two tracks. **Track C** — 63 new fluent Tailwind methods (plus pure type-union additions on `.on()`/`.at()`) that previously forced a raw `.setClass(...)` escape hatch — covering SVG paint, text effects, shadows/filters/blending, v4 gradients, 3D transforms, attribute/structural variants, layout, and v4.1 masks. Every method is in the shared class vocabulary, so the extractor (safelist) and ESLint plugin (`134 → 197` methods) pick them up in lockstep. **Track B** — HTML-element attribute completeness closing `addAttribute` escape hatches: text-level edit/quotation (`Ins`/`Del`/`Q`/`Blockquote` `cite`/`datetime`), media & resource hints (`crossorigin`/`referrerpolicy`/`<source>` sizing/responsive preload/`theme-color` media), iframe security (typed `sandbox` tokens + `allow` record), and accessible tables (Id-typed `headers`, `abbr`, `TableCellScope`). Additive apart from the intentional type-narrowing breaks listed below; benign, well-typed inputs render unchanged.
 
 ### 💥 Breaking
 
 - **`TailwindGradientDirection` is closed** — the `(string & {})` escape is removed, so `gradientTo`/`gradient` no longer accept an arbitrary/angle string (`gradientTo("45")` is a compile error). Use the new `gradientLinear(angle)`; only the 8 `to-*` keywords are valid as a direction.
 - **`.at()` container-query breakpoints narrow to a closed scale** — `TailwindContainerBreakpoint` goes from the fully-open `` `@${string}` `` to the `@3xs`…`@7xl` scale (+ `@max-*` and the `@[…]`/`@min-[…]`/`@max-[…]` arbitrary arms). Every real container breakpoint still compiles; the only inputs that now error are out-of-scale tokens / typos (`.at("@8xl")`, `.at("@mdd")`) — which Tailwind never generated a class for, so no working CSS changes (same flavor as 6.1.1's sizing-union closure). The `nth-[…]` arm is also folded into the structural `nth-*` family, but that is value-compatible (every `nth-[…]` literal still type-checks).
+- **`IframeTag.setSandbox` is now variadic closed tokens (RFC-B-03)** — `setSandbox(...tokens: SandboxToken[])` replaces the bare-string setter. A space-joined string no longer type-checks: `setSandbox("allow-scripts allow-same-origin")` → `setSandbox("allow-scripts", "allow-same-origin")`; `setSandbox()` → `sandbox=""` (fully locked). A misspelled token is now a compile error instead of a silently-weakened policy.
+- **`IframeTag.setAllow` is now record-only (RFC-B-03)** — `setAllow(policy?: Partial<Record<PermissionsPolicyDirective, string>>)`; the raw-string arm is removed (a record value is a freeform string and subsumes any raw allowlist, including multiple origins). `setAllow("accelerometer; autoplay")` → `setAllow({ accelerometer: "", autoplay: "" })`; `setAllow({ camera: "'self'" })` → `allow="camera 'self'"`; `setAllow({})` → `allow=""` (deny all); `setAllow()` clears the attribute. Directive *names* are an open union (`PermissionsPolicyDirective`) — name typos still compile (autocomplete-assisted only), unlike the fully-closed `SandboxToken`.
 
 ### ✨ Added
 
@@ -47,7 +49,31 @@ All notable changes to Fluent HTML will be documented in this file.
   Div().background("[url(/hero.jpg)]").maskFrom("b", "50%").maskTo("b", "90%");
   ```
 
-- **Compile-only type tests** for the new closed unions in `test/types/*.test-d.ts` — positive/negative `@ts-expect-error` assertions lock "a typo is a compile error" (including the no-collision pin `Svg(Path()).fillColor("current")`).
+- **HTML elements — accessible tables (RFC-B-04)** — `headers` cell-association on `ThTag`/`TdTag` via `setHeaders(...ids)` / `addHeaders(...ids)`, **Id-typed** against the `defineIds` registry (a typo is a compile error; `set` overrides, `add` accumulates de-duped, an empty list clears the attribute rather than emitting a dead `headers=""`); `abbr` on `ThTag` (`setAbbr`, th-only — a condensed header label for assistive tech); and the existing `th` `scope` literal promoted to an exported `TableCellScope` union for typing component props. Pass the raw id token (or an `Id`), not a `#selector`.
+
+  ```typescript
+  const ids = defineIds(["price-col", "q3-row"] as const);
+  Th("Price (USD)").setId(ids.priceCol).setScope("col").setAbbr("Price");
+  Td("$42").setHeaders(ids.priceCol, ids.q3Row);   // <td headers="price-col q3-row">
+  ```
+
+- **HTML elements — iframe security types (RFC-B-03)** — net-new exported unions `SandboxToken` (the fixed 13-token WHATWG `sandbox` set, fully closed) and `PermissionsPolicyDirective` (the `allow` directive registry, open-tailed) backing the breaking `setSandbox`/`setAllow` signature changes above. The two `<iframe>` attributes that form the security boundary are now typed: a misspelled `sandbox` token is a compile error, and `allow` is a directive record instead of a hand-joined string.
+
+- **HTML elements — media & resource-hint completeness (RFC-B-01)** — `setCrossOrigin` on `Video`/`Audio` (reusing the `CrossOrigin | ''` union shipped on `Img`/`Link`/`Script`); `setWidth`/`setHeight` on `Source` (`string | number` → `String`, reserves the CLS box in art-directed `<picture>`); the `setReferrerPolicy` holdouts on `Img`/`Link`/`Script`/`Area` (completing the closed-`ReferrerPolicy` set already on `A`/`Iframe`); `setImagesrcset`/`setImagesizes` on `Link` for responsive `<link rel=preload as=image>`; and `setMedia` on `Meta` for per-color-scheme `theme-color`. `<source>` deliberately gains **no** `referrerpolicy` (the spec defines none) — locked by a negative compile assertion.
+
+  ```typescript
+  Video(Track().setSrc("https://cdn/x.vtt").setKind("captions")).setCrossOrigin("anonymous");
+  Link().setRel("preload").setAs("image").setImagesrcset("/hero-480.jpg 480w, /hero-1080.jpg 1080w").setImagesizes("100vw");
+  ```
+
+- **HTML elements — text-level edit & quotation (RFC-B-02)** — new `Ins` / `Del` factories (`InsTag` / `DelTag`) carrying `setCite` + `setDatetime`; these are the only text-level edit elements that previously had no factory at all. `Q` / `Blockquote` are promoted in place to `QTag` / `BlockquoteTag` with `setCite` (additive return-type widening, no source-module move — barrel names and source lines unchanged). `cite` / `datetime` flow through the existing `escapeAttr` choke point; `cite` is escaped but not scheme-sanitized, matching `setHref`/`setSrc`.
+
+  ```typescript
+  Ins("added clause").setCite("/audit/12").setDatetime("2026-06-29T10:00");
+  Blockquote(P(article.excerpt)).setCite(article.url);
+  ```
+
+- **Compile-only type tests** for the new closed unions in `test/types/*.test-d.ts` — positive/negative `@ts-expect-error` assertions lock "a typo is a compile error" (including the no-collision pin `Svg(Path()).fillColor("current")`, and the negative `Q`/`Blockquote` `setDatetime` assertions for RFC-B-02).
 
 ## [6.1.1] - Composition, Typed Forms, Morph Keys & Modern-Platform Hooks
 

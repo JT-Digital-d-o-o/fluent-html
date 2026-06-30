@@ -34,6 +34,9 @@ export type {
   LinkRel,
   ReferrerPolicy,
   BooleanAttribute,
+  // Iframe security unions (B-03)
+  SandboxToken,
+  PermissionsPolicyDirective,
   // Head-element / resource-hint unions (B-008)
   FetchPriority,
   LinkElementRel,
@@ -53,6 +56,9 @@ export type {
   Autocapitalize,
   Spellcheck,
 } from './elements/html-types.js';
+
+// Table accessibility (B-04)
+export type { TableCellScope } from './elements/index.js';
 
 // Render
 export { render, renderWithNonce } from './render/index.js';
@@ -92,6 +98,10 @@ export {
   BaseTag,
   TimeTag,
   DataTag,
+  InsTag,
+  DelTag,
+  QTag,
+  BlockquoteTag,
   ProgressTag,
   MeterTag,
   DetailsTag,
@@ -276,6 +286,8 @@ export {
 export {
   Time,
   Data,
+  Ins,
+  Del,
 } from './elements/index.js';
 
 // Progress / Meter

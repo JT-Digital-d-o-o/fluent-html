@@ -2,7 +2,7 @@ import { defineSchemaKeys } from "../core/proto.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
-import type { CrossOrigin, FetchPriority } from "./html-types.js";
+import type { CrossOrigin, FetchPriority, ReferrerPolicy } from "./html-types.js";
 
 /**
  * Specialized Tag for `<img>` elements with typed attribute setters.
@@ -21,6 +21,7 @@ export class ImgTag extends Tag {
   sizes?: string;
   crossorigin?: CrossOrigin | '';
   fetchpriority?: FetchPriority;
+  referrerpolicy?: ReferrerPolicy;
 
   setSrc(src?: string): this {
     this.src = src;
@@ -72,9 +73,14 @@ export class ImgTag extends Tag {
     this.fetchpriority = fetchpriority;
     return this;
   }
+
+  setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
+    this.referrerpolicy = referrerpolicy;
+    return this;
+  }
 }
 
-defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin', 'fetchpriority']);
+defineSchemaKeys(ImgTag, ['src', 'alt', 'width', 'height', 'loading', 'decoding', 'srcset', 'sizes', 'crossorigin', 'fetchpriority', 'referrerpolicy']);
 
 /** Create an `<img>` element with typed attribute methods. */
 export function Img(): ImgTag {
@@ -91,6 +97,8 @@ export class SourceTag extends Tag {
   sizes?: string;
   type?: string;
   media?: string;
+  width?: string;
+  height?: string;
 
   setSrc(src?: string): this {
     this.src = src;
@@ -116,9 +124,19 @@ export class SourceTag extends Tag {
     this.media = media;
     return this;
   }
+
+  setWidth(width: string | number): this {
+    this.width = String(width);
+    return this;
+  }
+
+  setHeight(height: string | number): this {
+    this.height = String(height);
+    return this;
+  }
 }
 
-defineSchemaKeys(SourceTag, ['src', 'srcset', 'media', 'sizes', 'type']);
+defineSchemaKeys(SourceTag, ['src', 'srcset', 'media', 'sizes', 'type', 'width', 'height']);
 
 export function Source(): SourceTag {
   return new SourceTag("source");
@@ -130,6 +148,7 @@ export class VideoTag extends Tag {
   src?: string;
   preload?: 'none' | 'metadata' | 'auto';
   poster?: string;
+  crossorigin?: CrossOrigin | '';
 
   setWidth(width: number): this {
     this.width = width;
@@ -155,9 +174,14 @@ export class VideoTag extends Tag {
     this.poster = poster;
     return this;
   }
+
+  setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
+    this.crossorigin = crossorigin;
+    return this;
+  }
 }
 
-defineSchemaKeys(VideoTag, ['src', 'poster', 'preload', 'width', 'height']);
+defineSchemaKeys(VideoTag, ['src', 'poster', 'preload', 'width', 'height', 'crossorigin']);
 
 export function Video(...children: View[]): VideoTag {
   return new VideoTag("video", ...children);
@@ -166,6 +190,7 @@ export function Video(...children: View[]): VideoTag {
 export class AudioTag extends Tag {
   src?: string;
   preload?: 'none' | 'metadata' | 'auto';
+  crossorigin?: CrossOrigin | '';
 
   setSrc(src?: string): this {
     this.src = src;
@@ -176,9 +201,14 @@ export class AudioTag extends Tag {
     this.preload = preload;
     return this;
   }
+
+  setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
+    this.crossorigin = crossorigin;
+    return this;
+  }
 }
 
-defineSchemaKeys(AudioTag, ['src', 'preload']);
+defineSchemaKeys(AudioTag, ['src', 'preload', 'crossorigin']);
 
 export function Audio(...children: View[]): AudioTag {
   return new AudioTag("audio", ...children);

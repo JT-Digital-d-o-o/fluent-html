@@ -21,6 +21,7 @@ export {
   H1, H2, H3, H4, H5, H6,
   Span,
   Blockquote,
+  BlockquoteTag,
   Pre,
   Code,
   Hr,
@@ -40,6 +41,7 @@ export {
   Abbr,
   Cite,
   Q,
+  QTag,
   Dfn,
   Kbd,
   Samp,
@@ -79,6 +81,8 @@ export {
   Col,
   ColTag,
 } from "./tables.js";
+
+export type { TableCellScope } from "./tables.js";
 
 // Forms
 export {
@@ -236,6 +240,10 @@ export {
   TimeTag,
   Data,
   DataTag,
+  Ins,
+  InsTag,
+  Del,
+  DelTag,
 } from "./data.js";
 
 // Progress / Meter

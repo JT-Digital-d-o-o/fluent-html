@@ -9,7 +9,7 @@ export { defineTheme } from './core/index.js';
 export { render, renderWithNonce } from './render/index.js';
 export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';
 // Tag classes with typed attributes
-export { ButtonTag, InputTag, TextareaTag, ImgTag, AnchorTag, LabelTag, SelectTag, OptionTag, OptgroupTag, FormTag, VideoTag, AudioTag, SourceTag, TrackTag, CanvasTag, SvgTag, IframeTag, ObjectTag, EmbedTag, MapTag, AreaTag, MetaTag, LinkTag, StyleTag, ScriptTag, BaseTag, TimeTag, DataTag, ProgressTag, MeterTag, DetailsTag, DialogTag, FieldsetTag, OutputTag, SlotTag, ThTag, TdTag, ColTag, ColgroupTag, } from './elements/index.js';
+export { ButtonTag, InputTag, TextareaTag, ImgTag, AnchorTag, LabelTag, SelectTag, OptionTag, OptgroupTag, FormTag, VideoTag, AudioTag, SourceTag, TrackTag, CanvasTag, SvgTag, IframeTag, ObjectTag, EmbedTag, MapTag, AreaTag, MetaTag, LinkTag, StyleTag, ScriptTag, BaseTag, TimeTag, DataTag, InsTag, DelTag, QTag, BlockquoteTag, ProgressTag, MeterTag, DetailsTag, DialogTag, FieldsetTag, OutputTag, SlotTag, ThTag, TdTag, ColTag, ColgroupTag, } from './elements/index.js';
 // Structural / Semantic elements
 export { Div, Main, Header, Footer, Section, Article, Nav, Aside, Figure, Figcaption, Address, Hgroup, Search, } from './elements/index.js';
 // Text content
@@ -37,7 +37,7 @@ export { A, MapEl, Area, } from './elements/index.js';
 // Document metadata / Head elements
 export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta, Link, Style, Script, Base, Noscript, Template, } from './elements/index.js';
 // Data / Time elements
-export { Time, Data, } from './elements/index.js';
+export { Time, Data, Ins, Del, } from './elements/index.js';
 // Progress / Meter
 export { Progress, Meter, } from './elements/index.js';
 // Web Components

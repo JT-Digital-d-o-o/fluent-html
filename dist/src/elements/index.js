@@ -1,9 +1,9 @@
 // Structural / Semantic elements
 export { Div, Main, Header, Footer, Section, Article, Nav, Aside, Figure, Figcaption, Address, Hgroup, Search, } from "./structural.js";
 // Text content
-export { P, H1, H2, H3, H4, H5, H6, Span, Blockquote, Pre, Code, Hr, Br, Wbr, } from "./text.js";
+export { P, H1, H2, H3, H4, H5, H6, Span, Blockquote, BlockquoteTag, Pre, Code, Hr, Br, Wbr, } from "./text.js";
 // Inline text semantics
-export { Strong, Em, B, I, U, S, Mark, Small, Sub, Sup, Abbr, Cite, Q, Dfn, Kbd, Samp, Var, Bdi, Bdo, Ruby, Rt, Rp, } from "./inline.js";
+export { Strong, Em, B, I, U, S, Mark, Small, Sub, Sup, Abbr, Cite, Q, QTag, Dfn, Kbd, Samp, Var, Bdi, Bdo, Ruby, Rt, Rp, } from "./inline.js";
 // Lists
 export { Ul, Ol, Li, Dl, Dt, Dd, Menu, } from "./lists.js";
 // Tables
@@ -23,7 +23,7 @@ export { A, AnchorTag, MapEl, MapTag, Area, AreaTag, } from "./links.js";
 // Document metadata / Head elements
 export { HTML, HtmlTag, Document, DocumentTag, Doctype, Head, Body, Title, Meta, MetaTag, Link, LinkTag, Style, StyleTag, Script, ScriptTag, Base, BaseTag, Noscript, Template, } from "./document.js";
 // Data / Time elements
-export { Time, TimeTag, Data, DataTag, } from "./data.js";
+export { Time, TimeTag, Data, DataTag, Ins, InsTag, Del, DelTag, } from "./data.js";
 // Progress / Meter
 export { Progress, ProgressTag, Meter, MeterTag, } from "./data.js";
 // Web Components

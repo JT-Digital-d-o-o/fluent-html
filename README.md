@@ -677,6 +677,35 @@ Img().setSrc("/hero.avif").setAlt("").setFetchPriority("high");   // LCP image p
 
 Exported types: `FetchPriority` (closed), `LinkElementRel` (distinct from the anchor-rel `LinkRel`), `LinkAs`, `LinkType`, `ScriptType`, `MetaName`, `Charset` — plus `Base().setTarget` reuses `BrowsingContext`.
 
+### Media & resource-hint attributes
+
+`setCrossOrigin` is uniform across media — `Video`/`Audio`/`Img`/`Link`/`Script` all take it (required for cross-origin `<track>` captions, untainted `<canvas>` frame capture, and Web-Audio source nodes). `setReferrerPolicy` (closed `ReferrerPolicy`) is now uniform across `A`/`Img`/`Link`/`Script`/`Area`/`Iframe`. Size each `<source>` in an art-directed `<picture>` to kill CLS, preload the LCP image responsively, and ship a per-scheme `theme-color`:
+
+```typescript
+Video(Track().setSrc("https://cdn/x.vtt").setKind("captions")).setCrossOrigin("anonymous");
+Img().setSrc("/avatar.jpg").setReferrerPolicy("no-referrer");
+Picture(Source().setSrcset("/hero.avif").setMedia("(min-width:768px)").setWidth(1280).setHeight(720));
+Link().setRel("preload").setAs("image")
+  .setImagesrcset("/hero-480.jpg 480w, /hero-1080.jpg 1080w").setImagesizes("100vw");  // distinct from setSizes (icon grammar)
+Meta().setName("theme-color").setContent("#0b0b0b").setMedia("(prefers-color-scheme: dark)");
+```
+
+`<source>` deliberately has **no** `referrerpolicy` (the spec defines none); it carries `width`/`height` only.
+
+### Iframe security — `sandbox` & `allow`
+
+The two `<iframe>` attributes that *are* the security boundary are typed. `setSandbox` takes variadic closed `SandboxToken`s — a misspelled token is a compile error, not a silently-weakened policy — and each call replaces the list. `setAllow` is a Permissions-Policy directive **record** (names autocomplete; values are the allowlist grammar `'self'`/`'none'`/`*`/origins):
+
+```typescript
+Iframe().setSrcdoc(html).setSandbox("allow-scripts", "allow-same-origin");  // "allow-same-orign" → compile error
+Iframe().setSandbox();                                              // sandbox="" — fully locked default
+Iframe().setSrc(mapUrl).setAllow({ geolocation: "'self'", camera: "*" });   // allow="geolocation 'self'; camera *"
+Iframe().setAllow({ fullscreen: "" });                              // empty value → bare name → allow="fullscreen"
+Iframe().setAllow({});                                              // allow="" — deny all
+```
+
+Directive *names* are an open union (`(string & {})` tail) so new spec directives don't need a lib bump — meaning a misspelled directive name still compiles (autocomplete-assisted only), unlike the fully-closed `SandboxToken`.
+
 ---
 
 ## Global HTMX Config
@@ -1513,6 +1542,19 @@ Table(
 ).setClass("w-full border-collapse")
 ```
 
+#### Accessible tables — `scope` vs `headers`
+
+For simple, regular tables `setScope` is enough — a header governs its row or column. For complex tables (irregular or spanning headers), associate each data cell with its header cells by id: use the **same** `defineIds` token on the header's `.setId(...)` and the cell's `.setHeaders(...)`, so a typo is a compile error against the registry:
+
+```typescript
+const ids = defineIds(["price-col", "q3-row"] as const);
+
+Th("Price (USD)").setId(ids.priceCol).setScope("col").setAbbr("Price");  // abbr = condensed label for AT
+Td("$42").setHeaders(ids.priceCol, ids.q3Row);                          // <td headers="price-col q3-row">
+```
+
+`setHeaders` overrides; `addHeaders` appends (duplicate ids collapsed); an empty call clears the attribute (no dead `headers=""`). `setAbbr` is `th`-only. Pass the raw id token (or an `Id`), **not** a `#selector`, and don't also use `addAttribute("headers", …)` (it double-emits). The `scope` value type is exported as `TableCellScope` for typing component props.
+
 ### Media Elements
 
 ```typescript
@@ -1618,6 +1660,22 @@ Dialog(
 Progress().setValue(70).setMax(100)
 Meter().setValue(0.7).setMin(0).setMax(1).setLow(0.3).setHigh(0.8).setOptimum(0.5)
 ```
+
+### Edit & quotation attributes
+
+`Ins`/`Del` carry `setCite` (URL of the change rationale) and `setDatetime`
+(when the edit happened, free-text like `Time`); `Q`/`Blockquote` carry
+`setCite` (URL of the quoted source):
+
+```typescript
+Ins("added clause").setCite("/audit/12").setDatetime("2026-06-29T10:00")
+Del("removed clause").setDatetime("2026-06-29")
+Blockquote(P(article.excerpt)).setCite(article.url)
+Q(snippet.text).setCite(snippet.sourceUrl)
+```
+
+`cite` is HTML-escaped on render but not scheme-sanitized — same stance as
+`setHref`/`setSrc`; do not pass untrusted URLs.
 
 ---
 
@@ -2284,7 +2342,7 @@ See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-tai
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Structure**   | `Div`, `Main`, `Header`, `Footer`, `Section`, `Article`, `Nav`, `Aside`, `Figure`, `Figcaption`, `Address`, `Hgroup`, `Search`                                |
 | **Headings**    | `H1`, `H2`, `H3`, `H4`, `H5`, `H6`                                                                                                                            |
-| **Text**        | `P`, `Span`, `Strong`, `Em`, `B`, `I`, `U`, `S`, `Mark`, `Small`, `Sub`, `Sup`, `Blockquote`, `Pre`, `Code`, `Abbr`, `Cite`, `Q`, `Dfn`, `Kbd`, `Samp`, `Var` |
+| **Text**        | `P`, `Span`, `Strong`, `Em`, `B`, `I`, `U`, `S`, `Mark`, `Small`, `Sub`, `Sup`, `Blockquote`, `Q`, `Ins`, `Del`, `Pre`, `Code`, `Abbr`, `Cite`, `Dfn`, `Kbd`, `Samp`, `Var` |
 | **Breaks**      | `Br`, `Hr`, `Wbr`                                                                                                                                             |
 | **Lists**       | `Ul`, `Ol`, `Li`, `Dl`, `Dt`, `Dd`, `Menu`                                                                                                                    |
 | **Tables**      | `Table`, `Thead`, `Tbody`, `Tfoot`, `Tr`, `Th`, `Td`, `Caption`, `Colgroup`, `Col`                                                                            |

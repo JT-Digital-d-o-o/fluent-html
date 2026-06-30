@@ -38,6 +38,7 @@ export declare class AreaTag extends Tag {
     target?: BrowsingContext;
     rel?: LinkRel;
     download?: string;
+    referrerpolicy?: ReferrerPolicy;
     setShape(shape?: 'rect' | 'circle' | 'poly' | 'default'): this;
     setCoords(coords?: string): this;
     setHref(href?: string): this;
@@ -45,6 +46,7 @@ export declare class AreaTag extends Tag {
     setTarget(target?: BrowsingContext): this;
     setRel(rel?: LinkRel): this;
     setDownload(download?: string): this;
+    setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this;
 }
 export declare function Area(): AreaTag;
 //# sourceMappingURL=links.d.ts.map

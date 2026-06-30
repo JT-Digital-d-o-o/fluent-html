@@ -69,8 +69,12 @@ export class MetaTag extends Tag {
         this.property = property;
         return this;
     }
+    setMedia(media) {
+        this.media = media;
+        return this;
+    }
 }
-defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content']);
+defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content', 'media']);
 export function Meta() {
     return new MetaTag("meta");
 }
@@ -118,8 +122,21 @@ export class LinkTag extends Tag {
         this.fetchpriority = fetchpriority;
         return this;
     }
+    setReferrerPolicy(referrerpolicy) {
+        this.referrerpolicy = referrerpolicy;
+        return this;
+    }
+    /** `<link rel=preload as=image>` responsive srcset — distinct from `setSizes` (the icon `sizes` grammar). */
+    setImagesrcset(imagesrcset) {
+        this.imagesrcset = imagesrcset;
+        return this;
+    }
+    setImagesizes(imagesizes) {
+        this.imagesizes = imagesizes;
+        return this;
+    }
 }
-defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang', 'fetchpriority']);
+defineSchemaKeys(LinkTag, ['rel', 'href', 'type', 'media', 'sizes', 'as', 'crossorigin', 'integrity', 'hreflang', 'fetchpriority', 'referrerpolicy', 'imagesrcset', 'imagesizes']);
 export function Link() {
     return new LinkTag("link");
 }
@@ -179,8 +196,12 @@ export class ScriptTag extends Tag {
         this.fetchpriority = fetchpriority;
         return this;
     }
+    setReferrerPolicy(referrerpolicy) {
+        this.referrerpolicy = referrerpolicy;
+        return this;
+    }
 }
-defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin', 'fetchpriority']);
+defineSchemaKeys(ScriptTag, ['src', 'type', 'integrity', 'crossorigin', 'fetchpriority', 'referrerpolicy']);
 export function Script(js = "") {
     return new ScriptTag("script", js);
 }
