@@ -64,6 +64,11 @@ function emitRounded(args: readonly string[]): string[] {
 const custom = (method: string, emit: (args: readonly string[]) => string[], samples: readonly (readonly string[])[]): UtilityDef =>
   defineUtility({ method, emit: { kind: "custom", emit }, samples });
 
+const interp = (cls: string, i?: string): string => (i ? `${cls}/${i}` : cls);
+const stop = (method: string, prefix: string): UtilityDef =>
+  custom(method, (a) => (a.length >= 2 ? [`${prefix}-${a[0]}`, `${prefix}-${a[1]}`] : a.length === 1 ? [`${prefix}-${a[0]}`] : []),
+    [["red-500"], ["red-500", "10%"]]);
+
 // ── The vocabulary ──────────────────────────────────────────────────
 
 export const classVocab: readonly UtilityDef[] = [
@@ -207,13 +212,24 @@ export const classVocab: readonly UtilityDef[] = [
   stat("outlineHidden", "outline-hidden"),
 
   // Gradients (v4-native: bg-linear-* / bg-radial-* / bg-conic-*)
-  custom("gradient", (args) => (args.length >= 2 ? [`bg-linear-${args[2] ?? "to-r"}`, `from-${args[0]}`, `to-${args[1]}`] : []), [["red-500", "blue-500"], ["red-500", "blue-500", "to-br"]]),
-  pre("gradientTo", "bg-linear"),
-  stat("gradientRadial", "bg-radial"),
-  stat("gradientConic", "bg-conic"),
-  pre("from", "from"),
-  pre("via", "via"),
-  pre("to", "to"),
+  custom("gradient", (a) => (a.length >= 2
+    ? [interp(`bg-linear-${a[2] ?? "to-r"}`, a[3]), `from-${a[0]}`, `to-${a[1]}`] : []),
+    [["red-500", "blue-500"], ["red-500", "blue-500", "to-br"], ["red-500", "blue-500", "to-br", "oklab"]]),
+  custom("gradientTo", (a) => (a.length >= 1 ? [interp(`bg-linear-${a[0]}`, a[1])] : []),
+    [["to-r"], ["to-r", "oklch"], ["to-tr", "longer"]]),
+  custom("gradientLinear", (a) => [signNeg("bg-linear", a[0]!)],
+    [["45"], ["-65"], ["[0.25turn]"]]),
+  custom("gradientRadial", (a) => {
+    const origin = a[0]
+      ? (a[0].startsWith("[") ? `bg-radial-${a[0]}` : `bg-radial-[at_${a[0].replace(/-/g, "_")}]`)
+      : "bg-radial";
+    return [interp(origin, a[1])];
+  }, [[], ["top-left"], ["[at_top_left]"], ["undefined", "srgb"]]),
+  custom("gradientConic", (a) => [interp(a[0] === undefined ? "bg-conic" : signNeg("bg-conic", a[0]), a[1])],
+    [[], ["180"], ["-90"], ["undefined", "longer"]]),
+  stop("from", "from"),
+  stop("via", "via"),
+  stop("to", "to"),
 
   // Group / Peer markers
   opt("group", "group", "/"),
@@ -250,6 +266,76 @@ export const classVocab: readonly UtilityDef[] = [
 
   // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
   stat("htmxIndicator", "htmx-indicator"),
+
+  pre("fillColor", "fill"),
+  pre("strokeColor", "stroke"),
+  size("strokeWidth", "stroke"),
+  pre("accentColor", "accent"),
+  pre("caretColor", "caret"),
+  pre("scheme", "scheme"),
+  pre("decorationColor", "decoration"),
+  pre("decorationStyle", "decoration"),
+  size("decorationThickness", "decoration"),
+
+  size("insetX", "inset-x"),
+  size("insetY", "inset-y"),
+  size("insetS", "inset-s"),
+  size("insetE", "inset-e"),
+
+  pre("textWrap", "text"),
+  pre("hyphens", "hyphens"),
+  pre("textShadow", "text-shadow"),
+  pre("textShadowColor", "text-shadow"),
+
+  pre("dropShadow", "drop-shadow"),
+  pre("dropShadowColor", "drop-shadow"),
+  pre("insetShadow", "inset-shadow"),
+  pre("insetShadowColor", "inset-shadow"),
+  opt("insetRing", "inset-ring"),
+  pre("insetRingColor", "inset-ring"),
+  pre("mixBlend", "mix-blend"),
+  pre("bgBlend", "bg-blend"),
+  stat("isolate", "isolate"),
+  pre("isolation", "isolation"),
+
+  pre("delay", "delay"),
+  pre("transitionBehavior", "transition"),
+
+  pre("perspective", "perspective"),
+  pre("perspectiveOrigin", "perspective-origin"),
+  pre("transformStyle", "transform"),
+  pre("backfaceVisibility", "backface"),
+  stat("scale3d", "scale-3d"),
+  custom("rotateX", (args) => [signNeg("rotate-x", args[0]!)], [["45"], ["-45"]]),
+  custom("rotateY", (args) => [signNeg("rotate-y", args[0]!)], [["30"], ["-30"]]),
+  custom("rotateZ", (args) => [signNeg("rotate-z", args[0]!)], [["90"], ["-90"]]),
+  custom("scaleX", (args) => [signNeg("scale-x", args[0]!)], [["110"], ["-100"]]),
+  custom("scaleY", (args) => [signNeg("scale-y", args[0]!)], [["75"], ["-75"]]),
+  custom("scaleZ", (args) => [signNeg("scale-z", args[0]!)], [["150"], ["-150"]]),
+
+  custom("colStart", (a) => [signNeg("col-start", a[0]!)], [["2"], ["-1"], ["auto"]]),
+  custom("colEnd", (a) => [signNeg("col-end", a[0]!)], [["2"], ["-1"], ["auto"]]),
+  custom("rowStart", (a) => [signNeg("row-start", a[0]!)], [["3"], ["-1"], ["auto"]]),
+  custom("rowEnd", (a) => [signNeg("row-end", a[0]!)], [["3"], ["-1"], ["auto"]]),
+  pre("rowSpan", "row-span"),
+  pre("columns", "columns"),
+  pre("breakBefore", "break-before"),
+  pre("breakAfter", "break-after"),
+  pre("breakInside", "break-inside"),
+  pre("boxDecoration", "box-decoration"),
+  custom("snap", (a) => (a.length <= 1 ? [`snap-${a[0] ?? "none"}`] : [`snap-${a[0]}`, `snap-${a[1]}`]), [["x"], ["both"], ["x", "mandatory"], ["y", "proximity"]]),
+  custom("snapAlign", (a) => [a[0] === "none" ? "snap-align-none" : `snap-${a[0]}`], [["start"], ["center"], ["none"]]),
+  pre("snapStop", "snap"),
+  pre("scrollBehavior", "scroll"),
+  space("scrollMargin", "scroll-m", "", true, true),
+  space("scrollPadding", "scroll-p", "", true, true),
+  pre("fieldSizing", "field-sizing"),
+
+  custom("maskImage", (a) => (a[0] === "none" ? ["mask-none"] : [`mask-${a[0]}`]), [["none"], ["[url(/x.png)]"]]),
+  custom("maskFrom", (a) => (a.length === 2 ? [`mask-${a[0]}-from-${a[1]}`] : []), [["t", "50%"], ["x", "70%"], ["r", "blue-500"], ["l", "4"], ["t", "[20px]"]]),
+  custom("maskTo", (a) => (a.length === 2 ? [`mask-${a[0]}-to-${a[1]}`] : []), [["b", "90%"], ["y", "95%"]]),
+  custom("maskComposite", (a) => [`mask-${a[0]}`], [["add"], ["subtract"], ["intersect"], ["exclude"]]),
+  pre("maskType", "mask-type"),
 
   // CSS Anchor Positioning (B-010) emits *inline style*, never a class — anchorName /
   // positionAnchor / positionArea (and viewTransitionName, F-B-181) all take arbitrary

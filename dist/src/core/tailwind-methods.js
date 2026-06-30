@@ -274,15 +274,24 @@ p.outlineHidden = function () { return this.addClass("outline-hidden"); };
 // Font Family
 p.fontFamily = function (family) { return this.addClass(`font-${family}`); };
 // Gradients (v4-native: bg-linear-* replaces v3 bg-gradient-*; + radial/conic)
-p.gradient = function (from, to, direction = "to-r") {
-    return this.addClass(`bg-linear-${direction}`).addClass(`from-${from}`).addClass(`to-${to}`);
+const interp = (cls, i) => (i ? `${cls}/${i}` : cls);
+const radialOrigin = (o) => o.startsWith("[") ? `bg-radial-${o}` : `bg-radial-[at_${o.replace(/-/g, "_")}]`;
+p.gradient = function (from, to, direction = "to-r", interpolation) {
+    return this
+        .addClass(interp(`bg-linear-${direction}`, interpolation))
+        .addClass(`from-${from}`).addClass(`to-${to}`);
 };
-p.gradientTo = function (direction) { return this.addClass(`bg-linear-${direction}`); };
-p.gradientRadial = function () { return this.addClass("bg-radial"); };
-p.gradientConic = function () { return this.addClass("bg-conic"); };
-p.from = function (color) { return this.addClass(`from-${color}`); };
-p.via = function (color) { return this.addClass(`via-${color}`); };
-p.to = function (color) { return this.addClass(`to-${color}`); };
+p.gradientTo = function (direction, interpolation) { return this.addClass(interp(`bg-linear-${direction}`, interpolation)); };
+p.gradientLinear = function (angle) { return this.addClass(signNeg("bg-linear", String(angle))); };
+p.gradientRadial = function (origin, interpolation) {
+    return this.addClass(interp(origin ? radialOrigin(origin) : "bg-radial", interpolation));
+};
+p.gradientConic = function (angle, interpolation) {
+    return this.addClass(interp(angle === undefined ? "bg-conic" : signNeg("bg-conic", String(angle)), interpolation));
+};
+p.from = function (color, position) { this.addClass(`from-${color}`); return position ? this.addClass(`from-${position}`) : this; };
+p.via = function (color, position) { this.addClass(`via-${color}`); return position ? this.addClass(`via-${position}`) : this; };
+p.to = function (color, position) { this.addClass(`to-${color}`); return position ? this.addClass(`to-${position}`) : this; };
 // Group / Peer markers
 p.group = function (name) {
     return name === undefined ? this.addClass("group") : this.addClass(`group/${name}`);
@@ -379,4 +388,114 @@ p.positionArea = function (area) {
     return this.addStyle(`position-area: ${value}`);
 };
 p.viewTransitionName = function (name) { return this.addStyle(`view-transition-name: ${extractId(name)}`); };
+p.fillColor = function (color) { return this.addClass(`fill-${color}`); };
+p.strokeColor = function (color) { return this.addClass(`stroke-${color}`); };
+p.strokeWidth = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`stroke-[${amount}${unitOrValue}]`);
+    return this.addClass(`stroke-${unitOrValue}`);
+};
+p.accentColor = function (color) { return this.addClass(`accent-${color}`); };
+p.caretColor = function (color) { return this.addClass(`caret-${color}`); };
+p.scheme = function (value) { return this.addClass(`scheme-${value}`); };
+p.decorationColor = function (color) { return this.addClass(`decoration-${color}`); };
+p.decorationStyle = function (style) { return this.addClass(`decoration-${style}`); };
+p.decorationThickness = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`decoration-[${amount}${unitOrValue}]`);
+    return this.addClass(`decoration-${unitOrValue}`);
+};
+p.insetX = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`inset-x-[${amount}${unitOrValue}]`);
+    return this.addClass(`inset-x-${unitOrValue}`);
+};
+p.insetY = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`inset-y-[${amount}${unitOrValue}]`);
+    return this.addClass(`inset-y-${unitOrValue}`);
+};
+p.insetS = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`inset-s-[${amount}${unitOrValue}]`);
+    return this.addClass(`inset-s-${unitOrValue}`);
+};
+p.insetE = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`inset-e-[${amount}${unitOrValue}]`);
+    return this.addClass(`inset-e-${unitOrValue}`);
+};
+p.textWrap = function (value) { return this.addClass(`text-${value}`); };
+p.hyphens = function (value) { return this.addClass(`hyphens-${value}`); };
+p.textShadow = function (value) { return this.addClass(`text-shadow-${value}`); };
+p.textShadowColor = function (color) { return this.addClass(`text-shadow-${color}`); };
+p.dropShadow = function (value) { return this.addClass(`drop-shadow-${value}`); };
+p.dropShadowColor = function (color) { return this.addClass(`drop-shadow-${color}`); };
+p.insetShadow = function (value) { return this.addClass(`inset-shadow-${value}`); };
+p.insetShadowColor = function (color) { return this.addClass(`inset-shadow-${color}`); };
+p.insetRing = function (value) {
+    return value === undefined ? this.addClass("inset-ring") : this.addClass(`inset-ring-${value}`);
+};
+p.insetRingColor = function (color) { return this.addClass(`inset-ring-${color}`); };
+p.mixBlend = function (mode) { return this.addClass(`mix-blend-${mode}`); };
+p.bgBlend = function (mode) { return this.addClass(`bg-blend-${mode}`); };
+p.isolate = function () { return this.addClass("isolate"); };
+p.isolation = function (value) { return this.addClass(`isolation-${value}`); };
+p.delay = function (value) { return this.addClass(`delay-${value}`); };
+p.transitionBehavior = function (value) { return this.addClass(`transition-${value}`); };
+p.perspective = function (value) { return this.addClass(`perspective-${value}`); };
+p.perspectiveOrigin = function (value) { return this.addClass(`perspective-origin-${value}`); };
+p.transformStyle = function (value) { return this.addClass(`transform-${value}`); };
+p.backfaceVisibility = function (value) { return this.addClass(`backface-${value}`); };
+p.rotateX = function (value) { return this.addClass(signNeg("rotate-x", String(value))); };
+p.rotateY = function (value) { return this.addClass(signNeg("rotate-y", String(value))); };
+p.rotateZ = function (value) { return this.addClass(signNeg("rotate-z", String(value))); };
+p.scaleX = function (value) { return this.addClass(signNeg("scale-x", String(value))); };
+p.scaleY = function (value) { return this.addClass(signNeg("scale-y", String(value))); };
+p.scaleZ = function (value) { return this.addClass(signNeg("scale-z", String(value))); };
+p.scale3d = function () { return this.addClass("scale-3d"); };
+p.colStart = function (value) { return this.addClass(signNeg("col-start", String(value))); };
+p.colEnd = function (value) { return this.addClass(signNeg("col-end", String(value))); };
+p.rowStart = function (value) { return this.addClass(signNeg("row-start", String(value))); };
+p.rowEnd = function (value) { return this.addClass(signNeg("row-end", String(value))); };
+p.rowSpan = function (value) { return this.addClass(`row-span-${value}`); };
+p.columns = function (value) { return this.addClass(`columns-${value}`); };
+p.breakBefore = function (value) { return this.addClass(`break-before-${value}`); };
+p.breakAfter = function (value) { return this.addClass(`break-after-${value}`); };
+p.breakInside = function (value) { return this.addClass(`break-inside-${value}`); };
+p.boxDecoration = function (value) { return this.addClass(`box-decoration-${value}`); };
+p.snap = function (axis, strictness) {
+    if (strictness === undefined)
+        return this.addClass(`snap-${axis}`);
+    return this.addClass(`snap-${axis}`).addClass(`snap-${strictness}`);
+};
+p.snapAlign = function (value) {
+    return this.addClass(value === "none" ? "snap-align-none" : `snap-${value}`);
+};
+p.snapStop = function (value) { return this.addClass(`snap-${value}`); };
+p.scrollBehavior = function (value) { return this.addClass(`scroll-${value}`); };
+p.scrollMargin = function (directionOrValue, value) {
+    if (value === undefined)
+        return this.addClass(`scroll-m-${directionOrValue}`);
+    if (typeof value === "number")
+        return this.addClass(`scroll-m-[${value}${directionOrValue}]`);
+    const dir = DIR_MAP[directionOrValue] || directionOrValue;
+    return this.addClass(`scroll-m${dir}-${value}`);
+};
+p.scrollPadding = function (directionOrValue, value) {
+    if (value === undefined)
+        return this.addClass(`scroll-p-${directionOrValue}`);
+    if (typeof value === "number")
+        return this.addClass(`scroll-p-[${value}${directionOrValue}]`);
+    const dir = DIR_MAP[directionOrValue] || directionOrValue;
+    return this.addClass(`scroll-p${dir}-${value}`);
+};
+p.fieldSizing = function (value) { return this.addClass(`field-sizing-${value}`); };
+p.maskImage = function (value) {
+    return value === "none" ? this.addClass("mask-none") : this.addClass(`mask-${value}`);
+};
+p.maskFrom = function (edge, stop) { return this.addClass(`mask-${edge}-from-${stop}`); };
+p.maskTo = function (edge, stop) { return this.addClass(`mask-${edge}-to-${stop}`); };
+p.maskComposite = function (mode) { return this.addClass(`mask-${mode}`); };
+p.maskType = function (value) { return this.addClass(`mask-type-${value}`); };
 //# sourceMappingURL=tailwind-methods.js.map

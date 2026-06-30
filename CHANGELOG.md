@@ -2,6 +2,53 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [6.2.0] - Tailwind v4 Method Surface
+
+63 new fluent Tailwind methods (plus pure type-union additions on `.on()`/`.at()`) that previously forced a raw `.setClass(...)` escape hatch — covering SVG paint, text effects, shadows/filters/blending, v4 gradients, 3D transforms, attribute/structural variants, layout, and v4.1 masks. Additive apart from two intentional type-narrowing breaks listed below; benign, well-typed inputs render unchanged. Every method is in the shared class vocabulary, so the extractor (safelist) and ESLint plugin (`134 → 197` methods) pick them up in lockstep.
+
+### 💥 Breaking
+
+- **`TailwindGradientDirection` is closed** — the `(string & {})` escape is removed, so `gradientTo`/`gradient` no longer accept an arbitrary/angle string (`gradientTo("45")` is a compile error). Use the new `gradientLinear(angle)`; only the 8 `to-*` keywords are valid as a direction.
+- **`.at()` container-query breakpoints narrow to a closed scale** — `TailwindContainerBreakpoint` goes from the fully-open `` `@${string}` `` to the `@3xs`…`@7xl` scale (+ `@max-*` and the `@[…]`/`@min-[…]`/`@max-[…]` arbitrary arms). Every real container breakpoint still compiles; the only inputs that now error are out-of-scale tokens / typos (`.at("@8xl")`, `.at("@mdd")`) — which Tailwind never generated a class for, so no working CSS changes (same flavor as 6.1.1's sizing-union closure). The `nth-[…]` arm is also folded into the structural `nth-*` family, but that is value-compatible (every `nth-[…]` literal still type-checks).
+
+### ✨ Added
+
+- **SVG paint & color family** — `fillColor` / `strokeColor` (`fill-*` / `stroke-*`; named off `fill`/`stroke` to avoid the `SvgTag`/`SvgShapeTag` field collision — use `setFill`/`setStroke` for the literal SVG attribute), `strokeWidth`, `accentColor`, `caretColor`, `decorationColor` / `decorationStyle` / `decorationThickness`, and `scheme` (`color-scheme`).
+
+  ```typescript
+  Svg(Path().setD(icon)).fillColor("current").strokeColor("red-500").strokeWidth(2);
+  A("Docs").underline().decorationColor("blue-500").decorationStyle("wavy").decorationThickness("2");
+  ```
+
+- **Axis & logical inset shorthands** — `insetX` / `insetY` (+ RTL-correct `insetS` / `insetE`), each with the `(unit, amount)` overload. (`size()` — the `size-*` w+h shorthand — is **deferred**: it collides with the `<select size>` instance field, the same class of break C-01 hit.)
+
+- **Typography & text effects** — `textWrap` (`text-balance`/`text-pretty`, distinct from `whitespace`), `hyphens`, and `textShadow` / `textShadowColor` (Tailwind v4.1; value required, with the `text-shadow-lg/30` size-opacity form).
+
+- **Shadows, filters & blending** — `dropShadow` / `dropShadowColor`, `insetShadow` / `insetShadowColor`, `insetRing` / `insetRingColor`, `mixBlend`, `bgBlend`, and `isolate` / `isolation`. (`dropShadow`/`insetShadow` require a value — v4 ships no bare `drop-shadow`/`inset-shadow`.)
+
+- **Transitions** — `delay` (companion to `duration`) and `transitionBehavior` (`transition-discrete`, which makes `display`/popover/dialog animate — emit it alongside `transition`).
+
+- **Tailwind v4 gradients** — optional stop positions on `from`/`via`/`to` (`from("indigo-500", "10%")`), `gradientLinear(angle)` as the sole linear-angle path, angle + origin on `gradientConic`/`gradientRadial`, and an optional color-interpolation modifier (`gradientTo("to-r", "oklch")` → `bg-linear-to-r/oklch`) on all four gradient emitters.
+
+- **3D transforms** — `perspective` / `perspectiveOrigin` (the depth gates), per-axis `rotateX`/`rotateY`/`rotateZ` and `scaleX`/`scaleY`/`scaleZ` + `scale3d`, `transformStyle` / `backfaceVisibility`, and a `translate("z", …)` overload. Negatives relocate the leading `-` (`rotateX(-45)` → `-rotate-x-45`).
+
+- **Variants & selectors on `.on()`/`.at()`** (pure type additions — the runtime already passed the prefix through) — named + unnamed `group-*`/`peer-*` states, the nine first-class `aria-*` boolean heads + `aria-[…]`/`group-aria-`/`peer-aria-`, `data-[…]`/`group-data-[…]`/`peer-data-[…]`, extra pseudo-classes (`read-only`, `target`, `autofill`, `user-valid`, `rtl`/`ltr`, …), the structural `nth-*` family, child/descendant `*`/`**`, and the closed `@3xs`…`@7xl` container scale.
+
+  ```typescript
+  Form<T>(...).on("aria-invalid", t => t.borderColor("red-500"));  // Form<T> already emits aria-invalid
+  Ul(ForEach(rows, r => Li(r))).on("*", t => t.padding("y", "2"));
+  ```
+
+- **Layout** — grid-line placement `colStart` / `colEnd` / `rowStart` / `rowEnd` (negative lines → `-col-start-1`) and `rowSpan`; multi-column `columns` with `breakBefore` / `breakAfter` / `breakInside` / `boxDecoration`; scroll `snap` (+ strictness) / `snapAlign` / `snapStop` / `scrollBehavior` / `scrollMargin` / `scrollPadding`; and `fieldSizing` (JS-free auto-grow `<textarea>`; Chromium-only, degrades gracefully).
+
+- **Masks (Tailwind v4.1)** — `maskImage` (`mask-none` / arbitrary), `maskFrom` / `maskTo` directional edge fades (the hero/scroll-edge fade), `maskComposite`, and `maskType` (SVG `<mask>`). The gradient-type roots (`mask-linear/radial/conic`) stay cut — they need their own from/to stops to mask anything.
+
+  ```typescript
+  Div().background("[url(/hero.jpg)]").maskFrom("b", "50%").maskTo("b", "90%");
+  ```
+
+- **Compile-only type tests** for the new closed unions in `test/types/*.test-d.ts` — positive/negative `@ts-expect-error` assertions lock "a typo is a compile error" (including the no-collision pin `Svg(Path()).fillColor("current")`).
+
 ## [6.1.1] - Composition, Typed Forms, Morph Keys & Modern-Platform Hooks
 
 Mostly additive, plus two intentional type-narrowing breaks and a couple of behavior alignments (all listed below). Folded into 6.1.1 because v6 is greenfield with no published consumers to break. Benign, well-typed inputs render unchanged.
@@ -73,6 +120,17 @@ Mostly additive, plus two intentional type-narrowing breaks and a couple of beha
   ```typescript
   hx("/task", { query: { scope: "open", text: q } });   // → hx-get="/task?scope=open&text=…"
   hx("/task?event=E", { query: { _target: id } });       // → hx-get="/task?event=E&_target=…"  (joins with &)
+  ```
+
+- **Wildcard / splat route params on `defineRoutes`.** A trailing `*` (or named `*name`) captures the rest of the path as one required `string` param: `path: "/scope/*"` adds a `splat` param, `path: "/files/*path"` a `path` param. Each segment is url-encoded but `/` is preserved (catch-all) — so splats fit file trees and scoped slugs. An omitted/typo'd splat key is a compile error, and a missing value throws at `resolve()`. Only a *trailing* `/*` is a splat (mid-path wildcards are unsupported), and a splat route takes no declared `params` (it's always `string`) — declaring one stays a compile error.
+
+  ```typescript
+  const r = defineRoutes({
+    scope: { method: "get", path: "/scope/*" },       // r.scope.resolve({ splat })
+    file:  { method: "get", path: "/files/*path" },   // r.file.resolve({ path })
+  } as const);
+  r.scope.resolve({ splat: "a/b" });   // "/scope/a/b"     (slashes preserved)
+  r.file.resolve({ path: "a b/c" });   // "/files/a%20b/c" (segments encoded)
   ```
 
 - **Compile-only type tests** (`test/types/*.test-d.ts`) — positive/negative `@ts-expect-error` assertions for the closed/open unions, `Form<T>` field-name narrowing, and the new route-param typing, checked by `tsc` in the build. Locks "a typo is a compile error" as an enforced contract.

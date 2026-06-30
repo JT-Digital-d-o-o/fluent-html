@@ -19,7 +19,7 @@ Button("Save")
   .on("disabled", t => t.opacity("50").cursor("not-allowed"))
 ```
 
-States: `hover` `focus` `focus-within` `focus-visible` `active` `disabled` `checked` `required` `invalid` `valid` `first` `last` `odd` `even` `placeholder` `before` `after` `dark` `group-hover` `group-focus` `peer-hover` `peer-checked` and more.
+States: `hover` `focus` `focus-within` `focus-visible` `active` `disabled` `checked` `required` `invalid` `valid` `first` `last` `odd` `even` `placeholder` `before` `after` `dark` `group-hover` `group-focus` `peer-hover` `peer-checked` and more — plus typed `aria-*`/`aria-[…]`, `data-[…]`, named `group-…/name`/`peer-…/name`, structural `nth-3`/`nth-[3n+1]`, and child/descendant `*`/`**`.
 
 Variants nest:
 
@@ -37,7 +37,7 @@ Div()
   .at("lg", t => t.gridCols("3"))
 ```
 
-Breakpoints: `sm` `md` `lg` `xl` `2xl`
+Breakpoints: `sm` `md` `lg` `xl` `2xl`, plus container-query breakpoints `@3xs`…`@7xl` (`@max-lg`, `@[480px]`, named scope `@lg/sidebar`) for children of a `.containerQuery()` element.
 
 ## Conditional: `.when()`
 
@@ -103,7 +103,7 @@ Sizing, spacing, and position methods accept a `(unit, amount)` overload for arb
 .top("rem", 2)             // top-[2rem]
 ```
 
-Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, `minW`, `maxW`, `minH`, `maxH`, `padding`, `margin`, `gap`, `top`, `right`, `bottom`, `left`, `inset`.
+Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, `minW`, `maxW`, `minH`, `maxH`, `padding`, `margin`, `gap`, `top`, `right`, `bottom`, `left`, `inset`, `insetX`, `insetY`, `insetS`, `insetE`, `strokeWidth`, `decorationThickness`, `scrollMargin`, `scrollPadding`.
 
 ### Colors
 
@@ -112,6 +112,10 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .textColor("gray-700")     // text-gray-700
 .borderColor("gray-300")   // border-gray-300
 .ringColor("blue-300")     // ring-blue-300
+.fillColor("current")      // fill-current (SVG paint; .strokeColor(), .strokeWidth("2"))
+.accentColor("blue-600")   // accent-blue-600 (.caretColor("pink-500") for the text caret)
+.decorationColor("blue-500") // decoration-blue-500 (.decorationStyle("wavy"), .decorationThickness("2"))
+.scheme("light-dark")      // scheme-light-dark (color-scheme)
 ```
 
 ### Typography
@@ -133,6 +137,9 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .breakAll()                // break-all
 .listStyleType("disc")     // list-disc
 .listStylePosition("inside") // list-inside
+.textWrap("balance")       // text-balance (.textWrap("pretty") for body copy)
+.hyphens("auto")           // hyphens-auto (needs an ancestor lang)
+.textShadow("lg")          // text-shadow-lg (v4.1; .textShadow("lg/30"), .textShadowColor("black/30"))
 ```
 
 ### Flexbox
@@ -155,6 +162,9 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .gridCols("3")             // grid-cols-3
 .gridRows("2")             // grid-rows-2
 .colSpan("2")              // col-span-2
+.rowSpan("2")              // row-span-2
+.colStart("2")  .colEnd(-1)  // col-start-2, -col-end-1 (negative line = end-relative)
+.rowStart("1")  .rowEnd("3")
 ```
 
 ### Borders & Effects
@@ -168,6 +178,10 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .ring("2")                 // ring-2
 .opacity("50")             // opacity-50
 .divideX()  .divideY("2")  // divide-x, divide-y-2
+.dropShadow("lg")          // drop-shadow-lg (.dropShadowColor() for v4.1 colored)
+.insetShadow("sm")         // inset-shadow-sm (.insetRing("2") inner ring; both have +Color)
+.mixBlend("multiply")      // mix-blend-multiply (.bgBlend() for background layers)
+.isolate()                 // isolate (new stacking context — z-index/blend leak guard)
 ```
 
 ### Position & Layout
@@ -179,9 +193,14 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .zIndex("10")              // z-10
 .inset("0")                // inset-0
 .top("4")  .right("0")  .bottom("0")  .left("0")
+.insetX("0")  .insetY("4")  // inset-x-0, inset-y-4 (.insetS()/.insetE() are logical/RTL)
 .overflow("hidden")        // overflow-hidden
 .overflow("x", "auto")     // overflow-x-auto
 .objectFit("cover")        // object-cover
+.columns("3")              // columns-3 (.breakInside("avoid") keeps a card whole)
+.snap("x", "mandatory")    // snap-x snap-mandatory (.snapAlign("center") on children)
+.scrollMargin("t", "24")   // scroll-mt-24 (.scrollPadding(), .scrollBehavior("smooth"))
+.fieldSizing("content")    // field-sizing-content (JS-free auto-grow textarea)
 ```
 
 ### Transforms & Animation
@@ -192,19 +211,28 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .translate("x", "4")       // translate-x-4
 .skewX("6")                // skew-x-6
 .skewY("3")                // skew-y-3
+.rotateX("45")  .rotateY(-30)  .rotateZ("90")  // rotate-x-45, -rotate-y-30, rotate-z-90 (3D)
+.scaleX("110")  .scaleZ("75")  .scale3d()      // scale-x-110, scale-z-75, scale-3d
+.translate("z", "12")      // translate-z-12 (3D depth)
+.perspective("normal")     // perspective-normal (gate on the PARENT; + .perspectiveOrigin())
+.transformStyle("3d")      // transform-3d (+ .backfaceVisibility("hidden"))
 .transition("colors")      // transition-colors
 .duration("200")           // duration-200
+.delay("150")              // delay-150
 .ease("in-out")            // ease-in-out
+.transitionBehavior("discrete") // transition-discrete (animate display/popover/dialog)
 .animate("spin")           // animate-spin
 ```
 
-### Gradients
+### Gradients (v4 `bg-linear-*`)
 
 ```typescript
-.gradientTo("r")           // bg-gradient-to-r
-.from("blue-500")          // from-blue-500
-.via("purple-500")         // via-purple-500
-.to("pink-500")            // to-pink-500
+.gradient("blue-500", "pink-500", "to-r")  // bg-linear-to-r from-blue-500 to-pink-500
+.gradientTo("to-r")        // bg-linear-to-r  (interpolation: .gradientTo("to-r", "oklch"))
+.gradientLinear(45)        // bg-linear-45 (angle; -65 → -bg-linear-65)
+.gradientRadial("top-left") // bg-radial-[at_top_left]   ·   .gradientConic(180)  // bg-conic-180
+.from("blue-500", "10%")   // from-blue-500 from-10%  (optional stop position)
+.via("purple-500")  .to("pink-500", "90%")
 ```
 
 ### Filters
@@ -221,6 +249,15 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 ```
 
 All filters have `backdrop` variants: `.backdropBlur()`, `.backdropBrightness()`, `.backdropContrast()`, etc.
+
+### Masks (v4.1)
+
+```typescript
+.maskImage("none")         // mask-none  (or "[url(/fade.png)]")
+.maskFrom("b", "50%")  .maskTo("b", "90%")  // mask-b-from-50% mask-b-to-90% (edge fade)
+.maskComposite("intersect") // mask-intersect (stacked masks)
+.maskType("luminance")     // mask-type-luminance (SVG <mask>)
+```
 
 ### Group & Peer
 

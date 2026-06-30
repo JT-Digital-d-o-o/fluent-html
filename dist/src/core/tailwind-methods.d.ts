@@ -1,4 +1,4 @@
-import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindTranslate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll, TailwindPositionArea } from "./tailwind-types.js";
+import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindTranslate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll, TailwindPositionArea, TailwindStrokeWidth, TailwindDecorationStyle, TailwindDecorationThickness, TailwindColorScheme, TailwindTextWrap, TailwindHyphens, TailwindTextShadow, TailwindDropShadow, TailwindInsetShadow, TailwindMixBlendMode, TailwindBgBlendMode, TailwindIsolation, TailwindDelay, TailwindTransitionBehavior, TailwindGradientPosition, TailwindGradientAngle, TailwindGradientOrigin, TailwindGradientInterpolation, TailwindPerspective, TailwindPerspectiveOrigin, TailwindTranslateZ, TailwindTransformStyle, TailwindBackfaceVisibility, TailwindGridLine, TailwindRowSpan, TailwindColumns, TailwindBreakBeforeAfter, TailwindBreakInside, TailwindBoxDecoration, TailwindSnapAxis, TailwindSnapStrictness, TailwindSnapAlign, TailwindSnapStop, TailwindScrollBehavior, TailwindFieldSizing, TailwindMaskEdge, TailwindMaskStop, TailwindMaskComposite, TailwindMaskType } from "./tailwind-types.js";
 import type { Id } from "../ids.js";
 declare module "./tag.js" {
     interface Tag {
@@ -116,6 +116,7 @@ declare module "./tag.js" {
         scale(value: TailwindScale): this;
         rotate(value: TailwindRotate): this;
         translate(direction: "x" | "y", value: TailwindTranslate): this;
+        translate(direction: "z", value: TailwindTranslateZ): this;
         skewX(value: TailwindSkew): this;
         skewY(value: TailwindSkew): this;
         select(value: TailwindSelect): this;
@@ -130,13 +131,14 @@ declare module "./tag.js" {
         /** v4 a11y-safe focus-hiding: `outline-hidden` (keeps a visible outline in forced-colors mode). Prefer over `.outline("none")`. */
         outlineHidden(): this;
         fontFamily(family: TailwindFontFamily): this;
-        gradient(from: TailwindColor, to: TailwindColor, direction?: TailwindGradientDirection): this;
-        gradientTo(direction: TailwindGradientDirection): this;
-        gradientRadial(): this;
-        gradientConic(): this;
-        from(color: TailwindGradientStop): this;
-        via(color: TailwindGradientStop): this;
-        to(color: TailwindGradientStop): this;
+        gradient(from: TailwindColor, to: TailwindColor, direction?: TailwindGradientDirection, interpolation?: TailwindGradientInterpolation): this;
+        gradientTo(direction: TailwindGradientDirection, interpolation?: TailwindGradientInterpolation): this;
+        gradientLinear(angle: TailwindGradientAngle): this;
+        gradientRadial(origin?: TailwindGradientOrigin, interpolation?: TailwindGradientInterpolation): this;
+        gradientConic(angle?: TailwindGradientAngle, interpolation?: TailwindGradientInterpolation): this;
+        from(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
+        via(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
+        to(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
         group(name?: string): this;
         peer(name?: string): this;
         /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.at("@sm", …)`. */
@@ -200,6 +202,79 @@ declare module "./tag.js" {
          * Div().viewTransitionName(ids.card)
          */
         viewTransitionName(name: string | Id): this;
+        fillColor(color: TailwindColor | "none"): this;
+        strokeColor(color: TailwindColor | "none"): this;
+        strokeWidth(width: TailwindStrokeWidth): this;
+        strokeWidth(unit: TailwindUnit, amount: number): this;
+        accentColor(color: TailwindColor): this;
+        caretColor(color: TailwindColor): this;
+        decorationColor(color: TailwindColor): this;
+        decorationStyle(style: TailwindDecorationStyle): this;
+        decorationThickness(value: TailwindDecorationThickness): this;
+        decorationThickness(unit: TailwindUnit, amount: number): this;
+        scheme(value: TailwindColorScheme): this;
+        insetX(value: TailwindInset): this;
+        insetX(unit: TailwindUnit, amount: number): this;
+        insetY(value: TailwindInset): this;
+        insetY(unit: TailwindUnit, amount: number): this;
+        insetS(value: TailwindInset): this;
+        insetS(unit: TailwindUnit, amount: number): this;
+        insetE(value: TailwindInset): this;
+        insetE(unit: TailwindUnit, amount: number): this;
+        textWrap(value: TailwindTextWrap): this;
+        hyphens(value: TailwindHyphens): this;
+        textShadow(value: TailwindTextShadow): this;
+        textShadowColor(color: TailwindColor): this;
+        dropShadow(value: TailwindDropShadow): this;
+        dropShadowColor(color: TailwindColor): this;
+        insetShadow(value: TailwindInsetShadow): this;
+        insetShadowColor(color: TailwindColor): this;
+        insetRing(value?: TailwindRingWidth): this;
+        insetRingColor(color: TailwindColor): this;
+        mixBlend(mode: TailwindMixBlendMode): this;
+        bgBlend(mode: TailwindBgBlendMode): this;
+        isolate(): this;
+        isolation(value: TailwindIsolation): this;
+        delay(value: TailwindDelay): this;
+        transitionBehavior(value: TailwindTransitionBehavior): this;
+        perspective(value: TailwindPerspective): this;
+        perspectiveOrigin(value: TailwindPerspectiveOrigin): this;
+        transformStyle(value: TailwindTransformStyle): this;
+        backfaceVisibility(value: TailwindBackfaceVisibility): this;
+        rotateX(value: TailwindRotate): this;
+        rotateY(value: TailwindRotate): this;
+        rotateZ(value: TailwindRotate): this;
+        scaleX(value: TailwindScale): this;
+        scaleY(value: TailwindScale): this;
+        scaleZ(value: TailwindScale): this;
+        scale3d(): this;
+        colStart(value: TailwindGridLine): this;
+        colEnd(value: TailwindGridLine): this;
+        rowStart(value: TailwindGridLine): this;
+        rowEnd(value: TailwindGridLine): this;
+        rowSpan(value: TailwindRowSpan): this;
+        columns(value: TailwindColumns): this;
+        breakBefore(value: TailwindBreakBeforeAfter): this;
+        breakAfter(value: TailwindBreakBeforeAfter): this;
+        breakInside(value: TailwindBreakInside): this;
+        boxDecoration(value: TailwindBoxDecoration): this;
+        snap(axis: TailwindSnapAxis): this;
+        snap(axis: Exclude<TailwindSnapAxis, "none">, strictness: TailwindSnapStrictness): this;
+        snapAlign(value: TailwindSnapAlign): this;
+        snapStop(value: TailwindSnapStop): this;
+        scrollBehavior(value: TailwindScrollBehavior): this;
+        scrollMargin(value: TailwindSpacing): this;
+        scrollMargin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+        scrollMargin(unit: TailwindUnit, amount: number): this;
+        scrollPadding(value: TailwindSpacing): this;
+        scrollPadding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+        scrollPadding(unit: TailwindUnit, amount: number): this;
+        fieldSizing(value: TailwindFieldSizing): this;
+        maskImage(value: "none" | `[${string}]`): this;
+        maskFrom(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
+        maskTo(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
+        maskComposite(mode: TailwindMaskComposite): this;
+        maskType(value: TailwindMaskType): this;
     }
 }
 //# sourceMappingURL=tailwind-methods.d.ts.map

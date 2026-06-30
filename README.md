@@ -575,6 +575,23 @@ userRoutes.list.resolve({ page: "1", filter: undefined })                       
 Button("Page 2").setHtmx(userRoutes.list({ query: { page: "2" } }))
 ```
 
+### Wildcard (Splat) Routes
+
+A trailing `*` (or named `*name`) captures the rest of the path as one required `string` param — for file trees, scoped slugs, and other catch-alls. Each segment is url-encoded but `/` separators are preserved. Only a *trailing* `/*` is a splat, and a splat route takes no declared `params`.
+
+```typescript
+const fileRoutes = defineRoutes("/files", {
+  tree: { method: "get", path: "/*" },          // → required `splat`
+  blob: { method: "get", path: "/blob/*path" }, // → required `path`
+} as const);
+
+fileRoutes.tree.resolve({ splat: "a/b/c" })   // "/files/a/b/c"         (slashes preserved)
+fileRoutes.blob.resolve({ path: "x/y.png" })  // "/files/blob/x/y.png"
+
+fileRoutes.tree.resolve()              // ✗ missing splat — compile error
+fileRoutes.tree.resolve({ rest: "x" }) // ✗ wrong key (it's "splat") — compile error
+```
+
 ### Typed Route Parameters
 
 Route params can be typed as `string`, `number`, `uuid`, or an **enum** — a `readonly` literal tuple that constrains the segment to a token set. The type is enforced at compile time, and a `params` key that isn't a `:param` in the path is itself a compile error:
@@ -1089,6 +1106,12 @@ Button("Save")
 | Pseudo-elements | `placeholder`, `selection`, `marker`, `file`, `before`, `after` |
 | Theme | `dark` |
 | Group/peer | `group-hover`, `group-focus`, `group-active`, `group-disabled`, `peer-hover`, `peer-focus`, `peer-checked`, `peer-invalid` |
+| Named group/peer | `group-{state}/name`, `peer-{state}/name` (pair with `.group("name")`/`.peer("name")`) |
+| ARIA | the nine boolean heads (`aria-checked`, `aria-expanded`, `aria-disabled`, …) plus `aria-[…]`, `group-aria-[…]`, `peer-aria-[…]` |
+| Data attributes | `data-[…]`, `group-data-[…]`, `peer-data-[…]` |
+| Structural | `nth-3`, `nth-[3n+1]`, `nth-of-type-…`, `nth-last-…` |
+| Children | `*` (direct children), `**` (all descendants) |
+| More v4 | `read-only`, `target`, `autofill`, `user-valid`, `user-invalid`, `rtl`, `ltr`, `print`, `motion-reduce`/`safe`, `starting`, `open`, `inert`, and relational `has-[…]`/`group-has-[…]`/`peer-has-[…]`/`in-[…]` |
 
 ### Responsive Breakpoints with `.at()`
 
@@ -1103,7 +1126,7 @@ Div("Sidebar")
 // → p-4 text-sm md:p-6 md:text-base lg:p-8 lg:text-lg
 ```
 
-**Supported breakpoints:** `sm` | `md` | `lg` | `xl` | `2xl`
+**Supported breakpoints:** `sm` | `md` | `lg` | `xl` | `2xl` — plus container-query breakpoints `@3xs`…`@7xl` (and `@max-lg`, `@[480px]`, named scope `@lg/sidebar`) for children of a `.containerQuery()` element.
 
 ### Composing Variants
 
@@ -2345,8 +2368,8 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | `.overflow(value)` / `.overflow(axis, value)` | Overflow (`overflow-hidden`, `overflow-x-auto`) |
 | `.fontFamily(family)`                 | Font family (`font-sans`, `font-mono`)              |
 | `.antialiased()`                      | Font smoothing (`antialiased`)                      |
-| `.gradientTo(dir)`                    | Gradient direction (`bg-gradient-to-r`)             |
-| `.from(color)` / `.via(color)` / `.to(color)` | Gradient color stops                       |
+| `.gradient(from,to,dir?)` / `.gradientTo(dir)` | v4 gradient (`bg-linear-to-r`); optional interpolation arg |
+| `.from(color, pos?)` / `.via(color, pos?)` / `.to(color, pos?)` | Gradient color stops (+ optional position) |
 | `.blur()` / `.blur(size)`            | Blur filter (`blur`, `blur-lg`)                     |
 | `.brightness(value)`                  | Brightness filter (`brightness-75`)                 |
 | `.contrast(value)`                    | Contrast filter (`contrast-125`)                    |
@@ -2361,6 +2384,30 @@ All fluent methods have **type-safe autocomplete** for Tailwind values.
 | `.ease(value)`                        | Timing function (`ease-in`, `ease-out`)             |
 | `.aspect(ratio)`                      | Aspect ratio (`aspect-video`, `aspect-square`)      |
 | `.w(unit, amount)` / `.h(unit, amount)` | Arbitrary values (`w-[180px]`, `h-[2.5rem]`)     |
+| `.fillColor(c)` / `.strokeColor(c)` / `.strokeWidth(w)` | SVG paint (`fill-current`, `stroke-red-500`, `stroke-2`) |
+| `.accentColor(c)` / `.caretColor(c)`  | Form-control accent / text caret color              |
+| `.decorationColor(c)` / `.decorationStyle(s)` / `.decorationThickness(v)` | Text-decoration paint/style/thickness |
+| `.scheme(value)`                      | `color-scheme` (`scheme-light-dark`)                |
+| `.textWrap(value)` / `.hyphens(value)` | `text-balance`/`text-pretty`, `hyphens-auto`       |
+| `.textShadow(v)` / `.textShadowColor(c)` | Text shadow v4.1 (`text-shadow-lg`, `text-shadow-lg/30`) |
+| `.dropShadow(v)` / `.dropShadowColor(c)` | Drop-shadow filter (`drop-shadow-lg`)            |
+| `.insetShadow(v)` / `.insetRing(w?)` (+ `Color`) | Inner shadow / inner ring                |
+| `.mixBlend(mode)` / `.bgBlend(mode)`  | Blend modes (`mix-blend-multiply`, `bg-blend-screen`) |
+| `.isolate()` / `.isolation(v)`        | Stacking context (`isolate`)                        |
+| `.delay(value)` / `.transitionBehavior(value)` | Transition delay; `transition-discrete`    |
+| `.gradientLinear(angle)`              | Linear gradient angle (`bg-linear-45`)              |
+| `.gradientRadial(origin?)` / `.gradientConic(angle?)` | Radial / conic gradients            |
+| `.rotateX/Y/Z(v)` / `.scaleX/Y/Z(v)` / `.scale3d()` | Per-axis 3D rotate/scale              |
+| `.perspective(v)` / `.perspectiveOrigin(v)` | 3D depth gate (set on the parent)             |
+| `.transformStyle(v)` / `.backfaceVisibility(v)` | `transform-3d`, `backface-hidden`        |
+| `.translate("z", value)`              | 3D depth translate (`translate-z-12`)               |
+| `.insetX(v)` / `.insetY(v)` / `.insetS(v)` / `.insetE(v)` | Axis & logical inset (`inset-x-0`)  |
+| `.colStart/colEnd/rowStart/rowEnd(v)` / `.rowSpan(v)` | Grid-line placement (`-col-start-1`) |
+| `.columns(v)` / `.breakInside/Before/After(v)` / `.boxDecoration(v)` | Multi-column + fragmentation |
+| `.snap(axis, strict?)` / `.snapAlign(v)` / `.snapStop(v)` | Scroll-snap                      |
+| `.scrollBehavior(v)` / `.scrollMargin(...)` / `.scrollPadding(...)` | Scroll behavior + offsets      |
+| `.fieldSizing(value)`                 | Auto-grow textarea (`field-sizing-content`)         |
+| `.maskImage(v)` / `.maskFrom(e,s)` / `.maskTo(e,s)` / `.maskComposite(m)` / `.maskType(v)` | Masks (v4.1) edge fades + composite |
 
 ### Control Flow
 

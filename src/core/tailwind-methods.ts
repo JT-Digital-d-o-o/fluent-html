@@ -82,6 +82,45 @@ import type {
   TailwindWillChange,
   TailwindOverscroll,
   TailwindPositionArea,
+  TailwindStrokeWidth,
+  TailwindDecorationStyle,
+  TailwindDecorationThickness,
+  TailwindColorScheme,
+  TailwindTextWrap,
+  TailwindHyphens,
+  TailwindTextShadow,
+  TailwindDropShadow,
+  TailwindInsetShadow,
+  TailwindMixBlendMode,
+  TailwindBgBlendMode,
+  TailwindIsolation,
+  TailwindDelay,
+  TailwindTransitionBehavior,
+  TailwindGradientPosition,
+  TailwindGradientAngle,
+  TailwindGradientOrigin,
+  TailwindGradientInterpolation,
+  TailwindPerspective,
+  TailwindPerspectiveOrigin,
+  TailwindTranslateZ,
+  TailwindTransformStyle,
+  TailwindBackfaceVisibility,
+  TailwindGridLine,
+  TailwindRowSpan,
+  TailwindColumns,
+  TailwindBreakBeforeAfter,
+  TailwindBreakInside,
+  TailwindBoxDecoration,
+  TailwindSnapAxis,
+  TailwindSnapStrictness,
+  TailwindSnapAlign,
+  TailwindSnapStop,
+  TailwindScrollBehavior,
+  TailwindFieldSizing,
+  TailwindMaskEdge,
+  TailwindMaskStop,
+  TailwindMaskComposite,
+  TailwindMaskType,
 } from "./tailwind-types.js";
 import type { Id } from "../ids.js";
 import { extractId } from "../ids.js";
@@ -253,6 +292,7 @@ declare module "./tag.js" {
     scale(value: TailwindScale): this;
     rotate(value: TailwindRotate): this;
     translate(direction: "x" | "y", value: TailwindTranslate): this;
+    translate(direction: "z", value: TailwindTranslateZ): this;
     skewX(value: TailwindSkew): this;
     skewY(value: TailwindSkew): this;
 
@@ -281,13 +321,19 @@ declare module "./tag.js" {
     fontFamily(family: TailwindFontFamily): this;
 
     // Gradients (v4: bg-linear-* / bg-radial-* / bg-conic-*)
-    gradient(from: TailwindColor, to: TailwindColor, direction?: TailwindGradientDirection): this;
-    gradientTo(direction: TailwindGradientDirection): this;
-    gradientRadial(): this;
-    gradientConic(): this;
-    from(color: TailwindGradientStop): this;
-    via(color: TailwindGradientStop): this;
-    to(color: TailwindGradientStop): this;
+    gradient(
+      from: TailwindColor,
+      to: TailwindColor,
+      direction?: TailwindGradientDirection,
+      interpolation?: TailwindGradientInterpolation,
+    ): this;
+    gradientTo(direction: TailwindGradientDirection, interpolation?: TailwindGradientInterpolation): this;
+    gradientLinear(angle: TailwindGradientAngle): this;
+    gradientRadial(origin?: TailwindGradientOrigin, interpolation?: TailwindGradientInterpolation): this;
+    gradientConic(angle?: TailwindGradientAngle, interpolation?: TailwindGradientInterpolation): this;
+    from(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
+    via(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
+    to(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
 
     // Group / Peer markers
     group(name?: string): this;
@@ -379,6 +425,87 @@ declare module "./tag.js" {
      * Div().viewTransitionName(ids.card)
      */
     viewTransitionName(name: string | Id): this;
+
+    fillColor(color: TailwindColor | "none"): this;
+    strokeColor(color: TailwindColor | "none"): this;
+    strokeWidth(width: TailwindStrokeWidth): this;
+    strokeWidth(unit: TailwindUnit, amount: number): this;
+    accentColor(color: TailwindColor): this;
+    caretColor(color: TailwindColor): this;
+    decorationColor(color: TailwindColor): this;
+    decorationStyle(style: TailwindDecorationStyle): this;
+    decorationThickness(value: TailwindDecorationThickness): this;
+    decorationThickness(unit: TailwindUnit, amount: number): this;
+    scheme(value: TailwindColorScheme): this;
+
+    insetX(value: TailwindInset): this;
+    insetX(unit: TailwindUnit, amount: number): this;
+    insetY(value: TailwindInset): this;
+    insetY(unit: TailwindUnit, amount: number): this;
+    insetS(value: TailwindInset): this;
+    insetS(unit: TailwindUnit, amount: number): this;
+    insetE(value: TailwindInset): this;
+    insetE(unit: TailwindUnit, amount: number): this;
+
+    textWrap(value: TailwindTextWrap): this;
+    hyphens(value: TailwindHyphens): this;
+    textShadow(value: TailwindTextShadow): this;
+    textShadowColor(color: TailwindColor): this;
+
+    dropShadow(value: TailwindDropShadow): this;
+    dropShadowColor(color: TailwindColor): this;
+    insetShadow(value: TailwindInsetShadow): this;
+    insetShadowColor(color: TailwindColor): this;
+    insetRing(value?: TailwindRingWidth): this;
+    insetRingColor(color: TailwindColor): this;
+    mixBlend(mode: TailwindMixBlendMode): this;
+    bgBlend(mode: TailwindBgBlendMode): this;
+    isolate(): this;
+    isolation(value: TailwindIsolation): this;
+
+    delay(value: TailwindDelay): this;
+    transitionBehavior(value: TailwindTransitionBehavior): this;
+
+    perspective(value: TailwindPerspective): this;
+    perspectiveOrigin(value: TailwindPerspectiveOrigin): this;
+    transformStyle(value: TailwindTransformStyle): this;
+    backfaceVisibility(value: TailwindBackfaceVisibility): this;
+    rotateX(value: TailwindRotate): this;
+    rotateY(value: TailwindRotate): this;
+    rotateZ(value: TailwindRotate): this;
+    scaleX(value: TailwindScale): this;
+    scaleY(value: TailwindScale): this;
+    scaleZ(value: TailwindScale): this;
+    scale3d(): this;
+
+    colStart(value: TailwindGridLine): this;
+    colEnd(value: TailwindGridLine): this;
+    rowStart(value: TailwindGridLine): this;
+    rowEnd(value: TailwindGridLine): this;
+    rowSpan(value: TailwindRowSpan): this;
+    columns(value: TailwindColumns): this;
+    breakBefore(value: TailwindBreakBeforeAfter): this;
+    breakAfter(value: TailwindBreakBeforeAfter): this;
+    breakInside(value: TailwindBreakInside): this;
+    boxDecoration(value: TailwindBoxDecoration): this;
+    snap(axis: TailwindSnapAxis): this;
+    snap(axis: Exclude<TailwindSnapAxis, "none">, strictness: TailwindSnapStrictness): this;
+    snapAlign(value: TailwindSnapAlign): this;
+    snapStop(value: TailwindSnapStop): this;
+    scrollBehavior(value: TailwindScrollBehavior): this;
+    scrollMargin(value: TailwindSpacing): this;
+    scrollMargin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+    scrollMargin(unit: TailwindUnit, amount: number): this;
+    scrollPadding(value: TailwindSpacing): this;
+    scrollPadding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+    scrollPadding(unit: TailwindUnit, amount: number): this;
+    fieldSizing(value: TailwindFieldSizing): this;
+
+    maskImage(value: "none" | `[${string}]`): this;
+    maskFrom(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
+    maskTo(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
+    maskComposite(mode: TailwindMaskComposite): this;
+    maskType(value: TailwindMaskType): this;
   }
 }
 
@@ -657,15 +784,26 @@ p.fontFamily = function (family: string) { return this.addClass(`font-${family}`
 
 // Gradients (v4-native: bg-linear-* replaces v3 bg-gradient-*; + radial/conic)
 
-p.gradient = function (from: string, to: string, direction: string = "to-r") {
-  return this.addClass(`bg-linear-${direction}`).addClass(`from-${from}`).addClass(`to-${to}`);
+const interp = (cls: string, i?: string) => (i ? `${cls}/${i}` : cls);
+const radialOrigin = (o: string) =>
+  o.startsWith("[") ? `bg-radial-${o}` : `bg-radial-[at_${o.replace(/-/g, "_")}]`;
+
+p.gradient = function (from: string, to: string, direction: string = "to-r", interpolation?: string) {
+  return this
+    .addClass(interp(`bg-linear-${direction}`, interpolation))
+    .addClass(`from-${from}`).addClass(`to-${to}`);
 };
-p.gradientTo = function (direction: string) { return this.addClass(`bg-linear-${direction}`); };
-p.gradientRadial = function () { return this.addClass("bg-radial"); };
-p.gradientConic = function () { return this.addClass("bg-conic"); };
-p.from = function (color: string) { return this.addClass(`from-${color}`); };
-p.via = function (color: string) { return this.addClass(`via-${color}`); };
-p.to = function (color: string) { return this.addClass(`to-${color}`); };
+p.gradientTo = function (direction: string, interpolation?: string) { return this.addClass(interp(`bg-linear-${direction}`, interpolation)); };
+p.gradientLinear = function (angle: string | number) { return this.addClass(signNeg("bg-linear", String(angle))); };
+p.gradientRadial = function (origin?: string, interpolation?: string) {
+  return this.addClass(interp(origin ? radialOrigin(origin) : "bg-radial", interpolation));
+};
+p.gradientConic = function (angle?: string | number, interpolation?: string) {
+  return this.addClass(interp(angle === undefined ? "bg-conic" : signNeg("bg-conic", String(angle)), interpolation));
+};
+p.from = function (color: string, position?: string) { this.addClass(`from-${color}`); return position ? this.addClass(`from-${position}`) : this; };
+p.via = function (color: string, position?: string) { this.addClass(`via-${color}`); return position ? this.addClass(`via-${position}`) : this; };
+p.to = function (color: string, position?: string) { this.addClass(`to-${color}`); return position ? this.addClass(`to-${position}`) : this; };
 
 // Group / Peer markers
 
@@ -783,3 +921,110 @@ p.positionArea = function (area: string) {
   return this.addStyle(`position-area: ${value}`);
 };
 p.viewTransitionName = function (name: string | Id) { return this.addStyle(`view-transition-name: ${extractId(name)}`); };
+
+p.fillColor = function (color: string) { return this.addClass(`fill-${color}`); };
+p.strokeColor = function (color: string) { return this.addClass(`stroke-${color}`); };
+p.strokeWidth = function (unitOrValue: string | number, amount?: number) {
+  if (amount !== undefined) return this.addClass(`stroke-[${amount}${unitOrValue}]`);
+  return this.addClass(`stroke-${unitOrValue}`);
+};
+p.accentColor = function (color: string) { return this.addClass(`accent-${color}`); };
+p.caretColor = function (color: string) { return this.addClass(`caret-${color}`); };
+p.scheme = function (value: string) { return this.addClass(`scheme-${value}`); };
+p.decorationColor = function (color: string) { return this.addClass(`decoration-${color}`); };
+p.decorationStyle = function (style: string) { return this.addClass(`decoration-${style}`); };
+p.decorationThickness = function (unitOrValue: string | number, amount?: number) {
+  if (amount !== undefined) return this.addClass(`decoration-[${amount}${unitOrValue}]`);
+  return this.addClass(`decoration-${unitOrValue}`);
+};
+
+p.insetX = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`inset-x-[${amount}${unitOrValue}]`);
+  return this.addClass(`inset-x-${unitOrValue}`);
+};
+p.insetY = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`inset-y-[${amount}${unitOrValue}]`);
+  return this.addClass(`inset-y-${unitOrValue}`);
+};
+p.insetS = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`inset-s-[${amount}${unitOrValue}]`);
+  return this.addClass(`inset-s-${unitOrValue}`);
+};
+p.insetE = function (unitOrValue: string, amount?: number) {
+  if (amount !== undefined) return this.addClass(`inset-e-[${amount}${unitOrValue}]`);
+  return this.addClass(`inset-e-${unitOrValue}`);
+};
+
+p.textWrap = function (value: string) { return this.addClass(`text-${value}`); };
+p.hyphens = function (value: string) { return this.addClass(`hyphens-${value}`); };
+p.textShadow = function (value: string) { return this.addClass(`text-shadow-${value}`); };
+p.textShadowColor = function (color: string) { return this.addClass(`text-shadow-${color}`); };
+
+p.dropShadow = function (value: string) { return this.addClass(`drop-shadow-${value}`); };
+p.dropShadowColor = function (color: string) { return this.addClass(`drop-shadow-${color}`); };
+p.insetShadow = function (value: string) { return this.addClass(`inset-shadow-${value}`); };
+p.insetShadowColor = function (color: string) { return this.addClass(`inset-shadow-${color}`); };
+p.insetRing = function (value?: string | number) {
+  return value === undefined ? this.addClass("inset-ring") : this.addClass(`inset-ring-${value}`);
+};
+p.insetRingColor = function (color: string) { return this.addClass(`inset-ring-${color}`); };
+p.mixBlend = function (mode: string) { return this.addClass(`mix-blend-${mode}`); };
+p.bgBlend = function (mode: string) { return this.addClass(`bg-blend-${mode}`); };
+p.isolate = function () { return this.addClass("isolate"); };
+p.isolation = function (value: string) { return this.addClass(`isolation-${value}`); };
+
+p.delay = function (value: string | number) { return this.addClass(`delay-${value}`); };
+p.transitionBehavior = function (value: string) { return this.addClass(`transition-${value}`); };
+
+p.perspective = function (value: string) { return this.addClass(`perspective-${value}`); };
+p.perspectiveOrigin = function (value: string) { return this.addClass(`perspective-origin-${value}`); };
+p.transformStyle = function (value: string) { return this.addClass(`transform-${value}`); };
+p.backfaceVisibility = function (value: string) { return this.addClass(`backface-${value}`); };
+p.rotateX = function (value: string | number) { return this.addClass(signNeg("rotate-x", String(value))); };
+p.rotateY = function (value: string | number) { return this.addClass(signNeg("rotate-y", String(value))); };
+p.rotateZ = function (value: string | number) { return this.addClass(signNeg("rotate-z", String(value))); };
+p.scaleX = function (value: string | number) { return this.addClass(signNeg("scale-x", String(value))); };
+p.scaleY = function (value: string | number) { return this.addClass(signNeg("scale-y", String(value))); };
+p.scaleZ = function (value: string | number) { return this.addClass(signNeg("scale-z", String(value))); };
+p.scale3d = function () { return this.addClass("scale-3d"); };
+
+p.colStart = function (value: string | number) { return this.addClass(signNeg("col-start", String(value))); };
+p.colEnd = function (value: string | number) { return this.addClass(signNeg("col-end", String(value))); };
+p.rowStart = function (value: string | number) { return this.addClass(signNeg("row-start", String(value))); };
+p.rowEnd = function (value: string | number) { return this.addClass(signNeg("row-end", String(value))); };
+p.rowSpan = function (value: string | number) { return this.addClass(`row-span-${value}`); };
+p.columns = function (value: string | number) { return this.addClass(`columns-${value}`); };
+p.breakBefore = function (value: string) { return this.addClass(`break-before-${value}`); };
+p.breakAfter = function (value: string) { return this.addClass(`break-after-${value}`); };
+p.breakInside = function (value: string) { return this.addClass(`break-inside-${value}`); };
+p.boxDecoration = function (value: string) { return this.addClass(`box-decoration-${value}`); };
+p.snap = function (axis: string, strictness?: string) {
+  if (strictness === undefined) return this.addClass(`snap-${axis}`);
+  return this.addClass(`snap-${axis}`).addClass(`snap-${strictness}`);
+};
+p.snapAlign = function (value: string) {
+  return this.addClass(value === "none" ? "snap-align-none" : `snap-${value}`);
+};
+p.snapStop = function (value: string) { return this.addClass(`snap-${value}`); };
+p.scrollBehavior = function (value: string) { return this.addClass(`scroll-${value}`); };
+p.scrollMargin = function (directionOrValue: string, value?: string | number) {
+  if (value === undefined) return this.addClass(`scroll-m-${directionOrValue}`);
+  if (typeof value === "number") return this.addClass(`scroll-m-[${value}${directionOrValue}]`);
+  const dir = DIR_MAP[directionOrValue] || directionOrValue;
+  return this.addClass(`scroll-m${dir}-${value}`);
+};
+p.scrollPadding = function (directionOrValue: string, value?: string | number) {
+  if (value === undefined) return this.addClass(`scroll-p-${directionOrValue}`);
+  if (typeof value === "number") return this.addClass(`scroll-p-[${value}${directionOrValue}]`);
+  const dir = DIR_MAP[directionOrValue] || directionOrValue;
+  return this.addClass(`scroll-p${dir}-${value}`);
+};
+p.fieldSizing = function (value: string) { return this.addClass(`field-sizing-${value}`); };
+
+p.maskImage = function (value: string) {
+  return value === "none" ? this.addClass("mask-none") : this.addClass(`mask-${value}`);
+};
+p.maskFrom = function (edge: string, stop: string) { return this.addClass(`mask-${edge}-from-${stop}`); };
+p.maskTo = function (edge: string, stop: string) { return this.addClass(`mask-${edge}-to-${stop}`); };
+p.maskComposite = function (mode: string) { return this.addClass(`mask-${mode}`); };
+p.maskType = function (value: string) { return this.addClass(`mask-type-${value}`); };

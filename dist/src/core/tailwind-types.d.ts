@@ -66,11 +66,11 @@ export type TailwindTextAlign = "left" | "center" | "right" | "justify";
 export type TailwindFlexDirection = "row" | "col" | "row-reverse" | "col-reverse";
 export type TailwindJustifyContent = "start" | "end" | "center" | "between" | "around" | "evenly";
 export type TailwindAlignItems = "start" | "end" | "center" | "baseline" | "stretch";
-export type TailwindState = "hover" | "focus" | "focus-within" | "focus-visible" | "active" | "visited" | "disabled" | "enabled" | "checked" | "indeterminate" | "required" | "invalid" | "valid" | "first" | "last" | "odd" | "even" | "empty" | "first-of-type" | "last-of-type" | "only-child" | "placeholder" | "selection" | "marker" | "file" | "before" | "after" | "dark" | "group-hover" | "group-focus" | "group-active" | "group-disabled" | "peer-hover" | "peer-focus" | "peer-checked" | "peer-invalid" | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape" | "starting" | "open" | "inert" | `not-${string}` | `supports-[${string}]` | `nth-[${string}]` | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]`;
-export type TailwindContainerBreakpoint = `@${string}` | `@max-${string}` | `@[${string}]` | `@${string}/${string}`;
+export type TailwindState = "hover" | "focus" | "focus-within" | "focus-visible" | "active" | "visited" | "disabled" | "enabled" | "checked" | "indeterminate" | "required" | "invalid" | "valid" | "first" | "last" | "odd" | "even" | "empty" | "first-of-type" | "last-of-type" | "only-child" | "placeholder" | "selection" | "marker" | "file" | "before" | "after" | "dark" | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape" | "starting" | "open" | "inert" | `not-${string}` | `supports-[${string}]` | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]` | `group-${GroupPeerState}` | `peer-${GroupPeerState}` | `group-${GroupPeerState}/${string}` | `peer-${GroupPeerState}/${string}` | AriaBoolVariant | `aria-[${string}]` | `group-${AriaBoolVariant}` | `peer-${AriaBoolVariant}` | `group-aria-[${string}]` | `peer-aria-[${string}]` | `data-[${string}]` | `group-data-[${string}]` | `peer-data-[${string}]` | ExtraPseudoState | StructuralNthVariant | ChildDescendantVariant;
+export type TailwindContainerBreakpoint = TailwindContainerSize | `@max-${"3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"}` | `${TailwindContainerSize}/${string}` | `@[${string}]` | `@min-[${string}]` | `@max-[${string}]`;
 export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl" | TailwindContainerBreakpoint;
 export type TailwindFontFamily = "sans" | "serif" | "mono" | (string & {});
-export type TailwindGradientDirection = "to-t" | "to-tr" | "to-r" | "to-br" | "to-b" | "to-bl" | "to-l" | "to-tl" | (string & {});
+export type TailwindGradientDirection = "to-t" | "to-tr" | "to-r" | "to-br" | "to-b" | "to-bl" | "to-l" | "to-tl";
 export type TailwindGradientStop = TailwindColor;
 export type TailwindBlur = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | `[${string}]`;
 export type TailwindLineClamp = 1 | 2 | 3 | 4 | 5 | 6 | "none" | (string & {});
@@ -97,5 +97,61 @@ export type TailwindSkew = 0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12 | St
 export type TailwindWillChange = "auto" | "scroll" | "contents" | "transform" | `[${string}]`;
 export type TailwindOverscroll = "auto" | "contain" | "none";
 export type TailwindUnit = "px" | "rem" | "em" | "%" | "vh" | "vw" | "dvh" | "svh" | "lvh";
+export type TailwindStrokeWidth = 0 | 1 | 2 | Stringified<0 | 1 | 2> | `[${string}]`;
+export type TailwindDecorationStyle = "solid" | "double" | "dotted" | "dashed" | "wavy";
+export type TailwindDecorationThickness = "auto" | "from-font" | 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | `[${string}]`;
+export type TailwindColorScheme = "normal" | "light" | "dark" | "light-dark" | "only-light" | "only-dark";
+export type TailwindTextWrap = "wrap" | "nowrap" | "balance" | "pretty";
+export type TailwindHyphens = "none" | "manual" | "auto";
+export interface FluentCustomTextShadow {
+}
+export type TailwindTextShadowSize = "2xs" | "xs" | "sm" | "md" | "lg" | "none";
+export type TailwindTextShadow = TailwindTextShadowSize | `${TailwindTextShadowSize}/${number}` | (keyof FluentCustomTextShadow & string) | `[${string}]`;
+export interface FluentCustomDropShadow {
+}
+export type TailwindDropShadow = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "none" | (keyof FluentCustomDropShadow & string) | `[${string}]`;
+export interface FluentCustomInsetShadow {
+}
+export type TailwindInsetShadow = "2xs" | "xs" | "sm" | "none" | (keyof FluentCustomInsetShadow & string) | `[${string}]`;
+export type TailwindMixBlendMode = "normal" | "multiply" | "screen" | "overlay" | "darken" | "lighten" | "color-dodge" | "color-burn" | "hard-light" | "soft-light" | "difference" | "exclusion" | "hue" | "saturation" | "color" | "luminosity" | "plus-darker" | "plus-lighter";
+export type TailwindBgBlendMode = "normal" | "multiply" | "screen" | "overlay" | "darken" | "lighten" | "color-dodge" | "color-burn" | "hard-light" | "soft-light" | "difference" | "exclusion" | "hue" | "saturation" | "color" | "luminosity";
+export type TailwindIsolation = "auto";
+export type TailwindDelay = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | (string & {});
+export type TailwindTransitionBehavior = "normal" | "discrete";
+export type TailwindGradientPosition = "0%" | "5%" | "10%" | "15%" | "20%" | "25%" | "30%" | "35%" | "40%" | "45%" | "50%" | "55%" | "60%" | "65%" | "70%" | "75%" | "80%" | "85%" | "90%" | "95%" | "100%" | `[${string}]`;
+export type TailwindGradientAngle = number | `[${string}]`;
+export type TailwindGradientOrigin = "top" | "top-right" | "right" | "bottom-right" | "bottom" | "bottom-left" | "left" | "top-left" | "center" | `[${string}]`;
+export type TailwindGradientColorSpace = "oklch" | "oklab" | "srgb" | "srgb-linear" | "hsl" | "hwb" | "lab" | "lch";
+export type TailwindGradientHueInterpolation = "shorter" | "longer" | "increasing" | "decreasing";
+export type TailwindGradientInterpolation = TailwindGradientColorSpace | TailwindGradientHueInterpolation;
+export type TailwindPerspective = "dramatic" | "near" | "normal" | "midrange" | "distant" | "none" | `[${string}]`;
+export type TailwindPerspectiveOrigin = "center" | "top" | "top-right" | "right" | "bottom-right" | "bottom" | "bottom-left" | "left" | "top-left" | `[${string}]`;
+export type TailwindTranslateZ = TailwindSpacing | `-${number}` | "-px";
+export type TailwindTransformStyle = "3d" | "flat";
+export type TailwindBackfaceVisibility = "visible" | "hidden";
+export type AriaBoolVariant = "aria-busy" | "aria-checked" | "aria-disabled" | "aria-expanded" | "aria-hidden" | "aria-pressed" | "aria-readonly" | "aria-required" | "aria-selected";
+export type GroupPeerState = "hover" | "focus" | "focus-within" | "focus-visible" | "active" | "disabled" | "checked" | "required" | "invalid" | "valid" | "open";
+export type ExtraPseudoState = "only" | "only-of-type" | "target" | "default" | "optional" | "read-only" | "autofill" | "in-range" | "out-of-range" | "placeholder-shown" | "details-content" | "user-valid" | "user-invalid" | "rtl" | "ltr" | "contrast-more" | "contrast-less" | "forced-colors";
+export type StructuralNthVariant = `nth-${string}` | `nth-last-${string}` | `nth-of-type-${string}` | `nth-last-of-type-${string}`;
+export type ChildDescendantVariant = "*" | "**";
+export type TailwindContainerSize = "@3xs" | "@2xs" | "@xs" | "@sm" | "@md" | "@lg" | "@xl" | "@2xl" | "@3xl" | "@4xl" | "@5xl" | "@6xl" | "@7xl";
+type GridLineN = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
+type NegGridLineN = -1 | -2 | -3 | -4 | -5 | -6 | -7 | -8 | -9 | -10 | -11 | -12 | -13;
+export type TailwindGridLine = GridLineN | NegGridLineN | Stringified<GridLineN | NegGridLineN> | "auto" | `[${string}]`;
+export type TailwindRowSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Stringified<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12> | "full" | `[${string}]`;
+export type TailwindColumns = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Stringified<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12> | "auto" | "3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]`;
+export type TailwindBreakBeforeAfter = "auto" | "avoid" | "all" | "avoid-page" | "page" | "left" | "right" | "column";
+export type TailwindBreakInside = "auto" | "avoid" | "avoid-page" | "avoid-column";
+export type TailwindBoxDecoration = "clone" | "slice";
+export type TailwindSnapAxis = "none" | "x" | "y" | "both";
+export type TailwindSnapStrictness = "mandatory" | "proximity";
+export type TailwindSnapAlign = "start" | "end" | "center" | "none";
+export type TailwindSnapStop = "normal" | "always";
+export type TailwindScrollBehavior = "auto" | "smooth";
+export type TailwindFieldSizing = "content" | "fixed";
+export type TailwindMaskEdge = "t" | "r" | "b" | "l" | "x" | "y";
+export type TailwindMaskStop = `${number}%` | TailwindColor | TailwindSpacing | `(${string})` | `[${string}]`;
+export type TailwindMaskComposite = "add" | "subtract" | "intersect" | "exclude";
+export type TailwindMaskType = "alpha" | "luminance";
 export {};
 //# sourceMappingURL=tailwind-types.d.ts.map
