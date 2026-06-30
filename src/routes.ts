@@ -8,8 +8,8 @@
 // Complementary to defineIds() which protects target selectors,
 // defineRoutes() protects endpoint URLs and HTTP methods.
 
-import type { HTMX, HxHttpMethod, HxTarget } from "./htmx.js";
-import { resolveSelector } from "./htmx.js";
+import type { HTMX, HxHttpMethod, HxTarget, QueryParams } from "./htmx.js";
+import { resolveSelector, buildQueryString } from "./htmx.js";
 import type { Id } from "./ids.js";
 
 // ------------------------------------
@@ -139,16 +139,6 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
 };
 
 // ------------------------------------
-// Query Parameter Types
-// ------------------------------------
-
-/** Values accepted in a query-parameter object. `undefined` and `null` entries are silently skipped. */
-export type QueryParamValue = string | number | boolean | undefined | null;
-
-/** A bag of query parameters. */
-export type QueryParams = Record<string, QueryParamValue>;
-
-// ------------------------------------
 // Route Callable Types
 // ------------------------------------
 
@@ -212,16 +202,6 @@ function substituteParams(template: string, params: Record<string, string | numb
   return out;
 }
 
-/** Internal: serialize a query-params bag into a `?key=value&…` string. Skips nullish entries. */
-function buildQueryString(query: QueryParams): string {
-  const parts: string[] = [];
-  for (const [key, value] of Object.entries(query)) {
-    if (value == null) continue;
-    parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
-  }
-  return parts.length > 0 ? `?${parts.join("&")}` : "";
-}
-
 /** Internal: build an HTMX object from a resolved path + method + options. */
 function buildHtmxFromRoute(
   endpoint: string,
@@ -232,7 +212,7 @@ function buildHtmxFromRoute(
     return { endpoint, method };
   }
   const { target, select, indicator, disable, include, query, ...rest } = options;
-  const resolvedEndpoint = query ? endpoint + buildQueryString(query) : endpoint;
+  const resolvedEndpoint = query ? buildQueryString(endpoint, query) : endpoint;
   return {
     endpoint: resolvedEndpoint,
     method,
@@ -318,10 +298,10 @@ export function defineRoutes(
       ? function (params: Record<string, string | number>, query?: QueryParams): string {
           const resolved = substituteParams(fullPath, params);
           assertNoUnresolvedParams(resolved, fullPath);
-          return query ? resolved + buildQueryString(query) : resolved;
+          return query ? buildQueryString(resolved, query) : resolved;
         }
       : function (query?: QueryParams): string {
-          return query ? fullPath + buildQueryString(query) : fullPath;
+          return query ? buildQueryString(fullPath, query) : fullPath;
         };
 
     Object.defineProperty(routeFn, "method", { value: method, writable: false, enumerable: true });

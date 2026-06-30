@@ -7,7 +7,7 @@
 //
 // Complementary to defineIds() which protects target selectors,
 // defineRoutes() protects endpoint URLs and HTTP methods.
-import { resolveSelector } from "./htmx.js";
+import { resolveSelector, buildQueryString } from "./htmx.js";
 // ------------------------------------
 // Runtime Implementation
 // ------------------------------------
@@ -35,23 +35,13 @@ function substituteParams(template, params) {
     }
     return out;
 }
-/** Internal: serialize a query-params bag into a `?key=value&…` string. Skips nullish entries. */
-function buildQueryString(query) {
-    const parts = [];
-    for (const [key, value] of Object.entries(query)) {
-        if (value == null)
-            continue;
-        parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
-    }
-    return parts.length > 0 ? `?${parts.join("&")}` : "";
-}
 /** Internal: build an HTMX object from a resolved path + method + options. */
 function buildHtmxFromRoute(endpoint, method, options) {
     if (!options) {
         return { endpoint, method };
     }
     const { target, select, indicator, disable, include, query, ...rest } = options;
-    const resolvedEndpoint = query ? endpoint + buildQueryString(query) : endpoint;
+    const resolvedEndpoint = query ? buildQueryString(endpoint, query) : endpoint;
     return {
         endpoint: resolvedEndpoint,
         method,
@@ -84,10 +74,10 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
             ? function (params, query) {
                 const resolved = substituteParams(fullPath, params);
                 assertNoUnresolvedParams(resolved, fullPath);
-                return query ? resolved + buildQueryString(query) : resolved;
+                return query ? buildQueryString(resolved, query) : resolved;
             }
             : function (query) {
-                return query ? fullPath + buildQueryString(query) : fullPath;
+                return query ? buildQueryString(fullPath, query) : fullPath;
             };
         Object.defineProperty(routeFn, "method", { value: method, writable: false, enumerable: true });
         Object.defineProperty(routeFn, "path", { value: fullPath, writable: false, enumerable: true });

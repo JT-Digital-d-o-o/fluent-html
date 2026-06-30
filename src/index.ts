@@ -333,6 +333,8 @@ export type {
   HxOptions,
   HxConfig,
   HxStatusConfig,
+  QueryParams,
+  QueryParamValue,
 } from './htmx.js';
 
 // Common Patterns
@@ -369,8 +371,6 @@ export {
 export type {
   RouteDef,
   RouteHxOptions,
-  QueryParams,
-  QueryParamValue,
   ParamTypeName,
   ParamType,
 } from './routes.js';

@@ -112,6 +112,9 @@ Button("Load More").setHtmx(hx("/api/items", {
   swap: "outerMorph",     // ✅ IDE suggests: "outerMorph" | "innerMorph" | "innerHTML" | ...
   target: ids.itemList    // ✅ Compile-time validated ID
 }))
+
+// Query params on ad-hoc URLs — url-encoded + join-aware (prefer route callables when the route is modeled)
+Button("Search").setHtmx(hx("/search", { query: { q: term, scope: "open" } }))  // → hx-get="/search?q=…&scope=open"
 ```
 
 ### Forms with Validation

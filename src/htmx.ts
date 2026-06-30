@@ -256,6 +256,33 @@ export interface HTMX {
 }
 
 // ------------------------------------
+// Query Parameter Types
+// ------------------------------------
+
+/** Values accepted in a query-parameter object. `undefined` and `null` entries are silently skipped. */
+export type QueryParamValue = string | number | boolean | undefined | null;
+
+/** A bag of query parameters. */
+export type QueryParams = Record<string, QueryParamValue>;
+
+/**
+ * Internal: append a query-params bag to a base endpoint, joining with `?` or `&` as
+ * appropriate. Skips nullish entries; url-encodes keys and values. An empty or all-nullish
+ * bag returns `base` unchanged (no stray separator). Shared by `hx()` and the route-callable
+ * surface so both produce byte-identical query strings.
+ */
+export function buildQueryString(base: string, query: QueryParams): string {
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(query)) {
+    if (value == null) continue;
+    parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+  }
+  if (parts.length === 0) return base;
+  const sep = base.includes("?") ? "&" : "?";
+  return base + sep + parts.join("&");
+}
+
+// ------------------------------------
 // Helper Functions
 // ------------------------------------
 
@@ -267,6 +294,17 @@ export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 's
   indicator?: string | Id;
   disable?: string | Id;
   include?: string | Id;
+  /**
+   * Query parameters folded into the endpoint URL (via the join-aware `buildQueryString`):
+   * nullish entries are skipped and values are url-encoded. Join-aware — if `endpoint` already
+   * contains a `?`, params are appended with `&`.
+   *
+   * PREFER a typed route callable (`taskRoutes.list({ query })`) when the route is modeled by
+   * `defineRoutes`; this bag is the escape hatch for ad-hoc URLs. Distinct from `vals`
+   * (hx-vals): `query` writes the request URL and url-encodes; `vals` adds to the request
+   * body and is not url-encoded — never use `vals` to build a URL query string.
+   */
+  query?: QueryParams;
 };
 
 /**
@@ -298,14 +336,27 @@ export function resolveSelector(value: string | Id | undefined): string | undefi
  * @example
  * hx("/api/items")
  * hx("/api/save", { method: "post", target: ids.result, swap: "outerMorph" })
+ * // Ad-hoc string endpoint (escape hatch) — folds query into the URL:
+ * hx("/search", { query: { q: term, scope: "open" } })   // → hx-get="/search?q=…&scope=open"
+ * // Join-aware: a base that already carries a query string joins with "&":
+ * hx("/search?event=E", { query: { q: term } })           // → hx-get="/search?event=E&q=…"
+ *
+ * @remarks
+ * PREFER a typed route callable (`taskRoutes.list({ query })`) whenever the route is modeled
+ * by `defineRoutes` — it single-sources the path and types params. The `query` bag here is the
+ * escape hatch for ad-hoc URLs not modeled by a route (e.g. a `searchUrl` component prop). It is
+ * join-aware: if `endpoint` already contains a `?`, params are appended with `&`, so a
+ * fully-resolved URL from `.resolve(params, query)` is safe to pass. `query` writes the request
+ * URL and url-encodes its keys/values; it is DISTINCT from `vals` (hx-vals), which adds values to
+ * the request body and is not url-encoded — never reach for `vals` to build a query string.
  */
 export function hx(
   endpoint: string,
   options: HxOptions = {}
 ): HTMX {
-  const { method, target, select, indicator, disable, include, ...rest } = options;
+  const { method, target, select, indicator, disable, include, query, ...rest } = options;
   return {
-    endpoint,
+    endpoint: query ? buildQueryString(endpoint, query) : endpoint,
     method: method ?? "get",
     target: resolveSelector(target),
     select: resolveSelector(select),

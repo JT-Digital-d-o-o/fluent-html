@@ -60,12 +60,19 @@ Mostly additive, plus two intentional type-narrowing breaks and a couple of beha
 
 - **TW4 relational state hooks** on `.on()` — `has-[…]`, `group-has-[…]`, `peer-has-[…]`, and the implicit-ancestor `in-[…]` arms added to `TailwindState`, so `.on("has-[:checked]", t => t.ring("2"))` type-checks and emits the prefix (was raw `.addClass` only). Pure type add — no emitter/vocab change.
 
-- **`viewTransitionName(name | Id)`** — emits the v4 arbitrary-property class `[view-transition-name:<name>]` so a hero element morphs across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on. Registered in the class-vocab (extractor + eslint lockstep).
+- **`viewTransitionName(name | Id)`** — emits inline `style="view-transition-name: <name>"` (via `addStyle`, see above) so a hero element morphs across an HTMX `outerMorph` swap when `HtmxConfig({ transitions: true })` is on. Like the other three custom-ident emitters it is deliberately **not** in the class vocab — Tailwind has no native utility for it and the ident is extractor-opaque.
 
 - **`defineRoutes` typed params — enum + path-checked keys.** A param can now be an enum (a `readonly` literal tuple → its member union): `params: { status: ["open", "paid"] as const }` makes `route({ status: "shipped" })` a compile error. And a `params` key that is **not** a `:param` in the path is now a compile error (was a silent no-op that re-widened the param to `string`). Exported `ParamType`.
 
   ```typescript
   defineRoutes("/orders", { byStatus: { method: "get", path: "/:status", params: { status: ["open","paid"] as const } } });
+  ```
+
+- **`HxOptions.query` — query params on `hx()`.** The string `hx()` escape hatch now takes a typed `QueryParams` bag, mirroring the route-callable surface (6.1.0). It folds into the endpoint URL through a single **join-aware** `buildQueryString(base, query)` shared by both surfaces: nullish entries are skipped, values are url-encoded, and params join with `?` or `&` depending on whether the base already carries a query string — so a fully-resolved `.resolve(params, query)` URL is safe to pass. Prefer a typed route callable when the route is modeled by `defineRoutes`; this bag is the escape hatch for ad-hoc URLs (a `searchUrl` prop, a third-party endpoint). Distinct from `vals` (request body, not url-encoded). `QueryParams` / `QueryParamValue` and `buildQueryString` moved from `routes.ts` to `htmx.ts` (public symbol names unchanged).
+
+  ```typescript
+  hx("/task", { query: { scope: "open", text: q } });   // → hx-get="/task?scope=open&text=…"
+  hx("/task?event=E", { query: { _target: id } });       // → hx-get="/task?event=E&_target=…"  (joins with &)
   ```
 
 - **Compile-only type tests** (`test/types/*.test-d.ts`) — positive/negative `@ts-expect-error` assertions for the closed/open unions, `Form<T>` field-name narrowing, and the new route-param typing, checked by `tsc` in the build. Locks "a typo is a compile error" as an enforced contract.

@@ -30,12 +30,12 @@ export type { FormState, FormBinding, ErrorBag, SelectOption } from './elements/
 export type { OverlayPosition } from './control/index.js';
 export { IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, ForEachKeyed, Repeat, Intersperse, } from './control/index.js';
 export { hx, resolveSelector, id, clss, closest, find, next, previous, } from './htmx.js';
-export type { HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, HxOptions, HxConfig, HxStatusConfig, } from './htmx.js';
+export type { HTMX, HxSwap, HxSwapStyle, HxTrigger, HxEncoding, HxTarget, HxHttpMethod, HxSync, HxOptions, HxConfig, HxStatusConfig, QueryParams, QueryParamValue, } from './htmx.js';
 export { Partial, HtmxConfig, hxResponse, HxResponse, } from './patterns.js';
 export type { HtmxGlobalConfig, HxResponseResult, HxLocationConfig, } from './patterns.js';
 export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
 export type { Id } from './ids.js';
 export { defineRoutes, } from './routes.js';
-export type { RouteDef, RouteHxOptions, QueryParams, QueryParamValue, ParamTypeName, ParamType, } from './routes.js';
+export type { RouteDef, RouteHxOptions, ParamTypeName, ParamType, } from './routes.js';
 export type { BehaviorMap, HxOnEvent } from './core/behavior-methods.js';
 //# sourceMappingURL=index.d.ts.map

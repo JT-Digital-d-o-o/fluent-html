@@ -1,4 +1,4 @@
-import type { HTMX, HxHttpMethod, HxTarget } from "./htmx.js";
+import type { HTMX, HxHttpMethod, HxTarget, QueryParams } from "./htmx.js";
 import type { Id } from "./ids.js";
 /**
  * Extract parameter names from a route path string literal.
@@ -80,10 +80,6 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
     include?: string | Id;
     query?: QueryParams;
 };
-/** Values accepted in a query-parameter object. `undefined` and `null` entries are silently skipped. */
-export type QueryParamValue = string | number | boolean | undefined | null;
-/** A bag of query parameters. */
-export type QueryParams = Record<string, QueryParamValue>;
 /** Base properties available on every route callable. */
 type RouteProperties<Def extends RouteDef> = {
     readonly method: Def['method'];

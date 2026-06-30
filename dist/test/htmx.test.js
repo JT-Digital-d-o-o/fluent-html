@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Div, Button, Input, Form, Ul, A, } from "../src/index.js";
-import { hx, id, clss } from "../src/htmx.js";
+import { render, Div, Button, Input, Form, Ul, A, defineRoutes, } from "../src/index.js";
+import { hx, id, clss, buildQueryString } from "../src/htmx.js";
 // ------------------------------------
 // HTMX - Basic
 // ------------------------------------
@@ -198,6 +198,39 @@ describe("HTMX ignore (A-007)", () => {
     });
     it("omits the attribute when ignore is false", () => {
         assert.strictEqual(render(Div().setHtmx(hx("/x", { ignore: false }))), `<div hx-get="/x"></div>`);
+    });
+});
+// ------------------------------------
+// HTMX - hx() query bag (RFC-A-03)
+// ------------------------------------
+describe("HTMX - hx() query params", () => {
+    it("folds a query bag into the endpoint URL", () => {
+        assert.strictEqual(hx("/task", { query: { scope: "open", text: "abc def" } }).endpoint, "/task?scope=open&text=abc%20def");
+    });
+    it("renders the query in hx-get", () => {
+        assert.strictEqual(render(Button("Go").setHtmx(hx("/task", { query: { scope: "open" } }))), `<button hx-get="/task?scope=open">Go</button>`);
+    });
+    it("skips nullish query values", () => {
+        assert.strictEqual(hx("/u", { query: { page: 1, filter: undefined, x: null } }).endpoint, "/u?page=1");
+    });
+    it("returns the base unchanged for an empty bag (no stray ?)", () => {
+        assert.strictEqual(hx("/u", { query: {} }).endpoint, "/u");
+    });
+    it("is join-aware: a ?-bearing base joins with &", () => {
+        assert.strictEqual(hx("/task?event=E", { query: { _target: "r" } }).endpoint, "/task?event=E&_target=r");
+    });
+    it("returns a ?-bearing base unchanged for an empty bag (no stray &)", () => {
+        assert.strictEqual(hx("/u?a=1", { query: {} }).endpoint, "/u?a=1");
+    });
+    it("produces byte-identical output to the route-callable surface", () => {
+        const routes = defineRoutes("/users", { list: { method: "get", path: "/" } });
+        assert.strictEqual(hx("/users", { query: { page: 2, scope: "open" } }).endpoint, routes.list({ query: { page: 2, scope: "open" } }).endpoint);
+    });
+    it("buildQueryString is join-aware and skips nullish", () => {
+        assert.strictEqual(buildQueryString("/u", { page: 2, active: true }), "/u?page=2&active=true");
+        assert.strictEqual(buildQueryString("/u?a=1", { b: 2 }), "/u?a=1&b=2");
+        assert.strictEqual(buildQueryString("/u", {}), "/u");
+        assert.strictEqual(buildQueryString("/u?a=1", { b: undefined }), "/u?a=1");
     });
 });
 //# sourceMappingURL=htmx.test.js.map
