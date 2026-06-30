@@ -9,8 +9,21 @@ import type { Id } from "./ids.js";
  * ExtractParams<"/users">                        // never
  */
 type ExtractParams<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? Param | ExtractParams<`/${Rest}`> : Path extends `${string}:${infer Param}` ? Param : never;
-/** Whether a path contains `:param` segments. */
-type HasParams<Path extends string> = ExtractParams<Path> extends never ? false : true;
+/**
+ * Extract a trailing catch-all (splat) param key from a path.
+ * `/scope/*` → "splat"; `/files/*path` → "path". Only a trailing `/*` is a splat — the
+ * `` Rest extends `${string}/${string}` `` guard rejects mid-path wildcards (unsupported).
+ */
+type ExtractSplat<Path extends string> = Path extends `${string}/*${infer Rest}` ? Rest extends "" ? "splat" : Rest extends `${string}/${string}` ? never : Rest : never;
+/** All param keys a path declares — `:param` segments plus a trailing splat. */
+type AnyParamKey<Path extends string> = ExtractParams<Path> | ExtractSplat<Path>;
+/**
+ * Whether a path contains any `:param` segments or a trailing splat.
+ * `[T] extends [never]` tuple-wraps to stop `never` distributing to `false`.
+ */
+type HasAnyParams<Path extends string> = [
+    AnyParamKey<Path>
+] extends [never] ? false : true;
 /** Supported scalar param type names. Determines the TypeScript type required at call sites. */
 export type ParamTypeName = "string" | "number" | "uuid";
 /**
@@ -34,6 +47,14 @@ type ResolveParam<P> = P extends ParamTypeName ? ParamTypeMap[P] : P extends rea
  */
 type ResolveParamTypes<Path extends string, Params extends Readonly<Record<string, ParamType>> | undefined> = {
     [K in ExtractParams<Path>]: Params extends Readonly<Record<string, ParamType>> ? K extends keyof Params ? ResolveParam<Params[K]> : string : string;
+};
+/**
+ * Resolve every param key's TS type: the `:param` types from `ResolveParamTypes`, plus a
+ * trailing splat (always `string`). When `ExtractSplat` is `never` the splat half is `{}`, so
+ * non-wildcard routes resolve EXACTLY as before — additive, zero behavior change.
+ */
+type ResolveAllParamTypes<Path extends string, Params extends Readonly<Record<string, ParamType>> | undefined> = ResolveParamTypes<Path, Params> & {
+    [K in ExtractSplat<Path>]: string;
 };
 /** A single route definition: HTTP method + path. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
 export type RouteDef = {
@@ -84,7 +105,7 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
 type RouteProperties<Def extends RouteDef> = {
     readonly method: Def['method'];
     readonly path: Def['path'];
-    readonly resolve: HasParams<Def['path']> extends true ? (params: ResolveParamTypes<Def['path'], Def['params']>, query?: QueryParams) => string : (query?: QueryParams) => string;
+    readonly resolve: HasAnyParams<Def['path']> extends true ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: QueryParams) => string : (query?: QueryParams) => string;
 };
 /**
  * A type-safe route callable.
@@ -94,7 +115,7 @@ type RouteProperties<Def extends RouteDef> = {
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
  * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
-type RouteCallable<Def extends RouteDef> = HasParams<Def['path']> extends true ? ((params: ResolveParamTypes<Def['path'], Def['params']>, options?: RouteHxOptions) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptions) => HTMX) & RouteProperties<Def>;
+type RouteCallable<Def extends RouteDef> = HasAnyParams<Def['path']> extends true ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptions) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptions) => HTMX) & RouteProperties<Def>;
 /** The full registry object returned by defineRoutes(). */
 type RouteRegistry<T extends RouteDefinitions> = {
     readonly [K in keyof T]: RouteCallable<T[K]>;

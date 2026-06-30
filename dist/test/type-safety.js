@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Raw, Div, Span, Input, Textarea, Button, Form, A, Area, isTag, isRawString, } from "../src/index.js";
+import { render, Raw, Div, Span, Input, Textarea, Button, Form, A, Area, isTag, isRawString, defineRoutes, } from "../src/index.js";
 import { createId } from "../src/ids.js";
 // -------------------------------------------------------
 // Phase 1: String literal unions render correctly
@@ -280,5 +280,44 @@ describe("Typed prototype writes (D-07 migration)", () => {
         assert.equal(isTag(Raw("<b>x</b>")), false);
         assert.equal(isRawString(Div()), false);
     });
+});
+// -------------------------------------------------------
+// defineRoutes — trailing splat / wildcard params
+// -------------------------------------------------------
+describe("defineRoutes wildcard/splat params", () => {
+    const r = defineRoutes({
+        scope: { method: "get", path: "/scope/*" },
+        file: { method: "get", path: "/files/*path" },
+        user: { method: "get", path: "/users/:id" },
+        list: { method: "get", path: "/users" },
+    });
+    it("anonymous trailing splat resolves under the 'splat' key, preserving '/'", () => {
+        assert.strictEqual(r.scope.resolve({ splat: "a/b" }), "/scope/a/b");
+    });
+    it("named trailing splat resolves under its name, encoding each segment but not '/'", () => {
+        assert.strictEqual(r.file.resolve({ path: "x/y.png" }), "/files/x/y.png");
+        assert.strictEqual(r.file.resolve({ path: "a b/c" }), "/files/a%20b/c");
+    });
+    it("splat routes also build HTMX objects, with query folded after the splat", () => {
+        assert.strictEqual(r.scope({ splat: "a/b" }).endpoint, "/scope/a/b");
+        assert.strictEqual(r.scope({ splat: "a/b" }, { query: { q: "x" } }).endpoint, "/scope/a/b?q=x");
+    });
+    it(":param and no-param routes are unchanged", () => {
+        assert.strictEqual(r.user.resolve({ id: "1" }), "/users/1");
+        assert.strictEqual(r.list.resolve(), "/users");
+        assert.strictEqual(r.list({ query: { q: "x" } }).endpoint, "/users?q=x");
+    });
+    it("a missing splat value throws the splat error at resolve time", () => {
+        // @ts-expect-error — splat is required; {} omits it (compile error) and throws at runtime
+        assert.throws(() => r.scope.resolve({}), /Unresolved route splat/);
+    });
+    // Compile-only negatives — the thunk is never invoked, so resolve() never throws; the
+    // `@ts-expect-error` on the single-line `it(...)` IS the assertion (an unfired directive fails the build).
+    // @ts-expect-error — the splat param is required
+    it("ts-expect: scope.resolve() needs the splat", () => { const f = () => r.scope.resolve(); void f; });
+    // @ts-expect-error — "rest" is not the splat key ("splat")
+    it("ts-expect: scope.resolve({ rest }) wrong key", () => { const f = () => r.scope.resolve({ rest: "a/b" }); void f; });
+    // @ts-expect-error — a wildcard route takes no declared params (the splat is always string)
+    it("ts-expect: params declared on a splat route", () => { const bad = defineRoutes({ s: { method: "get", path: "/x/*", params: { splat: "string" } } }); void bad; });
 });
 //# sourceMappingURL=type-safety.js.map

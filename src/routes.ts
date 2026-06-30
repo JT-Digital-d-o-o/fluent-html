@@ -31,9 +31,27 @@ type ExtractParams<Path extends string> =
       ? Param
       : never;
 
-/** Whether a path contains `:param` segments. */
-type HasParams<Path extends string> =
-  ExtractParams<Path> extends never ? false : true;
+/**
+ * Extract a trailing catch-all (splat) param key from a path.
+ * `/scope/*` → "splat"; `/files/*path` → "path". Only a trailing `/*` is a splat — the
+ * `` Rest extends `${string}/${string}` `` guard rejects mid-path wildcards (unsupported).
+ */
+type ExtractSplat<Path extends string> =
+  Path extends `${string}/*${infer Rest}`
+    ? Rest extends "" ? "splat"
+    : Rest extends `${string}/${string}` ? never
+    : Rest
+    : never;
+
+/** All param keys a path declares — `:param` segments plus a trailing splat. */
+type AnyParamKey<Path extends string> = ExtractParams<Path> | ExtractSplat<Path>;
+
+/**
+ * Whether a path contains any `:param` segments or a trailing splat.
+ * `[T] extends [never]` tuple-wraps to stop `never` distributing to `false`.
+ */
+type HasAnyParams<Path extends string> =
+  [AnyParamKey<Path>] extends [never] ? false : true;
 
 // ------------------------------------
 // Param Type Metadata
@@ -77,6 +95,16 @@ type ResolveParamTypes<
       : string
     : string;
 };
+
+/**
+ * Resolve every param key's TS type: the `:param` types from `ResolveParamTypes`, plus a
+ * trailing splat (always `string`). When `ExtractSplat` is `never` the splat half is `{}`, so
+ * non-wildcard routes resolve EXACTLY as before — additive, zero behavior change.
+ */
+type ResolveAllParamTypes<
+  Path extends string,
+  Params extends Readonly<Record<string, ParamType>> | undefined,
+> = ResolveParamTypes<Path, Params> & { [K in ExtractSplat<Path>]: string };
 
 // ------------------------------------
 // Route Definition Types
@@ -146,8 +174,8 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
 type RouteProperties<Def extends RouteDef> = {
   readonly method: Def['method'];
   readonly path: Def['path'];
-  readonly resolve: HasParams<Def['path']> extends true
-    ? (params: ResolveParamTypes<Def['path'], Def['params']>, query?: QueryParams) => string
+  readonly resolve: HasAnyParams<Def['path']> extends true
+    ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: QueryParams) => string
     : (query?: QueryParams) => string;
 };
 
@@ -160,8 +188,8 @@ type RouteProperties<Def extends RouteDef> = {
  * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
 type RouteCallable<Def extends RouteDef> =
-  HasParams<Def['path']> extends true
-    ? ((params: ResolveParamTypes<Def['path'], Def['params']>, options?: RouteHxOptions) => HTMX)
+  HasAnyParams<Def['path']> extends true
+    ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptions) => HTMX)
       & RouteProperties<Def>
     : ((options?: RouteHxOptions) => HTMX)
       & RouteProperties<Def>;
@@ -188,6 +216,14 @@ function escapeRegExp(literal: string): string {
   return literal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/** Internal: matches a trailing splat segment — `/​*` or `/​*name` at the end of a path. */
+const SPLAT_RE = /\/\*([A-Za-z_]\w*)?$/;
+
+/** Internal: encode a splat value while preserving its `/` separators (catch-all semantics). */
+function encodeSplat(value: string | number): string {
+  return String(value).split("/").map(encodeURIComponent).join("/");
+}
+
 /**
  * Internal: substitute every `:name` placeholder with its encoded value. Boundary-aware
  * (`:id` never matches inside `:idCard`) and replaces all occurrences; the trailing
@@ -199,6 +235,17 @@ function substituteParams(template: string, params: Record<string, string | numb
     const pattern = new RegExp(`:${escapeRegExp(key)}(?![A-Za-z0-9_])`, "g");
     out = out.replace(pattern, encodeURIComponent(String(value)));
   }
+  // Trailing splat (`/*` or `/*name`), substituted after the `:param` loop. Throw on a
+  // missing value here rather than letting `assertNoUnresolvedParams` scan for `*` — a real
+  // splat value like "a/*b" stays unescaped by encodeURIComponent and would false-positive.
+  out = out.replace(SPLAT_RE, (_match: string, name?: string) => {
+    const key = name ?? "splat";
+    const value = params[key];
+    if (value == null) {
+      throw new Error(`Unresolved route splat "*${name ?? ""}" in "${template}"`);
+    }
+    return "/" + encodeSplat(value);
+  });
   return out;
 }
 
@@ -282,7 +329,7 @@ export function defineRoutes(
   for (const [name, def] of Object.entries(definitions)) {
     const { method } = def;
     const fullPath = prefix && def.path === "/" ? prefix : prefix + def.path;
-    const hasParams = fullPath.includes(":");
+    const hasParams = fullPath.includes(":") || SPLAT_RE.test(fullPath);
 
     const routeFn = hasParams
       ? function (params: Record<string, string | number>, options?: RouteHxOptions): HTMX {

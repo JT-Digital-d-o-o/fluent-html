@@ -22,6 +22,12 @@ function assertNoUnresolvedParams(resolved, template) {
 function escapeRegExp(literal) {
     return literal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+/** Internal: matches a trailing splat segment — `/​*` or `/​*name` at the end of a path. */
+const SPLAT_RE = /\/\*([A-Za-z_]\w*)?$/;
+/** Internal: encode a splat value while preserving its `/` separators (catch-all semantics). */
+function encodeSplat(value) {
+    return String(value).split("/").map(encodeURIComponent).join("/");
+}
 /**
  * Internal: substitute every `:name` placeholder with its encoded value. Boundary-aware
  * (`:id` never matches inside `:idCard`) and replaces all occurrences; the trailing
@@ -33,6 +39,17 @@ function substituteParams(template, params) {
         const pattern = new RegExp(`:${escapeRegExp(key)}(?![A-Za-z0-9_])`, "g");
         out = out.replace(pattern, encodeURIComponent(String(value)));
     }
+    // Trailing splat (`/*` or `/*name`), substituted after the `:param` loop. Throw on a
+    // missing value here rather than letting `assertNoUnresolvedParams` scan for `*` — a real
+    // splat value like "a/*b" stays unescaped by encodeURIComponent and would false-positive.
+    out = out.replace(SPLAT_RE, (_match, name) => {
+        const key = name ?? "splat";
+        const value = params[key];
+        if (value == null) {
+            throw new Error(`Unresolved route splat "*${name ?? ""}" in "${template}"`);
+        }
+        return "/" + encodeSplat(value);
+    });
     return out;
 }
 /** Internal: build an HTMX object from a resolved path + method + options. */
@@ -60,7 +77,7 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
     for (const [name, def] of Object.entries(definitions)) {
         const { method } = def;
         const fullPath = prefix && def.path === "/" ? prefix : prefix + def.path;
-        const hasParams = fullPath.includes(":");
+        const hasParams = fullPath.includes(":") || SPLAT_RE.test(fullPath);
         const routeFn = hasParams
             ? function (params, options) {
                 const resolvedPath = substituteParams(fullPath, params);
