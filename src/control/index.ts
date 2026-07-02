@@ -17,6 +17,7 @@ export {
   Intersperse,
 } from "./iteration.js";
 
-// Overlay — registers Tag.prototype.overlay() (side-effecting), like the core method mixins
-import "./overlay.js";
-export type { OverlayPosition } from "./overlay.js";
+// Register every Tag.prototype mixin so a control-only import still yields a
+// fully-populated Tag (overlay() moved to core/ alongside the other mixins).
+import "../core/register.js";
+export type { OverlayPosition } from "../core/overlay.js";

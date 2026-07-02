@@ -1,6 +1,6 @@
-import { Tag } from "../core/tag.js";
-import { El } from "../core/utils.js";
-import type { View } from "../core/types.js";
+import { Tag } from "./tag.js";
+import { El } from "./utils.js";
+import type { View } from "./types.js";
 
 export type OverlayPosition =
   | 'center' | 'top' | 'bottom' | 'left' | 'right'
@@ -23,7 +23,7 @@ const POSITION_CLASSES: Record<OverlayPosition, string> = {
 
 const OVERLAY_POSITIONS: ReadonlySet<string> = new Set(Object.keys(POSITION_CLASSES));
 
-declare module "../core/tag.js" {
+declare module "./tag.js" {
   interface Tag {
     /**
      * Wrap this element in a `relative` container and stack an `absolute` overlay

@@ -2,6 +2,21 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [6.3.0] - Packaging integrity
+
+Fixes a class of packaging defects where the library worked from `node dist/` (and its own test suite) but broke downstream — the failures only surfaced in a consumer's bundler or when importing a subpath. The entire chainable API (`.padding()`, `.setHtmx()`, `.behavior()`, `.overlay()`, …) is attached to `Tag.prototype` by side-effect-only modules; the packaging metadata was telling bundlers those modules were safe to drop. No public API changed — every current import renders byte-identically.
+
+### 🐛 Fixed
+
+- **`sideEffects: false` erased the fluent method surface in bundled builds** — any consumer bundling their server (esbuild-for-Lambda, Vite SSR, Next-style deploys) got `Div(...).padding is not a function` at runtime, because the prototype-mixin modules have zero exports and were legally tree-shaken away. `sideEffects` is now an array listing the effectful modules, so bundlers preserve them. Verified with an esbuild bundle of the published layout.
+- **`fluent-html/elements` (and `./core`, `./control`) were broken when imported standalone** — element factories import `Tag` directly from `core/tag.js`, bypassing the barrel that registered the mixins, so a Tag from the `./elements` subpath had *none* of its fluent methods (while its `.d.ts` still advertised them — a guaranteed runtime crash that type-checked). Registration is now an invariant of every Tag-producing barrel via a single `core/register.js` module. As part of this, `overlay()` moved from `control/` to `core/` alongside the other three mixins; `OverlayPosition` is still exported from the package root and from `fluent-html/control`, so no import path changes.
+- **Published tarball shipped dangling sourcemap references** — every `.js`/`.d.ts` pointed at `.map` files that weren't packed, degrading debugger output and "Go to Definition". The `.js.map`, `.d.ts.map`, and `src/**/*.ts` files are now included so the references resolve end-to-end.
+
+### ✨ Added
+
+- **`./package.json` export** — tooling (the Tailwind extractor, ESLint plugin, bundler plugins, dependency scanners) can now read the package manifest through the exports map, which previously returned `ERR_PACKAGE_PATH_NOT_EXPORTED`.
+- **Packaging regression test** (`test/packaging.test.ts`) — asserts `sideEffects` stays an array covering every mixin module, that each subpath yields a fully-populated Tag, and that `./package.json` remains exported, so none of the above can silently revert.
+
 ## [6.2.0] - Tailwind v4 Method Surface + HTML Element Completeness
 
 Two tracks. **Track C** — 63 new fluent Tailwind methods (plus pure type-union additions on `.on()`/`.at()`) that previously forced a raw `.setClass(...)` escape hatch — covering SVG paint, text effects, shadows/filters/blending, v4 gradients, 3D transforms, attribute/structural variants, layout, and v4.1 masks. Every method is in the shared class vocabulary, so the extractor (safelist) and ESLint plugin (`134 → 197` methods) pick them up in lockstep. **Track B** — HTML-element attribute completeness closing `addAttribute` escape hatches: text-level edit/quotation (`Ins`/`Del`/`Q`/`Blockquote` `cite`/`datetime`), media & resource hints (`crossorigin`/`referrerpolicy`/`<source>` sizing/responsive preload/`theme-color` media), iframe security (typed `sandbox` tokens + `allow` record), and accessible tables (Id-typed `headers`, `abbr`, `TableCellScope`). Additive apart from the intentional type-narrowing breaks listed below; benign, well-typed inputs render unchanged.

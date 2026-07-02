@@ -1,3 +1,8 @@
+// Register every Tag.prototype mixin — element factories import Tag directly
+// from core/tag.js, bypassing the core barrel, so without this a Tag from the
+// `./elements` subpath would be missing its entire fluent surface.
+import "../core/register.js";
+
 // Structural / Semantic elements
 export {
   Div,
