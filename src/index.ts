@@ -69,6 +69,10 @@ export { render, renderWithNonce } from './render/index.js';
 export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';
 export type { RenderOptions, RenderStreamOptions } from './render/index.js';
 
+// Escaping / URL sanitization helpers — the typed setters apply sanitizeUrl
+// automatically; exported for consumers who build attribute values by hand.
+export { escapeHtml, escapeAttr, sanitizeUrl } from './render/index.js';
+
 // Tag classes with typed attributes
 export {
   ButtonTag,

@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 import {
   render,
   Div, P, Span, Script, Style, Button,
+  A, Img, Form, ObjectEl, Video, Blockquote,
+  sanitizeUrl,
 } from "../src/index.js";
 import { defineIds } from "../src/ids.js";
 import { hx } from "../src/htmx.js";
@@ -169,5 +171,58 @@ describe("script break-out prevention (A-006)", () => {
     assert.strictEqual(render(Script("const re = /<script/;")), "<script>const re = /<script/;</script>");
     assert.strictEqual(render(Script("x = 1 <!-- legacy\n;")), "<script>x = 1 <!-- legacy\n;</script>");
     assert.strictEqual(render(Script("if (count<scripts) go();")), "<script>if (count<scripts) go();</script>");
+  });
+});
+
+describe("URL scheme sanitization on typed setters (XSS-1)", () => {
+  it("neutralizes javascript: on href/src/action to about:blank", () => {
+    assert.strictEqual(render(A("x").setHref("javascript:alert(1)")), `<a href="about:blank">x</a>`);
+    assert.strictEqual(render(Img().setSrc("javascript:alert(1)")), `<img src="about:blank">`);
+    assert.strictEqual(render(Form().setAction("javascript:alert(1)")), `<form action="about:blank"></form>`);
+  });
+
+  it("blocks obfuscated schemes (case, embedded tab, leading whitespace, vbscript)", () => {
+    assert.ok(render(A("x").setHref("JaVaScript:alert(1)")).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref("java\tscript:alert(1)")).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref("   javascript:alert(1)")).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref("vbscript:msgbox(1)")).includes(`href="about:blank"`));
+  });
+
+  it("blocks scriptable data: URLs (text/html, image/svg+xml) but allows raster/media", () => {
+    assert.ok(render(A("x").setHref("data:text/html,<script>alert(1)</script>")).includes(`href="about:blank"`));
+    assert.ok(render(Img().setSrc("data:image/svg+xml,<svg onload=alert(1)>")).includes(`src="about:blank"`));
+    assert.strictEqual(render(Img().setSrc("data:image/png;base64,iVBOR")), `<img src="data:image/png;base64,iVBOR">`);
+  });
+
+  it("covers data / poster / cite as well", () => {
+    assert.ok(render(ObjectEl().setData("javascript:alert(1)")).includes(`data="about:blank"`));
+    assert.ok(render(Video().setPoster("javascript:alert(1)")).includes(`poster="about:blank"`));
+    assert.ok(render(Blockquote("q").setCite("javascript:alert(1)")).includes(`cite="about:blank"`));
+  });
+
+  it("leaves safe URLs byte-identical (relative, https, mailto, tel, fragment, protocol-relative)", () => {
+    assert.strictEqual(render(A("x").setHref("/dashboard")), `<a href="/dashboard">x</a>`);
+    assert.strictEqual(render(A("x").setHref("https://example.com/a?b=c:d")), `<a href="https://example.com/a?b=c:d">x</a>`);
+    assert.strictEqual(render(A("x").setHref("mailto:a@b.com")), `<a href="mailto:a@b.com">x</a>`);
+    assert.strictEqual(render(A("x").setHref("tel:+123")), `<a href="tel:+123">x</a>`);
+    assert.strictEqual(render(A("x").setHref("#section")), `<a href="#section">x</a>`);
+    assert.strictEqual(render(A("x").setHref("//cdn.example.com/a.js")), `<a href="//cdn.example.com/a.js">x</a>`);
+  });
+
+  it("does NOT sanitize the untyped addAttribute escape hatch (explicit opt-out)", () => {
+    assert.strictEqual(render(A("x").addAttribute("href", "javascript:alert(1)")), `<a href="javascript:alert(1)">x</a>`);
+  });
+
+  it("still escapes attribute breakout inside an allowed value", () => {
+    assert.strictEqual(
+      render(A("x").setHref('/a"><img src=x onerror=alert(1)>')),
+      `<a href="/a&quot;&gt;&lt;img src=x onerror=alert(1)&gt;">x</a>`,
+    );
+  });
+
+  it("sanitizeUrl is exported and usable standalone", () => {
+    assert.strictEqual(sanitizeUrl("javascript:alert(1)"), "about:blank");
+    assert.strictEqual(sanitizeUrl("/relative/ok"), "/relative/ok");
+    assert.strictEqual(sanitizeUrl("https://ok.example"), "https://ok.example");
   });
 });

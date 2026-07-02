@@ -4,7 +4,14 @@ import { EMPTY_ATTRS } from "../core/tag.js";
 import type { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import { isTag, isRawString } from "../core/guards.js";
-import { escapeHtml, escapeAttr } from "./escape.js";
+import { escapeHtml, escapeAttr, sanitizeUrl } from "./escape.js";
+
+// URL-valued attributes emitted by the typed setters. Their values are run
+// through sanitizeUrl (scheme filtering) before attribute-escaping, so a
+// `javascript:`/`vbscript:`/dangerous-`data:` URL from a typed setter can never
+// reach the output. The untyped addAttribute bag is deliberately excluded — it
+// is the explicit escape hatch (see sanitizeUrl's doc comment).
+const URL_ATTRS = new Set(["href", "src", "action", "formaction", "data", "poster", "cite"]);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Single source of truth for HTML serialization.
@@ -267,7 +274,8 @@ export function buildAttrs(tag: Tag): string {
       else { prop = entry[0]; attr = entry[1]; }
       const value = bag[prop];
       if (value !== undefined && value !== null) {
-        attrs += ' ' + attr + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
+        const str = typeof value === 'string' ? value : String(value);
+        attrs += ' ' + attr + '="' + escapeAttr(URL_ATTRS.has(attr) ? sanitizeUrl(str) : str) + '"';
       }
     }
   }

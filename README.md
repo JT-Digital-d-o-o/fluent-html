@@ -57,7 +57,7 @@ render(page);
 - **Full autocomplete** - Every method, attribute, and value suggested by your IDE
 - **First-class HTMX 4** - Type-safe routes with typed params, triggers, swaps, targets, morph strategies, and more
 - **100+ Tailwind methods** - Gradients, filters, group/peer, arbitrary values with unit overloads, and more
-- **XSS protection** - All content escaped automatically
+- **XSS protection** - Text and attributes escaped automatically; URL setters scheme-sanitized (`javascript:`/hostile `data:` blocked)
 - **Zero dependencies** - Pure TypeScript, ~15KB minified
 - **SSR-ready** - Built for server-side rendering, optimized render path
 
@@ -1303,7 +1303,16 @@ writeFileSync("./src/fluent-safelist.css",
 
 ## XSS Protection
 
-Fluent HTML **automatically escapes** all text content and attributes. No configuration needed.
+Fluent HTML **automatically escapes** all text content and attribute values, so
+attacker-controlled data can never break out of a text node or a quoted attribute.
+On top of that, URL-valued attributes set through the typed setters
+(`setHref`/`setSrc`/`setAction`/…) are **scheme-sanitized** — a `javascript:` or
+hostile `data:` URL is neutralized before it reaches the output. No configuration
+needed.
+
+Two deliberate bypasses remain your responsibility: `Raw(...)` emits HTML verbatim,
+and the untyped `addAttribute(...)` escape hatch is not scheme-sanitized (see
+[Raw HTML](#raw-html-bypass-escaping) and [URL Scheme Sanitization](#url-scheme-sanitization)).
 
 ### Automatic Text Escaping
 
@@ -1326,6 +1335,32 @@ const element = Div().setClass(malicious);
 console.log(render(element));
 // Output: <div class="&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;"></div>
 ```
+
+### URL Scheme Sanitization
+
+HTML-escaping stops attribute *breakout*, but it does not stop a `javascript:` URL
+from executing when the link is clicked, or a `data:text/html` URL from loading an
+attacker-authored document. So the typed URL setters — `setHref`, `setSrc`,
+`setAction`, `setFormaction`, `setData`, `setPoster`, `setCite` — also run their
+value through scheme sanitization:
+
+```typescript
+render(A("Profile").setHref(user.website));
+// user.website = "javascript:steal(cookies)"  →  <a href="about:blank">Profile</a>
+// user.website = "https://example.com"         →  <a href="https://example.com">Profile</a>
+```
+
+- **Blocked** (rewritten to `about:blank`): `javascript:`, `vbscript:`, and scriptable
+  `data:` URLs (`data:text/html`, `data:image/svg+xml`) — including obfuscated forms
+  (`JaVaScript:`, `java&Tab;script:`, leading control characters).
+- **Allowed** (byte-identical): relative URLs, fragments (`#id`), query refs,
+  protocol-relative `//host`, `http(s)`, `mailto:`, `tel:`, and non-scriptable
+  `data:` media (`data:image/png`, `data:audio/*`, `data:video/*`, `data:font/*`).
+
+The sanitizer is exported as `sanitizeUrl(url)` if you need it directly. The one
+opt-out is the untyped `addAttribute("href", value)` bag, which is emitted verbatim
+(after breakout-escaping) — reach for it deliberately in the rare case you truly need
+a `javascript:` URL.
 
 ### Raw Content for Scripts & Styles
 
@@ -1350,7 +1385,7 @@ Style(`
 ### Safe Dynamic Content
 
 ```typescript
-// Building HTML from user data is always safe
+// Text and attribute values from user data are escaped automatically
 function UserCard(user: { name: string; bio: string }): View {
   return Div(
     H2(user.name),      // ← Escaped automatically
@@ -1703,8 +1738,8 @@ Blockquote(P(article.excerpt)).setCite(article.url)
 Q(snippet.text).setCite(snippet.sourceUrl)
 ```
 
-`cite` is HTML-escaped on render but not scheme-sanitized — same stance as
-`setHref`/`setSrc`; do not pass untrusted URLs.
+`setCite` is scheme-sanitized like `setHref`/`setSrc` (a `javascript:`/`data:text/html`
+value is neutralized to `about:blank`), in addition to being HTML-escaped on render.
 
 ---
 

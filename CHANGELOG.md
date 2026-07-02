@@ -2,11 +2,18 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [6.3.0] - Packaging integrity
+## [6.3.0] - Packaging integrity & URL sanitization
 
-Fixes a class of packaging defects where the library worked from `node dist/` (and its own test suite) but broke downstream — the failures only surfaced in a consumer's bundler or when importing a subpath. The entire chainable API (`.padding()`, `.setHtmx()`, `.behavior()`, `.overlay()`, …) is attached to `Tag.prototype` by side-effect-only modules; the packaging metadata was telling bundlers those modules were safe to drop. No public API changed — every current import renders byte-identically.
+### 🔒 Security
 
-### 🐛 Fixed
+- **URL-valued attributes are now scheme-sanitized** — HTML-escaping prevents attribute *breakout* but does nothing about a `javascript:` URL that executes on click or a `data:text/html` URL that loads an attacker-authored document. `A("x").setHref(user.website)` — trusting the README's "XSS prevented" promise — could ship stored XSS. The typed URL setters (`setHref`, `setSrc`, `setAction`, `setFormaction`, `setData`, `setPoster`, `setCite`) now run their value through a new `sanitizeUrl()`: `javascript:`/`vbscript:` and scriptable `data:` URLs (`data:text/html`, `data:image/svg+xml`), including obfuscated forms (case, embedded tab/control chars, leading whitespace), are neutralized to `about:blank`. Relative URLs, fragments, protocol-relative `//host`, `http(s)`/`mailto`/`tel`, and non-scriptable `data:` media (`image/png`, `audio/*`, `video/*`, `font/*`) pass through byte-identically. `sanitizeUrl` is exported (also re-exported from the root) for standalone use.
+  - **Escape hatch:** the untyped `addAttribute("href", value)` bag is intentionally *not* sanitized — it is the explicit, low-level opt-out for the rare `javascript:` bookmarklet, mirroring how `Raw()` opts out of content escaping.
+  - **Docs:** the README's absolute "all content escaped — XSS prevented" claim is scoped to what it actually guarantees (text/attribute breakout + URL schemes on typed setters), with a new *URL Scheme Sanitization* section and the two documented bypasses (`Raw`, `addAttribute`).
+
+### 🐛 Fixed — packaging integrity
+
+A class of packaging defects where the library worked from `node dist/` (and its own test suite) but broke downstream — the failures only surfaced in a consumer's bundler or when importing a subpath. The entire chainable API (`.padding()`, `.setHtmx()`, `.behavior()`, `.overlay()`, …) is attached to `Tag.prototype` by side-effect-only modules; the packaging metadata was telling bundlers those modules were safe to drop. No public API changed — every current import renders byte-identically.
+
 
 - **`sideEffects: false` erased the fluent method surface in bundled builds** — any consumer bundling their server (esbuild-for-Lambda, Vite SSR, Next-style deploys) got `Div(...).padding is not a function` at runtime, because the prototype-mixin modules have zero exports and were legally tree-shaken away. `sideEffects` is now an array listing the effectful modules, so bundlers preserve them. Verified with an esbuild bundle of the published layout.
 - **`fluent-html/elements` (and `./core`, `./control`) were broken when imported standalone** — element factories import `Tag` directly from `core/tag.js`, bypassing the barrel that registered the mixins, so a Tag from the `./elements` subpath had *none* of its fluent methods (while its `.d.ts` still advertised them — a guaranteed runtime crash that type-checked). Registration is now an invariant of every Tag-producing barrel via a single `core/register.js` module. As part of this, `overlay()` moved from `control/` to `core/` alongside the other three mixins; `OverlayPosition` is still exported from the package root and from `fluent-html/control`, so no import path changes.
