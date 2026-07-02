@@ -1,7 +1,7 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { Id } from "../ids.js";
-import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, InputMode, CommandFor } from "./html-types.js";
+import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormEnctype, FormMethod, BrowsingContext, InputMode, CommandFor } from "./html-types.js";
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
  *
@@ -24,11 +24,13 @@ export declare class InputTag extends Tag {
     inputmode?: InputMode;
     capture?: 'user' | 'environment';
     list?: string;
+    dirname?: string;
     setType(type?: InputType): this;
     setPlaceholder(placeholder?: string): this;
     setName(name?: string): this;
     setValue(value?: string): this;
     setAccept(accept?: string): this;
+    setAccept(accept: readonly string[]): this;
     setMin(min?: number | string): this;
     setMax(max?: number | string): this;
     setStep(step?: number | 'any'): this;
@@ -40,6 +42,7 @@ export declare class InputTag extends Tag {
     /** Set `capture` — hints the camera/mic source for file inputs on mobile. */
     setCapture(capture?: 'user' | 'environment'): this;
     setList(list?: string | Id): this;
+    setDirname(dirname?: string): this;
 }
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {
@@ -78,6 +81,7 @@ export declare class TextareaTag extends Tag {
     wrap?: 'hard' | 'soft' | 'off';
     autocomplete?: AutocompleteHint;
     inputmode?: InputMode;
+    dirname?: string;
     setPlaceholder(placeholder?: string): this;
     setName(name?: string): this;
     setRows(rows?: number): this;
@@ -87,6 +91,7 @@ export declare class TextareaTag extends Tag {
     setWrap(wrap?: 'hard' | 'soft' | 'off'): this;
     setAutocomplete(autocomplete?: AutocompleteHint): this;
     setInputmode(inputmode?: InputMode): this;
+    setDirname(dirname?: string): this;
 }
 /** Create a `<textarea>` element with typed attribute methods. */
 export declare function Textarea(...children: View[]): TextareaTag;
@@ -102,6 +107,8 @@ export declare class ButtonTag extends Tag {
     value?: string;
     formaction?: string;
     formmethod?: FormMethod;
+    formtarget?: BrowsingContext;
+    formenctype?: FormEnctype;
     command?: CommandFor;
     commandfor?: string;
     setType(type?: 'submit' | 'reset' | 'button'): this;
@@ -123,6 +130,8 @@ export declare class ButtonTag extends Tag {
     setFormaction(formaction?: string): this;
     /** Override the form's method for this submit button. `"dialog"` closes an ancestor `<dialog>` with the button's value. */
     setFormmethod(formmethod?: FormMethod): this;
+    setFormtarget(formtarget?: BrowsingContext): this;
+    setFormenctype(formenctype?: FormEnctype): this;
 }
 /** Create a `<button>` element with typed attribute methods. */
 export declare function Button(...children: View[]): ButtonTag;
@@ -134,12 +143,12 @@ export declare function Label(...children: View[]): LabelTag;
 export declare class FormTag extends Tag {
     action?: string;
     method?: FormMethod;
-    enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
+    enctype?: FormEnctype;
     target?: BrowsingContext;
     autocomplete?: 'on' | 'off';
     setAction(action?: string): this;
     setMethod(method?: FormMethod): this;
-    setEnctype(enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'): this;
+    setEnctype(enctype?: FormEnctype): this;
     setTarget(target?: BrowsingContext): this;
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
     /** Set `enctype="multipart/form-data"` (required for file uploads). */
@@ -186,8 +195,10 @@ export declare function Form<T>(state: FormState<T> | undefined, build: (f: Form
 export declare class SelectTag extends Tag {
     name?: string;
     size?: number;
+    autocomplete?: AutocompleteHint;
     setName(name?: string): this;
     setSize(size?: number): this;
+    setAutocomplete(autocomplete?: AutocompleteHint): this;
 }
 export declare function Select(...children: View[]): SelectTag;
 export declare class OptionTag extends Tag {
@@ -212,7 +223,7 @@ export declare function Legend(...children: View[]): Tag;
 export declare class OutputTag extends Tag {
     for?: string;
     name?: string;
-    setFor(forId?: string | Id): this;
+    setFor(...forIds: (string | Id)[]): this;
     setName(name?: string): this;
 }
 export declare function Output(...children: View[]): OutputTag;

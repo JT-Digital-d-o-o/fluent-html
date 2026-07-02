@@ -7,7 +7,7 @@ export { isTag, isRawString } from './core/index.js';
 export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from './core/index.js';
 export { defineTheme } from './core/index.js';
 export type { ThemeSpec, ThemeKeys, FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, } from './core/index.js';
-export type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, LinkRel, ReferrerPolicy, BooleanAttribute, SandboxToken, PermissionsPolicyDirective, FetchPriority, LinkElementRel, LinkAs, LinkType, ScriptType, MetaName, Charset, PopoverState, PopoverAction, CommandFor, ClosedBy, EnterKeyHint, ContentEditable, Autocapitalize, Spellcheck, } from './elements/html-types.js';
+export type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, AutofillField, AddressField, AddressPurpose, FormEnctype, FormMethod, BrowsingContext, LinkRel, ReferrerPolicy, BooleanAttribute, SandboxToken, PermissionsPolicyDirective, FetchPriority, LinkElementRel, LinkAs, LinkType, ScriptType, MetaName, Charset, PopoverState, PopoverAction, CommandFor, ClosedBy, EnterKeyHint, ContentEditable, Autocapitalize, Spellcheck, } from './elements/html-types.js';
 export type { TableCellScope } from './elements/index.js';
 export { render, renderWithNonce } from './render/index.js';
 export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';

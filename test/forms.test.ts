@@ -5,6 +5,7 @@ import {
   render,
   Form, Input, Textarea, Button, Label, Select, Option, Optgroup,
   Datalist, Fieldset, Legend, Output,
+  defineIds,
 } from "../src/index.js";
 
 // ------------------------------------
@@ -288,5 +289,31 @@ describe("Forms - Label, Fieldset, Form", () => {
   });
 
   it("Output element", () => { assert.strictEqual(render(Output("100").setFor("a b").setName("result")), `<output for="a b" name="result">100</output>`); });
+});
+
+describe("Forms - completeness (B-05)", () => {
+  const ids = defineIds(["a", "b"] as const);
+
+  it("setAccept array overload joins with comma", () => { assert.strictEqual(render(Input().setType("file").setName("avatar").setAccept(["image/png", "image/jpeg", "image/webp"])), `<input type="file" name="avatar" accept="image/png,image/jpeg,image/webp">`); });
+
+  it("setAccept single string unchanged", () => { assert.strictEqual(render(Input().setType("file").setAccept("image/png,image/jpeg")), `<input type="file" accept="image/png,image/jpeg">`); });
+
+  it("setAccept empty array omits attribute", () => { assert.strictEqual(render(Input().setType("file").setName("x").setAccept([])), `<input type="file" name="x">`); });
+
+  it("Input dirname (bidi companion)", () => { assert.strictEqual(render(Input().setType("text").setName("title").setDirname("title.dir")), `<input type="text" name="title" dirname="title.dir">`); });
+
+  it("Textarea dirname", () => { assert.strictEqual(render(Textarea().setName("comment").setDirname("comment.dir")), `<textarea name="comment" dirname="comment.dir"></textarea>`); });
+
+  it("Select autocomplete", () => { assert.strictEqual(render(Select(Option("US").setValue("us")).setName("country").setAutocomplete("country")), `<select name="country" autocomplete="country"><option value="us">US</option></select>`); });
+
+  it("Input structured autocomplete (shipping prefix)", () => { assert.strictEqual(render(Input().setType("text").setName("zip").setAutocomplete("shipping postal-code")), `<input type="text" name="zip" autocomplete="shipping postal-code">`); });
+
+  it("Input autocomplete webauthn suffix", () => { assert.strictEqual(render(Input().setType("text").setName("user").setAutocomplete("username webauthn")), `<input type="text" name="user" autocomplete="username webauthn">`); });
+
+  it("Button formtarget/formenctype overrides", () => { assert.strictEqual(render(Button("Upload").setType("submit").setFormaction("/upload").setFormenctype("multipart/form-data").setFormtarget("_blank")), `<button type="submit" formaction="/upload" formtarget="_blank" formenctype="multipart/form-data">Upload</button>`); });
+
+  it("Output for id-set (variadic)", () => { assert.strictEqual(render(Output("42").setFor(ids.a, ids.b).setName("result")), `<output for="a b" name="result">42</output>`); });
+
+  it("Output for single id byte-identical", () => { assert.strictEqual(render(Output("42").setFor(ids.a)), `<output for="a">42</output>`); });
 });
 

@@ -5,8 +5,12 @@ export type NumericInputType = 'number' | 'range';
 export type DateTimeInputType = 'date' | 'datetime-local' | 'month' | 'week' | 'time';
 /** Input types that do NOT support min/max. */
 export type NoMinMaxInputType = Exclude<InputType, NumericInputType | DateTimeInputType>;
-export type AutocompleteHint = 'on' | 'off' | 'name' | 'email' | 'username' | 'new-password' | 'current-password' | 'organization' | 'street-address' | 'country' | 'postal-code' | 'tel' | 'url' | 'one-time-code' | (string & {});
+export type AddressPurpose = 'shipping' | 'billing';
+export type AutofillField = 'name' | 'honorific-prefix' | 'given-name' | 'additional-name' | 'family-name' | 'honorific-suffix' | 'nickname' | 'username' | 'new-password' | 'current-password' | 'one-time-code' | 'organization-title' | 'organization' | 'street-address' | 'address-line1' | 'address-line2' | 'address-line3' | 'address-level4' | 'address-level3' | 'address-level2' | 'address-level1' | 'country' | 'country-name' | 'postal-code' | 'cc-name' | 'cc-given-name' | 'cc-additional-name' | 'cc-family-name' | 'cc-number' | 'cc-exp' | 'cc-exp-month' | 'cc-exp-year' | 'cc-csc' | 'cc-type' | 'transaction-currency' | 'transaction-amount' | 'language' | 'bday' | 'bday-day' | 'bday-month' | 'bday-year' | 'sex' | 'url' | 'photo' | 'tel' | 'tel-country-code' | 'tel-national' | 'tel-area-code' | 'tel-local' | 'tel-local-prefix' | 'tel-local-suffix' | 'tel-extension' | 'email' | 'impp';
+export type AddressField = 'name' | 'honorific-prefix' | 'given-name' | 'additional-name' | 'family-name' | 'honorific-suffix' | 'organization' | 'street-address' | 'address-line1' | 'address-line2' | 'address-line3' | 'address-level4' | 'address-level3' | 'address-level2' | 'address-level1' | 'country' | 'country-name' | 'postal-code' | 'cc-name' | 'cc-given-name' | 'cc-additional-name' | 'cc-family-name' | 'cc-number' | 'cc-exp' | 'cc-exp-month' | 'cc-exp-year' | 'cc-csc' | 'cc-type' | 'tel' | 'tel-country-code' | 'tel-national' | 'tel-area-code' | 'tel-local' | 'tel-extension' | 'email';
+export type AutocompleteHint = 'on' | 'off' | AutofillField | `${AddressPurpose} ${AddressField}` | `${AutofillField} webauthn` | `${AddressPurpose} ${AddressField} webauthn` | (string & {});
 export type FormMethod = 'get' | 'post' | 'dialog';
+export type FormEnctype = 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
 export type BrowsingContext = '_self' | '_blank' | '_parent' | '_top' | (string & {});
 export type LinkRel = 'noopener' | 'noreferrer' | 'nofollow' | 'external' | 'author' | 'bookmark' | 'help' | 'license' | 'next' | 'prev' | 'search' | 'tag' | (string & {});
 export type ReferrerPolicy = 'no-referrer' | 'no-referrer-when-downgrade' | 'origin' | 'origin-when-cross-origin' | 'same-origin' | 'strict-origin' | 'strict-origin-when-cross-origin' | 'unsafe-url';
@@ -22,18 +26,7 @@ export type HttpEquiv = 'content-type' | 'content-security-policy' | 'default-st
  * three-value set, so a typo like `setFetchPriority("highh")` is a compile error.
  */
 export type FetchPriority = 'high' | 'low' | 'auto';
-/**
- * `sandbox` token — the fixed WHATWG enumerated set. **Closed** (no `(string & {})`
- * tail): a typo (`'allow-form'`) is a compile error, since a misspelled token
- * silently *weakens* the policy rather than no-opping.
- */
 export type SandboxToken = 'allow-downloads' | 'allow-forms' | 'allow-modals' | 'allow-orientation-lock' | 'allow-pointer-lock' | 'allow-popups' | 'allow-popups-to-escape-sandbox' | 'allow-presentation' | 'allow-same-origin' | 'allow-scripts' | 'allow-top-navigation' | 'allow-top-navigation-by-user-activation' | 'allow-top-navigation-to-custom-protocols';
-/**
- * Permissions-Policy directive *name* (the `allow` attribute keys). Known names
- * autocomplete; the `(string & {})` tail stays OPEN for new directives (matching
- * `LinkRel`/`HttpEquiv`). Trade-off: a misspelled directive name still compiles —
- * weaker than `SandboxToken`. Directive *values* are freeform allowlist strings.
- */
 export type PermissionsPolicyDirective = 'accelerometer' | 'ambient-light-sensor' | 'attribution-reporting' | 'autoplay' | 'bluetooth' | 'camera' | 'ch-ua' | 'clipboard-read' | 'clipboard-write' | 'cross-origin-isolated' | 'display-capture' | 'encrypted-media' | 'fullscreen' | 'gamepad' | 'geolocation' | 'gyroscope' | 'hid' | 'identity-credentials-get' | 'idle-detection' | 'local-fonts' | 'magnetometer' | 'microphone' | 'midi' | 'otp-credentials' | 'payment' | 'picture-in-picture' | 'publickey-credentials-create' | 'publickey-credentials-get' | 'screen-wake-lock' | 'serial' | 'storage-access' | 'usb' | 'web-share' | 'window-management' | 'xr-spatial-tracking' | (string & {});
 /**
  * `<link rel>` — resource hints + document relations. **Distinct from `LinkRel`**,

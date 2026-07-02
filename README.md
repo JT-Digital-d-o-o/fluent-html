@@ -1512,6 +1512,35 @@ Select(
 ).setName("country").toggle("required")
 ```
 
+#### Form-control completeness
+
+```typescript
+// File inputs — array overload joins with "," (ergonomics + autocomplete; `accept`
+// is open by spec, so this does NOT type-check each token)
+Input("file").setName("avatar").setAccept(["image/png", "image/jpeg", "image/webp"]);
+
+// dirname — submits the entered text's resolved direction under a companion field
+// (convention `${name}.dir`); pass a field name, not a direction value
+Textarea().setName("comment").setDirname("comment.dir");   // server gets comment.dir=ltr|rtl
+
+// Structured autocomplete across Input/Textarea/Select — the full WHATWG token set
+// with shipping/billing prefixes and a webauthn suffix. IDE autocomplete + hover docs
+// only; the open tail means typos still compile (not typo-rejection)
+Input("text").setName("card").setAutocomplete("cc-number");
+Input("text").setName("zip").setAutocomplete("shipping postal-code");
+Select(/* options */).setName("country").setAutocomplete("country");
+
+// Per-submit-button form-association overrides (parity with <form>). FormEnctype is
+// CLOSED — a typo here IS a compile error (the one typo-rejecting union of the set)
+Button("Upload").setType("submit").setFormaction("/upload")
+  .setFormenctype("multipart/form-data").setFormtarget("_blank");
+
+// <output for> is a space-separated id SET — variadic, Id-typed
+Output().setFor(ids.a, ids.b).setName("result");   // <output for="a b">
+```
+
+Exported unions for app-side prop typing: `AutofillField` / `AddressField` / `AddressPurpose` (autocomplete DX) and `FormEnctype` (closed, typo-rejecting).
+
 ### Table Elements
 
 ```typescript

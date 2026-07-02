@@ -3,7 +3,7 @@
 // stops erroring (e.g. a closed union gets widened, or Form<T>/route-param narrowing
 // breaks) becomes an "unused directive" error and FAILS the build. This makes
 // "a typo is a compile error" an enforced contract, not a comment.
-import { Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, Video, Audio, Source, Meta, Script, Area, Th, Td, Ins, Del, Q, Blockquote, } from "../../src/index.js";
+import { Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, Video, Audio, Source, Meta, Script, Area, Th, Td, Select, Output, Textarea, Ins, Del, Q, Blockquote, } from "../../src/index.js";
 const ids = defineIds(["card"]);
 // `_`-prefixed param is exempt from noUnusedParameters; statements below are expressions, not bindings.
 const expectType = (_v) => undefined;
@@ -210,6 +210,25 @@ Div().maskType("luminance");
 Div().maskFrom("top", "50%");
 // @ts-expect-error — TailwindMaskType closed
 Div().maskType("alfa");
+// ── Form-control completeness (RFC-B-05) ───────────────────────────────────
+// FormEnctype is the one CLOSED union here — negatives are real compile errors.
+Button().setFormenctype("multipart/form-data").setFormtarget("_blank");
+Form().setEnctype("text/plain");
+// @ts-expect-error — FormEnctype is closed; "text/plian" is a typo
+Button().setFormenctype("text/plian");
+// @ts-expect-error — FormEnctype is closed (FormTag.setEnctype shares the union)
+Form().setEnctype("text/plian");
+// The open-tail unions: assert POSITIVES only — a @ts-expect-error here would itself
+// fail to compile, because the (string & {}) tail accepts any string (no typo rejection).
+Input().setAccept("image/png");
+Input().setAccept(["image/png", "image/jpeg"]);
+Input().setAutocomplete("cc-number");
+Input().setAutocomplete("shipping postal-code");
+Input().setAutocomplete("username webauthn");
+Select().setAutocomplete("country");
+Textarea().setDirname("comment.dir");
+Input().setDirname("title.dir");
+Output().setFor(ids.card, "raw-id");
 // ── Accessible tables (RFC-B-04) ───────────────────────────────────────────
 Th("x").setScope("col");
 Th("x").setHeaders(ids.card).addHeaders("raw-id").setAbbr("Short");

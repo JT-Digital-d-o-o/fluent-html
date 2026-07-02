@@ -45,8 +45,15 @@ Two tracks. **Track C** — 63 new fluent Tailwind methods (plus pure type-union
 
 - **Masks (Tailwind v4.1)** — `maskImage` (`mask-none` / arbitrary), `maskFrom` / `maskTo` directional edge fades (the hero/scroll-edge fade), `maskComposite`, and `maskType` (SVG `<mask>`). The gradient-type roots (`mask-linear/radial/conic`) stay cut — they need their own from/to stops to mask anything.
 
-  ```typescript
+  ```typescrip t
   Div().background("[url(/hero.jpg)]").maskFrom("b", "50%").maskTo("b", "90%");
+  ```
+
+- **HTML elements — form-control completeness (RFC-B-05)** — `setAccept` gains a `readonly string[]` overload (joins with `,`; ergonomics + autocomplete, **not** typo-checking — `accept` is open by spec); `setDirname` on Input/Textarea (the bidi submit companion, `${name}.dir`); `setAutocomplete` widened to the full WHATWG detail-token set with `shipping`/`billing` prefixes + `webauthn` suffix and extended to `Select` — this is **IDE autocomplete + hover-docs DX, not typo-rejection** (the `(string & {})` tail keeps the long-tail grammar compiling, so `"cc-numbr"` still compiles); `setFormtarget`/`setFormenctype` on Button (per-submit-button form-association overrides) backed by a new **closed** `FormEnctype` union (the one genuinely typo-rejecting addition, also single-sourcing the `enctype` literal previously inlined in `FormTag`); and `OutputTag.setFor` widened to the spec'd variadic, Id-typed space-separated id-set. New exports: `AutofillField`, `AddressField`, `AddressPurpose`, `FormEnctype`. Additive — every current call renders byte-identically. (eslint `prefer-set-method` gains `dirname`/`formtarget`/`formenctype`.)
+
+  ```typescript
+  Input("file").setName("avatar").setAccept(["image/png", "image/jpeg", "image/webp"]);
+  Button("Upload").setType("submit").setFormaction("/upload").setFormenctype("multipart/form-data").setFormtarget("_blank");
   ```
 
 - **HTML elements — accessible tables (RFC-B-04)** — `headers` cell-association on `ThTag`/`TdTag` via `setHeaders(...ids)` / `addHeaders(...ids)`, **Id-typed** against the `defineIds` registry (a typo is a compile error; `set` overrides, `add` accumulates de-duped, an empty list clears the attribute rather than emitting a dead `headers=""`); `abbr` on `ThTag` (`setAbbr`, th-only — a condensed header label for assistive tech); and the existing `th` `scope` literal promoted to an exported `TableCellScope` union for typing component props. Pass the raw id token (or an `Id`), not a `#selector`.

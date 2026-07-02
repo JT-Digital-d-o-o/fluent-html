@@ -17,13 +17,54 @@ export type DateTimeInputType = 'date' | 'datetime-local' | 'month' | 'week' | '
 /** Input types that do NOT support min/max. */
 export type NoMinMaxInputType = Exclude<InputType, NumericInputType | DateTimeInputType>;
 
+export type AddressPurpose = 'shipping' | 'billing';
+
+// WHATWG autofill detail tokens (HTML §4.10.18.7).
+export type AutofillField =
+  | 'name' | 'honorific-prefix' | 'given-name' | 'additional-name'
+  | 'family-name' | 'honorific-suffix' | 'nickname'
+  | 'username' | 'new-password' | 'current-password' | 'one-time-code'
+  | 'organization-title' | 'organization'
+  | 'street-address' | 'address-line1' | 'address-line2' | 'address-line3'
+  | 'address-level4' | 'address-level3' | 'address-level2' | 'address-level1'
+  | 'country' | 'country-name' | 'postal-code'
+  | 'cc-name' | 'cc-given-name' | 'cc-additional-name' | 'cc-family-name'
+  | 'cc-number' | 'cc-exp' | 'cc-exp-month' | 'cc-exp-year' | 'cc-csc' | 'cc-type'
+  | 'transaction-currency' | 'transaction-amount' | 'language'
+  | 'bday' | 'bday-day' | 'bday-month' | 'bday-year'
+  | 'sex' | 'url' | 'photo'
+  | 'tel' | 'tel-country-code' | 'tel-national' | 'tel-area-code'
+  | 'tel-local' | 'tel-local-prefix' | 'tel-local-suffix' | 'tel-extension'
+  | 'email' | 'impp';
+
+// Subset of AutofillField that may carry a shipping/billing prefix.
+export type AddressField =
+  | 'name' | 'honorific-prefix' | 'given-name' | 'additional-name'
+  | 'family-name' | 'honorific-suffix'
+  | 'organization'
+  | 'street-address' | 'address-line1' | 'address-line2' | 'address-line3'
+  | 'address-level4' | 'address-level3' | 'address-level2' | 'address-level1'
+  | 'country' | 'country-name' | 'postal-code'
+  | 'cc-name' | 'cc-given-name' | 'cc-additional-name' | 'cc-family-name'
+  | 'cc-number' | 'cc-exp' | 'cc-exp-month' | 'cc-exp-year' | 'cc-csc' | 'cc-type'
+  | 'tel' | 'tel-country-code' | 'tel-national' | 'tel-area-code'
+  | 'tel-local' | 'tel-extension'
+  | 'email';
+
 export type AutocompleteHint =
-  | 'on' | 'off' | 'name' | 'email' | 'username' | 'new-password'
-  | 'current-password' | 'organization' | 'street-address' | 'country'
-  | 'postal-code' | 'tel' | 'url' | 'one-time-code'
+  | 'on' | 'off'
+  | AutofillField
+  | `${AddressPurpose} ${AddressField}`
+  | `${AutofillField} webauthn`
+  | `${AddressPurpose} ${AddressField} webauthn`
   | (string & {});
 
 export type FormMethod = 'get' | 'post' | 'dialog';
+
+export type FormEnctype =
+  | 'application/x-www-form-urlencoded'
+  | 'multipart/form-data'
+  | 'text/plain';
 
 export type BrowsingContext = '_self' | '_blank' | '_parent' | '_top' | (string & {});
 
@@ -56,11 +97,7 @@ export type HttpEquiv =
  */
 export type FetchPriority = 'high' | 'low' | 'auto';
 
-/**
- * `sandbox` token — the fixed WHATWG enumerated set. **Closed** (no `(string & {})`
- * tail): a typo (`'allow-form'`) is a compile error, since a misspelled token
- * silently *weakens* the policy rather than no-opping.
- */
+// `sandbox` token — fixed WHATWG set, closed (a typo silently weakens the policy).
 export type SandboxToken =
   | 'allow-downloads'
   | 'allow-forms'
@@ -76,12 +113,7 @@ export type SandboxToken =
   | 'allow-top-navigation-by-user-activation'
   | 'allow-top-navigation-to-custom-protocols';
 
-/**
- * Permissions-Policy directive *name* (the `allow` attribute keys). Known names
- * autocomplete; the `(string & {})` tail stays OPEN for new directives (matching
- * `LinkRel`/`HttpEquiv`). Trade-off: a misspelled directive name still compiles —
- * weaker than `SandboxToken`. Directive *values* are freeform allowlist strings.
- */
+// Permissions-Policy directive name (`allow` keys). Open tail — name typos still compile.
 export type PermissionsPolicyDirective =
   | 'accelerometer' | 'ambient-light-sensor' | 'attribution-reporting'
   | 'autoplay' | 'bluetooth' | 'camera' | 'ch-ua' | 'clipboard-read'

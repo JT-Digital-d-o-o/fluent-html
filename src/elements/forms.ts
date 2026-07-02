@@ -4,7 +4,7 @@ import { El, Empty } from "../core/utils.js";
 import type { View } from "../core/types.js";
 import type { Id } from "../ids.js";
 import { extractId } from "../ids.js";
-import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormMethod, BrowsingContext, InputMode, CommandFor } from "./html-types.js";
+import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, FormEnctype, FormMethod, BrowsingContext, InputMode, CommandFor } from "./html-types.js";
 
 /**
  * Specialized Tag for `<input>` elements with typed attribute setters.
@@ -28,6 +28,7 @@ export class InputTag extends Tag {
   inputmode?: InputMode;
   capture?: 'user' | 'environment';
   list?: string;
+  dirname?: string;
 
   setType(type?: InputType): this {
     this.type = type;
@@ -49,8 +50,12 @@ export class InputTag extends Tag {
     return this;
   }
 
-  setAccept(accept?: string): this {
-    this.accept = accept;
+  setAccept(accept?: string): this;
+  setAccept(accept: readonly string[]): this;
+  setAccept(accept?: string | readonly string[]): this {
+    this.accept = Array.isArray(accept)
+      ? (accept.length ? accept.join(',') : undefined)
+      : (accept as string | undefined);
     return this;
   }
 
@@ -104,9 +109,14 @@ export class InputTag extends Tag {
     this.list = list === undefined ? undefined : extractId(list);
     return this;
   }
+
+  setDirname(dirname?: string): this {
+    this.dirname = dirname;
+    return this;
+  }
 }
 
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list', 'dirname']);
 
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {
@@ -154,6 +164,7 @@ export class TextareaTag extends Tag {
   wrap?: 'hard' | 'soft' | 'off';
   autocomplete?: AutocompleteHint;
   inputmode?: InputMode;
+  dirname?: string;
 
   setPlaceholder(placeholder?: string): this {
     this.placeholder = placeholder;
@@ -199,9 +210,14 @@ export class TextareaTag extends Tag {
     this.inputmode = inputmode;
     return this;
   }
+
+  setDirname(dirname?: string): this {
+    this.dirname = dirname;
+    return this;
+  }
 }
 
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode', 'dirname']);
 
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children: View[]): TextareaTag {
@@ -220,6 +236,8 @@ export class ButtonTag extends Tag {
   value?: string;
   formaction?: string;
   formmethod?: FormMethod;
+  formtarget?: BrowsingContext;
+  formenctype?: FormEnctype;
   command?: CommandFor;
   commandfor?: string;
 
@@ -269,9 +287,19 @@ export class ButtonTag extends Tag {
     this.formmethod = formmethod;
     return this;
   }
+
+  setFormtarget(formtarget?: BrowsingContext): this {
+    this.formtarget = formtarget;
+    return this;
+  }
+
+  setFormenctype(formenctype?: FormEnctype): this {
+    this.formenctype = formenctype;
+    return this;
+  }
 }
 
-defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod', 'command', 'commandfor']);
+defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod', 'formtarget', 'formenctype', 'command', 'commandfor']);
 
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children: View[]): ButtonTag {
@@ -296,7 +324,7 @@ export function Label(...children: View[]): LabelTag {
 export class FormTag extends Tag {
   action?: string;
   method?: FormMethod;
-  enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
+  enctype?: FormEnctype;
   target?: BrowsingContext;
   autocomplete?: 'on' | 'off';
 
@@ -310,7 +338,7 @@ export class FormTag extends Tag {
     return this;
   }
 
-  setEnctype(enctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'): this {
+  setEnctype(enctype?: FormEnctype): this {
     this.enctype = enctype;
     return this;
   }
@@ -449,6 +477,7 @@ export function Form(...args: unknown[]): FormTag {
 export class SelectTag extends Tag {
   name?: string;
   size?: number;
+  autocomplete?: AutocompleteHint;
 
   setName(name?: string): this {
     this.name = name;
@@ -459,9 +488,14 @@ export class SelectTag extends Tag {
     this.size = size;
     return this;
   }
+
+  setAutocomplete(autocomplete?: AutocompleteHint): this {
+    this.autocomplete = autocomplete;
+    return this;
+  }
 }
 
-defineSchemaKeys(SelectTag, ['name', 'size']);
+defineSchemaKeys(SelectTag, ['name', 'size', 'autocomplete']);
 
 export function Select(...children: View[]): SelectTag {
   return new SelectTag("select", ...children);
@@ -530,8 +564,10 @@ export class OutputTag extends Tag {
   for?: string;
   name?: string;
 
-  setFor(forId?: string | Id): this {
-    this.for = forId === undefined ? undefined : extractId(forId);
+  setFor(...forIds: (string | Id)[]): this {
+    this.for = forIds.length
+      ? forIds.map(extractId).map(s => s.trim()).filter(Boolean).join(' ')
+      : undefined;
     return this;
   }
 

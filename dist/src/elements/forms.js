@@ -26,7 +26,9 @@ export class InputTag extends Tag {
         return this;
     }
     setAccept(accept) {
-        this.accept = accept;
+        this.accept = Array.isArray(accept)
+            ? (accept.length ? accept.join(',') : undefined)
+            : accept;
         return this;
     }
     setMin(min) {
@@ -70,8 +72,12 @@ export class InputTag extends Tag {
         this.list = list === undefined ? undefined : extractId(list);
         return this;
     }
+    setDirname(dirname) {
+        this.dirname = dirname;
+        return this;
+    }
 }
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list', 'dirname']);
 export function Input(type) {
     const tag = new InputTag("input");
     if (type)
@@ -121,8 +127,12 @@ export class TextareaTag extends Tag {
         this.inputmode = inputmode;
         return this;
     }
+    setDirname(dirname) {
+        this.dirname = dirname;
+        return this;
+    }
 }
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode', 'dirname']);
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children) {
     return new TextareaTag("textarea", ...children);
@@ -174,8 +184,16 @@ export class ButtonTag extends Tag {
         this.formmethod = formmethod;
         return this;
     }
+    setFormtarget(formtarget) {
+        this.formtarget = formtarget;
+        return this;
+    }
+    setFormenctype(formenctype) {
+        this.formenctype = formenctype;
+        return this;
+    }
 }
-defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod', 'command', 'commandfor']);
+defineSchemaKeys(ButtonTag, ['type', 'name', 'value', 'formaction', 'formmethod', 'formtarget', 'formenctype', 'command', 'commandfor']);
 /** Create a `<button>` element with typed attribute methods. */
 export function Button(...children) {
     return new ButtonTag("button", ...children);
@@ -302,8 +320,12 @@ export class SelectTag extends Tag {
         this.size = size;
         return this;
     }
+    setAutocomplete(autocomplete) {
+        this.autocomplete = autocomplete;
+        return this;
+    }
 }
-defineSchemaKeys(SelectTag, ['name', 'size']);
+defineSchemaKeys(SelectTag, ['name', 'size', 'autocomplete']);
 export function Select(...children) {
     return new SelectTag("select", ...children);
 }
@@ -348,8 +370,10 @@ export function Legend(...children) {
     return El("legend", ...children);
 }
 export class OutputTag extends Tag {
-    setFor(forId) {
-        this.for = forId === undefined ? undefined : extractId(forId);
+    setFor(...forIds) {
+        this.for = forIds.length
+            ? forIds.map(extractId).map(s => s.trim()).filter(Boolean).join(' ')
+            : undefined;
         return this;
     }
     setName(name) {
