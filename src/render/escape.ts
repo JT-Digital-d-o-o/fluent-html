@@ -7,8 +7,14 @@ export const htmlEscapes: Record<string, string> = {
   "'": "&#39;",
 };
 
+// The five characters escapeHtml rewrites. A native regex pre-test lets V8's vectorized
+// engine reject the overwhelmingly common clean string (every machine-generated class
+// attribute, id, and URL) without the per-char JS scan below.
+const NEEDS_ESCAPE = /[&<>"']/;
+
 // HTML escape to prevent XSS — manual charCode scan for speed
 export function escapeHtml(unsafe: string): string {
+  if (!NEEDS_ESCAPE.test(unsafe)) return unsafe; // fast path: nothing to escape
   let result = '';
   let lastIdx = 0;
   for (let i = 0; i < unsafe.length; i++) {

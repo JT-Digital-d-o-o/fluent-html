@@ -64,60 +64,16 @@ export function splitArgs(args) {
     const views = args;
     return { view: views.length === 1 ? views[0] : views, opts: undefined };
 }
-// String attrs: escape the value, quote with "
-const str = (key) => ({
-    key,
-    serialize: (v) => ` hx-${key}="${escapeAttr(v)}"`,
-});
-// Boolean-or-string attrs (pushUrl, replaceUrl): pass booleans, escape strings.
-// Here the literal `false` IS meaningful htmx grammar (`hx-push-url="false"`).
-const boolOrStr = (key, hxKey) => ({
-    key,
-    serialize: (v) => ` hx-${hxKey ?? key}="${typeof v === 'string' ? escapeAttr(v) : v}"`,
-});
-// hx-swap-oob: `true` and swap-style strings are valid, but any non-`"true"` value is
-// read as a swap style, so `false` must OMIT the attribute (not emit `="false"`, which
-// htmx would treat as a garbage swap spec).
-const swapOob = (key, hxKey) => ({
-    key,
-    serialize: (v) => v === false ? '' : ` hx-${hxKey}="${typeof v === 'string' ? escapeAttr(v) : v}"`,
-});
-// Boolean attrs that render just the value (validate, preserve, boost, ignore)
-const boolVal = (key) => ({
-    key,
-    serialize: (v) => ` hx-${key}="${v}"`,
-});
-// JSON-or-string attrs (vals, config): stringify objects, escape strings
-const jsonOrStr = (key) => ({
-    key,
-    serialize: (v) => ` hx-${key}="${escapeAttr(typeof v === 'string' ? v : JSON.stringify(v))}"`,
-});
-// JSON-only attrs (headers): always stringify
-const json = (key) => ({
-    key,
-    serialize: (v) => ` hx-${key}="${escapeAttr(JSON.stringify(v))}"`,
-});
-const HTMX_ATTRS = [
-    str('target'),
-    str('swap'),
-    swapOob('swapOob', 'swap-oob'),
-    str('select'),
-    str('trigger'),
-    boolOrStr('pushUrl', 'push-url'),
-    boolOrStr('replaceUrl', 'replace-url'),
-    jsonOrStr('vals'),
-    json('headers'),
-    str('include'),
-    str('encoding'),
-    boolVal('validate'),
-    str('confirm'),
-    str('indicator'),
-    str('disable'),
-    str('sync'),
-    boolVal('preserve'),
-    boolVal('boost'),
-    jsonOrStr('config'),
-];
+// ── HTMX attribute serialization (single copy; was duplicated in render + stream)
+//
+// buildHtmx emits these as an unrolled, monomorphic `if` sequence rather than looping a
+// config table: `htmx[key]` with a per-iteration key is a megamorphic dynamic read that
+// V8 can't inline-cache, ~3x slower per htmx tag. Serialization helpers, inlined per attr:
+//   escaped string  → ` hx-NAME="<escapeAttr(v)>"`
+//   bool|string     → ` hx-NAME="<string?escapeAttr:v>"` (literal `false` is meaningful for push/replace-url)
+//   bool flag        → ` hx-NAME="<v>"`
+//   json|string     → ` hx-NAME="<escapeAttr(string?v:JSON.stringify(v))>"`
+// The emitted names, order, and escaping below are byte-identical to the former table.
 // A valid hx-status key: a 100–599 code or an Nxx wildcard (matches the HxStatusKey type).
 const STATUS_KEY_RE = /^(?:[1-5][0-9]{2}|[1-5]xx)$/;
 // A valid bare boolean-attribute name (set via `.toggle()`). The closed `BooleanAttribute`
@@ -132,12 +88,46 @@ const RESERVED_BAG_KEYS = new Set(['id', 'class', 'style']);
 /** Serialize an HTMX config to its attribute string. @internal */
 export function buildHtmx(htmx) {
     let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
-    for (const attr of HTMX_ATTRS) {
-        const value = htmx[attr.key];
-        if (value !== undefined) {
-            result += attr.serialize(value);
-        }
-    }
+    if (htmx.target !== undefined)
+        result += ' hx-target="' + escapeAttr(htmx.target) + '"';
+    if (htmx.swap !== undefined)
+        result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
+    // hx-swap-oob: any non-"true" value is read as a swap style, so `false` must omit the attr.
+    if (htmx.swapOob !== undefined && htmx.swapOob !== false)
+        result += ' hx-swap-oob="' + (typeof htmx.swapOob === 'string' ? escapeAttr(htmx.swapOob) : htmx.swapOob) + '"';
+    if (htmx.select !== undefined)
+        result += ' hx-select="' + escapeAttr(htmx.select) + '"';
+    if (htmx.trigger !== undefined)
+        result += ' hx-trigger="' + escapeAttr(htmx.trigger) + '"';
+    // push-url / replace-url: the literal `false` is meaningful htmx grammar, so it is kept.
+    if (htmx.pushUrl !== undefined)
+        result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl) + '"';
+    if (htmx.replaceUrl !== undefined)
+        result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl) + '"';
+    if (htmx.vals !== undefined)
+        result += ' hx-vals="' + escapeAttr(typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)) + '"';
+    if (htmx.headers !== undefined)
+        result += ' hx-headers="' + escapeAttr(JSON.stringify(htmx.headers)) + '"';
+    if (htmx.include !== undefined)
+        result += ' hx-include="' + escapeAttr(htmx.include) + '"';
+    if (htmx.encoding !== undefined)
+        result += ' hx-encoding="' + escapeAttr(htmx.encoding) + '"';
+    if (htmx.validate !== undefined)
+        result += ' hx-validate="' + htmx.validate + '"';
+    if (htmx.confirm !== undefined)
+        result += ' hx-confirm="' + escapeAttr(htmx.confirm) + '"';
+    if (htmx.indicator !== undefined)
+        result += ' hx-indicator="' + escapeAttr(htmx.indicator) + '"';
+    if (htmx.disable !== undefined)
+        result += ' hx-disable="' + escapeAttr(htmx.disable) + '"';
+    if (htmx.sync !== undefined)
+        result += ' hx-sync="' + escapeAttr(htmx.sync) + '"';
+    if (htmx.preserve !== undefined)
+        result += ' hx-preserve="' + htmx.preserve + '"';
+    if (htmx.boost !== undefined)
+        result += ' hx-boost="' + htmx.boost + '"';
+    if (htmx.config !== undefined)
+        result += ' hx-config="' + escapeAttr(typeof htmx.config === 'string' ? htmx.config : JSON.stringify(htmx.config)) + '"';
     // Special cases: boolean-only attrs. Gate on truthiness, not `!== undefined` —
     // `optimistic: false` (e.g. from a feature flag) must NOT emit the enabling attribute.
     if (htmx.optimistic)

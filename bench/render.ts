@@ -12,15 +12,30 @@ import type { View } from "../src/index.js";
 // ---------------------------------------------------------------------------
 
 function measure(_name: string, fn: () => void, iterations: number): { opsPerSec: number; avgMs: number } {
-  // Warm-up
-  for (let i = 0; i < Math.min(iterations, 100); i++) fn();
+  // Warm-up to a ~200ms budget so V8 tiers up on the larger bodies (a fixed 100 iters
+  // wasn't enough for TurboFan on the big scenarios).
+  const warmupEnd = performance.now() + 200;
+  let warmed = 0;
+  while (performance.now() < warmupEnd) {
+    fn();
+    if (++warmed >= iterations) break;
+  }
 
-  const start = performance.now();
-  for (let i = 0; i < iterations; i++) fn();
-  const elapsed = performance.now() - start;
-
-  const avgMs = elapsed / iterations;
-  const opsPerSec = Math.round(1000 / avgMs);
+  // Take several short samples and report the MEDIAN. A single contiguous sample per
+  // scenario had 25-57% run-to-run spread — the same order as the perf deltas the gate
+  // is meant to catch, so a real regression could pass. The median of 7 is stable enough.
+  const SAMPLES = 7;
+  const perSample = Math.max(1, Math.floor(iterations / SAMPLES));
+  const opsSamples: number[] = [];
+  for (let s = 0; s < SAMPLES; s++) {
+    const start = performance.now();
+    for (let i = 0; i < perSample; i++) fn();
+    const elapsed = performance.now() - start;
+    opsSamples.push((perSample * 1000) / elapsed);
+  }
+  opsSamples.sort((a, b) => a - b);
+  const opsPerSec = Math.round(opsSamples[SAMPLES >> 1]!);
+  const avgMs = 1000 / opsPerSec;
   return { opsPerSec, avgMs };
 }
 

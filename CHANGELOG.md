@@ -26,6 +26,14 @@ A class of packaging defects where the library worked from `node dist/` (and its
 - **`fluent-html/elements` (and `./core`, `./control`) were broken when imported standalone** — element factories import `Tag` directly from `core/tag.js`, bypassing the barrel that registered the mixins, so a Tag from the `./elements` subpath had *none* of its fluent methods (while its `.d.ts` still advertised them — a guaranteed runtime crash that type-checked). Registration is now an invariant of every Tag-producing barrel via a single `core/register.js` module. As part of this, `overlay()` moved from `control/` to `core/` alongside the other three mixins; `OverlayPosition` is still exported from the package root and from `fluent-html/control`, so no import path changes.
 - **Published tarball shipped dangling sourcemap references** — every `.js`/`.d.ts` pointed at `.map` files that weren't packed, degrading debugger output and "Go to Definition". The `.js.map`, `.d.ts.map`, and `src/**/*.ts` files are now included so the references resolve end-to-end.
 
+### ⚡ Performance
+
+Byte-identical output (parity-checked by the full suite incl. the render/stream fuzz test); ~2× render throughput on HTMX-heavy pages.
+
+- **`escapeHtml` short-circuits clean strings with a native regex pre-test** — the char-by-char JS scan ran on *every* attribute value, including machine-generated class strings, ids, and URLs that can never contain `&<>"'`. A `/[&<>"']/.test()` pre-test lets V8's vectorized engine reject the clean common case: the variant-heavy bench (long clean class attribute) went from ~10K to ~40K ops/sec (**~3.9×**), and every other bench rose 20–45%.
+- **`buildHtmx` unrolled from a config-table loop to direct checks** — the 19-entry table did a megamorphic dynamic `htmx[key]` read per entry per htmx tag (~3× slower, mostly finding `undefined`). The unrolled monomorphic `if` sequence lifts the HTMX-attrs bench ~55% (combined with the above, ~2.4×).
+- **Bench harness reports the median of several samples after a time-budget warm-up** — a single contiguous sample had 25–57% run-to-run spread (the same order as the deltas above), so real regressions could pass the gate. Runs are now stable to ~2%.
+
 ### 🐛 Fixed — Tailwind v4 class fidelity
 
 - **`gradientRadial(origin, interpolation)` emitted a class Tailwind v4 rejects — zero CSS** — Tailwind v4 doesn't support the `/interpolation` modifier on the arbitrary-value radial form, so `gradientRadial("top-right", "oklch")` produced `bg-radial-[at_top_right]/oklch`, which compiles to *nothing* (silent missing gradient). Origin + interpolation now fold into one arbitrary value (`bg-radial-[at_top_right_in_oklch]`), with hue keywords expanded the way Tailwind's own modifier does (`longer` → `in oklch longer hue`). The emitter and the class-vocab row now share one `radialGradientClass` helper so they can't drift.
