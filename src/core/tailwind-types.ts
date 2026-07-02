@@ -133,9 +133,10 @@ export type TailwindCursor =
 // Z-index
 export type TailwindZIndex = 0 | 10 | 20 | 30 | 40 | 50 | Stringified<0 | 10 | 20 | 30 | 40 | 50> | "auto" | `[${string}]`;
 
-// Grid columns/rows — keeps (string & {}) for JIT bare numbers beyond 12
-export type TailwindGridCols = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | (string & {});
-export type TailwindGridRows = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | (string & {});
+// Grid columns/rows — bare numbers beyond 12 via `${number}`; arbitrary track lists via `[…]`.
+// (Was `(string & {})`, which also swallowed typos like `.gridCols("brnad")` as dead classes.)
+export type TailwindGridCols = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | `${number}` | `[${string}]`;
+export type TailwindGridRows = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | `${number}` | `[${string}]`;
 
 // Flex
 export type TailwindFlex = "1" | "auto" | "initial" | "none";
@@ -161,22 +162,22 @@ export type TailwindFlexWrap = "wrap" | "wrap-reverse" | "nowrap";
 // Align self
 export type TailwindAlignSelf = "auto" | "start" | "end" | "center" | "stretch" | "baseline";
 
-// Column span — keeps (string & {}) for JIT bare numbers beyond 12
-export type TailwindColSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full" | (string & {});
+// Column span — bare numbers beyond 12 via `${number}`; arbitrary via `[…]`.
+export type TailwindColSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full" | `${number}` | `[${string}]`;
 
 // Aspect ratio
 export type TailwindAspect = "auto" | "square" | "video";
 
 // Transitions & Animation
 export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow" | "transform";
-export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | (string & {});
+export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | `${number}` | `[${string}]`;
 export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
 
 // Ring — v4 (C-03): added the `3` slot. Bare `ring` = 1px in v4 (was 3px).
-export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | (string & {});
+export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | `${number}` | `[${string}]`;
 
 // Transforms
-export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | (string & {});
+export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | `${number}` | `[${string}]`;
 // v4 (A-07): admit negatives — `.rotate(-45)` emits `-rotate-45` (sign relocated).
 export type TailwindRotate =
   | 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180
@@ -265,7 +266,7 @@ export type TailwindGradientStop = TailwindColor;
 export type TailwindBlur = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | `[${string}]`;
 
 // Line clamp
-export type TailwindLineClamp = 1 | 2 | 3 | 4 | 5 | 6 | "none" | (string & {});
+export type TailwindLineClamp = 1 | 2 | 3 | 4 | 5 | 6 | "none" | `${number}` | `[${string}]`;
 
 // Underline offset
 export type TailwindUnderlineOffset = "auto" | 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | `[${string}]`;
@@ -377,7 +378,7 @@ export type TailwindIsolation = "auto";
 export type TailwindDelay =
   | 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000
   | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000>
-  | (string & {});
+  | `${number}` | `[${string}]`;
 export type TailwindTransitionBehavior = "normal" | "discrete";
 
 // Gradient stop position — closed 0–100% (5% step) ladder + arbitrary `[…]`

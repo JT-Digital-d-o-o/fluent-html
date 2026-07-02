@@ -22,17 +22,6 @@ export interface Id {
     /** Returns the selector when used as a string */
     toString(): string;
 }
-/**
- * Create a single Id object from a string.
- *
- * @param name - The ID string (e.g., "user-list")
- * @returns An Id object with .id and .selector properties
- *
- * @example
- * const userId = createId("user-profile");
- * Div().setId(userId)  // id="user-profile"
- * hx("/api", { target: userId.selector })  // hx-target="#user-profile"
- */
 export declare function createId(name: string): Id;
 type KebabToCamel<S extends string> = S extends `${infer Head}-${infer Tail}` ? `${Head}${Capitalize<KebabToCamel<Tail>>}` : S;
 type IdRegistry<T extends readonly string[]> = {

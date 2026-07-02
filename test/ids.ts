@@ -77,6 +77,13 @@ describe("isId()", () => {
   it("returns false for objects without id property", () => {
     assert.strictEqual(isId({ selector: "#test" }), false);
   });
+
+  // Regression (type-honesty-7): a structural {id, selector} object (e.g. a DB row) must NOT
+  // launder itself into a branded Id — only createId/defineIds produce real Ids.
+  it("returns false for a structural look-alike (no runtime brand)", () => {
+    assert.strictEqual(isId({ id: "test", selector: "#test" }), false);
+    assert.strictEqual(isId({ id: "x", selector: "#x", toString() { return "#x"; } }), false);
+  });
 });
 
 describe("extractId()", () => {

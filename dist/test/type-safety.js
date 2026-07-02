@@ -427,4 +427,32 @@ describe("type honesty — types that used to lie", () => {
         u.posts.resolve({ userId: "42" });
     });
 });
+// -------------------------------------------------------
+// Closed-union honesty: numeric unions no longer carry a naked (string & {}) tail,
+// so a typo is a compile error again instead of a silently-dead class (type-honesty-6).
+// -------------------------------------------------------
+describe("numeric Tailwind unions reject typos (no (string & {}) tail)", () => {
+    it("valid numeric / bracket values still compile and render", () => {
+        assert.strictEqual(render(Div().duration(150)), `<div class="duration-150"></div>`);
+        assert.strictEqual(render(Div().gridCols("16")), `<div class="grid-cols-16"></div>`);
+        assert.strictEqual(render(Div().colSpan("13")), `<div class="col-span-13"></div>`);
+        assert.strictEqual(render(Div().duration("[2s]")), `<div class="duration-[2s]"></div>`);
+        assert.strictEqual(render(Div().ring("2")), `<div class="ring-2"></div>`);
+        assert.strictEqual(render(Div().lineClamp(3)), `<div class="line-clamp-3"></div>`);
+    });
+    it("garbage strings are compile errors (each @ts-expect-error IS the test)", () => {
+        // @ts-expect-error duration typo
+        Div().duration("fast");
+        // @ts-expect-error gridCols typo
+        Div().gridCols("brnad");
+        // @ts-expect-error ring typo
+        Div().ring("thick");
+        // @ts-expect-error scale typo
+        Div().scale("huge");
+        // @ts-expect-error lineClamp typo
+        Div().lineClamp("many");
+        // @ts-expect-error delay typo
+        Div().delay("soon");
+    });
+});
 //# sourceMappingURL=type-safety.js.map

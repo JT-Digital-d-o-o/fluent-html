@@ -42,12 +42,19 @@ export interface Id {
  * Div().setId(userId)  // id="user-profile"
  * hx("/api", { target: userId.selector })  // hx-target="#user-profile"
  */
+// Runtime brand for Id objects. Globally registered (Symbol.for) so it is shared across
+// module instances (dual-package safe). createId stamps it; isId checks it — so a structural
+// `{ id, selector }` object (e.g. a DB row flowing into resolveSelector) can no longer
+// launder itself into an Id, making the interface's "no structural spoofing" claim true.
+const ID_BRAND = Symbol.for("fluent-html.Id");
+
 export function createId(name: string): Id {
   return Object.freeze({
     id: name,
     selector: `#${name}`,
+    [ID_BRAND]: true,
     toString() { return this.selector; }
-  }) as unknown as Id; // cast is safe — brand is compile-time only
+  }) as unknown as Id; // cast is safe — the compile-time brand is erased; ID_BRAND is the runtime marker
 }
 
 // Type helper: Convert kebab-case to camelCase
@@ -147,10 +154,7 @@ export function isId(value: unknown): value is Id {
   return (
     typeof value === 'object' &&
     value !== null &&
-    'id' in value &&
-    'selector' in value &&
-    typeof (value as Id).id === 'string' &&
-    typeof (value as Id).selector === 'string'
+    (value as Record<symbol, unknown>)[ID_BRAND] === true
   );
 }
 
