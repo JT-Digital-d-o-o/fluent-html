@@ -4,6 +4,13 @@ All notable changes to Fluent HTML will be documented in this file.
 
 ## [6.3.0] - Packaging integrity & URL sanitization
 
+### 💥 Breaking (type-level only — no runtime behavior change)
+
+These reject call shapes that already misbehaved at runtime; well-formed code is unaffected. Same flavor as 6.2.0's type-narrowing breaks.
+
+- **`IfThen`/`IfThenElse`/`.when()`/`.whenElse()` reject a `boolean`-containing value on the nullable overload.** A `boolean | null` value (e.g. a Prisma `Boolean?` column) resolved to the nullable-*value* overload at compile time but was reinterpreted as a *condition* at runtime — `false` rendered the else-branch, and `true` invoked the callback with `undefined` typed as a definite `boolean`. Passing such a value is now a compile error; use an explicit comparison: `IfThen(user.emailVerified === true, …)`. Plain `boolean` conditions and non-boolean nullable narrowing are unchanged.
+- **`Match` no-default (exhaustive) form rejects a widened `string`/`number`.** When the value widened past a literal union (a DB column typed `string`, an unvalidated route param), the mapped-type exhaustiveness check silently collapsed, so any subset of cases compiled while a real miss rendered an invisible `Empty()`. The exhaustive form now requires a literal union; an unconstrained value must use the partial-with-default form `Match(value, cases, fallback)`.
+
 ### 🔒 Security
 
 - **URL-valued attributes are now scheme-sanitized** — HTML-escaping prevents attribute *breakout* but does nothing about a `javascript:` URL that executes on click or a `data:text/html` URL that loads an attacker-authored document. `A("x").setHref(user.website)` — trusting the README's "XSS prevented" promise — could ship stored XSS. The typed URL setters (`setHref`, `setSrc`, `setAction`, `setFormaction`, `setData`, `setPoster`, `setCite`) now run their value through a new `sanitizeUrl()`: `javascript:`/`vbscript:` and scriptable `data:` URLs (`data:text/html`, `data:image/svg+xml`), including obfuscated forms (case, embedded tab/control chars, leading whitespace), are neutralized to `about:blank`. Relative URLs, fragments, protocol-relative `//host`, `http(s)`/`mailto`/`tel`, and non-scriptable `data:` media (`image/png`, `audio/*`, `video/*`, `font/*`) pass through byte-identically. `sanitizeUrl` is exported (also re-exported from the root) for standalone use.

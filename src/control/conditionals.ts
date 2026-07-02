@@ -21,7 +21,11 @@ import { Empty } from "../core/utils.js";
  * IfThenElse(user, (u) => Span(`Welcome, ${u.name}`), () => A("Login"))
  */
 export function IfThenElse(condition: boolean, thenBranch: Thunk<View>, elseBranch: Thunk<View>): View;
-export function IfThenElse<T>(value: T | null | undefined, thenBranch: (value: T) => View, elseBranch: Thunk<View>): View;
+// A boolean-containing T would resolve here at compile time but be reinterpreted as a
+// condition at runtime (the `typeof === 'boolean'` branch), so `false` renders the else
+// and `true` calls the callback with `undefined`. Reject it — callers pass an explicit
+// comparison (`flag === true`) so the intended overload is unambiguous.
+export function IfThenElse<T>(value: boolean extends T ? never : T | null | undefined, thenBranch: (value: T) => View, elseBranch: Thunk<View>): View;
 export function IfThenElse<T>(
   conditionOrValue: boolean | T | null | undefined,
   thenBranch: Thunk<View> | ((value: T) => View),
@@ -55,7 +59,9 @@ export function IfThenElse<T>(
  * IfThen(user.avatar, (src) => Img().setSrc(src).setAlt("Avatar"))
  */
 export function IfThen(condition: boolean, then: Thunk<View>): View;
-export function IfThen<T>(value: T | null | undefined, then: (value: T) => View): View;
+// See IfThenElse: a boolean-containing T is rejected here because the runtime
+// treats it as a condition, not a value. Use an explicit comparison instead.
+export function IfThen<T>(value: boolean extends T ? never : T | null | undefined, then: (value: T) => View): View;
 export function IfThen<T>(
   conditionOrValue: boolean | T | null | undefined,
   then: Thunk<View> | ((value: T) => View),
@@ -114,9 +120,12 @@ export function IfThen<T>(
  *   error: (s) => Alert(s.message),
  * }, () => Spinner())
  */
-// Value matching — exhaustive
+// Value matching — exhaustive. A widened `string`/`number` collapses `{ [K in T] }`
+// to an index signature, so any subset would satisfy the "exhaustive" form while a
+// real miss renders an invisible Empty(). Reject the widened value here so an
+// unconstrained input must use the partial-with-default form (which supplies a fallback).
 export function Match<T extends string | number>(
-  value: T,
+  value: string extends T ? never : number extends T ? never : T,
   cases: { [K in T]: Thunk<View> }
 ): View;
 // Value matching — partial with default

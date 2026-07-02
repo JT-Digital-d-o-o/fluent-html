@@ -242,7 +242,11 @@ export class Tag {
    *   .when(isPrimary, t => t.background("blue-500").textColor("white"))
    *   .when(user.avatar, (t, avatar) => t.addChild(Img().setSrc(avatar)))
    */
-  when<T>(condition: T | null | undefined, fn: (tag: this, value: NonNullable<T>) => unknown): this;
+  // A boolean-containing T is rejected on the value overload: the runtime `typeof
+  // === "boolean"` branch treats it as a condition and calls fn without the value, so
+  // a `boolean | null` would pass `undefined` as a typed-boolean value. Plain `boolean`
+  // still resolves to the boolean overload below; nullable values must be non-boolean.
+  when<T>(condition: boolean extends T ? never : T | null | undefined, fn: (tag: this, value: NonNullable<T>) => unknown): this;
   when(condition: boolean, fn: (tag: this) => unknown): this;
   when<T>(condition: T | null | undefined | boolean, fn: (tag: this, value: NonNullable<T>) => unknown): this {
     if (typeof condition === "boolean") {
@@ -263,7 +267,9 @@ export class Tag {
    * Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
    */
   whenElse(condition: boolean, thenFn: (tag: this) => unknown, elseFn: (tag: this) => unknown): this;
-  whenElse<T>(value: T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => unknown, elseFn: (tag: this) => unknown): this;
+  // See `when`: a boolean-containing T is rejected on the value overload (runtime treats
+  // it as a condition). Plain `boolean` uses the boolean overload above.
+  whenElse<T>(value: boolean extends T ? never : T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => unknown, elseFn: (tag: this) => unknown): this;
   whenElse<T>(condition: T | null | undefined | boolean, thenFn: (tag: this, value: NonNullable<T>) => unknown, elseFn: (tag: this) => unknown): this {
     if (typeof condition === "boolean") {
       if (condition) (thenFn as (tag: this) => unknown)(this); else elseFn(this);
