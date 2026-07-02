@@ -220,7 +220,7 @@ export type TailwindState =
   | "active" | "visited"
   | "disabled" | "enabled" | "checked" | "indeterminate" | "required" | "invalid" | "valid"
   | "first" | "last" | "odd" | "even" | "empty"
-  | "first-of-type" | "last-of-type" | "only-child"
+  | "first-of-type" | "last-of-type"
   | "placeholder" | "selection" | "marker" | "file"
   | "before" | "after"
   | "dark"

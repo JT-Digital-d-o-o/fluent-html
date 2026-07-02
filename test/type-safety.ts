@@ -494,3 +494,14 @@ describe("control-flow overload type honesty", () => {
     check(null, "n");
   });
 });
+
+// Regression (tailwind-fidelity-2): "only-child" is not a Tailwind variant (emits zero CSS).
+// The working spellings are "only" / "only-of-type". @ts-expect-error IS the test.
+describe("Tailwind variant fidelity", () => {
+  it("rejects the non-existent only-child variant, accepts only / only-of-type", () => {
+    render(Div().on("only", (t) => t.margin("t", "2")));
+    render(Div().on("only-of-type", (t) => t.margin("t", "2")));
+    // @ts-expect-error — "only-child" is not a Tailwind variant; use "only"
+    render(Div().on("only-child", (t) => t.margin("t", "2")));
+  });
+});

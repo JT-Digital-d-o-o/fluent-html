@@ -8,7 +8,7 @@
  *
  * @module
  */
-import { DIR_MAP, ROUNDED_CORNERS, signNeg, defineUtility } from "./types.js";
+import { DIR_MAP, ROUNDED_CORNERS, signNeg, defineUtility, radialGradientClass } from "./types.js";
 // ── Row constructors (keep the table terse + uniform) ───────────────
 /** Zero-arg fixed class. */
 const stat = (method, cls) => defineUtility({ method, emit: { kind: "static", class: cls } });
@@ -180,12 +180,7 @@ export const classVocab = [
         ? [interp(`bg-linear-${a[2] ?? "to-r"}`, a[3]), `from-${a[0]}`, `to-${a[1]}`] : []), [["red-500", "blue-500"], ["red-500", "blue-500", "to-br"], ["red-500", "blue-500", "to-br", "oklab"]]),
     custom("gradientTo", (a) => (a.length >= 1 ? [interp(`bg-linear-${a[0]}`, a[1])] : []), [["to-r"], ["to-r", "oklch"], ["to-tr", "longer"]]),
     custom("gradientLinear", (a) => [signNeg("bg-linear", a[0])], [["45"], ["-65"], ["[0.25turn]"]]),
-    custom("gradientRadial", (a) => {
-        const origin = a[0]
-            ? (a[0].startsWith("[") ? `bg-radial-${a[0]}` : `bg-radial-[at_${a[0].replace(/-/g, "_")}]`)
-            : "bg-radial";
-        return [interp(origin, a[1])];
-    }, [[], ["top-left"], ["[at_top_left]"], ["undefined", "srgb"]]),
+    custom("gradientRadial", (a) => [radialGradientClass(a[0], a[1])], [[], ["top-left"], ["[at_top_left]"], ["top-right", "oklch"], ["top-right", "longer"]]),
     custom("gradientConic", (a) => [interp(a[0] === undefined ? "bg-conic" : signNeg("bg-conic", a[0]), a[1])], [[], ["180"], ["-90"], ["undefined", "longer"]]),
     stop("from", "from"),
     stop("via", "via"),

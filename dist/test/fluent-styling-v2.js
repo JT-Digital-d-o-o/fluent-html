@@ -116,6 +116,14 @@ describe("Gradients (v4: bg-linear / bg-radial / bg-conic)", () => {
         assert.strictEqual(render(Div().gradientRadial()), '<div class="bg-radial"></div>');
         assert.strictEqual(render(Div().gradientConic()), '<div class="bg-conic"></div>');
     });
+    // Regression (tailwind-fidelity-1): origin + interpolation must fold into one arbitrary
+    // value — `bg-radial-[at_x]/oklch` compiles to zero CSS in Tailwind v4.
+    it("gradientRadial folds origin + interpolation into a single valid arbitrary value", () => {
+        assert.strictEqual(render(Div().gradientRadial("top-right", "oklch")), '<div class="bg-radial-[at_top_right_in_oklch]"></div>');
+        assert.strictEqual(render(Div().gradientRadial("top-right", "longer")), '<div class="bg-radial-[at_top_right_in_oklch_longer_hue]"></div>');
+        assert.strictEqual(render(Div().gradientRadial("top-right")), '<div class="bg-radial-[at_top_right]"></div>');
+        assert.strictEqual(render(Div().gradientRadial(undefined, "oklch")), '<div class="bg-radial/oklch"></div>');
+    });
     it("from / via / to stops compose", () => {
         assert.strictEqual(render(Div().gradientTo("to-r").from("red-500").via("white").to("blue-500")), '<div class="bg-linear-to-r from-red-500 via-white to-blue-500"></div>');
     });

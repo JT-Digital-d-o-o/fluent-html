@@ -40,6 +40,30 @@ export const ROUNDED_CORNERS = new Set([
 export function signNeg(prefix, value) {
     return value.startsWith("-") ? `-${prefix}-${value.slice(1)}` : `${prefix}-${value}`;
 }
+/**
+ * The `bg-radial-*` gradient class. Single source of truth for both the render-time
+ * emitter and the class-vocab row so they cannot drift.
+ *
+ * Tailwind v4 rejects the `/interpolation` modifier on the arbitrary-value form
+ * (`bg-radial-[at_x]/oklch` compiles to zero CSS), so when both an origin and an
+ * interpolation are present they are folded into a single arbitrary value
+ * (`bg-radial-[at_x_in_oklch]`). Hue-interpolation keywords expand the way Tailwind's
+ * own modifier does (`/longer` → `in oklch longer hue`); a bare color space is `in <space>`.
+ */
+const HUE_INTERPOLATION_METHODS = new Set([
+    "shorter", "longer", "increasing", "decreasing",
+]);
+export function radialGradientClass(origin, interpolation) {
+    if (!origin)
+        return interpolation ? `bg-radial/${interpolation}` : "bg-radial";
+    const inner = origin.startsWith("[") ? origin.slice(1, -1) : `at_${origin.replace(/-/g, "_")}`;
+    if (!interpolation)
+        return `bg-radial-[${inner}]`;
+    const tail = HUE_INTERPOLATION_METHODS.has(interpolation)
+        ? `in_oklch_${interpolation}_hue`
+        : `in_${interpolation}`;
+    return `bg-radial-[${inner}_${tail}]`;
+}
 /** Identity passthrough that pins a row to {@link UtilityDef} at the definition site. */
 export function defineUtility(def) {
     return def;

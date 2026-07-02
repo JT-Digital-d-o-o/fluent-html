@@ -8,7 +8,7 @@
 import { Tag } from "./tag.js";
 // Shared with the class-vocab source of truth (C-05) — one home for these
 // constants (the extractor + ESLint maps derive from the same module).
-import { DIR_MAP, ROUNDED_CORNERS, signNeg } from "../class-vocab/types.js";
+import { DIR_MAP, ROUNDED_CORNERS, signNeg, radialGradientClass } from "../class-vocab/types.js";
 import { extractId } from "../ids.js";
 // ── Variant helper (local, not on prototype) ────────────────────────
 function withVariant(tag, prefix, fn) {
@@ -275,7 +275,6 @@ p.outlineHidden = function () { return this.addClass("outline-hidden"); };
 p.fontFamily = function (family) { return this.addClass(`font-${family}`); };
 // Gradients (v4-native: bg-linear-* replaces v3 bg-gradient-*; + radial/conic)
 const interp = (cls, i) => (i ? `${cls}/${i}` : cls);
-const radialOrigin = (o) => o.startsWith("[") ? `bg-radial-${o}` : `bg-radial-[at_${o.replace(/-/g, "_")}]`;
 p.gradient = function (from, to, direction = "to-r", interpolation) {
     return this
         .addClass(interp(`bg-linear-${direction}`, interpolation))
@@ -284,7 +283,7 @@ p.gradient = function (from, to, direction = "to-r", interpolation) {
 p.gradientTo = function (direction, interpolation) { return this.addClass(interp(`bg-linear-${direction}`, interpolation)); };
 p.gradientLinear = function (angle) { return this.addClass(signNeg("bg-linear", String(angle))); };
 p.gradientRadial = function (origin, interpolation) {
-    return this.addClass(interp(origin ? radialOrigin(origin) : "bg-radial", interpolation));
+    return this.addClass(radialGradientClass(origin, interpolation));
 };
 p.gradientConic = function (angle, interpolation) {
     return this.addClass(interp(angle === undefined ? "bg-conic" : signNeg("bg-conic", String(angle)), interpolation));

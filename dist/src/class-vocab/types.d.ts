@@ -30,6 +30,7 @@ export declare const ROUNDED_CORNERS: ReadonlySet<string>;
  * the vocab so lib-parity holds. A bracketed arbitrary value is left untouched.
  */
 export declare function signNeg(prefix: string, value: string): string;
+export declare function radialGradientClass(origin?: string, interpolation?: string): string;
 /** Which generated artifact(s) a row should be excluded from. */
 export type VocabTarget = "lib" | "extractor" | "eslint";
 /**
