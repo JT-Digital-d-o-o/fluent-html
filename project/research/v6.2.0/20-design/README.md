@@ -23,11 +23,11 @@
 
 | RFC | Title | Status | Impact/Effort | Adversary's key cut/fix |
 |---|---|---|---|---|
-| [B-01](track-b/RFC-B-01.md) | Media/head/image-map attribute completeness | proposed | **High**/M | both CONVERGE open questions closed in-body |
-| [B-02](track-b/RFC-B-02.md) | `Ins`/`Del` factories + `Q`/`Blockquote` cite | proposed | M/S | attribute-only, no file move; faithful `TimeTag` copy |
-| [B-03](track-b/RFC-B-03.md) | Iframe security (typed `sandbox` tokens, `allow` record) | proposed | M/M | raw-string `allow` arm **dropped** for CONVERGE; 2 tests migrated |
-| [B-04](track-b/RFC-B-04.md) | Table a11y (`headers`, `abbr`, `TableCellScope`) | proposed | M/M | empty-list-clears promoted to normative contract (no dead `headers=""`) |
-| [B-05](track-b/RFC-B-05.md) | Form-control completeness | proposed | M/L | **false "typo = compile error" claims corrected**; `AcceptToken` deleted; only `FormEnctype` genuinely typo-rejecting |
+| [B-01](track-b/RFC-B-01.md) | Media/head/image-map attribute completeness | implemented | **High**/M | both CONVERGE open questions closed in-body |
+| [B-02](track-b/RFC-B-02.md) | `Ins`/`Del` factories + `Q`/`Blockquote` cite | implemented | M/S | attribute-only, no file move; faithful `TimeTag` copy |
+| [B-03](track-b/RFC-B-03.md) | Iframe security (typed `sandbox` tokens, `allow` record) | implemented | M/M | raw-string `allow` arm **dropped** for CONVERGE; 2 tests migrated |
+| [B-04](track-b/RFC-B-04.md) | Table a11y (`headers`, `abbr`, `TableCellScope`) | implemented | M/M | empty-list-clears promoted to normative contract (no dead `headers=""`) |
+| [B-05](track-b/RFC-B-05.md) | Form-control completeness | implemented | M/L | **false "typo = compile error" claims corrected**; `AcceptToken` deleted; only `FormEnctype` genuinely typo-rejecting |
 | [B-06](track-b/RFC-B-06.md) | Declarative Shadow DOM + `::part`/slot | proposed | **High**/L | zero-JS standards-track shadow tree + theming seam |
 | [B-07](track-b/RFC-B-07.md) | Global attribute gaps | proposed | Low/M | **`setNonce` already shipped** (caught re-proposal); only `setDraggable` net-new; boolean arm cut |
 
