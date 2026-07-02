@@ -33,13 +33,13 @@ export class ImgTag extends Tag {
     return this;
   }
 
-  setWidth(width?: string): this {
-    this.width = width;
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height?: string): this {
-    this.height = height;
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 
@@ -125,13 +125,13 @@ export class SourceTag extends Tag {
     return this;
   }
 
-  setWidth(width: string | number): this {
-    this.width = String(width);
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height: string | number): this {
-    this.height = String(height);
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 }
@@ -143,20 +143,20 @@ export function Source(): SourceTag {
 }
 
 export class VideoTag extends Tag {
-  width?: number;
-  height?: number;
+  width?: string;
+  height?: string;
   src?: string;
   preload?: 'none' | 'metadata' | 'auto';
   poster?: string;
   crossorigin?: CrossOrigin | '';
 
-  setWidth(width: number): this {
-    this.width = width;
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height: number): this {
-    this.height = height;
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 
@@ -248,16 +248,16 @@ export function Track(): TrackTag {
 }
 
 export class CanvasTag extends Tag {
-  width?: number;
-  height?: number;
+  width?: string;
+  height?: string;
 
-  setWidth(width: number): this {
-    this.width = width;
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height: number): this {
-    this.height = height;
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 }
@@ -277,13 +277,13 @@ export class SvgTag extends Tag {
   stroke?: string;
   'stroke-width'?: string;
 
-  setWidth(width: string | number): this {
-    this.width = String(width);
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height: string | number): this {
-    this.height = String(height);
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 

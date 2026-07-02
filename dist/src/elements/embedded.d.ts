@@ -14,8 +14,8 @@ export declare class IframeTag extends Tag {
     fetchpriority?: FetchPriority;
     setSrc(src?: string): this;
     setSrcdoc(srcdoc?: string): this;
-    setWidth(width?: string): this;
-    setHeight(height?: string): this;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
     setAllow(policy?: Partial<Record<PermissionsPolicyDirective, string>>): this;
     setLoading(loading?: 'lazy' | 'eager'): this;
     /** Set `sandbox` from closed `SandboxToken`s; each call replaces the list. No args → `sandbox=""` (fully locked). */
@@ -34,8 +34,8 @@ export declare class ObjectTag extends Tag {
     name?: string;
     setData(data?: string): this;
     setType(type?: string): this;
-    setWidth(width?: string): this;
-    setHeight(height?: string): this;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
     setName(name?: string): this;
 }
 export declare function ObjectEl(...children: View[]): ObjectTag;
@@ -46,8 +46,8 @@ export declare class EmbedTag extends Tag {
     height?: string;
     setSrc(src?: string): this;
     setType(type?: string): this;
-    setWidth(width?: string): this;
-    setHeight(height?: string): this;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
 }
 export declare function Embed(): EmbedTag;
 //# sourceMappingURL=embedded.d.ts.map

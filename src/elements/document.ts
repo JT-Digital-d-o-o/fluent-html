@@ -138,8 +138,8 @@ export class LinkTag extends Tag {
   imagesizes?: string;
 
   /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
-  setRel(rel?: LinkElementRel): this {
-    this.rel = rel;
+  setRel(...rels: LinkElementRel[]): this {
+    this.rel = rels.length ? rels.join(" ") : undefined;
     return this;
   }
 

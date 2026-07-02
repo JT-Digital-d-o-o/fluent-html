@@ -65,6 +65,14 @@ describe("Duplicate-attribute emission (A-003)", () => {
     it("dedupes a repeated conditional toggle", () => {
         assert.strictEqual(render(Input().toggle("readonly", true).toggle("readonly", true)), `<input readonly>`);
     });
+    // Regression (elements-symmetry-3): a later toggle(name, false) removes an earlier add,
+    // restoring last-call-wins so a preset/.when() branch can be overridden downstream.
+    it("toggle(name, false) removes a previously-added attribute", () => {
+        assert.strictEqual(render(Input().toggle("required").toggle("required", false)), `<input>`);
+        assert.strictEqual(render(Input().toggle("disabled").toggle("readonly").toggle("disabled", false)), `<input readonly>`);
+        // re-adding after removal works
+        assert.strictEqual(render(Input().toggle("required").toggle("required", false).toggle("required")), `<input required>`);
+    });
     it("dedicated id setter wins over an addAttribute id", () => {
         assert.strictEqual(render(Div("x").setId("a").addAttribute("id", "b")), `<div id="a">x</div>`);
     });

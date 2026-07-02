@@ -60,7 +60,7 @@ export declare class LinkTag extends Tag {
     imagesrcset?: string;
     imagesizes?: string;
     /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
-    setRel(rel?: LinkElementRel): this;
+    setRel(...rels: LinkElementRel[]): this;
     setHreflang(hreflang?: string): this;
     setHref(href?: string): this;
     setType(type?: LinkType): this;

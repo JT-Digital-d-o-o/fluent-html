@@ -26,6 +26,13 @@ A class of packaging defects where the library worked from `node dist/` (and its
 - **`fluent-html/elements` (and `./core`, `./control`) were broken when imported standalone** — element factories import `Tag` directly from `core/tag.js`, bypassing the barrel that registered the mixins, so a Tag from the `./elements` subpath had *none* of its fluent methods (while its `.d.ts` still advertised them — a guaranteed runtime crash that type-checked). Registration is now an invariant of every Tag-producing barrel via a single `core/register.js` module. As part of this, `overlay()` moved from `control/` to `core/` alongside the other three mixins; `OverlayPosition` is still exported from the package root and from `fluent-html/control`, so no import path changes.
 - **Published tarball shipped dangling sourcemap references** — every `.js`/`.d.ts` pointed at `.map` files that weren't packed, degrading debugger output and "Go to Definition". The `.js.map`, `.d.ts.map`, and `src/**/*.ts` files are now included so the references resolve end-to-end.
 
+### 🐛 Fixed — element & attribute API consistency
+
+- **`.toggle(name, false)` now removes a previously-added boolean attribute** — it was add-only (`false` was a silent no-op), so `.toggle("required").toggle("required", false)` still rendered `required`. This was the one primitive that violated last-call-wins, breaking `.apply()` presets and `.when()` branches that toggle `disabled`/`hidden`. A later `false` now removes; re-adding works; adds are de-duplicated.
+- **`setWidth`/`setHeight` accept `string | number` uniformly across all seven media/embedded classes** — the same spec attribute had five different signatures: `Img().setWidth(800)` (the standard CLS fix) was a compile error while `Video().setWidth("800")` was an error the other way. All of `Img`/`Video`/`Canvas`/`Source`/`Svg`/`Iframe`/`Object`/`Embed` now take `?: string | number` and clear on `undefined` (numbers are stringified — byte-identical output). `Video`/`Canvas` `width`/`height` fields changed from `number` to `string` to match their siblings.
+- **`setRel` is variadic** on `A`/`Area`/`Link` — the security pair `setRel("noopener", "noreferrer")` now gets per-token autocomplete and typo-checking instead of only compiling through the `(string & {})` escape hatch. Single-token and single space-joined-string calls are unchanged; no args clears.
+- **`Area.setDownload` accepts the boolean form** (`setDownload(true)`) like `A`, closing the last divergence between the two link elements.
+
 ### ⚡ Performance
 
 Byte-identical output (parity-checked by the full suite incl. the render/stream fuzz test); ~2× render throughput on HTMX-heavy pages.

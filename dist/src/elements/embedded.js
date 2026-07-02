@@ -10,11 +10,11 @@ export class IframeTag extends Tag {
         return this;
     }
     setWidth(width) {
-        this.width = width;
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
     setAllow(policy) {
@@ -65,11 +65,11 @@ export class ObjectTag extends Tag {
         return this;
     }
     setWidth(width) {
-        this.width = width;
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
     setName(name) {
@@ -91,11 +91,11 @@ export class EmbedTag extends Tag {
         return this;
     }
     setWidth(width) {
-        this.width = width;
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
 }

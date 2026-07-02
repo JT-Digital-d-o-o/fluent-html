@@ -26,13 +26,13 @@ export class IframeTag extends Tag {
     return this;
   }
 
-  setWidth(width?: string): this {
-    this.width = width;
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height?: string): this {
-    this.height = height;
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 
@@ -99,13 +99,13 @@ export class ObjectTag extends Tag {
     return this;
   }
 
-  setWidth(width?: string): this {
-    this.width = width;
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height?: string): this {
-    this.height = height;
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 
@@ -137,13 +137,13 @@ export class EmbedTag extends Tag {
     return this;
   }
 
-  setWidth(width?: string): this {
-    this.width = width;
+  setWidth(width?: string | number): this {
+    this.width = width === undefined ? undefined : String(width);
     return this;
   }
 
-  setHeight(height?: string): this {
-    this.height = height;
+  setHeight(height?: string | number): this {
+    this.height = height === undefined ? undefined : String(height);
     return this;
   }
 }

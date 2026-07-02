@@ -34,8 +34,8 @@ export class AnchorTag extends Tag {
     return this;
   }
 
-  setRel(rel?: LinkRel): this {
-    this.rel = rel;
+  setRel(...rels: LinkRel[]): this {
+    this.rel = rels.length ? rels.join(" ") : undefined;
     return this;
   }
 
@@ -84,7 +84,7 @@ export class AreaTag extends Tag {
   alt?: string;
   target?: BrowsingContext;
   rel?: LinkRel;
-  download?: string;
+  download?: string | boolean;
   referrerpolicy?: ReferrerPolicy;
 
   setShape(shape?: 'rect' | 'circle' | 'poly' | 'default'): this {
@@ -112,12 +112,12 @@ export class AreaTag extends Tag {
     return this;
   }
 
-  setRel(rel?: LinkRel): this {
-    this.rel = rel;
+  setRel(...rels: LinkRel[]): this {
+    this.rel = rels.length ? rels.join(" ") : undefined;
     return this;
   }
 
-  setDownload(download?: string): this {
+  setDownload(download?: string | boolean): this {
     this.download = download;
     return this;
   }

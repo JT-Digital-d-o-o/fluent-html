@@ -21,8 +21,8 @@ export declare class ImgTag extends Tag {
     referrerpolicy?: ReferrerPolicy;
     setSrc(src?: string): this;
     setAlt(alt?: string): this;
-    setWidth(width?: string): this;
-    setHeight(height?: string): this;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
     setLoading(loading?: 'lazy' | 'eager'): this;
     setDecoding(decoding?: 'sync' | 'async' | 'auto'): this;
     setSrcset(srcset?: string): this;
@@ -48,19 +48,19 @@ export declare class SourceTag extends Tag {
     setSizes(sizes?: string): this;
     setType(type?: string): this;
     setMedia(media?: string): this;
-    setWidth(width: string | number): this;
-    setHeight(height: string | number): this;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
 }
 export declare function Source(): SourceTag;
 export declare class VideoTag extends Tag {
-    width?: number;
-    height?: number;
+    width?: string;
+    height?: string;
     src?: string;
     preload?: 'none' | 'metadata' | 'auto';
     poster?: string;
     crossorigin?: CrossOrigin | '';
-    setWidth(width: number): this;
-    setHeight(height: number): this;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
     setSrc(src: string): this;
     setPreload(preload?: 'none' | 'metadata' | 'auto'): this;
     setPoster(poster?: string): this;
@@ -88,10 +88,10 @@ export declare class TrackTag extends Tag {
 }
 export declare function Track(): TrackTag;
 export declare class CanvasTag extends Tag {
-    width?: number;
-    height?: number;
-    setWidth(width: number): this;
-    setHeight(height: number): this;
+    width?: string;
+    height?: string;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
 }
 export declare function Canvas(...children: View[]): CanvasTag;
 export declare class SvgTag extends Tag {
@@ -102,8 +102,8 @@ export declare class SvgTag extends Tag {
     fill?: string;
     stroke?: string;
     'stroke-width'?: string;
-    setWidth(width: string | number): this;
-    setHeight(height: string | number): this;
+    setWidth(width?: string | number): this;
+    setHeight(height?: string | number): this;
     setViewBox(viewBox: string): this;
     setXmlns(xmlns?: string): this;
     setFill(fill: string): this;

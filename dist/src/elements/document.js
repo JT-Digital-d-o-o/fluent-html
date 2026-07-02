@@ -80,8 +80,8 @@ export function Meta() {
 }
 export class LinkTag extends Tag {
     /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
-    setRel(rel) {
-        this.rel = rel;
+    setRel(...rels) {
+        this.rel = rels.length ? rels.join(" ") : undefined;
         return this;
     }
     setHreflang(hreflang) {

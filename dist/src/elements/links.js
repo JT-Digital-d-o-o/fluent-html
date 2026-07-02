@@ -19,8 +19,8 @@ export class AnchorTag extends Tag {
         this.target = target;
         return this;
     }
-    setRel(rel) {
-        this.rel = rel;
+    setRel(...rels) {
+        this.rel = rels.length ? rels.join(" ") : undefined;
         return this;
     }
     setDownload(download) {
@@ -72,8 +72,8 @@ export class AreaTag extends Tag {
         this.target = target;
         return this;
     }
-    setRel(rel) {
-        this.rel = rel;
+    setRel(...rels) {
+        this.rel = rels.length ? rels.join(" ") : undefined;
         return this;
     }
     setDownload(download) {

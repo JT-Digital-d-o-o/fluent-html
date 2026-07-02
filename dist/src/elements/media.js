@@ -17,11 +17,11 @@ export class ImgTag extends Tag {
         return this;
     }
     setWidth(width) {
-        this.width = width;
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
     setLoading(loading) {
@@ -84,11 +84,11 @@ export class SourceTag extends Tag {
         return this;
     }
     setWidth(width) {
-        this.width = String(width);
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = String(height);
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
 }
@@ -98,11 +98,11 @@ export function Source() {
 }
 export class VideoTag extends Tag {
     setWidth(width) {
-        this.width = width;
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
     setSrc(src) {
@@ -168,11 +168,11 @@ export function Track() {
 }
 export class CanvasTag extends Tag {
     setWidth(width) {
-        this.width = width;
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height;
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
 }
@@ -182,11 +182,11 @@ export function Canvas(...children) {
 }
 export class SvgTag extends Tag {
     setWidth(width) {
-        this.width = String(width);
+        this.width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = String(height);
+        this.height = height === undefined ? undefined : String(height);
         return this;
     }
     setViewBox(viewBox) {

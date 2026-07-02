@@ -165,6 +165,18 @@ describe("Links", () => {
     it("Email link", () => { assert.strictEqual(render(A("Contact us").setHref("mailto:info@example.com")), `<a href="mailto:info@example.com">Contact us</a>`); });
     it("Anchor with hreflang + referrerPolicy", () => { assert.strictEqual(render(A("FR").setHref("/fr").setHreflang("fr").setReferrerPolicy("no-referrer")), `<a href="/fr" referrerpolicy="no-referrer" hreflang="fr">FR</a>`); });
     it("Area with referrerpolicy", () => { assert.strictEqual(render(Area().setShape("rect").setCoords("0,0,80,80").setHref("/a").setReferrerPolicy("no-referrer-when-downgrade")), `<area shape="rect" coords="0,0,80,80" href="/a" referrerpolicy="no-referrer-when-downgrade">`); });
+    // Regression (elements-symmetry-4): setRel is variadic — the security pair gets autocomplete;
+    // a single space-joined string still works, and no args clears.
+    it("setRel joins multiple tokens; single-string and empty forms preserved", () => {
+        assert.strictEqual(render(A("x").setRel("noopener", "noreferrer")), `<a rel="noopener noreferrer">x</a>`);
+        assert.strictEqual(render(A("x").setRel("noopener")), `<a rel="noopener">x</a>`);
+        assert.strictEqual(render(A("x").setRel("nofollow noopener")), `<a rel="nofollow noopener">x</a>`);
+        assert.strictEqual(render(A("x").setRel()), `<a>x</a>`);
+    });
+    // Regression (elements-symmetry-6): Area.setDownload accepts the boolean form like Anchor.
+    it("Area.setDownload accepts the boolean form", () => {
+        assert.strictEqual(render(Area().setHref("/f").setDownload(true)), `<area href="/f" download="true">`);
+    });
 });
 // ------------------------------------
 // Media Elements
@@ -172,6 +184,14 @@ describe("Links", () => {
 describe("Media Elements", () => {
     it("Basic image", () => { assert.strictEqual(render(Img().setSrc("photo.jpg").setAlt("A photo")), `<img src="photo.jpg" alt="A photo">`); });
     it("Image with dimensions", () => { assert.strictEqual(render(Img().setSrc("photo.jpg").setAlt("Photo").setWidth("640").setHeight("480")), `<img src="photo.jpg" alt="Photo" width="640" height="480">`); });
+    // Regression (elements-symmetry-2): setWidth/setHeight accept a number uniformly across
+    // Img/Video/Canvas/Source/Svg/Iframe/Object/Embed (the CLS fix idiom), and undefined clears.
+    it("setWidth/setHeight accept number and are clearable across sibling classes", () => {
+        assert.strictEqual(render(Img().setWidth(800).setHeight(600)), `<img width="800" height="600">`);
+        assert.strictEqual(render(Video().setWidth(1920).setHeight(1080)), `<video width="1920" height="1080"></video>`);
+        assert.strictEqual(render(Canvas().setWidth(300).setHeight(150)), `<canvas width="300" height="150"></canvas>`);
+        assert.strictEqual(render(Img().setWidth(800).setWidth(undefined)), `<img>`);
+    });
     it("Lazy loaded image", () => { assert.strictEqual(render(Img().setSrc("photo.jpg").setAlt("Lazy").setLoading("lazy")), `<img src="photo.jpg" alt="Lazy" loading="lazy">`); });
     it("Image with srcset", () => {
         assert.strictEqual(render(Img()

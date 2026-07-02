@@ -165,21 +165,28 @@ export class Tag {
         return this;
     }
     /**
-     * Add a boolean HTML attribute (toggle). Conditionally add with the second parameter.
+     * Set a boolean HTML attribute on/off. With no condition, adds it. With a condition,
+     * `false` **removes** any previously-added instance — so a later call wins, matching
+     * the `set*` last-call-wins convention (a `.apply()` preset or `.when()` branch that
+     * toggled `disabled` can be re-enabled downstream).
      *
      * @example
-     * Input().toggle("required")                    // required
-     * Input().toggle("required", isRequired)        // conditional
-     * Input().toggle("disabled").toggle("readonly")  // chainable
+     * Input().toggle("required")                     // required
+     * Input().toggle("required", isRequired)         // conditional
+     * Input().toggle("disabled").toggle("disabled", false)  // removed — renders nothing
      */
     toggle(name, condition = true) {
         if (condition) {
             if (this.toggles) {
-                this.toggles.push(name);
+                if (!this.toggles.includes(name))
+                    this.toggles.push(name);
             }
             else {
                 this.toggles = [name];
             }
+        }
+        else if (this.toggles) {
+            this.toggles = this.toggles.filter((n) => n !== name);
         }
         return this;
     }
