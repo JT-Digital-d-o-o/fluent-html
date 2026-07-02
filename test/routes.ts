@@ -122,6 +122,13 @@ describe("URL encoding of param values", () => {
       "/users/550e8400-e29b-41d4-a716-446655440000"
     );
   });
+  // Regression (routes-splat-1): a `:param` value starting with `*` on a splatless route
+  // must not be re-parsed as a splat (it used to throw "Unresolved route splat").
+  it("handles a param value that starts with * on a route with no splat", () => {
+    assert.strictEqual(routes.detail({ id: "*" }).endpoint, "/users/*");
+    assert.strictEqual(routes.detail({ id: "*x" }).endpoint, "/users/*x");
+    assert.strictEqual(routes.detail({ id: "a/*b" }).endpoint, "/users/a%2F*b");
+  });
 });
 
 describe("Integration with setHtmx() and render()", () => {

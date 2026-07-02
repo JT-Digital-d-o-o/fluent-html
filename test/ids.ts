@@ -42,6 +42,23 @@ describe("defineIds()", () => {
   it("selector is correct", () => {
     assert.strictEqual(ids.userCount.selector, "#user-count");
   });
+
+  // Regression (ids-camel-2): runtime camelization must mirror the type-level KebabToCamel
+  // for digits and uppercase after a hyphen (the old /-([a-z])/ regex left these undefined).
+  it("camelizes hyphen-before-digit and hyphen-before-uppercase to match the types", () => {
+    const r = defineIds(["col-2", "user-List", "step-3-panel", "tab-1"] as const);
+    assert.strictEqual(r.col2.id, "col-2");
+    assert.strictEqual(r.userList.id, "user-List");
+    assert.strictEqual(r.step3Panel.id, "step-3-panel");
+    assert.strictEqual(r.tab1.id, "tab-1");
+  });
+
+  // Regression (ids-uniqueness-6): two names collapsing to one key must throw, not silently
+  // last-write-win (which would retarget every existing reference).
+  it("throws when two names map to the same camelCase key", () => {
+    assert.throws(() => defineIds(["user-list", "userList"]), /duplicate key/);
+    assert.throws(() => defineIds(["a", "a"]), /duplicate key/);
+  });
 });
 
 describe("isId()", () => {
