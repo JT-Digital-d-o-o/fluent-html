@@ -24,16 +24,20 @@ export function Match(value, casesOrKey, casesOrDefault, defaultView) {
         const obj = value;
         const discriminant = obj[casesOrKey];
         const cases = casesOrDefault;
-        const handler = cases[discriminant];
-        if (handler) {
+        // Own-property lookup only — a bare `cases[discriminant]` finds inherited
+        // Object.prototype members ("toString"/"constructor"/…), which pass a truthy
+        // check and get invoked as handlers (garbage output / throw). Mirrors MatchValue.
+        const handler = Object.prototype.hasOwnProperty.call(cases, discriminant) ? cases[discriminant] : undefined;
+        if (typeof handler === "function") {
             return handler(value);
         }
         return (defaultView ?? Empty)();
     }
     // Value matching overload: Match(value, cases, ?default)
     const cases = casesOrKey;
-    const handler = cases[value];
-    if (handler) {
+    const key = value;
+    const handler = Object.prototype.hasOwnProperty.call(cases, key) ? cases[key] : undefined;
+    if (typeof handler === "function") {
         return handler();
     }
     return (casesOrDefault ?? Empty)();

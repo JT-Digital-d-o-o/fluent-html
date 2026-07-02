@@ -42,6 +42,48 @@ export function escapeHtml(unsafe) {
 export function escapeAttr(unsafe) {
     return escapeHtml(unsafe);
 }
+// A URL carrying a dangerous scheme is rewritten to this inert value.
+const BLOCKED_URL = "about:blank";
+// Whitespace / control chars a browser strips before resolving a URL's scheme —
+// `java\tscript:` and a leading NUL both still execute, so strip them before testing.
+const URL_SCHEME_NOISE_RE = /[\u0000-\u0020\u007f-\u009f\u2028\u2029]/g;
+// `data:` payloads that cannot run script — raster images, audio, video, fonts.
+// SVG is deliberately excluded (an SVG document can carry <script>). The trailing
+// `[;,]` anchors the media type to a real data-URL body (`;base64,` or `,`).
+const SAFE_DATA_URL_RE = /^data:(?:image\/(?!svg)[a-z0-9.+-]+|audio\/[a-z0-9.+-]+|video\/[a-z0-9.+-]+|font\/[a-z0-9.+-]+)[;,]/;
+/**
+ * Neutralize a URL that would execute script or load an attacker-authored
+ * document when placed in a navigable/loadable attribute (`href`, `src`,
+ * `action`, `formaction`, `data`, `poster`, `cite`). `javascript:` and
+ * `vbscript:` are always blocked; `data:` is blocked except for non-scriptable
+ * media types. Relative URLs, fragments, query refs, protocol-relative
+ * `//host`, and ordinary `http(s)`/`mailto`/`tel` values pass through unchanged.
+ *
+ * Returns the original string when safe, or `"about:blank"` when blocked.
+ *
+ * Applied automatically by the typed URL setters (`setHref`/`setSrc`/…). The
+ * untyped `addAttribute(...)` escape hatch is intentionally NOT sanitized — reach
+ * for it deliberately in the rare case you need a `javascript:` URL.
+ */
+export function sanitizeUrl(url) {
+    // Fast path (no allocation): no ':' means a relative URL/fragment, and a ':'
+    // preceded by '/', '?' or '#' is a path/query/fragment colon, not a scheme.
+    const colon = url.indexOf(":");
+    if (colon === -1)
+        return url;
+    for (let i = 0; i < colon; i++) {
+        const c = url.charCodeAt(i);
+        if (c === 47 || c === 63 || c === 35)
+            return url; // '/', '?', '#'
+    }
+    // Possible scheme — normalize the way a browser would, then inspect it.
+    const probe = url.replace(URL_SCHEME_NOISE_RE, "").toLowerCase();
+    if (probe.startsWith("javascript:") || probe.startsWith("vbscript:"))
+        return BLOCKED_URL;
+    if (probe.startsWith("data:") && !SAFE_DATA_URL_RE.test(probe))
+        return BLOCKED_URL;
+    return url;
+}
 /**
  * Escape a string for embedding inside a SINGLE-QUOTED JavaScript string literal
  * — e.g. the JS the behavior system writes into `hx-on:*` attributes. Escapes the

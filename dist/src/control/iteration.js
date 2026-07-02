@@ -1,10 +1,17 @@
+// A count/range length clamped to a non-negative integer. Non-finite
+// (NaN/Infinity) and negative/fractional inputs collapse to a valid length, so a
+// derived count (division, an over-full list, an inverted range) renders zero
+// times instead of crashing the whole SSR response on `new Array(len)`'s RangeError.
+function clampLength(n) {
+    return Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+}
 // Implementation
 export function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
     // ForEach(low, high, renderItem)
     if (typeof viewsOrLowOrHigh === "number" && typeof renderItemOrHigh === "number") {
         const low = viewsOrLowOrHigh;
         const high = renderItemOrHigh;
-        const len = high - low;
+        const len = clampLength(high - low);
         const result = new Array(len);
         for (let i = 0; i < len; i++) {
             result[i] = renderItem(low + i);
@@ -13,7 +20,7 @@ export function ForEach(viewsOrLowOrHigh, renderItemOrHigh, renderItem) {
     }
     // ForEach(high, renderItem)
     if (typeof viewsOrLowOrHigh === "number") {
-        const len = viewsOrLowOrHigh;
+        const len = clampLength(viewsOrLowOrHigh);
         const fn = renderItemOrHigh;
         const result = new Array(len);
         for (let i = 0; i < len; i++) {

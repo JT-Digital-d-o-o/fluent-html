@@ -1,6 +1,12 @@
 import { EMPTY_ATTRS } from "../core/tag.js";
 import { isTag, isRawString } from "../core/guards.js";
-import { escapeHtml, escapeAttr } from "./escape.js";
+import { escapeHtml, escapeAttr, sanitizeUrl } from "./escape.js";
+// URL-valued attributes emitted by the typed setters. Their values are run
+// through sanitizeUrl (scheme filtering) before attribute-escaping, so a
+// `javascript:`/`vbscript:`/dangerous-`data:` URL from a typed setter can never
+// reach the output. The untyped addAttribute bag is deliberately excluded — it
+// is the explicit escape hatch (see sanitizeUrl's doc comment).
+const URL_ATTRS = new Set(["href", "src", "action", "formaction", "data", "poster", "cite"]);
 // ─────────────────────────────────────────────────────────────────────────────
 // Single source of truth for HTML serialization.
 //
@@ -63,10 +69,18 @@ const str = (key) => ({
     key,
     serialize: (v) => ` hx-${key}="${escapeAttr(v)}"`,
 });
-// Boolean-or-string attrs (pushUrl, replaceUrl, swapOob): pass booleans, escape strings
+// Boolean-or-string attrs (pushUrl, replaceUrl): pass booleans, escape strings.
+// Here the literal `false` IS meaningful htmx grammar (`hx-push-url="false"`).
 const boolOrStr = (key, hxKey) => ({
     key,
     serialize: (v) => ` hx-${hxKey ?? key}="${typeof v === 'string' ? escapeAttr(v) : v}"`,
+});
+// hx-swap-oob: `true` and swap-style strings are valid, but any non-`"true"` value is
+// read as a swap style, so `false` must OMIT the attribute (not emit `="false"`, which
+// htmx would treat as a garbage swap spec).
+const swapOob = (key, hxKey) => ({
+    key,
+    serialize: (v) => v === false ? '' : ` hx-${hxKey}="${typeof v === 'string' ? escapeAttr(v) : v}"`,
 });
 // Boolean attrs that render just the value (validate, preserve, boost, ignore)
 const boolVal = (key) => ({
@@ -86,7 +100,7 @@ const json = (key) => ({
 const HTMX_ATTRS = [
     str('target'),
     str('swap'),
-    boolOrStr('swapOob', 'swap-oob'),
+    swapOob('swapOob', 'swap-oob'),
     str('select'),
     str('trigger'),
     boolOrStr('pushUrl', 'push-url'),
@@ -124,15 +138,16 @@ export function buildHtmx(htmx) {
             result += attr.serialize(value);
         }
     }
-    // Special cases: boolean-only attrs
-    if (htmx.optimistic !== undefined)
+    // Special cases: boolean-only attrs. Gate on truthiness, not `!== undefined` —
+    // `optimistic: false` (e.g. from a feature flag) must NOT emit the enabling attribute.
+    if (htmx.optimistic)
         result += ' hx-optimistic';
     // `ignore` emits htmx 4's bare-boolean disable-processing attribute `hx-ignore`. (htmx 4
     // renamed htmx 2's `hx-disable` boolean to `hx-ignore`; in htmx 4 `hx-disable` is the
     // disabled-ELEMENTS selector — the `disable` field — so the two must not collide.)
     if (htmx.ignore)
         result += ' hx-ignore';
-    if (htmx.preload !== undefined) {
+    if (htmx.preload) {
         result += typeof htmx.preload === 'string'
             ? ' hx-preload="' + escapeAttr(htmx.preload) + '"'
             : ' hx-preload';
@@ -214,7 +229,8 @@ export function buildAttrs(tag) {
             }
             const value = bag[prop];
             if (value !== undefined && value !== null) {
-                attrs += ' ' + attr + '="' + escapeAttr(typeof value === 'string' ? value : String(value)) + '"';
+                const str = typeof value === 'string' ? value : String(value);
+                attrs += ' ' + attr + '="' + escapeAttr(URL_ATTRS.has(attr) ? sanitizeUrl(str) : str) + '"';
             }
         }
     }

@@ -1,9 +1,8 @@
 export type { View, Thunk } from "./types.js";
 export { Tag } from "./tag.js";
 export type { FluentCustomMethods } from "./tag.js";
-import "./tailwind-methods.js";
-import "./htmx-methods.js";
-import "./behavior-methods.js";
+import "./register.js";
+export type { OverlayPosition } from "./overlay.js";
 export { RawString, Raw } from "./raw-string.js";
 export { Empty, El } from "./utils.js";
 export { isTag, isRawString } from "./guards.js";

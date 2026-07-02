@@ -1,5 +1,5 @@
-import { Tag } from "../core/tag.js";
-import { El } from "../core/utils.js";
+import { Tag } from "./tag.js";
+import { El } from "./utils.js";
 // Position-specific utility classes for the absolutely-positioned overlay layer.
 // (`.absolute()`/`.relative()` come from the Tailwind methods; these are the per-
 // position inset/translate utilities — all valid C-05/C-06 vocab values.)

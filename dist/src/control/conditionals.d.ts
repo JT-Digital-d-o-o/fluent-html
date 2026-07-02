@@ -19,7 +19,7 @@ import type { View, Thunk } from "../core/types.js";
  * IfThenElse(user, (u) => Span(`Welcome, ${u.name}`), () => A("Login"))
  */
 export declare function IfThenElse(condition: boolean, thenBranch: Thunk<View>, elseBranch: Thunk<View>): View;
-export declare function IfThenElse<T>(value: T | null | undefined, thenBranch: (value: T) => View, elseBranch: Thunk<View>): View;
+export declare function IfThenElse<T>(value: boolean extends T ? never : T | null | undefined, thenBranch: (value: T) => View, elseBranch: Thunk<View>): View;
 /**
  * Conditionally render a view, or render nothing (`Empty()`).
  *
@@ -39,7 +39,7 @@ export declare function IfThenElse<T>(value: T | null | undefined, thenBranch: (
  * IfThen(user.avatar, (src) => Img().setSrc(src).setAlt("Avatar"))
  */
 export declare function IfThen(condition: boolean, then: Thunk<View>): View;
-export declare function IfThen<T>(value: T | null | undefined, then: (value: T) => View): View;
+export declare function IfThen<T>(value: boolean extends T ? never : T | null | undefined, then: (value: T) => View): View;
 /**
  * Exhaustive value matching — maps a string or number to a corresponding view.
  *
@@ -85,16 +85,16 @@ export declare function IfThen<T>(value: T | null | undefined, then: (value: T) 
  *   error: (s) => Alert(s.message),
  * }, () => Spinner())
  */
-export declare function Match<T extends string | number>(value: T, cases: {
+export declare function Match<T extends string | number>(value: string extends T ? never : number extends T ? never : T, cases: {
     [K in T]: Thunk<View>;
 }): View;
 export declare function Match<T extends string | number>(value: T, cases: Partial<{
     [K in T]: Thunk<View>;
 }>, defaultView: Thunk<View>): View;
-export declare function Match<T extends Record<K, string | number>, K extends keyof T>(value: T, key: K, cases: {
+export declare function Match<T extends Record<K, string | number>, K extends keyof T & string>(value: T, key: K, cases: {
     [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View;
 }): View;
-export declare function Match<T extends Record<K, string | number>, K extends keyof T>(value: T, key: K, cases: Partial<{
+export declare function Match<T extends Record<K, string | number>, K extends keyof T & string>(value: T, key: K, cases: Partial<{
     [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View;
 }>, defaultView: Thunk<View>): View;
 //# sourceMappingURL=conditionals.d.ts.map

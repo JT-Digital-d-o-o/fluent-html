@@ -1,3 +1,4 @@
+import "../core/register.js";
 export { Div, Main, Header, Footer, Section, Article, Nav, Aside, Figure, Figcaption, Address, Hgroup, Search, } from "./structural.js";
 export { P, H1, H2, H3, H4, H5, H6, Span, Blockquote, BlockquoteTag, Pre, Code, Hr, Br, Wbr, } from "./text.js";
 export { Strong, Em, B, I, U, S, Mark, Small, Sub, Sup, Abbr, Cite, Q, QTag, Dfn, Kbd, Samp, Var, Bdi, Bdo, Ruby, Rt, Rp, } from "./inline.js";

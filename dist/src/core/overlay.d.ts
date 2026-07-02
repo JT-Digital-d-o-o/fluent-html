@@ -1,6 +1,6 @@
-import type { View } from "../core/types.js";
+import type { View } from "./types.js";
 export type OverlayPosition = 'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-declare module "../core/tag.js" {
+declare module "./tag.js" {
     interface Tag {
         /**
          * Wrap this element in a `relative` container and stack an `absolute` overlay

@@ -34,22 +34,24 @@ function encodeSplat(value) {
  * lookahead mirrors the identifier grammar used by `assertNoUnresolvedParams`.
  */
 function substituteParams(template, params) {
-    let out = template;
+    // Split any trailing splat off the TEMPLATE first. Deciding splat-ness from the template
+    // (not from the already-substituted output) means a `:param` value that happens to start
+    // with `*` — a realistic wildcard search term — can no longer re-trigger the splat branch
+    // and throw / mis-substitute on a route that has no splat.
+    const splatMatch = SPLAT_RE.exec(template);
+    let out = splatMatch ? template.slice(0, template.length - splatMatch[0].length) : template;
     for (const [key, value] of Object.entries(params)) {
         const pattern = new RegExp(`:${escapeRegExp(key)}(?![A-Za-z0-9_])`, "g");
         out = out.replace(pattern, encodeURIComponent(String(value)));
     }
-    // Trailing splat (`/*` or `/*name`), substituted after the `:param` loop. Throw on a
-    // missing value here rather than letting `assertNoUnresolvedParams` scan for `*` — a real
-    // splat value like "a/*b" stays unescaped by encodeURIComponent and would false-positive.
-    out = out.replace(SPLAT_RE, (_match, name) => {
-        const key = name ?? "splat";
+    if (splatMatch) {
+        const key = splatMatch[1] ?? "splat";
         const value = params[key];
         if (value == null) {
-            throw new Error(`Unresolved route splat "*${name ?? ""}" in "${template}"`);
+            throw new Error(`Unresolved route splat "*${splatMatch[1] ?? ""}" in "${template}"`);
         }
-        return "/" + encodeSplat(value);
-    });
+        out += "/" + encodeSplat(value);
+    }
     return out;
 }
 /** Internal: build an HTMX object from a resolved path + method + options. */

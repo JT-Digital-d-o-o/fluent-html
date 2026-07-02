@@ -66,7 +66,9 @@ const renderers = {
         "history.back()",
     ],
     formResetOnSwap: () => [
-        "htmx:after-swap",
+        // htmx 4 lifecycle events are colon-separated (htmx:after:swap); the htmx 1/2
+        // kebab alias (htmx:after-swap) is never dispatched, so the listener no-ops.
+        "htmx:after:swap",
         "this.reset()",
     ],
     dismissOnEscape: () => [

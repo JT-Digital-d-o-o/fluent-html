@@ -12,6 +12,7 @@ export type { TableCellScope } from './elements/index.js';
 export { render, renderWithNonce } from './render/index.js';
 export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';
 export type { RenderOptions, RenderStreamOptions } from './render/index.js';
+export { escapeHtml, escapeAttr, sanitizeUrl } from './render/index.js';
 export { ButtonTag, InputTag, NumericInputTag, DateTimeInputTag, NoMinMaxInputTag, TextareaTag, ImgTag, AnchorTag, LabelTag, SelectTag, OptionTag, OptgroupTag, FormTag, VideoTag, AudioTag, SourceTag, TrackTag, CanvasTag, SvgTag, IframeTag, ObjectTag, EmbedTag, MapTag, AreaTag, MetaTag, LinkTag, StyleTag, ScriptTag, BaseTag, TimeTag, DataTag, InsTag, DelTag, QTag, BlockquoteTag, ProgressTag, MeterTag, DetailsTag, DialogTag, FieldsetTag, OutputTag, SlotTag, ThTag, TdTag, ColTag, ColgroupTag, } from './elements/index.js';
 export { Div, Main, Header, Footer, Section, Article, Nav, Aside, Figure, Figcaption, Address, Hgroup, Search, } from './elements/index.js';
 export { P, H1, H2, H3, H4, H5, H6, Span, Blockquote, Pre, Code, Hr, Br, Wbr, } from './elements/index.js';

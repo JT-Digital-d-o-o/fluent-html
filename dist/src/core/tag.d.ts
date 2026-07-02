@@ -141,7 +141,7 @@ export declare class Tag {
      *   .when(isPrimary, t => t.background("blue-500").textColor("white"))
      *   .when(user.avatar, (t, avatar) => t.addChild(Img().setSrc(avatar)))
      */
-    when<T>(condition: T | null | undefined, fn: (tag: this, value: NonNullable<T>) => unknown): this;
+    when<T>(condition: boolean extends T ? never : T | null | undefined, fn: (tag: this, value: NonNullable<T>) => unknown): this;
     when(condition: boolean, fn: (tag: this) => unknown): this;
     /**
      * Two-branch conditional modifier — mirrors `IfThenElse`, NOT truthiness. With a
@@ -153,7 +153,7 @@ export declare class Tag {
      * Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
      */
     whenElse(condition: boolean, thenFn: (tag: this) => unknown, elseFn: (tag: this) => unknown): this;
-    whenElse<T>(value: T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => unknown, elseFn: (tag: this) => unknown): this;
+    whenElse<T>(value: boolean extends T ? never : T | null | undefined, thenFn: (tag: this, value: NonNullable<T>) => unknown, elseFn: (tag: this) => unknown): this;
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,
      * composable styling and behavior.

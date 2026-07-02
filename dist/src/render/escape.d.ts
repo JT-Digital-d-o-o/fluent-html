@@ -9,6 +9,21 @@ export declare function escapeHtml(unsafe: string): string;
  */
 export declare function escapeAttr(unsafe: string): string;
 /**
+ * Neutralize a URL that would execute script or load an attacker-authored
+ * document when placed in a navigable/loadable attribute (`href`, `src`,
+ * `action`, `formaction`, `data`, `poster`, `cite`). `javascript:` and
+ * `vbscript:` are always blocked; `data:` is blocked except for non-scriptable
+ * media types. Relative URLs, fragments, query refs, protocol-relative
+ * `//host`, and ordinary `http(s)`/`mailto`/`tel` values pass through unchanged.
+ *
+ * Returns the original string when safe, or `"about:blank"` when blocked.
+ *
+ * Applied automatically by the typed URL setters (`setHref`/`setSrc`/…). The
+ * untyped `addAttribute(...)` escape hatch is intentionally NOT sanitized — reach
+ * for it deliberately in the rare case you need a `javascript:` URL.
+ */
+export declare function sanitizeUrl(url: string): string;
+/**
  * Escape a string for embedding inside a SINGLE-QUOTED JavaScript string literal
  * — e.g. the JS the behavior system writes into `hx-on:*` attributes. Escapes the
  * backslash and single quote (which would close/break the literal) plus the line

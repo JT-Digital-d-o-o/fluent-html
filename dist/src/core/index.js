@@ -1,9 +1,9 @@
 // Tag class
 export { Tag } from "./tag.js";
-// Mixins — add methods to Tag.prototype via declaration merging
-import "./tailwind-methods.js";
-import "./htmx-methods.js";
-import "./behavior-methods.js";
+// Mixins — attach every chainable method to Tag.prototype (side-effecting).
+// Registration lives in one module so any barrel that re-exports Tag factories
+// yields a fully-populated prototype (see register.ts + package.json sideEffects).
+import "./register.js";
 // Raw HTML support
 export { RawString, Raw } from "./raw-string.js";
 // Utility functions

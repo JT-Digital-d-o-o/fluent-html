@@ -38,42 +38,6 @@ type KebabToCamel<S extends string> = S extends `${infer Head}-${infer Tail}` ? 
 type IdRegistry<T extends readonly string[]> = {
     readonly [K in T[number] as KebabToCamel<K>]: Id;
 };
-/**
- * Define a registry of type-safe IDs.
- *
- * This function creates a typed object where each ID is accessible
- * via a camelCase property name (kebab-case IDs are converted).
- *
- * @param names - Array of ID strings (use `as const` for type inference)
- * @returns A frozen object with Id entries for each name
- *
- * @example
- * // Define IDs for your application
- * export const ids = defineIds([
- *   "user-list",
- *   "user-count",
- *   "notification-area",
- *   "modal-container",
- * ] as const);
- *
- * // TypeScript knows all valid properties:
- * ids.userList       // ✓ Valid
- * ids.userCount      // ✓ Valid
- * ids.notificationArea // ✓ Valid
- * ids.modalContainer // ✓ Valid
- * ids.invalidId      // ✗ TypeScript error!
- *
- * // Use in page layout
- * Div().setId(ids.userList)
- *
- * // Use in HTMX (same typed reference)
- * Button("Load").setHtmx(hx("/api/users", {
- *   target: ids.userList.selector
- * }))
- *
- * // Use in partial multi-swap responses
- * Partial(ids.userCount, Span("42 users"))
- */
 export declare function defineIds<const T extends readonly string[]>(names: T): IdRegistry<T>;
 /**
  * Type guard to check if a value is an `Id` object.

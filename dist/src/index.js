@@ -8,6 +8,9 @@ export { defineTheme } from './core/index.js';
 // Render
 export { render, renderWithNonce } from './render/index.js';
 export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';
+// Escaping / URL sanitization helpers — the typed setters apply sanitizeUrl
+// automatically; exported for consumers who build attribute values by hand.
+export { escapeHtml, escapeAttr, sanitizeUrl } from './render/index.js';
 // Tag classes with typed attributes
 export { ButtonTag, InputTag, TextareaTag, ImgTag, AnchorTag, LabelTag, SelectTag, OptionTag, OptgroupTag, FormTag, VideoTag, AudioTag, SourceTag, TrackTag, CanvasTag, SvgTag, IframeTag, ObjectTag, EmbedTag, MapTag, AreaTag, MetaTag, LinkTag, StyleTag, ScriptTag, BaseTag, TimeTag, DataTag, InsTag, DelTag, QTag, BlockquoteTag, ProgressTag, MeterTag, DetailsTag, DialogTag, FieldsetTag, OutputTag, SlotTag, ThTag, TdTag, ColTag, ColgroupTag, } from './elements/index.js';
 // Structural / Semantic elements

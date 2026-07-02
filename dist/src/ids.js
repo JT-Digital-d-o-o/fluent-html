@@ -59,11 +59,29 @@ export function createId(name) {
  * // Use in partial multi-swap responses
  * Partial(ids.userCount, Span("42 users"))
  */
+// Runtime mirror of the type-level `KebabToCamel`: split on '-', capitalize the first
+// character of every segment after the first, drop the hyphens. The old `/-([a-z])/`
+// regex only matched a lowercase letter after '-', so `col-2`/`user-List`/`a-` diverged
+// from their compile-time keys (`col2`/`userList`/`a`), leaving typed properties undefined.
+// Capitalizing a digit or empty segment is a no-op, matching `Capitalize<…>`.
+function kebabToCamel(name) {
+    const parts = name.split("-");
+    let out = parts[0];
+    for (let i = 1; i < parts.length; i++) {
+        const p = parts[i];
+        out += p.charAt(0).toUpperCase() + p.slice(1);
+    }
+    return out;
+}
 export function defineIds(names) {
     const registry = {};
     for (const name of names) {
-        // Convert kebab-case to camelCase for the property key
-        const camelKey = name.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+        const camelKey = kebabToCamel(name);
+        // Two distinct names collapsing to one property key (e.g. "user-list" + "userList")
+        // would silently last-write-win, retargeting every existing reference — throw instead.
+        if (Object.prototype.hasOwnProperty.call(registry, camelKey)) {
+            throw new Error(`defineIds: duplicate key "${camelKey}" (from "${name}") — two ids map to the same camelCase property.`);
+        }
         registry[camelKey] = createId(name);
     }
     return Object.freeze(registry);

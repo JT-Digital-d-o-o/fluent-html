@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { render, Raw, Div, Span, Input, Textarea, Button, Form, A, Area, isTag, isRawString, defineRoutes, } from "../src/index.js";
+import { render, Raw, Div, Span, Input, Textarea, Button, Form, A, Area, isTag, isRawString, defineRoutes, IfThen, IfThenElse, Match, Empty, } from "../src/index.js";
 import { createId } from "../src/ids.js";
 // -------------------------------------------------------
 // Phase 1: String literal unions render correctly
@@ -319,5 +319,52 @@ describe("defineRoutes wildcard/splat params", () => {
     it("ts-expect: scope.resolve({ rest }) wrong key", () => { const f = () => r.scope.resolve({ rest: "a/b" }); void f; });
     // @ts-expect-error — a wildcard route takes no declared params (the splat is always string)
     it("ts-expect: params declared on a splat route", () => { const bad = defineRoutes({ s: { method: "get", path: "/x/*", params: { splat: "string" } } }); void bad; });
+});
+// -------------------------------------------------------
+// Control-flow overload type honesty (control-flow-1/4, core-tag-4)
+// Each `@ts-expect-error` IS the test — an unfired directive fails the build (TS2578).
+// -------------------------------------------------------
+describe("control-flow overload type honesty", () => {
+    it("IfThen/IfThenElse accept nullable narrowing and plain booleans", () => {
+        const s = "x";
+        const b = true;
+        assert.strictEqual(render(IfThen(s, (v) => Span(v))), "<span>x</span>");
+        assert.strictEqual(render(IfThen(b, () => Span("y"))), "<span>y</span>");
+        assert.strictEqual(render(IfThenElse(s, (v) => Span(v), () => Span("-"))), "<span>x</span>");
+    });
+    // Values arrive as function parameters so control-flow analysis cannot narrow a
+    // `const … = null` down to `null` (which would defeat the @ts-expect-error).
+    it("IfThen rejects a boolean|null value (must use an explicit comparison)", () => {
+        const check = (flag) => {
+            // @ts-expect-error — boolean|null resolves to a broken runtime path; compare explicitly
+            IfThen(flag, (v) => Span(String(v)));
+            return render(IfThen(flag === true, () => Span("on"))); // correct form compiles
+        };
+        assert.strictEqual(check(null), "");
+    });
+    it("IfThenElse rejects a boolean|null value", () => {
+        const check = (flag) => {
+            // @ts-expect-error — boolean|null must use an explicit comparison
+            IfThenElse(flag, (v) => Span(String(v)), () => Span("-"));
+        };
+        check(true);
+    });
+    it("Match exhaustive form rejects a widened string (must supply a default)", () => {
+        const check = (s) => {
+            // @ts-expect-error — widened string cannot use the no-default exhaustive form
+            Match(s, { a: () => Span("A") });
+            return render(Match(s, { a: () => Span("A") }, () => Empty())); // partial+default compiles
+        };
+        assert.strictEqual(check("whatever"), "");
+    });
+    it("Tag.when rejects a boolean|null value but accepts plain boolean + nullable", () => {
+        const check = (flag, name) => {
+            // @ts-expect-error — boolean|null on the value overload
+            Div().when(flag, (t, v) => t.setTitle(String(v)));
+            Div().when(true, (t) => t.opacity("50"));
+            Div().when(name, (t, v) => t.setTitle(v));
+        };
+        check(null, "n");
+    });
 });
 //# sourceMappingURL=type-safety.js.map

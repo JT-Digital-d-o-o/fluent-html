@@ -7,6 +7,13 @@
 import { Tag } from "./core/tag.js";
 import { isId } from "./ids.js";
 import { render } from "./render/render.js";
+// HTTP header values must be Latin-1 — Node's setHeader throws ERR_INVALID_CHAR on
+// any character above U+00FF (routine in non-English detail payloads: š, č, emoji,
+// typographic quotes). Library-built header JSON (HX-Trigger / HX-Location) escapes
+// those as \uXXXX; htmx parses the header with JSON.parse, which decodes them transparently.
+function toHeaderSafeJson(value) {
+    return JSON.stringify(value).replace(/[\u007f-\uffff]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
+}
 // ------------------------------------
 // HTMX Partial Helpers (htmx 4)
 // ------------------------------------
@@ -28,8 +35,13 @@ import { render } from "./render/render.js";
  * )
  */
 export function Partial(target, content, swap = "outerMorph") {
+    // Resolve an Id to its selector; pass any explicit CSS selector through verbatim
+    // (HxTarget legitimately includes class/closest/find/attribute selectors — hx-partial
+    // takes any selector). Only a bare id token (`user-list`) gets the `#` convenience;
+    // never a value containing '.', a space, or a combinator/pseudo character, which the
+    // old `#${target}` blanket-prefix corrupted (e.g. `.items` → `#.items`).
     const selector = isId(target) ? target.selector :
-        target.startsWith('#') ? target : `#${target}`;
+        /^[A-Za-z][\w-]*$/.test(target) ? `#${target}` : target;
     return new Tag("hx-partial", content)
         .addAttribute("hx-target", selector)
         .addAttribute("hx-swap", swap);
@@ -96,7 +108,7 @@ export class HxResponse {
         const obj = {};
         for (const [k, v] of this._triggers)
             obj[k] = v ?? {};
-        return JSON.stringify(obj);
+        return toHeaderSafeJson(obj);
     }
     /**
      * Push a URL onto the browser history stack.
@@ -186,7 +198,7 @@ export class HxResponse {
             this._headers["HX-Location"] = config;
         }
         else {
-            this._headers["HX-Location"] = JSON.stringify(config);
+            this._headers["HX-Location"] = toHeaderSafeJson(config);
         }
         return this;
     }
