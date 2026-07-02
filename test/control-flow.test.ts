@@ -312,3 +312,49 @@ describe("Intersperse", () => {
     assert.strictEqual(calls, 2);
   });
 });
+
+// Regression: Match must not resolve handlers via the prototype chain (control-flow-2)
+describe("Control Flow - Match prototype-chain hardening", () => {
+  it("value form falls back to default for Object.prototype keys", () => {
+    for (const k of ["toString", "constructor", "valueOf", "hasOwnProperty", "__proto__"]) {
+      assert.strictEqual(
+        render(Match(k, { a: () => Span("A") }, () => Span("DEFAULT"))),
+        "<span>DEFAULT</span>",
+        `value key ${k}`,
+      );
+    }
+  });
+
+  it("DU form falls back to default for Object.prototype discriminants", () => {
+    for (const k of ["toString", "constructor", "valueOf"]) {
+      assert.strictEqual(
+        render(Match({ status: k } as { status: string }, "status", { a: () => Span("A") }, () => Span("DEFAULT"))),
+        "<span>DEFAULT</span>",
+        `DU discriminant ${k}`,
+      );
+    }
+  });
+
+  it("real own-property cases still resolve", () => {
+    assert.strictEqual(render(Match("a", { a: () => Span("A") }, () => Span("D"))), "<span>A</span>");
+  });
+});
+
+// Regression: numeric ForEach lengths must never throw RangeError (control-flow-3)
+describe("Control Flow - ForEach numeric length clamping", () => {
+  it("renders nothing for negative / inverted / NaN counts instead of throwing", () => {
+    assert.strictEqual(render(ForEach(-2, (i) => Span(String(i)))), "");
+    assert.strictEqual(render(ForEach(5, 3, (i) => Span(String(i)))), "");
+    assert.strictEqual(render(ForEach(NaN, (i) => Span(String(i)))), "");
+    assert.strictEqual(render(ForEach(Infinity, (i) => Span(String(i)))), "");
+  });
+
+  it("floors fractional counts", () => {
+    assert.strictEqual(render(ForEach(2.9, (i) => Span(String(i)))), "<span>0</span>\n<span>1</span>");
+  });
+
+  it("valid counts and ranges are unaffected", () => {
+    assert.strictEqual(render(ForEach(3, (i) => Span(String(i)))), "<span>0</span>\n<span>1</span>\n<span>2</span>");
+    assert.strictEqual(render(ForEach(5, 7, (i) => Span(String(i)))), "<span>5</span>\n<span>6</span>");
+  });
+});

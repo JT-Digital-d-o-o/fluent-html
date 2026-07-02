@@ -128,7 +128,7 @@ export function Match<T extends string | number>(
 // Discriminated union — exhaustive
 export function Match<
   T extends Record<K, string | number>,
-  K extends keyof T,
+  K extends keyof T & string,
 >(
   value: T,
   key: K,
@@ -137,7 +137,7 @@ export function Match<
 // Discriminated union — partial with default
 export function Match<
   T extends Record<K, string | number>,
-  K extends keyof T,
+  K extends keyof T & string,
 >(
   value: T,
   key: K,
@@ -156,8 +156,11 @@ export function Match(
     const obj = value as Record<string, string | number>;
     const discriminant = obj[casesOrKey as string] as string | number;
     const cases = casesOrDefault as Record<string | number, ((value: unknown) => View) | undefined>;
-    const handler = cases[discriminant];
-    if (handler) {
+    // Own-property lookup only — a bare `cases[discriminant]` finds inherited
+    // Object.prototype members ("toString"/"constructor"/…), which pass a truthy
+    // check and get invoked as handlers (garbage output / throw). Mirrors MatchValue.
+    const handler = Object.prototype.hasOwnProperty.call(cases, discriminant) ? cases[discriminant] : undefined;
+    if (typeof handler === "function") {
       return handler(value);
     }
     return (defaultView ?? Empty)();
@@ -165,8 +168,9 @@ export function Match(
 
   // Value matching overload: Match(value, cases, ?default)
   const cases = casesOrKey as Record<string | number, Thunk<View> | undefined>;
-  const handler = cases[value as string | number];
-  if (handler) {
+  const key = value as string | number;
+  const handler = Object.prototype.hasOwnProperty.call(cases, key) ? cases[key] : undefined;
+  if (typeof handler === "function") {
     return handler();
   }
   return ((casesOrDefault as Thunk<View> | undefined) ?? Empty)();

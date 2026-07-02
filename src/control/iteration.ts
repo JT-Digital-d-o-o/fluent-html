@@ -1,6 +1,14 @@
 import type { View } from "../core/types.js";
 import type { Tag } from "../core/tag.js";
 
+// A count/range length clamped to a non-negative integer. Non-finite
+// (NaN/Infinity) and negative/fractional inputs collapse to a valid length, so a
+// derived count (division, an over-full list, an inverted range) renders zero
+// times instead of crashing the whole SSR response on `new Array(len)`'s RangeError.
+function clampLength(n: number): number {
+  return Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+}
+
 /**
  * Iterate over items, a count, or a range to produce views.
  *
@@ -47,7 +55,7 @@ export function ForEach<T>(
   if (typeof viewsOrLowOrHigh === "number" && typeof renderItemOrHigh === "number") {
     const low = viewsOrLowOrHigh;
     const high = renderItemOrHigh;
-    const len = high - low;
+    const len = clampLength(high - low);
     const result: View[] = new Array(len);
     for (let i = 0; i < len; i++) {
       result[i] = renderItem!(low + i);
@@ -56,7 +64,7 @@ export function ForEach<T>(
   }
   // ForEach(high, renderItem)
   if (typeof viewsOrLowOrHigh === "number") {
-    const len = viewsOrLowOrHigh;
+    const len = clampLength(viewsOrLowOrHigh);
     const fn = renderItemOrHigh as (i: number) => View;
     const result: View[] = new Array(len);
     for (let i = 0; i < len; i++) {
