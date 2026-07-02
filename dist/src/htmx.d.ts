@@ -1,25 +1,29 @@
 import type { Id } from "./ids.js";
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type HxEncoding = "multipart/form-data";
-type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s';
+type DelayValue = '100ms' | '200ms' | '300ms' | '500ms' | '1s' | `${number}ms` | `${number}s`;
 export type HxSwapStyle = 'innerHTML' | 'outerHTML' | 'textContent' | 'beforebegin' | 'afterbegin' | 'beforeend' | 'afterend' | 'before' | 'after' | 'prepend' | 'append' | 'innerMorph' | 'outerMorph' | 'delete' | 'none';
 type SwapScrollValue = 'scroll:top' | 'scroll:bottom' | 'scroll:window:top' | 'scroll:window:bottom';
 type SwapShowValue = 'show:top' | 'show:bottom' | 'show:window:top' | 'show:window:bottom' | 'show:none';
 type SwapTimingValue = `swap:${DelayValue}` | `settle:${DelayValue}`;
 type SwapFocusScroll = 'focus-scroll:true' | 'focus-scroll:false';
 type SwapTransition = 'transition:true';
-type SwapModifier = SwapScrollValue | SwapShowValue | SwapTimingValue | SwapFocusScroll | SwapTransition;
+type SwapIgnoreTitle = 'ignoreTitle:true';
+type SwapModifier = SwapScrollValue | SwapShowValue | SwapTimingValue | SwapFocusScroll | SwapTransition | SwapIgnoreTitle;
 type SwapWithModifier = `${HxSwapStyle} ${SwapModifier}`;
 type SwapWithTwoModifiers = `${HxSwapStyle} ${SwapScrollValue | SwapShowValue} ${SwapTimingValue | SwapTransition}`;
 /**
- * HTMX Swap type with deep autocomplete.
+ * HTMX swap spec with deep autocomplete. A **closed** union — a typo (`"innerHTM"`,
+ * `"scroll:middle"`) is a compile error.
  *
- * Supports:
- * - Basic: "innerHTML", "outerHTML", "beforeend", etc.
- * - With modifier: "outerHTML scroll:top", "innerHTML transition:true"
- * - With two modifiers: "outerHTML scroll:top swap:500ms"
+ * Covers:
+ * - Style only: `"innerHTML"`, `"outerHTML"`, `"beforeend"`, `"outerMorph"`, …
+ * - Style + one modifier: `"outerHTML scroll:top"`, `"innerHTML settle:250ms"`, `"outerHTML ignoreTitle:true"`
+ * - Style + a positional + a timing/transition modifier: `"outerHTML scroll:top swap:500ms"`
  *
- * Also accepts any valid swap string for patterns not covered.
+ * Delays accept any `${n}ms`/`${n}s`. For an exotic combination this union does not
+ * model (three+ modifiers, or `scroll:<selector>:top` element targeting), drop to the
+ * explicit escape hatch: `.addAttribute("hx-swap", "…")`.
  */
 export type HxSwap = HxSwapStyle | SwapWithModifier | SwapWithTwoModifiers;
 type StandardCSSSelector = string;

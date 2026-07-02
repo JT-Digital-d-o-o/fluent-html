@@ -68,7 +68,10 @@ export class Tag {
   id?: string;
   class?: string;
   style?: string;
-  declare attributes: Record<string, string>;
+  // Public type is Readonly: the bag defaults to a shared frozen object (EMPTY_ATTRS), so a
+  // direct `tag.attributes.foo = "x"` would compile then throw at runtime. Go through
+  // addAttribute()/setDataAttrs()/setAria() (which swap in a fresh mutable record first).
+  declare attributes: Readonly<Record<string, string>>;
   htmx?: HTMX;
   toggles?: string[];
 
@@ -190,7 +193,7 @@ export class Tag {
     if (this.attributes === EMPTY_ATTRS) {
       this.attributes = Object.create(null) as Record<string, string>;
     }
-    this.attributes[key] = value;
+    (this.attributes as Record<string, string>)[key] = value;
     return this;
   }
 
@@ -205,7 +208,7 @@ export class Tag {
     if (this.attributes === EMPTY_ATTRS) {
       this.attributes = Object.create(null) as Record<string, string>;
     }
-    this.attributes['nonce'] = nonce;
+    (this.attributes as Record<string, string>)['nonce'] = nonce;
     return this;
   }
 
@@ -385,7 +388,7 @@ export class Tag {
     for (const [key, value] of Object.entries(attrs)) {
       const attrKey = `data-${kebabCase(key)}`;
       validateAttributeKey(attrKey);
-      this.attributes[attrKey] = value;
+      (this.attributes as Record<string, string>)[attrKey] = value;
     }
     return this;
   }
@@ -443,7 +446,7 @@ export class Tag {
       if (value === undefined) continue;
       const attrKey = key.startsWith("aria-") ? key : `aria-${key}`;
       validateAttributeKey(attrKey);
-      this.attributes[attrKey] = String(value);
+      (this.attributes as Record<string, string>)[attrKey] = String(value);
     }
     return this;
   }

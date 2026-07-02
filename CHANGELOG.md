@@ -10,6 +10,14 @@ These reject call shapes that already misbehaved at runtime; well-formed code is
 
 - **`IfThen`/`IfThenElse`/`.when()`/`.whenElse()` reject a `boolean`-containing value on the nullable overload.** A `boolean | null` value (e.g. a Prisma `Boolean?` column) resolved to the nullable-*value* overload at compile time but was reinterpreted as a *condition* at runtime — `false` rendered the else-branch, and `true` invoked the callback with `undefined` typed as a definite `boolean`. Passing such a value is now a compile error; use an explicit comparison: `IfThen(user.emailVerified === true, …)`. Plain `boolean` conditions and non-boolean nullable narrowing are unchanged.
 - **`Match` no-default (exhaustive) form rejects a widened `string`/`number`.** When the value widened past a literal union (a DB column typed `string`, an unvalidated route param), the mapped-type exhaustiveness check silently collapsed, so any subset of cases compiled while a real miss rendered an invisible `Empty()`. The exhaustive form now requires a literal union; an unconstrained value must use the partial-with-default form `Match(value, cases, fallback)`.
+- **`MatchValue` no-default form rejects a widened `string`/`number`** — same hole as `Match`, but it returned `undefined` typed as the result `R`. Use the partial-with-default form for unconstrained values.
+- **`Tag.attributes` is now `Readonly`** — a direct `tag.attributes.foo = "x"` compiled but threw at runtime (the bag defaults to a shared frozen object). Direct writes are now a compile error; use `addAttribute()` / `setDataAttrs()` / `setAria()`.
+- **Dot-suffixed route params key on the identifier** — `/export/:id.csv` now types the param as `"id"` (matching the runtime), not `"id.csv"`. Any call site using the old `"id.csv"` key must switch to `"id"` (which also fixes the URL: `resolve({ id })` → `/export/x.csv`).
+
+### 🎯 Type-safety honesty
+
+- **`HxSwap` accepts any numeric delay and `ignoreTitle:true`, without opening the union** — the delay set was five fixed literals, so valid swaps like `"innerHTML settle:250ms"` / `"outerHTML swap:1.5s"` were compile errors, contradicting the JSDoc's "accepts any valid swap string" claim. Delays are now typed `${number}ms`/`${number}s` templates (still no bare `string`, so `"scroll:middle"` is still a typo error), and the JSDoc is corrected to point at `.addAttribute("hx-swap", …)` for exotic combinations rather than falsely promising the type accepts them.
+- **Route prefix params are declarable and typed** — `defineRoutes("/users/:userId", { posts: { path: "/posts", params: { userId: "number" } } })` now type-checks (the `params` map is validated against the *joined* path). Previously declaring `userId` was a compile error and omitting it left the callable's `userId` as bare `string`; now it flows through as `number`.
 
 ### 🔒 Security
 

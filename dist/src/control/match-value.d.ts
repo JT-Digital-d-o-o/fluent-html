@@ -15,7 +15,7 @@
  * // token widens the result and surfaces as a closed-union error at the `.background()` call.
  * Div().background(MatchValue(tone, { ok: "green-100", err: "red-100" }, "gray-100"))
  */
-export declare function MatchValue<T extends string | number, R>(value: T, cases: {
+export declare function MatchValue<T extends string | number, R>(value: string extends T ? never : number extends T ? never : T, cases: {
     [K in T]: R;
 }): R;
 export declare function MatchValue<T extends string | number, R, D>(value: T, cases: Partial<{

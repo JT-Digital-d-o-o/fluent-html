@@ -15,8 +15,11 @@
  * // token widens the result and surfaces as a closed-union error at the `.background()` call.
  * Div().background(MatchValue(tone, { ok: "green-100", err: "red-100" }, "gray-100"))
  */
+// A widened `string`/`number` collapses `{ [K in T]: R }` to an index signature, so any
+// subset satisfies the "exhaustive" form while a real miss returns `undefined` typed as `R`.
+// Reject the widened value here so it must use the partial-with-default form below.
 export function MatchValue<T extends string | number, R>(
-  value: T,
+  value: string extends T ? never : number extends T ? never : T,
   cases: { [K in T]: R },
 ): R;
 export function MatchValue<T extends string | number, R, D>(

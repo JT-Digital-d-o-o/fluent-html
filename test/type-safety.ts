@@ -5,7 +5,7 @@ import {
   render, Raw, Div, Span,
   Input, Textarea, Button, Form, A, Area,
   isTag, isRawString, defineRoutes,
-  IfThen, IfThenElse, Match, Empty,
+  IfThen, IfThenElse, Match, MatchValue, Empty,
 } from "../src/index.js";
 import { createId } from "../src/ids.js";
 
@@ -503,5 +503,60 @@ describe("Tailwind variant fidelity", () => {
     render(Div().on("only-of-type", (t) => t.margin("t", "2")));
     // @ts-expect-error — "only-child" is not a Tailwind variant; use "only"
     render(Div().on("only-child", (t) => t.margin("t", "2")));
+  });
+});
+
+// -------------------------------------------------------
+// Type-honesty: no type that compiles-but-lies (Tier 1 + MatchValue)
+// Each `@ts-expect-error` IS the test — an unfired directive fails the build (TS2578).
+// -------------------------------------------------------
+describe("type honesty — types that used to lie", () => {
+  it("Tag.attributes is Readonly (a direct write would compile then throw on the frozen default)", () => {
+    assert.throws(() => {
+      // @ts-expect-error attributes is Readonly; go through addAttribute()
+      Div().attributes["foo"] = "bar";
+    }, TypeError);
+    // the sanctioned path is unaffected:
+    assert.strictEqual(render(Div().addAttribute("data-x", "y")), `<div data-x="y"></div>`);
+  });
+
+  it("MatchValue exhaustive form rejects a widened string (returned undefined-as-R before)", () => {
+    const pick = (s: string) => {
+      // @ts-expect-error widened string cannot use the no-default exhaustive form
+      MatchValue(s, { a: "x" });
+      return MatchValue(s, { a: "x" }, "def"); // partial + default is correct
+    };
+    assert.strictEqual(pick("a"), "x");
+    assert.strictEqual(pick("z"), "def");
+    // literal-union exhaustive still works:
+    assert.strictEqual(MatchValue("a" as "a" | "b", { a: "1", b: "2" }), "1");
+  });
+
+  it("HxSwap accepts arbitrary delays + ignoreTitle, rejects typos (closed union)", () => {
+    for (const s of ["innerHTML settle:250ms", "outerHTML swap:1.5s", "outerHTML ignoreTitle:true", "outerHTML scroll:top swap:500ms"] as const) {
+      assert.ok(render(Div().setHtmx({ method: "get", endpoint: "/x", swap: s })).includes(`hx-swap="${s}"`));
+    }
+    // @ts-expect-error "innerHTM" is a typo — closed union rejects it
+    Div().setHtmx({ method: "get", endpoint: "/x", swap: "innerHTM" });
+  });
+
+  it("dot-suffixed route params key on the identifier, not the whole segment", () => {
+    const r = defineRoutes({ exportCsv: { method: "get", path: "/export/:id.csv" } });
+    assert.strictEqual(r.exportCsv.resolve({ id: "abc" }), "/export/abc.csv");
+    // @ts-expect-error the param key is "id", not "id.csv"
+    r.exportCsv.resolve({ "id.csv": "abc" });
+  });
+
+  it("prefix params are declarable and typed (were rejected / silently string before)", () => {
+    const u = defineRoutes("/users/:userId", {
+      posts: { method: "get", path: "/posts", params: { userId: "number" } as const },
+    });
+    assert.strictEqual(u.posts.resolve({ userId: 42 }), "/users/42/posts");
+    assert.throws(() => {
+      // @ts-expect-error userId (from the prefix) is required
+      u.posts.resolve({});
+    });
+    // @ts-expect-error userId is typed number, not string (harmless at runtime — just checks the type)
+    u.posts.resolve({ userId: "42" });
   });
 });

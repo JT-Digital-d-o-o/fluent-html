@@ -28,7 +28,7 @@ export declare class Tag {
     id?: string;
     class?: string;
     style?: string;
-    attributes: Record<string, string>;
+    attributes: Readonly<Record<string, string>>;
     htmx?: HTMX;
     toggles?: string[];
     /** @internal type discriminant for fast render checks */

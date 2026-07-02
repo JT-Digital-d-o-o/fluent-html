@@ -1,14 +1,21 @@
 import type { HTMX, HxHttpMethod, HxTarget, QueryParams } from "./htmx.js";
 import type { Id } from "./ids.js";
 /**
+ * Trim a captured `:param` token at the first non-identifier character, mirroring the
+ * runtime substitution boundary (`(?![A-Za-z0-9_])`). So `/export/:id.csv` yields the
+ * param key `"id"` (and `resolve({ id })` produces `/export/x.csv`), not `"id.csv"`.
+ */
+type ParamName<S extends string> = S extends `${infer Head}.${string}` ? ParamName<Head> : S extends `${infer Head}-${string}` ? ParamName<Head> : S;
+/**
  * Extract parameter names from a route path string literal.
  *
  * @example
  * ExtractParams<"/users/:id">                    // "id"
  * ExtractParams<"/users/:userId/posts/:postId">  // "userId" | "postId"
+ * ExtractParams<"/export/:id.csv">               // "id"  (dot-suffix trimmed)
  * ExtractParams<"/users">                        // never
  */
-type ExtractParams<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? Param | ExtractParams<`/${Rest}`> : Path extends `${string}:${infer Param}` ? Param : never;
+type ExtractParams<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? ParamName<Param> | ExtractParams<`/${Rest}`> : Path extends `${string}:${infer Param}` ? ParamName<Param> : never;
 /**
  * Extract a trailing catch-all (splat) param key from a path.
  * `/scope/*` → "splat"; `/files/*path` → "path". Only a trailing `/*` is a splat — the
@@ -81,6 +88,19 @@ type CheckRouteParams<T extends RouteDefinitions> = {
 };
 /** Join a prefix and a sub-path, collapsing a bare "/" into the prefix. */
 type JoinPath<Prefix extends `/${string}`, Path extends `/${string}`> = Path extends "/" ? Prefix : `${Prefix}${Path}`;
+/**
+ * Prefix-aware `CheckRouteParams`: validates each route's `params` map against the
+ * **joined** (prefix + sub-path) param set, so a param declared in the prefix
+ * (`defineRoutes("/users/:userId", { posts: { path: "/posts", params: { userId: "number" } } })`)
+ * type-checks instead of being rejected as a stale key.
+ */
+type CheckRouteParamsPrefixed<P extends `/${string}`, T extends RouteDefinitions> = {
+    readonly [K in keyof T]: {
+        readonly params?: {
+            readonly [Q in keyof T[K]['params']]: Q extends ExtractParams<JoinPath<P, T[K]['path']>> ? ParamType : never;
+        };
+    };
+};
 /** Map each route definition's path to include the prefix. */
 type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
     readonly [K in keyof T]: {
@@ -159,6 +179,6 @@ type RouteRegistry<T extends RouteDefinitions> = {
  * server.delete(userRoutes.delete.path, handler)   // "/users/:id"
  */
 export declare function defineRoutes<const T extends RouteDefinitions>(definitions: T & CheckRouteParams<T>): RouteRegistry<T>;
-export declare function defineRoutes<const P extends `/${string}`, const T extends RouteDefinitions>(prefix: P, definitions: T & CheckRouteParams<T>): RouteRegistry<PrefixedRouteDefs<P, T>>;
+export declare function defineRoutes<const P extends `/${string}`, const T extends RouteDefinitions>(prefix: P, definitions: T & CheckRouteParamsPrefixed<P, T>): RouteRegistry<PrefixedRouteDefs<P, T>>;
 export {};
 //# sourceMappingURL=routes.d.ts.map
