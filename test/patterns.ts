@@ -1,7 +1,8 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { render, Div, Button, Span } from "../src/index.js";
+import { render, Div, Button, Span, Empty } from "../src/index.js";
+import { clss, closest, find } from "../src/htmx.js";
 import {
   Partial,
   HtmxConfig,
@@ -87,6 +88,22 @@ describe("HTMX Patterns", () => {
     assert.ok(response.headers["HX-Trigger"]!.includes("showMessage"));
   });
 
+  // Regression (htmx-emission-4): non-Latin1 JSON must be \uXXXX-escaped so Node's
+  // setHeader (Latin-1 only) does not throw ERR_INVALID_CHAR, while htmx's JSON.parse round-trips it.
+  it("hxResponse.trigger ASCII-escapes non-Latin1 detail for header safety", () => {
+    const value = "Uspešno shranjeno 🎉";
+    const header = hxResponse(Empty()).trigger("toast", { msg: value }).build().headers["HX-Trigger"]!;
+    assert.ok(/^[\x00-\xff]*$/.test(header), "header must be Latin-1 safe");
+    assert.doesNotThrow(() => { const h: Record<string, string> = {}; h["HX-Trigger"] = header; });
+    assert.strictEqual((JSON.parse(header) as { toast: { msg: string } }).toast.msg, value);
+  });
+
+  it("hxResponse.location ASCII-escapes non-Latin1 config", () => {
+    const header = hxResponse(Empty()).location({ path: "/x", values: { name: "Žiga" } }).build().headers["HX-Location"]!;
+    assert.ok(/^[\x00-\xff]*$/.test(header));
+    assert.strictEqual((JSON.parse(header) as { values: { name: string } }).values.name, "Žiga");
+  });
+
   it("hxResponse.pushUrl sets HX-Push-Url header", () => {
     const response = hxResponse(Div("Content")).pushUrl("/items/123").build();
     assert.strictEqual(response.headers["HX-Push-Url"], "/items/123");
@@ -166,6 +183,21 @@ describe("Partial (htmx 4)", () => {
     );
     assert.ok(html.includes('hx-target="#content"'));
     assert.ok(html.includes('hx-target="#count"'));
+  });
+
+  // Regression (htmx-emission-2): non-id selectors must pass through verbatim, not get `#`-prefixed
+  it("passes class / closest / find selectors through verbatim", () => {
+    assert.ok(render(Partial(clss("items"), "X")).includes('hx-target=".items"'));
+    assert.ok(render(Partial(closest("tr"), "X")).includes('hx-target="closest tr"'));
+    assert.ok(render(Partial(find(".row"), "X")).includes('hx-target="find .row"'));
+  });
+
+  it("prefixes # only for a bare id token, never a raw selector string", () => {
+    assert.ok(render(Partial("user-list", "X")).includes('hx-target="#user-list"'));
+    assert.ok(render(Partial(".items", "X")).includes('hx-target=".items"'));
+    assert.ok(render(Partial("#main", "X")).includes('hx-target="#main"'));
+    // `>` is attribute-escaped (the selector is preserved; the browser un-escapes it).
+    assert.ok(render(Partial("div > p", "X")).includes('hx-target="div &gt; p"'));
   });
 });
 

@@ -77,7 +77,7 @@ describe("behavior()", () => {
 
   it("formResetOnSwap — resets the form after an htmx swap", () => {
     const html = render(Input().behavior("formResetOnSwap"));
-    assert.ok(html.includes(`hx-on:htmx:after-swap="this.reset()"`));
+    assert.ok(html.includes(`hx-on:htmx:after:swap="this.reset()"`));
   });
 
   it("dismissOnEscape — removes on Escape keyup", () => {

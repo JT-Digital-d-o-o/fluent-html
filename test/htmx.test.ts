@@ -344,3 +344,27 @@ describe("HTMX - hx() query params", () => {
     assert.strictEqual(buildQueryString("/u?a=1", { b: undefined }), "/u?a=1");
   });
 });
+
+// Regression (htmx-emission-3): a falsy boolean option must not emit the enabling attribute
+describe("htmx boolean options gate on truthiness, not presence", () => {
+  const r = (opts: Parameters<typeof hx>[1]) => render(Div().setHtmx(hx("/x", opts)));
+
+  it("optimistic:false / preload:false / swapOob:false emit nothing", () => {
+    assert.ok(!r({ optimistic: false }).includes("hx-optimistic"));
+    assert.ok(!r({ preload: false }).includes("hx-preload"));
+    assert.ok(!r({ swapOob: false }).includes("hx-swap-oob"));
+  });
+
+  it("truthy values still emit", () => {
+    assert.ok(r({ optimistic: true }).includes("hx-optimistic"));
+    assert.ok(r({ preload: true }).includes("hx-preload"));
+    assert.ok(r({ preload: "mouseover" }).includes('hx-preload="mouseover"'));
+    assert.ok(r({ swapOob: true }).includes('hx-swap-oob="true"'));
+    assert.ok(r({ swapOob: "innerHTML" }).includes('hx-swap-oob="innerHTML"'));
+  });
+
+  it("pushUrl/replaceUrl:false still emit the literal \"false\" (meaningful htmx grammar)", () => {
+    assert.ok(r({ pushUrl: false }).includes('hx-push-url="false"'));
+    assert.ok(r({ replaceUrl: false }).includes('hx-replace-url="false"'));
+  });
+});
