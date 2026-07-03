@@ -120,16 +120,16 @@ Button("Search").setHtmx(hx("/search", { query: { q: term, scope: "open" } }))  
 ### Forms with Validation
 
 ```typescript
-Form(
-  Input()
-    .setType("email")
-    .setName("email")
-    .setPlaceholder("you@example.com")
-    .setAutocomplete("email")
-    .toggle("required"),
+type Subscribe = { email: string };
 
-  Button("Subscribe").setType("submit")
-)
+// `state` (prefill values + validation errors) comes from your controller.
+// The typed binding wires name/id/label-for/value/aria from the field key — no repetition.
+Form<Subscribe>({ errors }, (f) => [
+  f.label("email", "Email"),
+  f.input("email", "email").setPlaceholder("you@example.com").setAutocomplete("email").toggle("required"),
+  f.error("email"),                             // <span> linked via aria-describedby when errored
+  Button("Subscribe").setType("submit"),
+])
   .setHtmx(hx("/api/subscribe", { method: "post", swap: "outerMorph" }))
 ```
 
@@ -499,32 +499,32 @@ Input().setHtmx(hx("/api/search", {
 ### Complete Form Example
 
 ```typescript
-Form(
+type Register = { email: string; password: string };
+
+Form<Register>({ values, errors }, (f) =>
   Fieldset(
     Legend("User Registration"),
 
-    Label("Email").setFor("email"),
-    Input()
-      .setType("email")
-      .setId("email")
-      .setName("email")
+    f.label("email", "Email"),
+    f.input("email", "email")
       .setPlaceholder("you@example.com")
       .setAutocomplete("email")
       .toggle("required"),
+    f.error("email"),
 
-    Label("Password").setFor("password"),
-    Input()
-      .setType("password")
-      .setId("password")
-      .setName("password")
+    f.label("password", "Password"),
+    f.input("password", "password")
       .setMinlength(8)
       .setAutocomplete("new-password")
       .toggle("required"),
+    f.error("password"),
 
     Button("Register")
       .setType("submit")
-      .setClass("bg-blue-500 text-white px-4 py-2 rounded")
-  ).setClass("space-y-4")
+      .background("blue-500").textColor("white")
+      .padding("x", "4").padding("y", "2").rounded()
+      .cursor("pointer"),
+  ).flex().flexDirection("col").gap("4"),
 )
   .setHtmx(hx("/api/register", {
     method: "post",
