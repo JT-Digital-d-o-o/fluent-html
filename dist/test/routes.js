@@ -384,7 +384,7 @@ describe("Boundary-aware param substitution (A-001)", () => {
 // --- Typed params ---
 const typedRoutes = defineRoutes("/items", {
     list: { method: "get", path: "/" },
-    detail: { method: "get", path: "/:id", params: { id: "uuid" } },
+    detail: { method: "get", path: "/:id", params: { id: "string" } },
     page: { method: "get", path: "/page/:page", params: { page: "number" } },
     mixed: { method: "get", path: "/:slug/rev/:rev", params: { slug: "string", rev: "number" } },
 });
@@ -453,6 +453,24 @@ describe("Registry immutability", () => {
     });
     it("prefixed registry is frozen", () => {
         assert.strictEqual(Object.isFrozen(prefixedRoutes), true);
+    });
+});
+// Phase 4 + number guard (routes-midsplat-7, routes-paramtype-4 number half)
+describe("route definition & value guards", () => {
+    it("throws at definition time on a mid-path wildcard (only trailing splat supported)", () => {
+        assert.throws(() => defineRoutes({ x: { method: "get", path: "/files/*path/meta" } }), /mid-path wildcard/);
+        assert.throws(() => defineRoutes("/a/*mid", { y: { method: "get", path: "/b" } }), /mid-path wildcard/);
+    });
+    it("allows a trailing splat (named and anonymous)", () => {
+        assert.strictEqual(defineRoutes({ f: { method: "get", path: "/files/*path" } }).f.resolve({ path: "a/b" }), "/files/a/b");
+        assert.strictEqual(defineRoutes({ d: { method: "get", path: "/dl/*" } }).d.resolve({ splat: "a/b" }), "/dl/a/b");
+    });
+    it("rejects a non-finite / exponential number param value", () => {
+        const r = defineRoutes({ u: { method: "get", path: "/users/:id", params: { id: "number" } } });
+        assert.strictEqual(r.u.resolve({ id: 42 }), "/users/42");
+        assert.throws(() => r.u.resolve({ id: NaN }), /finite integer/);
+        assert.throws(() => r.u.resolve({ id: Infinity }), /finite integer/);
+        assert.throws(() => r.u.resolve({ id: 1e21 }), /finite integer/);
     });
 });
 //# sourceMappingURL=routes.js.map

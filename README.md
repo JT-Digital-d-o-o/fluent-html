@@ -594,7 +594,7 @@ fileRoutes.tree.resolve({ rest: "x" }) // ✗ wrong key (it's "splat") — compi
 
 ### Typed Route Parameters
 
-Route params can be typed as `string`, `number`, `uuid`, or an **enum** — a `readonly` literal tuple that constrains the segment to a token set. The type is enforced at compile time, and a `params` key that isn't a `:param` in the path is itself a compile error:
+Route params can be typed as `string`, `number`, or an **enum** — a `readonly` literal tuple that constrains the segment to a token set. The type is enforced at compile time (and a `number` value is checked for finiteness at resolve time), and a `params` key that isn't a `:param` in the path is itself a compile error:
 
 ```typescript
 export const userRoutes = defineRoutes("/users", {

@@ -29,6 +29,20 @@ function encodeSplat(value) {
     return String(value).split("/").map(encodeURIComponent).join("/");
 }
 /**
+ * Internal: reject a numeric param value that can't form a valid URL segment — `NaN`,
+ * `±Infinity`, or a magnitude that serializes to exponential (`1e21` → `"1e+21"`). These
+ * are always programmer errors (a derived id that went wrong); throwing at resolve time
+ * beats silently emitting `/users/NaN`. Finite integers/decimals in the normal range pass.
+ */
+function assertUrlSafeNumber(key, value, template) {
+    if (typeof value !== "number")
+        return;
+    const s = String(value);
+    if (!Number.isFinite(value) || s.includes("e") || s.includes("E")) {
+        throw new Error(`Route param "${key}" (${value}) can't form a valid URL segment in "${template}" — pass a finite integer.`);
+    }
+}
+/**
  * Internal: substitute every `:name` placeholder with its encoded value. Boundary-aware
  * (`:id` never matches inside `:idCard`) and replaces all occurrences; the trailing
  * lookahead mirrors the identifier grammar used by `assertNoUnresolvedParams`.
@@ -41,6 +55,7 @@ function substituteParams(template, params) {
     const splatMatch = SPLAT_RE.exec(template);
     let out = splatMatch ? template.slice(0, template.length - splatMatch[0].length) : template;
     for (const [key, value] of Object.entries(params)) {
+        assertUrlSafeNumber(key, value, template);
         const pattern = new RegExp(`:${escapeRegExp(key)}(?![A-Za-z0-9_])`, "g");
         out = out.replace(pattern, encodeURIComponent(String(value)));
     }
@@ -50,6 +65,7 @@ function substituteParams(template, params) {
         if (value == null) {
             throw new Error(`Unresolved route splat "*${splatMatch[1] ?? ""}" in "${template}"`);
         }
+        assertUrlSafeNumber(key, value, template);
         out += "/" + encodeSplat(value);
     }
     return out;
@@ -79,6 +95,12 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
     for (const [name, def] of Object.entries(definitions)) {
         const { method } = def;
         const fullPath = prefix && def.path === "/" ? prefix : prefix + def.path;
+        // Only a trailing `/*` or `/*name` splat is supported. A `*` anywhere else (the type
+        // rejects it, but the runtime would otherwise register the route as paramless and serve
+        // a literal `*seg`) is a broken route — fail at definition time, not at click time.
+        if (fullPath.replace(SPLAT_RE, "").includes("*")) {
+            throw new Error(`Route "${name}" path "${fullPath}" has a mid-path wildcard — only a trailing "/*" or "/*name" splat is supported.`);
+        }
         const hasParams = fullPath.includes(":") || SPLAT_RE.test(fullPath);
         const routeFn = hasParams
             ? function (params, options) {

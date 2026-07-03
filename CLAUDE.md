@@ -206,7 +206,7 @@ Critical rules:
 - **htmx 4**: attributes don't inherit — use `:inherited` modifier
 - **Almost everything uses full-layout swap** targeting `ids.mainContent` — including forms, modals, and inline edits. Feature-specific targets are rare; default to the full-layout pattern.
 
-**`defineRoutes` / `defineIds`** — define in `[feature].routes.ts`. Use typed params (`"string"`, `"number"`, `"uuid"`) for compile-time safety:
+**`defineRoutes` / `defineIds`** — define in `[feature].routes.ts`. Use typed params (`"string"`, `"number"`, or an enum tuple) for compile-time safety:
 ```typescript
 export const ids = defineIds(["mainContent", "userList", "userCount"] as const);
 export const userRoutes = defineRoutes("/users", {

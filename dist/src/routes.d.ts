@@ -32,7 +32,7 @@ type HasAnyParams<Path extends string> = [
     AnyParamKey<Path>
 ] extends [never] ? false : true;
 /** Supported scalar param type names. Determines the TypeScript type required at call sites. */
-export type ParamTypeName = "string" | "number" | "uuid";
+export type ParamTypeName = "string" | "number";
 /**
  * A param's declared type: a scalar kind, **or** a readonly literal tuple whose member
  * union constrains the segment to an enum (`["active", "archived"] as const`), so the
@@ -43,7 +43,6 @@ export type ParamType = ParamTypeName | readonly [string, ...string[]];
 type ParamTypeMap = {
     string: string;
     number: number;
-    uuid: string;
 };
 /** Resolve one declared param type to the TS type accepted at call sites (tuple → its member union). */
 type ResolveParam<P> = P extends ParamTypeName ? ParamTypeMap[P] : P extends readonly string[] ? P[number] : string;

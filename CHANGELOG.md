@@ -12,6 +12,7 @@ Hardening release: packaging, security, control-flow/HTMX/routing correctness, a
 - `Match` / `MatchValue` no-default (exhaustive) form rejects a widened `string`/`number` — use the partial-with-default form.
 - `Tag.attributes` is now `Readonly` — use `addAttribute()`/`setDataAttrs()`/`setAria()` (a direct write threw at runtime anyway).
 - Dot-suffixed route params key on the identifier: `/export/:id.csv` → param `"id"` (was `"id.csv"`).
+- `uuid` param type removed — it was a pure alias of `string` (no compile-time or runtime check), so it implied a guarantee it didn't provide. Use `"string"`.
 
 ### 🎯 Type-safety
 
@@ -36,7 +37,7 @@ Hardening release: packaging, security, control-flow/HTMX/routing correctness, a
 - **Packaging** — `sideEffects: false` erased the fluent API in bundled builds (now an array); the `./elements`/`./core`/`./control` subpaths register their mixins (via `core/register.js`; `overlay()` moved to core); sourcemaps + `src` are shipped so map references resolve.
 - **Control flow** — `Match` no longer resolves handlers via the prototype chain (`toString`/`constructor`/`__proto__`); `ForEach` clamps negative/fractional/NaN/∞ counts instead of throwing; DU `Match` key constrained to `string`.
 - **HTMX** — `formResetOnSwap` uses `htmx:after:swap` (was the never-fired `htmx:after-swap`); `Partial()` passes non-id selectors verbatim (was `.items` → `#.items`); `optimistic`/`preload`/`swapOob: false` no longer emit the enabling attribute; `hxResponse` header JSON is `\uXXXX`-escaped (non-Latin1 no longer crashes `setHeader`).
-- **Routes/ids** — `resolve()` no longer crashes on a `:param` value starting with `*`; `defineIds` camelization matches the type (`col-2` → `col2`) and throws on colliding keys.
+- **Routes/ids** — `resolve()` no longer crashes on a `:param` value starting with `*`; a mid-path wildcard now throws at `defineRoutes` time (only a trailing splat is supported); a non-finite/exponential `number` param value throws at resolve time instead of emitting `/users/NaN`; `defineIds` camelization matches the type (`col-2` → `col2`) and throws on colliding keys.
 - **Tailwind** — `gradientRadial(origin, interpolation)` folds into a valid arbitrary value (was zero CSS); removed the non-existent `only-child` variant (use `only`).
 - **Elements** — `.toggle(name, false)` removes (was add-only); `setWidth`/`setHeight` accept `string | number` across all media/embedded classes; `setRel` is variadic on `A`/`Area`/`Link`; `Area.setDownload` accepts the boolean form.
 
