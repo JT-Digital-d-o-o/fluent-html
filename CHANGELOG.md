@@ -43,6 +43,7 @@ Hardening release: packaging, security, control-flow/HTMX/routing correctness, a
 
 ### ✨ Added
 
+- **`Form<T>` gains `f.label()` + default control ids** — the typed binding now sets `id={name}` on every bound control (radios get `${name}-${value}`), and a new `f.label(name, …children)` binds `<label for>` to it. This kills the id/name/for triple-repetition the library's own examples exhibited, and makes accessible labels the path of least resistance. An optional `idPrefix` on the form state namespaces every id (`${idPrefix}-${name}`) for the rare two-forms-share-a-field-name collision. Note: bound controls now render an `id` attribute by default (additive; the error `aria-describedby` id is unchanged when no prefix is set).
 - `./package.json` export (tooling can read the manifest); packaging + type-safety regression tests.
 
 ## [6.2.0] - Tailwind v4 Method Surface + HTML Element Completeness

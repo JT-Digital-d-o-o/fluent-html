@@ -367,8 +367,13 @@ defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplet
 /** A `{ field: "message" }` map of validation errors, keyed by `T`'s fields. */
 export type ErrorBag<T> = Partial<Record<keyof T & string, string>>;
 
-/** Prefill values + validation errors that `Form<T>` auto-wires into its controls. */
-export type FormState<T> = { values?: Partial<T>; errors?: ErrorBag<T> };
+/**
+ * Prefill values + validation errors that `Form<T>` auto-wires into its controls.
+ * `idPrefix` namespaces every control `id` (and its `label for` / error `aria-describedby`)
+ * as `${idPrefix}-${name}` — set it when two forms on one page share a field name so their
+ * default `id={name}` don't collide.
+ */
+export type FormState<T> = { values?: Partial<T>; errors?: ErrorBag<T>; idPrefix?: string };
 
 /** A `<select>` option descriptor — `Form<T>` builds the `<option>`s and marks the selected one. */
 export type SelectOption = { value: string; label: string };
@@ -390,27 +395,36 @@ export interface FormBinding<T> {
   /** A radio in the `name` group — `checked` when `String(state.values[name])` equals `value`. */
   radio(name: keyof T & string, value: string): InputTag;
   hidden(name: keyof T & string, value: string): InputTag;
+  /**
+   * A `<label>` bound to the `name` control — `for` targets the control's default id, so no
+   * stringly id/for repetition. Use the correct HTML for radio groups instead (a `Fieldset` +
+   * `Legend`, or wrap each `radio()` in its own `Label`), since one `for` can't target a group.
+   */
+  label(name: keyof T & string, ...children: View[]): LabelTag;
   /** The field's error message (an unstyled `<span>`), or nothing when there's no error. */
   error(name: keyof T & string): View;
 }
 
-/** The conventional id of a field's error span — links the control's `aria-describedby` to `f.error(name)`. */
-const fieldErrorId = (name: string): string => `${name}-error`;
-
 function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
   const values = (state?.values ?? {}) as Record<string, unknown>;
   const errors = (state?.errors ?? {}) as Record<string, string | undefined>;
+  const prefix = state?.idPrefix;
+  // The deterministic control id derived from the field name (+ optional form prefix). Every
+  // bound control gets it, so `label`'s `for` and `error`'s `aria-describedby` line up with no
+  // hand-written id — the id/name/for triple-repetition the typed binding exists to kill.
+  const controlId = (name: string): string => (prefix ? `${prefix}-${name}` : name);
+  const errorId = (name: string): string => `${controlId(name)}-error`;
   // When the field has a bound error, mark the control invalid and link it to its message span,
   // so assistive tech and the `aria-invalid:`/`invalid:` Tailwind variant both see the error state.
   const markInvalid = <E extends Tag>(tag: E, name: string): E => {
-    if (errors[name] !== undefined) tag.setAria({ invalid: true, describedby: fieldErrorId(name) });
+    if (errors[name] !== undefined) tag.setAria({ invalid: true, describedby: errorId(name) });
     return tag;
   };
   return {
     input(name, type) {
       // Cast past Input's narrowed overloads — the binding accepts any InputType.
       const tag = type ? (Input as (t: InputType) => InputTag)(type) : Input();
-      tag.setName(name);
+      tag.setName(name).setId(controlId(name));
       const v = values[name];
       if (v !== undefined && v !== null) tag.setValue(String(v));
       return markInvalid(tag, name);
@@ -419,7 +433,7 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
       const v = values[name];
       // A textarea's value is its text content, not a `value` attribute.
       const tag = v !== undefined && v !== null ? Textarea(String(v)) : Textarea();
-      return markInvalid(tag.setName(name), name);
+      return markInvalid(tag.setName(name).setId(controlId(name)), name);
     },
     select(name, options) {
       const selected = values[name];
@@ -428,26 +442,31 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
         if (selected !== undefined && String(selected) === o.value) opt.toggle("selected");
         return opt;
       });
-      return markInvalid(Select(...opts).setName(name), name);
+      return markInvalid(Select(...opts).setName(name).setId(controlId(name)), name);
     },
     checkbox(name, value) {
-      const tag = Input("checkbox").setName(name);
+      const tag = Input("checkbox").setName(name).setId(controlId(name));
       if (value !== undefined) tag.setValue(value);
       // checked reflects a boolean field (terms-accepted, is-active, …)
       return markInvalid(tag.toggle("checked", Boolean(values[name])), name);
     },
     radio(name, value) {
-      // checked when this radio's value matches the bound field across the shared name group
-      return markInvalid(Input("radio").setName(name).setValue(value).toggle("checked", String(values[name]) === value), name);
+      // Each radio in the group gets a unique `${id}-${value}` id (one `id={name}` per option
+      // would duplicate). checked when this value matches the bound field across the shared group.
+      return markInvalid(Input("radio").setName(name).setId(`${controlId(name)}-${value}`).setValue(value).toggle("checked", String(values[name]) === value), name);
     },
     hidden(name, value) {
+      // Hidden controls take no label, so no id.
       return Input("hidden").setName(name).setValue(value);
+    },
+    label(name, ...children) {
+      return Label(...children).setFor(controlId(name));
     },
     error(name) {
       const message = errors[name];
       // Unstyled span (the styled FieldError shell lives in @jtdigital/ui), id-linked to the
       // control via `aria-describedby` so the message and its input are wired as one unit.
-      return message ? El("span", message).setId(fieldErrorId(name)) : Empty();
+      return message ? El("span", message).setId(errorId(name)) : Empty();
     },
   };
 }

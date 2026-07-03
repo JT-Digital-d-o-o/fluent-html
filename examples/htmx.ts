@@ -4,7 +4,7 @@
  * Run: npx tsx examples/htmx.ts
  */
 import {
-  Div, Form, Input, Button, Span, Label, Fieldset, Legend,
+  Div, Form, Button, Span, Fieldset, Legend,
   defineRoutes, defineIds, Partial,
   render,
 } from '../src/index.js';
@@ -19,46 +19,41 @@ const userRoutes = defineRoutes("/users", {
 // 2. Type-safe IDs — compile-time validated HTMX targets
 const ids = defineIds(["user-list", "user-count", "create-form"] as const);
 
-// 3. Interactive form with HTMX
-const createUserForm = Form(
-  Fieldset(
-    Legend("Add User"),
+// 3. Interactive form with HTMX — the typed Form<T> binding wires name/id/for/error
+//    from the field key, so there's no stringly id/name/for repetition.
+type CreateUserReq = { name: string; email: string };
 
-    Label("Name").setFor("name"),
-    Input()
-      .setType("text")
-      .setId("name")
-      .setName("name")
-      .setPlaceholder("Jane Doe")
-      .toggle("required"),
+function CreateUserForm() {
+  return Form<CreateUserReq>((f) =>
+    Fieldset(
+      Legend("Add User"),
 
-    Label("Email").setFor("email"),
-    Input()
-      .setType("email")
-      .setId("email")
-      .setName("email")
-      .setPlaceholder("jane@example.com")
-      .setAutocomplete("email")
-      .toggle("required"),
+      f.label("name", "Name"),
+      f.input("name", "text").setPlaceholder("Jane Doe").toggle("required"),
 
-    Button("Create User").setType("submit"),
-  ),
-)
-  .setId(ids.createForm)
-  .setHtmx(userRoutes.create({ target: ids.userList, swap: "outerMorph" }));
+      f.label("email", "Email"),
+      f.input("email", "email").setPlaceholder("jane@example.com").setAutocomplete("email").toggle("required"),
+
+      Button("Create User").setType("submit"),
+    ),
+  )
+    .setId(ids.createForm)
+    .setHtmx(userRoutes.create({ target: ids.userList, swap: "outerMorph" }));
+}
 
 // 4. Page layout with HTMX targets
-const page = Div(
-  Div().setId(ids.userList),
-  Span("0 users").setId(ids.userCount),
-  createUserForm,
+function Page() {
+  return Div(
+    Div().setId(ids.userList),
+    Span("0 users").setId(ids.userCount),
+    CreateUserForm(),
 
-  // Load users on page load
-  Button("Refresh")
-    .setHtmx(userRoutes.list({ target: ids.userList })),
-);
+    // Load users on page load
+    Button("Refresh").setHtmx(userRoutes.list({ target: ids.userList })),
+  );
+}
 
-console.log(render(page));
+console.log(render(Page()));
 
 // 5. Multi-swap response (what a controller would return)
 const multiSwapResponse = render(

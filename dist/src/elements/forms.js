@@ -236,23 +236,27 @@ export class FormTag extends Tag {
     }
 }
 defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplete']);
-/** The conventional id of a field's error span — links the control's `aria-describedby` to `f.error(name)`. */
-const fieldErrorId = (name) => `${name}-error`;
 function createFormBinding(state) {
     const values = (state?.values ?? {});
     const errors = (state?.errors ?? {});
+    const prefix = state?.idPrefix;
+    // The deterministic control id derived from the field name (+ optional form prefix). Every
+    // bound control gets it, so `label`'s `for` and `error`'s `aria-describedby` line up with no
+    // hand-written id — the id/name/for triple-repetition the typed binding exists to kill.
+    const controlId = (name) => (prefix ? `${prefix}-${name}` : name);
+    const errorId = (name) => `${controlId(name)}-error`;
     // When the field has a bound error, mark the control invalid and link it to its message span,
     // so assistive tech and the `aria-invalid:`/`invalid:` Tailwind variant both see the error state.
     const markInvalid = (tag, name) => {
         if (errors[name] !== undefined)
-            tag.setAria({ invalid: true, describedby: fieldErrorId(name) });
+            tag.setAria({ invalid: true, describedby: errorId(name) });
         return tag;
     };
     return {
         input(name, type) {
             // Cast past Input's narrowed overloads — the binding accepts any InputType.
             const tag = type ? Input(type) : Input();
-            tag.setName(name);
+            tag.setName(name).setId(controlId(name));
             const v = values[name];
             if (v !== undefined && v !== null)
                 tag.setValue(String(v));
@@ -262,7 +266,7 @@ function createFormBinding(state) {
             const v = values[name];
             // A textarea's value is its text content, not a `value` attribute.
             const tag = v !== undefined && v !== null ? Textarea(String(v)) : Textarea();
-            return markInvalid(tag.setName(name), name);
+            return markInvalid(tag.setName(name).setId(controlId(name)), name);
         },
         select(name, options) {
             const selected = values[name];
@@ -272,27 +276,32 @@ function createFormBinding(state) {
                     opt.toggle("selected");
                 return opt;
             });
-            return markInvalid(Select(...opts).setName(name), name);
+            return markInvalid(Select(...opts).setName(name).setId(controlId(name)), name);
         },
         checkbox(name, value) {
-            const tag = Input("checkbox").setName(name);
+            const tag = Input("checkbox").setName(name).setId(controlId(name));
             if (value !== undefined)
                 tag.setValue(value);
             // checked reflects a boolean field (terms-accepted, is-active, …)
             return markInvalid(tag.toggle("checked", Boolean(values[name])), name);
         },
         radio(name, value) {
-            // checked when this radio's value matches the bound field across the shared name group
-            return markInvalid(Input("radio").setName(name).setValue(value).toggle("checked", String(values[name]) === value), name);
+            // Each radio in the group gets a unique `${id}-${value}` id (one `id={name}` per option
+            // would duplicate). checked when this value matches the bound field across the shared group.
+            return markInvalid(Input("radio").setName(name).setId(`${controlId(name)}-${value}`).setValue(value).toggle("checked", String(values[name]) === value), name);
         },
         hidden(name, value) {
+            // Hidden controls take no label, so no id.
             return Input("hidden").setName(name).setValue(value);
+        },
+        label(name, ...children) {
+            return Label(...children).setFor(controlId(name));
         },
         error(name) {
             const message = errors[name];
             // Unstyled span (the styled FieldError shell lives in @jtdigital/ui), id-linked to the
             // control via `aria-describedby` so the message and its input are wired as one unit.
-            return message ? El("span", message).setId(fieldErrorId(name)) : Empty();
+            return message ? El("span", message).setId(errorId(name)) : Empty();
         },
     };
 }

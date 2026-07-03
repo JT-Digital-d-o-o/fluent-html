@@ -156,10 +156,16 @@ export declare class FormTag extends Tag {
 }
 /** A `{ field: "message" }` map of validation errors, keyed by `T`'s fields. */
 export type ErrorBag<T> = Partial<Record<keyof T & string, string>>;
-/** Prefill values + validation errors that `Form<T>` auto-wires into its controls. */
+/**
+ * Prefill values + validation errors that `Form<T>` auto-wires into its controls.
+ * `idPrefix` namespaces every control `id` (and its `label for` / error `aria-describedby`)
+ * as `${idPrefix}-${name}` — set it when two forms on one page share a field name so their
+ * default `id={name}` don't collide.
+ */
 export type FormState<T> = {
     values?: Partial<T>;
     errors?: ErrorBag<T>;
+    idPrefix?: string;
 };
 /** A `<select>` option descriptor — `Form<T>` builds the `<option>`s and marks the selected one. */
 export type SelectOption = {
@@ -183,6 +189,12 @@ export interface FormBinding<T> {
     /** A radio in the `name` group — `checked` when `String(state.values[name])` equals `value`. */
     radio(name: keyof T & string, value: string): InputTag;
     hidden(name: keyof T & string, value: string): InputTag;
+    /**
+     * A `<label>` bound to the `name` control — `for` targets the control's default id, so no
+     * stringly id/for repetition. Use the correct HTML for radio groups instead (a `Fieldset` +
+     * `Legend`, or wrap each `radio()` in its own `Label`), since one `for` can't target a group.
+     */
+    label(name: keyof T & string, ...children: View[]): LabelTag;
     /** The field's error message (an unstyled `<span>`), or nothing when there's no error. */
     error(name: keyof T & string): View;
 }
