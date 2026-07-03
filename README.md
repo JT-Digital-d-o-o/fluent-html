@@ -156,8 +156,8 @@ Ul().addChild(...users.map(u => Li(u.name)))   // append after construction
 Use `.apply()` to compose reusable modifier functions. A style-fn typed against the base `Tag` composes onto any element subclass (`Button`, `Input`, `A`, …) and may return anything:
 
 ```typescript
-const card = (t: Tag) => t.setClass("rounded shadow p-4 bg-white");
-const danger = (t: Tag) => t.addClass("border-red-500 text-red-700");
+const card = (t: Tag) => t.rounded().shadow().padding("4").background("white");
+const danger = (t: Tag) => t.borderColor("red-500").textColor("red-700");
 
 // Apply single or multiple modifiers
 Div("Warning").apply(card, danger)
@@ -1621,7 +1621,7 @@ Dialog(
   H2("Confirm Action"),
   P("Are you sure you want to proceed?"),
   Button("Cancel").addAttribute("onclick", "this.closest('dialog').close()"),
-  Button("Confirm").setClass("bg-blue-500 text-white"),
+  Button("Confirm").background("blue-500").textColor("white"),
 ).setId("confirm-modal")
 
 // Progress and Meter
@@ -1713,9 +1713,9 @@ type Status = 'pending' | 'approved' | 'rejected';
 
 function StatusBadge(status: Status): View {
   return Match(status, {
-    pending:  () => Span("Pending").setClass("text-yellow-600"),
-    approved: () => Span("Approved").setClass("text-green-600"),
-    rejected: () => Span("Rejected").setClass("text-red-600"),
+    pending:  () => Span("Pending").textColor("yellow-600"),
+    approved: () => Span("Approved").textColor("green-600"),
+    rejected: () => Span("Rejected").textColor("red-600"),
   });
 }
 ```
@@ -1768,12 +1768,12 @@ Ul(ForEach(items, (item, index) =>
 
 // Range iteration (0 to n-1)
 Div(ForEach(5, i =>
-  Span(`Item ${i}`).setClass("inline-block p-2")
+  Span(`Item ${i}`).inlineBlock().padding("2")
 ))
 
 // Range iteration (start to end-1)
 Div(ForEach(1, 6, i =>
-  Button(`Page ${i}`).setClass("px-3 py-1")
+  Button(`Page ${i}`).padding("x", "3").padding("y", "1")
 ))
 
 // Repeat n times
