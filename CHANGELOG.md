@@ -2,83 +2,47 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [6.3.0] - Packaging integrity & URL sanitization
+## [6.3.0] - Packaging integrity, URL sanitization & type-safety
 
-### 💥 Breaking (type-level only — no runtime behavior change)
+Hardening release: packaging, security, control-flow/HTMX/routing correctness, and type-surface honesty, plus ~2× render throughput on HTMX pages. No public API changes except the type-level breaks below — each rejects code that already misbehaved at runtime. Per-item rationale and evidence: [`project/research/v6.3.0/`](project/research/v6.3.0/).
 
-These reject call shapes that already misbehaved at runtime; well-formed code is unaffected. Same flavor as 6.2.0's type-narrowing breaks.
+### 💥 Breaking (type-level only)
 
-- **`IfThen`/`IfThenElse`/`.when()`/`.whenElse()` reject a `boolean`-containing value on the nullable overload.** A `boolean | null` value (e.g. a Prisma `Boolean?` column) resolved to the nullable-*value* overload at compile time but was reinterpreted as a *condition* at runtime — `false` rendered the else-branch, and `true` invoked the callback with `undefined` typed as a definite `boolean`. Passing such a value is now a compile error; use an explicit comparison: `IfThen(user.emailVerified === true, …)`. Plain `boolean` conditions and non-boolean nullable narrowing are unchanged.
-- **`Match` no-default (exhaustive) form rejects a widened `string`/`number`.** When the value widened past a literal union (a DB column typed `string`, an unvalidated route param), the mapped-type exhaustiveness check silently collapsed, so any subset of cases compiled while a real miss rendered an invisible `Empty()`. The exhaustive form now requires a literal union; an unconstrained value must use the partial-with-default form `Match(value, cases, fallback)`.
-- **`MatchValue` no-default form rejects a widened `string`/`number`** — same hole as `Match`, but it returned `undefined` typed as the result `R`. Use the partial-with-default form for unconstrained values.
-- **`Tag.attributes` is now `Readonly`** — a direct `tag.attributes.foo = "x"` compiled but threw at runtime (the bag defaults to a shared frozen object). Direct writes are now a compile error; use `addAttribute()` / `setDataAttrs()` / `setAria()`.
-- **Dot-suffixed route params key on the identifier** — `/export/:id.csv` now types the param as `"id"` (matching the runtime), not `"id.csv"`. Any call site using the old `"id.csv"` key must switch to `"id"` (which also fixes the URL: `resolve({ id })` → `/export/x.csv`).
+- `IfThen`/`IfThenElse`/`.when()`/`.whenElse()` reject a `boolean | null` value on the nullable overload — use an explicit comparison (`x === true`). Plain booleans and non-boolean nullables are unchanged.
+- `Match` / `MatchValue` no-default (exhaustive) form rejects a widened `string`/`number` — use the partial-with-default form.
+- `Tag.attributes` is now `Readonly` — use `addAttribute()`/`setDataAttrs()`/`setAria()` (a direct write threw at runtime anyway).
+- Dot-suffixed route params key on the identifier: `/export/:id.csv` → param `"id"` (was `"id.csv"`).
 
-### 🎯 Type-safety honesty
+### 🎯 Type-safety
 
-- **Anti-drift harness for `defineRoutes`/`defineIds`** — the routing/id rules are encoded twice (template-literal *types* and runtime regex/`.replace`) with nothing forcing them to agree, which is where this session's route/id bugs came from (dot-suffix keys, camelization, splat). A new `test/routes-ids-parity.test.ts` pins both encodings to one fixture set: a type-level assertion that the extracted param/id key set is exactly expected, plus a runtime assertion that resolution consumes exactly those keys (no leftover `:param`/`*splat`; camel keys round-trip to their raw id). A type-side drift now fails the build (`TS2344`); a runtime-side drift fails the test — both verified. This converts "we fixed the drift we found" into "drift can't merge."
-- **Numeric Tailwind unions no longer carry a naked `(string & {})` tail** — `TailwindGridCols`/`GridRows`, `ColSpan`, `Duration`, `RingWidth`, `Scale`, `LineClamp`, and `Delay` had an open string tail that silently swallowed typos: `.duration("fast")`, `.gridCols("brnad")`, `.ring("thick")`, `.scale("huge")` all compiled and rendered a class Tailwind ignores (an unstyled element, not a compile error — the exact failure the closed-union design exists to prevent). Each tail is now the honest pair `` `${number}` | `[${string}]` `` — bare numbers beyond the named steps still work (`.gridCols("16")`), arbitrary values still work (`.duration("[2s]")`), and a garbage string is a compile error again. Purely a compile-time tightening: valid numeric values and the emitted classes are unchanged, so the extractor/safelist is unaffected. (`fontFamily`'s tail is intentionally left open — font names are freeform.)
-- **`isId` checks a real runtime brand** — the `Id` interface promised "no structural spoofing," but `isId` upgraded any `{ id, selector }` object (e.g. a DB row flowing into `resolveSelector`) into a branded `Id`. `createId` now stamps a globally-registered `Symbol.for("fluent-html.Id")` marker that `isId` verifies, so only real Ids pass — making the brand's guarantee true at runtime, not just at compile time.
-- **`HxSwap` accepts any numeric delay and `ignoreTitle:true`, without opening the union** — the delay set was five fixed literals, so valid swaps like `"innerHTML settle:250ms"` / `"outerHTML swap:1.5s"` were compile errors, contradicting the JSDoc's "accepts any valid swap string" claim. Delays are now typed `${number}ms`/`${number}s` templates (still no bare `string`, so `"scroll:middle"` is still a typo error), and the JSDoc is corrected to point at `.addAttribute("hx-swap", …)` for exotic combinations rather than falsely promising the type accepts them.
-- **Route prefix params are declarable and typed** — `defineRoutes("/users/:userId", { posts: { path: "/posts", params: { userId: "number" } } })` now type-checks (the `params` map is validated against the *joined* path). Previously declaring `userId` was a compile error and omitting it left the callable's `userId` as bare `string`; now it flows through as `number`.
+- Removed the naked `(string & {})` typo-hole from the numeric unions (`gridCols`/`gridRows`, `colSpan`, `duration`, `ringWidth`, `scale`, `lineClamp`, `delay`) — now `` `${number}` | `[${string}]` ``, so a typo errors again. Compile-time only; valid values and emitted classes unchanged.
+- `isId` verifies a real runtime brand (`Symbol.for`) — a structural `{ id, selector }` object can no longer spoof an `Id`.
+- `HxSwap` accepts `${number}ms`/`${number}s` delays + `ignoreTitle:true`, still closed (typos error); JSDoc corrected to match.
+- Route prefix params are declarable and typed (`params` validated against the joined path).
+- Anti-drift harness (`test/routes-ids-parity.test.ts`) pins `defineRoutes`/`defineIds` type-extraction ≡ runtime — drift now fails the build/tests.
 
 ### 🔒 Security
 
-- **URL-valued attributes are now scheme-sanitized** — HTML-escaping prevents attribute *breakout* but does nothing about a `javascript:` URL that executes on click or a `data:text/html` URL that loads an attacker-authored document. `A("x").setHref(user.website)` — trusting the README's "XSS prevented" promise — could ship stored XSS. The typed URL setters (`setHref`, `setSrc`, `setAction`, `setFormaction`, `setData`, `setPoster`, `setCite`) now run their value through a new `sanitizeUrl()`: `javascript:`/`vbscript:` and scriptable `data:` URLs (`data:text/html`, `data:image/svg+xml`), including obfuscated forms (case, embedded tab/control chars, leading whitespace), are neutralized to `about:blank`. Relative URLs, fragments, protocol-relative `//host`, `http(s)`/`mailto`/`tel`, and non-scriptable `data:` media (`image/png`, `audio/*`, `video/*`, `font/*`) pass through byte-identically. `sanitizeUrl` is exported (also re-exported from the root) for standalone use.
-  - **Escape hatch:** the untyped `addAttribute("href", value)` bag is intentionally *not* sanitized — it is the explicit, low-level opt-out for the rare `javascript:` bookmarklet, mirroring how `Raw()` opts out of content escaping.
-  - **Docs:** the README's absolute "all content escaped — XSS prevented" claim is scoped to what it actually guarantees (text/attribute breakout + URL schemes on typed setters), with a new *URL Scheme Sanitization* section and the two documented bypasses (`Raw`, `addAttribute`).
+- URL setters (`setHref`/`setSrc`/`setAction`/`setFormaction`/`setData`/`setPoster`/`setCite`) scheme-sanitize their value: `javascript:`/`vbscript:` and scriptable `data:` (incl. obfuscated forms) → `about:blank`; safe URLs pass through byte-identically. `sanitizeUrl` is exported; the untyped `addAttribute` is the explicit opt-out. The README's "XSS prevented" claim is scoped to what it guarantees.
 
-### 🐛 Fixed — packaging integrity
+### ⚡ Performance (~2× on HTMX pages, byte-identical output)
 
-A class of packaging defects where the library worked from `node dist/` (and its own test suite) but broke downstream — the failures only surfaced in a consumer's bundler or when importing a subpath. The entire chainable API (`.padding()`, `.setHtmx()`, `.behavior()`, `.overlay()`, …) is attached to `Tag.prototype` by side-effect-only modules; the packaging metadata was telling bundlers those modules were safe to drop. No public API changed — every current import renders byte-identically.
+- `escapeHtml` regex pre-test skips the per-char scan on clean strings (~3.9× variant-heavy; +20–45% elsewhere).
+- `buildHtmx` unrolled from its config-table loop (+55% HTMX bench).
+- Bench harness reports the median of several samples after a time-budget warm-up (run-to-run noise 57% → ~2%).
 
+### 🐛 Fixed
 
-- **`sideEffects: false` erased the fluent method surface in bundled builds** — any consumer bundling their server (esbuild-for-Lambda, Vite SSR, Next-style deploys) got `Div(...).padding is not a function` at runtime, because the prototype-mixin modules have zero exports and were legally tree-shaken away. `sideEffects` is now an array listing the effectful modules, so bundlers preserve them. Verified with an esbuild bundle of the published layout.
-- **`fluent-html/elements` (and `./core`, `./control`) were broken when imported standalone** — element factories import `Tag` directly from `core/tag.js`, bypassing the barrel that registered the mixins, so a Tag from the `./elements` subpath had *none* of its fluent methods (while its `.d.ts` still advertised them — a guaranteed runtime crash that type-checked). Registration is now an invariant of every Tag-producing barrel via a single `core/register.js` module. As part of this, `overlay()` moved from `control/` to `core/` alongside the other three mixins; `OverlayPosition` is still exported from the package root and from `fluent-html/control`, so no import path changes.
-- **Published tarball shipped dangling sourcemap references** — every `.js`/`.d.ts` pointed at `.map` files that weren't packed, degrading debugger output and "Go to Definition". The `.js.map`, `.d.ts.map`, and `src/**/*.ts` files are now included so the references resolve end-to-end.
-
-### 🐛 Fixed — element & attribute API consistency
-
-- **`.toggle(name, false)` now removes a previously-added boolean attribute** — it was add-only (`false` was a silent no-op), so `.toggle("required").toggle("required", false)` still rendered `required`. This was the one primitive that violated last-call-wins, breaking `.apply()` presets and `.when()` branches that toggle `disabled`/`hidden`. A later `false` now removes; re-adding works; adds are de-duplicated.
-- **`setWidth`/`setHeight` accept `string | number` uniformly across all seven media/embedded classes** — the same spec attribute had five different signatures: `Img().setWidth(800)` (the standard CLS fix) was a compile error while `Video().setWidth("800")` was an error the other way. All of `Img`/`Video`/`Canvas`/`Source`/`Svg`/`Iframe`/`Object`/`Embed` now take `?: string | number` and clear on `undefined` (numbers are stringified — byte-identical output). `Video`/`Canvas` `width`/`height` fields changed from `number` to `string` to match their siblings.
-- **`setRel` is variadic** on `A`/`Area`/`Link` — the security pair `setRel("noopener", "noreferrer")` now gets per-token autocomplete and typo-checking instead of only compiling through the `(string & {})` escape hatch. Single-token and single space-joined-string calls are unchanged; no args clears.
-- **`Area.setDownload` accepts the boolean form** (`setDownload(true)`) like `A`, closing the last divergence between the two link elements.
-
-### ⚡ Performance
-
-Byte-identical output (parity-checked by the full suite incl. the render/stream fuzz test); ~2× render throughput on HTMX-heavy pages.
-
-- **`escapeHtml` short-circuits clean strings with a native regex pre-test** — the char-by-char JS scan ran on *every* attribute value, including machine-generated class strings, ids, and URLs that can never contain `&<>"'`. A `/[&<>"']/.test()` pre-test lets V8's vectorized engine reject the clean common case: the variant-heavy bench (long clean class attribute) went from ~10K to ~40K ops/sec (**~3.9×**), and every other bench rose 20–45%.
-- **`buildHtmx` unrolled from a config-table loop to direct checks** — the 19-entry table did a megamorphic dynamic `htmx[key]` read per entry per htmx tag (~3× slower, mostly finding `undefined`). The unrolled monomorphic `if` sequence lifts the HTMX-attrs bench ~55% (combined with the above, ~2.4×).
-- **Bench harness reports the median of several samples after a time-budget warm-up** — a single contiguous sample had 25–57% run-to-run spread (the same order as the deltas above), so real regressions could pass the gate. Runs are now stable to ~2%.
-
-### 🐛 Fixed — Tailwind v4 class fidelity
-
-- **`gradientRadial(origin, interpolation)` emitted a class Tailwind v4 rejects — zero CSS** — Tailwind v4 doesn't support the `/interpolation` modifier on the arbitrary-value radial form, so `gradientRadial("top-right", "oklch")` produced `bg-radial-[at_top_right]/oklch`, which compiles to *nothing* (silent missing gradient). Origin + interpolation now fold into one arbitrary value (`bg-radial-[at_top_right_in_oklch]`), with hue keywords expanded the way Tailwind's own modifier does (`longer` → `in oklch longer hue`). The emitter and the class-vocab row now share one `radialGradientClass` helper so they can't drift.
-- **`.on("only-child", …)` emitted a variant that doesn't exist** — Tailwind's variant for `:only-child` is `only:` (there is no `only-child:` in any version), so it type-checked, rendered into the HTML, got safelisted, and produced no style. `"only-child"` is removed from the variant union; use `"only"` / `"only-of-type"` (both already supported).
-
-### 🐛 Fixed — routes & ids
-
-- **A `:param` value starting with `*` crashed `resolve()` on splatless routes** — `substituteParams` applied the splat regex to the *already-substituted* output, so `search.resolve({ term: "*" })` (a realistic wildcard search) re-triggered the splat branch and threw `Unresolved route splat`, or — if `*name` matched a params key — mis-substituted slash-preservingly. Splat-ness is now decided from the template once, before `:param` substitution, so the output is never re-parsed for route syntax.
-- **`defineIds` runtime camelization diverged from the type-level `KebabToCamel`** — the `/-([a-z])/` regex only upcased a *lowercase letter* after a hyphen, so `col-2`, `user-List`, and `step-3-panel` produced runtime keys (`col-2`, `user-List`, `step-3Panel`) that didn't match their compile-time keys (`col2`, `userList`, `step3Panel`). `ids.col2` type-checked everywhere but was `undefined` at runtime, rendering `id="undefined"`. Runtime now mirrors the type exactly (split on `-`, capitalize each following segment), covering digits, uppercase, and trailing/double hyphens. Additionally, `defineIds` now **throws** when two names collapse to the same camelCase key (previously a silent last-write-win that retargeted every reference).
-
-### 🐛 Fixed — HTMX emission
-
-- **`formResetOnSwap` behavior listened on `htmx:after-swap`, an event htmx 4 never fires** — htmx 4 lifecycle events are colon-separated (`htmx:after:swap`); the emitted `hx-on:htmx:after-swap` bound a listener that never triggered, so the form silently never reset. Now emits `htmx:after:swap`.
-- **`Partial()` corrupted every non-id target** — it force-prefixed `#`, turning `Partial(clss("items"), …)` into `hx-target="#.items"` and `Partial(closest("tr"), …)` into `hx-target="#closest tr"` — both target nonexistent elements, so the swap silently no-ops. `<hx-partial>` accepts any CSS selector, and the library ships `clss()`/`closest()`/`find()` builders whose output this destroyed. Now only a bare id token (`user-list`) gets the `#` convenience; every explicit selector (and `Id`) passes through verbatim.
-- **`optimistic: false` / `preload: false` emitted the *enabling* attribute; `swapOob: false` emitted a broken swap spec** — the serializer gated on `!== undefined`, so disabling a feature via a variable (`optimistic: featureFlag`) turned it on. These now gate on truthiness; `swapOob: false` omits the attribute entirely (`hx-swap-oob="false"` would be read by htmx as a garbage swap style). `pushUrl`/`replaceUrl: false` still emit the literal `"false"`, which is meaningful htmx grammar.
-- **`hxResponse` `HX-Trigger`/`HX-Location` JSON crashed on non-Latin1 characters** — `JSON.stringify` passes characters above U+00FF through raw, but HTTP header values must be Latin-1, so a detail payload with `š`, `č`, an emoji, or a typographic quote (routine in non-English apps) made `res.setHeader` throw `ERR_INVALID_CHAR` at request time. The library-built header JSON is now `\uXXXX`-escaped; htmx's `JSON.parse` decodes it transparently.
-
-### 🐛 Fixed — control-flow robustness
-
-- **`Match` resolved handlers through the prototype chain** — a bare `cases[discriminant]` lookup found inherited `Object.prototype` members, so `Match("toString", …)` invoked `Object.prototype.toString` as a handler (rendering `[object Undefined]`) and `Match("constructor", …)` / `Match("__proto__", …)` produced garbage or threw, instead of falling back to the default. Since the partial-with-default form is exactly what you use for user-supplied values (a status off a query param), this was attacker-reachable. Both the value and discriminated-union paths now use an own-property (`hasOwnProperty`) lookup, matching what `MatchValue` already did.
-- **`ForEach` count/range overloads crashed the render on non-natural lengths** — `new Array(len)` throws `RangeError` for negative, fractional, `NaN`, or `Infinity` lengths, so `ForEach(capacity - items.length, …)` on an over-full list, a count derived from division, or an inverted range `ForEach(5, 3, …)` took down the whole SSR response. Numeric lengths are now clamped to a non-negative integer, so those cases render zero times (matching the empty-iterable overload) instead of throwing.
-- **Discriminated-union `Match` accepted numeric/symbol discriminant keys that crashed at runtime** — `K extends keyof T` admitted keys the runtime `typeof key === "string"` guard rejects, sending the call down the wrong path (`TypeError` mid-render). The key is now constrained to `keyof T & string`, removing the class at compile time.
+- **Packaging** — `sideEffects: false` erased the fluent API in bundled builds (now an array); the `./elements`/`./core`/`./control` subpaths register their mixins (via `core/register.js`; `overlay()` moved to core); sourcemaps + `src` are shipped so map references resolve.
+- **Control flow** — `Match` no longer resolves handlers via the prototype chain (`toString`/`constructor`/`__proto__`); `ForEach` clamps negative/fractional/NaN/∞ counts instead of throwing; DU `Match` key constrained to `string`.
+- **HTMX** — `formResetOnSwap` uses `htmx:after:swap` (was the never-fired `htmx:after-swap`); `Partial()` passes non-id selectors verbatim (was `.items` → `#.items`); `optimistic`/`preload`/`swapOob: false` no longer emit the enabling attribute; `hxResponse` header JSON is `\uXXXX`-escaped (non-Latin1 no longer crashes `setHeader`).
+- **Routes/ids** — `resolve()` no longer crashes on a `:param` value starting with `*`; `defineIds` camelization matches the type (`col-2` → `col2`) and throws on colliding keys.
+- **Tailwind** — `gradientRadial(origin, interpolation)` folds into a valid arbitrary value (was zero CSS); removed the non-existent `only-child` variant (use `only`).
+- **Elements** — `.toggle(name, false)` removes (was add-only); `setWidth`/`setHeight` accept `string | number` across all media/embedded classes; `setRel` is variadic on `A`/`Area`/`Link`; `Area.setDownload` accepts the boolean form.
 
 ### ✨ Added
 
-- **`./package.json` export** — tooling (the Tailwind extractor, ESLint plugin, bundler plugins, dependency scanners) can now read the package manifest through the exports map, which previously returned `ERR_PACKAGE_PATH_NOT_EXPORTED`.
-- **Packaging regression test** (`test/packaging.test.ts`) — asserts `sideEffects` stays an array covering every mixin module, that each subpath yields a fully-populated Tag, and that `./package.json` remains exported, so none of the above can silently revert.
+- `./package.json` export (tooling can read the manifest); packaging + type-safety regression tests.
 
 ## [6.2.0] - Tailwind v4 Method Surface + HTML Element Completeness
 
