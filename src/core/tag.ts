@@ -302,9 +302,9 @@ export class Tag {
    * the Tailwind extractor can see the classes statically.
    *
    * @example
-   * Div(children).whenMatch(width, {
-   *   lg:    t => t.maxW("lg"),
-   *   "2xl": t => t.maxW("2xl"),
+   * Span(status).whenMatch(status, {   // status: "active" | "closed"
+   *   active: t => t.background("green-100").textColor("green-700"),
+   *   closed: t => t.background("gray-100").textColor("gray-600"),
    * })
    * Button(label).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))
    */

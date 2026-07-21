@@ -117,8 +117,12 @@ Button("Save")
   .when(isPrimary, t => t.background("blue-500").textColor("white"))
 
 // .whenMatch() — one modifier per variant of a discriminant (exhaustive; add a default fn to match a subset)
-Div().when(width === "lg", t => t.maxW("lg")).when(width === "2xl", t => t.maxW("2xl"))  // ✗ chained .when on one discriminant — non-exhaustive
-Div().whenMatch(width, { lg: t => t.maxW("lg"), "2xl": t => t.maxW("2xl") })             // ✓ missing case = compile error; literal calls stay extractor-visible
+Span(s).when(s === "active", t => t.background("green-100"))
+       .when(s === "closed", t => t.background("gray-100"))          // ✗ chained .when on one discriminant — non-exhaustive
+Span(s).whenMatch(s, {                                               // ✓ missing case = compile error; literal calls stay extractor-visible
+  active: t => t.background("green-100").textColor("green-700"),
+  closed: t => t.background("gray-100").textColor("gray-600"),
+})
 
 // .apply() — compose reusable modifier functions (accepts multiple)
 const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow("md");

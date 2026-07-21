@@ -158,8 +158,11 @@ Div("Content").apply(card)
 
 **`whenMatch` for discriminants** — never chain `.when(x === …)` on one value; the exhaustive form makes a missing case a compile error:
 ```typescript
-Div().when(width === "lg", t => t.maxW("lg")).when(width === "2xl", t => t.maxW("2xl"))  // ✗ non-exhaustive chain
-Div().whenMatch(width, { lg: t => t.maxW("lg"), "2xl": t => t.maxW("2xl") })             // ✓ exhaustive
+Span(s).when(s === "active", t => …).when(s === "closed", t => …)   // ✗ non-exhaustive chain
+Span(s).whenMatch(s, {                                              // ✓ exhaustive, multi-property per variant
+  active: t => t.background("green-100").textColor("green-700"),
+  closed: t => t.background("gray-100").textColor("gray-600"),
+})
 Button(l).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))  // subset + default
 ```
 

@@ -161,10 +161,10 @@ Ul().addChild(...users.map(u => Li(u.name)))   // append after construction
 `.whenMatch()` completes the family (`IfThen → when`, `IfThenElse → whenElse`, `Match → whenMatch`): one modifier per variant of a string/number discriminant. The two-argument form is exhaustive — a missing case is a compile error, so adding a union member surfaces every `whenMatch` that needs updating. Pass a default modifier to match a subset:
 
 ```typescript
-Div(children).whenMatch(width, {          // width: "lg" | "2xl" | "4xl"
-  lg:    t => t.maxW("lg"),
-  "2xl": t => t.maxW("2xl"),
-  "4xl": t => t.maxW("4xl"),
+Span(status).whenMatch(status, {          // status: "active" | "pending" | "closed"
+  active:  t => t.background("green-100").textColor("green-700"),
+  pending: t => t.background("amber-100").textColor("amber-700"),
+  closed:  t => t.background("gray-100").textColor("gray-600"),
 })
 Button(label).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))
 ```
@@ -172,11 +172,12 @@ Button(label).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.b
 Never chain `.when()` on one discriminant — it re-tests the value per branch and a new union member compiles silently, rendering unstyled:
 
 ```typescript
-Div().when(width === "lg", t => t.maxW("lg")).when(width === "2xl", t => t.maxW("2xl"))  // ✗
-Div().whenMatch(width, { lg: t => t.maxW("lg"), "2xl": t => t.maxW("2xl") })             // ✓
+Span().when(status === "active", t => t.background("green-100"))
+      .when(status === "closed", t => t.background("gray-100"))                            // ✗
+Span().whenMatch(status, { active: t => t.background("green-100"), closed: t => t.background("gray-100") })  // ✓
 ```
 
-Keep each branch's fluent calls literal (`t.maxW("lg")`, not `t.maxW(key)`) so the Tailwind extractor sees the classes statically.
+Keep each branch's fluent calls literal so the Tailwind extractor sees the classes statically. That holds even when variant names coincide with tokens: `Div().maxW(width)` type-checks for `width: "lg" | "2xl"`, but a variable argument is invisible to the extractor — and the general discriminant maps each variant to several properties, which no single dynamic call can express.
 
 ### Reusable Modifiers
 
