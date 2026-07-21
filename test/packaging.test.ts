@@ -21,7 +21,7 @@ describe("packaging invariants", () => {
         "./dist/src/core/register.js",
         "./dist/src/core/tailwind-methods.js",
         "./dist/src/core/htmx-methods.js",
-        "./dist/src/core/behavior-methods.js",
+        "./dist/src/behaviors/emit.js",
         "./dist/src/core/overlay.js",
       ]) {
         assert.ok(pkg.sideEffects.includes(mod), `sideEffects must include ${mod}`);

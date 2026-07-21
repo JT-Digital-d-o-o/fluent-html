@@ -144,6 +144,13 @@ Button("Save")
   .when(isPrimary, t => t.addClass("btn-primary"))
 ```
 
+`.whenElse()` adds a second modifier for the other branch (the chain-level mirror of `IfThenElse`):
+
+```typescript
+Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
+Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
+```
+
 A boolean condition runs the modifier when `true`; a **nullable value** runs it when non-null (`!= null`, like `IfThen`) and passes the narrowed value — so a present-but-falsy `0` or `""` still runs. Use `.addChild(...)` inside a modifier to conditionally append children (the structural counterpart to `.apply`/`.when`):
 
 ```typescript
@@ -307,14 +314,22 @@ Div().setHtmx(hx("/api/more", {
 // Load on reveal (lazy loading)
 Div().setHtmx(hx("/api/content", { trigger: "revealed" }))
 
-// Polling every 30 seconds
-Div().setHtmx(hx("/api/notifications", { trigger: "every 30s" }))
+// Self-polling status panel — poll only while work is in flight; the settled
+// re-render omits the trigger, and the outerHTML replace tears down the timer
+StatusPanel(job)
+  .when(!job.done, t => t.setHtmx(hx(`/jobs/${job.id}/status`, {
+    trigger: "every 2s",
+    target: "this",
+    swap: "outerHTML",  // never a morph — see below
+  })))
 
 // Multiple triggers
 Button("Action").setHtmx(hx("/api/action", {
   trigger: "click, keyup[key=='Enter']"
 }))
 ```
+
+> **Polling swaps `outerHTML`, never a morph.** htmx clears an `every` timer only when the polled node leaves the DOM. A morph keeps the old node — and its timer — alive after the settled re-render drops the trigger; the stale tick then fires with no `hx-get`, fetches the page URL, and nests the full document inside the panel. Replacing the node each poll lets the trigger-less terminal render actually stop the timer. For the same reason, a poll endpoint must always respond with the polled fragment (a terminal, trigger-less variant for gone/error states) — never a full error page.
 
 ### Swap Strategies with Modifiers
 
@@ -539,6 +554,8 @@ Each `Partial` targets a specific element by ID and uses `outerMorph` by default
 Partial(ids.notifications, Div("New!"), "append")  // append instead of morph
 ```
 
+When a partial's target is (or contains) a self-polling element, pass `"outerHTML"` — the default morph preserves settled poller nodes and their `every` timers, resurrecting a poll a plain replace would have stopped (see [Triggers with Modifiers](#triggers-with-modifiers)).
+
 > **Note:** the old `OOB()` / `withOOB()` helpers were **removed** in 6.1.1 (htmx 4 replaced OOB swaps). Migrate `OOB(id, content)` → `Partial(id, content)`, and `withOOB(main, ...oob)` → a plain array `[main, ...partials]`.
 
 ---
@@ -751,72 +768,108 @@ Partial(ids.userList, content)               // ✓
 
 ## Behavior System
 
-**Built-in, type-safe client-side interactions** via `hx-on:*` attributes. No client-side runtime needed — the library generates the JS inline. Full autocomplete, typed options, compile-time typo detection.
+**Type-safe client-side interactions with zero inline JS.** `.behavior()` emits flat `data-behavior-*` attributes only; one versioned, immutable, ~6KB runtime asset (`dist/fluent-behaviors.<version>.js`, capture-phase document delegation, no per-element binding) executes them. Works under **strict CSP** (per-request nonce + `strict-dynamic`, no `unsafe-eval`, no `unsafe-inline`) and survives any number of htmx swaps/morphs by construction — attributes are server-authoritative, and the listener set never changes.
 
-### Built-in Behaviors
+### The 10 built-in verbs
 
-| Behavior      | Options                        | Event   | Description                    |
-|---------------|-------------------------------|---------|--------------------------------|
-| `toggle`      | `{ target: Id }`              | click   | Toggle `hidden` class          |
-| `toggleClass` | `{ target: Id; class: string }` | click | Toggle any CSS class           |
-| `remove`      | `{ target: Id }`              | click   | Remove element from DOM        |
-| `clipboard`   | `{ value: string }`           | click   | Copy text to clipboard         |
-| `disable`     | void                          | click   | Disable the clicked element    |
-| `focus`       | `{ target: Id }`              | click   | Focus another element          |
-| `scrollTo`    | `{ target: Id }`              | click   | Smooth scroll to element       |
-| `selectAll`   | void                          | focus   | Select all text on focus       |
+| Verb             | Options                                                                 | Trigger    | Does |
+|------------------|-------------------------------------------------------------------------|------------|------|
+| `toggle`         | `{ target: Id \| Id[]; force?; display?; event? }`                      | click      | Toggle the `hidden` class (multi-target; `display` sets `style.display` when shown) |
+| `toggleClass`    | `{ target: Id \| Id[]; class; force?; event? }`                         | click      | Toggle any class |
+| `remove`         | `{ target: Id \| "@self" \| {closest}; animateOut?; animateOutTimeoutMs?; event? }` | click | Remove the target; `animateOut` waits for `transitionend` with a timeout fallback — cannot hang |
+| `clipboard`      | `{ value? \| path?; feedback?: { target?, mode: "text"\|"class", text?, class?, durationMs? } }` | click | Copy (origin-resolved `path` supported) with transient, morph-safe feedback |
+| `drawer`         | `{ target: Id; class?; backdrop?; bodyClass?; closeOn?; trapFocus?; focusFirst? }` | click | The composite overlay: open class + backdrop + body scroll-lock + `aria-expanded` + focus management, atomically. At most one open. |
+| `onEscape`       | `{ action: "click"\|"remove"\|"hide"; target?; scope?: "self"\|"document" }` | keydown | Escape handling; `scope: "document"` fires with focus anywhere |
+| `onClickOutside` | `{ action: "hide"\|"remove"\|"click"; target? }`                        | click      | Dismiss when a click lands outside the carrier |
+| `resetOnSuccess` | —                                                                       | htmx lifecycle | `form.reset()` only when the request succeeded (< 300) — a 422 keeps typed values |
+| `back`           | —                                                                       | click      | `history.back()`, default-prevented (safe on `<a>`) |
+| `focus`          | `{ target: Id }`                                                        | click      | Focus the target |
+
+**Overlap rule** (one blessed path per situation): `drawer` for overlay bundles · `toggle` for simple show/hide · `onClickOutside` for non-overlay dismissal.
 
 ### Usage
 
 ```typescript
-const ids = defineIds(["panel", "banner", "search", "section"] as const);
+const ids = defineIds(["panel", "banner", "search", "mobile-menu", "menu-backdrop", "cancel-btn"] as const);
 
 Button("Toggle").behavior("toggle", { target: ids.panel })
 Button("Fade").behavior("toggleClass", { target: ids.panel, class: "opacity-50" })
-Button("Dismiss").behavior("remove", { target: ids.banner })
-Button("Copy").behavior("clipboard", { value: apiKey })
-Button("Submit").behavior("disable")
+Button("×").behavior("remove", { target: { closest: "[role=alert]" } })  // relative target
+Button("Copy").behavior("clipboard", {
+  path: "/invite/8f3k",                                     // resolved against location.origin
+  feedback: { mode: "text", text: "Copied!", durationMs: 1500 },
+})
+Button("Menu").behavior("drawer", {
+  target: ids.mobileMenu,
+  backdrop: ids.menuBackdrop,
+  bodyClass: "overflow-hidden",
+  closeOn: ["escape", "backdrop", "nav"],                   // the default
+  trapFocus: true,
+  focusFirst: true,
+})
+Form(/* … */).behavior("onEscape", { action: "click", target: ids.cancelBtn })
+Form(/* … */).behavior("resetOnSuccess")                    // reset only on < 300
+A("← Back").behavior("back").cursor("pointer")
 Button("Go").behavior("focus", { target: ids.search })
-Button("Top").behavior("scrollTo", { target: ids.section })
-Input().behavior("selectAll")
-Form().behavior("formResetOnSwap")          // reset after an htmx swap
-Div("Toast").behavior("dismissOnEscape")    // remove on Escape
-Button("Open").behavior("openDialog", { target: ids.modal })   // native <dialog>.showModal()
-Button("Close").behavior("closeDialog", { target: ids.modal }) // .close()
 
-// Option widening:
-Button("Hover").behavior("toggle", { target: ids.panel, event: "mouseenter" })  // custom event
-Button("X").behavior("remove", { target: ids.toast, animateOut: "fade-out" })   // exit animation
-
-// One-off raw handler (typed event, escaped) — when no built-in fits:
-Button("Inc").hxOn("click", "this.dataset.n = (+this.dataset.n||0)+1")
+// Event override — resolved at emit time (focus→focusin, mouseenter→mouseover):
+Button("Hover").behavior("toggle", { target: ids.panel, event: "mouseenter" })
 
 // Compile errors:
-Button("x").behavior("togle", { target: ids.panel })  // ❌ typo
-Input().behavior("selectAll", { foo: 1 })              // ❌ void takes no options
+Button("x").behavior("togle", { target: ids.panel })   // ❌ unknown verb
+Form().behavior("resetOnSuccess", { foo: 1 })          // ❌ void takes no options
+Button("x").behavior("toggle", { target: "panel" })    // ❌ raw string where an Id is required
 ```
 
 ### Rendered HTML
 
-Behaviors emit `hx-on:*` attributes with inline JS. HTMX handles re-init on swaps automatically:
+Flat, greppable data attributes — no JS strings, no `escapeJs`, plain HTML-attribute escaping:
 
 ```html
-<button hx-on:click="document.getElementById('panel').classList.toggle('hidden')">Toggle</button>
-<button hx-on:click="document.getElementById('banner').remove()">Dismiss</button>
-<button hx-on:click="this.disabled=true">Submit</button>
-<input hx-on:focus="this.select()">
+<button data-behavior="toggle" data-behavior-toggle-target="panel">Toggle</button>
+<button data-behavior="drawer"
+  data-behavior-drawer-target="mobile-menu"
+  data-behavior-drawer-backdrop="menu-backdrop"
+  data-behavior-drawer-body-class="overflow-hidden"
+  data-behavior-drawer-trap-focus="true">Menu</button>
 ```
 
-### Multiple Behaviors
+Render-time guards throw in **all** modes (including production): unknown verb, duplicate same-verb on one element, unknown option, option-type mismatch. Silent no-ops are structurally impossible.
 
-Calling `.behavior()` multiple times appends. Same-event behaviors are semicolon-separated:
+### Multiple verbs, dispatch, consumption
+
+`data-behavior` holds ordered verb tokens; all verbs on one element run in declaration order. Dispatch walks carriers innermost-first; a verb that acts **consumes** the event, so clicking a clipboard button inside a clickable row never also toggles the row. Keyboard verbs consume conditionally (an `onEscape` that didn't act lets an outer drawer's Escape close run).
 
 ```typescript
-Button("Delete")
-  .behavior("disable")
-  .behavior("remove", { target: ids.banner })
-// hx-on:click="this.disabled=true;document.getElementById('banner').remove()"
+Button("+386 40 123 456")
+  .behavior("toggleClass", { target: ids.tooltip, class: "tooltip-visible" })
+  .behavior("clipboard", { value: "+386 40 123 456" })
+// data-behavior="toggleClass clipboard" — both fire, in order
 ```
+
+The same verb twice on one element throws at render — to bind one verb to two events, wrap one in a child element.
+
+### The runtime asset
+
+The npm package version **is** the grammar + runtime version: the same release renders the attributes and ships `dist/fluent-behaviors.<version>.js` (built-ins asset, immutable-cacheable). The framework layer serves it and loads it with exactly one nonce'd `<script defer src>` in the layout head; the layout stamps `<html data-fluent-behaviors="<version>:<registryHash>">` and the runtime asserts the match (skew = one loud `console.error`; unknown verbs from a newer render skip with one `console.warn` + a `data-behavior-unknown` mark).
+
+```typescript
+import { behaviorRuntimeSource, behaviorStamp } from "fluent-html/behaviors";
+const { fileName, source } = behaviorRuntimeSource();  // serve with immutable cache headers
+Html(…).addAttribute("data-fluent-behaviors", behaviorStamp())
+```
+
+Extension verbs are **framework-layer-only** (the `jt:` pack in projects-template): `registerBehavior` (data-only spec + mandatory fixtures) on the server, `defineBehavior` from `fluent-html/behavior-runtime` on the client, compiled once by `buildBehaviorRuntime` (esbuild) into a registry-hashed asset. Apps consume typed verbs — they never register them.
+
+### The escape-hatch ladder
+
+1. A built-in verb (the table above).
+2. The native tier — dialogs, popovers, invoker commands (next section).
+3. An htmx round-trip (it's an SSR library — most "interactivity" is a swap).
+4. Propose a verb to the framework pack (`jt:` namespace, framework PR).
+5. (Rare, sign-off-gated) a scoped vanilla-JS island.
+
+There is no inline-JS hatch: `.hxOn()` is gone, `on*` attributes are blocked, and hand-written `data-behavior-*` via raw-attribute APIs is lint-banned.
 
 ### Native Interactivity (Popover · Commands · anchor positioning)
 
@@ -862,7 +915,7 @@ Div(/* … */).setId(menu).setPopover().positionAnchor(menu).positionArea("botto
 //   style="position-anchor: --user-menu; position-area: bottom span-right"
 ```
 
-> The `openDialog`/`closeDialog` behaviors **remain** — reach for them when an htmx *event* (not a click) must trigger the open/close. All three anchor-positioning methods emit **inline style**, not classes: their values are arbitrary custom-idents (`anchorName`/`positionAnchor` take a per-instance `Id`) or the multi-keyword `position-area` grammar — none of which Tailwind v4 has a native utility for, so a class would silently render nothing. `positionArea` stays type-safe via a closed token union (`"bottom-span-right"` → `position-area: bottom span-right`), with a `[…]` arm for the full grammar; nothing needs safelisting.
+> **The native/behavior boundary (one blessed path each):** modal dialogs are always native — `setCommand`/`setCommandfor` + `<dialog>` `setClosedby` (the old `openDialog`/`closeDialog` verbs are gone). Non-modal and responsive overlays (mobile off-canvas, pinned sidebars) are the `drawer` verb — `dialog.showModal()` is wrong for them. Autocomplete/dropdown dismissal is `onClickOutside` + `toggle`, **not** `popover="auto"` — auto-popovers light-dismiss when you click back into the anchor input. All three anchor-positioning methods emit **inline style**, not classes: their values are arbitrary custom-idents (`anchorName`/`positionAnchor` take a per-instance `Id`) or the multi-keyword `position-area` grammar — none of which Tailwind v4 has a native utility for, so a class would silently render nothing. `positionArea` stays type-safe via a closed token union (`"bottom-span-right"` → `position-area: bottom span-right`), with a `[…]` arm for the full grammar; nothing needs safelisting.
 
 ---
 
@@ -1616,13 +1669,14 @@ Details(
   P("Hidden content revealed when opened."),
 ).toggle("open")
 
-// Dialog (modal)
+// Dialog (modal) — zero JS via Invoker Commands + closedby
+const modal = createId("confirm-modal");
 Dialog(
   H2("Confirm Action"),
   P("Are you sure you want to proceed?"),
-  Button("Cancel").addAttribute("onclick", "this.closest('dialog').close()"),
+  Button("Cancel").setCommand("close").setCommandfor(modal),
   Button("Confirm").background("blue-500").textColor("white"),
-).setId("confirm-modal")
+).setId(modal).setClosedby("any")
 
 // Progress and Meter
 Progress().setValue(70).setMax(100)

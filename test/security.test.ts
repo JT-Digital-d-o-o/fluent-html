@@ -48,28 +48,34 @@ describe("escapeJs", () => {
   });
 });
 
-describe("Behavior JS injection prevention", () => {
+describe("Behavior injection prevention (v4: attributes-only, no JS emission)", () => {
   const ids = defineIds(["panel"] as const);
 
-  it("escapes a single quote in a toggleClass class (no JS break-out)", () => {
-    const html = render(Button("x").behavior("toggleClass", { target: ids.panel, class: "it's-active" }));
-    // escapeJs turns ' into \' ; the renderer then HTML-escapes ' to &#39;, so the
-    // safe form carries the backslash: it\&#39;s . Without the fix it would be it&#39;s .
-    assert.ok(html.includes("it\\&#39;s-active"), html);
-  });
-
-  it("neutralizes a class crafted to inject JS", () => {
+  it("emits zero inline JS — values ride plain data attributes with HTML escaping only", () => {
     const evil = "x'); alert(document.cookie); ('";
-    const html = render(Button("x").behavior("toggleClass", { target: ids.panel, class: evil }));
-    // Every user ' is backslash-escaped (\&#39;), so the unescaped break-out form
-    // x&#39;); — which would close the JS string and inject — never appears.
-    assert.ok(!html.includes("x&#39;);"), html);
-    assert.ok(html.includes("x\\&#39;);"), html);
+    const html = render(Button("x").behavior("clipboard", { value: evil }));
+    assert.ok(!html.includes("hx-on"), html);
+    assert.ok(html.includes(`data-behavior-clipboard-value="x&#39;); alert(document.cookie); (&#39;"`), html);
   });
 
-  it("escapes the interpolated target id too", () => {
-    const html = render(Button("x").behavior("toggle", { target: "a'b" as unknown as typeof ids.panel }));
-    assert.ok(html.includes("getElementById(&#39;a\\&#39;b&#39;)"), html);
+  it("class options reject non-token payloads at render (injection can't even ride the wire)", () => {
+    assert.throws(
+      () => render(Button("x").behavior("toggleClass", { target: ids.panel, class: "x'); alert(1); ('" })),
+      /single CSS class token/,
+    );
+  });
+
+  it("rejects a raw string smuggled where an Id is required", () => {
+    assert.throws(
+      () => render(Button("x").behavior("toggle", { target: "a'b" as unknown as typeof ids.panel })),
+      /expects an Id/,
+    );
+  });
+
+  it("blocks hand-written data-behavior-unknown-adjacent quoting from breaking the attribute", () => {
+    const html = render(Button("x").behavior("clipboard", { value: `"><script>alert(1)</script>` }));
+    assert.ok(!html.includes("<script>alert(1)"), html);
+    assert.ok(html.includes("&quot;&gt;&lt;script&gt;"), html);
   });
 });
 

@@ -39,5 +39,7 @@ export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js
 export type { Id } from './ids.js';
 export { defineRoutes, } from './routes.js';
 export type { RouteDef, RouteHxOptions, ParamTypeName, ParamType, } from './routes.js';
-export type { BehaviorMap, HxOnEvent } from './core/behavior-methods.js';
+export type { BehaviorMap, BehaviorName, BehaviorTarget } from './behaviors/map.js';
+export type { BehaviorEvent, LifecycleEvent } from './behaviors/events.js';
+export { EVENT_TABLE, HTMX_EVENTS } from './behaviors/events.js';
 //# sourceMappingURL=index.d.ts.map

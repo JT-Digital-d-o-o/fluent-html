@@ -22,7 +22,7 @@
 SSR apps. Interactivity = HTMX swapping server-rendered partials. Client-side JS / CSR is a last resort needing explicit sign-off.
 
 - **Server round-trip by default** — state changes, lists, forms, modals, inline edits swap a server-rendered partial (`reply.renderView(...)`). Never build/mutate UI in the browser.
-- **`.behavior()` for pure-client interactions** (toggle, clipboard, focus, scroll, disable, back) — never inline `<script>` / `onclick`. See [§ HTMX](#htmx).
+- **`.behavior()` for pure-client interactions** (toggle, drawer, clipboard, dismiss, back, focus) — never inline `<script>` / `onclick`. See [§ HTMX](#htmx).
 - **No `public/js/` additions, no SPA frameworks** (React/Vue/Alpine). Think it's impossible without JS? Get sign-off first, scope JS to that feature.
 - **OK reasons:** canvas, interactive charts, media editors, offline, sub-round-trip latency. **Not OK:** "easier", "fewer requests", habit, porting a client-side pattern.
 
@@ -230,14 +230,14 @@ A("Settings").setHtmx(settingsRoutes.index({
 render(Partial(ids.mainContent, List(items)), Partial(ids.navBadge, Span(`${items.length}`)))  // ✓
 ```
 
-**`.behavior()` for client-side interactions** — never raw inline JS:
+**`.behavior()` for client-side interactions** — never raw inline JS. Emits flat `data-behavior-*` attributes (zero inline JS, strict-CSP-safe) executed by the fluent-behaviors runtime asset loaded once in the layout head:
 ```typescript
 Button("Toggle").behavior("toggle", { target: ids.filterPanel })
-Button("Copy").behavior("clipboard", { value: apiKey })
-Button("Submit").behavior("disable")
+Button("Menu").behavior("drawer", { target: ids.mobileMenu, backdrop: ids.menuBackdrop, trapFocus: true })
+Button("Copy").behavior("clipboard", { value: apiKey, feedback: { mode: "text", text: "Copied!" } })
 A("Back").behavior("back").cursor("pointer")
 ```
-Built-in: `toggle`, `toggleClass`, `remove`, `clipboard`, `disable`, `focus`, `scrollTo`, `selectAll`, `back`.
+Built-in (10): `toggle`, `toggleClass`, `remove`, `clipboard`, `drawer`, `onEscape`, `onClickOutside`, `resetOnSuccess`, `back`, `focus`. Overlap rule: `drawer` for overlay bundles; `toggle` for simple show/hide; `onClickOutside` for non-overlay dismissal. There is no inline-JS hatch; never hand-write `data-behavior*` attributes.
 
 **Back navigation — default to `.behavior("back")`** — for any "Back" / "Return" control, pop the browser history stack rather than re-navigating to a hardcoded route. `back` emits a native `history.back()`, so it returns the user to wherever they actually came from and restores HTMX's prior page snapshot (content + scroll) — correct regardless of entry path:
 ```typescript

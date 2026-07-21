@@ -395,5 +395,7 @@ export type {
   ParamType,
 } from './routes.js';
 
-// Behavior system
-export type { BehaviorMap, HxOnEvent } from './core/behavior-methods.js';
+// Behavior system (v4 — flat data-behavior-* emission, ADR-01)
+export type { BehaviorMap, BehaviorName, BehaviorTarget } from './behaviors/map.js';
+export type { BehaviorEvent, LifecycleEvent } from './behaviors/events.js';
+export { EVENT_TABLE, HTMX_EVENTS } from './behaviors/events.js';

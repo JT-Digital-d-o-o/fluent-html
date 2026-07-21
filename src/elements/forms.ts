@@ -251,7 +251,8 @@ export class ButtonTag extends Tag {
    * `<dialog>` or popover from a `<button>`. Closed over the native verbs
    * (`show-modal`/`close`/`request-close`/`show-popover`/`hide-popover`/`toggle-popover`);
    * a `--`-prefixed value is an author command that fires a `CommandEvent`. Pair with
-   * `setCommandfor`. The `openDialog`/`closeDialog` behaviors remain for htmx-event cases.
+   * `setCommandfor`. Modal dialogs are always native (this API + `setClosedby`) —
+   * non-modal/responsive overlays are the `drawer` behavior verb.
    *
    * @example
    * Button("Edit").setCommand("show-modal").setCommandfor(ids.dialog)

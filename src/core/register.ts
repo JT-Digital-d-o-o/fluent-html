@@ -11,5 +11,5 @@
  */
 import "./tailwind-methods.js";
 import "./htmx-methods.js";
-import "./behavior-methods.js";
+import "../behaviors/emit.js";
 import "./overlay.js";

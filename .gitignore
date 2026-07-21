@@ -6,3 +6,6 @@ coverage/
 docs/
 
 .vscode/
+# playwright acceptance artifacts
+test-results/
+test/acceptance/.assets/

@@ -2,6 +2,34 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [6.4.0] - Behavior System v4: strict-CSP data-attribute emission + versioned runtime asset
+
+The once-and-for-all behavior redesign (W1–W4/W7 of the locked design in [`project/research/behavior-v4/`](project/research/behavior-v4/design.md), 12 ADRs). `.behavior()` no longer emits inline `hx-on:*` JS — it emits flat, greppable `data-behavior-*` attributes executed by one versioned, immutable, capture-phase-delegated runtime asset. Works under real strict CSP (per-request nonce + `strict-dynamic`, no `unsafe-eval`); survives any number of htmx swaps/morphs by construction. Greenfield v6 posture: no v5 compat.
+
+### 💥 Breaking
+
+- **Emission format**: `.behavior()` emits `data-behavior="<verbs>"` + `data-behavior-<verb>-<option>` attributes (ADR-01) instead of `hx-on:*` inline JS. Pages must load the runtime asset via one nonce'd `<script defer src>` in the layout head (`behaviorRuntimeSource()` from `fluent-html/behaviors` — framework/template wiring).
+- **`.hxOn()` is deleted** — no inline-JS hatch exists. `HxOnEvent` type removed.
+- **Vocabulary is now exactly 10 verbs** (ADR-09). Deleted with successors: `disable` → htmx-native `disable:` route option; `openDialog`/`closeDialog` → `setCommand`/`setCommandfor` + `setClosedby` (the v6.0.1 parked deprecation executes); `formResetOnSwap` → `resetOnSuccess` (no longer wipes typed values on 422); `dismissOnEscape` → `onEscape` (document-scope option fixes the focus-scope bug); `scrollTo` → htmx swap `scroll:top`; `selectAll` → deleted (zero call sites).
+- **Render-time throws in ALL modes** (including production): unknown verb, duplicate same-verb on one element, unknown option, option-type mismatch, raw string where an `Id` is required. Silent no-ops are structurally impossible.
+- **`event?` overrides** come from the closed `EVENT_TABLE` union and resolve at emit time (`focus`→`focusin`, `mouseenter`→`mouseover`, …); `keyup` is dropped (ADR-10).
+- `createId`/`defineIds` reject `"@self"` (reserved by the behavior target grammar) and behavior emission rejects ids containing whitespace.
+- Class-name options (`toggleClass.class`, `drawer.class`/`bodyClass`, `clipboard.feedback.class`, `remove.animateOut`) validate as a single CSS class token at emit — a whitespace-containing value used to render fine and then throw in `classList` on every activation (the v2-style runtime-dead failure class).
+
+### ✨ Added
+
+- **New verbs**: `drawer` (the composite non-modal overlay: open class + backdrop + body scroll-lock + `aria-expanded` + focus-first + focus trap + `closeOn: escape|backdrop|nav`, at-most-one-open, DOM-predicate state, morph reconciliation sweep — ADR-05); `onEscape`, `onClickOutside`, `resetOnSuccess` (status-gated `form.reset()`, roadmap #52).
+- **Widened verbs**: `toggle` gains `Id[]` multi-target + `display?` (roadmap #53) + `force?`; `toggleClass` gains `Id[]` + missing-class guard; `remove` gains `"@self"`/`{ closest }` relative targets, `animateOutTimeoutMs` fallback (cannot hang); `clipboard` gains origin-resolved `path` + transient `feedback` (text/class modes, token + compare-guarded — double-click-safe, never clobbers a fresh morph render, degrades with one `console.warn` when `navigator.clipboard` is absent).
+- **Runtime asset**: `dist/fluent-behaviors.<version>.js` built at publish (minified IIFE, banner-stamped, CI size gate). Capture-phase document delegation from the single-source `EVENT_TABLE`; innermost-first consumption walk (ADR-04 — all verbs on a carrier run in declaration order, consumption halts outer carriers); the only htmx coupling is the two-literal `HTMX_EVENTS` const, read defensively; fully inert without htmx (templates/web profile).
+- **Skew handling (ADR-11)**: unknown verbs skip with exactly one `console.warn` + a `data-behavior-unknown` mark; the runtime asserts the `<html data-fluent-behaviors="<version>:<registryHash>">` stamp (mismatch = one loud `console.error`); `behaviorStamp()`/`readAssetStamp()`/`assertBehaviorRuntimeAsset()` make hash skew a deploy-time error.
+- **`fluent-html/behaviors` subpath** (framework-layer surface, ADR-07): `registerBehavior` (data-only specs, mandatory fixtures, `jt:` namespace + collision + seal enforcement), `buildBehaviorRuntime` (esbuild wrapper — optional peer — compiles framework `defineBehavior` entries + core into one registry-hashed immutable asset), `behaviorRuntimeSource`, `allBehaviors` (feeds the acceptance `matrix()`), `BUILTIN_FIXTURES`.
+- **`fluent-html/behavior-runtime` subpath**: `defineBehavior` + the mediated `FxCtx` (resolve/transient/after/status — no store, no fetch, no observers, ADR-08) for framework-pack client entries. Apps never register (ADR-07 amendment).
+- **Acceptance harness** (`npm run test:acceptance`, ADR-12): in-package Playwright suite — minimal Fastify app, real strict CSP, pinned htmx 4.0.0-beta5, production-built minified asset — mechanically enumerating every verb × fixture × {initial, outerHTML swap, outerMorph} plus the 30 hand-written matrix rows (skew, drawer suite, clipboard re-entrancy, reset semantics, Escape precedence, CSP hygiene, native-dialog tier). 68 rows green on Chromium; `ACCEPT_ENGINES=all` adds WebKit/Firefox.
+
+### 📦 Size budget (ADR-12 note)
+
+The built-ins asset measures **5.95KB min / 2.66KB gz** — the full contract (drawer a11y, gated nav-close, skew degrade, once-token resets) exceeds ADR-12's 5KB/2.2KB estimate. The CI gate is set to the honest ceiling (6KB/2.75KB); flagged in `project/pm/decisions.md` as an ADR-12 amendment. The asset is immutable-cached, so the cost is paid once per version.
+
 ## [6.3.0] - Packaging integrity, URL sanitization & type-safety
 
 Hardening release: packaging, security, control-flow/HTMX/routing correctness, and type-surface honesty, plus ~2× render throughput on HTMX pages. No public API changes except the type-level breaks below — each rejects code that already misbehaved at runtime. Per-item rationale and evidence: [`project/research/v6.3.0/`](project/research/v6.3.0/).

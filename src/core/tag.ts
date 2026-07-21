@@ -35,7 +35,7 @@ function validateAttributeKey(key: string): void {
     throw new Error(`Invalid attribute key: "${key}"`);
   }
   if (EVENT_HANDLER_RE.test(key)) {
-    throw new Error(`Event handler attribute "${key}" is blocked — use .behavior() or .hxOn() instead of an inline on* handler`);
+    throw new Error(`Event handler attribute "${key}" is blocked — use .behavior() instead of an inline on* handler`);
   }
 }
 

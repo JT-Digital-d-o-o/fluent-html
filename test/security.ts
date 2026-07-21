@@ -84,8 +84,8 @@ describe("XSS — Attribute Keys", () => {
     );
   });
 
-  it("the blocked-event error points to .behavior()/.hxOn()", () => {
-    assert.throws(() => Div().addAttribute("onload", "x()"), /\.behavior\(\) or \.hxOn\(\)/);
+  it("the blocked-event error points to .behavior()", () => {
+    assert.throws(() => Div().addAttribute("onload", "x()"), /\.behavior\(\)/);
   });
 
   it("Blocks onerror attribute", () => {

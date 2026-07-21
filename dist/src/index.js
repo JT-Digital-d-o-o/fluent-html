@@ -63,4 +63,5 @@ hxResponse, HxResponse, } from './patterns.js';
 export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
 // Type-safe Routes
 export { defineRoutes, } from './routes.js';
+export { EVENT_TABLE, HTMX_EVENTS } from './behaviors/events.js';
 //# sourceMappingURL=index.js.map

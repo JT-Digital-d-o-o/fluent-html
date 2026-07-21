@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "rootDir": "../../..",
+    "outDir": "../../../dist"
+  },
+  "include": ["./**/*"],
+  "exclude": ["../../../node_modules", "../../../dist"]
+}

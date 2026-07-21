@@ -1,1 +1,1 @@
-{"version":3,"file":"behavior.test.d.ts","sourceRoot":"","sources":["../../test/behavior.test.ts"],"names":[],"mappings":""}
+{"version":3,"file":"behavior.test.d.ts","sourceRoot":"","sources":["../../test/behavior.test.ts"],"names":[],"mappings":"AA2BA,OAAO,KAAK,EAAE,EAAE,EAAE,MAAM,eAAe,CAAC;AAGxC,OAAO,QAAQ,yBAAyB,CAAC;IACvC,UAAU,WAAW;QACnB,eAAe,EAAE;YAAE,IAAI,EAAE,EAAE,CAAC;YAAC,YAAY,EAAE,MAAM,CAAA;SAAE,CAAC;KACrD;CACF"}

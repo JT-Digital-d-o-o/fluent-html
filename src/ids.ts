@@ -49,6 +49,11 @@ export interface Id {
 const ID_BRAND = Symbol.for("fluent-html.Id");
 
 export function createId(name: string): Id {
+  // "@self" is a reserved BehaviorTarget sentinel (behavior wire grammar) — an Id
+  // carrying it would be indistinguishable from the sentinel on the wire.
+  if (name === "@self") {
+    throw new Error(`createId: "@self" is reserved by the behavior target grammar and cannot be an element id.`);
+  }
   return Object.freeze({
     id: name,
     selector: `#${name}`,
