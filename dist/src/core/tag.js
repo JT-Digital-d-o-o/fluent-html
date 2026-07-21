@@ -215,6 +215,12 @@ export class Tag {
         }
         return this;
     }
+    whenMatch(value, cases, defaultFn) {
+        const fn = Object.prototype.hasOwnProperty.call(cases, value) ? cases[value] : defaultFn;
+        if (fn)
+            fn(this);
+        return this;
+    }
     /**
      * Apply one or more modifier functions to this tag. Enables reusable,
      * composable styling and behavior.

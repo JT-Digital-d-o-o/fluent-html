@@ -158,6 +158,26 @@ Button("Save").when(isLoading, t => t.addChild(Spinner()))
 Ul().addChild(...users.map(u => Li(u.name)))   // append after construction
 ```
 
+`.whenMatch()` completes the family (`IfThen → when`, `IfThenElse → whenElse`, `Match → whenMatch`): one modifier per variant of a string/number discriminant. The two-argument form is exhaustive — a missing case is a compile error, so adding a union member surfaces every `whenMatch` that needs updating. Pass a default modifier to match a subset:
+
+```typescript
+Div(children).whenMatch(width, {          // width: "lg" | "2xl" | "4xl"
+  lg:    t => t.maxW("lg"),
+  "2xl": t => t.maxW("2xl"),
+  "4xl": t => t.maxW("4xl"),
+})
+Button(label).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))
+```
+
+Never chain `.when()` on one discriminant — it re-tests the value per branch and a new union member compiles silently, rendering unstyled:
+
+```typescript
+Div().when(width === "lg", t => t.maxW("lg")).when(width === "2xl", t => t.maxW("2xl"))  // ✗
+Div().whenMatch(width, { lg: t => t.maxW("lg"), "2xl": t => t.maxW("2xl") })             // ✓
+```
+
+Keep each branch's fluent calls literal (`t.maxW("lg")`, not `t.maxW(key)`) so the Tailwind extractor sees the classes statically.
+
 ### Reusable Modifiers
 
 Use `.apply()` to compose reusable modifier functions. A style-fn typed against the base `Tag` composes onto any element subclass (`Button`, `Input`, `A`, …) and may return anything:
@@ -213,6 +233,11 @@ MatchValue(trend, { up: "↑", down: "↓" }, "→")          // "↑" | "↓" |
 
 // Two-branch tag modifier (mirrors IfThenElse, not truthiness)
 Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
+
+// The match trio: MatchValue = value per property, whenMatch = modifier per variant, Match = view per variant
+Span(MatchValue(tone, { ok: "✓", err: "✗" }))
+Div().whenMatch(tone, { ok: t => t.textColor("green-700"), err: t => t.textColor("red-700") })
+Match(tone, { ok: () => OkBanner(), err: () => ErrBanner() })
 ```
 
 ### Partial Multi-Swap (HTMX 4)

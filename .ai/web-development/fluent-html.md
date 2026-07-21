@@ -116,6 +116,10 @@ Button("Save")
   .when(isLoading, t => t.toggle("disabled").opacity("50"))
   .when(isPrimary, t => t.background("blue-500").textColor("white"))
 
+// .whenMatch() — one modifier per variant of a discriminant (exhaustive; add a default fn to match a subset)
+Div().when(width === "lg", t => t.maxW("lg")).when(width === "2xl", t => t.maxW("2xl"))  // ✗ chained .when on one discriminant — non-exhaustive
+Div().whenMatch(width, { lg: t => t.maxW("lg"), "2xl": t => t.maxW("2xl") })             // ✓ missing case = compile error; literal calls stay extractor-visible
+
 // .apply() — compose reusable modifier functions (accepts multiple)
 const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow("md");
 const hoverLift = (t: Tag) => t.transition().on("hover", t => t.shadow("lg"));

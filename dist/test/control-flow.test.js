@@ -164,6 +164,31 @@ describe("Tag.whenElse", () => {
     });
 });
 // ------------------------------------
+// Tag.whenMatch
+// ------------------------------------
+describe("Tag.whenMatch", () => {
+    it("exhaustive form applies the matched case's modifier", () => {
+        const width = "2xl";
+        assert.strictEqual(render(Div().whenMatch(width, { lg: t => t.maxW("lg"), "2xl": t => t.maxW("2xl") })), `<div class="max-w-2xl"></div>`);
+    });
+    it("partial form falls back to defaultFn on a miss", () => {
+        const tone = "info";
+        assert.strictEqual(render(Span().whenMatch(tone, { danger: t => t.setClass("red") }, t => t.setClass("gray"))), `<span class="gray"></span>`);
+    });
+    it("partial form still applies a present case over defaultFn", () => {
+        const tone = "danger";
+        assert.strictEqual(render(Span().whenMatch(tone, { danger: t => t.setClass("red") }, t => t.setClass("gray"))), `<span class="red"></span>`);
+    });
+    it("numeric discriminants work", () => {
+        const i = 6;
+        assert.strictEqual(render(Div().whenMatch(i % 5, { 0: t => t.w("full"), 1: t => t.w("3/4") }, t => t.w("1/2"))), `<div class="w-3/4"></div>`);
+    });
+    it("returns this — the chain continues after the match", () => {
+        const s = "a";
+        assert.strictEqual(render(Div().whenMatch(s, { a: t => t.addClass("x"), b: t => t.addClass("y") }).addClass("z")), `<div class="x z"></div>`);
+    });
+});
+// ------------------------------------
 // MatchValue / Intersperse (C-005)
 // ------------------------------------
 describe("MatchValue", () => {

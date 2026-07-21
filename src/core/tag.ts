@@ -290,6 +290,36 @@ export class Tag {
   }
 
   /**
+   * Match-on-discriminant conditional modifier — the chain-level mirror of `Match`,
+   * completing the family (`IfThen → when`, `IfThenElse → whenElse`, `Match → whenMatch`).
+   * Runs the case modifier for the discriminant's current value. Exhaustive in the
+   * two-argument form (every member of `T` must have a case — a missing key is a
+   * compile error); supply a `defaultFn` to match a subset. Prefer this over chained
+   * `.when(x === "a", …).when(x === "b", …)` on one discriminant, which is
+   * non-exhaustive and re-tests the value per branch.
+   *
+   * Keep each branch's fluent calls literal (`t.maxW("lg")`, not `t.maxW(key)`) so
+   * the Tailwind extractor can see the classes statically.
+   *
+   * @example
+   * Div(children).whenMatch(width, {
+   *   lg:    t => t.maxW("lg"),
+   *   "2xl": t => t.maxW("2xl"),
+   * })
+   * Button(label).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))
+   */
+  // See `MatchValue`: a widened `string`/`number` collapses `{ [K in T]: … }` to an index
+  // signature, so any subset satisfies the "exhaustive" form while a real miss silently
+  // no-ops. Reject the widened value here so it must use the partial-with-default form.
+  whenMatch<T extends string | number>(value: string extends T ? never : number extends T ? never : T, cases: { [K in T]: (tag: this) => unknown }): this;
+  whenMatch<T extends string | number>(value: T, cases: Partial<{ [K in T]: (tag: this) => unknown }>, defaultFn: (tag: this) => unknown): this;
+  whenMatch(value: string | number, cases: Record<string | number, (tag: this) => unknown>, defaultFn?: (tag: this) => unknown): this {
+    const fn = Object.prototype.hasOwnProperty.call(cases, value) ? cases[value] : defaultFn;
+    if (fn) fn(this);
+    return this;
+  }
+
+  /**
    * Apply one or more modifier functions to this tag. Enables reusable,
    * composable styling and behavior.
    *

@@ -156,6 +156,13 @@ const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow
 Div("Content").apply(card)
 ```
 
+**`whenMatch` for discriminants** — never chain `.when(x === …)` on one value; the exhaustive form makes a missing case a compile error:
+```typescript
+Div().when(width === "lg", t => t.maxW("lg")).when(width === "2xl", t => t.maxW("2xl"))  // ✗ non-exhaustive chain
+Div().whenMatch(width, { lg: t => t.maxW("lg"), "2xl": t => t.maxW("2xl") })             // ✓ exhaustive
+Button(l).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))  // subset + default
+```
+
 **Scoped context** — use for cross-cutting values read by many components (i18n, theme, auth, nonce, feature flags) instead of prop drilling. Use props for component-specific data. **Never use `AsyncLocalStorage`** for render-time data — context is sufficient for synchronous rendering:
 - `createContext(defaultValue)` — returns default when no scope active
 - `createRequiredContext(name)` — throws if accessed outside a scope (use for auth, request data)

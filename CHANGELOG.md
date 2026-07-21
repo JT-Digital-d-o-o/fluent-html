@@ -2,6 +2,12 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [6.5.0] - Tag.whenMatch: match-on-discriminant conditional modifier
+
+### ✨ Added
+
+- **`Tag.whenMatch(value, cases, defaultFn?)`** — the chain-level mirror of `Match`, completing the conditional family (`IfThen → when`, `IfThenElse → whenElse`, `Match → whenMatch`). Runs one modifier per variant of a string/number discriminant. The two-argument form is exhaustive (missing case = compile error; widened `string`/`number` is rejected, same guard as `MatchValue`); pass a `defaultFn` to match a subset. Replaces chained `.when(x === "a", …).when(x === "b", …)`, which is non-exhaustive and re-tests the discriminant per branch. Scalar discriminants only — the discriminated-union keyed form (`whenMatch(state, "status", {…})`) is deliberately deferred.
+
 ## [6.4.0] - Behavior System v4: strict-CSP data-attribute emission + versioned runtime asset
 
 The once-and-for-all behavior redesign (W1–W4/W7 of the locked design in [`project/research/behavior-v4/`](project/research/behavior-v4/design.md), 12 ADRs). `.behavior()` no longer emits inline `hx-on:*` JS — it emits flat, greppable `data-behavior-*` attributes executed by one versioned, immutable, capture-phase-delegated runtime asset. Works under real strict CSP (per-request nonce + `strict-dynamic`, no `unsafe-eval`); survives any number of htmx swaps/morphs by construction. Greenfield v6 posture: no v5 compat.

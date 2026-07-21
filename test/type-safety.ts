@@ -493,6 +493,18 @@ describe("control-flow overload type honesty", () => {
     };
     check(null, "n");
   });
+
+  it("Tag.whenMatch: exhaustive form rejects widened strings and missing cases", () => {
+    const check = (wide: string, tone: "danger" | "info") => {
+      // @ts-expect-error — widened string cannot use the no-default exhaustive form
+      Div().whenMatch(wide, { a: (t) => t.opacity("50") });
+      Div().whenMatch(wide, { a: (t) => t.opacity("50") }, (t) => t.opacity("100")); // partial+default compiles
+      // @ts-expect-error — missing "info" case on the exhaustive form
+      Div().whenMatch(tone, { danger: (t) => t.opacity("50") });
+      Div().whenMatch(tone, { danger: (t) => t.opacity("50"), info: (t) => t.opacity("100") });
+    };
+    check("whatever", "info");
+  });
 });
 
 // Regression (tailwind-fidelity-2): "only-child" is not a Tailwind variant (emits zero CSS).
