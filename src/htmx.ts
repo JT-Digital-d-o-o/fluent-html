@@ -136,7 +136,13 @@ type ThrottledTrigger = `${BasicTrigger} throttle:${DelayValue}`;
 // Event + changed + delay: "keyup changed delay:300ms"
 type ChangedDelayTrigger = `${BasicTrigger} changed delay:${DelayValue}`;
 
-// Polling triggers
+// Polling triggers.
+//
+// A polled element must pair `every …` with `target: "this"` and a REMOVING swap
+// (`outerHTML`) — never a morph. htmx clears an `every` timer only when the polled
+// node leaves the DOM; a morph keeps the old node (and its timer) alive after a
+// settled re-render drops the trigger. The stale tick then fires with no hx-get,
+// fetches the page URL, and nests the full document inside the element.
 type PollingTrigger = 'every 1s' | 'every 2s' | 'every 5s' | 'every 10s';
 
 /**

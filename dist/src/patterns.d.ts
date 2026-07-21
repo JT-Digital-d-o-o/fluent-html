@@ -8,6 +8,10 @@ import type { Id } from "./ids.js";
  * Each partial independently declares its target and swap strategy.
  * This replaces OOB swaps with a cleaner, more explicit pattern.
  *
+ * When the target is (or contains) a self-polling element (`trigger: "every …"`),
+ * pass `"outerHTML"` — the default morph preserves settled poller nodes and their
+ * `every` timers, resurrecting a poll that a plain replace would have stopped.
+ *
  * @param target - CSS selector string or Id object
  * @param content - Content to swap in
  * @param swap - Swap strategy (default: "outerMorph")
