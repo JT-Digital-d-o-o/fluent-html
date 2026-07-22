@@ -4,74 +4,88 @@ type ParamKeys<F> = keyof Parameters<F extends (...a: never[]) => unknown ? F : 
 declare const R: {
     readonly simple: ((params: {
         id: string;
-    } & {}, options?: import("../src/routes.js").RouteHxOptions) => import("../src/htmx.js").HTMX) & {
+    } & {}, options?: (Omit<import("../src/routes.js").RouteHxOptions, "query"> & {
+        query?: import("../src/htmx.js").QueryParams | undefined;
+    }) | undefined) => import("../src/htmx.js").HTMX) & {
         readonly method: "get";
         readonly path: "/users/:id";
         readonly resolve: (params: {
             id: string;
-        } & {}, query?: import("../src/htmx.js").QueryParams) => string;
+        } & {}, query?: import("../src/htmx.js").QueryParams | undefined) => string;
     };
     readonly multi: ((params: {
         userId: string;
         postId: string;
-    } & {}, options?: import("../src/routes.js").RouteHxOptions) => import("../src/htmx.js").HTMX) & {
+    } & {}, options?: (Omit<import("../src/routes.js").RouteHxOptions, "query"> & {
+        query?: import("../src/htmx.js").QueryParams | undefined;
+    }) | undefined) => import("../src/htmx.js").HTMX) & {
         readonly method: "get";
         readonly path: "/a/:userId/b/:postId";
         readonly resolve: (params: {
             userId: string;
             postId: string;
-        } & {}, query?: import("../src/htmx.js").QueryParams) => string;
+        } & {}, query?: import("../src/htmx.js").QueryParams | undefined) => string;
     };
     readonly dotSuffix: ((params: {
         id: string;
-    } & {}, options?: import("../src/routes.js").RouteHxOptions) => import("../src/htmx.js").HTMX) & {
+    } & {}, options?: (Omit<import("../src/routes.js").RouteHxOptions, "query"> & {
+        query?: import("../src/htmx.js").QueryParams | undefined;
+    }) | undefined) => import("../src/htmx.js").HTMX) & {
         readonly method: "get";
         readonly path: "/export/:id.csv";
         readonly resolve: (params: {
             id: string;
-        } & {}, query?: import("../src/htmx.js").QueryParams) => string;
+        } & {}, query?: import("../src/htmx.js").QueryParams | undefined) => string;
     };
     readonly splat: ((params: {} & {
         path: string;
-    }, options?: import("../src/routes.js").RouteHxOptions) => import("../src/htmx.js").HTMX) & {
+    }, options?: (Omit<import("../src/routes.js").RouteHxOptions, "query"> & {
+        query?: import("../src/htmx.js").QueryParams | undefined;
+    }) | undefined) => import("../src/htmx.js").HTMX) & {
         readonly method: "get";
         readonly path: "/files/*path";
         readonly resolve: (params: {} & {
             path: string;
-        }, query?: import("../src/htmx.js").QueryParams) => string;
+        }, query?: import("../src/htmx.js").QueryParams | undefined) => string;
     };
     readonly anonSplat: ((params: {} & {
         splat: string;
-    }, options?: import("../src/routes.js").RouteHxOptions) => import("../src/htmx.js").HTMX) & {
+    }, options?: (Omit<import("../src/routes.js").RouteHxOptions, "query"> & {
+        query?: import("../src/htmx.js").QueryParams | undefined;
+    }) | undefined) => import("../src/htmx.js").HTMX) & {
         readonly method: "get";
         readonly path: "/dl/*";
         readonly resolve: (params: {} & {
             splat: string;
-        }, query?: import("../src/htmx.js").QueryParams) => string;
+        }, query?: import("../src/htmx.js").QueryParams | undefined) => string;
     };
     readonly mixed: ((params: {
         id: string;
     } & {
         rest: string;
-    }, options?: import("../src/routes.js").RouteHxOptions) => import("../src/htmx.js").HTMX) & {
+    }, options?: (Omit<import("../src/routes.js").RouteHxOptions, "query"> & {
+        query?: import("../src/htmx.js").QueryParams | undefined;
+    }) | undefined) => import("../src/htmx.js").HTMX) & {
         readonly method: "get";
         readonly path: "/u/:id/*rest";
         readonly resolve: (params: {
             id: string;
         } & {
             rest: string;
-        }, query?: import("../src/htmx.js").QueryParams) => string;
+        }, query?: import("../src/htmx.js").QueryParams | undefined) => string;
     };
 };
 declare const P: {
     readonly posts: ((params: {
         userId: number;
-    } & {}, options?: import("../src/routes.js").RouteHxOptions) => import("../src/htmx.js").HTMX) & {
+    } & {}, options?: (Omit<import("../src/routes.js").RouteHxOptions, "query"> & {
+        query?: import("../src/htmx.js").QueryParams | undefined;
+    }) | undefined) => import("../src/htmx.js").HTMX) & {
         readonly method: "get";
         readonly path: "/users/:userId/posts";
         readonly resolve: (params: {
             userId: number;
-        } & {}, query?: import("../src/htmx.js").QueryParams) => string;
+        } & {}, query?: import("../src/htmx.js").QueryParams | undefined) => string;
     };
 };
 export type _RouteParamKeyParity = [

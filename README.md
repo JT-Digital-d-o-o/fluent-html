@@ -490,7 +490,7 @@ import { defineRoutes } from 'fluent-html';
 
 // Shared prefix avoids path repetition (like Fastify's register prefix)
 export const userRoutes = defineRoutes("/users", {
-  list:   { method: "get",    path: "/" },
+  list:   { path: "/" },                 // method defaults to "get" — spell it out only when it isn't
   create: { method: "post",   path: "/" },
   delete: { method: "delete", path: "/:id" },
 } as const);
@@ -554,6 +554,26 @@ userRoutes.byStatus.resolve({ status: "active" })  // ✓ — one of "active" | 
 userRoutes.byStatus.resolve({ status: "deleted" }) // ✗ compile error — not in the enum
 // { path: "/:id", params: { ic: "number" } }       // ✗ compile error — "ic" is not a :param in the path
 ```
+
+### Typed Query Parameters
+
+By default `.resolve(query)` and `{ query }` take a loose bag of params (nullish values are silently skipped). Declare a `query` map — the same `ParamType` vocabulary as path params (`string`, `number`, or an enum tuple) — to type the query string too. Every declared key is **optional**; wrong types and undeclared keys become compile errors:
+
+```typescript
+export const productRoutes = defineRoutes({
+  list: { path: "/products", query: { page: "number", sort: ["asc", "desc"] } as const },
+} as const);
+
+productRoutes.list.resolve({ page: 2, sort: "asc" })  // "/products?page=2&sort=asc"
+productRoutes.list.resolve()                          // "/products" — every declared key is optional
+productRoutes.list({ query: { page: 3 } })            // hx-get="/products?page=3"
+
+productRoutes.list.resolve({ sort: "up" })  // ✗ compile error — not in the enum
+productRoutes.list.resolve({ page: "2" })   // ✗ compile error — number expected
+productRoutes.list.resolve({ limit: 10 })   // ✗ compile error — "limit" is not a declared query key
+```
+
+A route with no `query` map keeps the loose bag, so routes you don't annotate are unchanged.
 
 The prefix is optional — you can still pass route definitions directly without one. Routes expose `.method`, `.path` (with prefix applied), and `.resolve()` (for param + query substitution). Views and controllers always stay in sync.
 

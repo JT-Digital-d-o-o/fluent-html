@@ -62,11 +62,12 @@ type ResolveParamTypes<Path extends string, Params extends Readonly<Record<strin
 type ResolveAllParamTypes<Path extends string, Params extends Readonly<Record<string, ParamType>> | undefined> = ResolveParamTypes<Path, Params> & {
     [K in ExtractSplat<Path>]: string;
 };
-/** A single route definition: HTTP method + path. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
+/** A single route definition: HTTP method + path (plus optional typed `query` params). `method` defaults to `"get"` when omitted. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
 export type RouteDef = {
-    readonly method: HxHttpMethod;
+    readonly method?: HxHttpMethod;
     readonly path: `/${string}`;
     readonly params?: Readonly<Record<string, ParamType>>;
+    readonly query?: Readonly<Record<string, ParamType>>;
 };
 /** Input object for defineRoutes(). */
 type RouteDefinitions = {
@@ -103,9 +104,10 @@ type CheckRouteParamsPrefixed<P extends `/${string}`, T extends RouteDefinitions
 /** Map each route definition's path to include the prefix. */
 type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
     readonly [K in keyof T]: {
-        readonly method: T[K]['method'];
+        readonly method: MethodOf<T[K]>;
         readonly path: JoinPath<P, T[K]['path']> & `/${string}`;
         readonly params: T[K]['params'];
+        readonly query: T[K]['query'];
     };
 };
 /**
@@ -120,11 +122,28 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
     include?: string | Id;
     query?: QueryParams;
 };
+/**
+ * Resolve a route's declared `query` map to the object its callable/`.resolve` accepts.
+ * Each declared key is optional (query strings are rarely all-present) and typed by its
+ * `ParamType` (scalar or enum tuple). A route with no `query` map keeps the loose
+ * `QueryParams`, so undeclared routes are byte-for-byte unchanged.
+ */
+type ResolveQuery<Q extends Readonly<Record<string, ParamType>> | undefined> = Q extends Readonly<Record<string, ParamType>> ? {
+    readonly [K in keyof Q]?: ResolveParam<Q[K]>;
+} : QueryParams;
+/** Per-route HTMX options — `RouteHxOptions` with the route's typed `query` in place of the loose bag. */
+type RouteHxOptionsFor<Def extends RouteDef> = Omit<RouteHxOptions, 'query'> & {
+    query?: ResolveQuery<Def['query']>;
+};
+/** Resolve a route definition's HTTP method, defaulting to `"get"` when `method` is omitted. */
+type MethodOf<Def extends RouteDef> = Def extends {
+    readonly method: infer M extends HxHttpMethod;
+} ? M : "get";
 /** Base properties available on every route callable. */
 type RouteProperties<Def extends RouteDef> = {
-    readonly method: Def['method'];
+    readonly method: MethodOf<Def>;
     readonly path: Def['path'];
-    readonly resolve: HasAnyParams<Def['path']> extends true ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: QueryParams) => string : (query?: QueryParams) => string;
+    readonly resolve: HasAnyParams<Def['path']> extends true ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => string : (query?: ResolveQuery<Def['query']>) => string;
 };
 /**
  * A type-safe route callable.
@@ -134,7 +153,7 @@ type RouteProperties<Def extends RouteDef> = {
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
  * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
-type RouteCallable<Def extends RouteDef> = HasAnyParams<Def['path']> extends true ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptions) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptions) => HTMX) & RouteProperties<Def>;
+type RouteCallable<Def extends RouteDef> = HasAnyParams<Def['path']> extends true ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptionsFor<Def>) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptionsFor<Def>) => HTMX) & RouteProperties<Def>;
 /** The full registry object returned by defineRoutes(). */
 type RouteRegistry<T extends RouteDefinitions> = {
     readonly [K in keyof T]: RouteCallable<T[K]>;
@@ -148,25 +167,33 @@ type RouteRegistry<T extends RouteDefinitions> = {
  *
  * Routes also expose `.method` and `.path` for server-side registration.
  *
- * @param definitions - Object mapping route names to `{ method, path }` definitions
+ * @param definitions - Object mapping route names to `{ method?, path }` definitions (`method` defaults to `"get"`)
  * @returns A frozen registry where each key is a callable route
  *
  * @example
- * // Define per-feature routes
+ * // Define per-feature routes — `method` defaults to "get", so spell it out only when it isn't
  * export const userRoutes = defineRoutes({
- *   list:   { method: "get",    path: "/users" },
+ *   list:   { path: "/users" },
  *   create: { method: "post",   path: "/users" },
- *   detail: { method: "get",    path: "/users/:id" },
+ *   detail: { path: "/users/:id" },
  *   delete: { method: "delete", path: "/users/:id" },
  * } as const);
  *
  * // With a shared prefix (like Fastify's register prefix)
  * export const userRoutes = defineRoutes("/users", {
- *   list:   { method: "get",    path: "/" },
+ *   list:   { path: "/" },
  *   create: { method: "post",   path: "/" },
- *   detail: { method: "get",    path: "/:id" },
+ *   detail: { path: "/:id" },
  *   delete: { method: "delete", path: "/:id" },
  * } as const);
+ *
+ * // Typed query params — declare a `query` map (same ParamType vocabulary as path params);
+ * // each key is optional and typed at the call site and in `.resolve`.
+ * export const searchRoutes = defineRoutes({
+ *   list: { path: "/users", query: { page: "number", sort: ["asc", "desc"] } as const },
+ * } as const);
+ * searchRoutes.list({ query: { page: 2, sort: "asc" } })   // ok
+ * searchRoutes.list.resolve({ page: 2, sort: "aasc" })     // compile error — "aasc" not in the enum
  *
  * // In views — type-safe HTMX
  * Button("Load").setHtmx(userRoutes.list())

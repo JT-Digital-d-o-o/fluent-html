@@ -444,6 +444,51 @@ describe("defineRoutes wildcard/splat params", () => {
 });
 
 // -------------------------------------------------------
+// defineRoutes — typed query params
+// -------------------------------------------------------
+
+describe("defineRoutes typed query params", () => {
+  const r = defineRoutes({
+    list:   { path: "/products", query: { page: "number", sort: ["asc", "desc"] } as const },
+    detail: { path: "/products/:id", query: { tab: ["specs", "reviews"] } as const },
+    plain:  { path: "/plain" },
+  } as const);
+
+  it("resolve folds typed query (scalar + enum) after the path", () => {
+    assert.strictEqual(r.list.resolve({ page: 2, sort: "asc" }), "/products?page=2&sort=asc");
+  });
+
+  it("declared query keys are optional — none yields the bare path", () => {
+    assert.strictEqual(r.list.resolve(), "/products");
+    assert.strictEqual(r.list.resolve({}), "/products");
+    assert.strictEqual(r.list.resolve({ page: 2 }), "/products?page=2");
+  });
+
+  it("typed query on a parameterized route folds after the resolved path", () => {
+    assert.strictEqual(r.detail.resolve({ id: "7" }, { tab: "specs" }), "/products/7?tab=specs");
+  });
+
+  it("typed query folds into the callable endpoint too", () => {
+    assert.strictEqual(r.list({ query: { page: 3, sort: "desc" } }).endpoint, "/products?page=3&sort=desc");
+    assert.strictEqual(r.detail({ id: "7" }, { query: { tab: "reviews" } }).endpoint, "/products/7?tab=reviews");
+  });
+
+  it("a route without a query map keeps the loose bag", () => {
+    assert.strictEqual(r.plain.resolve({ anything: "goes", n: 1 }), "/plain?anything=goes&n=1");
+  });
+
+  // Compile-only negatives — the thunk is never invoked; the `@ts-expect-error` IS the assertion.
+  // @ts-expect-error — "aasc" is not a member of the sort enum
+  it("ts-expect: bad enum value in resolve query", () => { const f = () => r.list.resolve({ sort: "aasc" }); void f; });
+  // @ts-expect-error — page is declared number, not string
+  it("ts-expect: wrong scalar type in resolve query", () => { const f = () => r.list.resolve({ page: "2" }); void f; });
+  // @ts-expect-error — "limit" is not a declared query key on this typed route
+  it("ts-expect: undeclared query key on a typed route", () => { const f = () => r.list.resolve({ limit: 10 }); void f; });
+  // @ts-expect-error — bad enum value in the callable query bag
+  it("ts-expect: bad enum value in callable query", () => { const f = () => r.list({ query: { sort: "up" } }); void f; });
+});
+
+// -------------------------------------------------------
 // Control-flow overload type honesty (control-flow-1/4, core-tag-4)
 // Each `@ts-expect-error` IS the test — an unfired directive fails the build (TS2578).
 // -------------------------------------------------------

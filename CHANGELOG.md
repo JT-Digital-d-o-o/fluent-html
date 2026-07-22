@@ -2,11 +2,13 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [6.5.0] - Tag.whenMatch: match-on-discriminant conditional modifier
+## [6.5.0] - Tag.whenMatch + defineRoutes ergonomics (default method, typed query params)
 
 ### ✨ Added
 
 - **`Tag.whenMatch(value, cases, defaultFn?)`** — the chain-level mirror of `Match`, completing the conditional family (`IfThen → when`, `IfThenElse → whenElse`, `Match → whenMatch`). Runs one modifier per variant of a string/number discriminant. The two-argument form is exhaustive (missing case = compile error; widened `string`/`number` is rejected, same guard as `MatchValue`); pass a `defaultFn` to match a subset. Replaces chained `.when(x === "a", …).when(x === "b", …)`, which is non-exhaustive and re-tests the discriminant per branch. Scalar discriminants only — the discriminated-union keyed form (`whenMatch(state, "status", {…})`) is deliberately deferred.
+- **`defineRoutes` — `method` defaults to `"get"`** — omit `method` on GET routes (`{ path: "/x" }`) and spell it out only when it isn't a GET. Kills the `method: "get"` repetition — an all-GET sitemap/marketing route file collapses to `{ path }` one-liners — without grouping by method or fragmenting a route's identity. Purely additive: explicit methods and the `.method` property are unchanged, and a stray/misspelled key is still an excess-property compile error.
+- **`defineRoutes` — typed query params** — declare a `query` map on a route (same `ParamType` vocabulary as path params: `"string"` | `"number"` | a `readonly` enum tuple) and the query string is typed at the call site and in `.resolve()`. Each declared key is **optional**; wrong value types and undeclared keys are compile errors (`sort: "up"` / `page: "2"` / `limit: 10` all rejected against `{ page: "number", sort: ["asc","desc"] }`). A route with no `query` map keeps the loose `QueryParams` bag, so routes you don't annotate are byte-for-byte unchanged. Type-level only — runtime `buildQueryString` is untouched.
 
 ## [6.4.0] - Behavior System v4: strict-CSP data-attribute emission + versioned runtime asset
 

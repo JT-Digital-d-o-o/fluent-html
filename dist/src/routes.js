@@ -93,7 +93,7 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
     const definitions = typeof prefixOrDefinitions === "string" ? maybeDefinitions : prefixOrDefinitions;
     const registry = {};
     for (const [name, def] of Object.entries(definitions)) {
-        const { method } = def;
+        const method = def.method ?? "get";
         const fullPath = prefix && def.path === "/" ? prefix : prefix + def.path;
         // Only a trailing `/*` or `/*name` splat is supported. A `*` anywhere else (the type
         // rejects it, but the runtime would otherwise register the route as paramless and serve

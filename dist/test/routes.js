@@ -11,6 +11,24 @@ const routes = defineRoutes({
     delete: { method: "delete", path: "/users/:id" },
     nested: { method: "get", path: "/users/:userId/posts/:postId" },
 });
+const defaultMethodRoutes = defineRoutes({
+    landing: { path: "/landing" },
+    detail: { path: "/landing/:id" },
+    submit: { method: "post", path: "/landing" },
+});
+describe("Default method", () => {
+    it("omitted method defaults to get on the callable", () => {
+        assert.deepStrictEqual(defaultMethodRoutes.landing.method, "get");
+        assert.deepStrictEqual(defaultMethodRoutes.detail.method, "get");
+    });
+    it("omitted method defaults to get on the built HTMX", () => {
+        assert.deepStrictEqual(defaultMethodRoutes.landing().method, "get");
+        assert.deepStrictEqual(defaultMethodRoutes.detail({ id: "7" }).method, "get");
+    });
+    it("explicit method still wins", () => {
+        assert.deepStrictEqual(defaultMethodRoutes.submit.method, "post");
+    });
+});
 describe("Route properties", () => {
     it("list.method is get", () => {
         assert.deepStrictEqual(routes.list.method, "get");
