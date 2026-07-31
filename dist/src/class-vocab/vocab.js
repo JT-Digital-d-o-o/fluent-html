@@ -181,7 +181,7 @@ export const classVocab = [
     custom("gradientTo", (a) => (a.length >= 1 ? [interp(`bg-linear-${a[0]}`, a[1])] : []), [["to-r"], ["to-r", "oklch"], ["to-tr", "longer"]]),
     custom("gradientLinear", (a) => [signNeg("bg-linear", a[0])], [["45"], ["-65"], ["[0.25turn]"]]),
     custom("gradientRadial", (a) => [radialGradientClass(a[0], a[1])], [[], ["top-left"], ["[at_top_left]"], ["top-right", "oklch"], ["top-right", "longer"]]),
-    custom("gradientConic", (a) => [interp(a[0] === undefined ? "bg-conic" : signNeg("bg-conic", a[0]), a[1])], [[], ["180"], ["-90"], ["undefined", "longer"]]),
+    custom("gradientConic", (a) => [interp(a[0] === undefined ? "bg-conic" : signNeg("bg-conic", a[0]), a[1])], [[], ["180"], ["-90"], ["180", "longer"]]),
     stop("from", "from"),
     stop("via", "via"),
     stop("to", "to"),
