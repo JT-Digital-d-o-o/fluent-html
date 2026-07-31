@@ -15,10 +15,14 @@ deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
 - W5 glue: asset route + BehaviorRuntimeScript + X-Fluent-Behaviors hardening +
   the row-30 dev render-throw (lives with the template)
 - W6 eslint: raw `data-behavior*` ban, behavior-client-purity, framework-only imports
-- **llm-styling (P8)** after the 6.4.0 train: vocab-generator first (validity oracle +
-  coverage watch ship as a 6.x patch, ~3d, unblocks everything else), then escape-hatch;
-  canonical-names + object-variants land later as ONE breaking release. Scope + decision
-  record: [llm-styling/](llm-styling/)
+- **llm-styling (P8)**: vocab-generator is DONE (6.6.0 oracle + 6.7.0 emitters +
+  plugin 2.0.0 derivation) — next sub-scope is [escape-hatch](llm-styling/escape-hatch/)
+  (gap fills, `.cssProp()`/`.cssClass()`, CI-blocking lint; depends on the derived
+  vocab tables, now available); canonical-names + object-variants later as ONE
+  breaking release. Scope + decision record: [llm-styling/](llm-styling/)
+- Publish note: nothing since 6.4.0 is on npm (registry still pre-v6) and
+  `main..v6.6.0` holds the whole train — plugin 2.0.0 must NOT publish before
+  fluent-html 6.7.0 (peer dep)
 
 ## Blocked on a Decision
 
@@ -30,6 +34,11 @@ deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
   (uphill in [llm-styling/tl-sink/](llm-styling/tl-sink/todo.md))
 
 ## Just Shipped
+
+- 2026-07-31 — vocab-generator complete (llm-styling P8, first sub-scope): 6.6.0
+  pinned validity oracle + coverage watch; 6.7.0 values/doc-enriched rows + types
+  emitter (`gen:vocab`, 54 generated unions, seams split, CI --check); eslint-plugin
+  2.0.0 derives fix tables from class-vocab at rule-load (hand table deleted)
 
 - 2026-07-21 — behavior v4 W1–W4+W7 implemented (6.4.0): data-behavior-* emission,
   5.95KB runtime asset, framework-only registry + buildBehaviorRuntime, 68-row
