@@ -15,6 +15,10 @@ deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
 - W5 glue: asset route + BehaviorRuntimeScript + X-Fluent-Behaviors hardening +
   the row-30 dev render-throw (lives with the template)
 - W6 eslint: raw `data-behavior*` ban, behavior-client-purity, framework-only imports
+- **llm-styling (P8)** after the 6.4.0 train: vocab-generator first (validity oracle +
+  coverage watch ship as a 6.x patch, ~3d, unblocks everything else), then escape-hatch;
+  canonical-names + object-variants land later as ONE breaking release. Scope + decision
+  record: [llm-styling/](llm-styling/)
 
 ## Blocked on a Decision
 
@@ -22,6 +26,8 @@ deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
   nightly full sweep (lean: nightly). Harness ready: `ACCEPT_ENGINES=all`.
 - ADR-12 size estimate vs measured: gate now 6KB/2.75KB (see decisions.md entry
   2026-07-21) — bless as amendment or fund further golf
+- `.tl()` sink go/no-go — deferred until canonical-names + object-variants soak
+  (uphill in [llm-styling/tl-sink/](llm-styling/tl-sink/todo.md))
 
 ## Just Shipped
 
