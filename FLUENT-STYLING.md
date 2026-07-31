@@ -4,7 +4,7 @@ Chainable, type-safe Tailwind CSS methods with IDE autocomplete for all values.
 
 ```typescript
 Div()
-  .padding("4").background("red-500").textColor("white").rounded("lg").shadow("md")
+  .p("4").bg("red-500").text("white").rounded("lg").shadow("md")
 ```
 
 ## Variants: `.on()` and `.at()`
@@ -13,9 +13,9 @@ Div()
 
 ```typescript
 Button("Save")
-  .background("blue-500").textColor("white").transition("colors")
-  .on("hover", t => t.background("blue-600").scale("105"))
-  .on("focus", t => t.ring("2").ringColor("blue-300").outline("none"))
+  .bg("blue-500").text("white").transition("colors")
+  .on("hover", t => t.bg("blue-600").scale("105"))
+  .on("focus", t => t.ring("2").ring("blue-300").outline("none"))
   .on("disabled", t => t.opacity("50").cursor("not-allowed"))
 ```
 
@@ -24,7 +24,7 @@ States: `hover` `focus` `focus-within` `focus-visible` `active` `disabled` `chec
 Variants nest:
 
 ```typescript
-Div().on("dark", t => t.background("gray-900").on("hover", t => t.background("gray-800")))
+Div().on("dark", t => t.bg("gray-900").on("hover", t => t.bg("gray-800")))
 // -> dark:bg-gray-900 dark:hover:bg-gray-800
 ```
 
@@ -44,13 +44,13 @@ Breakpoints: `sm` `md` `lg` `xl` `2xl`, plus container-query breakpoints `@3xs`�
 ```typescript
 Button("Save")
   .when(isLoading, t => t.toggle("disabled").opacity("50"))
-  .when(isPrimary, t => t.background("blue-500").textColor("white"))
+  .when(isPrimary, t => t.bg("blue-500").text("white"))
 ```
 
 ## Composition: `.apply()`
 
 ```typescript
-const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow("md");
+const card = (t: Tag) => t.p("6").bg("white").rounded("lg").shadow("md");
 const hoverLift = (t: Tag) => t.transition().duration("200")
   .on("hover", t => t.shadow("lg").translate("y", "-1"));
 
@@ -67,12 +67,26 @@ Option(city).toggle("selected", city === current) // expression
 
 ## Style Methods Reference
 
+Method name = Tailwind class prefix. Merged prefixes (`text`, `font`, `border`, `ring`, `shadow`, `flex`, `list`, …) take every value family their Tailwind prefix does — the argument discriminates, exactly like Tailwind itself: `.text("lg")` → `text-lg`, `.text("red-500")` → `text-red-500`, `.text("center")` → `text-center`.
+
+### Where names diverge from raw Tailwind
+
+The prefix rule has a few deliberate exceptions — worth knowing when deriving a method from a class you already know:
+
+- **Compound prefixes: the longest camelCase prefix wins.** `text-shadow-lg` → `.textShadow("lg")`, never `.text("shadow-lg")`; likewise `.dropShadow("lg")`, `.insetShadow("sm")`, `.insetRing("2")`, `.gridCols("3")`, `.scrollM("t", "24")`.
+- **Negative utilities go through `.neg()`.** `-mt-2` → `.neg("mt-2")`, `-inset-px` → `.neg("inset-px")`. Methods with numeric arguments relocate the sign themselves: `.rotate(-45)` → `-rotate-45`, `.colEnd(-1)` → `-col-end-1`, `.bgLinear(-65)` → `-bg-linear-65`.
+- **Translate takes its axis as an argument** — `.translate("y", "-1")` → `-translate-y-1` — while rotate/scale use per-axis methods (`.rotateX("45")`, `.scaleX("110")`).
+- **A few names can't equal their prefix:** `.containerQuery()` (`@container` isn't a valid identifier), `.gradient(from, to, dir?)` (a multi-class convenience over `.bgLinear()`/`.from()`/`.to()`), and `.snap("x", "mandatory")` (emits the `snap-x snap-mandatory` pair; `"none"` would collide between the axis and align families, so children use `.snapAlign()`/`.snapStop()`).
+
 ### Spacing
 
 ```typescript
-.padding("4")              // p-4
-.padding("x", "4")         // px-4  (directions: x, y, top/t, bottom/b, left/l, right/r)
-.margin("x", "auto")       // mx-auto
+.p("4")                    // p-4 (all sides; same for .m())
+.px("6")  .py("3")         // px-6, py-3
+.pt("4")  .pb("4")  .pl("2")  .pr("2")
+.mx("auto")                // mx-auto
+.mt("8")  .mb("2")  .ml("4")  .mr("4")
+.p("x", "4")               // px-4 (parametric side form; directions: x, y, top/t, bottom/b, left/l, right/r)
 .gap("4")                  // gap-4
 .gap("x", "2")             // gap-x-2
 .spaceX("4")               // space-x-4
@@ -97,35 +111,35 @@ Sizing, spacing, and position methods accept a `(unit, amount)` overload for arb
 .w("px", 180)              // w-[180px]
 .h("rem", 2.5)             // h-[2.5rem]
 .minH("vh", 50)            // min-h-[50vh]
-.padding("px", 12)         // p-[12px]
-.margin("em", 1.5)         // m-[1.5em]
+.p("px", 12)               // p-[12px]
+.mt("em", 1.5)             // mt-[1.5em]
 .gap("px", 10)             // gap-[10px]
 .top("rem", 2)             // top-[2rem]
 ```
 
-Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, `minW`, `maxW`, `minH`, `maxH`, `padding`, `margin`, `gap`, `top`, `right`, `bottom`, `left`, `inset`, `insetX`, `insetY`, `insetS`, `insetE`, `strokeWidth`, `decorationThickness`, `scrollMargin`, `scrollPadding`.
+Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, `minW`, `maxW`, `minH`, `maxH`, `p`, `m` + the directional shorthands (`px`…`pr`, `mx`…`mr`), `gap`, `top`, `right`, `bottom`, `left`, `inset`, `insetX`, `insetY`, `insetS`, `insetE`, `text`, `leading`, `tracking`, `underlineOffset`, `stroke`, `decoration`, `scrollM`, `scrollP`.
 
 ### Colors
 
 ```typescript
-.background("red-500")     // bg-red-500
-.textColor("gray-700")     // text-gray-700
-.borderColor("gray-300")   // border-gray-300
-.ringColor("blue-300")     // ring-blue-300
-.fillColor("current")      // fill-current (SVG paint; .strokeColor(), .strokeWidth("2"))
-.accentColor("blue-600")   // accent-blue-600 (.caretColor("pink-500") for the text caret)
-.decorationColor("blue-500") // decoration-blue-500 (.decorationStyle("wavy"), .decorationThickness("2"))
+.bg("red-500")             // bg-red-500
+.text("gray-700")          // text-gray-700
+.border("gray-300")        // border-gray-300
+.ring("blue-300")          // ring-blue-300
+.fill("current")           // fill-current (SVG paint; .stroke("current"), .stroke("2"))
+.accent("blue-600")        // accent-blue-600 (.caret("pink-500") for the text caret)
+.decoration("blue-500")    // decoration-blue-500 (same method for style/thickness: .decoration("wavy"), .decoration("2"))
 .scheme("light-dark")      // scheme-light-dark (color-scheme)
 ```
 
 ### Typography
 
 ```typescript
-.textSize("xl")            // text-xl
-.textAlign("center")       // text-center
-.fontWeight("semibold")    // font-semibold
-.fontFamily("mono")        // font-mono
-.bold()  .italic()         // font-bold, italic
+.text("xl")                // text-xl
+.text("center")            // text-center
+.font("semibold")          // font-semibold
+.font("mono")              // font-mono (weights and families share the prefix)
+.italic()                  // italic
 .underline()  .noUnderline()  .lineThrough()  .truncate()
 .uppercase()  .lowercase()  .capitalize()
 .leading("tight")          // leading-tight (line-height)
@@ -135,11 +149,10 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .underlineOffset("4")      // underline-offset-4
 .lineClamp("3")            // line-clamp-3
 .breakAll()                // break-all
-.listStyleType("disc")     // list-disc
-.listStylePosition("inside") // list-inside
-.textWrap("balance")       // text-balance (.textWrap("pretty") for body copy)
+.list("disc")              // list-disc (.list("inside") for position)
+.text("balance")           // text-balance (.text("pretty") for body copy)
 .hyphens("auto")           // hyphens-auto (needs an ancestor lang)
-.textShadow("lg")          // text-shadow-lg (v4.1; .textShadow("lg/30"), .textShadowColor("black/30"))
+.textShadow("lg")          // text-shadow-lg (v4.1; .textShadow("lg/30"), colors too: .textShadow("black/30"))
 ```
 
 ### Flexbox
@@ -147,11 +160,11 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 ```typescript
 .flex()                    // flex
 .flex("1")                 // flex-1
-.flexDirection("col")      // flex-col
-.justifyContent("between") // justify-between
-.alignItems("center")      // items-center
-.alignSelf("center")       // self-center
-.flexWrap("wrap")          // flex-wrap
+.flex("col")               // flex-col
+.flex("wrap")              // flex-wrap
+.justify("between")        // justify-between
+.items("center")           // items-center
+.self("center")            // self-center
 .shrink("0")  .grow()      // shrink-0, grow
 ```
 
@@ -174,12 +187,12 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .border("t")               // border-t (directional)
 .rounded("lg")             // rounded-lg
 .shadow("md")              // shadow-md
-.shadowColor("red-500")    // shadow-red-500
-.ring("2")                 // ring-2
+.shadow("red-500")         // shadow-red-500
+.ring("2")                 // ring-2 (widths 0|1|2|3|4|8; colors on the same method)
 .opacity("50")             // opacity-50
 .divideX()  .divideY("2")  // divide-x, divide-y-2
-.dropShadow("lg")          // drop-shadow-lg (.dropShadowColor() for v4.1 colored)
-.insetShadow("sm")         // inset-shadow-sm (.insetRing("2") inner ring; both have +Color)
+.dropShadow("lg")          // drop-shadow-lg (v4.1 colors on the same method: .dropShadow("red-500/50"))
+.insetShadow("sm")         // inset-shadow-sm (.insetRing("2") inner ring; both take colors too)
 .mixBlend("multiply")      // mix-blend-multiply (.bgBlend() for background layers)
 .isolate()                 // isolate (new stacking context — z-index/blend leak guard)
 ```
@@ -190,16 +203,16 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .relative()                // relative  (.absolute() .fixed() .sticky() .static())
 .block()                   // block     (.inline() .inlineFlex() .inlineGrid() .contents())
 .hidden()                  // hidden
-.zIndex("10")              // z-10
+.z("10")                   // z-10
 .inset("0")                // inset-0
 .top("4")  .right("0")  .bottom("0")  .left("0")
 .insetX("0")  .insetY("4")  // inset-x-0, inset-y-4 (.insetS()/.insetE() are logical/RTL)
 .overflow("hidden")        // overflow-hidden
 .overflow("x", "auto")     // overflow-x-auto
-.objectFit("cover")        // object-cover
+.object("cover")           // object-cover
 .columns("3")              // columns-3 (.breakInside("avoid") keeps a card whole)
 .snap("x", "mandatory")    // snap-x snap-mandatory (.snapAlign("center") on children)
-.scrollMargin("t", "24")   // scroll-mt-24 (.scrollPadding(), .scrollBehavior("smooth"))
+.scrollM("t", "24")        // scroll-mt-24 (.scrollP(), .scroll("smooth"))
 .fieldSizing("content")    // field-sizing-content (JS-free auto-grow textarea)
 ```
 
@@ -215,12 +228,12 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .scaleX("110")  .scaleZ("75")  .scale3d()      // scale-x-110, scale-z-75, scale-3d
 .translate("z", "12")      // translate-z-12 (3D depth)
 .perspective("normal")     // perspective-normal (gate on the PARENT; + .perspectiveOrigin())
-.transformStyle("3d")      // transform-3d (+ .backfaceVisibility("hidden"))
+.transform("3d")           // transform-3d (+ .backface("hidden"))
 .transition("colors")      // transition-colors
 .duration("200")           // duration-200
 .delay("150")              // delay-150
 .ease("in-out")            // ease-in-out
-.transitionBehavior("discrete") // transition-discrete (animate display/popover/dialog)
+.transition("discrete")    // transition-discrete (animate display/popover/dialog)
 .animate("spin")           // animate-spin
 ```
 
@@ -228,9 +241,9 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 
 ```typescript
 .gradient("blue-500", "pink-500", "to-r")  // bg-linear-to-r from-blue-500 to-pink-500
-.gradientTo("to-r")        // bg-linear-to-r  (interpolation: .gradientTo("to-r", "oklch"))
-.gradientLinear(45)        // bg-linear-45 (angle; -65 → -bg-linear-65)
-.gradientRadial("top-left") // bg-radial-[at_top_left]   ·   .gradientConic(180)  // bg-conic-180
+.bgLinear("to-r")          // bg-linear-to-r  (interpolation: .bgLinear("to-r", "oklch"))
+.bgLinear(45)              // bg-linear-45 (angle; -65 → -bg-linear-65)
+.bgRadial("top-left")      // bg-radial-[at_top_left]   ·   .bgConic(180)  // bg-conic-180
 .from("blue-500", "10%")   // from-blue-500 from-10%  (optional stop position)
 .via("purple-500")  .to("pink-500", "90%")
 ```
@@ -253,9 +266,9 @@ All filters have `backdrop` variants: `.backdropBlur()`, `.backdropBrightness()`
 ### Masks (v4.1)
 
 ```typescript
-.maskImage("none")         // mask-none  (or "[url(/fade.png)]")
+.mask("none")              // mask-none  (or "[url(/fade.png)]")
 .maskFrom("b", "50%")  .maskTo("b", "90%")  // mask-b-from-50% mask-b-to-90% (edge fade)
-.maskComposite("intersect") // mask-intersect (stacked masks)
+.mask("intersect")         // mask-intersect (stacked masks)
 .maskType("luminance")     // mask-type-luminance (SVG <mask>)
 ```
 
@@ -296,20 +309,20 @@ Div(
 ```typescript
 const Card = ({ title, body }: { title: string; body: string }) =>
   Div(
-    H2(title).textSize("xl").bold().margin("bottom", "2"),
-    P(body).textColor("gray-600"),
+    H2(title).text("xl").font("bold").mb("2"),
+    P(body).text("gray-600"),
     Div(
-      Button("Cancel").padding("x", "4").padding("y", "2").border().rounded()
-        .on("hover", t => t.background("gray-50")),
-      Button("Submit").padding("x", "4").padding("y", "2")
-        .background("blue-500").textColor("white").rounded()
-        .on("hover", t => t.background("blue-600"))
-    ).flex().gap("4").justifyContent("end").margin("top", "6")
+      Button("Cancel").px("4").py("2").border().rounded()
+        .on("hover", t => t.bg("gray-50")),
+      Button("Submit").px("4").py("2")
+        .bg("blue-500").text("white").rounded()
+        .on("hover", t => t.bg("blue-600"))
+    ).flex().gap("4").justify("end").mt("6")
   )
-    .background("white").padding("6").rounded("xl").shadow("lg")
-    .border().borderColor("gray-200")
-    .at("md", t => t.padding("8"))
-    .on("dark", t => t.background("gray-800").borderColor("gray-700"))
+    .bg("white").p("6").rounded("xl").shadow("lg")
+    .border().border("gray-200")
+    .at("md", t => t.p("8"))
+    .on("dark", t => t.bg("gray-800").border("gray-700"))
 ```
 
 ## Theming: `defineTheme()`
@@ -334,10 +347,10 @@ declare module "fluent-html" {
 ```
 
 ```ts
-Div().background("brand").padding("gutter")   // ✓ your tokens, autocompleted
-Div().background("brnad")                     // ✗ compile error (closed unions)
-Div().background("blue-500")                  // ✓ built-ins still work
-const card = (t: Tag) => t.padding("6").rounded("lg").shadow("md");  // ✓ preset = composition
+Div().bg("brand").p("gutter")   // ✓ your tokens, autocompleted
+Div().bg("brnad")               // ✗ compile error (closed unions)
+Div().bg("blue-500")            // ✓ built-ins still work
+const card = (t: Tag) => t.p("6").rounded("lg").shadow("md");  // ✓ preset = composition
 Div().apply(card)                             // ✓ presets are user-land, NOT defineTheme
 ```
 
@@ -351,7 +364,7 @@ Raw class strings (`setClass`/`addClass` with Tailwind) are lint-blocked: they b
 
 | Situation | Hatch | Emits |
 |---|---|---|
-| Arbitrary value of a covered utility | bracket arm / unit overload: `.textSize("[13px]")`, `.w("px", 180)`, `.padding("[37px]")` | `text-[13px]`, `w-[180px]` |
+| Arbitrary value of a covered utility | bracket arm / unit overload: `.text("[13px]")`, `.w("px", 180)`, `.p("[37px]")` | `text-[13px]`, `w-[180px]` |
 | CSS property with no Tailwind utility | `.cssProp("mask-repeat", "no-repeat")` | `[mask-repeat:no-repeat]` |
 | Legit non-Tailwind class (JS/CSS hook, third-party) | `.cssClass("js-map-container")` | verbatim |
 | Runtime-computed style value | `.setStyle("--progress: " + pct + "%")` | inline style (extractor-opaque, dynamic-safe) |

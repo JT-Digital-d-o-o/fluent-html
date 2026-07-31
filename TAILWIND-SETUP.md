@@ -8,8 +8,8 @@ When you use fluent-html's fluent styling methods, Tailwind CSS doesn't automati
 
 ```typescript
 Div()
-  .background("red-500")  // Generates "bg-red-500"
-  .padding("4")           // Generates "p-4"
+  .bg("red-500")  // Generates "bg-red-500"
+  .p("4")         // Generates "p-4"
 ```
 
 **Solution:** Use the `fluent-html-tailwind-extractor` to tell Tailwind which classes to generate.
@@ -86,9 +86,9 @@ The extractor scans your fluent-html code and tells Tailwind which classes to ge
 ```typescript
 // Your code:
 Div()
-  .background("red-500")
-  .padding("4")
-  .textColor("white")
+  .bg("red-500")
+  .p("4")
+  .text("white")
   .rounded("lg")
 
 // Extractor finds: bg-red-500, p-4, text-white, rounded-lg
@@ -124,23 +124,23 @@ import { Div, H2, P, Button } from "fluent-html";
 export const Card = () =>
   Div(
     H2("Card Title")
-      .textSize("2xl")
-      .fontWeight("bold")
-      .margin("bottom", "4"),
+      .text("2xl")
+      .font("bold")
+      .mb("4"),
 
     P("Card content")
-      .textColor("gray-600"),
+      .text("gray-600"),
 
     Button("Click")
-      .padding("x", "4")
-      .padding("y", "2")
-      .background("blue-500")
-      .textColor("white")
+      .px("4")
+      .py("2")
+      .bg("blue-500")
+      .text("white")
       .rounded()
-      .on("hover", t => t.background("blue-600")),
+      .on("hover", t => t.bg("blue-600")),
   )
-    .background("white")
-    .padding("6")
+    .bg("white")
+    .p("6")
     .rounded("lg")
     .shadow("md");
 ```

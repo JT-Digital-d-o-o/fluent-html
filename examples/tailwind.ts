@@ -11,8 +11,8 @@ const card = (t: Tag) =>
   t.p("6").bg("white").rounded("xl").shadow("lg");
 
 const primaryBtn = <T extends Tag>(t: T) =>
-  t.p("x", "6")
-    .p("y", "3")
+  t.px("6")
+    .py("3")
     .bg("blue-500")
     .text("white")
     .rounded("lg")
@@ -28,16 +28,16 @@ const styledCard = Div(
 
   P("Welcome back! Here's what's happening today.")
     .text("gray-600")
-    .m("top", "2"),
+    .mt("2"),
 
   Button("View Reports")
     .apply(primaryBtn)
-    .m("top", "4")
+    .mt("4")
     .on("hover", t => t.bg("blue-600").scale("105"))
     .on("focus", t => t.ring("2").ring("blue-300").outline("none")),
 )
   .apply(card)
   .maxW("md")
-  .m("x", "auto");
+  .mx("auto");
 
 console.log(render(styledCard));

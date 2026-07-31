@@ -13,7 +13,7 @@ import {
 
 const isAdmin = true;
 const userName: string | null = "Alice";
-const avatarUrl: string | null = null;
+const avatarUrl: string | null = "/avatars/alice.png";
 
 const header = Div(
   // Boolean condition

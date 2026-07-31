@@ -27,17 +27,17 @@ import { Div, H1, Button, render } from 'fluent-html';
 
 const page = Div(
   H1("Welcome")
-    .textSize("3xl")
-    .fontWeight("bold"),
+    .text("3xl")
+    .font("bold"),
 
   Button("Get Started")
-    .padding("x", "6")
-    .padding("y", "3")
-    .background("blue-500")
-    .textColor("white")
+    .px("6")
+    .py("3")
+    .bg("blue-500")
+    .text("white")
     .rounded("lg")
     .shadow()
-).padding("8").maxW("4xl").margin("x", "auto");
+).p("8").maxW("4xl").mx("auto");
 
 render(page);
 ```
@@ -70,20 +70,20 @@ render(page);
 ```typescript
 // Chainable Tailwind-friendly methods
 Card(
-  H2("Dashboard").textSize("xl").fontWeight("semibold"),
-  P("Welcome back!").textColor("gray-600")
+  H2("Dashboard").text("xl").font("semibold"),
+  P("Welcome back!").text("gray-600")
 )
-  .background("white")
-  .padding("6")
+  .bg("white")
+  .p("6")
   .rounded("xl")
   .shadow("lg")
 
 // Pseudo-classes with .on() and breakpoints with .at()
 Button("Save")
-  .background("blue-500").textColor("white").padding("x", "4").rounded()
-  .on("hover", t => t.background("blue-600"))
+  .bg("blue-500").text("white").px("4").rounded()
+  .on("hover", t => t.bg("blue-600"))
   .on("disabled", t => t.opacity("50").cursor("not-allowed"))
-  .at("md", t => t.padding("x", "8").textSize("lg"))
+  .at("md", t => t.px("8").text("lg"))
 
 // Escape hatches, in order: arbitrary CSS → .cssProp(); non-Tailwind class hooks → .cssClass()
 Div("Content").cssProp("mask-repeat", "no-repeat").cssClass("js-map-container")
@@ -139,15 +139,15 @@ Use `.when()` to conditionally modify a tag without breaking the chain:
 
 ```typescript
 Button("Save")
-  .padding("x", "4").rounded()
+  .px("4").rounded()
   .when(isLoading, t => t.toggle("disabled").opacity("50"))
-  .when(isPrimary, t => t.background("blue-600").textColor("white"))
+  .when(isPrimary, t => t.bg("blue-600").text("white"))
 ```
 
 `.whenElse()` adds a second modifier for the other branch (the chain-level mirror of `IfThenElse`):
 
 ```typescript
-Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
+Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.bg("blue-500"))
 Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
 ```
 
@@ -162,19 +162,19 @@ Ul().addChild(...users.map(u => Li(u.name)))   // append after construction
 
 ```typescript
 Span(status).whenMatch(status, {          // status: "active" | "pending" | "closed"
-  active:  t => t.background("green-100").textColor("green-700"),
-  pending: t => t.background("amber-100").textColor("amber-700"),
-  closed:  t => t.background("gray-100").textColor("gray-600"),
+  active:  t => t.bg("green-100").text("green-700"),
+  pending: t => t.bg("amber-100").text("amber-700"),
+  closed:  t => t.bg("gray-100").text("gray-600"),
 })
-Button(label).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))
+Button(label).whenMatch(tone, { danger: t => t.bg("red-500") }, t => t.bg("gray-200"))
 ```
 
 Never chain `.when()` on one discriminant — it re-tests the value per branch and a new union member compiles silently, rendering unstyled:
 
 ```typescript
-Span().when(status === "active", t => t.background("green-100"))
-      .when(status === "closed", t => t.background("gray-100"))                            // ✗
-Span().whenMatch(status, { active: t => t.background("green-100"), closed: t => t.background("gray-100") })  // ✓
+Span().when(status === "active", t => t.bg("green-100"))
+      .when(status === "closed", t => t.bg("gray-100"))                            // ✗
+Span().whenMatch(status, { active: t => t.bg("green-100"), closed: t => t.bg("gray-100") })  // ✓
 ```
 
 Keep each branch's fluent calls literal so the Tailwind extractor sees the classes statically. That holds even when variant names coincide with tokens: `Div().maxW(width)` type-checks for `width: "lg" | "2xl"`, but a variable argument is invisible to the extractor — and the general discriminant maps each variant to several properties, which no single dynamic call can express.
@@ -184,8 +184,8 @@ Keep each branch's fluent calls literal so the Tailwind extractor sees the class
 Use `.apply()` to compose reusable modifier functions. A style-fn typed against the base `Tag` composes onto any element subclass (`Button`, `Input`, `A`, …) and may return anything:
 
 ```typescript
-const card = (t: Tag) => t.rounded().shadow().padding("4").background("white");
-const danger = (t: Tag) => t.borderColor("red-500").textColor("red-700");
+const card = (t: Tag) => t.rounded().shadow().p("4").bg("white");
+const danger = (t: Tag) => t.border("red-500").text("red-700");
 
 // Apply single or multiple modifiers
 Div("Warning").apply(card, danger)
@@ -233,11 +233,11 @@ Nav(Intersperse(crumbs, c => A(c.label), () => Span("/")))  // separator between
 MatchValue(trend, { up: "↑", down: "↓" }, "→")          // "↑" | "↓" | "→"
 
 // Two-branch tag modifier (mirrors IfThenElse, not truthiness)
-Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
+Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.bg("blue-500"))
 
 // The match trio: MatchValue = value per property, whenMatch = modifier per variant, Match = view per variant
 Span(MatchValue(tone, { ok: "✓", err: "✗" }))
-Div().whenMatch(tone, { ok: t => t.textColor("green-700"), err: t => t.textColor("red-700") })
+Div().whenMatch(tone, { ok: t => t.text("green-700"), err: t => t.text("red-700") })
 Match(tone, { ok: () => OkBanner(), err: () => ErrBanner() })
 ```
 
@@ -466,10 +466,10 @@ Form<Register>({ values, errors }, (f) =>
 
     Button("Register")
       .setType("submit")
-      .background("blue-500").textColor("white")
-      .padding("x", "4").padding("y", "2").rounded()
+      .bg("blue-500").text("white")
+      .px("4").py("2").rounded()
       .cursor("pointer"),
-  ).flex().flexDirection("col").gap("4"),
+  ).flex().flex("col").gap("4"),
 )
   .setHtmx(hx("/api/register", {
     method: "post",
@@ -977,10 +977,10 @@ import { Div, Button } from 'fluent-html';
 // Instead of raw Tailwind strings (lint-blocked — they bypass the type system
 // and the safelist extractor), write:
 Div("Content")
-  .padding("4")
-  .background("red-500")
-  .margin("x", "8")
-  .textColor("white")
+  .p("4")
+  .bg("red-500")
+  .mx("8")
+  .text("white")
   .rounded("lg")
   .shadow("md")
 ```
@@ -993,49 +993,47 @@ All fluent methods have **type-safe parameters** with IDE autocomplete for Tailw
 ```typescript
 Div()
   .w("full")              // IDE suggests: "full", "1/2", "screen", "64", etc.
-  .background("red-500")  // IDE suggests: all color-shade combinations
+  .bg("red-500")          // IDE suggests: all color-shade combinations
   .rounded("lg")          // IDE suggests: "sm", "md", "lg", "xl", "full", etc.
   .tracking("wide")       // IDE suggests: "tighter", "tight", "normal", "wide", etc.
 ```
 
-The type system enforces valid Tailwind values — wrong values don't compile. For arbitrary values, use the bracket arms (`.textSize("[13px]")`) or the `(unit, amount)` overloads (`.w("px", 180)`); for CSS properties Tailwind has no utility for, use `.cssProp()`.
+The type system enforces valid Tailwind values — wrong values don't compile. For arbitrary values, use the bracket arms (`.text("[13px]")`) or the `(unit, amount)` overloads (`.w("px", 180)`); for CSS properties Tailwind has no utility for, use `.cssProp()`.
+
+Method names equal Tailwind class prefixes — if you know the class, you know the method. Merged prefixes (`text`, `font`, `border`, `ring`, `shadow`, `flex`, …) accept every value family their prefix does, and the argument discriminates exactly like Tailwind itself: `.text("lg")` → `text-lg`, `.text("red-500")` → `text-red-500`, `.text("center")` → `text-center`.
 
 ### Spacing Methods
 
 **Padding:**
 ```typescript
-.padding("4")                    // p-4 (all sides)
-.padding("x", "4")               // px-4 (horizontal)
-.padding("y", "4")               // py-4 (vertical)
-.padding("top", "4")             // pt-4
-.padding("bottom", "4")          // pb-4
-.padding("left", "4")            // pl-4
-.padding("right", "4")           // pr-4
+.p("4")                          // p-4 (all sides)
+.px("4")                         // px-4 (horizontal)
+.py("4")                         // py-4 (vertical)
+.pt("4")                         // pt-4 (also .pb() .pl() .pr())
 ```
 
 **Margin:**
 ```typescript
-.margin("4")                     // m-4 (all sides)
-.margin("x", "auto")             // mx-auto (center horizontally)
-.margin("y", "4")                // my-4 (vertical)
-.margin("top", "8")              // mt-8
+.m("4")                          // m-4 (all sides)
+.mx("auto")                      // mx-auto (center horizontally)
+.my("4")                         // my-4 (vertical)
+.mt("8")                         // mt-8 (also .mb() .ml() .mr())
 ```
 
 ### Color & Typography
 
 **Colors:**
 ```typescript
-.background("red-500")           // bg-red-500
-.textColor("gray-700")           // text-gray-700
-.borderColor("gray-300")         // border-gray-300
+.bg("red-500")                   // bg-red-500
+.text("gray-700")                // text-gray-700
+.border("gray-300")              // border-gray-300
 ```
 
 **Typography:**
 ```typescript
-.textSize("xl")                  // text-xl
-.textAlign("center")             // text-center
-.fontWeight("bold")              // font-bold
-.bold()                          // font-bold (shorthand)
+.text("xl")                      // text-xl
+.text("center")                  // text-center
+.font("bold")                    // font-bold (families too: .font("mono"))
 .italic()                        // italic
 ```
 
@@ -1070,9 +1068,9 @@ The type system enforces valid Tailwind values — wrong values don't compile. F
 **Flexbox:**
 ```typescript
 .flex()                          // flex
-.flexDirection("col")            // flex-col
-.justifyContent("center")        // justify-center
-.alignItems("center")            // items-center
+.flex("col")                     // flex-col
+.justify("center")               // justify-center
+.items("center")                 // items-center
 .gap("4")                        // gap-4
 ```
 
@@ -1100,7 +1098,7 @@ The type system enforces valid Tailwind values — wrong values don't compile. F
 .relative()                      // relative
 .absolute()                      // absolute  (also .fixed() .sticky() .static())
 .block()                         // block     (also .inline() .inlineFlex() .inlineGrid() .contents())
-.zIndex("10")                    // z-10
+.z("10")                         // z-10
 .opacity("50")                   // opacity-50
 .cursor("pointer")               // cursor-pointer
 .overflow("hidden")              // overflow-hidden
@@ -1112,12 +1110,12 @@ Use `.on(state, fn)` for hover, focus, active, disabled, and other pseudo-class 
 
 ```typescript
 Button("Save")
-  .padding("x", "4").padding("y", "2")
-  .background("blue-500")
-  .textColor("white")
+  .px("4").py("2")
+  .bg("blue-500")
+  .text("white")
   .rounded()
-  .on("hover", t => t.background("blue-600").scale("105"))
-  .on("focus", t => t.ring("2").ringColor("blue-300").outline("none"))
+  .on("hover", t => t.bg("blue-600").scale("105"))
+  .on("focus", t => t.ring("2").ring("blue-300").outline("none"))
   .on("disabled", t => t.opacity("50").cursor("not-allowed"))
 // → px-4 py-2 bg-blue-500 text-white rounded
 //   hover:bg-blue-600 hover:scale-105
@@ -1148,10 +1146,10 @@ Use `.at(breakpoint, fn)` for responsive variants — same pattern as `.on()` bu
 
 ```typescript
 Div("Sidebar")
-  .padding("4")
-  .textSize("sm")
-  .at("md", t => t.padding("6").textSize("base"))
-  .at("lg", t => t.padding("8").textSize("lg"))
+  .p("4")
+  .text("sm")
+  .at("md", t => t.p("6").text("base"))
+  .at("lg", t => t.p("8").text("lg"))
 // → p-4 text-sm md:p-6 md:text-base lg:p-8 lg:text-lg
 ```
 
@@ -1163,17 +1161,17 @@ Variants compose naturally — nest `.on()` inside `.at()` (or vice versa) for c
 
 ```typescript
 Button("Save")
-  .background("blue-500")
+  .bg("blue-500")
   .at("md", t => t
-    .padding("x", "8")
-    .on("hover", t2 => t2.background("blue-700"))
+    .px("8")
+    .on("hover", t2 => t2.bg("blue-700"))
   )
 // → bg-blue-500 md:px-8 md:hover:bg-blue-700
 
 Card()
   .on("dark", t => t
-    .background("gray-900")
-    .on("hover", t2 => t2.background("gray-800"))
+    .bg("gray-900")
+    .on("hover", t2 => t2.bg("gray-800"))
   )
 // → dark:bg-gray-900 dark:hover:bg-gray-800
 ```
@@ -1183,36 +1181,36 @@ Card()
 ```typescript
 const card = Div(
   H2("Card Title")
-    .textSize("2xl")
-    .fontWeight("bold")
-    .margin("bottom", "4"),
+    .text("2xl")
+    .font("bold")
+    .mb("4"),
 
   P("Card content goes here...")
-    .textColor("gray-600")
-    .margin("bottom", "6"),
+    .text("gray-600")
+    .mb("6"),
 
   Div(
     Button("Cancel")
-      .padding("x", "4")
-      .padding("y", "2")
+      .px("4")
+      .py("2")
       .border()
-      .borderColor("gray-300")
+      .border("gray-300")
       .rounded(),
 
     Button("Submit")
-      .padding("x", "4")
-      .padding("y", "2")
-      .background("blue-500")
-      .textColor("white")
+      .px("4")
+      .py("2")
+      .bg("blue-500")
+      .text("white")
       .rounded()
       .shadow()
   )
     .flex()
     .gap("4")
-    .justifyContent("end")
+    .justify("end")
 )
-  .background("white")
-  .padding("6")
+  .bg("white")
+  .p("6")
   .rounded("xl")
   .shadow("lg")
   .w("full")
@@ -1225,9 +1223,9 @@ You can freely mix fluent methods with traditional class names:
 
 ```typescript
 Div()
-  .padding("4")                        // Typed utility
-  .background("red-500")               // Typed utility
-  .on("hover", t => t.background("red-600"))  // Variants via .on()/.at()
+  .p("4")                              // Typed utility
+  .bg("red-500")                       // Typed utility
+  .on("hover", t => t.bg("red-600"))   // Variants via .on()/.at()
   .cssProp("mask-repeat", "no-repeat") // Arbitrary CSS → [mask-repeat:no-repeat]
   .cssClass("js-hook");                // Non-Tailwind class marker
 ```
@@ -1238,9 +1236,9 @@ All methods return the correct type for full IDE autocomplete:
 
 ```typescript
 Button("Click")
-  .padding("4")                  // Available on all Tags
+  .p("4")                        // Available on all Tags
   .setType("submit")             // Button-specific method
-  .background("blue-500")        // Available on all Tags
+  .bg("blue-500")                // Available on all Tags
   .toggle("disabled", isLoading);// Boolean attributes — one .toggle() path
 ```
 
@@ -1272,10 +1270,10 @@ declare module "fluent-html" {
 Now your tokens are first-class on every fluent method — autocompleted, and typo-checked:
 
 ```ts
-Div().background("brand").padding("gutter")   // ✓ autocompletes; both are your tokens
-Div().background("brnad")                     // ✗ compile error — caught at build, not at runtime
-Div().background("blue-500")                  // ✓ built-ins still work
-Div().background("[#1a2b3c]")                 // ✓ arbitrary values still work
+Div().bg("brand").p("gutter")   // ✓ autocompletes; both are your tokens
+Div().bg("brnad")               // ✗ compile error — caught at build, not at runtime
+Div().bg("blue-500")            // ✓ built-ins still work
+Div().bg("[#1a2b3c]")           // ✓ arbitrary values still work
 ```
 
 Wire the CSS + safelist once — generate a `.css` file in a prebuild step and `@import` it:
@@ -1719,7 +1717,7 @@ Dialog(
   H2("Confirm Action"),
   P("Are you sure you want to proceed?"),
   Button("Cancel").setCommand("close").setCommandfor(modal),
-  Button("Confirm").background("blue-500").textColor("white"),
+  Button("Confirm").bg("blue-500").text("white"),
 ).setId(modal).setClosedby("any")
 
 // Progress and Meter
@@ -1811,9 +1809,9 @@ type Status = 'pending' | 'approved' | 'rejected';
 
 function StatusBadge(status: Status): View {
   return Match(status, {
-    pending:  () => Span("Pending").textColor("yellow-600"),
-    approved: () => Span("Approved").textColor("green-600"),
-    rejected: () => Span("Rejected").textColor("red-600"),
+    pending:  () => Span("Pending").text("yellow-600"),
+    approved: () => Span("Approved").text("green-600"),
+    rejected: () => Span("Rejected").text("red-600"),
   });
 }
 ```
@@ -1866,12 +1864,12 @@ Ul(ForEach(items, (item, index) =>
 
 // Range iteration (0 to n-1)
 Div(ForEach(5, i =>
-  Span(`Item ${i}`).inlineBlock().padding("2")
+  Span(`Item ${i}`).inlineBlock().p("2")
 ))
 
 // Range iteration (start to end-1)
 Div(ForEach(1, 6, i =>
-  Button(`Page ${i}`).padding("x", "3").padding("y", "1")
+  Button(`Page ${i}`).px("3").py("1")
 ))
 
 // Repeat n times
@@ -1905,11 +1903,11 @@ export default [{
 The plugin catches the most common fluent-html mistake — calling `.setClass()` after fluent methods, which silently **replaces** all previously set classes:
 
 ```typescript
-// 🚨 error: setClass after fluent modifier — background("green-700") and padding("4") are lost
-Div().background("green-700").padding("4").setClass("bg-red-500 flex")
+// 🚨 error: setClass after fluent modifier — bg("green-700") and p("4") are lost
+Div().bg("green-700").p("4").setClass("bg-red-500 flex")
 
 // ✅ auto-fixed — fluent methods append safely
-Div().background("green-700").padding("4").background("red-500").flex()
+Div().bg("green-700").p("4").bg("red-500").flex()
 ```
 
 It also catches `.setClass()` inside `.when()` / `.apply()` callbacks and multiple `.setClass()` calls in the same chain — both of which silently discard styles.
@@ -1945,7 +1943,7 @@ See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-esl
 
 [fluent-html-tailwind-extractor](https://github.com/JT-Digital-d-o-o/fluent-html-tailwind-extractor) teaches Tailwind which CSS classes to generate from fluent-html's method calls.
 
-**The problem:** Tailwind scans source files for class names, but fluent methods like `.background("red-500")` don't look like `bg-red-500` — so Tailwind won't generate the CSS.
+**The problem:** Tailwind scans source files for class names, but fluent methods like `.bg("red-500")` don't look like `bg-red-500` — so Tailwind won't generate the CSS.
 
 ```bash
 npm install fluent-html-tailwind-extractor --save-dev

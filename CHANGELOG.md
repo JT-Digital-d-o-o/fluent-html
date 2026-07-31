@@ -35,6 +35,11 @@ One method per Tailwind class prefix; the argument's (statically disjoint) union
 
 Pairs with **eslint-plugin-fluent-html 4.0.0** (derived tables re-derive from the canonical vocab; autofixes now emit `.bg()`/`.p()`/`.mt()`/… and the directional shorthands own their prefixes).
 
+### 📝 Docs
+
+- README, FLUENT-STYLING.md, TAILWIND-SETUP.md, examples/, the guidelines surface, and the tooling READMEs (extractor, eslint plugin) teach only the canonical names (directional shorthands as the preferred spelling). FLUENT-STYLING states the prefix rule up front and documents the residual divergences ("Where names diverge from raw Tailwind": compound-prefix boundary, `.neg()`, translate axis form, `containerQuery`/`gradient`/`snap`).
+- Examples now typecheck under strict; fixed two latent example bugs (a dynamic-interpolation badge helper → `whenMatch` with literal branches, and a flow-narrowed `null` in the `IfThen` narrowing demo).
+
 ## [6.8.0] - Escape hatch closure: vocab gap fills + font-family theme tokens
 
 First stage of `llm-styling/escape-hatch` — the last vocab gaps are filled so no styling need forces an author off the typed surface.

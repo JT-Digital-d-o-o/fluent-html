@@ -53,7 +53,7 @@ SSR apps. Interactivity = HTMX swapping server-rendered partials. Client-side JS
 
 - **No dynamic class interpolation** — prefer literal fluent calls; when a token must come from a variable, put it in `defineTheme()`'s `staticManifest` so the extractor still emits it.
 - **v4 build wiring** — fluent classes never appear as literal text in source, so v4's auto-detection can't see them. A prebuild step (`generateFluentSafelist`) writes a `@source inline("…")` **file** your CSS `@import`s (a real file — Tailwind only resolves disk `@import`s). Never `content.extract` (removed in v4) or a hand-rolled `combinedExtractor`; use `@import "tailwindcss"` (not `@tailwind` directives).
-- **v4 semantics** — bare `.ring()` = 1px (was 3px) + `currentColor`; bare `.border()` = `currentColor` (add `.borderColor(...)`); `Button()` has **no default cursor** (add `.cursor("pointer")`); prefer `.flex().gap()` over `space-*`; `.outlineHidden()` over `.outline("none")`; gradients are `.gradient()`/`.gradientTo()` → `bg-linear-*` (not v3 `bg-gradient-*`).
+- **v4 semantics** — bare `.ring()` = 1px (was 3px) + `currentColor`; bare `.border()` = `currentColor` (add a color: `.border("gray-300")`); `Button()` has **no default cursor** (add `.cursor("pointer")`); prefer `.flex().gap()` over `space-*`; `.outline("hidden")` over `.outline("none")`; gradients are `.gradient()`/`.bgLinear()` → `bg-linear-*` (not v3 `bg-gradient-*`).
 
 ---
 
@@ -143,11 +143,11 @@ Option(city).toggle("selected", city === current) // ✓ expression
 Div().minH("px", 180)       // → min-h-[180px]
 Div().w("rem", 12)          // → w-[12rem]
 // Units: px | rem | em | % | vh | vw | dvh | svh | lvh
-// Methods: w, h, minW, maxW, minH, maxH, padding, margin, gap, top, right, bottom, left, inset
+// Methods: w, h, minW, maxW, minH, maxH, p, m (+ px…pr, mx…mr), gap, top, right, bottom, left, inset
 ```
 
 **Escape hatches (6.8+) — one per situation, never `setClass`/`addClass` styling** (lint-blocked at error level):
-- Arbitrary value of a covered utility → bracket arm or unit overload: `.textSize("[13px]")`, `.opacity("[0.33]")`, `.w("px", 180)`
+- Arbitrary value of a covered utility → bracket arm or unit overload: `.text("[13px]")`, `.opacity("[0.33]")`, `.w("px", 180)`
 - CSS property with no Tailwind utility → `.cssProp("mask-repeat", "no-repeat")` → `[mask-repeat:no-repeat]` (literal args only — non-literals fail the safelist build)
 - Legit non-Tailwind class (JS hook, third-party) → `.cssClass("js-map-container")`
 - Runtime-computed style value → `.setStyle(...)` (extractor-opaque, dynamic-safe)
@@ -156,7 +156,7 @@ Div().w("rem", 12)          // → w-[12rem]
 ```typescript
 Button("Save").when(isLoading, t => t.toggle("disabled").opacity("50"))
 
-const card = (t: Tag) => t.padding("6").background("white").rounded("lg").shadow("md");
+const card = (t: Tag) => t.p("6").bg("white").rounded("lg").shadow("md");
 Div("Content").apply(card)
 ```
 
@@ -168,15 +168,17 @@ Div("Content").apply(card)
 
 ## Fluent Tailwind Styling
 
+**Method name = Tailwind class prefix** (`.bg`, `.p`, `.text`, `.px`/`.mt`, …) — derive the method from the class you know. Merged prefixes take every value family their prefix does; the argument discriminates (`.text("lg")` / `.text("red-500")` / `.text("center")`). Negative utilities go through `.neg("mt-2")`; compound prefixes keep the longest camelCase name (`text-shadow-lg` → `.textShadow("lg")`).
+
 **Fluent methods** — not `setClass` with Tailwind strings (fluent methods provide type safety + IDE autocomplete). **`.on()` for pseudo-classes, `.at()` for breakpoints** — not `addClass`:
 ```typescript
 Button("Save")
-  .padding("x", "4").background("blue-500").textColor("white").rounded()
+  .px("4").bg("blue-500").text("white").rounded()
   .transition("colors")
-  .on("hover", t => t.background("blue-600").scale("105"))
-  .on("focus", t => t.ring("2").ringColor("blue-300").outline("none"))
+  .on("hover", t => t.bg("blue-600").scale("105"))
+  .on("focus", t => t.ring("2").ring("blue-300").outline("none"))
   .on("disabled", t => t.opacity("50").cursor("not-allowed"))
-  .at("md", t => t.padding("x", "8").textSize("lg"))
+  .at("md", t => t.px("8").text("lg"))
 ```
 
 **Theming** — define tokens once with `defineTheme(tokens)`; never hand-maintain theme objects, per-app `inputStyle`, or `@theme` CSS by hand. One `tokens` const → typed methods + `@theme` CSS + safelist. Custom tokens become typed via a once-written `declare module` that **derives** from the const (`ThemeKeys<typeof tokens, "colors">`) — add tokens to the const, never edit the augmentation. Component "presets" (card/button styles) are user-land `.apply()` helpers, **not** `defineTheme` (tokens only: colors/spacing/fontSize/radius/shadow).
@@ -185,9 +187,9 @@ const tokens = { colors: { brand: "#ff5500" } } as const;
 export const theme = defineTheme(tokens);
 declare module "fluent-html" { interface FluentCustomColors extends ThemeKeys<typeof tokens, "colors"> {} }
 
-Div().background("brand")        // ✓ typed token
-Div().background("brnad")        // ✗ compile error (closed unions)
-const card = (t: Tag) => t.padding("6").rounded("lg").shadow("md");  // ✓ preset = composition
+Div().bg("brand")        // ✓ typed token
+Div().bg("brnad")        // ✗ compile error (closed unions)
+const card = (t: Tag) => t.p("6").rounded("lg").shadow("md");  // ✓ preset = composition
 Div().apply(card)                // ✓ NOT defineTheme
 ```
 

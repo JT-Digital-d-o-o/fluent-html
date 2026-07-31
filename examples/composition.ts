@@ -15,14 +15,8 @@ import {
 const card = (t: Tag) =>
   t.p("6").bg("white").rounded("lg").shadow("md");
 
-const badge = (color: string) => (t: Tag) =>
-  t.p("x", "2")
-    .p("y", "1")
-    .text("xs")
-    .font("semibold")
-    .rounded("full")
-    .bg(`${color}-100`)
-    .text(`${color}-800`);
+const badge = (t: Tag) =>
+  t.px("2").py("1").text("xs").font("semibold").rounded("full");
 
 // --- Reusable component functions ---
 
@@ -33,18 +27,20 @@ type User = {
   isOnline: boolean;
 };
 
-const roleBadgeColor = { admin: "red", editor: "blue", viewer: "gray" } as const;
-
 function UserCard(props: { user: User }) {
   const { user } = props;
 
   return Div(
     Div(
       H2(user.name).text("lg").font("bold"),
-      Span(user.role).apply(badge(roleBadgeColor[user.role])),
+      Span(user.role).apply(badge).whenMatch(user.role, {
+        admin:  t => t.bg("red-100").text("red-800"),
+        editor: t => t.bg("blue-100").text("blue-800"),
+        viewer: t => t.bg("gray-100").text("gray-800"),
+      }),
     ).flex().items("center").gap("2"),
 
-    P(user.email).text("gray-500").text("sm").m("top", "1"),
+    P(user.email).text("gray-500").text("sm").mt("1"),
 
     IfThen(user.isOnline, () =>
       Span("Online").text("green-600").text("sm").font("medium"),
@@ -56,20 +52,20 @@ function UserCard(props: { user: User }) {
 
 function UserList(props: { users: User[]; title: string }) {
   return Div(
-    H2(props.title).text("xl").font("bold").m("bottom", "4"),
+    H2(props.title).text("xl").font("bold").mb("4"),
 
     Ul(
       ForEach(props.users, (user) =>
-        Li(UserCard({ user })).m("bottom", "3"),
+        Li(UserCard({ user })).mb("3"),
       ),
     ),
 
     Button(`${props.users.length} users total`)
-      .p("x", "4")
-      .p("y", "2")
+      .px("4")
+      .py("2")
       .bg("gray-100")
       .rounded("lg")
-      .m("top", "4")
+      .mt("4")
       .when(props.users.length === 0, t =>
         t.toggle("disabled").opacity("50"),
       ),
