@@ -1,7 +1,7 @@
 /**
  * `defineTheme()` — the ONE theming mechanism (C-02). Design tokens only:
- * `colors` / `spacing` / `fontSize` / `radius` / `shadow` (the Tailwind v4
- * `@theme` namespaces). Component "presets" (card/button style bundles) stay
+ * `colors` / `spacing` / `fontSize` / `radius` / `shadow` / `fonts` (the
+ * Tailwind v4 `@theme` namespaces). Component "presets" (card/button style bundles) stay
  * user-land `.apply()` helpers — they are NOT part of `defineTheme`.
  *
  * From one `tokens` const you get three things:

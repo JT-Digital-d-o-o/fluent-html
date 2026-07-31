@@ -261,6 +261,7 @@ p.skewY = function (value) { return this.addClass(signNeg("skew-y", String(value
 // Interactivity
 p.select = function (value) { return this.addClass(`select-${value}`); };
 p.pointerEvents = function (value) { return this.addClass(`pointer-events-${value}`); };
+p.appearance = function (value) { return this.addClass(`appearance-${value}`); };
 // Text & Whitespace
 p.whitespace = function (value) { return this.addClass(`whitespace-${value}`); };
 // List Style
@@ -425,6 +426,7 @@ p.insetE = function (unitOrValue, amount) {
     return this.addClass(`inset-e-${unitOrValue}`);
 };
 p.textWrap = function (value) { return this.addClass(`text-${value}`); };
+p.wrap = function (value) { return this.addClass(`wrap-${value}`); };
 p.hyphens = function (value) { return this.addClass(`hyphens-${value}`); };
 p.textShadow = function (value) { return this.addClass(`text-shadow-${value}`); };
 p.textShadowColor = function (color) { return this.addClass(`text-shadow-${color}`); };
@@ -490,6 +492,9 @@ p.scrollPadding = function (directionOrValue, value) {
     return this.addClass(`scroll-p${dir}-${value}`);
 };
 p.fieldSizing = function (value) { return this.addClass(`field-sizing-${value}`); };
+p.content = function (value) {
+    return this.addClass(value === undefined ? "content-['']" : `content-${value}`);
+};
 p.maskImage = function (value) {
     return value === "none" ? this.addClass("mask-none") : this.addClass(`mask-${value}`);
 };

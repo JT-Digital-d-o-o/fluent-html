@@ -23,7 +23,7 @@ type Stringified<T extends number> = `${T}`;
 // `defineTheme()` targets them, so regeneration must never touch them.
 import type {
   FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow,
-  FluentCustomTextShadow, FluentCustomDropShadow, FluentCustomInsetShadow,
+  FluentCustomTextShadow, FluentCustomDropShadow, FluentCustomInsetShadow, FluentCustomFontFamily,
 } from "./tailwind-types.seams.js";
 
 // Spacing scale (used for padding, margin, gap, and — via derived types — width/
@@ -190,6 +190,7 @@ export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${n
 // Interactivity
 export type TailwindSelect = "none" | "text" | "all" | "auto";
 export type TailwindPointerEvents = "none" | "auto";
+export type TailwindAppearance = "none" | "auto";
 
 // List style
 export type TailwindListStyleType = "none" | "disc" | "decimal" | `[${string}]`;
@@ -229,6 +230,8 @@ export type TailwindState =
   | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape"
   | "starting" | "open" | "inert"
   | `not-${string}` | `supports-[${string}]`
+  // arbitrary selector variant (escape-hatch): `[&>li]:` / `[&_svg]:` — verbatim pass-through
+  | `[&${string}]`
   // v4 relational hooks (F-B-180): `:has()` (self + group/peer scopes) and the implicit-ancestor `in-*`
   | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]`
   // unnamed + named group/peer states, aria/data attribute variants, extra
@@ -252,8 +255,12 @@ export type TailwindContainerBreakpoint =
 // Responsive breakpoints — folded with container queries so `.at("@sm", …)` type-checks.
 export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl" | TailwindContainerBreakpoint;
 
-// Font family
-export type TailwindFontFamily = "sans" | "serif" | "mono" | (string & {});
+// Font family (fonts family). CLOSED (escape-hatch): custom families come from
+// FluentCustomFontFamily (defineTheme `fonts` → `--font-*`); arbitrary via `[…]`.
+export type TailwindFontFamily =
+  | "sans" | "serif" | "mono"
+  | (keyof FluentCustomFontFamily & string)
+  | `[${string}]`;
 
 // Gradient direction — keyword only; an angle goes through `gradientLinear`.
 export type TailwindGradientDirection =
@@ -334,9 +341,13 @@ export type TailwindDecorationThickness =
 // Color scheme
 export type TailwindColorScheme = "normal" | "light" | "dark" | "light-dark" | "only-light" | "only-dark";
 
-// Text wrap / hyphenation
+// Text wrap / hyphenation / overflow-wrap
 export type TailwindTextWrap = "wrap" | "nowrap" | "balance" | "pretty";
+export type TailwindWrap = "break-word" | "anywhere" | "normal";
 export type TailwindHyphens = "none" | "manual" | "auto";
+
+// Pseudo-element content — `none` or arbitrary; the bare `.content()` form emits `content-['']`.
+export type TailwindContent = "none" | `[${string}]`;
 
 // Text shadow. Value is required (no bare `text-shadow`); size + size/opacity forms.
 export type TailwindTextShadowSize = "2xs" | "xs" | "sm" | "md" | "lg" | "none";

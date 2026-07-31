@@ -121,6 +121,9 @@ import type {
   TailwindMaskStop,
   TailwindMaskComposite,
   TailwindMaskType,
+  TailwindAppearance,
+  TailwindWrap,
+  TailwindContent,
 } from "./tailwind-types.js";
 import type { Id } from "../ids.js";
 import { extractId } from "../ids.js";
@@ -299,6 +302,7 @@ declare module "./tag.js" {
     // Interactivity
     select(value: TailwindSelect): this;
     pointerEvents(value: TailwindPointerEvents): this;
+    appearance(value: TailwindAppearance): this;
 
     // Text & Whitespace
     whitespace(value: TailwindWhitespace): this;
@@ -448,6 +452,8 @@ declare module "./tag.js" {
     insetE(unit: TailwindUnit, amount: number): this;
 
     textWrap(value: TailwindTextWrap): this;
+    /** Overflow-wrap (v4 `wrap-*`): where long words may break. */
+    wrap(value: TailwindWrap): this;
     hyphens(value: TailwindHyphens): this;
     textShadow(value: TailwindTextShadow): this;
     textShadowColor(color: TailwindColor): this;
@@ -500,6 +506,15 @@ declare module "./tag.js" {
     scrollPadding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
     scrollPadding(unit: TailwindUnit, amount: number): this;
     fieldSizing(value: TailwindFieldSizing): this;
+
+    /**
+     * Pseudo-element content. Bare `.content()` emits `content-['']` — the empty
+     * string every `before:`/`after:` decoration needs to render.
+     * @example
+     * Span().on("before", t => t.content().w("2").h("2").background("red-500"))
+     * Span().on("after", t => t.content("[attr(data-label)]"))
+     */
+    content(value?: TailwindContent): this;
 
     maskImage(value: "none" | `[${string}]`): this;
     maskFrom(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
@@ -759,6 +774,7 @@ p.skewY = function (value: string | number) { return this.addClass(signNeg("skew
 
 p.select = function (value: string) { return this.addClass(`select-${value}`); };
 p.pointerEvents = function (value: string) { return this.addClass(`pointer-events-${value}`); };
+p.appearance = function (value: string) { return this.addClass(`appearance-${value}`); };
 
 // Text & Whitespace
 
@@ -954,6 +970,7 @@ p.insetE = function (unitOrValue: string, amount?: number) {
 };
 
 p.textWrap = function (value: string) { return this.addClass(`text-${value}`); };
+p.wrap = function (value: string) { return this.addClass(`wrap-${value}`); };
 p.hyphens = function (value: string) { return this.addClass(`hyphens-${value}`); };
 p.textShadow = function (value: string) { return this.addClass(`text-shadow-${value}`); };
 p.textShadowColor = function (color: string) { return this.addClass(`text-shadow-${color}`); };
@@ -1018,6 +1035,10 @@ p.scrollPadding = function (directionOrValue: string, value?: string | number) {
   return this.addClass(`scroll-p${dir}-${value}`);
 };
 p.fieldSizing = function (value: string) { return this.addClass(`field-sizing-${value}`); };
+
+p.content = function (value?: string) {
+  return this.addClass(value === undefined ? "content-['']" : `content-${value}`);
+};
 
 p.maskImage = function (value: string) {
   return value === "none" ? this.addClass("mask-none") : this.addClass(`mask-${value}`);

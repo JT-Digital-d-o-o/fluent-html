@@ -118,6 +118,7 @@ const ORACLE_ARGS: Readonly<Record<string, readonly (readonly string[])[]>> = {
   // Interactivity
   select: [["none"]],
   pointerEvents: [["none"]],
+  appearance: [["none"], ["auto"]],
   // List Style
   listStyleType: [["disc"]],
   listStylePosition: [["inside"]],
@@ -181,6 +182,7 @@ const ORACLE_ARGS: Readonly<Record<string, readonly (readonly string[])[]>> = {
   insetE: [["0"]],
   // Text extras
   textWrap: [["balance"]],
+  wrap: [["break-word"], ["anywhere"]],
   hyphens: [["auto"]],
   textShadow: [["md"]],
   textShadowColor: [["red-500"]],

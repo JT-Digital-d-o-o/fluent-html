@@ -254,6 +254,31 @@ Div().maskFrom("top", "50%");
 // @ts-expect-error — TailwindMaskType closed
 Div().maskType("alfa");
 
+// ── Escape-hatch gap fills (llm-styling/escape-hatch) ──────────────────────
+Div().appearance("none");
+Input().appearance("auto");
+// @ts-expect-error — TailwindAppearance is closed
+Div().appearance("non");
+Div().wrap("break-word");
+Div().wrap("anywhere");
+// @ts-expect-error — TailwindWrap is overflow-wrap; "break-all" is word-break (.breakAll())
+Div().wrap("break-all");
+Div().on("before", (t) => t.content());          // bare → content-['']
+Div().content("none");
+Div().content("[attr(data-label)]");
+// @ts-expect-error — TailwindContent is none | [..] (bare for the empty string)
+Div().content("empty");
+// Arbitrary selector variant on .on() — verbatim pass-through
+Div().on("[&>li]", (t) => t.padding("2"));
+Div().on("[&_svg]", (t) => t.w("4"));
+// @ts-expect-error — an arbitrary selector must anchor on & ("[li]" is not a variant)
+Div().on("[li]", (t) => t);
+// TailwindFontFamily is CLOSED: built-ins + declared tokens + [..] only
+Div().fontFamily("mono");
+Div().fontFamily("[Inter,sans-serif]");
+// @ts-expect-error — undeclared family; declare it via defineTheme `fonts`
+Div().fontFamily("comic-sans");
+
 // ── Form-control completeness (RFC-B-05) ───────────────────────────────────
 // FormEnctype is the one CLOSED union here — negatives are real compile errors.
 Button().setFormenctype("multipart/form-data").setFormtarget("_blank");

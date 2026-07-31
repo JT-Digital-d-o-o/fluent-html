@@ -20,6 +20,7 @@ export type {
   FluentCustomFontSize,
   FluentCustomRadius,
   FluentCustomShadow,
+  FluentCustomFontFamily,
 } from './core/index.js';
 
 // HTML attribute types

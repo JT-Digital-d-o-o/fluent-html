@@ -191,6 +191,19 @@ describe("v4 variants (C-06): widened states + container queries", () => {
     assert.strictEqual(render(Div().on("supports-[display:grid]", t => t.grid())), '<div class="supports-[display:grid]:grid"></div>');
     assert.strictEqual(render(Div().on("nth-[3]", t => t.background("red-500"))), '<div class="nth-[3]:bg-red-500"></div>');
   });
+  it(".on() accepts arbitrary [&…] selectors (escape-hatch)", () => {
+    // & and > are entity-encoded by escapeAttr; the DOM class decodes back to [&>li]:p-2.
+    assert.strictEqual(render(Div().on("[&>li]", t => t.padding("2"))), '<div class="[&amp;&gt;li]:p-2"></div>');
+    assert.strictEqual(render(Div().on("[&_svg]", t => t.w("4").h("4"))), '<div class="[&amp;_svg]:w-4 [&amp;_svg]:h-4"></div>');
+  });
+  it(".on(before) + bare .content() renders the empty-string content class", () => {
+    // escapeAttr entity-encodes the quotes; the browser decodes the DOM class
+    // back to before:content-[''].
+    assert.strictEqual(
+      render(Div().on("before", t => t.content().background("red-500"))),
+      '<div class="before:content-[&#39;&#39;] before:bg-red-500"></div>',
+    );
+  });
 });
 
 describe("Variant Proxy - .on()", () => {

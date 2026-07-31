@@ -116,7 +116,7 @@ export class TextareaTag extends Tag {
         return this;
     }
     setWrap(wrap) {
-        this.wrap = wrap;
+        this.wrapMode = wrap;
         return this;
     }
     setAutocomplete(autocomplete) {
@@ -132,7 +132,7 @@ export class TextareaTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode', 'dirname']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', ['wrapMode', 'wrap'], 'autocomplete', 'inputmode', 'dirname']);
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children) {
     return new TextareaTag("textarea", ...children);

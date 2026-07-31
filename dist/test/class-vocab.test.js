@@ -60,6 +60,12 @@ describe("emitClasses — per-shape exact output", () => {
         ["custom borderColor dir", "borderColor", ["top", "red-500"], ["border-t-red-500"]],
         ["custom rounded bare", "rounded", [], ["rounded"]],
         ["custom rounded corner", "rounded", ["tl", "lg"], ["rounded-tl-lg"]],
+        // escape-hatch gap fills
+        ["prefix appearance", "appearance", ["none"], ["appearance-none"]],
+        ["prefix wrap", "wrap", ["anywhere"], ["wrap-anywhere"]],
+        ["custom content bare (empty string)", "content", [], ["content-['']"]],
+        ["custom content none", "content", ["none"], ["content-none"]],
+        ["custom content arbitrary", "content", ["[attr(data-label)]"], ["content-[attr(data-label)]"]],
     ];
     const byMethod = new Map(classVocab.map((d) => [d.method, d]));
     for (const [label, method, args, expected] of cases) {
@@ -108,7 +114,13 @@ function samplesFor(def) {
 function renderedClass(tag) {
     const html = render(tag);
     const m = /class="([^"]*)"/.exec(html);
-    return m ? m[1] : "";
+    if (!m)
+        return "";
+    // Decode escapeAttr's entities back to the DOM-level class value the browser
+    // sees (content-[&#39;&#39;] → content-['']) so parity compares real classes.
+    return m[1]
+        .replace(/&#39;/g, "'").replace(/&quot;/g, '"')
+        .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 }
 describe("lib parity — vocab emit matches tailwind-methods render", () => {
     const proto = Tag.prototype;

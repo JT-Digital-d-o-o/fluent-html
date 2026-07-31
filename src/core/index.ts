@@ -34,6 +34,7 @@ export type {
   FluentCustomFontSize,
   FluentCustomRadius,
   FluentCustomShadow,
+  FluentCustomFontFamily,
   ThemeKeys,
 } from "./tailwind-types.js";
 

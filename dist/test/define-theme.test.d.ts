@@ -17,6 +17,9 @@ declare const tokens: {
     readonly shadow: {
         readonly card: "0 2px 8px rgba(0,0,0,0.1)";
     };
+    readonly fonts: {
+        readonly display: "Inter, sans-serif";
+    };
 };
 declare module "../src/index.js" {
     interface FluentCustomColors extends ThemeKeys<typeof tokens, "colors"> {
@@ -28,6 +31,8 @@ declare module "../src/index.js" {
     interface FluentCustomRadius extends ThemeKeys<typeof tokens, "radius"> {
     }
     interface FluentCustomShadow extends ThemeKeys<typeof tokens, "shadow"> {
+    }
+    interface FluentCustomFontFamily extends ThemeKeys<typeof tokens, "fonts"> {
     }
 }
 export {};

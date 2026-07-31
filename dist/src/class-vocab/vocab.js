@@ -180,6 +180,7 @@ export const classVocab = [
     // Interactivity
     pre("select", "select", { values: lit("none", "text", "all", "auto"), doc: "Text selection behavior." }),
     pre("pointerEvents", "pointer-events", { values: lit("none", "auto"), doc: "Whether the element receives pointer events." }),
+    pre("appearance", "appearance", { values: lit("none", "auto"), doc: "Native appearance of form controls." }),
     // List Style (both emit `list-…`)
     pre("listStyleType", "list", { values: lit("none", "disc", "decimal"), doc: "List marker style." }),
     pre("listStylePosition", "list", { values: lit("inside", "outside"), doc: "List marker position." }),
@@ -242,6 +243,7 @@ export const classVocab = [
     size("insetS", "inset-s", { values: ref("TailwindInset"), doc: "Logical inline-start offset." }),
     size("insetE", "inset-e", { values: ref("TailwindInset"), doc: "Logical inline-end offset." }),
     pre("textWrap", "text", { values: lit("wrap", "nowrap", "balance", "pretty"), doc: "Text wrapping strategy." }),
+    pre("wrap", "wrap", { values: lit("break-word", "anywhere", "normal"), doc: "Overflow-wrap — where long words may break." }),
     pre("hyphens", "hyphens", { values: lit("none", "manual", "auto"), doc: "Hyphenation behavior." }),
     pre("textShadow", "text-shadow", { values: theme("--text-shadow"), doc: "Text shadow — theme size (value required)." }),
     pre("textShadowColor", "text-shadow", { values: theme("--color"), doc: "Text-shadow color." }),
@@ -285,6 +287,8 @@ export const classVocab = [
     space("scrollMargin", "scroll-m", "", true, true, { values: theme("--spacing"), doc: "Scroll margin — all sides, one axis/side, or the unit overload." }),
     space("scrollPadding", "scroll-p", "", true, true, { values: theme("--spacing"), doc: "Scroll padding — all sides, one axis/side, or the unit overload." }),
     pre("fieldSizing", "field-sizing", { values: lit("content", "fixed"), doc: "Whether form fields size to their content." }),
+    // Pseudo-element content — bare = empty string (the common `before:`/`after:` case)
+    custom("content", (a) => [a[0] === undefined ? "content-['']" : `content-${a[0]}`], [[], ["none"], ["[attr(data-label)]"]], { values: lit("none"), doc: "Pseudo-element content — `none`, arbitrary `[…]`, or bare for the empty string." }),
     custom("maskImage", (a) => (a[0] === "none" ? ["mask-none"] : [`mask-${a[0]}`]), [["none"], ["[url(/x.png)]"]], { doc: "Mask image — `none` or an arbitrary source." }),
     custom("maskFrom", (a) => (a.length === 2 ? [`mask-${a[0]}-from-${a[1]}`] : []), [["t", "50%"], ["x", "70%"], ["r", "blue-500"], ["l", "4"], ["t", "[20px]"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask start — edge + stop." }),
     custom("maskTo", (a) => (a.length === 2 ? [`mask-${a[0]}-to-${a[1]}`] : []), [["b", "90%"], ["y", "95%"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask end — edge + stop." }),

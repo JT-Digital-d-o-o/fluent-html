@@ -13,6 +13,7 @@ const tokens = {
     fontSize: { hero: "4.5rem" },
     radius: { card: "0.75rem" },
     shadow: { card: "0 2px 8px rgba(0,0,0,0.1)" },
+    fonts: { display: "Inter, sans-serif" },
 };
 const theme = defineTheme(tokens);
 describe("defineTheme — runtime", () => {
@@ -37,6 +38,10 @@ describe("defineTheme — declared custom tokens render across all five families
         assert.equal(render(Div().rounded("card")), '<div class="rounded-card"></div>');
         assert.equal(render(Div().shadow("card")), '<div class="shadow-card"></div>');
     });
+    it("fonts (fontFamily)", () => {
+        assert.equal(render(Div().fontFamily("display")), '<div class="font-display"></div>');
+        assert.equal(render(Div().fontFamily("mono")), '<div class="font-mono"></div>');
+    });
     it("built-ins + arbitrary values still work alongside custom tokens", () => {
         assert.equal(render(Div().background("blue-500")), '<div class="bg-blue-500"></div>');
         assert.equal(render(Div().background("blue-500/50")), '<div class="bg-blue-500/50"></div>');
@@ -56,6 +61,10 @@ describe("defineTheme — undeclared tokens are compile errors (closed unions)",
     it("rejects an undeclared shadow token", () => {
         // @ts-expect-error — "glow" is not a declared shadow token
         assert.equal(render(Div().shadow("glow")), '<div class="shadow-glow"></div>');
+    });
+    it("rejects an undeclared font family (TailwindFontFamily is closed)", () => {
+        // @ts-expect-error — "displya" is not a declared font token or built-in family
+        assert.equal(render(Div().fontFamily("displya")), '<div class="font-displya"></div>');
     });
 });
 //# sourceMappingURL=define-theme.test.js.map

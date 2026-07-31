@@ -52,7 +52,7 @@ export class MetaTag extends Tag {
         return this;
     }
     setContent(content) {
-        this.content = content;
+        this.contentValue = content;
         return this;
     }
     /** Set `charset` — canonical lowercase `"utf-8"`; custom values stay legal via the open tail. */
@@ -74,7 +74,7 @@ export class MetaTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content', 'media']);
+defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', ['contentValue', 'content'], 'media']);
 export function Meta() {
     return new MetaTag("meta");
 }

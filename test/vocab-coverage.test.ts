@@ -24,10 +24,6 @@ type IgnoredRoot = { readonly prefix: string; readonly reason: string };
  * the staleness test below — the list can only shrink consciously.
  */
 const IGNORED_ROOTS: readonly IgnoredRoot[] = [
-  // Planned — escape-hatch scope adds these methods (llm-styling/escape-hatch)
-  { prefix: "appearance", reason: "planned: escape-hatch adds .appearance()" },
-  { prefix: "content", reason: "planned: escape-hatch adds .content() (align-content + content-none)" },
-  { prefix: "wrap", reason: "planned: escape-hatch adds .wrap() (overflow-wrap)" },
   // Backlog — no fluent method yet (see vocab-generator/backlog.md)
   { prefix: "align", reason: "backlog: vertical-align" },
   { prefix: "basis", reason: "backlog: flex-basis" },

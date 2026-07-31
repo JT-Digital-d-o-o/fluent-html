@@ -1,7 +1,7 @@
 /**
  * `defineTheme()` — the ONE theming mechanism (C-02). Design tokens only:
- * `colors` / `spacing` / `fontSize` / `radius` / `shadow` (the Tailwind v4
- * `@theme` namespaces). Component "presets" (card/button style bundles) stay
+ * `colors` / `spacing` / `fontSize` / `radius` / `shadow` / `fonts` (the
+ * Tailwind v4 `@theme` namespaces). Component "presets" (card/button style bundles) stay
  * user-land `.apply()` helpers — they are NOT part of `defineTheme`.
  *
  * From one `tokens` const you get three things:
@@ -38,6 +38,8 @@ export type ThemeSpec = {
   readonly fontSize?: Readonly<Record<string, string>>;
   readonly radius?: Readonly<Record<string, string>>;
   readonly shadow?: Readonly<Record<string, string>>;
+  /** Font families (`--font-*`): token → font stack. `.fontFamily("display")` via FluentCustomFontFamily. */
+  readonly fonts?: Readonly<Record<string, string>>;
 };
 
 /**

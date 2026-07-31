@@ -20,7 +20,7 @@ type Stringified<T extends number> = `${T}`;
 // `defineTheme()` targets them, so regeneration must never touch them.
 import type {
   FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow,
-  FluentCustomTextShadow, FluentCustomDropShadow, FluentCustomInsetShadow,
+  FluentCustomTextShadow, FluentCustomDropShadow, FluentCustomInsetShadow, FluentCustomFontFamily,
 } from "./tailwind-types.seams.js";
 
 // Spacing scale (used for padding, margin, gap, and — via derived types — width/
@@ -180,6 +180,7 @@ export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${n
 // Interactivity
 @@UNION TailwindSelect select@@
 @@UNION TailwindPointerEvents pointerEvents@@
+@@UNION TailwindAppearance appearance@@
 
 // List style
 @@UNION TailwindListStyleType listStyleType +arb@@
@@ -219,6 +220,8 @@ export type TailwindState =
   | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape"
   | "starting" | "open" | "inert"
   | `not-${string}` | `supports-[${string}]`
+  // arbitrary selector variant (escape-hatch): `[&>li]:` / `[&_svg]:` — verbatim pass-through
+  | `[&${string}]`
   // v4 relational hooks (F-B-180): `:has()` (self + group/peer scopes) and the implicit-ancestor `in-*`
   | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]`
   // unnamed + named group/peer states, aria/data attribute variants, extra
@@ -242,8 +245,12 @@ export type TailwindContainerBreakpoint =
 // Responsive breakpoints — folded with container queries so `.at("@sm", …)` type-checks.
 export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl" | TailwindContainerBreakpoint;
 
-// Font family
-export type TailwindFontFamily = "sans" | "serif" | "mono" | (string & {});
+// Font family (fonts family). CLOSED (escape-hatch): custom families come from
+// FluentCustomFontFamily (defineTheme `fonts` → `--font-*`); arbitrary via `[…]`.
+export type TailwindFontFamily =
+  | "sans" | "serif" | "mono"
+  | (keyof FluentCustomFontFamily & string)
+  | `[${string}]`;
 
 // Gradient direction — keyword only; an angle goes through `gradientLinear`.
 @@UNION TailwindGradientDirection gradientTo@@
@@ -322,9 +329,13 @@ export type TailwindDecorationThickness =
 // Color scheme
 @@UNION TailwindColorScheme scheme@@
 
-// Text wrap / hyphenation
+// Text wrap / hyphenation / overflow-wrap
 @@UNION TailwindTextWrap textWrap@@
+@@UNION TailwindWrap wrap@@
 @@UNION TailwindHyphens hyphens@@
+
+// Pseudo-element content — `none` or arbitrary; the bare `.content()` form emits `content-['']`.
+@@UNION TailwindContent content +arb@@
 
 // Text shadow. Value is required (no bare `text-shadow`); size + size/opacity forms.
 export type TailwindTextShadowSize = "2xs" | "xs" | "sm" | "md" | "lg" | "none";

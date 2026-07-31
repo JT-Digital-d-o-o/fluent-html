@@ -72,7 +72,9 @@ export function Title(...children: View[]): Tag {
 
 export class MetaTag extends Tag {
   name?: MetaName;
-  content?: string;
+  // Storage is `contentValue` (aliased to the `content` attribute in the schema) so the
+  // field doesn't shadow Tag's `.content()` styling method.
+  contentValue?: string;
   charset?: Charset;
   httpEquiv?: string;
   property?: string;
@@ -89,7 +91,7 @@ export class MetaTag extends Tag {
   }
 
   setContent(content?: string): this {
-    this.content = content;
+    this.contentValue = content;
     return this;
   }
 
@@ -116,7 +118,7 @@ export class MetaTag extends Tag {
   }
 }
 
-defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', 'content', 'media']);
+defineSchemaKeys(MetaTag, ['name', 'charset', ['httpEquiv', 'http-equiv'], 'property', ['contentValue', 'content'], 'media']);
 
 export function Meta(): MetaTag {
   return new MetaTag("meta");

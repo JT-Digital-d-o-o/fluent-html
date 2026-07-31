@@ -161,7 +161,9 @@ export class TextareaTag extends Tag {
   cols?: number;
   minlength?: number;
   maxlength?: number;
-  wrap?: 'hard' | 'soft' | 'off';
+  // Storage is `wrapMode` (aliased to the `wrap` attribute in the schema) so the
+  // field doesn't shadow Tag's `.wrap()` styling method.
+  wrapMode?: 'hard' | 'soft' | 'off';
   autocomplete?: AutocompleteHint;
   inputmode?: InputMode;
   dirname?: string;
@@ -197,7 +199,7 @@ export class TextareaTag extends Tag {
   }
 
   setWrap(wrap?: 'hard' | 'soft' | 'off'): this {
-    this.wrap = wrap;
+    this.wrapMode = wrap;
     return this;
   }
 
@@ -217,7 +219,7 @@ export class TextareaTag extends Tag {
   }
 }
 
-defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', 'wrap', 'autocomplete', 'inputmode', 'dirname']);
+defineSchemaKeys(TextareaTag, ['name', 'placeholder', 'rows', 'cols', 'minlength', 'maxlength', ['wrapMode', 'wrap'], 'autocomplete', 'inputmode', 'dirname']);
 
 /** Create a `<textarea>` element with typed attribute methods. */
 export function Textarea(...children: View[]): TextareaTag {

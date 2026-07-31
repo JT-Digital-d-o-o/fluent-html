@@ -1,5 +1,5 @@
 type Stringified<T extends number> = `${T}`;
-import type { FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, FluentCustomTextShadow, FluentCustomDropShadow, FluentCustomInsetShadow } from "./tailwind-types.seams.js";
+import type { FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, FluentCustomTextShadow, FluentCustomDropShadow, FluentCustomInsetShadow, FluentCustomFontFamily } from "./tailwind-types.seams.js";
 type BaseSpacing = "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96";
 export type TailwindSpacing = BaseSpacing | (keyof FluentCustomSpacing & string) | `[${string}]`;
 export type TailwindWidth = TailwindSpacing | "auto" | "full" | "screen" | "svw" | "lvw" | "dvw" | "min" | "max" | "fit" | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6" | "1/12" | "2/12" | "3/12" | "4/12" | "5/12" | "6/12" | "7/12" | "8/12" | "9/12" | "10/12" | "11/12";
@@ -45,6 +45,7 @@ export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | -1 | -2 | 
 export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${number}` | "-full" | "-px";
 export type TailwindSelect = "none" | "text" | "all" | "auto";
 export type TailwindPointerEvents = "none" | "auto";
+export type TailwindAppearance = "none" | "auto";
 export type TailwindListStyleType = "none" | "disc" | "decimal" | `[${string}]`;
 export type TailwindListStylePosition = "inside" | "outside";
 export type TailwindWhitespace = "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap" | "break-spaces";
@@ -55,10 +56,10 @@ export type TailwindTextAlign = "left" | "center" | "right" | "justify";
 export type TailwindFlexDirection = "row" | "col" | "row-reverse" | "col-reverse";
 export type TailwindJustifyContent = "start" | "end" | "center" | "between" | "around" | "evenly";
 export type TailwindAlignItems = "start" | "end" | "center" | "baseline" | "stretch";
-export type TailwindState = "hover" | "focus" | "focus-within" | "focus-visible" | "active" | "visited" | "disabled" | "enabled" | "checked" | "indeterminate" | "required" | "invalid" | "valid" | "first" | "last" | "odd" | "even" | "empty" | "first-of-type" | "last-of-type" | "placeholder" | "selection" | "marker" | "file" | "before" | "after" | "dark" | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape" | "starting" | "open" | "inert" | `not-${string}` | `supports-[${string}]` | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]` | `group-${GroupPeerState}` | `peer-${GroupPeerState}` | `group-${GroupPeerState}/${string}` | `peer-${GroupPeerState}/${string}` | AriaBoolVariant | `aria-[${string}]` | `group-${AriaBoolVariant}` | `peer-${AriaBoolVariant}` | `group-aria-[${string}]` | `peer-aria-[${string}]` | `data-[${string}]` | `group-data-[${string}]` | `peer-data-[${string}]` | ExtraPseudoState | StructuralNthVariant | ChildDescendantVariant;
+export type TailwindState = "hover" | "focus" | "focus-within" | "focus-visible" | "active" | "visited" | "disabled" | "enabled" | "checked" | "indeterminate" | "required" | "invalid" | "valid" | "first" | "last" | "odd" | "even" | "empty" | "first-of-type" | "last-of-type" | "placeholder" | "selection" | "marker" | "file" | "before" | "after" | "dark" | "print" | "motion-reduce" | "motion-safe" | "portrait" | "landscape" | "starting" | "open" | "inert" | `not-${string}` | `supports-[${string}]` | `[&${string}]` | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]` | `group-${GroupPeerState}` | `peer-${GroupPeerState}` | `group-${GroupPeerState}/${string}` | `peer-${GroupPeerState}/${string}` | AriaBoolVariant | `aria-[${string}]` | `group-${AriaBoolVariant}` | `peer-${AriaBoolVariant}` | `group-aria-[${string}]` | `peer-aria-[${string}]` | `data-[${string}]` | `group-data-[${string}]` | `peer-data-[${string}]` | ExtraPseudoState | StructuralNthVariant | ChildDescendantVariant;
 export type TailwindContainerBreakpoint = TailwindContainerSize | `@max-${"3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"}` | `${TailwindContainerSize}/${string}` | `@[${string}]` | `@min-[${string}]` | `@max-[${string}]`;
 export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl" | TailwindContainerBreakpoint;
-export type TailwindFontFamily = "sans" | "serif" | "mono" | (string & {});
+export type TailwindFontFamily = "sans" | "serif" | "mono" | (keyof FluentCustomFontFamily & string) | `[${string}]`;
 export type TailwindGradientDirection = "to-t" | "to-tr" | "to-r" | "to-br" | "to-b" | "to-bl" | "to-l" | "to-tl";
 export type TailwindGradientStop = TailwindColor;
 export type TailwindBlur = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | `[${string}]`;
@@ -91,7 +92,9 @@ export type TailwindDecorationStyle = "solid" | "double" | "dotted" | "dashed" |
 export type TailwindDecorationThickness = "auto" | "from-font" | 0 | 1 | 2 | 4 | 8 | Stringified<0 | 1 | 2 | 4 | 8> | `[${string}]`;
 export type TailwindColorScheme = "normal" | "light" | "dark" | "light-dark" | "only-light" | "only-dark";
 export type TailwindTextWrap = "wrap" | "nowrap" | "balance" | "pretty";
+export type TailwindWrap = "break-word" | "anywhere" | "normal";
 export type TailwindHyphens = "none" | "manual" | "auto";
+export type TailwindContent = "none" | `[${string}]`;
 export type TailwindTextShadowSize = "2xs" | "xs" | "sm" | "md" | "lg" | "none";
 export type TailwindTextShadow = TailwindTextShadowSize | `${TailwindTextShadowSize}/${number}` | (keyof FluentCustomTextShadow & string) | `[${string}]`;
 export type TailwindDropShadow = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "none" | (keyof FluentCustomDropShadow & string) | `[${string}]`;

@@ -115,6 +115,7 @@ const ORACLE_ARGS = {
     // Interactivity
     select: [["none"]],
     pointerEvents: [["none"]],
+    appearance: [["none"], ["auto"]],
     // List Style
     listStyleType: [["disc"]],
     listStylePosition: [["inside"]],
@@ -178,6 +179,7 @@ const ORACLE_ARGS = {
     insetE: [["0"]],
     // Text extras
     textWrap: [["balance"]],
+    wrap: [["break-word"], ["anywhere"]],
     hyphens: [["auto"]],
     textShadow: [["md"]],
     textShadowColor: [["red-500"]],

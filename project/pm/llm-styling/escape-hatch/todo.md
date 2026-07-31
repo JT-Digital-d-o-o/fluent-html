@@ -2,11 +2,11 @@
 
 ### As a developer I want the last vocab gaps filled so that no styling need forces me off the typed surface
 
-- [ ] [P1] Add `appearance()`, `wrap()`, `content()` (+ zero-arg sugar) — types + vocab rows + methods
-- [ ] [P1] Add the `` `[&${string}]` `` arbitrary-selector arm to `TailwindPseudoClass` (`.on()`)
-- [ ] [P1] Font-family theme tokens: `defineTheme` `fonts` family → `--font-*` CSS/manifest (extractor `theme.ts`), close `TailwindFontFamily` behind `FluentCustomFontFamily` seam
-- [ ] [P1] Write tests — per-method emission + lib-parity auto-rows + `@ts-expect-error` on the closed font union
-- [ ] [P1] Check for bugs
+- [x] [P1] Add `appearance()`, `wrap()`, `content()` (+ zero-arg sugar) — types + vocab rows + methods (6.8.0; bare `.content()` → `content-['']`; coverage ignore-list entries retired; storage-field renames `MetaTag.content`→`contentValue`, `TextareaTag.wrap`→`wrapMode` to unshadow the new Tag methods)
+- [x] [P1] Add the `` `[&${string}]` `` arbitrary-selector arm to `TailwindState` (`.on()`) — type-only; runtime/withVariant already passes prefixes through verbatim
+- [x] [P1] Font-family theme tokens: `defineTheme` `fonts` family → `--font-*` CSS/manifest (extractor `theme.ts`, 2.1.0), close `TailwindFontFamily` behind `FluentCustomFontFamily` seam (exported through both barrels)
+- [x] [P1] Write tests — per-method emission (`class-vocab.test.ts`) + lib-parity auto-rows + oracle args + `@ts-expect-error` on the closed font union (`type-surface.test-d.ts`, `define-theme.test.ts` fonts family) + `[&…]`/`before:content-['']` render tests (`fluent-styling-v2.ts`); lib 1933 green, extractor 47 green, plugin 283+12 green (regen → 636 patterns, 200 methods)
+- [x] [P1] Check for bugs (self-review: attr-entity escaping vs lib-parity — parity helper now compares DOM-decoded class values; schema alias tuples keep `content`/`wrap` attribute emission byte-identical)
 
 ### As a developer I want typed escapes for arbitrary CSS and non-Tailwind classes so that reaching outside the vocabulary is visible and build-tracked
 

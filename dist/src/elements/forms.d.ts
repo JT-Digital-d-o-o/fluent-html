@@ -78,7 +78,7 @@ export declare class TextareaTag extends Tag {
     cols?: number;
     minlength?: number;
     maxlength?: number;
-    wrap?: 'hard' | 'soft' | 'off';
+    wrapMode?: 'hard' | 'soft' | 'off';
     autocomplete?: AutocompleteHint;
     inputmode?: InputMode;
     dirname?: string;

@@ -25,7 +25,7 @@ export declare function Body(...children: View[]): Tag;
 export declare function Title(...children: View[]): Tag;
 export declare class MetaTag extends Tag {
     name?: MetaName;
-    content?: string;
+    contentValue?: string;
     charset?: Charset;
     httpEquiv?: string;
     property?: string;

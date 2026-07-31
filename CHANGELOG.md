@@ -2,6 +2,23 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [6.8.0] - Escape hatch closure: vocab gap fills + font-family theme tokens
+
+First stage of `llm-styling/escape-hatch` — the last vocab gaps are filled so no styling need forces an author off the typed surface.
+
+### ✨ Added
+
+- **`.appearance("none" | "auto")`** — native appearance of form controls (`appearance-*`).
+- **`.wrap("break-word" | "anywhere" | "normal")`** — overflow-wrap (v4 `wrap-*`).
+- **`.content(value?)`** — pseudo-element content: `.content()` bare emits `content-['']` (the empty string every `before:`/`after:` decoration needs), `.content("none")`, or an arbitrary `[…]` value. Unblocks `before:`/`after:` styling.
+- **Arbitrary selector variants on `.on()`** — the `` `[&${string}]` `` arm: `.on("[&>li]", t => t.padding("2"))` → `[&>li]:p-2` (verbatim pass-through, same contract as `supports-[…]`).
+- **Font-family theme tokens** — `defineTheme({ fonts: { display: "Inter, sans-serif" } })` emits `--font-*` `@theme` CSS + safelist entries (extractor ≥2.1.0), typed via the new `FluentCustomFontFamily` augmentation seam.
+
+### 💥 Breaking (type-level)
+
+- **`TailwindFontFamily` is CLOSED** — `"sans" | "serif" | "mono"`, declared `fonts` tokens, or `[…]`; the `(string & {})` open tail is gone, so an undeclared family is now a compile error (declare it in `defineTheme` `fonts`).
+- **Internal storage fields renamed** to stop shadowing the new Tag methods: `MetaTag.content` → `contentValue`, `TextareaTag.wrap` → `wrapMode` (the `content`/`wrap` HTML attributes and the `setContent`/`setWrap` setters are unchanged).
+
 ## [6.7.0] - Vocab generator: generated type unions + values/doc-enriched rows
 
 Emitter stage of `llm-styling/vocab-generator` — the keyword type unions are now *generated from the class-vocab*, so the vocab, the TS types, and (via the peer-dep consuming ESLint plugin) the lint tables cannot drift.
