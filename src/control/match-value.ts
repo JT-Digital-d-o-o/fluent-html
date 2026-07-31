@@ -12,8 +12,8 @@
  * MatchValue(color, { green: "green-500", red: "red-500", gray: "gray-500" })  // exhaustive, no default
  * // The union flows into a fluent styling method only if every value is a real Tailwind token
  * // (the closed `TailwindColor` union, or a `defineTheme()`-registered custom token). A typo'd
- * // token widens the result and surfaces as a closed-union error at the `.background()` call.
- * Div().background(MatchValue(tone, { ok: "green-100", err: "red-100" }, "gray-100"))
+ * // token widens the result and surfaces as a closed-union error at the `.bg()` call.
+ * Div().bg(MatchValue(tone, { ok: "green-100", err: "red-100" }, "gray-100"))
  */
 // A widened `string`/`number` collapses `{ [K in T]: R }` to an index signature, so any
 // subset satisfies the "exhaustive" form while a real miss returns `undefined` typed as `R`.

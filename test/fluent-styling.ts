@@ -26,73 +26,73 @@ section("Spacing - Padding");
 test(
   "padding all sides",
   '<div class="p-4"></div>',
-  render(Div().padding("4"))
+  render(Div().p("4"))
 );
 
 test(
   "padding x-axis",
   '<div class="px-4"></div>',
-  render(Div().padding("x", "4"))
+  render(Div().p("x", "4"))
 );
 
 test(
   "padding y-axis",
   '<div class="py-4"></div>',
-  render(Div().padding("y", "4"))
+  render(Div().p("y", "4"))
 );
 
 test(
   "padding top (full word)",
   '<div class="pt-4"></div>',
-  render(Div().padding("top", "4"))
+  render(Div().p("top", "4"))
 );
 
 test(
   "padding bottom (full word)",
   '<div class="pb-4"></div>',
-  render(Div().padding("bottom", "4"))
+  render(Div().p("bottom", "4"))
 );
 
 test(
   "padding left (full word)",
   '<div class="pl-4"></div>',
-  render(Div().padding("left", "4"))
+  render(Div().p("left", "4"))
 );
 
 test(
   "padding right (full word)",
   '<div class="pr-4"></div>',
-  render(Div().padding("right", "4"))
+  render(Div().p("right", "4"))
 );
 
 test(
   "padding top (short)",
   '<div class="pt-4"></div>',
-  render(Div().padding("t", "4"))
+  render(Div().p("t", "4"))
 );
 
 test(
   "padding bottom (short)",
   '<div class="pb-4"></div>',
-  render(Div().padding("b", "4"))
+  render(Div().p("b", "4"))
 );
 
 test(
   "padding left (short)",
   '<div class="pl-4"></div>',
-  render(Div().padding("l", "4"))
+  render(Div().p("l", "4"))
 );
 
 test(
   "padding right (short)",
   '<div class="pr-4"></div>',
-  render(Div().padding("r", "4"))
+  render(Div().p("r", "4"))
 );
 
 test(
   "multiple padding calls chain",
   '<div class="pt-8 px-4"></div>',
-  render(Div().padding("top", "8").padding("x", "4"))
+  render(Div().p("top", "8").p("x", "4"))
 );
 
 section("Spacing - Margin");
@@ -100,49 +100,49 @@ section("Spacing - Margin");
 test(
   "margin all sides",
   '<div class="m-4"></div>',
-  render(Div().margin("4"))
+  render(Div().m("4"))
 );
 
 test(
   "margin x-axis",
   '<div class="mx-4"></div>',
-  render(Div().margin("x", "4"))
+  render(Div().m("x", "4"))
 );
 
 test(
   "margin y-axis",
   '<div class="my-4"></div>',
-  render(Div().margin("y", "4"))
+  render(Div().m("y", "4"))
 );
 
 test(
   "margin top",
   '<div class="mt-8"></div>',
-  render(Div().margin("top", "8"))
+  render(Div().m("top", "8"))
 );
 
 test(
   "margin bottom",
   '<div class="mb-4"></div>',
-  render(Div().margin("bottom", "4"))
+  render(Div().m("bottom", "4"))
 );
 
 test(
   "margin left",
   '<div class="ml-2"></div>',
-  render(Div().margin("left", "2"))
+  render(Div().m("left", "2"))
 );
 
 test(
   "margin right",
   '<div class="mr-2"></div>',
-  render(Div().margin("right", "2"))
+  render(Div().m("right", "2"))
 );
 
 test(
   "margin auto",
   '<div class="mx-auto"></div>',
-  render(Div().margin("x", "auto"))
+  render(Div().m("x", "auto"))
 );
 
 test(
@@ -156,7 +156,7 @@ section("Colors");
 test(
   "background color",
   '<div class="bg-red-500"></div>',
-  render(Div().background("red-500"))
+  render(Div().bg("red-500"))
 );
 
 test(
@@ -168,25 +168,25 @@ test(
 test(
   "text color",
   '<span class="text-gray-700"></span>',
-  render(Span().textColor("gray-700"))
+  render(Span().text("gray-700"))
 );
 
 test(
   "text color white",
   '<span class="text-white"></span>',
-  render(Span().textColor("white"))
+  render(Span().text("white"))
 );
 
 test(
   "border color",
   '<div class="border-gray-300"></div>',
-  render(Div().borderColor("gray-300"))
+  render(Div().border("gray-300"))
 );
 
 test(
   "combined colors",
   '<div class="bg-blue-500 text-white border-blue-700"></div>',
-  render(Div().background("blue-500").textColor("white").borderColor("blue-700"))
+  render(Div().bg("blue-500").text("white").border("blue-700"))
 );
 
 section("Typography");
@@ -194,55 +194,55 @@ section("Typography");
 test(
   "text size",
   '<span class="text-xl"></span>',
-  render(Span().textSize("xl"))
+  render(Span().text("xl"))
 );
 
 test(
   "text size small",
   '<span class="text-sm"></span>',
-  render(Span().textSize("sm"))
+  render(Span().text("sm"))
 );
 
 test(
   "text align center",
   '<p class="text-center"></p>',
-  render(P().textAlign("center"))
+  render(P().text("center"))
 );
 
 test(
   "text align right",
   '<p class="text-right"></p>',
-  render(P().textAlign("right"))
+  render(P().text("right"))
 );
 
 test(
   "text align left",
   '<p class="text-left"></p>',
-  render(P().textAlign("left"))
+  render(P().text("left"))
 );
 
 test(
   "text align justify",
   '<p class="text-justify"></p>',
-  render(P().textAlign("justify"))
+  render(P().text("justify"))
 );
 
 test(
   "font weight bold",
   '<span class="font-bold"></span>',
-  render(Span().fontWeight("bold"))
+  render(Span().font("bold"))
 );
 
 test(
   "font weight semibold",
   '<span class="font-semibold"></span>',
-  render(Span().fontWeight("semibold"))
+  render(Span().font("semibold"))
 );
 
 test(
   "combined typography",
   '<span class="text-2xl font-bold text-center"></span>',
-  render(Span().textSize("2xl").fontWeight("bold").textAlign("center"))
+  render(Span().text("2xl").font("bold").text("center"))
 );
 
 section("Sizing");
@@ -336,79 +336,79 @@ test(
 test(
   "flex direction col",
   '<div class="flex-col"></div>',
-  render(Div().flexDirection("col"))
+  render(Div().flex("col"))
 );
 
 test(
   "flex direction row",
   '<div class="flex-row"></div>',
-  render(Div().flexDirection("row"))
+  render(Div().flex("row"))
 );
 
 test(
   "flex direction row-reverse",
   '<div class="flex-row-reverse"></div>',
-  render(Div().flexDirection("row-reverse"))
+  render(Div().flex("row-reverse"))
 );
 
 test(
   "flex direction col-reverse",
   '<div class="flex-col-reverse"></div>',
-  render(Div().flexDirection("col-reverse"))
+  render(Div().flex("col-reverse"))
 );
 
 test(
   "justify content center",
   '<div class="justify-center"></div>',
-  render(Div().justifyContent("center"))
+  render(Div().justify("center"))
 );
 
 test(
   "justify content between",
   '<div class="justify-between"></div>',
-  render(Div().justifyContent("between"))
+  render(Div().justify("between"))
 );
 
 test(
   "justify content around",
   '<div class="justify-around"></div>',
-  render(Div().justifyContent("around"))
+  render(Div().justify("around"))
 );
 
 test(
   "justify content evenly",
   '<div class="justify-evenly"></div>',
-  render(Div().justifyContent("evenly"))
+  render(Div().justify("evenly"))
 );
 
 test(
   "align items center",
   '<div class="items-center"></div>',
-  render(Div().alignItems("center"))
+  render(Div().items("center"))
 );
 
 test(
   "align items start",
   '<div class="items-start"></div>',
-  render(Div().alignItems("start"))
+  render(Div().items("start"))
 );
 
 test(
   "align items end",
   '<div class="items-end"></div>',
-  render(Div().alignItems("end"))
+  render(Div().items("end"))
 );
 
 test(
   "align items baseline",
   '<div class="items-baseline"></div>',
-  render(Div().alignItems("baseline"))
+  render(Div().items("baseline"))
 );
 
 test(
   "align items stretch",
   '<div class="items-stretch"></div>',
-  render(Div().alignItems("stretch"))
+  render(Div().items("stretch"))
 );
 
 test(
@@ -432,7 +432,7 @@ test(
 test(
   "complete flex layout",
   '<div class="flex flex-row justify-between items-center gap-4"></div>',
-  render(Div().flex().flexDirection("row").justifyContent("between").alignItems("center").gap("4"))
+  render(Div().flex().flex("row").justify("between").items("center").gap("4"))
 );
 
 section("Grid");
@@ -478,13 +478,13 @@ test(
 test(
   "border color",
   '<div class="border-gray-300"></div>',
-  render(Div().borderColor("gray-300"))
+  render(Div().border("gray-300"))
 );
 
 test(
   "border complete",
   '<div class="border border-gray-300"></div>',
-  render(Div().border().borderColor("gray-300"))
+  render(Div().border().border("gray-300"))
 );
 
 test(
@@ -606,13 +606,13 @@ test(
 test(
   "z-index",
   '<div class="z-10"></div>',
-  render(Div().zIndex(10))
+  render(Div().z(10))
 );
 
 test(
   "z-index 50",
   '<div class="z-50"></div>',
-  render(Div().zIndex(50))
+  render(Div().z(50))
 );
 
 test(
@@ -650,37 +650,37 @@ section("Object Fit");
 test(
   "object fit cover",
   '<img class="object-cover">',
-  render(Img().objectFit("cover"))
+  render(Img().object("cover"))
 );
 
 test(
   "object fit contain",
   '<img class="object-contain">',
-  render(Img().objectFit("contain"))
+  render(Img().object("contain"))
 );
 
 test(
   "object fit fill",
   '<img class="object-fill">',
-  render(Img().objectFit("fill"))
+  render(Img().object("fill"))
 );
 
 test(
   "object fit none",
   '<img class="object-none">',
-  render(Img().objectFit("none"))
+  render(Img().object("none"))
 );
 
 test(
   "object fit scale-down",
   '<img class="object-scale-down">',
-  render(Img().objectFit("scale-down"))
+  render(Img().object("scale-down"))
 );
 
 test(
   "object fit with sizing",
   '<img class="w-full h-48 object-cover">',
-  render(Img().w("full").h("48").objectFit("cover"))
+  render(Img().w("full").h("48").object("cover"))
 );
 
 section("Method Chaining & Integration");
@@ -688,25 +688,25 @@ section("Method Chaining & Integration");
 test(
   "chain all spacing",
   '<div class="p-4 m-2"></div>',
-  render(Div().padding("4").margin("2"))
+  render(Div().p("4").m("2"))
 );
 
 test(
   "chain with setId",
   '<div id="test" class="p-4"></div>',
-  render(Div().setId("test").padding("4"))
+  render(Div().setId("test").p("4"))
 );
 
 test(
   "chain with addClass",
   '<div class="p-4 hover:bg-blue-600"></div>',
-  render(Div().padding("4").addClass("hover:bg-blue-600"))
+  render(Div().p("4").addClass("hover:bg-blue-600"))
 );
 
 test(
   "chain with setClass preserves new methods",
   '<div class="custom p-4"></div>',
-  render(Div().setClass("custom").padding("4"))
+  render(Div().setClass("custom").p("4"))
 );
 
 test(
@@ -714,12 +714,12 @@ test(
   '<div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 w-full max-w-md"></div>',
   render(
     Div()
-      .background("white")
-      .padding("6")
+      .bg("white")
+      .p("6")
       .rounded("xl")
       .shadow("lg")
       .border()
-      .borderColor("gray-200")
+      .border("gray-200")
       .w("full")
       .maxW("md")
   )
@@ -730,10 +730,10 @@ test(
   '<button class="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer shadow"></button>',
   render(
     Button()
-      .padding("x", "4")
-      .padding("y", "2")
-      .background("blue-500")
-      .textColor("white")
+      .p("x", "4")
+      .p("y", "2")
+      .bg("blue-500")
+      .text("white")
       .rounded()
       .cursor("pointer")
       .shadow()
@@ -746,8 +746,8 @@ test(
   render(
     Div([Div("Left"), Div("Right")])
       .flex()
-      .justifyContent("between")
-      .alignItems("center")
+      .justify("between")
+      .items("center")
       .gap("4")
   )
 );
@@ -757,7 +757,7 @@ section("Edge Cases");
 test(
   "zero values work",
   '<div class="p-0"></div>',
-  render(Div().padding("0"))
+  render(Div().p("0"))
 );
 
 test(
@@ -775,13 +775,13 @@ test(
 test(
   "multiple same method calls append",
   '<div class="pt-4 pb-2"></div>',
-  render(Div().padding("top", "4").padding("bottom", "2"))
+  render(Div().p("top", "4").p("bottom", "2"))
 );
 
 test(
   "works with existing Button methods",
   '<button class="px-4 py-2 bg-blue-500" type="submit"></button>',
-  render(Button().setType("submit").padding("x", "4").padding("y", "2").background("blue-500"))
+  render(Button().setType("submit").p("x", "4").p("y", "2").bg("blue-500"))
 );
 
 section("Real-World Patterns");
@@ -789,31 +789,31 @@ section("Real-World Patterns");
 test(
   "centered container",
   '<div class="w-full max-w-md mx-auto p-4"></div>',
-  render(Div().w("full").maxW("md").margin("x", "auto").padding("4"))
+  render(Div().w("full").maxW("md").m("x", "auto").p("4"))
 );
 
 test(
   "full screen section",
   '<div class="w-full h-screen flex justify-center items-center"></div>',
-  render(Div().w("full").h("screen").flex().justifyContent("center").alignItems("center"))
+  render(Div().w("full").h("screen").flex().justify("center").items("center"))
 );
 
 test(
   "card with shadow hover",
   '<div class="bg-white rounded-lg shadow p-6 hover:shadow-xl"></div>',
-  render(Div().background("white").rounded("lg").shadow().padding("6").addClass("hover:shadow-xl"))
+  render(Div().bg("white").rounded("lg").shadow().p("6").addClass("hover:shadow-xl"))
 );
 
 test(
   "sticky header",
   '<div class="sticky z-50 bg-white shadow"></div>',
-  render(Div().sticky().zIndex(50).background("white").shadow())
+  render(Div().sticky().z(50).bg("white").shadow())
 );
 
 test(
   "responsive grid",
   '<div class="grid grid-cols-3 gap-4 p-8"></div>',
-  render(Div().grid().gridCols(3).gap("4").padding("8"))
+  render(Div().grid().gridCols(3).gap("4").p("8"))
 );
 
 section("TEST SUMMARY");

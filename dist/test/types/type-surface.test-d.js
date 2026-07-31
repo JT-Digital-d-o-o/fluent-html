@@ -60,7 +60,7 @@ defineRoutes({
     },
 });
 // ── Styling/control: :has() variant, viewTransitionName, ForEachKeyed ──────
-Div().on("has-[:checked]", (t) => t.background("blue-50")); // F-B-180 relational hook
+Div().on("has-[:checked]", (t) => t.bg("blue-50")); // F-B-180 relational hook
 Div().viewTransitionName("hero"); // F-B-181 string
 Div().viewTransitionName(ids.card); // F-B-181 Id overload
 // ForEachKeyed renderItem must return a Tag (so it can be keyed)
@@ -80,7 +80,7 @@ Input().setEnterkeyhint("nope");
 Div().setContenteditable("plaintext-only");
 // @ts-expect-error — ContentEditable is closed
 Div().setContenteditable("maybe");
-Div().textSize("px", 13); // F-C-160 unit overload
+Div().text("px", 13); // F-C-160 unit overload
 Div().leading("rem", 1.5);
 Div().underlineOffset("px", 2);
 Button().setForm(ids.card); // setForm accepts string | Id
@@ -102,18 +102,18 @@ Div().minW("nope");
 Div().maxW("hyooge");
 // ── Track-C closed unions: canonical compiles, typo errors ──
 // Color family
-Svg(Path()).fillColor("current");
-Circle().strokeColor("red-500");
-Div().fillColor("[#1a2b3c]");
-Div().strokeWidth("px", 1.5);
-Div().decorationThickness("from-font");
+Svg(Path()).fill("current");
+Circle().stroke("red-500");
+Div().fill("[#1a2b3c]");
+Div().stroke("px", 1.5);
+Div().decoration("from-font");
 Div().scheme("light-dark");
 // @ts-expect-error — TailwindColor closed
-Div().fillColor("nope");
+Div().fill("nope");
 // @ts-expect-error — v4 ships no stroke-3
-Div().strokeWidth(3);
+Div().stroke(3);
 // @ts-expect-error — TailwindDecorationStyle closed
-Div().decorationStyle("squiggly");
+Div().decoration("squiggly");
 // @ts-expect-error — TailwindColorScheme closed
 Div().scheme("blue");
 // Inset shorthands
@@ -122,11 +122,11 @@ Div().insetY("rem", 1.5);
 // @ts-expect-error — TailwindInset closed
 Div().insetS("nope");
 // Typography & text effects
-Div().textWrap("balance");
+Div().text("balance");
 Div().textShadow("lg/30");
 Div().hyphens("auto");
 // @ts-expect-error — not in TailwindTextWrap
-Div().textWrap("baalance");
+Div().text("baalance");
 // @ts-expect-error — "xl" not in the v4.1 text-shadow scale
 Div().textShadow("xl");
 // Shadows, filters & blending
@@ -144,39 +144,40 @@ Div().bgBlend("plus-lighter");
 Div().isolation("isolate");
 // Transitions
 Div().delay("150");
-Div().transitionBehavior("discrete");
-// @ts-expect-error — "all" is a TailwindTransition value, not a behavior
-Div().transitionBehavior("all");
+Div().transition("discrete");
+Div().transition("all"); // property group and behavior are one merged method
+// @ts-expect-error — neither a property group nor a behavior
+Div().transition("fast");
 // Gradients
 Div().from("indigo-500", "10%");
-Div().gradientLinear(45);
-Div().gradientLinear(-65);
-Div().gradientTo("to-r", "oklch");
-Div().gradientRadial("top-left");
+Div().bgLinear(45);
+Div().bgLinear(-65);
+Div().bgLinear("to-r", "oklch");
+Div().bgRadial("top-left");
 // @ts-expect-error — angle goes through gradientLinear, not the keyword union
-Div().gradientTo("45");
+Div().bgLinear("45");
 // @ts-expect-error — direction keyword union is closed
-Div().gradientTo("to-rr");
+Div().bgLinear("to-rr");
 // @ts-expect-error — interpolation typo
-Div().gradientTo("to-r", "oklhc");
+Div().bgLinear("to-r", "oklhc");
 // @ts-expect-error — off-ladder stop must use the [..] form
 Div().from("indigo-500", "ten");
 // 3D transforms
 Div().rotateX(-45);
 Div().perspectiveOrigin("top-left");
-Div().transformStyle("3d");
+Div().transform("3d");
 Div().translate("z", "-px");
 // @ts-expect-error — TailwindPerspective closed
 Div().perspective("dramtic");
 // @ts-expect-error — translate-z has no numeric arm
 Div().translate("z", 12);
 // @ts-expect-error — TailwindBackfaceVisibility closed
-Div().backfaceVisibility("collapse");
+Div().backface("collapse");
 // Variants on .on()/.at()
-Div().on("aria-checked", (t) => t.background("blue-50"));
+Div().on("aria-checked", (t) => t.bg("blue-50"));
 Div().on("group-hover/item", (t) => t.opacity(100));
 Div().on("nth-3", (t) => t);
-Div().on("*", (t) => t.padding("4"));
+Div().on("*", (t) => t.p("4"));
 Div().at("@sm", (t) => t.flex());
 Div().at("@lg/sidebar", (t) => t);
 // @ts-expect-error — typo'd aria boolean head
@@ -192,7 +193,7 @@ Div().columns("xs");
 Div().breakInside("avoid");
 Div().snap("x", "mandatory");
 Div().snapAlign("none");
-Div().scrollMargin("t", "24");
+Div().scrollM("t", "24");
 Div().fieldSizing("content");
 // @ts-expect-error — TailwindGridLine closed
 Div().colStart("aut");
@@ -201,10 +202,10 @@ Div().breakInside("page");
 // @ts-expect-error — 2-arg snap excludes "none"
 Div().snap("none", "mandatory");
 // Masks (v4.1)
-Div().maskImage("none");
+Div().mask("none");
 Div().maskFrom("b", "50%");
 Div().maskTo("b", "90%");
-Div().maskComposite("intersect");
+Div().mask("intersect");
 Div().maskType("luminance");
 // @ts-expect-error — TailwindMaskEdge closed; "top" is not an edge
 Div().maskFrom("top", "50%");
@@ -225,15 +226,15 @@ Div().content("[attr(data-label)]");
 // @ts-expect-error — TailwindContent is none | [..] (bare for the empty string)
 Div().content("empty");
 // Arbitrary selector variant on .on() — verbatim pass-through
-Div().on("[&>li]", (t) => t.padding("2"));
+Div().on("[&>li]", (t) => t.p("2"));
 Div().on("[&_svg]", (t) => t.w("4"));
 // @ts-expect-error — an arbitrary selector must anchor on & ("[li]" is not a variant)
 Div().on("[li]", (t) => t);
 // TailwindFontFamily is CLOSED: built-ins + declared tokens + [..] only
-Div().fontFamily("mono");
-Div().fontFamily("[Inter,sans-serif]");
+Div().font("mono");
+Div().font("[Inter,sans-serif]");
 // @ts-expect-error — undeclared family; declare it via defineTheme `fonts`
-Div().fontFamily("comic-sans");
+Div().font("comic-sans");
 // Typed escapes: cssProp property union is generated + closed (custom-property arm open)
 Div().cssProp("mask-repeat", "no-repeat");
 Div().cssProp("--brand-glow", "0 0 4px red");
@@ -312,4 +313,41 @@ expectType(Blockquote("x").setCite("https://e.com/a"));
 Q("x").setDatetime("2026-06-29");
 // @ts-expect-error — BlockquoteTag exposes only setCite, not setDatetime
 Blockquote("x").setDatetime("2026-06-29");
+// ── Canonical names (llm-styling): merged-method discrimination ────────────
+// Positive: each merged method accepts every family it absorbed.
+Div().text("lg").text("red-500").text("center").text("balance");
+Div().font("bold").font("mono");
+Div().border("2").border("dashed").border("red-500").border("top", "red-500");
+Div().ring("2").ring("blue-300/50");
+Div().shadow("md").shadow("red-500");
+Div().stroke("red-500").stroke("2");
+Div().decoration("red-500").decoration("wavy").decoration("2");
+Div().flex().flex("1").flex("col").flex("wrap");
+Div().list("disc").list("inside");
+Div().outline("hidden");
+Div().mask("none").mask("add").mask("[url(/m.png)]");
+Div().bgLinear("to-r").bgLinear(45, "oklch");
+Div().px("4").mx("auto").mt("2").pt("px", 12);
+// Negative: the unions stay disjoint and closed — a wrong-family or typo'd
+// value is a compile error, not a dead class.
+// @ts-expect-error — ring widths are the closed 0|1|2|3|4|8 ladder; "500" is a shade, not a width
+Div().ring("500");
+// @ts-expect-error — "bold" is a font value, not a text value
+Div().text("bold");
+// @ts-expect-error — TailwindFontFamily is closed; raw font names need the [..] arm
+Div().font("Arial");
+// @ts-expect-error — "wavy" is a decoration style, not a border style
+Div().border("wavy");
+// @ts-expect-error — "center" is not a flex value (it's justify/items)
+Div().flex("center");
+// @ts-expect-error — "outside-in" is not a list value
+Div().list("outside-in");
+// @ts-expect-error — "multiply" is a blend mode, not a mask composite
+Div().mask("multiply");
+// @ts-expect-error — margin-only "auto" is rejected on padding shorthands
+Div().px("auto");
+// @ts-expect-error — directional shorthands take the spacing scale, not width keywords
+Div().mt("full");
+// @ts-expect-error — angle is a number; a string angle needs the direction keywords or [..]
+Div().bgLinear("45deg");
 //# sourceMappingURL=type-surface.test-d.js.map

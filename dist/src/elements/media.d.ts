@@ -99,8 +99,8 @@ export declare class SvgTag extends Tag {
     height?: string;
     viewBox?: string;
     xmlns?: string;
-    fill?: string;
-    stroke?: string;
+    fillValue?: string;
+    strokeValue?: string;
     'stroke-width'?: string;
     setWidth(width?: string | number): this;
     setHeight(height?: string | number): this;

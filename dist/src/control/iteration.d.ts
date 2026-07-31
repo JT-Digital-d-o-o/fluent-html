@@ -62,7 +62,7 @@ export declare function ForEachKeyed<T>(items: Iterable<T>, keyOf: (item: T) => 
  * @param separator - A View, or a thunk returning one, emitted between items
  *
  * @example
- * Nav(Intersperse(crumbs, (c) => A(c.label).setHtmx(c.route), () => Span("/").textColor("gray-400")))
+ * Nav(Intersperse(crumbs, (c) => A(c.label).setHtmx(c.route), () => Span("/").text("gray-400")))
  */
 export declare function Intersperse<T>(items: Iterable<T>, renderItem: (item: T, index: number) => View, separator: View | (() => View)): View;
 /**

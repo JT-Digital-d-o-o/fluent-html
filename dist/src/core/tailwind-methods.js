@@ -35,7 +35,7 @@ p.at = function (breakpoint, fn) {
     return withVariant(this, breakpoint, fn);
 };
 // Spacing
-p.padding = function (directionOrValue, value) {
+p.p = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`p-${directionOrValue}`);
     if (typeof value === "number")
@@ -43,7 +43,7 @@ p.padding = function (directionOrValue, value) {
     const dir = DIR_MAP[directionOrValue] || directionOrValue;
     return this.addClass(`p${dir}-${value}`);
 };
-p.margin = function (directionOrValue, value) {
+p.m = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`m-${directionOrValue}`);
     if (typeof value === "number")
@@ -51,18 +51,76 @@ p.margin = function (directionOrValue, value) {
     const dir = DIR_MAP[directionOrValue] || directionOrValue;
     return this.addClass(`m${dir}-${value}`);
 };
+// Directional shorthands (canonical-names)
+p.px = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`px-[${amount}${unitOrValue}]`);
+    return this.addClass(`px-${unitOrValue}`);
+};
+p.py = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`py-[${amount}${unitOrValue}]`);
+    return this.addClass(`py-${unitOrValue}`);
+};
+p.pt = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`pt-[${amount}${unitOrValue}]`);
+    return this.addClass(`pt-${unitOrValue}`);
+};
+p.pb = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`pb-[${amount}${unitOrValue}]`);
+    return this.addClass(`pb-${unitOrValue}`);
+};
+p.pl = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`pl-[${amount}${unitOrValue}]`);
+    return this.addClass(`pl-${unitOrValue}`);
+};
+p.pr = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`pr-[${amount}${unitOrValue}]`);
+    return this.addClass(`pr-${unitOrValue}`);
+};
+p.mx = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`mx-[${amount}${unitOrValue}]`);
+    return this.addClass(`mx-${unitOrValue}`);
+};
+p.my = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`my-[${amount}${unitOrValue}]`);
+    return this.addClass(`my-${unitOrValue}`);
+};
+p.mt = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`mt-[${amount}${unitOrValue}]`);
+    return this.addClass(`mt-${unitOrValue}`);
+};
+p.mb = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`mb-[${amount}${unitOrValue}]`);
+    return this.addClass(`mb-${unitOrValue}`);
+};
+p.ml = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`ml-[${amount}${unitOrValue}]`);
+    return this.addClass(`ml-${unitOrValue}`);
+};
+p.mr = function (unitOrValue, amount) {
+    if (amount !== undefined)
+        return this.addClass(`mr-[${amount}${unitOrValue}]`);
+    return this.addClass(`mr-${unitOrValue}`);
+};
 // Colors
-p.background = function (color) { return this.addClass(`bg-${color}`); };
-p.textColor = function (color) { return this.addClass(`text-${color}`); };
+p.bg = function (color) { return this.addClass(`bg-${color}`); };
 // Typography
-p.textSize = function (unitOrValue, amount) {
+p.text = function (unitOrValue, amount) {
     if (amount !== undefined)
         return this.addClass(`text-[${amount}${unitOrValue}]`);
     return this.addClass(`text-${unitOrValue}`);
 };
-p.textAlign = function (align) { return this.addClass(`text-${align}`); };
-p.fontWeight = function (weight) { return this.addClass(`font-${weight}`); };
-p.bold = function () { return this.addClass("font-bold"); };
+p.font = function (value) { return this.addClass(`font-${value}`); };
 p.italic = function () { return this.addClass("italic"); };
 p.uppercase = function () { return this.addClass("uppercase"); };
 p.lowercase = function () { return this.addClass("lowercase"); };
@@ -116,10 +174,8 @@ p.minH = function (unitOrValue, amount) {
 p.flex = function (value) {
     return value === undefined ? this.addClass("flex") : this.addClass(`flex-${value}`);
 };
-p.flexShorthand = function (value) { return this.addClass(`flex-${value}`); };
-p.flexDirection = function (direction) { return this.addClass(`flex-${direction}`); };
-p.justifyContent = function (justify) { return this.addClass(`justify-${justify}`); };
-p.alignItems = function (align) { return this.addClass(`items-${align}`); };
+p.justify = function (justify) { return this.addClass(`justify-${justify}`); };
+p.items = function (align) { return this.addClass(`items-${align}`); };
 p.gap = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`gap-${directionOrValue}`);
@@ -131,9 +187,9 @@ p.gap = function (directionOrValue, value) {
 p.grid = function () { return this.addClass("grid"); };
 p.gridCols = function (cols) { return this.addClass(`grid-cols-${cols}`); };
 p.gridRows = function (rows) { return this.addClass(`grid-rows-${rows}`); };
-p.gridAutoFlow = function (value) { return this.addClass(`grid-flow-${value}`); };
-p.gridAutoRows = function (value) { return this.addClass(`auto-rows-${value}`); };
-p.gridAutoCols = function (value) { return this.addClass(`auto-cols-${value}`); };
+p.gridFlow = function (value) { return this.addClass(`grid-flow-${value}`); };
+p.autoRows = function (value) { return this.addClass(`auto-rows-${value}`); };
+p.autoCols = function (value) { return this.addClass(`auto-cols-${value}`); };
 // Borders
 p.border = function (directionOrValue, value) {
     if (directionOrValue === undefined)
@@ -146,13 +202,6 @@ p.border = function (directionOrValue, value) {
     }
     return this.addClass(`border-${directionOrValue}`);
 };
-p.borderColor = function (directionOrColor, color) {
-    if (color === undefined)
-        return this.addClass(`border-${directionOrColor}`);
-    const dir = DIR_MAP[directionOrColor] || directionOrColor;
-    return this.addClass(`border-${dir}-${color}`);
-};
-p.borderStyle = function (style) { return this.addClass(`border-${style}`); };
 p.rounded = function (cornerOrValue, value) {
     if (cornerOrValue === undefined)
         return this.addClass("rounded");
@@ -174,13 +223,13 @@ p.relative = function () { return this.addClass("relative"); };
 p.fixed = function () { return this.addClass("fixed"); };
 p.sticky = function () { return this.addClass("sticky"); };
 p.static = function () { return this.addClass("static"); };
-p.zIndex = function (value) { return this.addClass(`z-${value}`); };
+p.z = function (value) { return this.addClass(`z-${value}`); };
 p.overflow = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`overflow-${directionOrValue}`);
     return this.addClass(`overflow-${directionOrValue}-${value}`);
 };
-p.objectFit = function (value) { return this.addClass(`object-${value}`); };
+p.object = function (value) { return this.addClass(`object-${value}`); };
 // Layout & Display
 p.block = function () { return this.addClass("block"); };
 p.inlineBlock = function () { return this.addClass("inline-block"); };
@@ -221,8 +270,7 @@ p.shrink = function (value) {
 p.grow = function (value) {
     return value === undefined ? this.addClass("grow") : this.addClass(`grow-${value}`);
 };
-p.flexWrap = function (value) { return this.addClass(`flex-${value}`); };
-p.alignSelf = function (value) { return this.addClass(`self-${value}`); };
+p.self = function (value) { return this.addClass(`self-${value}`); };
 p.colSpan = function (value) { return this.addClass(`col-span-${value}`); };
 p.aspect = function (value) { return this.addClass(`aspect-${value}`); };
 p.order = function (value) { return this.addClass(`order-${value}`); };
@@ -249,7 +297,6 @@ p.animate = function (value) { return this.addClass(`animate-${value}`); };
 p.ring = function (value) {
     return value === undefined ? this.addClass("ring") : this.addClass(`ring-${value}`);
 };
-p.ringColor = function (color) { return this.addClass(`ring-${color}`); };
 // Transforms
 p.scale = function (value) { return this.addClass(`scale-${value}`); };
 p.rotate = function (value) { return this.addClass(signNeg("rotate", String(value))); };
@@ -265,15 +312,11 @@ p.appearance = function (value) { return this.addClass(`appearance-${value}`); }
 // Text & Whitespace
 p.whitespace = function (value) { return this.addClass(`whitespace-${value}`); };
 // List Style
-p.listStyleType = function (value) { return this.addClass(`list-${value}`); };
-p.listStylePosition = function (value) { return this.addClass(`list-${value}`); };
+p.list = function (value) { return this.addClass(`list-${value}`); };
 // Accessibility
 p.srOnly = function () { return this.addClass("sr-only"); };
 // Outline
 p.outline = function (value) { return this.addClass(`outline-${value}`); };
-p.outlineHidden = function () { return this.addClass("outline-hidden"); };
-// Font Family
-p.fontFamily = function (family) { return this.addClass(`font-${family}`); };
 // Gradients (v4-native: bg-linear-* replaces v3 bg-gradient-*; + radial/conic)
 const interp = (cls, i) => (i ? `${cls}/${i}` : cls);
 p.gradient = function (from, to, direction = "to-r", interpolation) {
@@ -281,12 +324,13 @@ p.gradient = function (from, to, direction = "to-r", interpolation) {
         .addClass(interp(`bg-linear-${direction}`, interpolation))
         .addClass(`from-${from}`).addClass(`to-${to}`);
 };
-p.gradientTo = function (direction, interpolation) { return this.addClass(interp(`bg-linear-${direction}`, interpolation)); };
-p.gradientLinear = function (angle) { return this.addClass(signNeg("bg-linear", String(angle))); };
-p.gradientRadial = function (origin, interpolation) {
+p.bgLinear = function (directionOrAngle, interpolation) {
+    return this.addClass(interp(signNeg("bg-linear", String(directionOrAngle)), interpolation));
+};
+p.bgRadial = function (origin, interpolation) {
     return this.addClass(radialGradientClass(origin, interpolation));
 };
-p.gradientConic = function (angle, interpolation) {
+p.bgConic = function (angle, interpolation) {
     return this.addClass(interp(angle === undefined ? "bg-conic" : signNeg("bg-conic", String(angle)), interpolation));
 };
 p.from = function (color, position) { this.addClass(`from-${color}`); return position ? this.addClass(`from-${position}`) : this; };
@@ -302,8 +346,6 @@ p.peer = function (name) {
 p.containerQuery = function (name) {
     return name === undefined ? this.addClass("@container") : this.addClass(`@container/${name}`);
 };
-// Shadow Color
-p.shadowColor = function (color) { return this.addClass(`shadow-${color}`); };
 // Filters
 p.blur = function (value) {
     return value === undefined ? this.addClass("blur") : this.addClass(`blur-${value}`);
@@ -393,19 +435,16 @@ p.positionArea = function (area) {
     return this.addStyle(`position-area: ${value}`);
 };
 p.viewTransitionName = function (name) { return this.addStyle(`view-transition-name: ${extractId(name)}`); };
-p.fillColor = function (color) { return this.addClass(`fill-${color}`); };
-p.strokeColor = function (color) { return this.addClass(`stroke-${color}`); };
-p.strokeWidth = function (unitOrValue, amount) {
+p.fill = function (color) { return this.addClass(`fill-${color}`); };
+p.stroke = function (unitOrValue, amount) {
     if (amount !== undefined)
         return this.addClass(`stroke-[${amount}${unitOrValue}]`);
     return this.addClass(`stroke-${unitOrValue}`);
 };
-p.accentColor = function (color) { return this.addClass(`accent-${color}`); };
-p.caretColor = function (color) { return this.addClass(`caret-${color}`); };
+p.accent = function (color) { return this.addClass(`accent-${color}`); };
+p.caret = function (color) { return this.addClass(`caret-${color}`); };
 p.scheme = function (value) { return this.addClass(`scheme-${value}`); };
-p.decorationColor = function (color) { return this.addClass(`decoration-${color}`); };
-p.decorationStyle = function (style) { return this.addClass(`decoration-${style}`); };
-p.decorationThickness = function (unitOrValue, amount) {
+p.decoration = function (unitOrValue, amount) {
     if (amount !== undefined)
         return this.addClass(`decoration-[${amount}${unitOrValue}]`);
     return this.addClass(`decoration-${unitOrValue}`);
@@ -430,29 +469,23 @@ p.insetE = function (unitOrValue, amount) {
         return this.addClass(`inset-e-[${amount}${unitOrValue}]`);
     return this.addClass(`inset-e-${unitOrValue}`);
 };
-p.textWrap = function (value) { return this.addClass(`text-${value}`); };
 p.wrap = function (value) { return this.addClass(`wrap-${value}`); };
 p.hyphens = function (value) { return this.addClass(`hyphens-${value}`); };
 p.textShadow = function (value) { return this.addClass(`text-shadow-${value}`); };
-p.textShadowColor = function (color) { return this.addClass(`text-shadow-${color}`); };
 p.dropShadow = function (value) { return this.addClass(`drop-shadow-${value}`); };
-p.dropShadowColor = function (color) { return this.addClass(`drop-shadow-${color}`); };
 p.insetShadow = function (value) { return this.addClass(`inset-shadow-${value}`); };
-p.insetShadowColor = function (color) { return this.addClass(`inset-shadow-${color}`); };
 p.insetRing = function (value) {
     return value === undefined ? this.addClass("inset-ring") : this.addClass(`inset-ring-${value}`);
 };
-p.insetRingColor = function (color) { return this.addClass(`inset-ring-${color}`); };
 p.mixBlend = function (mode) { return this.addClass(`mix-blend-${mode}`); };
 p.bgBlend = function (mode) { return this.addClass(`bg-blend-${mode}`); };
 p.isolate = function () { return this.addClass("isolate"); };
 p.isolation = function (value) { return this.addClass(`isolation-${value}`); };
 p.delay = function (value) { return this.addClass(`delay-${value}`); };
-p.transitionBehavior = function (value) { return this.addClass(`transition-${value}`); };
 p.perspective = function (value) { return this.addClass(`perspective-${value}`); };
 p.perspectiveOrigin = function (value) { return this.addClass(`perspective-origin-${value}`); };
-p.transformStyle = function (value) { return this.addClass(`transform-${value}`); };
-p.backfaceVisibility = function (value) { return this.addClass(`backface-${value}`); };
+p.transform = function (value) { return this.addClass(`transform-${value}`); };
+p.backface = function (value) { return this.addClass(`backface-${value}`); };
 p.rotateX = function (value) { return this.addClass(signNeg("rotate-x", String(value))); };
 p.rotateY = function (value) { return this.addClass(signNeg("rotate-y", String(value))); };
 p.rotateZ = function (value) { return this.addClass(signNeg("rotate-z", String(value))); };
@@ -479,8 +512,8 @@ p.snapAlign = function (value) {
     return this.addClass(value === "none" ? "snap-align-none" : `snap-${value}`);
 };
 p.snapStop = function (value) { return this.addClass(`snap-${value}`); };
-p.scrollBehavior = function (value) { return this.addClass(`scroll-${value}`); };
-p.scrollMargin = function (directionOrValue, value) {
+p.scroll = function (value) { return this.addClass(`scroll-${value}`); };
+p.scrollM = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`scroll-m-${directionOrValue}`);
     if (typeof value === "number")
@@ -488,7 +521,7 @@ p.scrollMargin = function (directionOrValue, value) {
     const dir = DIR_MAP[directionOrValue] || directionOrValue;
     return this.addClass(`scroll-m${dir}-${value}`);
 };
-p.scrollPadding = function (directionOrValue, value) {
+p.scrollP = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`scroll-p-${directionOrValue}`);
     if (typeof value === "number")
@@ -500,11 +533,10 @@ p.fieldSizing = function (value) { return this.addClass(`field-sizing-${value}`)
 p.content = function (value) {
     return this.addClass(value === undefined ? "content-['']" : `content-${value}`);
 };
-p.maskImage = function (value) {
+p.mask = function (value) {
     return value === "none" ? this.addClass("mask-none") : this.addClass(`mask-${value}`);
 };
 p.maskFrom = function (edge, stop) { return this.addClass(`mask-${edge}-from-${stop}`); };
 p.maskTo = function (edge, stop) { return this.addClass(`mask-${edge}-to-${stop}`); };
-p.maskComposite = function (mode) { return this.addClass(`mask-${mode}`); };
 p.maskType = function (value) { return this.addClass(`mask-type-${value}`); };
 //# sourceMappingURL=tailwind-methods.js.map

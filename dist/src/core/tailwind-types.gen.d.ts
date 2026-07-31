@@ -38,7 +38,7 @@ export type TailwindAspect = "auto" | "square" | "video";
 export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow" | "transform";
 export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | `${number}` | `[${string}]`;
 export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
-export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | `${number}` | `[${string}]`;
+export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | `[${string}]`;
 export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | `${number}` | `[${string}]`;
 export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | -1 | -2 | -3 | -6 | -12 | -45 | -90 | -180 | Stringified<0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | -1 | -2 | -3 | -6 | -12 | -45 | -90 | -180> | `[${string}]`;
 /** Translate distance — the spacing scale plus its negatives (`-translate-y-1`). */
@@ -50,7 +50,7 @@ export type TailwindListStyleType = "none" | "disc" | "decimal" | `[${string}]`;
 export type TailwindListStylePosition = "inside" | "outside";
 export type TailwindWhitespace = "normal" | "nowrap" | "pre" | "pre-line" | "pre-wrap" | "break-spaces";
 export type TailwindBorderStyle = "solid" | "dashed" | "dotted" | "double" | "hidden" | "none";
-export type TailwindOutline = "none" | "dashed" | "dotted" | "double";
+export type TailwindOutline = "none" | "hidden" | "dashed" | "dotted" | "double";
 export type TailwindPosition = "static" | "fixed" | "absolute" | "relative" | "sticky";
 export type TailwindTextAlign = "left" | "center" | "right" | "justify";
 export type TailwindFlexDirection = "row" | "col" | "row-reverse" | "col-reverse";
@@ -80,7 +80,7 @@ export type TailwindOrder = "first" | "last" | "none" | 1 | 2 | 3 | 4 | 5 | 6 | 
 /**
  * `position-area` grid placement (CSS anchor positioning, B-010). The common
  * single- and two-axis cells, plus the `[${string}]` arbitrary hatch for the full
- * grammar (`[top span-left]`) — emitted verbatim, same contract as `.textSize("[13px]")`.
+ * grammar (`[top span-left]`) — emitted verbatim, same contract as `.text("[13px]")`.
  */
 export type TailwindPositionArea = "top" | "bottom" | "left" | "right" | "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right" | "top-span-left" | "top-span-right" | "bottom-span-left" | "bottom-span-right" | `[${string}]`;
 export type TailwindSkew = 0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12 | Stringified<0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12> | `[${string}]`;

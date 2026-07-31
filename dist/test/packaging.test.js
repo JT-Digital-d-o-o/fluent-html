@@ -25,7 +25,7 @@ describe("packaging invariants", () => {
         });
     });
     describe("mixin registration is an invariant of every Tag-producing barrel (architecture-2)", () => {
-        const surface = ["padding", "setHtmx", "behavior", "overlay"];
+        const surface = ["p", "setHtmx", "behavior", "overlay"];
         it("the ./elements subpath yields a fully-populated Tag", async () => {
             const m = await import("../src/elements/index.js");
             const d = m.Div("x");

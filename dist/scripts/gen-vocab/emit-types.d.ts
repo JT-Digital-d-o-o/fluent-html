@@ -15,8 +15,11 @@ export declare function templateUnions(): readonly {
     readonly method: string;
     readonly arbitrary: boolean;
 }[];
-/** The `values.literals` list for a method — loud error for missing/non-literals rows. */
-export declare function literalsOf(method: string): readonly string[];
+/**
+ * The `values.literals` list for a `method` or `method.group` address — loud
+ * error for missing rows/groups or non-literals specs.
+ */
+export declare function literalsOf(address: string): readonly string[];
 /** Render the full content of `tailwind-types.gen.ts`. */
 export declare function renderTailwindTypesGen(): string;
 //# sourceMappingURL=emit-types.d.ts.map

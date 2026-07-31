@@ -2,6 +2,39 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [Unreleased — 7.0.0] - Canonical names: method name = Tailwind class prefix
+
+Library stage of `llm-styling/canonical-names` — the styling surface is renamed to the model author's Tailwind prior. **Breaking, no aliases, no shims** (greenfield-major); ships together with `object-variants` in one release. Measured on the demos corpus: 0.80× styling tokens, 0.76× with the directional shorthands.
+
+### 💥 Breaking — 21 renames
+
+`padding→p`, `margin→m`, `background→bg`, `zIndex→z`, `objectFit→object`, `justifyContent→justify`, `alignItems→items`, `alignSelf→self`, `gridAutoFlow→gridFlow`, `gridAutoRows→autoRows`, `gridAutoCols→autoCols`, `fillColor→fill`, `accentColor→accent`, `caretColor→caret`, `backfaceVisibility→backface`, `transformStyle→transform`, `scrollBehavior→scroll`, `scrollMargin→scrollM`, `scrollPadding→scrollP`, `gradientRadial→bgRadial`, `gradientConic→bgConic`.
+
+### 💥 Breaking — 17 merges (40 methods → 17)
+
+One method per Tailwind class prefix; the argument's (statically disjoint) union discriminates, exactly like Tailwind itself:
+
+- **`.text()`** ← textSize + textColor + textAlign + textWrap (`.text("lg")`, `.text("red-500")`, `.text("center")`, `.text("balance")`, `.text("px", 13)`)
+- **`.font()`** ← fontWeight + fontFamily; **`.border()`** ← border + borderColor + borderStyle (side forms take width or color; style is all-sides); **`.ring()`** ← ring + ringColor; **`.shadow()`** ← shadow + shadowColor; **`.stroke()`** ← strokeColor + strokeWidth; **`.decoration()`** ← decorationColor + decorationStyle + decorationThickness; **`.textShadow()`/`.dropShadow()`/`.insetShadow()`** ← + their `*Color` twins; **`.insetRing()`** ← + insetRingColor; **`.flex()`** ← flex + flexDirection + flexWrap; **`.transition()`** ← + transitionBehavior; **`.list()`** ← listStyleType + listStylePosition; **`.outline()`** ← + outlineHidden (`.outline("hidden")` is the a11y-safe value); **`.mask()`** ← maskImage + maskComposite; **`.bgLinear()`** ← gradientLinear + gradientTo (direction keyword or angle, optional interpolation).
+- Vocab rows carry the merged families as a new `values: { kind: "group", groups }` spec — the types emitter (`@@UNION Name method.group@@` addresses), validity oracle, and ESLint derivation all read per-family lists, so nothing left the anti-drift machinery.
+
+### ✨ Added — 12 directional shorthands
+
+`px/py/pt/pb/pl/pr/mx/my/mt/mb/ml/mr` — the Tailwind spelling models emit first (`.px("4")`, `.mx("auto")`, `.pt("px", 12)`). `.p("x", "4")` remains as the parametric form.
+
+### 💥 Breaking — deletions & tightenings
+
+- Deleted `bold()` (→ `.font("bold")`), `flexShorthand()` (→ `.flex("2")`-style values stay on `.flex()`), `outlineHidden()` (→ `.outline("hidden")`).
+- **`TailwindRingWidth` closed** — the open `` `${number}` `` arm is gone (`.ring("500")` was a nonsense class and would blur width-vs-color discrimination); widths are `0|1|2|3|4|8` or `[…]`.
+- Internal storage fields renamed to stop shadowing new Tag methods (attributes and `set*` setters unchanged): `InputTag.list → listId`, `SvgTag`/`SvgShapeTag` `fill/stroke/transform → fillValue/strokeValue/transformValue`.
+
+### ✨ Added — guardrails
+
+- **`defineTheme` ambiguity warning** — a token name landing in two families that share a merged prefix (`colors`×`fontSize` → `text-*`, `colors`×`shadow` → `shadow-*`, weight-named `fonts` tokens → `font-*`) now warns at definition time with a rename suggestion.
+- JSDoc cross-references on `.fill()`/`.stroke()`/`.transform()` (class utilities) vs `setFill`/`setStroke`/`setTransform` (SVG presentation attributes).
+
+Pairs with **eslint-plugin-fluent-html 4.0.0** (derived tables re-derive from the canonical vocab; autofixes now emit `.bg()`/`.p()`/`.mt()`/… and the directional shorthands own their prefixes).
+
 ## [6.8.0] - Escape hatch closure: vocab gap fills + font-family theme tokens
 
 First stage of `llm-styling/escape-hatch` — the last vocab gaps are filled so no styling need forces an author off the typed surface.

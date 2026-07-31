@@ -15,10 +15,10 @@ import { readFileSync } from "node:fs";
 import { classVocab } from "../src/class-vocab/index.js";
 import { generatedPath, renderTailwindTypesGen, templateUnions, literalsOf } from "../scripts/gen-vocab/emit-types.js";
 import { cssPropsGeneratedPath, renderCssPropsGen, cssPropertyNames } from "../scripts/gen-vocab/emit-css-props.js";
-/** follower method → union-source method it must stay identical to. */
+/** follower address → union-source address it must stay identical to. */
 const SHARED_UNION_FOLLOWERS = new Map([
     ["backdropBlur", "blur"],
-    ["gridAutoCols", "gridAutoRows"],
+    ["autoCols", "autoRows"],
     ["breakAfter", "breakBefore"],
 ]);
 describe("generated tailwind types", () => {
@@ -54,13 +54,21 @@ describe("generated tailwind types", () => {
         assert.equal(new Set(names).size, names.length, "duplicate type name in template");
         assert.equal(new Set(methods).size, methods.length, "one vocab row drives two unions — use a follower instead");
     });
-    it("every literals row is rendered (union source or shared follower)", () => {
+    it("every literals row/group is rendered (union source or shared follower)", () => {
         const sources = new Set(templateUnions().map((u) => u.method));
-        const missing = classVocab
-            .filter((d) => d.values?.kind === "literals")
-            .map((d) => d.method)
-            .filter((m) => !sources.has(m) && !SHARED_UNION_FOLLOWERS.has(m));
-        assert.deepEqual(missing, [], `literals rows not rendered into tailwind-types.gen.ts: ${missing.join(", ")} — add a template union or a SHARED_UNION_FOLLOWERS entry`);
+        // Every literals list — flat rows as `method`, merged-method groups as `method.group`.
+        const addresses = classVocab.flatMap((d) => {
+            if (d.values?.kind === "literals")
+                return [d.method];
+            if (d.values?.kind === "group") {
+                return Object.entries(d.values.groups)
+                    .filter(([, spec]) => spec.kind === "literals")
+                    .map(([name]) => `${d.method}.${name}`);
+            }
+            return [];
+        });
+        const missing = addresses.filter((a) => !sources.has(a) && !SHARED_UNION_FOLLOWERS.has(a));
+        assert.deepEqual(missing, [], `literals lists not rendered into tailwind-types.gen.ts: ${missing.join(", ")} — add a template union or a SHARED_UNION_FOLLOWERS entry`);
     });
     it("shared-union followers stay identical to their source list", () => {
         for (const [follower, source] of SHARED_UNION_FOLLOWERS) {

@@ -233,7 +233,7 @@ describe("ForEach: non-array iterables (D-06 single-pass)", () => {
 
 describe("Tag.whenElse", () => {
   it("boolean true takes thenFn", () => {
-    assert.strictEqual(render(Button("X").whenElse(true, t => t.toggle("disabled"), t => t.background("blue-500"))), `<button disabled>X</button>`);
+    assert.strictEqual(render(Button("X").whenElse(true, t => t.toggle("disabled"), t => t.bg("blue-500"))), `<button disabled>X</button>`);
   });
 
   it("boolean false takes elseFn", () => {
@@ -306,7 +306,7 @@ describe("MatchValue", () => {
 
   it("the value flows straight into a fluent method", () => {
     const bg = MatchValue("err" as "ok" | "err", { ok: "green-100", err: "red-100" } as const);
-    assert.strictEqual(render(Div().background(bg)), `<div class="bg-red-100"></div>`);
+    assert.strictEqual(render(Div().bg(bg)), `<div class="bg-red-100"></div>`);
   });
 
   it("a present key whose value is falsy is returned (not the default)", () => {

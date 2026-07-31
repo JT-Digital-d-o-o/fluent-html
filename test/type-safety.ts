@@ -76,7 +76,7 @@ describe("Generic Input factory type safety", () => {
   });
 
   it("Input factory preserves chaining with tailwind methods", () => {
-    const html = render(Input("number").setMin(1).setMax(10).padding("4"));
+    const html = render(Input("number").setMin(1).setMax(10).p("4"));
     assert.ok(html.includes('min="1"'));
     assert.ok(html.includes('class="p-4"'));
   });
@@ -556,10 +556,10 @@ describe("control-flow overload type honesty", () => {
 // The working spellings are "only" / "only-of-type". @ts-expect-error IS the test.
 describe("Tailwind variant fidelity", () => {
   it("rejects the non-existent only-child variant, accepts only / only-of-type", () => {
-    render(Div().on("only", (t) => t.margin("t", "2")));
-    render(Div().on("only-of-type", (t) => t.margin("t", "2")));
+    render(Div().on("only", (t) => t.m("t", "2")));
+    render(Div().on("only-of-type", (t) => t.m("t", "2")));
     // @ts-expect-error — "only-child" is not a Tailwind variant; use "only"
-    render(Div().on("only-child", (t) => t.margin("t", "2")));
+    render(Div().on("only-child", (t) => t.m("t", "2")));
   });
 });
 

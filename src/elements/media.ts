@@ -273,8 +273,10 @@ export class SvgTag extends Tag {
   height?: string;
   viewBox?: string;
   xmlns?: string;
-  fill?: string;
-  stroke?: string;
+  // Storage is `fillValue`/`strokeValue` (aliased to the `fill`/`stroke` attributes in
+  // the schema) so the fields don't shadow the Tag `.fill()`/`.stroke()` styling methods.
+  fillValue?: string;
+  strokeValue?: string;
   'stroke-width'?: string;
 
   setWidth(width?: string | number): this {
@@ -298,12 +300,12 @@ export class SvgTag extends Tag {
   }
 
   setFill(fill: string): this {
-    this.fill = fill;
+    this.fillValue = fill;
     return this;
   }
 
   setStroke(stroke: string): this {
-    this.stroke = stroke;
+    this.strokeValue = stroke;
     return this;
   }
 
@@ -313,7 +315,7 @@ export class SvgTag extends Tag {
   }
 }
 
-defineSchemaKeys(SvgTag, ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width']);
+defineSchemaKeys(SvgTag, ['width', 'height', 'viewBox', 'xmlns', ['fillValue', 'fill'], ['strokeValue', 'stroke'], 'stroke-width']);
 
 export function Svg(...children: View[]): SvgTag {
   return new SvgTag("svg", ...children);

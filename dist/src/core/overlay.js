@@ -28,7 +28,7 @@ Tag.prototype.overlay = function (positionOrContent, ...rest) {
     else {
         content = [positionOrContent, ...rest];
     }
-    const layer = El("div", ...content).absolute().addClass(POSITION_CLASSES[position]).zIndex("10");
+    const layer = El("div", ...content).absolute().addClass(POSITION_CLASSES[position]).z("10");
     return El("div", this, layer).relative();
 };
 //# sourceMappingURL=overlay.js.map

@@ -1,15 +1,15 @@
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 export declare class SvgShapeTag extends Tag {
-    fill?: string;
-    stroke?: string;
+    fillValue?: string;
+    strokeValue?: string;
     'stroke-width'?: string;
     'stroke-linecap'?: 'butt' | 'round' | 'square';
     'stroke-linejoin'?: 'miter' | 'round' | 'bevel';
     'stroke-dasharray'?: string;
     'stroke-dashoffset'?: string;
     'stroke-opacity'?: string;
-    transform?: string;
+    transformValue?: string;
     svgOpacity?: string;
     filter?: string;
     setFill(fill: string): this;

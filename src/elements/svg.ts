@@ -6,27 +6,30 @@ import type { View } from "../core/types.js";
 // ─── Shared SVG presentation attributes ────────────────────────────
 
 export class SvgShapeTag extends Tag {
-  fill?: string;
-  stroke?: string;
+  // Storage is `fillValue`/`strokeValue`/`transformValue` (aliased to the `fill`/
+  // `stroke`/`transform` presentation attributes in the schema) so the fields don't
+  // shadow the Tag `.fill()`/`.stroke()`/`.transform()` styling methods (canonical-names).
+  fillValue?: string;
+  strokeValue?: string;
   'stroke-width'?: string;
   'stroke-linecap'?: 'butt' | 'round' | 'square';
   'stroke-linejoin'?: 'miter' | 'round' | 'bevel';
   'stroke-dasharray'?: string;
   'stroke-dashoffset'?: string;
   'stroke-opacity'?: string;
-  transform?: string;
+  transformValue?: string;
   // Named `svgOpacity` (not `opacity`) to avoid clashing with the Tailwind `.opacity()`
   // method; the `_sk` tuple emits it as the `opacity` presentation attribute.
   svgOpacity?: string;
   filter?: string;
 
   setFill(fill: string): this {
-    this.fill = fill;
+    this.fillValue = fill;
     return this;
   }
 
   setStroke(stroke: string): this {
-    this.stroke = stroke;
+    this.strokeValue = stroke;
     return this;
   }
 
@@ -66,7 +69,7 @@ export class SvgShapeTag extends Tag {
   }
 
   setTransform(transform: string): this {
-    this.transform = transform;
+    this.transformValue = transform;
     return this;
   }
 
@@ -77,7 +80,7 @@ export class SvgShapeTag extends Tag {
 }
 
 /** @internal */
-const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity', 'transform', ['svgOpacity', 'opacity'], 'filter'] as const;
+const SHAPE_SK = [['fillValue', 'fill'], ['strokeValue', 'stroke'], 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity', ['transformValue', 'transform'], ['svgOpacity', 'opacity'], 'filter'] as const;
 
 defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 

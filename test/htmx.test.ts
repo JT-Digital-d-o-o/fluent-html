@@ -282,7 +282,7 @@ describe("hx Shorthand Methods", () => {
 
   it("htmxIndicator() emits the sanctioned class", () => {
     assert.strictEqual(render(Div("Loading…").htmxIndicator()), `<div class="htmx-indicator">Loading…</div>`);
-    assert.strictEqual(render(Div("Saving").padding("4").htmxIndicator()), `<div class="p-4 htmx-indicator">Saving</div>`);
+    assert.strictEqual(render(Div("Saving").p("4").htmxIndicator()), `<div class="p-4 htmx-indicator">Saving</div>`);
   });
 });
 

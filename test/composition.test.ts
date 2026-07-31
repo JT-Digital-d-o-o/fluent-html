@@ -322,7 +322,7 @@ describe("when() and apply()", () => {
 
   // F-C-120 -- a base-Tag style-fn composes onto an element subclass, and void-returning modifiers are accepted
   it("apply() accepts a base-Tag style-fn on a subclass (Button)", () => {
-    const card = (t: Tag) => t.padding("4");
+    const card = (t: Tag) => t.p("4");
     assert.strictEqual(render(Button("Save").apply(card)), `<button class="p-4">Save</button>`);
   });
 

@@ -23,7 +23,7 @@ export declare class InputTag extends Tag {
     autocomplete?: AutocompleteHint;
     inputmode?: InputMode;
     capture?: 'user' | 'environment';
-    list?: string;
+    listId?: string;
     dirname?: string;
     setType(type?: InputType): this;
     setPlaceholder(placeholder?: string): this;

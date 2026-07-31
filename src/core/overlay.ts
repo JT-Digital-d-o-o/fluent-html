@@ -57,6 +57,6 @@ Tag.prototype.overlay = function (this: Tag, positionOrContent?: OverlayPosition
   } else {
     content = [positionOrContent, ...rest];
   }
-  const layer = El("div", ...content).absolute().addClass(POSITION_CLASSES[position]).zIndex("10");
+  const layer = El("div", ...content).absolute().addClass(POSITION_CLASSES[position]).z("10");
   return El("div", this, layer).relative();
 };

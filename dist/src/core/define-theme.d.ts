@@ -37,7 +37,7 @@ export type ThemeSpec = {
     readonly fontSize?: Readonly<Record<string, string>>;
     readonly radius?: Readonly<Record<string, string>>;
     readonly shadow?: Readonly<Record<string, string>>;
-    /** Font families (`--font-*`): token → font stack. `.fontFamily("display")` via FluentCustomFontFamily. */
+    /** Font families (`--font-*`): token → font stack. `.font("display")` via FluentCustomFontFamily. */
     readonly fonts?: Readonly<Record<string, string>>;
 };
 /**
@@ -45,7 +45,8 @@ export type ThemeSpec = {
  * preserves the literal token keys (so `theme` and `typeof tokens` carry them)
  * and returns the spec for `fluentHtmlPlugin({ theme })` to emit CSS + safelist.
  * The compile-time typing comes from the `declare module` augmentation, not from
- * this call (a runtime value can't add to a type).
+ * this call (a runtime value can't add to a type). Warns (once, at definition
+ * time) on token names that collide across families sharing a merged emitter.
  */
 export declare function defineTheme<const T extends ThemeSpec>(spec: T): T;
 //# sourceMappingURL=define-theme.d.ts.map

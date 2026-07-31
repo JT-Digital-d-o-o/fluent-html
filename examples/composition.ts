@@ -13,16 +13,16 @@ import {
 // --- Reusable modifiers via .apply() ---
 
 const card = (t: Tag) =>
-  t.padding("6").background("white").rounded("lg").shadow("md");
+  t.p("6").bg("white").rounded("lg").shadow("md");
 
 const badge = (color: string) => (t: Tag) =>
-  t.padding("x", "2")
-    .padding("y", "1")
-    .textSize("xs")
-    .fontWeight("semibold")
+  t.p("x", "2")
+    .p("y", "1")
+    .text("xs")
+    .font("semibold")
     .rounded("full")
-    .background(`${color}-100`)
-    .textColor(`${color}-800`);
+    .bg(`${color}-100`)
+    .text(`${color}-800`);
 
 // --- Reusable component functions ---
 
@@ -40,14 +40,14 @@ function UserCard(props: { user: User }) {
 
   return Div(
     Div(
-      H2(user.name).textSize("lg").fontWeight("bold"),
+      H2(user.name).text("lg").font("bold"),
       Span(user.role).apply(badge(roleBadgeColor[user.role])),
-    ).flex().alignItems("center").gap("2"),
+    ).flex().items("center").gap("2"),
 
-    P(user.email).textColor("gray-500").textSize("sm").margin("top", "1"),
+    P(user.email).text("gray-500").text("sm").m("top", "1"),
 
     IfThen(user.isOnline, () =>
-      Span("Online").textColor("green-600").textSize("sm").fontWeight("medium"),
+      Span("Online").text("green-600").text("sm").font("medium"),
     ),
   )
     .apply(card)
@@ -56,20 +56,20 @@ function UserCard(props: { user: User }) {
 
 function UserList(props: { users: User[]; title: string }) {
   return Div(
-    H2(props.title).textSize("xl").fontWeight("bold").margin("bottom", "4"),
+    H2(props.title).text("xl").font("bold").m("bottom", "4"),
 
     Ul(
       ForEach(props.users, (user) =>
-        Li(UserCard({ user })).margin("bottom", "3"),
+        Li(UserCard({ user })).m("bottom", "3"),
       ),
     ),
 
     Button(`${props.users.length} users total`)
-      .padding("x", "4")
-      .padding("y", "2")
-      .background("gray-100")
+      .p("x", "4")
+      .p("y", "2")
+      .bg("gray-100")
       .rounded("lg")
-      .margin("top", "4")
+      .m("top", "4")
       .when(props.users.length === 0, t =>
         t.toggle("disabled").opacity("50"),
       ),

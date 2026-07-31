@@ -69,7 +69,7 @@ export class InputTag extends Tag {
         return this;
     }
     setList(list) {
-        this.list = list === undefined ? undefined : extractId(list);
+        this.listId = list === undefined ? undefined : extractId(list);
         return this;
     }
     setDirname(dirname) {
@@ -77,7 +77,7 @@ export class InputTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list', 'dirname']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', ['listId', 'list'], 'dirname']);
 export function Input(type) {
     const tag = new InputTag("input");
     if (type)

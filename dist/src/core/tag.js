@@ -34,8 +34,8 @@ function validateAttributeKey(key) {
  * @example
  * Div(H1("Hello"), P("World"))
  *   .setId(ids.main)
- *   .padding("4")
- *   .background("white")
+ *   .p("4")
+ *   .bg("white")
  *   .setHtmx("/api/content")
  */
 export class Tag {

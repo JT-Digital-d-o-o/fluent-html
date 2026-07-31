@@ -17,25 +17,31 @@ import type { UtilityDef } from "../src/class-vocab/index.js";
 describe("emitClasses — per-shape exact output", () => {
   const cases: Array<[label: string, method: string, args: string[], expected: string[]]> = [
     // static
-    ["static bold", "bold", [], ["font-bold"]],
     ["static srOnly", "srOnly", [], ["sr-only"]],
     // prefix
-    ["prefix background", "background", ["blue-500"], ["bg-blue-500"]],
+    ["prefix bg", "bg", ["blue-500"], ["bg-blue-500"]],
     ["prefix gridCols", "gridCols", ["3"], ["grid-cols-3"]],
     ["custom skewX", "skewX", ["6"], ["skew-x-6"]],
     ["custom skewX negative", "skewX", ["-6"], ["-skew-x-6"]],
     // optional
     ["optional shadow bare", "shadow", [], ["shadow"]],
     ["optional shadow value", "shadow", ["md"], ["shadow-md"]],
+    ["optional shadow color (merged)", "shadow", ["red-500"], ["shadow-red-500"]],
     ["optional ring value", "ring", ["2"], ["ring-2"]],
+    ["optional ring color (merged)", "ring", ["blue-300"], ["ring-blue-300"]],
     ["optional group bare (slash)", "group", [], ["group"]],
     ["optional group named (slash)", "group", ["nav"], ["group/nav"]],
-    // spacing — padding (abbrev, no sep)
-    ["spacing padding value", "padding", ["4"], ["p-4"]],
-    ["spacing padding axis", "padding", ["x", "4"], ["px-4"]],
-    ["spacing padding long dir", "padding", ["top", "2"], ["pt-2"]],
-    ["spacing padding unit", "padding", ["px", "16"], ["p-[16px]"]],
-    ["spacing padding percent", "padding", ["%", "50"], ["p-[50%]"]],
+    // spacing — p (abbrev, no sep)
+    ["spacing p value", "p", ["4"], ["p-4"]],
+    ["spacing p axis", "p", ["x", "4"], ["px-4"]],
+    ["spacing p long dir", "p", ["top", "2"], ["pt-2"]],
+    ["spacing p unit", "p", ["px", "16"], ["p-[16px]"]],
+    ["spacing p percent", "p", ["%", "50"], ["p-[50%]"]],
+    // directional shorthands (sizing shape)
+    ["shorthand px value", "px", ["4"], ["px-4"]],
+    ["shorthand px unit", "px", ["px", "16"], ["px-[16px]"]],
+    ["shorthand mx auto", "mx", ["auto"], ["mx-auto"]],
+    ["shorthand mt value", "mt", ["2"], ["mt-2"]],
     // spacing — gap (sep "-", no abbrev)
     ["spacing gap value", "gap", ["4"], ["gap-4"]],
     ["spacing gap axis", "gap", ["x", "4"], ["gap-x-4"]],
@@ -48,22 +54,46 @@ describe("emitClasses — per-shape exact output", () => {
     ["sizing w value", "w", ["full"], ["w-full"]],
     ["sizing w unit", "w", ["px", "180"], ["w-[180px]"]],
     ["sizing minH unit", "minH", ["px", "180"], ["min-h-[180px]"]],
+    // merged text/font (size shape + one prefix)
+    ["merged text size", "text", ["lg"], ["text-lg"]],
+    ["merged text color", "text", ["red-500"], ["text-red-500"]],
+    ["merged text align", "text", ["center"], ["text-center"]],
+    ["merged text wrap", "text", ["balance"], ["text-balance"]],
+    ["merged text unit", "text", ["px", "13"], ["text-[13px]"]],
+    ["merged font weight", "font", ["bold"], ["font-bold"]],
+    ["merged font family", "font", ["mono"], ["font-mono"]],
     // static shortcuts (A-07: replaced the display/position passthroughs)
     ["static block", "block", [], ["block"]],
     ["static absolute", "absolute", [], ["absolute"]],
     ["static contents", "contents", [], ["contents"]],
     ["static htmxIndicator", "htmxIndicator", [], ["htmx-indicator"]],
-    ["prefix flexShorthand", "flexShorthand", ["1"], ["flex-1"]],
+    ["merged flex shorthand", "flex", ["1"], ["flex-1"]],
+    ["merged flex direction", "flex", ["col"], ["flex-col"]],
+    ["merged flex wrap", "flex", ["wrap"], ["flex-wrap"]],
     // value
     ["value neg (dash prefix)", "neg", ["inset-px"], ["-inset-px"]],
     // custom
     ["custom border bare", "border", [], ["border"]],
     ["custom border width", "border", ["2"], ["border-2"]],
     ["custom border dir", "border", ["top", "2"], ["border-t-2"]],
-    ["custom borderColor", "borderColor", ["red-500"], ["border-red-500"]],
-    ["custom borderColor dir", "borderColor", ["top", "red-500"], ["border-t-red-500"]],
+    ["custom border style (merged)", "border", ["dashed"], ["border-dashed"]],
+    ["custom border color (merged)", "border", ["red-500"], ["border-red-500"]],
+    ["custom border color dir (merged)", "border", ["top", "red-500"], ["border-t-red-500"]],
     ["custom rounded bare", "rounded", [], ["rounded"]],
     ["custom rounded corner", "rounded", ["tl", "lg"], ["rounded-tl-lg"]],
+    // merged bgLinear (direction | angle)
+    ["merged bgLinear direction", "bgLinear", ["to-r"], ["bg-linear-to-r"]],
+    ["merged bgLinear angle", "bgLinear", ["45"], ["bg-linear-45"]],
+    ["merged bgLinear negative angle", "bgLinear", ["-65"], ["-bg-linear-65"]],
+    ["merged bgLinear interpolation", "bgLinear", ["to-r", "oklch"], ["bg-linear-to-r/oklch"]],
+    // merged mask (image | composite)
+    ["merged mask none", "mask", ["none"], ["mask-none"]],
+    ["merged mask composite", "mask", ["add"], ["mask-add"]],
+    ["merged mask arbitrary", "mask", ["[url(/x.png)]"], ["mask-[url(/x.png)]"]],
+    // merged list / outline absorb
+    ["merged list type", "list", ["disc"], ["list-disc"]],
+    ["merged list position", "list", ["inside"], ["list-inside"]],
+    ["outline hidden (absorbed)", "outline", ["hidden"], ["outline-hidden"]],
     // escape-hatch gap fills
     ["prefix appearance", "appearance", ["none"], ["appearance-none"]],
     ["prefix wrap", "wrap", ["anywhere"], ["wrap-anywhere"]],
@@ -159,16 +189,18 @@ describe("lib parity — vocab emit matches tailwind-methods render", () => {
 
 describe("prefixOf", () => {
   it("returns the stable prefix for prefix/spacing/sizing rows", () => {
-    assert.equal(prefixOf("padding"), "p");
-    assert.equal(prefixOf("margin"), "m");
-    assert.equal(prefixOf("background"), "bg");
+    assert.equal(prefixOf("p"), "p");
+    assert.equal(prefixOf("m"), "m");
+    assert.equal(prefixOf("px"), "px");
+    assert.equal(prefixOf("mx"), "mx");
+    assert.equal(prefixOf("bg"), "bg");
+    assert.equal(prefixOf("text"), "text");
     assert.equal(prefixOf("w"), "w");
     assert.equal(prefixOf("minH"), "min-h");
     assert.equal(prefixOf("gridCols"), "grid-cols");
   });
 
   it("returns the full class for static rows", () => {
-    assert.equal(prefixOf("bold"), "font-bold");
     assert.equal(prefixOf("srOnly"), "sr-only");
   });
 

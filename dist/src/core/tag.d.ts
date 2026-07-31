@@ -18,8 +18,8 @@ export interface Tag extends FluentCustomMethods {
  * @example
  * Div(H1("Hello"), P("World"))
  *   .setId(ids.main)
- *   .padding("4")
- *   .background("white")
+ *   .p("4")
+ *   .bg("white")
  *   .setHtmx("/api/content")
  */
 export declare class Tag {
@@ -143,7 +143,7 @@ export declare class Tag {
      * @example
      * Button("Save")
      *   .when(isLoading, t => t.toggle("disabled").opacity("50"))
-     *   .when(isPrimary, t => t.background("blue-500").textColor("white"))
+     *   .when(isPrimary, t => t.bg("blue-500").text("white"))
      *   .when(user.avatar, (t, avatar) => t.addChild(Img().setSrc(avatar)))
      */
     when<T>(condition: boolean extends T ? never : T | null | undefined, fn: (tag: this, value: NonNullable<T>) => unknown): this;
@@ -154,7 +154,7 @@ export declare class Tag {
      * value into `thenFn`. Falsy-but-present values (`""`, `0`) take the `thenFn` branch.
      *
      * @example
-     * Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.background("blue-500"))
+     * Button("Save").whenElse(isLoading, t => t.toggle("disabled"), t => t.bg("blue-500"))
      * Span().whenElse(user.name, (t, name) => t.setTitle(name), t => t.setTitle("Anon"))
      */
     whenElse(condition: boolean, thenFn: (tag: this) => unknown, elseFn: (tag: this) => unknown): this;
@@ -173,10 +173,10 @@ export declare class Tag {
      *
      * @example
      * Span(status).whenMatch(status, {   // status: "active" | "closed"
-     *   active: t => t.background("green-100").textColor("green-700"),
-     *   closed: t => t.background("gray-100").textColor("gray-600"),
+     *   active: t => t.bg("green-100").text("green-700"),
+     *   closed: t => t.bg("gray-100").text("gray-600"),
      * })
-     * Button(label).whenMatch(tone, { danger: t => t.background("red-500") }, t => t.background("gray-200"))
+     * Button(label).whenMatch(tone, { danger: t => t.bg("red-500") }, t => t.bg("gray-200"))
      */
     whenMatch<T extends string | number>(value: string extends T ? never : number extends T ? never : T, cases: {
         [K in T]: (tag: this) => unknown;

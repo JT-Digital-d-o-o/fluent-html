@@ -4,11 +4,11 @@ import { El } from "../core/utils.js";
 // ─── Shared SVG presentation attributes ────────────────────────────
 export class SvgShapeTag extends Tag {
     setFill(fill) {
-        this.fill = fill;
+        this.fillValue = fill;
         return this;
     }
     setStroke(stroke) {
-        this.stroke = stroke;
+        this.strokeValue = stroke;
         return this;
     }
     setStrokeWidth(width) {
@@ -40,7 +40,7 @@ export class SvgShapeTag extends Tag {
         return this;
     }
     setTransform(transform) {
-        this.transform = transform;
+        this.transformValue = transform;
         return this;
     }
     setFilter(filter) {
@@ -49,7 +49,7 @@ export class SvgShapeTag extends Tag {
     }
 }
 /** @internal */
-const SHAPE_SK = ['fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity', 'transform', ['svgOpacity', 'opacity'], 'filter'];
+const SHAPE_SK = [['fillValue', 'fill'], ['strokeValue', 'stroke'], 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-opacity', ['transformValue', 'transform'], ['svgOpacity', 'opacity'], 'filter'];
 defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 // ─── Circle ─────────────────────────────────────────────────────────
 export class CircleTag extends SvgShapeTag {

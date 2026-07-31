@@ -30,14 +30,45 @@
  *
  * @module
  */
+// Font-weight keywords the merged `.font()` accepts — a custom font-family
+// token with one of these names would shadow the weight at the call site.
+const FONT_WEIGHT_KEYWORDS = new Set([
+    "thin", "extralight", "light", "normal", "medium", "semibold", "bold", "extrabold", "black",
+]);
+/**
+ * Warn on token names that collide across families sharing one merged emitter
+ * (canonical-names): `colors`×`fontSize` both emit `text-*`, `colors`×`shadow`
+ * both emit `shadow-*`, and `fonts` shares `font-*` with the weight keywords.
+ * The class Tailwind resolves for the ambiguous name follows ITS precedence —
+ * same ambiguity you'd have writing raw Tailwind — so this warns, not throws.
+ */
+function warnOnAmbiguousTokens(spec) {
+    const overlap = (a, b) => a && b ? Object.keys(a).filter((k) => k in b) : [];
+    const report = [];
+    const textDupes = overlap(spec.colors, spec.fontSize);
+    if (textDupes.length)
+        report.push(`colors×fontSize (${textDupes.join(", ")}) — \`.text("${textDupes[0]}")\` is ambiguous`);
+    const shadowDupes = overlap(spec.colors, spec.shadow);
+    if (shadowDupes.length)
+        report.push(`colors×shadow (${shadowDupes.join(", ")}) — \`.shadow("${shadowDupes[0]}")\` is ambiguous`);
+    const weightDupes = Object.keys(spec.fonts ?? {}).filter((k) => FONT_WEIGHT_KEYWORDS.has(k));
+    if (weightDupes.length)
+        report.push(`fonts named after font weights (${weightDupes.join(", ")}) — \`.font("${weightDupes[0]}")\` is ambiguous`);
+    if (report.length) {
+        // eslint-disable-next-line no-console -- define-time diagnostics have no other channel
+        console.warn(`fluent-html defineTheme: token name collides across families that share one class prefix — rename the token to keep call sites unambiguous. ${report.join("; ")}`);
+    }
+}
 /**
  * Declare a project's design tokens. A const-generic identity passthrough — it
  * preserves the literal token keys (so `theme` and `typeof tokens` carry them)
  * and returns the spec for `fluentHtmlPlugin({ theme })` to emit CSS + safelist.
  * The compile-time typing comes from the `declare module` augmentation, not from
- * this call (a runtime value can't add to a type).
+ * this call (a runtime value can't add to a type). Warns (once, at definition
+ * time) on token names that collide across families sharing a merged emitter.
  */
 export function defineTheme(spec) {
+    warnOnAmbiguousTokens(spec);
     return spec;
 }
 //# sourceMappingURL=define-theme.js.map

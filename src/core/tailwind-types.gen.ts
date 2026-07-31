@@ -14,7 +14,7 @@ type Stringified<T extends number> = `${T}`;
 //
 // NOTE (C-02): the five themeable families (colors, spacing, fontSize, radius,
 // shadow) are CLOSED — they no longer carry `(string & {})`. An open tail can't
-// typo-check (`.background("brnad")` would compile). Custom tokens instead come
+// typo-check (`.bg("brnad")` would compile). Custom tokens instead come
 // from the augmentable seams (tailwind-types.seams.ts), populated by `defineTheme()`. The cost of
 // closing is the restated opacity/arbitrary arms. Proof: spikes/define-theme.
 
@@ -173,8 +173,10 @@ export type TailwindTransition = "none" | "all" | "colors" | "opacity" | "shadow
 export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | `${number}` | `[${string}]`;
 export type TailwindAnimate = "none" | "spin" | "ping" | "pulse" | "bounce" | `[${string}]`;
 
-// Ring — v4 (C-03): added the `3` slot. Bare `ring` = 1px in v4 (was 3px).
-export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | `${number}` | `[${string}]`;
+// Ring — v4 (C-03): added the `3` slot. Bare `ring` = 1px in v4 (was 3px). CLOSED
+// (canonical-names): the open `${number}` arm is gone — it let `.ring("500")` compile
+// to a nonsense class and would shadow color discrimination in the merged `.ring()`.
+export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | `[${string}]`;
 
 // Transforms
 export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | `${number}` | `[${string}]`;
@@ -203,7 +205,7 @@ export type TailwindWhitespace = "normal" | "nowrap" | "pre" | "pre-line" | "pre
 export type TailwindBorderStyle = "solid" | "dashed" | "dotted" | "double" | "hidden" | "none";
 
 // Outline
-export type TailwindOutline = "none" | "dashed" | "dotted" | "double";
+export type TailwindOutline = "none" | "hidden" | "dashed" | "dotted" | "double";
 
 // Position
 export type TailwindPosition = "static" | "fixed" | "absolute" | "relative" | "sticky";
@@ -262,7 +264,7 @@ export type TailwindFontFamily =
   | (keyof FluentCustomFontFamily & string)
   | `[${string}]`;
 
-// Gradient direction — keyword only; an angle goes through `gradientLinear`.
+// Gradient direction keywords (the angle form is the other arm of the merged `.bgLinear()`).
 export type TailwindGradientDirection =
   | "to-t" | "to-tr" | "to-r" | "to-br" | "to-b" | "to-bl" | "to-l" | "to-tl";
 
@@ -302,7 +304,7 @@ export type TailwindOrder = "first" | "last" | "none" | 1 | 2 | 3 | 4 | 5 | 6 | 
 /**
  * `position-area` grid placement (CSS anchor positioning, B-010). The common
  * single- and two-axis cells, plus the `[${string}]` arbitrary hatch for the full
- * grammar (`[top span-left]`) — emitted verbatim, same contract as `.textSize("[13px]")`.
+ * grammar (`[top span-left]`) — emitted verbatim, same contract as `.text("[13px]")`.
  */
 export type TailwindPositionArea =
   | "top" | "bottom" | "left" | "right" | "center"

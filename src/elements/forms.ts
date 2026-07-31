@@ -27,7 +27,9 @@ export class InputTag extends Tag {
   autocomplete?: AutocompleteHint;
   inputmode?: InputMode;
   capture?: 'user' | 'environment';
-  list?: string;
+  // Storage is `listId` (aliased to the `list` attribute in the schema) so the
+  // field doesn't shadow the Tag `.list()` styling method (canonical-names).
+  listId?: string;
   dirname?: string;
 
   setType(type?: InputType): this {
@@ -106,7 +108,7 @@ export class InputTag extends Tag {
   }
 
   setList(list?: string | Id): this {
-    this.list = list === undefined ? undefined : extractId(list);
+    this.listId = list === undefined ? undefined : extractId(list);
     return this;
   }
 
@@ -116,7 +118,7 @@ export class InputTag extends Tag {
   }
 }
 
-defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', 'list', 'dirname']);
+defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'min', 'max', 'step', 'pattern', 'minlength', 'maxlength', 'autocomplete', 'inputmode', 'capture', ['listId', 'list'], 'dirname']);
 
 /** InputTag narrowed for numeric input types (number, range). */
 export interface NumericInputTag extends InputTag {

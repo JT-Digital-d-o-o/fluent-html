@@ -5,19 +5,48 @@ declare module "./tag.js" {
     interface Tag {
         on(state: TailwindState, fn: (tag: this) => this): this;
         at(breakpoint: TailwindBreakpoint, fn: (tag: this) => this): this;
-        padding(value: TailwindSpacing): this;
-        padding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
-        padding(unit: TailwindUnit, amount: number): this;
-        margin(value: TailwindSpacing | "auto"): this;
-        margin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing | "auto"): this;
-        margin(unit: TailwindUnit, amount: number): this;
-        background(color: TailwindColor): this;
-        textColor(color: TailwindColor): this;
-        textSize(size: TailwindTextSize): this;
-        textSize(unit: TailwindUnit, amount: number): this;
-        textAlign(align: TailwindTextAlign): this;
-        fontWeight(weight: TailwindFontWeight): this;
-        bold(): this;
+        p(value: TailwindSpacing): this;
+        p(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+        p(unit: TailwindUnit, amount: number): this;
+        m(value: TailwindSpacing | "auto"): this;
+        m(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing | "auto"): this;
+        m(unit: TailwindUnit, amount: number): this;
+        px(value: TailwindSpacing): this;
+        px(unit: TailwindUnit, amount: number): this;
+        py(value: TailwindSpacing): this;
+        py(unit: TailwindUnit, amount: number): this;
+        pt(value: TailwindSpacing): this;
+        pt(unit: TailwindUnit, amount: number): this;
+        pb(value: TailwindSpacing): this;
+        pb(unit: TailwindUnit, amount: number): this;
+        pl(value: TailwindSpacing): this;
+        pl(unit: TailwindUnit, amount: number): this;
+        pr(value: TailwindSpacing): this;
+        pr(unit: TailwindUnit, amount: number): this;
+        mx(value: TailwindSpacing | "auto"): this;
+        mx(unit: TailwindUnit, amount: number): this;
+        my(value: TailwindSpacing | "auto"): this;
+        my(unit: TailwindUnit, amount: number): this;
+        mt(value: TailwindSpacing | "auto"): this;
+        mt(unit: TailwindUnit, amount: number): this;
+        mb(value: TailwindSpacing | "auto"): this;
+        mb(unit: TailwindUnit, amount: number): this;
+        ml(value: TailwindSpacing | "auto"): this;
+        ml(unit: TailwindUnit, amount: number): this;
+        mr(value: TailwindSpacing | "auto"): this;
+        mr(unit: TailwindUnit, amount: number): this;
+        bg(color: TailwindColor): this;
+        /**
+         * Merged `text-*` method — size, color, alignment, or wrapping (Tailwind's
+         * own overload; the value unions are disjoint). Arbitrary size via the
+         * `(unit, amount)` overload.
+         * @example
+         * Span("hi").text("lg").text("red-500").text("center").text("balance")
+         */
+        text(value: TailwindTextSize | TailwindColor | TailwindTextAlign | TailwindTextWrap): this;
+        text(unit: TailwindUnit, amount: number): this;
+        /** Merged `font-*` method — weight (`bold`, `medium`, …) or family (`sans`/`serif`/`mono` + theme tokens). */
+        font(value: TailwindFontWeight | TailwindFontFamily): this;
         italic(): this;
         uppercase(): this;
         lowercase(): this;
@@ -42,30 +71,40 @@ declare module "./tag.js" {
         maxH(unit: TailwindUnit, amount: number): this;
         minH(value: TailwindMinHeight): this;
         minH(unit: TailwindUnit, amount: number): this;
-        flex(value?: TailwindFlex): this;
-        /** `flex` shorthand — `flex-1` | `flex-auto` | `flex-initial` | `flex-none`. */
-        flexShorthand(value: "1" | "auto" | "initial" | "none"): this;
-        flexDirection(direction: TailwindFlexDirection): this;
-        justifyContent(justify: TailwindJustifyContent): this;
-        alignItems(align: TailwindAlignItems): this;
+        /**
+         * Merged `flex-*` method — bare flex container, shorthand value (`"1"`,
+         * `"auto"`, `"initial"`, `"none"`), main-axis direction, or wrapping.
+         * @example
+         * Div().flex().flex("col").flex("wrap")
+         * Div().flex("1")
+         */
+        flex(value?: TailwindFlex | TailwindFlexDirection | TailwindFlexWrap): this;
+        justify(value: TailwindJustifyContent): this;
+        items(value: TailwindAlignItems): this;
         gap(value: TailwindSpacing): this;
         gap(direction: "x" | "y", value: TailwindSpacing): this;
         gap(unit: TailwindUnit, amount: number): this;
         grid(): this;
         gridCols(cols: TailwindGridCols): this;
         gridRows(rows: TailwindGridRows): this;
-        gridAutoFlow(value: TailwindGridAutoFlow): this;
-        gridAutoRows(value: TailwindGridAuto): this;
-        gridAutoCols(value: TailwindGridAuto): this;
-        /** v4: a bare `.border()` uses `currentColor` — add an explicit `.borderColor(...)` for a specific color (v3's gray default is gone). */
-        border(value?: TailwindBorderWidth | TailwindBorderStyle | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
-        border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth): this;
-        borderColor(color: TailwindColor): this;
-        borderColor(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", color: TailwindColor): this;
-        borderStyle(style: TailwindBorderStyle): this;
+        gridFlow(value: TailwindGridAutoFlow): this;
+        autoRows(value: TailwindGridAuto): this;
+        autoCols(value: TailwindGridAuto): this;
+        /**
+         * Merged `border-*` method — width, style, or color (v4: a bare `.border()`
+         * is 1px `currentColor`). One side via the side token or the 2-arg
+         * side + width/color form; style is all-sides only.
+         * @example
+         * Div().border()                       // border
+         * Div().border("2").border("dashed").border("red-500")
+         * Div().border("t").border("top", "2").border("b", "red-500")
+         */
+        border(value?: TailwindBorderWidth | TailwindBorderStyle | TailwindColor | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right"): this;
+        border(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: TailwindBorderWidth | TailwindColor): this;
         rounded(value?: TailwindRounded): this;
         rounded(corner: TailwindRoundedCorner, value?: TailwindRounded): this;
-        shadow(value?: TailwindShadow): this;
+        /** Merged `shadow-*` method — bare default, theme size, or shadow color. */
+        shadow(value?: TailwindShadow | TailwindColor): this;
         opacity(value: TailwindOpacity): this;
         cursor(value: TailwindCursor): this;
         absolute(): this;
@@ -73,10 +112,10 @@ declare module "./tag.js" {
         fixed(): this;
         sticky(): this;
         static(): this;
-        zIndex(value: TailwindZIndex): this;
+        z(value: TailwindZIndex): this;
         overflow(value: TailwindOverflow): this;
         overflow(direction: "x" | "y", value: TailwindOverflow): this;
-        objectFit(value: TailwindObjectFit): this;
+        object(value: TailwindObjectFit): this;
         block(): this;
         inlineBlock(): this;
         inline(): this;
@@ -96,8 +135,7 @@ declare module "./tag.js" {
         left(unit: TailwindUnit, amount: number): this;
         shrink(value?: 0 | "0"): this;
         grow(value?: 0 | "0"): this;
-        flexWrap(value: TailwindFlexWrap): this;
-        alignSelf(value: TailwindAlignSelf): this;
+        self(value: TailwindAlignSelf): this;
         colSpan(value: TailwindColSpan): this;
         aspect(value: TailwindAspect): this;
         order(value: TailwindOrder): this;
@@ -108,12 +146,12 @@ declare module "./tag.js" {
         spaceY(value: TailwindSpacing): this;
         divideX(value?: TailwindBorderWidth): this;
         divideY(value?: TailwindBorderWidth): this;
-        transition(value?: TailwindTransition): this;
+        /** Merged `transition-*` method — property group (bare = default set) or discrete-transition behavior (`"discrete"`/`"normal"`). */
+        transition(value?: TailwindTransition | TailwindTransitionBehavior): this;
         duration(value: TailwindDuration): this;
         animate(value: TailwindAnimate): this;
-        /** v4: a bare `.ring()` is **1px** (was 3px in v3) and uses `currentColor` — pass a width and/or `.ringColor(...)` explicitly. */
-        ring(value?: TailwindRingWidth): this;
-        ringColor(color: TailwindColor): this;
+        /** Merged `ring-*` method — width or color. v4: a bare `.ring()` is **1px** (was 3px in v3) and uses `currentColor`. */
+        ring(value?: TailwindRingWidth | TailwindColor): this;
         scale(value: TailwindScale): this;
         rotate(value: TailwindRotate): this;
         translate(direction: "x" | "y", value: TailwindTranslate): this;
@@ -124,20 +162,16 @@ declare module "./tag.js" {
         pointerEvents(value: TailwindPointerEvents): this;
         appearance(value: TailwindAppearance): this;
         whitespace(value: TailwindWhitespace): this;
-        /** Sets list style type. Generates `list-{value}` — same prefix as `listStylePosition`, but type-safe via `TailwindListStyleType`. */
-        listStyleType(value: TailwindListStyleType): this;
-        /** Sets list style position. Generates `list-{value}` — same prefix as `listStyleType`, but type-safe via `TailwindListStylePosition`. */
-        listStylePosition(value: TailwindListStylePosition): this;
+        /** Merged `list-*` method — marker type (`disc`/`decimal`/`none`) or position (`inside`/`outside`). */
+        list(value: TailwindListStyleType | TailwindListStylePosition): this;
         srOnly(): this;
+        /** Outline style. `"hidden"` is the v4 a11y-safe focus-hiding value (keeps a visible outline in forced-colors mode) — prefer it over `"none"`. */
         outline(value: TailwindOutline): this;
-        /** v4 a11y-safe focus-hiding: `outline-hidden` (keeps a visible outline in forced-colors mode). Prefer over `.outline("none")`. */
-        outlineHidden(): this;
-        fontFamily(family: TailwindFontFamily): this;
         gradient(from: TailwindColor, to: TailwindColor, direction?: TailwindGradientDirection, interpolation?: TailwindGradientInterpolation): this;
-        gradientTo(direction: TailwindGradientDirection, interpolation?: TailwindGradientInterpolation): this;
-        gradientLinear(angle: TailwindGradientAngle): this;
-        gradientRadial(origin?: TailwindGradientOrigin, interpolation?: TailwindGradientInterpolation): this;
-        gradientConic(angle?: TailwindGradientAngle, interpolation?: TailwindGradientInterpolation): this;
+        /** Merged `bg-linear-*` method — direction keyword (`"to-r"`) or angle (negatives relocate the sign), with optional interpolation. */
+        bgLinear(direction: TailwindGradientDirection | TailwindGradientAngle, interpolation?: TailwindGradientInterpolation): this;
+        bgRadial(origin?: TailwindGradientOrigin, interpolation?: TailwindGradientInterpolation): this;
+        bgConic(angle?: TailwindGradientAngle, interpolation?: TailwindGradientInterpolation): this;
         from(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
         via(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
         to(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
@@ -145,7 +179,6 @@ declare module "./tag.js" {
         peer(name?: string): this;
         /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.at("@sm", …)`. */
         containerQuery(name?: string): this;
-        shadowColor(color: TailwindColor): this;
         blur(value?: TailwindBlur): this;
         backdropBlur(value?: TailwindBlur): this;
         brightness(value: TailwindBrightness): this;
@@ -213,7 +246,7 @@ declare module "./tag.js" {
          * Place against the active anchor: emits inline `position-area: <area>`. The closed
          * tokens map to their space-separated CSS values (`"bottom-span-right"` → `bottom
          * span-right`); the `[${string}]` arm is unwrapped verbatim (`"[top span-left]"` → `top
-         * span-left`), the same escape-hatch contract as `.textSize("[13px]")`.
+         * span-left`), the same escape-hatch contract as `.text("[13px]")`.
          */
         positionArea(area: TailwindPositionArea): this;
         /**
@@ -227,16 +260,20 @@ declare module "./tag.js" {
          * Div().viewTransitionName(ids.card)
          */
         viewTransitionName(name: string | Id): this;
-        fillColor(color: TailwindColor | "none"): this;
-        strokeColor(color: TailwindColor | "none"): this;
-        strokeWidth(width: TailwindStrokeWidth): this;
-        strokeWidth(unit: TailwindUnit, amount: number): this;
-        accentColor(color: TailwindColor): this;
-        caretColor(color: TailwindColor): this;
-        decorationColor(color: TailwindColor): this;
-        decorationStyle(style: TailwindDecorationStyle): this;
-        decorationThickness(value: TailwindDecorationThickness): this;
-        decorationThickness(unit: TailwindUnit, amount: number): this;
+        /** SVG fill color (`fill-*` utility). Distinct from the SVG presentation-attribute setter `setFill` — this styles via a class, that sets the `fill` attribute. */
+        fill(color: TailwindColor | "none"): this;
+        /**
+         * Merged `stroke-*` method — SVG stroke color or width (widths are bare
+         * numerals; arbitrary width via the unit overload). Distinct from the SVG
+         * presentation-attribute setter `setStroke` — this styles via a class.
+         */
+        stroke(value: TailwindColor | "none" | TailwindStrokeWidth): this;
+        stroke(unit: TailwindUnit, amount: number): this;
+        accent(color: TailwindColor): this;
+        caret(color: TailwindColor): this;
+        /** Merged `decoration-*` method — text-decoration color, style, or thickness (arbitrary thickness via the unit overload). */
+        decoration(value: TailwindColor | TailwindDecorationStyle | TailwindDecorationThickness): this;
+        decoration(unit: TailwindUnit, amount: number): this;
         scheme(value: TailwindColorScheme): this;
         insetX(value: TailwindInset): this;
         insetX(unit: TailwindUnit, amount: number): this;
@@ -246,28 +283,27 @@ declare module "./tag.js" {
         insetS(unit: TailwindUnit, amount: number): this;
         insetE(value: TailwindInset): this;
         insetE(unit: TailwindUnit, amount: number): this;
-        textWrap(value: TailwindTextWrap): this;
-        /** Overflow-wrap (v4 `wrap-*`): where long words may break. */
+        /** Overflow-wrap (v4 `wrap-*`): where long words may break. Text wrapping (`text-balance`, …) merged into `.text()`. */
         wrap(value: TailwindWrap): this;
         hyphens(value: TailwindHyphens): this;
-        textShadow(value: TailwindTextShadow): this;
-        textShadowColor(color: TailwindColor): this;
-        dropShadow(value: TailwindDropShadow): this;
-        dropShadowColor(color: TailwindColor): this;
-        insetShadow(value: TailwindInsetShadow): this;
-        insetShadowColor(color: TailwindColor): this;
-        insetRing(value?: TailwindRingWidth): this;
-        insetRingColor(color: TailwindColor): this;
+        /** Merged `text-shadow-*` method — theme size or shadow color (value required). */
+        textShadow(value: TailwindTextShadow | TailwindColor): this;
+        /** Merged `drop-shadow-*` method — theme size or shadow color (value required). */
+        dropShadow(value: TailwindDropShadow | TailwindColor): this;
+        /** Merged `inset-shadow-*` method — theme size or shadow color (value required). */
+        insetShadow(value: TailwindInsetShadow | TailwindColor): this;
+        /** Merged `inset-ring-*` method — width (bare = 1px) or color. */
+        insetRing(value?: TailwindRingWidth | TailwindColor): this;
         mixBlend(mode: TailwindMixBlendMode): this;
         bgBlend(mode: TailwindBgBlendMode): this;
         isolate(): this;
         isolation(value: TailwindIsolation): this;
         delay(value: TailwindDelay): this;
-        transitionBehavior(value: TailwindTransitionBehavior): this;
         perspective(value: TailwindPerspective): this;
         perspectiveOrigin(value: TailwindPerspectiveOrigin): this;
-        transformStyle(value: TailwindTransformStyle): this;
-        backfaceVisibility(value: TailwindBackfaceVisibility): this;
+        /** `transform-style` (`transform-3d`/`transform-flat`). Distinct from the SVG presentation-attribute setter `setTransform` — this styles via a class. */
+        transform(value: TailwindTransformStyle): this;
+        backface(value: TailwindBackfaceVisibility): this;
         rotateX(value: TailwindRotate): this;
         rotateY(value: TailwindRotate): this;
         rotateZ(value: TailwindRotate): this;
@@ -289,26 +325,26 @@ declare module "./tag.js" {
         snap(axis: Exclude<TailwindSnapAxis, "none">, strictness: TailwindSnapStrictness): this;
         snapAlign(value: TailwindSnapAlign): this;
         snapStop(value: TailwindSnapStop): this;
-        scrollBehavior(value: TailwindScrollBehavior): this;
-        scrollMargin(value: TailwindSpacing): this;
-        scrollMargin(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
-        scrollMargin(unit: TailwindUnit, amount: number): this;
-        scrollPadding(value: TailwindSpacing): this;
-        scrollPadding(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
-        scrollPadding(unit: TailwindUnit, amount: number): this;
+        scroll(value: TailwindScrollBehavior): this;
+        scrollM(value: TailwindSpacing): this;
+        scrollM(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+        scrollM(unit: TailwindUnit, amount: number): this;
+        scrollP(value: TailwindSpacing): this;
+        scrollP(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
+        scrollP(unit: TailwindUnit, amount: number): this;
         fieldSizing(value: TailwindFieldSizing): this;
         /**
          * Pseudo-element content. Bare `.content()` emits `content-['']` — the empty
          * string every `before:`/`after:` decoration needs to render.
          * @example
-         * Span().on("before", t => t.content().w("2").h("2").background("red-500"))
+         * Span().on("before", t => t.content().w("2").h("2").bg("red-500"))
          * Span().on("after", t => t.content("[attr(data-label)]"))
          */
         content(value?: TailwindContent): this;
-        maskImage(value: "none" | `[${string}]`): this;
+        /** Merged `mask-*` method — mask image (`"none"` or an arbitrary `[url(…)]` source) or mask-composite mode. */
+        mask(value: "none" | `[${string}]` | TailwindMaskComposite): this;
         maskFrom(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
         maskTo(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
-        maskComposite(mode: TailwindMaskComposite): this;
         maskType(value: TailwindMaskType): this;
     }
 }

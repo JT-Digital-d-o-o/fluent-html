@@ -108,8 +108,14 @@ export type EmitShape =
  *  - `typeRef`  — transition state: the union in `tailwind-types` is curated
  *                 beyond what a flat list can express (numeric arms,
  *                 template-literal forms, embedded scales); `name` points at it.
+ *  - `group`    — a merged method (canonical-names) accepts several value
+ *                 families through one emit shape (`.text()` ← size + color +
+ *                 align + wrap). Each named group keeps its own spec, so the
+ *                 types emitter can still render per-family unions
+ *                 (`@@UNION TailwindTextAlign text.align@@`) and the validity
+ *                 oracle still compiles every literal member. Groups don't nest.
  */
-export type ValuesSpec = {
+export type LeafValuesSpec = {
     readonly kind: "theme";
     readonly ns: `--${string}`;
 } | {
@@ -118,6 +124,10 @@ export type ValuesSpec = {
 } | {
     readonly kind: "typeRef";
     readonly name: string;
+};
+export type ValuesSpec = LeafValuesSpec | {
+    readonly kind: "group";
+    readonly groups: Readonly<Record<string, LeafValuesSpec>>;
 };
 /** One utility method's vocabulary entry. */
 export type UtilityDef = {

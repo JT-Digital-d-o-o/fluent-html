@@ -198,11 +198,11 @@ export class SvgTag extends Tag {
         return this;
     }
     setFill(fill) {
-        this.fill = fill;
+        this.fillValue = fill;
         return this;
     }
     setStroke(stroke) {
-        this.stroke = stroke;
+        this.strokeValue = stroke;
         return this;
     }
     setStrokeWidth(width) {
@@ -210,7 +210,7 @@ export class SvgTag extends Tag {
         return this;
     }
 }
-defineSchemaKeys(SvgTag, ['width', 'height', 'viewBox', 'xmlns', 'fill', 'stroke', 'stroke-width']);
+defineSchemaKeys(SvgTag, ['width', 'height', 'viewBox', 'xmlns', ['fillValue', 'fill'], ['strokeValue', 'stroke'], 'stroke-width']);
 export function Svg(...children) {
     return new SvgTag("svg", ...children);
 }

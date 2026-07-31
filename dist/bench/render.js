@@ -46,12 +46,12 @@ function printResult(name, result) {
 // Benchmarks
 // ---------------------------------------------------------------------------
 function benchFlatPage() {
-    return Div(ForEach(1000, (i) => Div(`Item ${i}`).setId(`item-${i}`).padding("4").background("white")));
+    return Div(ForEach(1000, (i) => Div(`Item ${i}`).setId(`item-${i}`).p("4").bg("white")));
 }
 function benchDeepTree(depth) {
     if (depth === 0)
         return Span("leaf");
-    return Div(benchDeepTree(depth - 1)).padding("2");
+    return Div(benchDeepTree(depth - 1)).p("2");
 }
 function benchHeavyEscaping() {
     const nasty = `<script>alert("xss")</script> & "quotes" & 'apostrophes' <b>bold</b>`;
@@ -60,25 +60,25 @@ function benchHeavyEscaping() {
 function benchHtmxAttributes() {
     return Div(ForEach(100, (i) => Button(`Button ${i}`)
         .setHtmx(`/api/button/${i}`, { method: "post", swap: "none" })
-        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()));
+        .p("x", "4").p("y", "2").bg("blue-500").text("white").rounded()));
 }
 function benchVariantHeavy() {
     return Div(ForEach(100, (i) => Button(`Button ${i}`)
-        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()
+        .p("x", "4").p("y", "2").bg("blue-500").text("white").rounded()
         .transition("colors")
-        .on("hover", t => t.background("blue-600").scale("105").textColor("white").shadow("lg"))
-        .on("focus", t => t.ring("2").ringColor("blue-300").outline("none").shadow("md"))
-        .on("disabled", t => t.opacity("50").cursor("not-allowed").background("gray-400"))
-        .at("md", t => t.padding("x", "8").textSize("lg").rounded("lg"))
-        .at("lg", t => t.padding("x", "12").textSize("xl"))));
+        .on("hover", t => t.bg("blue-600").scale("105").text("white").shadow("lg"))
+        .on("focus", t => t.ring("2").ring("blue-300").outline("none").shadow("md"))
+        .on("disabled", t => t.opacity("50").cursor("not-allowed").bg("gray-400"))
+        .at("md", t => t.p("x", "8").text("lg").rounded("lg"))
+        .at("lg", t => t.p("x", "12").text("xl"))));
 }
 function benchLargeForEach() {
     return Div(ForEach(5000, (i) => Div(`Item ${i}`).setId(`item-${i}`)));
 }
 function benchRealisticPage() {
-    return Div(Header(Nav(Ul(Li(A("Home").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("About").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Products").setClass("nav-link").padding("x", "4").padding("y", "2")), Li(A("Contact").setClass("nav-link").padding("x", "4").padding("y", "2"))).flex().gap("4")).padding("4").background("white").shadow("md")), Main(Section(H1("Welcome to Our Store").textSize("3xl").bold().margin("b", "4"), P("Browse our collection of fine products.").textColor("gray-600")).padding("8"), Section(H2("Featured Products").textSize("2xl").bold().margin("b", "6"), Div(ForEach(12, (i) => Article(Img().addAttribute("src", `/img/product-${i}.jpg`).addAttribute("alt", `Product ${i}`).w("full").h("48").objectFit("cover"), Div(H2(`Product ${i}`).textSize("lg").bold(), P(`$${(i + 1) * 9.99}`).textColor("green-600").bold(), P("Lorem ipsum dolor sit amet, consectetur adipiscing elit.").textColor("gray-500").textSize("sm"), Button("Add to Cart")
+    return Div(Header(Nav(Ul(Li(A("Home").setClass("nav-link").p("x", "4").p("y", "2")), Li(A("About").setClass("nav-link").p("x", "4").p("y", "2")), Li(A("Products").setClass("nav-link").p("x", "4").p("y", "2")), Li(A("Contact").setClass("nav-link").p("x", "4").p("y", "2"))).flex().gap("4")).p("4").bg("white").shadow("md")), Main(Section(H1("Welcome to Our Store").text("3xl").font("bold").m("b", "4"), P("Browse our collection of fine products.").text("gray-600")).p("8"), Section(H2("Featured Products").text("2xl").font("bold").m("b", "6"), Div(ForEach(12, (i) => Article(Img().addAttribute("src", `/img/product-${i}.jpg`).addAttribute("alt", `Product ${i}`).w("full").h("48").object("cover"), Div(H2(`Product ${i}`).text("lg").font("bold"), P(`$${(i + 1) * 9.99}`).text("green-600").font("bold"), P("Lorem ipsum dolor sit amet, consectetur adipiscing elit.").text("gray-500").text("sm"), Button("Add to Cart")
         .setHtmx(`/cart/add/${i}`, { method: "post", swap: "none" })
-        .padding("x", "4").padding("y", "2").background("blue-500").textColor("white").rounded()).padding("4")).border().rounded("lg").overflow("hidden"))).grid().gridCols("3").gap("6")).padding("8"), Section(H2("Customer Reviews").textSize("2xl").bold().margin("b", "4"), Table(Thead(Tr(Th("Name"), Th("Rating"), Th("Comment"))), Tbody(ForEach(10, (i) => Tr(Td(`Customer ${i}`).padding("2").border(), Td(`${"★".repeat(3 + (i % 3))}`).padding("2").border(), Td("Great product, highly recommended!").padding("2").border())))).w("full").border()).padding("8")), Footer(Div(P("© 2026 Our Store. All rights reserved.").textColor("gray-400"), Ul(Li(A("Privacy").textColor("gray-400")), Li(A("Terms").textColor("gray-400")), Li(A("Support").textColor("gray-400"))).flex().gap("4")).flex().justifyContent("between").alignItems("center").padding("8")).background("gray-800"));
+        .p("x", "4").p("y", "2").bg("blue-500").text("white").rounded()).p("4")).border().rounded("lg").overflow("hidden"))).grid().gridCols("3").gap("6")).p("8"), Section(H2("Customer Reviews").text("2xl").font("bold").m("b", "4"), Table(Thead(Tr(Th("Name"), Th("Rating"), Th("Comment"))), Tbody(ForEach(10, (i) => Tr(Td(`Customer ${i}`).p("2").border(), Td(`${"★".repeat(3 + (i % 3))}`).p("2").border(), Td("Great product, highly recommended!").p("2").border())))).w("full").border()).p("8")), Footer(Div(P("© 2026 Our Store. All rights reserved.").text("gray-400"), Ul(Li(A("Privacy").text("gray-400")), Li(A("Terms").text("gray-400")), Li(A("Support").text("gray-400"))).flex().gap("4")).flex().justify("between").items("center").p("8")).bg("gray-800"));
 }
 // ---------------------------------------------------------------------------
 // Memory measurement

@@ -22,6 +22,8 @@ const lit = (...list) => ({ kind: "literals", list });
 const theme = (ns) => ({ kind: "theme", ns });
 /** Transition state: the union in `tailwind-types` is curated beyond a flat list. */
 const ref = (name) => ({ kind: "typeRef", name });
+/** Merged method (canonical-names): several value families through one emit shape. */
+const group = (groups) => ({ kind: "group", groups });
 // ── Row constructors (keep the table terse + uniform) ───────────────
 /** Zero-arg fixed class. */
 const stat = (method, cls, x) => defineUtility({ method, emit: { kind: "static", class: cls }, ...x });
@@ -45,14 +47,6 @@ function emitBorder(args) {
         return args.length >= 2 ? [`border-${dir}-${args[1]}`] : [`border-${dir}`];
     return [`border-${a}`];
 }
-function emitBorderColor(args) {
-    if (args.length === 0)
-        return [];
-    if (args.length === 1)
-        return [`border-${args[0]}`];
-    const dir = DIR_MAP[args[0]] ?? args[0];
-    return [`border-${dir}-${args[1]}`];
-}
 function emitRounded(args) {
     if (args.length === 0)
         return ["rounded"];
@@ -67,23 +61,45 @@ const stop = (method, prefix, x) => custom(method, (a) => (a.length >= 2 ? [`${p
 // ── The vocabulary ──────────────────────────────────────────────────
 export const classVocab = [
     // Spacing
-    space("padding", "p", "", true, true, { values: theme("--spacing"), doc: "Padding — all sides, one axis/side, or an arbitrary length via the unit overload." }),
-    space("margin", "m", "", true, true, { values: theme("--spacing"), doc: "Margin — all sides, one axis/side, or an arbitrary length via the unit overload." }),
+    space("p", "p", "", true, true, { values: theme("--spacing"), doc: "Padding — all sides, one axis/side, or an arbitrary length via the unit overload." }),
+    space("m", "m", "", true, true, { values: theme("--spacing"), doc: "Margin — all sides, one axis/side, or an arbitrary length via the unit overload." }),
+    // Directional shorthands (canonical-names): the Tailwind spelling models reach
+    // for first (`px-4` → `.px("4")`). `.p("x", "4")` stays as the parametric form.
+    size("px", "px", { values: theme("--spacing"), doc: "Horizontal padding (`px-*`)." }),
+    size("py", "py", { values: theme("--spacing"), doc: "Vertical padding (`py-*`)." }),
+    size("pt", "pt", { values: theme("--spacing"), doc: "Top padding (`pt-*`)." }),
+    size("pb", "pb", { values: theme("--spacing"), doc: "Bottom padding (`pb-*`)." }),
+    size("pl", "pl", { values: theme("--spacing"), doc: "Left padding (`pl-*`)." }),
+    size("pr", "pr", { values: theme("--spacing"), doc: "Right padding (`pr-*`)." }),
+    size("mx", "mx", { values: theme("--spacing"), doc: "Horizontal margin (`mx-*`, incl. `auto`)." }),
+    size("my", "my", { values: theme("--spacing"), doc: "Vertical margin (`my-*`, incl. `auto`)." }),
+    size("mt", "mt", { values: theme("--spacing"), doc: "Top margin (`mt-*`, incl. `auto`)." }),
+    size("mb", "mb", { values: theme("--spacing"), doc: "Bottom margin (`mb-*`, incl. `auto`)." }),
+    size("ml", "ml", { values: theme("--spacing"), doc: "Left margin (`ml-*`, incl. `auto`)." }),
+    size("mr", "mr", { values: theme("--spacing"), doc: "Right margin (`mr-*`, incl. `auto`)." }),
     pre("spaceX", "space-x", { values: theme("--spacing"), doc: "Horizontal space between children (prefer flex/grid + gap)." }),
     pre("spaceY", "space-y", { values: theme("--spacing"), doc: "Vertical space between children (prefer flex/grid + gap)." }),
     space("gap", "gap", "-", false, true, { values: theme("--spacing"), doc: "Gap between flex/grid children — both axes or one." }),
     // Colors
-    pre("background", "bg", { values: theme("--color"), doc: "Background color." }),
-    pre("textColor", "text", { values: theme("--color"), doc: "Text color." }),
-    custom("borderColor", emitBorderColor, [["red-500"], ["top", "red-500"]], { values: theme("--color"), doc: "Border color — all sides or one." }),
-    pre("ringColor", "ring", { values: theme("--color"), doc: "Ring color." }),
-    pre("shadowColor", "shadow", { values: theme("--color"), doc: "Box-shadow color." }),
-    // Typography
-    size("textSize", "text", { values: theme("--text"), doc: "Font size — theme scale or an arbitrary length via the unit overload." }),
-    pre("textAlign", "text", { values: lit("left", "center", "right", "justify"), doc: "Horizontal text alignment." }),
-    pre("fontWeight", "font", { values: lit("thin", "extralight", "light", "normal", "medium", "semibold", "bold", "extrabold", "black"), doc: "Font weight." }),
-    pre("fontFamily", "font", { values: theme("--font"), doc: "Font family — theme families (sans/serif/mono + custom tokens)." }),
-    stat("bold", "font-bold", { doc: "Bold font weight (`font-bold`)." }),
+    pre("bg", "bg", { values: theme("--color"), doc: "Background color." }),
+    // Typography — `.text()` is the canonical merged method: size, color, align,
+    // and wrap all emit `text-*` (Tailwind's own overload; unions are disjoint).
+    size("text", "text", {
+        values: group({
+            size: theme("--text"),
+            color: theme("--color"),
+            align: lit("left", "center", "right", "justify"),
+            wrap: lit("wrap", "nowrap", "balance", "pretty"),
+        }),
+        doc: "Text size, color, alignment, or wrapping — one merged `text-*` emitter; arbitrary length via the unit overload.",
+    }),
+    pre("font", "font", {
+        values: group({
+            weight: lit("thin", "extralight", "light", "normal", "medium", "semibold", "bold", "extrabold", "black"),
+            family: theme("--font"),
+        }),
+        doc: "Font weight or family — one merged `font-*` emitter.",
+    }),
     stat("italic", "italic", { doc: "Italic text." }),
     stat("uppercase", "uppercase", { doc: "Uppercase transform." }),
     stat("lowercase", "lowercase", { doc: "Lowercase transform." }),
@@ -108,37 +124,53 @@ export const classVocab = [
     size("maxH", "max-h", { values: ref("TailwindMaxHeight"), doc: "Max-height." }),
     size("minH", "min-h", { values: ref("TailwindMinHeight"), doc: "Min-height." }),
     pre("aspect", "aspect", { values: lit("auto", "square", "video"), doc: "Aspect ratio." }),
-    // Flexbox
-    opt("flex", "flex", undefined, { values: lit("1", "auto", "initial", "none"), doc: "Flex container (bare) or flex shorthand value." }),
-    pre("flexShorthand", "flex", { doc: "Raw `flex-*` shorthand value (e.g. `flex-2`)." }),
-    pre("flexDirection", "flex", { values: lit("row", "col", "row-reverse", "col-reverse"), doc: "Main-axis direction of a flex container." }),
-    pre("flexWrap", "flex", { values: lit("wrap", "wrap-reverse", "nowrap"), doc: "Whether flex items wrap." }),
-    pre("justifyContent", "justify", { values: lit("start", "end", "center", "between", "around", "evenly"), doc: "Main-axis distribution." }),
-    pre("alignItems", "items", { values: lit("start", "end", "center", "baseline", "stretch"), doc: "Cross-axis alignment of items." }),
-    pre("alignSelf", "self", { values: lit("auto", "start", "end", "center", "stretch", "baseline"), doc: "Cross-axis alignment of one item." }),
+    // Flexbox — `.flex()` is merged: bare container, shorthand value, direction,
+    // or wrap, all through the one `flex-*` emitter (disjoint keyword sets).
+    opt("flex", "flex", undefined, {
+        values: group({
+            shorthand: lit("1", "auto", "initial", "none"),
+            direction: lit("row", "col", "row-reverse", "col-reverse"),
+            wrap: lit("wrap", "wrap-reverse", "nowrap"),
+        }),
+        doc: "Flex container (bare), flex shorthand value, main-axis direction, or wrapping.",
+    }),
+    pre("justify", "justify", { values: lit("start", "end", "center", "between", "around", "evenly"), doc: "Main-axis distribution." }),
+    pre("items", "items", { values: lit("start", "end", "center", "baseline", "stretch"), doc: "Cross-axis alignment of items." }),
+    pre("self", "self", { values: lit("auto", "start", "end", "center", "stretch", "baseline"), doc: "Cross-axis alignment of one item." }),
     opt("shrink", "shrink", undefined, { doc: "Allow shrinking (bare) or `shrink-0` to forbid it." }),
     opt("grow", "grow", undefined, { doc: "Allow growing (bare) or `grow-0` to forbid it." }),
     // Grid
     stat("grid", "grid", { doc: "Grid container." }),
     pre("gridCols", "grid-cols", { values: ref("TailwindGridCols"), doc: "Number of grid columns, `none`/`subgrid`, or an arbitrary track list." }),
     pre("gridRows", "grid-rows", { values: ref("TailwindGridRows"), doc: "Number of grid rows, `none`/`subgrid`, or an arbitrary track list." }),
-    pre("gridAutoFlow", "grid-flow", { values: lit("row", "col", "dense", "row-dense", "col-dense"), doc: "Auto-placement flow of grid items." }),
-    pre("gridAutoRows", "auto-rows", { values: lit("auto", "min", "max", "fr"), doc: "Size of implicit grid rows." }),
-    pre("gridAutoCols", "auto-cols", { values: lit("auto", "min", "max", "fr"), doc: "Size of implicit grid columns." }),
+    pre("gridFlow", "grid-flow", { values: lit("row", "col", "dense", "row-dense", "col-dense"), doc: "Auto-placement flow of grid items." }),
+    pre("autoRows", "auto-rows", { values: lit("auto", "min", "max", "fr"), doc: "Size of implicit grid rows." }),
+    pre("autoCols", "auto-cols", { values: lit("auto", "min", "max", "fr"), doc: "Size of implicit grid columns." }),
     pre("colSpan", "col-span", { values: ref("TailwindColSpan"), doc: "How many columns an item spans." }),
     pre("order", "order", { values: ref("TailwindOrder"), doc: "Visual order of a flex/grid item." }),
     // Place
     pre("placeContent", "place-content", { values: lit("center", "start", "end", "between", "around", "evenly", "baseline", "stretch"), doc: "Shorthand for align-content + justify-content." }),
     pre("placeItems", "place-items", { values: lit("start", "end", "center", "baseline", "stretch"), doc: "Shorthand for align-items + justify-items." }),
     pre("placeSelf", "place-self", { values: lit("auto", "start", "end", "center", "stretch"), doc: "Shorthand for align-self + justify-self." }),
-    // Borders
-    custom("border", emitBorder, [[], ["2"], ["t"], ["top", "2"]], { values: ref("TailwindBorderWidth"), doc: "Border width — all sides (bare = 1px), one side, or side + width." }),
-    pre("borderStyle", "border", { values: lit("solid", "dashed", "dotted", "double", "hidden", "none"), doc: "Border style." }),
+    // Borders — `.border()` is merged: width, style, and color through the one
+    // `border-*` emitter (widths are bare numerals, colors carry letters, styles
+    // are keywords — disjoint). Side forms take a width or color; style is all-sides.
+    custom("border", emitBorder, [[], ["2"], ["t"], ["top", "2"], ["dashed"], ["red-500"], ["top", "red-500"]], {
+        values: group({
+            width: ref("TailwindBorderWidth"),
+            style: lit("solid", "dashed", "dotted", "double", "hidden", "none"),
+            color: theme("--color"),
+        }),
+        doc: "Border width, style, or color — all sides (bare = 1px width), one side, or side + width/color.",
+    }),
     custom("rounded", emitRounded, [[], ["lg"], ["t"], ["tl", "lg"]], { values: theme("--radius"), doc: "Border radius — all corners (bare = default), one corner, or corner + size." }),
     opt("divideX", "divide-x", undefined, { values: ref("TailwindBorderWidth"), doc: "Border between horizontal children." }),
     opt("divideY", "divide-y", undefined, { values: ref("TailwindBorderWidth"), doc: "Border between vertical children." }),
-    // Effects & Appearance
-    opt("shadow", "shadow", undefined, { values: theme("--shadow"), doc: "Box shadow — bare default or a theme size." }),
+    // Effects & Appearance — `.shadow()` merged: size or color through `shadow-*`.
+    opt("shadow", "shadow", undefined, {
+        values: group({ size: theme("--shadow"), color: theme("--color") }),
+        doc: "Box shadow — bare default, a theme size, or a shadow color.",
+    }),
     pre("opacity", "opacity", { values: ref("TailwindOpacity"), doc: "Element opacity (0–100)." }),
     pre("cursor", "cursor", { values: lit("auto", "default", "pointer", "wait", "text", "move", "help", "not-allowed", "none", "context-menu", "progress", "cell", "crosshair", "vertical-text", "alias", "copy", "no-drop", "grab", "grabbing", "all-scroll", "col-resize", "row-resize", "n-resize", "e-resize", "s-resize", "w-resize", "ne-resize", "nw-resize", "se-resize", "sw-resize", "ew-resize", "ns-resize", "nesw-resize", "nwse-resize", "zoom-in", "zoom-out"), doc: "Mouse cursor." }),
     // Position — dedicated shortcuts (A-07, replaced the `.position(value)` passthrough).
@@ -147,9 +179,9 @@ export const classVocab = [
     stat("fixed", "fixed", { doc: "Fixed positioning." }),
     stat("sticky", "sticky", { doc: "Sticky positioning." }),
     stat("static", "static", { doc: "Static (default) positioning." }),
-    pre("zIndex", "z", { values: ref("TailwindZIndex"), doc: "Stacking order." }),
+    pre("z", "z", { values: ref("TailwindZIndex"), doc: "Stacking order." }),
     space("overflow", "overflow", "-", false, false, { values: lit("auto", "hidden", "clip", "visible", "scroll"), doc: "Overflow behavior — both axes or one." }),
-    pre("objectFit", "object", { values: lit("contain", "cover", "fill", "none", "scale-down"), doc: "How replaced content fits its box." }),
+    pre("object", "object", { values: lit("contain", "cover", "fill", "none", "scale-down"), doc: "How replaced content fits its box." }),
     // Layout & Display — dedicated shortcuts (A-07; `.flex()`/`.grid()`/`.hidden()` cover the rest).
     stat("block", "block", { doc: "Block display." }),
     stat("inlineBlock", "inline-block", { doc: "Inline-block display." }),
@@ -163,13 +195,23 @@ export const classVocab = [
     size("right", "right", { values: ref("TailwindInset"), doc: "Right offset of a positioned element." }),
     size("bottom", "bottom", { values: ref("TailwindInset"), doc: "Bottom offset of a positioned element." }),
     size("left", "left", { values: ref("TailwindInset"), doc: "Left offset of a positioned element." }),
-    // Transitions & Animation
-    opt("transition", "transition", undefined, { values: lit("none", "all", "colors", "opacity", "shadow", "transform"), doc: "Transitioned property group (bare = default set)." }),
+    // Transitions & Animation — `.transition()` merged: property group or
+    // discrete-behavior value through `transition-*`.
+    opt("transition", "transition", undefined, {
+        values: group({
+            property: lit("none", "all", "colors", "opacity", "shadow", "transform"),
+            behavior: lit("normal", "discrete"),
+        }),
+        doc: "Transitioned property group (bare = default set) or discrete-transition behavior.",
+    }),
     pre("duration", "duration", { values: ref("TailwindDuration"), doc: "Transition duration in ms." }),
     pre("animate", "animate", { values: lit("none", "spin", "ping", "pulse", "bounce"), doc: "Named animation." }),
     pre("ease", "ease", { values: lit("linear", "in", "out", "in-out"), doc: "Transition timing function." }),
-    // Ring
-    opt("ring", "ring", undefined, { values: ref("TailwindRingWidth"), doc: "Ring width (bare = 1px in v4)." }),
+    // Ring — `.ring()` merged: width or color through `ring-*`.
+    opt("ring", "ring", undefined, {
+        values: group({ width: ref("TailwindRingWidth"), color: theme("--color") }),
+        doc: "Ring width (bare = 1px in v4) or ring color.",
+    }),
     // Transforms (A-07: rotate/skew/translate relocate a leading `-` via signNeg, so
     // `.rotate(-45)` → `-rotate-45`; translate is strictly 2-arg `translate-${axis}-${value}`)
     pre("scale", "scale", { values: ref("TailwindScale"), doc: "Uniform scale (percent of original size)." }),
@@ -181,21 +223,30 @@ export const classVocab = [
     pre("select", "select", { values: lit("none", "text", "all", "auto"), doc: "Text selection behavior." }),
     pre("pointerEvents", "pointer-events", { values: lit("none", "auto"), doc: "Whether the element receives pointer events." }),
     pre("appearance", "appearance", { values: lit("none", "auto"), doc: "Native appearance of form controls." }),
-    // List Style (both emit `list-…`)
-    pre("listStyleType", "list", { values: lit("none", "disc", "decimal"), doc: "List marker style." }),
-    pre("listStylePosition", "list", { values: lit("inside", "outside"), doc: "List marker position." }),
+    // List Style — `.list()` merged: marker type or position through `list-*`.
+    pre("list", "list", {
+        values: group({ type: lit("none", "disc", "decimal"), position: lit("inside", "outside") }),
+        doc: "List marker style or position.",
+    }),
     // Accessibility
     stat("srOnly", "sr-only", { doc: "Visually hidden but readable by screen readers." }),
-    // Outline
-    pre("outline", "outline", { values: lit("none", "dashed", "dotted", "double"), doc: "Outline style (prefer `outlineHidden` over `outline-none` in v4)." }),
-    stat("outlineHidden", "outline-hidden", { doc: "Hide the outline while preserving it in forced-colors mode." }),
+    // Outline — `hidden` absorbed from the old `outlineHidden()` (v4 a11y-safe
+    // focus-hiding: keeps a visible outline in forced-colors mode; prefer over `none`).
+    pre("outline", "outline", { values: lit("none", "hidden", "dashed", "dotted", "double"), doc: "Outline style (prefer `hidden` over `none` in v4 — forced-colors safe)." }),
     // Gradients (v4-native: bg-linear-* / bg-radial-* / bg-conic-*)
     custom("gradient", (a) => (a.length >= 2
         ? [interp(`bg-linear-${a[2] ?? "to-r"}`, a[3]), `from-${a[0]}`, `to-${a[1]}`] : []), [["red-500", "blue-500"], ["red-500", "blue-500", "to-br"], ["red-500", "blue-500", "to-br", "oklab"]], { values: theme("--color"), doc: "Linear gradient from → to, with optional direction + interpolation." }),
-    custom("gradientTo", (a) => (a.length >= 1 ? [interp(`bg-linear-${a[0]}`, a[1])] : []), [["to-r"], ["to-r", "oklch"], ["to-tr", "longer"]], { values: lit("to-t", "to-tr", "to-r", "to-br", "to-b", "to-bl", "to-l", "to-tl"), doc: "Linear-gradient direction keyword, with optional interpolation." }),
-    custom("gradientLinear", (a) => [signNeg("bg-linear", a[0])], [["45"], ["-65"], ["[0.25turn]"]], { values: ref("TailwindGradientAngle"), doc: "Linear gradient at an angle in degrees." }),
-    custom("gradientRadial", (a) => [radialGradientClass(a[0], a[1])], [[], ["top-left"], ["[at_top_left]"], ["top-right", "oklch"], ["top-right", "longer"]], { values: ref("TailwindGradientOrigin"), doc: "Radial gradient, optionally positioned at an origin." }),
-    custom("gradientConic", (a) => [interp(a[0] === undefined ? "bg-conic" : signNeg("bg-conic", a[0]), a[1])], [[], ["180"], ["-90"], ["180", "longer"]], { values: ref("TailwindGradientAngle"), doc: "Conic gradient, optionally from an angle in degrees." }),
+    // `.bgLinear()` merged: direction keyword or angle (negatives relocate the
+    // sign), with optional interpolation — one `bg-linear-*` emitter.
+    custom("bgLinear", (a) => (a.length >= 1 ? [interp(signNeg("bg-linear", a[0]), a[1])] : []), [["to-r"], ["to-r", "oklch"], ["to-tr", "longer"], ["45"], ["-65"], ["[0.25turn]"], ["180", "longer"]], {
+        values: group({
+            direction: lit("to-t", "to-tr", "to-r", "to-br", "to-b", "to-bl", "to-l", "to-tl"),
+            angle: ref("TailwindGradientAngle"),
+        }),
+        doc: "Linear-gradient direction keyword or angle, with optional interpolation.",
+    }),
+    custom("bgRadial", (a) => [radialGradientClass(a[0], a[1])], [[], ["top-left"], ["[at_top_left]"], ["top-right", "oklch"], ["top-right", "longer"]], { values: ref("TailwindGradientOrigin"), doc: "Radial gradient, optionally positioned at an origin." }),
+    custom("bgConic", (a) => [interp(a[0] === undefined ? "bg-conic" : signNeg("bg-conic", a[0]), a[1])], [[], ["180"], ["-90"], ["180", "longer"]], { values: ref("TailwindGradientAngle"), doc: "Conic gradient, optionally from an angle in degrees." }),
     stop("from", "from", { values: theme("--color"), doc: "First gradient stop — color with optional position." }),
     stop("via", "via", { values: theme("--color"), doc: "Middle gradient stop — color with optional position." }),
     stop("to", "to", { values: theme("--color"), doc: "Last gradient stop — color with optional position." }),
@@ -234,40 +285,56 @@ export const classVocab = [
     custom("cssProp", (a) => (a.length === 2 ? [`[${a[0]}:${a[1].replace(/\s+/g, "_")}]`] : []), [["mask-repeat", "no-repeat"], ["border", "1px solid red"], ["--brand-glow", "0 0 4px red"]], { doc: "Arbitrary-CSS escape — emits `[prop:value]` (spaces become `_`); variant-composable." }),
     // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
     stat("htmxIndicator", "htmx-indicator", { doc: "htmx loading-indicator marker class." }),
-    pre("fillColor", "fill", { values: theme("--color"), doc: "SVG fill color." }),
-    pre("strokeColor", "stroke", { values: theme("--color"), doc: "SVG stroke color." }),
-    size("strokeWidth", "stroke", { values: ref("TailwindStrokeWidth"), doc: "SVG stroke width." }),
-    pre("accentColor", "accent", { values: theme("--color"), doc: "Accent color of form controls." }),
-    pre("caretColor", "caret", { values: theme("--color"), doc: "Text-input caret color." }),
+    pre("fill", "fill", { values: theme("--color"), doc: "SVG fill color (`none` to unset)." }),
+    // `.stroke()` merged: color or width through `stroke-*` (widths are bare numerals).
+    size("stroke", "stroke", {
+        values: group({ color: theme("--color"), width: ref("TailwindStrokeWidth") }),
+        doc: "SVG stroke color or width — one merged `stroke-*` emitter; arbitrary width via the unit overload.",
+    }),
+    pre("accent", "accent", { values: theme("--color"), doc: "Accent color of form controls." }),
+    pre("caret", "caret", { values: theme("--color"), doc: "Text-input caret color." }),
     pre("scheme", "scheme", { values: lit("normal", "light", "dark", "light-dark", "only-light", "only-dark"), doc: "color-scheme of the element." }),
-    pre("decorationColor", "decoration", { values: theme("--color"), doc: "Text-decoration color." }),
-    pre("decorationStyle", "decoration", { values: lit("solid", "double", "dotted", "dashed", "wavy"), doc: "Text-decoration style." }),
-    size("decorationThickness", "decoration", { values: ref("TailwindDecorationThickness"), doc: "Text-decoration thickness." }),
+    // `.decoration()` merged: color, style, or thickness through `decoration-*`.
+    size("decoration", "decoration", {
+        values: group({
+            color: theme("--color"),
+            style: lit("solid", "double", "dotted", "dashed", "wavy"),
+            thickness: ref("TailwindDecorationThickness"),
+        }),
+        doc: "Text-decoration color, style, or thickness — one merged `decoration-*` emitter.",
+    }),
     size("insetX", "inset-x", { values: ref("TailwindInset"), doc: "Left + right offsets at once." }),
     size("insetY", "inset-y", { values: ref("TailwindInset"), doc: "Top + bottom offsets at once." }),
     size("insetS", "inset-s", { values: ref("TailwindInset"), doc: "Logical inline-start offset." }),
     size("insetE", "inset-e", { values: ref("TailwindInset"), doc: "Logical inline-end offset." }),
-    pre("textWrap", "text", { values: lit("wrap", "nowrap", "balance", "pretty"), doc: "Text wrapping strategy." }),
     pre("wrap", "wrap", { values: lit("break-word", "anywhere", "normal"), doc: "Overflow-wrap — where long words may break." }),
     pre("hyphens", "hyphens", { values: lit("none", "manual", "auto"), doc: "Hyphenation behavior." }),
-    pre("textShadow", "text-shadow", { values: theme("--text-shadow"), doc: "Text shadow — theme size (value required)." }),
-    pre("textShadowColor", "text-shadow", { values: theme("--color"), doc: "Text-shadow color." }),
-    pre("dropShadow", "drop-shadow", { values: theme("--drop-shadow"), doc: "Drop-shadow filter — theme size (value required)." }),
-    pre("dropShadowColor", "drop-shadow", { values: theme("--color"), doc: "Drop-shadow color." }),
-    pre("insetShadow", "inset-shadow", { values: theme("--inset-shadow"), doc: "Inner box shadow — theme size (value required)." }),
-    pre("insetShadowColor", "inset-shadow", { values: theme("--color"), doc: "Inner box-shadow color." }),
-    opt("insetRing", "inset-ring", undefined, { values: ref("TailwindRingWidth"), doc: "Inner ring width (bare = 1px)." }),
-    pre("insetRingColor", "inset-ring", { values: theme("--color"), doc: "Inner ring color." }),
+    // Shadow-family merges: size or color through the one prefix each.
+    pre("textShadow", "text-shadow", {
+        values: group({ size: theme("--text-shadow"), color: theme("--color") }),
+        doc: "Text shadow — theme size or shadow color (value required).",
+    }),
+    pre("dropShadow", "drop-shadow", {
+        values: group({ size: theme("--drop-shadow"), color: theme("--color") }),
+        doc: "Drop-shadow filter — theme size or shadow color (value required).",
+    }),
+    pre("insetShadow", "inset-shadow", {
+        values: group({ size: theme("--inset-shadow"), color: theme("--color") }),
+        doc: "Inner box shadow — theme size or shadow color (value required).",
+    }),
+    opt("insetRing", "inset-ring", undefined, {
+        values: group({ width: ref("TailwindRingWidth"), color: theme("--color") }),
+        doc: "Inner ring width (bare = 1px) or inner ring color.",
+    }),
     pre("mixBlend", "mix-blend", { values: lit("normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity", "plus-darker", "plus-lighter"), doc: "Blend mode of the element against its backdrop." }),
     pre("bgBlend", "bg-blend", { values: lit("normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"), doc: "Blend mode of the background layers." }),
     stat("isolate", "isolate", { doc: "Create a new stacking context." }),
     pre("isolation", "isolation", { values: lit("auto"), doc: "Reset stacking-context isolation." }),
     pre("delay", "delay", { values: ref("TailwindDelay"), doc: "Transition delay in ms." }),
-    pre("transitionBehavior", "transition", { values: lit("normal", "discrete"), doc: "Whether discrete properties transition." }),
     pre("perspective", "perspective", { values: lit("dramatic", "near", "normal", "midrange", "distant", "none"), doc: "3D perspective depth on the parent." }),
     pre("perspectiveOrigin", "perspective-origin", { values: lit("center", "top", "top-right", "right", "bottom-right", "bottom", "bottom-left", "left", "top-left"), doc: "Vanishing-point origin for 3D perspective." }),
-    pre("transformStyle", "transform", { values: lit("3d", "flat"), doc: "Whether children are positioned in 3D space." }),
-    pre("backfaceVisibility", "backface", { values: lit("visible", "hidden"), doc: "Visibility of an element's back face." }),
+    pre("transform", "transform", { values: lit("3d", "flat"), doc: "Whether children are positioned in 3D space (transform-style)." }),
+    pre("backface", "backface", { values: lit("visible", "hidden"), doc: "Visibility of an element's back face." }),
     stat("scale3d", "scale-3d", { doc: "Apply scale on all three axes." }),
     custom("rotateX", (args) => [signNeg("rotate-x", args[0])], [["45"], ["-45"]], { values: ref("TailwindRotate"), doc: "Rotation around the X axis in degrees." }),
     custom("rotateY", (args) => [signNeg("rotate-y", args[0])], [["30"], ["-30"]], { values: ref("TailwindRotate"), doc: "Rotation around the Y axis in degrees." }),
@@ -288,16 +355,20 @@ export const classVocab = [
     custom("snap", (a) => (a.length <= 1 ? [`snap-${a[0] ?? "none"}`] : [`snap-${a[0]}`, `snap-${a[1]}`]), [["x"], ["both"], ["x", "mandatory"], ["y", "proximity"]], { values: ref("TailwindSnapAxis"), doc: "Scroll-snap axis with optional strictness." }),
     custom("snapAlign", (a) => [a[0] === "none" ? "snap-align-none" : `snap-${a[0]}`], [["start"], ["center"], ["none"]], { values: lit("start", "end", "center", "none"), doc: "Snap alignment of a snapped child." }),
     pre("snapStop", "snap", { values: lit("normal", "always"), doc: "Whether scrolling may skip past snap positions." }),
-    pre("scrollBehavior", "scroll", { values: lit("auto", "smooth"), doc: "Programmatic scrolling behavior." }),
-    space("scrollMargin", "scroll-m", "", true, true, { values: theme("--spacing"), doc: "Scroll margin — all sides, one axis/side, or the unit overload." }),
-    space("scrollPadding", "scroll-p", "", true, true, { values: theme("--spacing"), doc: "Scroll padding — all sides, one axis/side, or the unit overload." }),
+    pre("scroll", "scroll", { values: lit("auto", "smooth"), doc: "Programmatic scrolling behavior." }),
+    space("scrollM", "scroll-m", "", true, true, { values: theme("--spacing"), doc: "Scroll margin — all sides, one axis/side, or the unit overload." }),
+    space("scrollP", "scroll-p", "", true, true, { values: theme("--spacing"), doc: "Scroll padding — all sides, one axis/side, or the unit overload." }),
     pre("fieldSizing", "field-sizing", { values: lit("content", "fixed"), doc: "Whether form fields size to their content." }),
     // Pseudo-element content — bare = empty string (the common `before:`/`after:` case)
     custom("content", (a) => [a[0] === undefined ? "content-['']" : `content-${a[0]}`], [[], ["none"], ["[attr(data-label)]"]], { values: lit("none"), doc: "Pseudo-element content — `none`, arbitrary `[…]`, or bare for the empty string." }),
-    custom("maskImage", (a) => (a[0] === "none" ? ["mask-none"] : [`mask-${a[0]}`]), [["none"], ["[url(/x.png)]"]], { doc: "Mask image — `none` or an arbitrary source." }),
+    // `.mask()` merged: image (`none` / arbitrary source) or composite mode
+    // through the one `mask-*` emitter.
+    custom("mask", (a) => (a[0] === "none" ? ["mask-none"] : [`mask-${a[0]}`]), [["none"], ["[url(/x.png)]"], ["add"], ["subtract"], ["intersect"], ["exclude"]], {
+        values: group({ composite: lit("add", "subtract", "intersect", "exclude") }),
+        doc: "Mask image (`none` or an arbitrary source) or mask-composite mode.",
+    }),
     custom("maskFrom", (a) => (a.length === 2 ? [`mask-${a[0]}-from-${a[1]}`] : []), [["t", "50%"], ["x", "70%"], ["r", "blue-500"], ["l", "4"], ["t", "[20px]"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask start — edge + stop." }),
     custom("maskTo", (a) => (a.length === 2 ? [`mask-${a[0]}-to-${a[1]}`] : []), [["b", "90%"], ["y", "95%"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask end — edge + stop." }),
-    custom("maskComposite", (a) => [`mask-${a[0]}`], [["add"], ["subtract"], ["intersect"], ["exclude"]], { values: lit("add", "subtract", "intersect", "exclude"), doc: "How multiple masks combine." }),
     pre("maskType", "mask-type", { values: lit("alpha", "luminance"), doc: "SVG mask interpretation mode." }),
     // CSS Anchor Positioning (B-010) emits *inline style*, never a class — anchorName /
     // positionAnchor / positionArea (and viewTransitionName, F-B-181) all take arbitrary

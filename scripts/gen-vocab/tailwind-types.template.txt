@@ -11,7 +11,7 @@ type Stringified<T extends number> = `${T}`;
 //
 // NOTE (C-02): the five themeable families (colors, spacing, fontSize, radius,
 // shadow) are CLOSED — they no longer carry `(string & {})`. An open tail can't
-// typo-check (`.background("brnad")` would compile). Custom tokens instead come
+// typo-check (`.bg("brnad")` would compile). Custom tokens instead come
 // from the augmentable seams (tailwind-types.seams.ts), populated by `defineTheme()`. The cost of
 // closing is the restated opacity/arbitrary arms. Proof: spikes/define-theme.
 
@@ -85,7 +85,7 @@ export type TailwindTextSize =
   | (keyof FluentCustomFontSize & string) | `[${string}]`;
 
 // Font weight
-@@UNION TailwindFontWeight fontWeight +arb@@
+@@UNION TailwindFontWeight font.weight +arb@@
 
 // Leading (line-height)
 export type TailwindLeading = "none" | "tight" | "snug" | "normal" | "relaxed" | "loose" | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | `[${string}]`;
@@ -129,13 +129,13 @@ export type TailwindGridCols = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 
 export type TailwindGridRows = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "none" | "subgrid" | `${number}` | `[${string}]`;
 
 // Flex
-@@UNION TailwindFlex flex@@
+@@UNION TailwindFlex flex.shorthand@@
 
 // Overflow
 @@UNION TailwindOverflow overflow@@
 
 // Object fit
-@@UNION TailwindObjectFit objectFit@@
+@@UNION TailwindObjectFit object@@
 
 // Display
 export type TailwindDisplay =
@@ -147,10 +147,10 @@ export type TailwindDisplay =
 export type TailwindInset = TailwindSpacing | "auto" | "full" | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4";
 
 // Flex wrap
-@@UNION TailwindFlexWrap flexWrap@@
+@@UNION TailwindFlexWrap flex.wrap@@
 
 // Align self
-@@UNION TailwindAlignSelf alignSelf@@
+@@UNION TailwindAlignSelf self@@
 
 // Column span — bare numbers beyond 12 via `${number}`; arbitrary via `[…]`.
 export type TailwindColSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "full" | `${number}` | `[${string}]`;
@@ -159,12 +159,14 @@ export type TailwindColSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 @@UNION TailwindAspect aspect@@
 
 // Transitions & Animation
-@@UNION TailwindTransition transition@@
+@@UNION TailwindTransition transition.property@@
 export type TailwindDuration = 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000 | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000> | `${number}` | `[${string}]`;
 @@UNION TailwindAnimate animate +arb@@
 
-// Ring — v4 (C-03): added the `3` slot. Bare `ring` = 1px in v4 (was 3px).
-export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | `${number}` | `[${string}]`;
+// Ring — v4 (C-03): added the `3` slot. Bare `ring` = 1px in v4 (was 3px). CLOSED
+// (canonical-names): the open `${number}` arm is gone — it let `.ring("500")` compile
+// to a nonsense class and would shadow color discrimination in the merged `.ring()`.
+export type TailwindRingWidth = 0 | 1 | 2 | 3 | 4 | 8 | Stringified<0 | 1 | 2 | 3 | 4 | 8> | `[${string}]`;
 
 // Transforms
 export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 | Stringified<0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150> | `${number}` | `[${string}]`;
@@ -183,14 +185,14 @@ export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${n
 @@UNION TailwindAppearance appearance@@
 
 // List style
-@@UNION TailwindListStyleType listStyleType +arb@@
-@@UNION TailwindListStylePosition listStylePosition@@
+@@UNION TailwindListStyleType list.type +arb@@
+@@UNION TailwindListStylePosition list.position@@
 
 // Whitespace
 @@UNION TailwindWhitespace whitespace@@
 
 // Border style
-@@UNION TailwindBorderStyle borderStyle@@
+@@UNION TailwindBorderStyle border.style@@
 
 // Outline
 @@UNION TailwindOutline outline@@
@@ -199,12 +201,12 @@ export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${n
 export type TailwindPosition = "static" | "fixed" | "absolute" | "relative" | "sticky";
 
 // Text align
-@@UNION TailwindTextAlign textAlign@@
+@@UNION TailwindTextAlign text.align@@
 
 // Flexbox layout
-@@UNION TailwindFlexDirection flexDirection@@
-@@UNION TailwindJustifyContent justifyContent@@
-@@UNION TailwindAlignItems alignItems@@
+@@UNION TailwindFlexDirection flex.direction@@
+@@UNION TailwindJustifyContent justify@@
+@@UNION TailwindAlignItems items@@
 
 // Variant proxy types
 export type TailwindState =
@@ -252,8 +254,8 @@ export type TailwindFontFamily =
   | (keyof FluentCustomFontFamily & string)
   | `[${string}]`;
 
-// Gradient direction — keyword only; an angle goes through `gradientLinear`.
-@@UNION TailwindGradientDirection gradientTo@@
+// Gradient direction keywords (the angle form is the other arm of the merged `.bgLinear()`).
+@@UNION TailwindGradientDirection bgLinear.direction@@
 
 // Gradient stop (color with optional opacity)
 export type TailwindGradientStop = TailwindColor;
@@ -283,14 +285,14 @@ export type TailwindSaturate = 0 | 50 | 100 | 150 | 200 | Stringified<0 | 50 | 1
 @@UNION TailwindPlaceContent placeContent@@
 @@UNION TailwindPlaceItems placeItems@@
 @@UNION TailwindPlaceSelf placeSelf@@
-@@UNION TailwindGridAutoFlow gridAutoFlow@@
-@@UNION TailwindGridAuto gridAutoRows +arb@@
+@@UNION TailwindGridAutoFlow gridFlow@@
+@@UNION TailwindGridAuto autoRows +arb@@
 export type TailwindOrder = "first" | "last" | "none" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Stringified<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12> | `[${string}]`;
 
 /**
  * `position-area` grid placement (CSS anchor positioning, B-010). The common
  * single- and two-axis cells, plus the `[${string}]` arbitrary hatch for the full
- * grammar (`[top span-left]`) — emitted verbatim, same contract as `.textSize("[13px]")`.
+ * grammar (`[top span-left]`) — emitted verbatim, same contract as `.text("[13px]")`.
  */
 export type TailwindPositionArea =
   | "top" | "bottom" | "left" | "right" | "center"
@@ -319,7 +321,7 @@ export type TailwindStrokeWidth =
   | `[${string}]`;
 
 // Text decoration style / thickness
-@@UNION TailwindDecorationStyle decorationStyle@@
+@@UNION TailwindDecorationStyle decoration.style@@
 export type TailwindDecorationThickness =
   | "auto" | "from-font"
   | 0 | 1 | 2 | 4 | 8
@@ -330,7 +332,7 @@ export type TailwindDecorationThickness =
 @@UNION TailwindColorScheme scheme@@
 
 // Text wrap / hyphenation / overflow-wrap
-@@UNION TailwindTextWrap textWrap@@
+@@UNION TailwindTextWrap text.wrap@@
 @@UNION TailwindWrap wrap@@
 @@UNION TailwindHyphens hyphens@@
 
@@ -367,7 +369,7 @@ export type TailwindDelay =
   | 0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000
   | Stringified<0 | 75 | 100 | 150 | 200 | 300 | 500 | 700 | 1000>
   | `${number}` | `[${string}]`;
-@@UNION TailwindTransitionBehavior transitionBehavior@@
+@@UNION TailwindTransitionBehavior transition.behavior@@
 
 // Gradient stop position — closed 0–100% (5% step) ladder + arbitrary `[…]`
 export type TailwindGradientPosition =
@@ -398,8 +400,8 @@ export type TailwindGradientInterpolation =
 @@UNION TailwindPerspectiveOrigin perspectiveOrigin +arb@@
 // Narrower than TailwindTranslate: translate-z has no `-full` and no fractions.
 export type TailwindTranslateZ = TailwindSpacing | `-${number}` | "-px";
-@@UNION TailwindTransformStyle transformStyle@@
-@@UNION TailwindBackfaceVisibility backfaceVisibility@@
+@@UNION TailwindTransformStyle transform@@
+@@UNION TailwindBackfaceVisibility backface@@
 
 // Variant selectors for `.on()` — aria / group / peer / pseudo / nth / child.
 // Each member is the bare prefix; the base utility is added inside the callback.
@@ -458,7 +460,7 @@ export type TailwindSnapAxis = "none" | "x" | "y" | "both";
 export type TailwindSnapStrictness = "mandatory" | "proximity";
 @@UNION TailwindSnapAlign snapAlign@@
 @@UNION TailwindSnapStop snapStop@@
-@@UNION TailwindScrollBehavior scrollBehavior@@
+@@UNION TailwindScrollBehavior scroll@@
 @@UNION TailwindFieldSizing fieldSizing@@
 
 // Masks (v4.1) — edge fades, composite, SVG mask-type
@@ -469,5 +471,5 @@ export type TailwindMaskStop =
   | TailwindSpacing
   | `(${string})`
   | `[${string}]`;
-@@UNION TailwindMaskComposite maskComposite@@
+@@UNION TailwindMaskComposite mask.composite@@
 @@UNION TailwindMaskType maskType@@

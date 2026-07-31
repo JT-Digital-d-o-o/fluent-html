@@ -43,8 +43,8 @@ describe("Layout & Display", () => {
     assert.strictEqual(render(Div().static()), '<div class="static"></div>');
   });
   it("flexShorthand", () => {
-    assert.strictEqual(render(Div().flexShorthand("1")), '<div class="flex-1"></div>');
-    assert.strictEqual(render(Div().flexShorthand("none")), '<div class="flex-none"></div>');
+    assert.strictEqual(render(Div().flex("1")), '<div class="flex-1"></div>');
+    assert.strictEqual(render(Div().flex("none")), '<div class="flex-none"></div>');
   });
   it("negative transforms relocate the sign", () => {
     assert.strictEqual(render(Div().rotate(-45)), '<div class="-rotate-45"></div>');
@@ -59,10 +59,10 @@ describe("Flexbox & Grid Extensions", () => {
   it("shrink 0", () => { assert.strictEqual(render(Div().shrink(0)), '<div class="shrink-0"></div>'); });
   it("grow default", () => { assert.strictEqual(render(Div().grow()), '<div class="grow"></div>'); });
   it("grow 0", () => { assert.strictEqual(render(Div().grow(0)), '<div class="grow-0"></div>'); });
-  it("flexWrap wrap", () => { assert.strictEqual(render(Div().flexWrap("wrap")), '<div class="flex-wrap"></div>'); });
-  it("flexWrap nowrap", () => { assert.strictEqual(render(Div().flexWrap("nowrap")), '<div class="flex-nowrap"></div>'); });
-  it("alignSelf center", () => { assert.strictEqual(render(Div().alignSelf("center")), '<div class="self-center"></div>'); });
-  it("alignSelf stretch", () => { assert.strictEqual(render(Div().alignSelf("stretch")), '<div class="self-stretch"></div>'); });
+  it("flexWrap wrap", () => { assert.strictEqual(render(Div().flex("wrap")), '<div class="flex-wrap"></div>'); });
+  it("flexWrap nowrap", () => { assert.strictEqual(render(Div().flex("nowrap")), '<div class="flex-nowrap"></div>'); });
+  it("alignSelf center", () => { assert.strictEqual(render(Div().self("center")), '<div class="self-center"></div>'); });
+  it("alignSelf stretch", () => { assert.strictEqual(render(Div().self("stretch")), '<div class="self-stretch"></div>'); });
   it("colSpan 2", () => { assert.strictEqual(render(Div().colSpan(2)), '<div class="col-span-2"></div>'); });
   it("colSpan full", () => { assert.strictEqual(render(Div().colSpan("full")), '<div class="col-span-full"></div>'); });
   it("aspect video", () => { assert.strictEqual(render(Div().aspect("video")), '<div class="aspect-video"></div>'); });
@@ -91,8 +91,8 @@ describe("Transitions & Animation", () => {
 describe("Ring (Focus Rings)", () => {
   it("ring default", () => { assert.strictEqual(render(Div().ring()), '<div class="ring"></div>'); });
   it("ring 2", () => { assert.strictEqual(render(Div().ring(2)), '<div class="ring-2"></div>'); });
-  it("ringColor", () => { assert.strictEqual(render(Div().ringColor("blue-300")), '<div class="ring-blue-300"></div>'); });
-  it("ring + ringColor", () => { assert.strictEqual(render(Button().ring(2).ringColor("blue-300")), '<button class="ring-2 ring-blue-300"></button>'); });
+  it("ringColor", () => { assert.strictEqual(render(Div().ring("blue-300")), '<div class="ring-blue-300"></div>'); });
+  it("ring + ringColor", () => { assert.strictEqual(render(Button().ring(2).ring("blue-300")), '<button class="ring-2 ring-blue-300"></button>'); });
 });
 
 describe("Transforms", () => {
@@ -131,7 +131,7 @@ describe("Text Decoration", () => {
 describe("Outline", () => {
   it("outline none", () => { assert.strictEqual(render(Button().outline("none")), '<button class="outline-none"></button>'); });
   it("outline dashed", () => { assert.strictEqual(render(Div().outline("dashed")), '<div class="outline-dashed"></div>'); });
-  it("outlineHidden (v4 a11y-safe)", () => { assert.strictEqual(render(Button().outlineHidden()), '<button class="outline-hidden"></button>'); });
+  it("outlineHidden (v4 a11y-safe)", () => { assert.strictEqual(render(Button().outline("hidden")), '<button class="outline-hidden"></button>'); });
 });
 
 describe("Gradients (v4: bg-linear / bg-radial / bg-conic)", () => {
@@ -142,22 +142,22 @@ describe("Gradients (v4: bg-linear / bg-radial / bg-conic)", () => {
     assert.strictEqual(render(Div().gradient("red-500", "blue-500", "to-br")), '<div class="bg-linear-to-br from-red-500 to-blue-500"></div>');
   });
   it("gradientTo emits v4 bg-linear-*", () => {
-    assert.strictEqual(render(Div().gradientTo("to-tr")), '<div class="bg-linear-to-tr"></div>');
+    assert.strictEqual(render(Div().bgLinear("to-tr")), '<div class="bg-linear-to-tr"></div>');
   });
   it("gradientRadial / gradientConic", () => {
-    assert.strictEqual(render(Div().gradientRadial()), '<div class="bg-radial"></div>');
-    assert.strictEqual(render(Div().gradientConic()), '<div class="bg-conic"></div>');
+    assert.strictEqual(render(Div().bgRadial()), '<div class="bg-radial"></div>');
+    assert.strictEqual(render(Div().bgConic()), '<div class="bg-conic"></div>');
   });
   // Regression (tailwind-fidelity-1): origin + interpolation must fold into one arbitrary
   // value — `bg-radial-[at_x]/oklch` compiles to zero CSS in Tailwind v4.
   it("gradientRadial folds origin + interpolation into a single valid arbitrary value", () => {
-    assert.strictEqual(render(Div().gradientRadial("top-right", "oklch")), '<div class="bg-radial-[at_top_right_in_oklch]"></div>');
-    assert.strictEqual(render(Div().gradientRadial("top-right", "longer")), '<div class="bg-radial-[at_top_right_in_oklch_longer_hue]"></div>');
-    assert.strictEqual(render(Div().gradientRadial("top-right")), '<div class="bg-radial-[at_top_right]"></div>');
-    assert.strictEqual(render(Div().gradientRadial(undefined, "oklch")), '<div class="bg-radial/oklch"></div>');
+    assert.strictEqual(render(Div().bgRadial("top-right", "oklch")), '<div class="bg-radial-[at_top_right_in_oklch]"></div>');
+    assert.strictEqual(render(Div().bgRadial("top-right", "longer")), '<div class="bg-radial-[at_top_right_in_oklch_longer_hue]"></div>');
+    assert.strictEqual(render(Div().bgRadial("top-right")), '<div class="bg-radial-[at_top_right]"></div>');
+    assert.strictEqual(render(Div().bgRadial(undefined, "oklch")), '<div class="bg-radial/oklch"></div>');
   });
   it("from / via / to stops compose", () => {
-    assert.strictEqual(render(Div().gradientTo("to-r").from("red-500").via("white").to("blue-500")), '<div class="bg-linear-to-r from-red-500 via-white to-blue-500"></div>');
+    assert.strictEqual(render(Div().bgLinear("to-r").from("red-500").via("white").to("blue-500")), '<div class="bg-linear-to-r from-red-500 via-white to-blue-500"></div>');
   });
 });
 
@@ -176,7 +176,7 @@ describe("v4 variants (C-06): widened states + container queries", () => {
     assert.strictEqual(render(Div().containerQuery("sidebar")), '<div class="@container/sidebar"></div>');
   });
   it(".at() accepts container-query breakpoints", () => {
-    assert.strictEqual(render(Div().at("@sm", t => t.padding("4"))), '<div class="@sm:p-4"></div>');
+    assert.strictEqual(render(Div().at("@sm", t => t.p("4"))), '<div class="@sm:p-4"></div>');
     assert.strictEqual(render(Div().at("@max-lg", t => t.hidden())), '<div class="@max-lg:hidden"></div>');
     assert.strictEqual(render(Div().at("@[480px]", t => t.flex())), '<div class="@[480px]:flex"></div>');
   });
@@ -189,11 +189,11 @@ describe("v4 variants (C-06): widened states + container queries", () => {
   });
   it(".on() accepts arbitrary supports-[…] / nth-[…]", () => {
     assert.strictEqual(render(Div().on("supports-[display:grid]", t => t.grid())), '<div class="supports-[display:grid]:grid"></div>');
-    assert.strictEqual(render(Div().on("nth-[3]", t => t.background("red-500"))), '<div class="nth-[3]:bg-red-500"></div>');
+    assert.strictEqual(render(Div().on("nth-[3]", t => t.bg("red-500"))), '<div class="nth-[3]:bg-red-500"></div>');
   });
   it(".on() accepts arbitrary [&…] selectors (escape-hatch)", () => {
     // & and > are entity-encoded by escapeAttr; the DOM class decodes back to [&>li]:p-2.
-    assert.strictEqual(render(Div().on("[&>li]", t => t.padding("2"))), '<div class="[&amp;&gt;li]:p-2"></div>');
+    assert.strictEqual(render(Div().on("[&>li]", t => t.p("2"))), '<div class="[&amp;&gt;li]:p-2"></div>');
     assert.strictEqual(render(Div().on("[&_svg]", t => t.w("4").h("4"))), '<div class="[&amp;_svg]:w-4 [&amp;_svg]:h-4"></div>');
   });
   it(".cssProp() emits the arbitrary-property class and composes with variants", () => {
@@ -211,7 +211,7 @@ describe("v4 variants (C-06): widened states + container queries", () => {
   it(".cssClass() appends verbatim (non-Tailwind intent marker)", () => {
     assert.strictEqual(render(Div().cssClass("js-map-container")), '<div class="js-map-container"></div>');
     assert.strictEqual(
-      render(Div().padding("4").cssClass("shepherd-target")),
+      render(Div().p("4").cssClass("shepherd-target")),
       '<div class="p-4 shepherd-target"></div>',
     );
   });
@@ -219,7 +219,7 @@ describe("v4 variants (C-06): widened states + container queries", () => {
     // escapeAttr entity-encodes the quotes; the browser decodes the DOM class
     // back to before:content-[''].
     assert.strictEqual(
-      render(Div().on("before", t => t.content().background("red-500"))),
+      render(Div().on("before", t => t.content().bg("red-500"))),
       '<div class="before:content-[&#39;&#39;] before:bg-red-500"></div>',
     );
   });
@@ -227,19 +227,19 @@ describe("v4 variants (C-06): widened states + container queries", () => {
 
 describe("Variant Proxy - .on()", () => {
   it("on hover - single property", () => {
-    assert.strictEqual(render(Button().on("hover", t => t.background("blue-600"))), '<button class="hover:bg-blue-600"></button>');
+    assert.strictEqual(render(Button().on("hover", t => t.bg("blue-600"))), '<button class="hover:bg-blue-600"></button>');
   });
   it("on hover - multiple properties", () => {
-    assert.strictEqual(render(Button().on("hover", t => t.background("blue-600").scale(105))), '<button class="hover:bg-blue-600 hover:scale-105"></button>');
+    assert.strictEqual(render(Button().on("hover", t => t.bg("blue-600").scale(105))), '<button class="hover:bg-blue-600 hover:scale-105"></button>');
   });
   it("on focus - ring + outline", () => {
-    assert.strictEqual(render(Button().on("focus", t => t.ring(2).ringColor("blue-300").outline("none"))), '<button class="focus:ring-2 focus:ring-blue-300 focus:outline-none"></button>');
+    assert.strictEqual(render(Button().on("focus", t => t.ring(2).ring("blue-300").outline("none"))), '<button class="focus:ring-2 focus:ring-blue-300 focus:outline-none"></button>');
   });
   it("on disabled", () => {
     assert.strictEqual(render(Button().on("disabled", t => t.opacity(50).cursor("not-allowed"))), '<button class="disabled:opacity-50 disabled:cursor-not-allowed"></button>');
   });
   it("on dark", () => {
-    assert.strictEqual(render(Div().on("dark", t => t.background("gray-900"))), '<div class="dark:bg-gray-900"></div>');
+    assert.strictEqual(render(Div().on("dark", t => t.bg("gray-900"))), '<div class="dark:bg-gray-900"></div>');
   });
   it("on group-hover", () => {
     assert.strictEqual(render(Div().on("group-hover", t => t.opacity(100))), '<div class="group-hover:opacity-100"></div>');
@@ -265,22 +265,22 @@ describe("Variant Proxy - .at()", () => {
     );
   });
   it("at with multiple properties", () => {
-    assert.strictEqual(render(Div().at("md", t => t.padding("x", "8").textSize("lg"))), '<div class="md:px-8 md:text-lg"></div>');
+    assert.strictEqual(render(Div().at("md", t => t.p("x", "8").text("lg"))), '<div class="md:px-8 md:text-lg"></div>');
   });
 });
 
 describe("Variant Proxy - Nesting", () => {
   it("nested dark:hover", () => {
-    assert.strictEqual(render(Div().on("dark", t => t.on("hover", t => t.background("gray-700")))), '<div class="dark:hover:bg-gray-700"></div>');
+    assert.strictEqual(render(Div().on("dark", t => t.on("hover", t => t.bg("gray-700")))), '<div class="dark:hover:bg-gray-700"></div>');
   });
   it("nested md:hover", () => {
     assert.strictEqual(render(Div().at("md", t => t.on("hover", t => t.shadow("lg")))), '<div class="md:hover:shadow-lg"></div>');
   });
   it("complex nesting dark + hover + base", () => {
     assert.strictEqual(
-      render(Div().background("white").on("dark", t => t
-        .background("gray-900")
-        .on("hover", t => t.background("gray-800"))
+      render(Div().bg("white").on("dark", t => t
+        .bg("gray-900")
+        .on("hover", t => t.bg("gray-800"))
       )),
       '<div class="bg-white dark:bg-gray-900 dark:hover:bg-gray-800"></div>'
     );
@@ -292,8 +292,8 @@ describe("Variant Proxy - Integration", () => {
     assert.strictEqual(
       render(
         Button()
-          .background("blue-500").textColor("white").rounded()
-          .on("hover", t => t.background("blue-600"))
+          .bg("blue-500").text("white").rounded()
+          .on("hover", t => t.bg("blue-600"))
           .on("focus", t => t.ring(2))
           .on("disabled", t => t.opacity(50))
       ),
@@ -304,9 +304,9 @@ describe("Variant Proxy - Integration", () => {
     assert.strictEqual(
       render(
         Button()
-          .background("blue-500")
+          .bg("blue-500")
           .transition().duration(200)
-          .on("hover", t => t.background("blue-600").scale(105))
+          .on("hover", t => t.bg("blue-600").scale(105))
       ),
       '<button class="bg-blue-500 transition duration-200 hover:bg-blue-600 hover:scale-105"></button>'
     );
@@ -315,7 +315,7 @@ describe("Variant Proxy - Integration", () => {
     assert.strictEqual(
       render(
         Button()
-          .on("hover", t => t.background("blue-600"))
+          .on("hover", t => t.bg("blue-600"))
           .when(true, t => t.on("disabled", t => t.opacity(50)))
       ),
       '<button class="hover:bg-blue-600 disabled:opacity-50"></button>'
@@ -325,7 +325,7 @@ describe("Variant Proxy - Integration", () => {
     assert.strictEqual(
       render(
         Button()
-          .on("hover", t => t.background("blue-600"))
+          .on("hover", t => t.bg("blue-600"))
           .when(false, t => t.on("disabled", t => t.opacity(50)))
       ),
       '<button class="hover:bg-blue-600"></button>'
@@ -352,25 +352,25 @@ describe("Variant Proxy - Integration", () => {
 
 describe("Custom theme tokens (defineTheme seam)", () => {
   it("custom color in background()", () => {
-    assert.strictEqual(render(Div().background("accent")), '<div class="bg-accent"></div>');
+    assert.strictEqual(render(Div().bg("accent")), '<div class="bg-accent"></div>');
   });
   it("custom color with shade in background()", () => {
-    assert.strictEqual(render(Div().background("brand-500")), '<div class="bg-brand-500"></div>');
+    assert.strictEqual(render(Div().bg("brand-500")), '<div class="bg-brand-500"></div>');
   });
   it("custom color in textColor()", () => {
-    assert.strictEqual(render(Span().textColor("accent-dark")), '<span class="text-accent-dark"></span>');
+    assert.strictEqual(render(Span().text("accent-dark")), '<span class="text-accent-dark"></span>');
   });
   it("custom color in borderColor()", () => {
-    assert.strictEqual(render(Div().borderColor("accent-light")), '<div class="border-accent-light"></div>');
+    assert.strictEqual(render(Div().border("accent-light")), '<div class="border-accent-light"></div>');
   });
   it("custom color in ringColor()", () => {
-    assert.strictEqual(render(Button().ring(2).ringColor("accent")), '<button class="ring-2 ring-accent"></button>');
+    assert.strictEqual(render(Button().ring(2).ring("accent")), '<button class="ring-2 ring-accent"></button>');
   });
   it("custom color in variant proxy", () => {
-    assert.strictEqual(render(Div().on("hover", t => t.background("accent"))), '<div class="hover:bg-accent"></div>');
+    assert.strictEqual(render(Div().on("hover", t => t.bg("accent"))), '<div class="hover:bg-accent"></div>');
   });
   it("custom spacing in padding()", () => {
-    assert.strictEqual(render(Div().padding("18")), '<div class="p-18"></div>');
+    assert.strictEqual(render(Div().p("18")), '<div class="p-18"></div>');
   });
   it("custom spacing in gap()", () => {
     assert.strictEqual(render(Div().gap("18")), '<div class="gap-18"></div>');
@@ -403,10 +403,10 @@ describe("Arbitrary value overloads (unit, amount)", () => {
   it("maxH with dvh", () => { assert.strictEqual(render(Div().maxH("dvh", 80)), '<div class="max-h-[80dvh]"></div>'); });
 
   // Spacing
-  it("padding with px", () => { assert.strictEqual(render(Div().padding("px", 16)), '<div class="p-[16px]"></div>'); });
-  it("padding with rem", () => { assert.strictEqual(render(Div().padding("rem", 1.5)), '<div class="p-[1.5rem]"></div>'); });
-  it("margin with em", () => { assert.strictEqual(render(Div().margin("em", 2)), '<div class="m-[2em]"></div>'); });
-  it("margin with %", () => { assert.strictEqual(render(Div().margin("%", 50)), '<div class="m-[50%]"></div>'); });
+  it("padding with px", () => { assert.strictEqual(render(Div().p("px", 16)), '<div class="p-[16px]"></div>'); });
+  it("padding with rem", () => { assert.strictEqual(render(Div().p("rem", 1.5)), '<div class="p-[1.5rem]"></div>'); });
+  it("margin with em", () => { assert.strictEqual(render(Div().m("em", 2)), '<div class="m-[2em]"></div>'); });
+  it("margin with %", () => { assert.strictEqual(render(Div().m("%", 50)), '<div class="m-[50%]"></div>'); });
 
   // Gap
   it("gap with px", () => { assert.strictEqual(render(Div().gap("px", 8)), '<div class="gap-[8px]"></div>'); });
@@ -421,9 +421,9 @@ describe("Arbitrary value overloads (unit, amount)", () => {
 
   // Existing overloads still work
   it("w with named value still works", () => { assert.strictEqual(render(Div().w("full")), '<div class="w-full"></div>'); });
-  it("padding with direction still works", () => { assert.strictEqual(render(Div().padding("x", "4")), '<div class="px-4"></div>'); });
+  it("padding with direction still works", () => { assert.strictEqual(render(Div().p("x", "4")), '<div class="px-4"></div>'); });
   it("gap with direction still works", () => { assert.strictEqual(render(Div().gap("x", "2")), '<div class="gap-x-2"></div>'); });
-  it("margin auto still works", () => { assert.strictEqual(render(Div().margin("auto")), '<div class="m-auto"></div>'); });
+  it("margin auto still works", () => { assert.strictEqual(render(Div().m("auto")), '<div class="m-auto"></div>'); });
 
   // Works with variant proxy
   it("unit overload inside .on()", () => {
@@ -434,7 +434,7 @@ describe("Arbitrary value overloads (unit, amount)", () => {
   });
 
   // Decimal values
-  it("fractional rem", () => { assert.strictEqual(render(Div().padding("rem", 0.75)), '<div class="p-[0.75rem]"></div>'); });
+  it("fractional rem", () => { assert.strictEqual(render(Div().p("rem", 0.75)), '<div class="p-[0.75rem]"></div>'); });
 
   // All unit types
   it("svh unit", () => { assert.strictEqual(render(Div().h("svh", 100)), '<div class="h-[100svh]"></div>'); });
@@ -456,10 +456,10 @@ describe("Numeric values", () => {
   it("border direction with numeric width", () => { assert.strictEqual(render(Div().border("t", 2)), '<div class="border-t-2"></div>'); });
 
   // Z-index
-  it("zIndex 0", () => { assert.strictEqual(render(Div().zIndex(0)), '<div class="z-0"></div>'); });
-  it("zIndex 10", () => { assert.strictEqual(render(Div().zIndex(10)), '<div class="z-10"></div>'); });
-  it("zIndex 50", () => { assert.strictEqual(render(Div().zIndex(50)), '<div class="z-50"></div>'); });
-  it("zIndex auto", () => { assert.strictEqual(render(Div().zIndex("auto")), '<div class="z-auto"></div>'); });
+  it("zIndex 0", () => { assert.strictEqual(render(Div().z(0)), '<div class="z-0"></div>'); });
+  it("zIndex 10", () => { assert.strictEqual(render(Div().z(10)), '<div class="z-10"></div>'); });
+  it("zIndex 50", () => { assert.strictEqual(render(Div().z(50)), '<div class="z-50"></div>'); });
+  it("zIndex auto", () => { assert.strictEqual(render(Div().z("auto")), '<div class="z-auto"></div>'); });
 
   // Grid
   it("gridCols 1", () => { assert.strictEqual(render(Div().gridCols(1)), '<div class="grid-cols-1"></div>'); });
@@ -515,19 +515,19 @@ describe("Numeric values", () => {
 });
 
 describe("Bracket escape hatches", () => {
-  it("custom textSize", () => { assert.strictEqual(render(Div().textSize("[13px]")), '<div class="text-[13px]"></div>'); });
-  it("custom fontWeight", () => { assert.strictEqual(render(Div().fontWeight("[450]")), '<div class="font-[450]"></div>'); });
+  it("custom textSize", () => { assert.strictEqual(render(Div().text("[13px]")), '<div class="text-[13px]"></div>'); });
+  it("custom fontWeight", () => { assert.strictEqual(render(Div().font("[450]")), '<div class="font-[450]"></div>'); });
   it("custom leading", () => { assert.strictEqual(render(Div().leading("[1.35]")), '<div class="leading-[1.35]"></div>'); });
   it("custom tracking", () => { assert.strictEqual(render(Div().tracking("[0.02em]")), '<div class="tracking-[0.02em]"></div>'); });
   it("custom rounded", () => { assert.strictEqual(render(Div().rounded("[3px]")), '<div class="rounded-[3px]"></div>'); });
   it("custom shadow", () => { assert.strictEqual(render(Div().shadow("[0_2px_4px_rgba(0,0,0,0.1)]")), '<div class="shadow-[0_2px_4px_rgba(0,0,0,0.1)]"></div>'); });
   it("custom border width", () => { assert.strictEqual(render(Div().border("[1.5px]")), '<div class="border-[1.5px]"></div>'); });
   it("custom opacity", () => { assert.strictEqual(render(Div().opacity("[0.33]")), '<div class="opacity-[0.33]"></div>'); });
-  it("custom zIndex", () => { assert.strictEqual(render(Div().zIndex("[999]")), '<div class="z-[999]"></div>'); });
+  it("custom zIndex", () => { assert.strictEqual(render(Div().z("[999]")), '<div class="z-[999]"></div>'); });
   it("custom ringWidth", () => { assert.strictEqual(render(Div().ring("[1.5px]")), '<div class="ring-[1.5px]"></div>'); });
   it("custom scale", () => { assert.strictEqual(render(Div().scale("[1.15]")), '<div class="scale-[1.15]"></div>'); });
   it("custom rotate", () => { assert.strictEqual(render(Div().rotate("[15deg]")), '<div class="rotate-[15deg]"></div>'); });
-  it("custom listStyleType", () => { assert.strictEqual(render(Div().listStyleType("[square]")), '<div class="list-[square]"></div>'); });
+  it("custom listStyleType", () => { assert.strictEqual(render(Div().list("[square]")), '<div class="list-[square]"></div>'); });
   it("custom animate", () => { assert.strictEqual(render(Div().animate("[fade-out]")), '<div class="animate-[fade-out]"></div>'); });
 });
 
@@ -536,18 +536,18 @@ describe("JIT bare string escape hatches (string & {})", () => {
   it("custom gridRows beyond 12", () => { assert.strictEqual(render(Div().gridRows("13")), '<div class="grid-rows-13"></div>'); });
   it("custom duration", () => { assert.strictEqual(render(Div().duration("250")), '<div class="duration-250"></div>'); });
   it("custom colSpan beyond 12", () => { assert.strictEqual(render(Div().colSpan("13")), '<div class="col-span-13"></div>'); });
-  it("custom spacing", () => { assert.strictEqual(render(Div().padding("18")), '<div class="p-18"></div>'); });
-  it("custom color", () => { assert.strictEqual(render(Div().background("accent")), '<div class="bg-accent"></div>'); });
+  it("custom spacing", () => { assert.strictEqual(render(Div().p("18")), '<div class="p-18"></div>'); });
+  it("custom color", () => { assert.strictEqual(render(Div().bg("accent")), '<div class="bg-accent"></div>'); });
 });
 
 describe("List Style", () => {
-  it("listStyleType disc", () => { assert.strictEqual(render(Div().listStyleType("disc")), '<div class="list-disc"></div>'); });
-  it("listStyleType decimal", () => { assert.strictEqual(render(Div().listStyleType("decimal")), '<div class="list-decimal"></div>'); });
-  it("listStyleType none", () => { assert.strictEqual(render(Div().listStyleType("none")), '<div class="list-none"></div>'); });
-  it("listStylePosition inside", () => { assert.strictEqual(render(Div().listStylePosition("inside")), '<div class="list-inside"></div>'); });
-  it("listStylePosition outside", () => { assert.strictEqual(render(Div().listStylePosition("outside")), '<div class="list-outside"></div>'); });
-  it("chained list styles", () => { assert.strictEqual(render(Div().listStyleType("disc").listStylePosition("inside")), '<div class="list-disc list-inside"></div>'); });
-  it("custom listStyleType via escape hatch", () => { assert.strictEqual(render(Div().listStyleType("[square]")), '<div class="list-[square]"></div>'); });
+  it("listStyleType disc", () => { assert.strictEqual(render(Div().list("disc")), '<div class="list-disc"></div>'); });
+  it("listStyleType decimal", () => { assert.strictEqual(render(Div().list("decimal")), '<div class="list-decimal"></div>'); });
+  it("listStyleType none", () => { assert.strictEqual(render(Div().list("none")), '<div class="list-none"></div>'); });
+  it("listStylePosition inside", () => { assert.strictEqual(render(Div().list("inside")), '<div class="list-inside"></div>'); });
+  it("listStylePosition outside", () => { assert.strictEqual(render(Div().list("outside")), '<div class="list-outside"></div>'); });
+  it("chained list styles", () => { assert.strictEqual(render(Div().list("disc").list("inside")), '<div class="list-disc list-inside"></div>'); });
+  it("custom listStyleType via escape hatch", () => { assert.strictEqual(render(Div().list("[square]")), '<div class="list-[square]"></div>'); });
 });
 
 describe("Filters", () => {
@@ -579,12 +579,12 @@ describe("Layout — Place, Grid Auto, Order", () => {
   it("placeItems center", () => { assert.strictEqual(render(Div().placeItems("center")), '<div class="place-items-center"></div>'); });
   it("placeSelf auto", () => { assert.strictEqual(render(Div().placeSelf("auto")), '<div class="place-self-auto"></div>'); });
   it("placeSelf end", () => { assert.strictEqual(render(Div().placeSelf("end")), '<div class="place-self-end"></div>'); });
-  it("gridAutoFlow row", () => { assert.strictEqual(render(Div().gridAutoFlow("row")), '<div class="grid-flow-row"></div>'); });
-  it("gridAutoFlow col-dense", () => { assert.strictEqual(render(Div().gridAutoFlow("col-dense")), '<div class="grid-flow-col-dense"></div>'); });
-  it("gridAutoRows min", () => { assert.strictEqual(render(Div().gridAutoRows("min")), '<div class="auto-rows-min"></div>'); });
-  it("gridAutoRows fr", () => { assert.strictEqual(render(Div().gridAutoRows("fr")), '<div class="auto-rows-fr"></div>'); });
-  it("gridAutoCols auto", () => { assert.strictEqual(render(Div().gridAutoCols("auto")), '<div class="auto-cols-auto"></div>'); });
-  it("gridAutoCols escape hatch", () => { assert.strictEqual(render(Div().gridAutoCols("[minmax(0,2fr)]")), '<div class="auto-cols-[minmax(0,2fr)]"></div>'); });
+  it("gridAutoFlow row", () => { assert.strictEqual(render(Div().gridFlow("row")), '<div class="grid-flow-row"></div>'); });
+  it("gridAutoFlow col-dense", () => { assert.strictEqual(render(Div().gridFlow("col-dense")), '<div class="grid-flow-col-dense"></div>'); });
+  it("gridAutoRows min", () => { assert.strictEqual(render(Div().autoRows("min")), '<div class="auto-rows-min"></div>'); });
+  it("gridAutoRows fr", () => { assert.strictEqual(render(Div().autoRows("fr")), '<div class="auto-rows-fr"></div>'); });
+  it("gridAutoCols auto", () => { assert.strictEqual(render(Div().autoCols("auto")), '<div class="auto-cols-auto"></div>'); });
+  it("gridAutoCols escape hatch", () => { assert.strictEqual(render(Div().autoCols("[minmax(0,2fr)]")), '<div class="auto-cols-[minmax(0,2fr)]"></div>'); });
   it("order first", () => { assert.strictEqual(render(Div().order("first")), '<div class="order-first"></div>'); });
   it("order last", () => { assert.strictEqual(render(Div().order("last")), '<div class="order-last"></div>'); });
   it("order numeric", () => { assert.strictEqual(render(Div().order(3)), '<div class="order-3"></div>'); });
@@ -611,13 +611,13 @@ describe("Full Example (Plan Before/After)", () => {
     assert.strictEqual(
       render(
         Button()
-          .padding("x", "4").padding("y", "2")
-          .background("blue-500").textColor("white").rounded()
+          .p("x", "4").p("y", "2")
+          .bg("blue-500").text("white").rounded()
           .transition().duration(200)
-          .on("hover", t => t.background("blue-600").scale(105).shadow("lg"))
-          .on("focus", t => t.ring(2).ringColor("blue-300").outline("none"))
+          .on("hover", t => t.bg("blue-600").scale(105).shadow("lg"))
+          .on("focus", t => t.ring(2).ring("blue-300").outline("none"))
           .on("disabled", t => t.opacity(50).cursor("not-allowed"))
-          .at("md", t => t.padding("x", "8").textSize("lg"))
+          .at("md", t => t.p("x", "8").text("lg"))
       ),
       '<button class="px-4 py-2 bg-blue-500 text-white rounded transition duration-200 hover:bg-blue-600 hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-blue-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed md:px-8 md:text-lg"></button>'
     );
@@ -627,9 +627,9 @@ describe("Full Example (Plan Before/After)", () => {
 describe("Variant exception-safety (D-06)", () => {
   it("a throw inside .on(...) does not leak the variant prefix onto later classes", () => {
     const tag = Div();
-    assert.throws(() => tag.on("hover", (t) => { t.background("blue-600"); throw new Error("boom"); }));
+    assert.throws(() => tag.on("hover", (t) => { t.bg("blue-600"); throw new Error("boom"); }));
     // The prefix is restored even though the callback threw — the next class is unprefixed.
-    tag.textColor("white");
+    tag.text("white");
     const html = render(tag);
     assert.ok(html.includes("text-white"), html);
     assert.ok(!html.includes("hover:text-white"), html);
@@ -637,8 +637,8 @@ describe("Variant exception-safety (D-06)", () => {
 
   it("a throw inside .at(...) does not leak the breakpoint prefix", () => {
     const tag = Span();
-    assert.throws(() => tag.at("md", (t) => { t.padding("x", "8"); throw new Error("boom"); }));
-    tag.textColor("black");
+    assert.throws(() => tag.at("md", (t) => { t.p("x", "8"); throw new Error("boom"); }));
+    tag.text("black");
     assert.ok(!render(tag).includes("md:text-black"));
   });
 });
@@ -649,12 +649,12 @@ describe("Variant exception-safety (D-06)", () => {
 
 describe("TW4 relational hooks & View Transitions", () => {
   it(".on(\"has-[:checked]\", …) emits the has- variant prefix", () => {
-    assert.strictEqual(render(Div().on("has-[:checked]", (t) => t.background("blue-50"))), `<div class="has-[:checked]:bg-blue-50"></div>`);
+    assert.strictEqual(render(Div().on("has-[:checked]", (t) => t.bg("blue-50"))), `<div class="has-[:checked]:bg-blue-50"></div>`);
   });
 
   it(".on(\"group-has-[:invalid]\", …) and in-[…] compile and emit", () => {
-    assert.strictEqual(render(Div().on("group-has-[:invalid]", (t) => t.textColor("red-600"))), `<div class="group-has-[:invalid]:text-red-600"></div>`);
-    assert.strictEqual(render(Div().on("in-[.dark]", (t) => t.textColor("white"))), `<div class="in-[.dark]:text-white"></div>`);
+    assert.strictEqual(render(Div().on("group-has-[:invalid]", (t) => t.text("red-600"))), `<div class="group-has-[:invalid]:text-red-600"></div>`);
+    assert.strictEqual(render(Div().on("in-[.dark]", (t) => t.text("white"))), `<div class="in-[.dark]:text-white"></div>`);
   });
 
   it("viewTransitionName emits inline view-transition-name style (dynamic-ident safe)", () => {
@@ -668,13 +668,13 @@ describe("TW4 relational hooks & View Transitions", () => {
 
 describe("Scalar unit overloads", () => {
   it("textSize / leading / tracking / underlineOffset accept (unit, amount)", () => {
-    assert.strictEqual(render(Div().textSize("px", 13)), `<div class="text-[13px]"></div>`);
+    assert.strictEqual(render(Div().text("px", 13)), `<div class="text-[13px]"></div>`);
     assert.strictEqual(render(Div().leading("px", 24)), `<div class="leading-[24px]"></div>`);
     assert.strictEqual(render(Div().tracking("em", 0.05)), `<div class="tracking-[0.05em]"></div>`);
     assert.strictEqual(render(Div().underlineOffset("px", 2)), `<div class="underline-offset-[2px]"></div>`);
   });
 
   it("the value overload is unchanged (byte-identical)", () => {
-    assert.strictEqual(render(Div().textSize("lg").leading("relaxed")), `<div class="text-lg leading-relaxed"></div>`);
+    assert.strictEqual(render(Div().text("lg").leading("relaxed")), `<div class="text-lg leading-relaxed"></div>`);
   });
 });

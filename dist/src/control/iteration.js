@@ -94,7 +94,7 @@ export function ForEachKeyed(items, keyOf, renderItem) {
  * @param separator - A View, or a thunk returning one, emitted between items
  *
  * @example
- * Nav(Intersperse(crumbs, (c) => A(c.label).setHtmx(c.route), () => Span("/").textColor("gray-400")))
+ * Nav(Intersperse(crumbs, (c) => A(c.label).setHtmx(c.route), () => Span("/").text("gray-400")))
  */
 export function Intersperse(items, renderItem, separator) {
     const result = [];
