@@ -17,16 +17,16 @@
 
 ### As a maintainer I want CI-blocking lint on raw class strings so that leaks are loud errors carrying their own fix
 
-- [ ] [P1] `no-tailwind-in-raw-class` (prefix-anchored via derived vocab tables; autofix from generated fix table; supersedes `no-known-modifiers-in-setclass`)
-- [ ] [P1] `no-dynamic-class-argument` (addClass/setClass/cssClass non-literal args)
-- [ ] [P1] `no-tailwind-in-cssclass` (inverse guard)
-- [ ] [P1] Promote the rule set to `error` in the recommended config
-- [ ] [P1] Write tests — rule fixtures incl. category-C false-positive guards (`sidebar-backdrop`, `entry-row`) and message-text assertions
-- [ ] [P1] Check for bugs
+- [x] [P1] `no-tailwind-in-raw-class` (plugin 3.0.0; prefix-anchored: derived tables + generated `TAILWIND_ROOTS` (1073 roots from the lib's pinned design system, new gen artifact); bracket-aware variant split; whole-call autofix to fluent chains incl. `.on()`/`.at()` folding for nested variants; supersedes `no-known-modifiers-in-setclass` — old rule deprecated via `replacedBy`, kept registered)
+- [x] [P1] `no-dynamic-class-argument` (addClass/setClass/cssClass non-literal args; interpolation-free template literals allowed; `setClasses` deliberately excluded — it is the sanctioned conditional-array form)
+- [x] [P1] `no-tailwind-in-cssclass` (inverse guard, autofixes mis-filed utilities back to the typed surface)
+- [x] [P1] Promote the rule set to `error` in the recommended config (shared analyzer `src/tailwind-token.ts`)
+- [x] [P1] Write tests — 35 new fixtures incl. category-C guards (`sidebar-backdrop`, `entry-row`, `hamburger-line`, bare `container`/`card`) and exact message-text assertions for the two design messages; 318 cases + derivation + drift green
+- [x] [P1] Check for bugs (design's flagship autofix verified byte-exact: `"grid-cols-1 sm:grid-cols-2"` → `.gridCols("1").at("sm", t => t.gridCols("2"))`)
 
 ### As a maintainer I want the docs to stop teaching the leak so that model authors never learn `setClass` styling
 
-- [ ] [P1] Purge `setClass`/`addClass` styling examples from README + examples/ + FLUENT-STYLING.md; document `.cssProp`/`.cssClass`/`.setStyle` decision rule (static arbitrary / non-Tailwind / dynamic)
-- [ ] [P1] Update guidelines surface (`guidelines/web-development/fluent-html.md` + CLAUDE.md) — replace escape-hatch string teaching (`.textSize("[13px]")`, `.opacity("[0.33]")`) with the `.cssProp`/`.cssClass`/`.setStyle` decision rule; purge any `setClass`/`addClass` styling mentions
-- [ ] [P2] ~Autofix pass over fluent-html-demos' 6 leak sites (dogfood of the new rules)
-- [ ] [P1] Check for bugs
+- [x] [P1] Purge `setClass`/`addClass` styling examples from README + examples/ + FLUENT-STYLING.md; decision-rule table added to FLUENT-STYLING § Escape hatches (bracket arm / cssProp / cssClass / setStyle); README lint table updated to the 3.0.0 rule set; only surviving raw-string mention is the 🚨 negative example inside the lint section
+- [x] [P1] Update guidelines surface (`guidelines/web-development/fluent-html.md` + both CLAUDE.md copies — fluent-html/CLAUDE.md and guidelines/web-development/CLAUDE.md) — escape-hatch string lines replaced with the 4-arm decision rule; universal-methods block now teaches `.cssClass`/`.cssProp` instead of `setClass`/`addClass`
+- [ ] [P2] ~Autofix pass over fluent-html-demos' 6 leak sites — DEFERRED: demos pins fluent-html 5.11.0 (pre-v6 github hash); per PRD, app migration happens when the repo bumps, and `.cssClass()` needs ≥6.8.0
+- [x] [P1] Check for bugs (final sweep grep over README/FLUENT-STYLING/examples: no surviving styling-through-strings teaching)

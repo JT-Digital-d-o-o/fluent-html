@@ -85,8 +85,8 @@ Button("Save")
   .on("disabled", t => t.opacity("50").cursor("not-allowed"))
   .at("md", t => t.padding("x", "8").textSize("lg"))
 
-// Or use traditional classes
-Div("Content").setClass("p-4 bg-white rounded-lg shadow")
+// Escape hatches, in order: arbitrary CSS → .cssProp(); non-Tailwind class hooks → .cssClass()
+Div("Content").cssProp("mask-repeat", "no-repeat").cssClass("js-map-container")
 ```
 
 ### HTMX 4 with Full Type Safety
@@ -139,9 +139,9 @@ Use `.when()` to conditionally modify a tag without breaking the chain:
 
 ```typescript
 Button("Save")
-  .setClass("btn")
-  .when(isLoading, t => t.toggle("disabled").addClass("opacity-50"))
-  .when(isPrimary, t => t.addClass("btn-primary"))
+  .padding("x", "4").rounded()
+  .when(isLoading, t => t.toggle("disabled").opacity("50"))
+  .when(isPrimary, t => t.background("blue-600").textColor("white"))
 ```
 
 `.whenElse()` adds a second modifier for the other branch (the chain-level mirror of `IfThenElse`):
@@ -974,10 +974,8 @@ Fluent HTML provides a **fluent, chainable API** for Tailwind CSS classes, makin
 ```typescript
 import { Div, Button } from 'fluent-html';
 
-// Instead of:
-Div("Content").setClass("p-4 bg-red-500 mx-8 text-white rounded-lg shadow-md")
-
-// Write this:
+// Instead of raw Tailwind strings (lint-blocked — they bypass the type system
+// and the safelist extractor), write:
 Div("Content")
   .padding("4")
   .background("red-500")
@@ -987,7 +985,6 @@ Div("Content")
   .shadow("md")
 ```
 
-Both approaches produce identical HTML, but the fluent API offers better readability and IDE support.
 
 ### Type-Safe Autocomplete
 
@@ -1001,7 +998,7 @@ Div()
   .tracking("wide")       // IDE suggests: "tighter", "tight", "normal", "wide", etc.
 ```
 
-The type system enforces valid Tailwind values — wrong values don't compile. For arbitrary values, use `addClass()`.
+The type system enforces valid Tailwind values — wrong values don't compile. For arbitrary values, use the bracket arms (`.textSize("[13px]")`) or the `(unit, amount)` overloads (`.w("px", 180)`); for CSS properties Tailwind has no utility for, use `.cssProp()`.
 
 ### Spacing Methods
 
@@ -1228,10 +1225,11 @@ You can freely mix fluent methods with traditional class names:
 
 ```typescript
 Div()
-  .padding("4")                  // Fluent API
-  .background("red-500")         // Fluent API
-  .addClass("hover:bg-red-600")  // Traditional Tailwind
-  .setClass("custom-class");     // Replace all classes
+  .padding("4")                        // Typed utility
+  .background("red-500")               // Typed utility
+  .on("hover", t => t.background("red-600"))  // Variants via .on()/.at()
+  .cssProp("mask-repeat", "no-repeat") // Arbitrary CSS → [mask-repeat:no-repeat]
+  .cssClass("js-hook");                // Non-Tailwind class marker
 ```
 
 ### Type Safety
@@ -1393,7 +1391,7 @@ function UserCard(user: { name: string; bio: string }): View {
   return Div(
     H2(user.name),      // ← Escaped automatically
     P(user.bio),        // ← Escaped automatically
-  ).setClass("user-card");
+  ).cssClass("user-card");
 }
 
 // Even malicious data is safely rendered
@@ -1460,8 +1458,8 @@ All elements support fluent method chaining:
 ```typescript
 const card = Div("Content")
   .setId("my-card")
-  .setClass("card shadow-lg")
-  .addClass("hover:shadow-xl")
+  .rounded("lg").shadow("lg")
+  .on("hover", t => t.shadow("xl"))
   .setStyle("max-width: 400px")
   .addAttribute("data-testid", "card-component")
   .setHtmx(hx("/api/card", { trigger: "click" }));
@@ -1606,7 +1604,7 @@ Table(
       Td("$3,000").setColspan(3),
     )
   ),
-).setClass("w-full border-collapse")
+).w("full").cssProp("border-collapse", "collapse")
 ```
 
 #### Accessible tables — `scope` vs `headers`
@@ -1760,10 +1758,10 @@ import { IfThen, IfThenElse } from 'fluent-html';
 function UserBadge(user: { isAdmin: boolean; isPremium: boolean }): View {
   return Div(
     IfThen(user.isAdmin, () =>
-      Span("Admin").setClass("badge badge-red")
+      Span("Admin").cssClass("badge badge-red")
     ),
     IfThen(user.isPremium, () =>
-      Span("Premium").setClass("badge badge-gold")
+      Span("Premium").cssClass("badge badge-gold")
     ),
   );
 }
@@ -1795,7 +1793,7 @@ function LoginStatus(user: User | null): View {
 function Card(props: { title: string; image?: string }): View {
   return Div(
     IfThen(props.image, (src) =>
-      Img().setSrc(src).setAlt(props.title).setClass("card-img")
+      Img().setSrc(src).setAlt(props.title).cssClass("card-img")
     ),
     H3(props.title),
   );
@@ -1898,7 +1896,7 @@ import fluentHtml from 'eslint-plugin-fluent-html';
 
 export default [{
   plugins: { "fluent-html": fluentHtml },
-  rules: fluentHtml.configs.recommended.rules // all 16 rules
+  rules: fluentHtml.configs.recommended.rules
 }];
 ```
 
@@ -1916,15 +1914,17 @@ Div().background("green-700").padding("4").background("red-500").flex()
 
 It also catches `.setClass()` inside `.when()` / `.apply()` callbacks and multiple `.setClass()` calls in the same chain — both of which silently discard styles.
 
-### All 16 Rules
+### Key Rules
 
 | Rule | Severity | Fix | What it catches |
 |------|----------|-----|-----------------|
+| `no-tailwind-in-raw-class` | error | ✅ | Tailwind utilities in raw class strings — autofixes to the fluent chain (incl. `.on()`/`.at()` for variant tokens) |
+| `no-dynamic-class-argument` | error | — | Non-literal `.addClass()`/`.setClass()`/`.cssClass()` args — invisible to the safelist extractor |
+| `no-tailwind-in-cssclass` | error | ✅ | Tailwind utilities mis-filed in the `.cssClass()` non-Tailwind marker |
 | `no-setclass-after-fluent-modifier` | error | — | `.setClass()` after fluent methods overwrites styles |
 | `no-multiple-setclass-in-chain` | error | — | Multiple `.setClass()` calls — earlier ones are lost |
 | `no-setclass-in-when-apply-callback` | error | — | `.setClass()` in callbacks overwrites outer styles |
 | `no-innerhtml-swap` | error | ✅ | `innerHTML` swap loses target element id |
-| `no-known-modifiers-in-setclass` | warn | ✅ | Tailwind classes that should be fluent methods |
 | `no-conflicting-classes-in-setclass` | warn | — | Mutually exclusive Tailwind classes |
 | `no-duplicate-classes-in-setclass` | warn | — | Duplicate class names |
 | `no-empty-setclass` | warn | — | Empty `.setClass("")` calls |

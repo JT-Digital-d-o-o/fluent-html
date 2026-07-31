@@ -146,7 +146,11 @@ Div().w("rem", 12)          // → w-[12rem]
 // Methods: w, h, minW, maxW, minH, maxH, padding, margin, gap, top, right, bottom, left, inset
 ```
 
-Escape-hatch strings: `.textSize("[13px]")`, `.opacity("[0.33]")`, `.zIndex("[999]")`
+**Escape hatches (6.8+) — one per situation, never `setClass`/`addClass` styling** (lint-blocked at error level):
+- Arbitrary value of a covered utility → bracket arm or unit overload: `.textSize("[13px]")`, `.opacity("[0.33]")`, `.w("px", 180)`
+- CSS property with no Tailwind utility → `.cssProp("mask-repeat", "no-repeat")` → `[mask-repeat:no-repeat]` (literal args only — non-literals fail the safelist build)
+- Legit non-Tailwind class (JS hook, third-party) → `.cssClass("js-map-container")`
+- Runtime-computed style value → `.setStyle(...)` (extractor-opaque, dynamic-safe)
 
 **Conditional modifiers & composition:**
 ```typescript

@@ -345,10 +345,21 @@ Div().apply(card)                             // ✓ presets are user-land, NOT 
 - Wire the CSS + safelist once: run `generateFluentSafelist(globFiles(["./src/**/*.ts"]), { theme })` in a prebuild step, write it to `fluent-safelist.css`, and `@import` that file next to `@import "tailwindcss"`. (A real file — Tailwind only resolves `@import`s from disk.)
 - The themeable unions are **closed** (no `(string & {})`): a custom-token typo is a compile error, not an unstyled element.
 
+## Escape hatches — the decision rule
+
+Raw class strings (`setClass`/`addClass` with Tailwind) are lint-blocked: they bypass the type system, conflict detection, and the safelist extractor. When the typed vocabulary genuinely doesn't cover a need, there is exactly one sanctioned hatch per situation:
+
+| Situation | Hatch | Emits |
+|---|---|---|
+| Arbitrary value of a covered utility | bracket arm / unit overload: `.textSize("[13px]")`, `.w("px", 180)`, `.padding("[37px]")` | `text-[13px]`, `w-[180px]` |
+| CSS property with no Tailwind utility | `.cssProp("mask-repeat", "no-repeat")` | `[mask-repeat:no-repeat]` |
+| Legit non-Tailwind class (JS/CSS hook, third-party) | `.cssClass("js-map-container")` | verbatim |
+| Runtime-computed style value | `.setStyle("--progress: " + pct + "%")` | inline style (extractor-opaque, dynamic-safe) |
+
+`.cssProp` stays build-tracked: literal calls are safelisted, a non-literal value fails the safelist build (`onUnresolved: "error"`). `addClass` is `@internal` — the emitter primitive the fluent methods call, not a styling API.
+
 ## Notes
 
-- All methods append via `addClass()` — order doesn't affect specificity
-- `setClass()` replaces all classes; fluent methods add to them
 - All values are **strictly typed** — wrong values don't compile
-- For arbitrary Tailwind values (e.g., `p-[37px]`), use `addClass()` as the escape hatch
-- Named types exported for consumer use: `TailwindPosition`, `TailwindTextAlign`, `TailwindFlexDirection`, `TailwindJustifyContent`, `TailwindAlignItems`
+- Fluent methods append and never overwrite each other — order doesn't affect specificity
+- Named types exported for consumer use: `TailwindPosition`, `TailwindTextAlign`, `TailwindFlexDirection`, `TailwindJustifyContent`, `TailwindAlignItems`, `CssPropertyName`

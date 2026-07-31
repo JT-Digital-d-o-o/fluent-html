@@ -16,6 +16,10 @@ First stage of `llm-styling/escape-hatch` — the last vocab gaps are filled so 
 - **`.cssProp(property, value)`** — the typed arbitrary-CSS escape: emits Tailwind's `[prop:value]` arbitrary-property class (spaces → `_`), composes with `.on()`/`.at()` variants, and — being a vocab row — inherits extractor tracking: literal calls are safelisted, a **non-literal value is a build error** under `onUnresolved: "error"` (closes the silent-style-loss hole). `property` is the generated `CssPropertyName` union (435 kebab-case names from `CSSStyleDeclaration` + the `` `--${string}` `` custom-property arm; new gen artifact `src/core/css-props.gen.ts`).
 - **`.cssClass(name)`** — the greppable intent marker for legitimately non-Tailwind classes (JS/CSS hooks, third-party widgets); appends verbatim. `addClass` is now documented `@internal` — the emitter primitive, not a styling API. Decision rule: static arbitrary CSS → `.cssProp`; non-Tailwind class → `.cssClass`; runtime-computed → `.setStyle`.
 
+### 📝 Docs
+
+- README/FLUENT-STYLING/examples no longer teach `setClass`/`addClass` styling; FLUENT-STYLING gained the escape-hatch decision-rule table. Pairs with eslint-plugin-fluent-html 3.0.0, whose recommended preset now blocks Tailwind-in-raw-strings at error level (`no-tailwind-in-raw-class` + `no-dynamic-class-argument` + `no-tailwind-in-cssclass`).
+
 ### 💥 Breaking (type-level)
 
 - **`TailwindFontFamily` is CLOSED** — `"sans" | "serif" | "mono"`, declared `fonts` tokens, or `[…]`; the `(string & {})` open tail is gone, so an undeclared family is now a compile error (declare it in `defineTheme` `fonts`).

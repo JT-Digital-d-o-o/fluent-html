@@ -17,7 +17,7 @@ const avatarUrl: string | null = null;
 
 const header = Div(
   // Boolean condition
-  IfThen(isAdmin, () => Span("Admin").setClass("badge")),
+  IfThen(isAdmin, () => Span("Admin").cssClass("badge")),
 
   // Nullable value narrowing — `name` is narrowed to `string`
   IfThenElse(
