@@ -22,6 +22,7 @@ export type {
   FluentCustomShadow,
   FluentCustomFontFamily,
 } from './core/index.js';
+export type { CssPropertyName } from './core/index.js';
 
 // HTML attribute types
 export type {

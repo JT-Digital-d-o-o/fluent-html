@@ -38,6 +38,9 @@ export type {
   ThemeKeys,
 } from "./tailwind-types.js";
 
+// `.cssProp()` property-name union (llm-styling/escape-hatch, generated)
+export type { CssPropertyName } from "./css-props.gen.js";
+
 // Tailwind types (re-export for consumers who need them)
 export type {
   TailwindSpacing,

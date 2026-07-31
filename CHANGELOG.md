@@ -13,6 +13,8 @@ First stage of `llm-styling/escape-hatch` — the last vocab gaps are filled so 
 - **`.content(value?)`** — pseudo-element content: `.content()` bare emits `content-['']` (the empty string every `before:`/`after:` decoration needs), `.content("none")`, or an arbitrary `[…]` value. Unblocks `before:`/`after:` styling.
 - **Arbitrary selector variants on `.on()`** — the `` `[&${string}]` `` arm: `.on("[&>li]", t => t.padding("2"))` → `[&>li]:p-2` (verbatim pass-through, same contract as `supports-[…]`).
 - **Font-family theme tokens** — `defineTheme({ fonts: { display: "Inter, sans-serif" } })` emits `--font-*` `@theme` CSS + safelist entries (extractor ≥2.1.0), typed via the new `FluentCustomFontFamily` augmentation seam.
+- **`.cssProp(property, value)`** — the typed arbitrary-CSS escape: emits Tailwind's `[prop:value]` arbitrary-property class (spaces → `_`), composes with `.on()`/`.at()` variants, and — being a vocab row — inherits extractor tracking: literal calls are safelisted, a **non-literal value is a build error** under `onUnresolved: "error"` (closes the silent-style-loss hole). `property` is the generated `CssPropertyName` union (435 kebab-case names from `CSSStyleDeclaration` + the `` `--${string}` `` custom-property arm; new gen artifact `src/core/css-props.gen.ts`).
+- **`.cssClass(name)`** — the greppable intent marker for legitimately non-Tailwind classes (JS/CSS hooks, third-party widgets); appends verbatim. `addClass` is now documented `@internal` — the emitter primitive, not a styling API. Decision rule: static arbitrary CSS → `.cssProp`; non-Tailwind class → `.cssClass`; runtime-computed → `.setStyle`.
 
 ### 💥 Breaking (type-level)
 

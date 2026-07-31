@@ -66,6 +66,10 @@ describe("emitClasses — per-shape exact output", () => {
         ["custom content bare (empty string)", "content", [], ["content-['']"]],
         ["custom content none", "content", ["none"], ["content-none"]],
         ["custom content arbitrary", "content", ["[attr(data-label)]"], ["content-[attr(data-label)]"]],
+        // typed escapes
+        ["custom cssProp simple", "cssProp", ["mask-repeat", "no-repeat"], ["[mask-repeat:no-repeat]"]],
+        ["custom cssProp spaces → underscores", "cssProp", ["border", "1px solid red"], ["[border:1px_solid_red]"]],
+        ["custom cssProp custom property", "cssProp", ["--brand-glow", "0 0 4px red"], ["[--brand-glow:0_0_4px_red]"]],
     ];
     const byMethod = new Map(classVocab.map((d) => [d.method, d]));
     for (const [label, method, args, expected] of cases) {

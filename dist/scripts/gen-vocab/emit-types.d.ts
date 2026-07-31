@@ -5,9 +5,10 @@ export declare function generatedPath(): string;
 /**
  * Canonical union rendering: single-line when it fits, otherwise wrapped at
  * {@link MAX_WIDTH} with `  | ` continuation lines and the `;` on the last
- * member line. `arbitrary` appends the `` `[${string}]` `` escape-hatch arm.
+ * member line. `arbitrary` appends the `` `[${string}]` `` escape-hatch arm;
+ * `extraArms` appends further non-literal arms verbatim (e.g. `` `--${string}` ``).
  */
-export declare function renderUnion(typeName: string, members: readonly string[], arbitrary: boolean): string;
+export declare function renderUnion(typeName: string, members: readonly string[], arbitrary: boolean, extraArms?: readonly string[]): string;
 /** Every vocab-driven union in the template: type name → source method (+arb flag). */
 export declare function templateUnions(): readonly {
     readonly typeName: string;

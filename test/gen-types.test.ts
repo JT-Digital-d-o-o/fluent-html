@@ -15,6 +15,7 @@ import { readFileSync } from "node:fs";
 
 import { classVocab } from "../src/class-vocab/index.js";
 import { generatedPath, renderTailwindTypesGen, templateUnions, literalsOf } from "../scripts/gen-vocab/emit-types.js";
+import { cssPropsGeneratedPath, renderCssPropsGen, cssPropertyNames } from "../scripts/gen-vocab/emit-css-props.js";
 
 /** follower method → union-source method it must stay identical to. */
 const SHARED_UNION_FOLLOWERS: ReadonlyMap<string, string> = new Map([
@@ -26,6 +27,23 @@ const SHARED_UNION_FOLLOWERS: ReadonlyMap<string, string> = new Map([
 describe("generated tailwind types", () => {
   it("committed tailwind-types.gen.ts matches a fresh render (run `npm run gen:vocab`)", () => {
     assert.equal(readFileSync(generatedPath(), "utf8"), renderTailwindTypesGen());
+  });
+
+  it("committed css-props.gen.ts matches a fresh render (run `npm run gen:vocab`)", () => {
+    assert.equal(readFileSync(cssPropsGeneratedPath(), "utf8"), renderCssPropsGen());
+  });
+
+  it("css property names are kebab-case, deduped, and plausibly complete", () => {
+    const names = cssPropertyNames();
+    assert.ok(names.length >= 300, `expected ≥300 CSS properties, got ${names.length}`);
+    assert.equal(new Set(names).size, names.length, "duplicate property names");
+    for (const n of names) {
+      assert.match(n, /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/, `"${n}" is not kebab-case`);
+    }
+    for (const expected of ["background-color", "mask-repeat", "float", "grid-template-columns"]) {
+      assert.ok(names.includes(expected), `missing "${expected}"`);
+    }
+    assert.ok(!names.includes("css-text") && !names.includes("css-float"), "serialization accessors leaked");
   });
 
   it("every template union resolves to a literals vocab row", () => {

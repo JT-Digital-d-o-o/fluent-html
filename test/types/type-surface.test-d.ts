@@ -278,6 +278,14 @@ Div().fontFamily("mono");
 Div().fontFamily("[Inter,sans-serif]");
 // @ts-expect-error — undeclared family; declare it via defineTheme `fonts`
 Div().fontFamily("comic-sans");
+// Typed escapes: cssProp property union is generated + closed (custom-property arm open)
+Div().cssProp("mask-repeat", "no-repeat");
+Div().cssProp("--brand-glow", "0 0 4px red");
+Div().cssClass("js-map-container");
+// @ts-expect-error — "mask-repeet" is not a CSS property name
+Div().cssProp("mask-repeet", "no-repeat");
+// @ts-expect-error — camelCase is rejected; the union is kebab-case
+Div().cssProp("maskRepeat", "no-repeat");
 
 // ── Form-control completeness (RFC-B-05) ───────────────────────────────────
 // FormEnctype is the one CLOSED union here — negatives are real compile errors.

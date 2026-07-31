@@ -227,6 +227,11 @@ export const classVocab = [
     space("overscroll", "overscroll", "-", false, false, { values: lit("auto", "contain", "none"), doc: "Overscroll behavior — both axes or one." }),
     // Negative value prefix
     val("neg", "-", { doc: "Prefix an arbitrary utility with `-` (negative value passthrough)." }),
+    // Typed escape (llm-styling/escape-hatch): arbitrary CSS property → Tailwind's
+    // `[prop:value]` arbitrary-property form (spaces → `_`). A vocab row so the
+    // extractor scans it — literal args are safelisted, non-literal args are
+    // tracked as unresolved (build error under `onUnresolved: "error"`).
+    custom("cssProp", (a) => (a.length === 2 ? [`[${a[0]}:${a[1].replace(/\s+/g, "_")}]`] : []), [["mask-repeat", "no-repeat"], ["border", "1px solid red"], ["--brand-glow", "0 0 4px red"]], { doc: "Arbitrary-CSS escape — emits `[prop:value]` (spaces become `_`); variant-composable." }),
     // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
     stat("htmxIndicator", "htmx-indicator", { doc: "htmx loading-indicator marker class." }),
     pre("fillColor", "fill", { values: theme("--color"), doc: "SVG fill color." }),

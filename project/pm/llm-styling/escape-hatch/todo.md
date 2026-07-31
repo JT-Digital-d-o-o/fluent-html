@@ -10,10 +10,10 @@
 
 ### As a developer I want typed escapes for arbitrary CSS and non-Tailwind classes so that reaching outside the vocabulary is visible and build-tracked
 
-- [ ] [P1] `.cssProp(property, value)` → `[prop:value]` as vocab `custom` row (inherits extractor unresolved tracking); generated `CssPropertyName` union
-- [ ] [P1] `.cssClass(name)` intent marker; mark `addClass` `@internal` in docs surface
-- [ ] [P1] Write tests — emission, variant composition under `.on()`, extractor `onUnresolved` build error on non-literal `.cssProp` arg
-- [ ] [P1] Check for bugs
+- [x] [P1] `.cssProp(property, value)` → `[prop:value]` as vocab `custom` row (inherits extractor unresolved tracking with ZERO extractor code changes); generated `CssPropertyName` union — new emitter `scripts/gen-vocab/emit-css-props.ts` parses `CSSStyleDeclaration` from the installed TS `lib.dom.d.ts` (435 kebab names + `--${string}` arm; lib compiles without DOM so type-level derivation was out), `gen-vocab.ts` now multi-artifact `--check`
+- [x] [P1] `.cssClass(name)` intent marker (verbatim append, deliberately NOT a vocab row); `addClass` JSDoc'd `@internal` with the decision rule (cssProp / cssClass / setStyle)
+- [x] [P1] Write tests — emission + spaces→`_` (`class-vocab.test.ts`, oracle-validated samples incl. custom property), variant composition (`fluent-styling-v2.ts` hover/at), `CssPropertyName` typo + camelCase rejection (`type-surface.test-d.ts`), gen pin + kebab/dedup invariants (`gen-types.test.ts`); extractor: literal extraction, variant prefix, unresolved scan + `onUnresolved:"error"` throw (`extract.test.ts`, `safelist.test.ts`) — lib 1942 green, extractor 51 green
+- [x] [P1] Check for bugs (verified sanitizer passes `[border:1px_solid_red]` / `hover:[scale:1.02]` through to emitted safelist CSS end-to-end)
 
 ### As a maintainer I want CI-blocking lint on raw class strings so that leaks are loud errors carrying their own fix
 

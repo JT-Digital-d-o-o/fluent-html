@@ -62,11 +62,13 @@ export declare class Tag {
     /**
      * Append classes to the element's existing `class` attribute.
      *
+     * @internal The raw emitter primitive every fluent styling method calls — not
+     * a styling API. Author styles through the typed methods; for arbitrary CSS
+     * use `.cssProp()`, for non-Tailwind classes (JS/CSS hooks, third-party)
+     * use `.cssClass()`, for runtime-computed styles use `.setStyle()`.
+     *
      * @param c - Space-separated class names to add
      * @returns `this` for chaining
-     *
-     * @example
-     * Div("Content").setClass("p-4").addClass("bg-white rounded")
      */
     addClass(c: string): this;
     /**

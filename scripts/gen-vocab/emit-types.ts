@@ -48,11 +48,13 @@ export function generatedPath(): string {
 /**
  * Canonical union rendering: single-line when it fits, otherwise wrapped at
  * {@link MAX_WIDTH} with `  | ` continuation lines and the `;` on the last
- * member line. `arbitrary` appends the `` `[${string}]` `` escape-hatch arm.
+ * member line. `arbitrary` appends the `` `[${string}]` `` escape-hatch arm;
+ * `extraArms` appends further non-literal arms verbatim (e.g. `` `--${string}` ``).
  */
-export function renderUnion(typeName: string, members: readonly string[], arbitrary: boolean): string {
+export function renderUnion(typeName: string, members: readonly string[], arbitrary: boolean, extraArms: readonly string[] = []): string {
   const arms = members.map((m) => JSON.stringify(m));
   if (arbitrary) arms.push("`[${string}]`");
+  arms.push(...extraArms);
   const oneLine = `export type ${typeName} = ${arms.join(" | ")};`;
   if (oneLine.length <= MAX_WIDTH) return oneLine;
   const lines: string[] = [`export type ${typeName} =`];

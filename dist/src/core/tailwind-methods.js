@@ -364,6 +364,11 @@ p.overscroll = function (directionOrValue, value) {
 };
 // Negative value prefix
 p.neg = function (cls) { return this.addClass(`-${cls}`); };
+// Typed escapes (llm-styling/escape-hatch)
+p.cssProp = function (property, value) {
+    return this.addClass(`[${property}:${value.replace(/\s+/g, "_")}]`);
+};
+p.cssClass = function (name) { return this.addClass(name); };
 // CSS Anchor Positioning (B-010) — `anchorName`/`positionAnchor` accept `string | Id`
 // (the public type narrows to `Id`; the parity harness drives the runtime with raw
 // strings). `extractId` is the same `isId(x) ? x.id : x` bridge `setId` uses (tag.ts).

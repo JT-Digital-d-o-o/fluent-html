@@ -162,6 +162,16 @@ describe("v4 variants (C-06): widened states + container queries", () => {
         assert.strictEqual(render(Div().on("[&>li]", t => t.padding("2"))), '<div class="[&amp;&gt;li]:p-2"></div>');
         assert.strictEqual(render(Div().on("[&_svg]", t => t.w("4").h("4"))), '<div class="[&amp;_svg]:w-4 [&amp;_svg]:h-4"></div>');
     });
+    it(".cssProp() emits the arbitrary-property class and composes with variants", () => {
+        assert.strictEqual(render(Div().cssProp("mask-repeat", "no-repeat")), '<div class="[mask-repeat:no-repeat]"></div>');
+        assert.strictEqual(render(Div().cssProp("border", "1px solid red")), '<div class="[border:1px_solid_red]"></div>');
+        assert.strictEqual(render(Div().on("hover", t => t.cssProp("--glow", "0 0 4px"))), '<div class="hover:[--glow:0_0_4px]"></div>');
+        assert.strictEqual(render(Div().at("md", t => t.cssProp("scrollbar-width", "none"))), '<div class="md:[scrollbar-width:none]"></div>');
+    });
+    it(".cssClass() appends verbatim (non-Tailwind intent marker)", () => {
+        assert.strictEqual(render(Div().cssClass("js-map-container")), '<div class="js-map-container"></div>');
+        assert.strictEqual(render(Div().padding("4").cssClass("shepherd-target")), '<div class="p-4 shepherd-target"></div>');
+    });
     it(".on(before) + bare .content() renders the empty-string content class", () => {
         // escapeAttr entity-encodes the quotes; the browser decodes the DOM class
         // back to before:content-[''].

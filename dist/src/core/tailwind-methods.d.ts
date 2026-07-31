@@ -1,4 +1,5 @@
 import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindTranslate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll, TailwindPositionArea, TailwindStrokeWidth, TailwindDecorationStyle, TailwindDecorationThickness, TailwindColorScheme, TailwindTextWrap, TailwindHyphens, TailwindTextShadow, TailwindDropShadow, TailwindInsetShadow, TailwindMixBlendMode, TailwindBgBlendMode, TailwindIsolation, TailwindDelay, TailwindTransitionBehavior, TailwindGradientPosition, TailwindGradientAngle, TailwindGradientOrigin, TailwindGradientInterpolation, TailwindPerspective, TailwindPerspectiveOrigin, TailwindTranslateZ, TailwindTransformStyle, TailwindBackfaceVisibility, TailwindGridLine, TailwindRowSpan, TailwindColumns, TailwindBreakBeforeAfter, TailwindBreakInside, TailwindBoxDecoration, TailwindSnapAxis, TailwindSnapStrictness, TailwindSnapAlign, TailwindSnapStop, TailwindScrollBehavior, TailwindFieldSizing, TailwindMaskEdge, TailwindMaskStop, TailwindMaskComposite, TailwindMaskType, TailwindAppearance, TailwindWrap, TailwindContent } from "./tailwind-types.js";
+import type { CssPropertyName } from "./css-props.gen.js";
 import type { Id } from "../ids.js";
 declare module "./tag.js" {
     interface Tag {
@@ -181,6 +182,29 @@ declare module "./tag.js" {
          * Div().neg("mt-2")       // -mt-2
          */
         neg(cls: string): this;
+        /**
+         * Arbitrary-CSS escape hatch — emits Tailwind's arbitrary-property class
+         * `[prop:value]` (spaces become `_`), so the style composes with variants
+         * (`.on()`/`.at()`) and stays visible to the safelist extractor: a literal
+         * call is safelisted, a non-literal argument is a build error. Decision
+         * rule: static arbitrary CSS → `cssProp`; runtime-computed → `.setStyle()`;
+         * non-Tailwind class hooks → `.cssClass()`.
+         * @example
+         * Div().cssProp("mask-repeat", "no-repeat")            // [mask-repeat:no-repeat]
+         * Div().cssProp("border", "1px solid red")             // [border:1px_solid_red]
+         * Div().on("hover", t => t.cssProp("--glow", "0 0 4px")) // hover:[--glow:0_0_4px]
+         */
+        cssProp(property: CssPropertyName, value: string): this;
+        /**
+         * Intent marker for a legitimately non-Tailwind class (JS/CSS hook,
+         * third-party widget class). Appends the name verbatim — greppable, and
+         * lint keeps Tailwind-shaped strings out of it. Tailwind styling belongs
+         * on the typed methods; arbitrary CSS on `.cssProp()`.
+         * @example
+         * Div().cssClass("js-map-container")
+         * Div().cssClass("shepherd-target")
+         */
+        cssClass(name: string): this;
         /** Register this element as an anchor: emits inline `anchor-name: --<name>`. */
         anchorName(name: string | Id): this;
         /** Position this element against a named anchor: emits inline `position-anchor: --<name>`. */

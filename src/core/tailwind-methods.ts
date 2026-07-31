@@ -125,6 +125,7 @@ import type {
   TailwindWrap,
   TailwindContent,
 } from "./tailwind-types.js";
+import type { CssPropertyName } from "./css-props.gen.js";
 import type { Id } from "../ids.js";
 import { extractId } from "../ids.js";
 
@@ -399,6 +400,31 @@ declare module "./tag.js" {
      * Div().neg("mt-2")       // -mt-2
      */
     neg(cls: string): this;
+
+    /**
+     * Arbitrary-CSS escape hatch — emits Tailwind's arbitrary-property class
+     * `[prop:value]` (spaces become `_`), so the style composes with variants
+     * (`.on()`/`.at()`) and stays visible to the safelist extractor: a literal
+     * call is safelisted, a non-literal argument is a build error. Decision
+     * rule: static arbitrary CSS → `cssProp`; runtime-computed → `.setStyle()`;
+     * non-Tailwind class hooks → `.cssClass()`.
+     * @example
+     * Div().cssProp("mask-repeat", "no-repeat")            // [mask-repeat:no-repeat]
+     * Div().cssProp("border", "1px solid red")             // [border:1px_solid_red]
+     * Div().on("hover", t => t.cssProp("--glow", "0 0 4px")) // hover:[--glow:0_0_4px]
+     */
+    cssProp(property: CssPropertyName, value: string): this;
+
+    /**
+     * Intent marker for a legitimately non-Tailwind class (JS/CSS hook,
+     * third-party widget class). Appends the name verbatim — greppable, and
+     * lint keeps Tailwind-shaped strings out of it. Tailwind styling belongs
+     * on the typed methods; arbitrary CSS on `.cssProp()`.
+     * @example
+     * Div().cssClass("js-map-container")
+     * Div().cssClass("shepherd-target")
+     */
+    cssClass(name: string): this;
 
     // CSS Anchor Positioning (B-010). `anchorName`/`positionAnchor` accept `string | Id`
     // (normalized via `extractId`). All three emitters write *inline style*, not a Tailwind
@@ -908,6 +934,13 @@ p.overscroll = function (directionOrValue: string, value?: string) {
 // Negative value prefix
 
 p.neg = function (cls: string) { return this.addClass(`-${cls}`); };
+
+// Typed escapes (llm-styling/escape-hatch)
+
+p.cssProp = function (property: string, value: string) {
+  return this.addClass(`[${property}:${value.replace(/\s+/g, "_")}]`);
+};
+p.cssClass = function (name: string) { return this.addClass(name); };
 
 // CSS Anchor Positioning (B-010) — `anchorName`/`positionAnchor` accept `string | Id`
 // (the public type narrows to `Id`; the parity harness drives the runtime with raw
