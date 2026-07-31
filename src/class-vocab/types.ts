@@ -109,12 +109,35 @@ export type EmitShape =
   /** Genuine straggler — explicit emit fn. Carries `samples` on the row for the round-trip test. */
   | { readonly kind: "custom"; readonly emit: (args: readonly string[]) => string[] };
 
+/**
+ * Where a row's accepted values come from — the source the type/table emitters
+ * (and the validity oracle) read.
+ *
+ *  - `theme`    — values are the keys of a Tailwind `@theme` namespace
+ *                 (`--color`, `--spacing`, …); the TS union stays hand-curated
+ *                 (seam arms, opacity forms) but the namespace linkage is
+ *                 recorded here for theme-key validation.
+ *  - `literals` — the closed keyword list IS the union; the types emitter
+ *                 renders it and the validity oracle compiles every member.
+ *  - `typeRef`  — transition state: the union in `tailwind-types` is curated
+ *                 beyond what a flat list can express (numeric arms,
+ *                 template-literal forms, embedded scales); `name` points at it.
+ */
+export type ValuesSpec =
+  | { readonly kind: "theme"; readonly ns: `--${string}` }
+  | { readonly kind: "literals"; readonly list: readonly string[] }
+  | { readonly kind: "typeRef"; readonly name: string };
+
 /** One utility method's vocabulary entry. */
 export type UtilityDef = {
   /** The fluent method name (`padding`, `background`, `on` is NOT here — variants aren't utilities). */
   readonly method: string;
   /** The single v4 emit shape. */
   readonly emit: EmitShape;
+  /** Accepted-value source for emitters + validity oracle (see {@link ValuesSpec}). */
+  readonly values?: ValuesSpec;
+  /** One-line doc for generated signatures/types. */
+  readonly doc?: string;
   /** Generated artifacts this row opts out of (e.g. handled by default-class extraction). */
   readonly skip?: readonly VocabTarget[];
   /**

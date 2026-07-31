@@ -2,6 +2,21 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [6.7.0] - Vocab generator: generated type unions + values/doc-enriched rows
+
+Emitter stage of `llm-styling/vocab-generator` — the keyword type unions are now *generated from the class-vocab*, so the vocab, the TS types, and (via the peer-dep consuming ESLint plugin) the lint tables cannot drift.
+
+### ✨ Added
+
+- **`UtilityDef.values` + `UtilityDef.doc`** — every vocab row now declares where its accepted values come from: `{ kind: "literals", list }` (closed keyword list), `{ kind: "theme", ns }` (`@theme` namespace linkage, e.g. `--color`), or `{ kind: "typeRef", name }` (curated union, transition state), plus a one-line doc.
+- **Types emitter (`npm run gen:vocab`)** — renders `src/core/tailwind-types.gen.ts` from the vocab `literals` lists + `scripts/gen-vocab/tailwind-types.template.txt` (curated unions kept verbatim). `--check` mode regenerates in memory and fails if the committed file is stale; CI runs it after every build. Introduction gate honored: the first generated output was member-for-member asserted against the previous hand-written `tailwind-types.ts`.
+- **`tailwind-types.seams.ts`** — the `FluentCustom*` augmentation interfaces + `ThemeKeys` moved to a hand-written seams file `defineTheme()` targets; regeneration can never touch them. `tailwind-types.ts` is now a barrel re-exporting seams + generated files, so the public surface is unchanged.
+- **Validity oracle over generated unions** — every `values.literals` member × its row's emit shape compiles through the pinned Tailwind design system (`vocab-validity.test.ts`), so a typed-but-dead union member can no longer ship. `gen-types.test.ts` pins regen self-consistency, template↔vocab integrity, and shared-union follower lists (`blur`/`backdropBlur`, `gridAutoRows`/`gridAutoCols`, `breakBefore`/`breakAfter`).
+
+## [6.6.0] - Vocab generator: pinned Tailwind validity oracle + coverage watch
+
+First stage of `llm-styling/vocab-generator` (validation only — no API change). Exact-pinned `tailwindcss@4.3.3` devDependency + hardened `__unstable__loadDesignSystem` loader (`scripts/gen-vocab/load-design-system.ts`); `vocab-validity.test.ts` compiles every vocab emission through `candidatesToCss` (caught the `gradientConic` sample emitting `bg-conic-undefined/longer`); `vocab-coverage.test.ts` diffs `design.utilities.keys()` against vocab coverage + an ignore-list-with-reasons (231 uncovered roots filed in the scope backlog).
+
 ## [6.5.0] - Tag.whenMatch + defineRoutes ergonomics (default method, typed query params)
 
 ### ✨ Added

@@ -250,6 +250,26 @@ describe("vocab validity oracle — every emission compiles in Tailwind", () => 
         const orphans = Object.keys(ORACLE_ARGS).filter((m) => !methods.has(m));
         assert.deepEqual(orphans, [], `ORACLE_ARGS entries without a vocab row: ${orphans.join(", ")}`);
     });
+    // Every `values.literals` member × the row's emit shape must compile — the
+    // generated type unions (tailwind-types.gen.ts) are rendered from these
+    // lists, so an invalid member would ship as a typed-but-dead value.
+    for (const def of classVocab) {
+        if (def.values?.kind !== "literals" || KNOWN_NON_TAILWIND.has(def.method))
+            continue;
+        const { list } = def.values;
+        it(`${def.method} literals all compile (${list.length} members)`, () => {
+            for (const member of list) {
+                const tuples = [[member]];
+                if (def.emit.kind === "spacing")
+                    tuples.push(["x", member], ["y", member]);
+                for (const args of tuples) {
+                    for (const cls of emitClasses(def.emit, args)) {
+                        assert.notEqual(design.candidatesToCss([cls])[0], null, `.${def.method}(${JSON.stringify(args)}) emitted "${cls}", which Tailwind does not compile — fix the values.literals list`);
+                    }
+                }
+            }
+        });
+    }
     for (const def of classVocab) {
         if (KNOWN_NON_TAILWIND.has(def.method))
             continue;

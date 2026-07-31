@@ -29,5 +29,8 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Generated vocab artifacts are current
+        run: npm run gen:vocab -- --check
+
       - name: Test with coverage
         run: npm run test:coverage
