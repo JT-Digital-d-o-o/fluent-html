@@ -129,6 +129,31 @@ export type ValuesSpec = LeafValuesSpec | {
     readonly kind: "group";
     readonly groups: Readonly<Record<string, LeafValuesSpec>>;
 };
+/**
+ * One key of a row's variant-object form (llm-styling/object-variants). A row
+ * without an explicit spec derives mechanically from its emit shape (see
+ * `variant-keys.ts`); rows whose object form is non-mechanical — multi-arg
+ * customs (tuple values), positional-arg flattening (`translate` → `translateX`),
+ * or a value type the `values` spec can't express — declare it here.
+ */
+export type VariantKeyDef = {
+    /** Object key (defaults to the row's method name). */
+    readonly key?: string;
+    /** Fixed leading args prepended before the value's own args (`translateY` → `["y"]`). */
+    readonly pre?: readonly string[];
+    /**
+     * TS type expression for the value side, rendered verbatim into the generated
+     * `StyleProps` interface (emitter-only — unused at runtime). When absent the
+     * types emitter derives it from the `values` spec.
+     */
+    readonly type?: string;
+};
+/** A row's variant-object spec: excluded entirely, or one or more explicit keys. */
+export type VariantObjectSpec = {
+    readonly skip: true;
+} | {
+    readonly keys: readonly VariantKeyDef[];
+};
 /** One utility method's vocabulary entry. */
 export type UtilityDef = {
     /** The fluent method name (`padding`, `background`, `on` is NOT here — variants aren't utilities). */
@@ -147,6 +172,8 @@ export type UtilityDef = {
      * derived from the shape when absent).
      */
     readonly samples?: readonly (readonly string[])[];
+    /** Variant-object form override (see {@link VariantObjectSpec}); mechanical when absent. */
+    readonly variantObject?: VariantObjectSpec;
 };
 /** Identity passthrough that pins a row to {@link UtilityDef} at the definition site. */
 export declare function defineUtility(def: UtilityDef): UtilityDef;

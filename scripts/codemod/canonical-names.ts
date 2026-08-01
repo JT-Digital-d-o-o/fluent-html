@@ -78,20 +78,29 @@ const RENAMES: Readonly<Record<string, string>> = {
   gradientTo: "bgLinear",
 };
 
-/** Legacy `.display(value)` argument → canonical no-arg display method. */
-const DISPLAY_METHODS: Readonly<Record<string, string>> = {
-  block: "block",
-  flex: "flex",
-  grid: "grid",
-  hidden: "hidden",
-  inline: "inline",
-  contents: "contents",
-  "inline-block": "inlineBlock",
-  "inline-flex": "inlineFlex",
-  "inline-grid": "inlineGrid",
+/** Legacy keyword-dispatch methods (pre-6.x) — `.display(value)` / `.position(value)` → canonical no-arg method. */
+const KEYWORD_DISPATCH: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+  display: {
+    block: "block",
+    flex: "flex",
+    grid: "grid",
+    hidden: "hidden",
+    inline: "inline",
+    contents: "contents",
+    "inline-block": "inlineBlock",
+    "inline-flex": "inlineFlex",
+    "inline-grid": "inlineGrid",
+  },
+  position: {
+    static: "static",
+    fixed: "fixed",
+    absolute: "absolute",
+    relative: "relative",
+    sticky: "sticky",
+  },
 };
 
-const REWRITES = new Set(["outlineHidden", "bold", "display"]);
+const REWRITES = new Set(["outlineHidden", "bold", ...Object.keys(KEYWORD_DISPATCH)]);
 const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES]);
 
 /** A pending text edit: [start, end) replaced by `text`. Applied per file in descending `start` order. */
@@ -130,15 +139,17 @@ function receiverIsTag(expr: Expression): boolean {
   return false;
 }
 
-/** Replacement text for the `name(...)` span of the three non-pure-rename rewrites, or undefined to skip. */
+/** Replacement text for the `name(...)` span of the non-pure-rename rewrites, or undefined to skip. */
 function rewriteText(name: string, call: CallExpression): { text?: string; skipReason?: string } {
   if (name === "outlineHidden") return { text: 'outline("hidden")' };
   if (name === "bold") return { text: 'font("bold")' };
+  const dispatch = KEYWORD_DISPATCH[name];
+  if (dispatch === undefined) return { skipReason: "unknown rewrite" };
   const args = call.getArguments();
   const arg = args.length === 1 ? args[0] : undefined;
-  if (!arg || !Node.isStringLiteral(arg)) return { skipReason: "display() argument is not a single string literal" };
-  const method = DISPLAY_METHODS[arg.getLiteralValue()];
-  if (!method) return { skipReason: `no canonical method for display("${arg.getLiteralValue()}")` };
+  if (!arg || !Node.isStringLiteral(arg)) return { skipReason: `${name}() argument is not a single string literal` };
+  const method = dispatch[arg.getLiteralValue()];
+  if (method === undefined) return { skipReason: `no canonical method for ${name}("${arg.getLiteralValue()}")` };
   return { text: `${method}()` };
 }
 

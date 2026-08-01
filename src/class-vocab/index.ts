@@ -6,6 +6,8 @@
  * @module
  */
 export { UNITS, DIR_MAP, ROUNDED_CORNERS, defineUtility } from "./types.js";
-export type { EmitShape, UtilityDef, VocabTarget } from "./types.js";
+export type { EmitShape, UtilityDef, VocabTarget, VariantKeyDef, VariantObjectSpec } from "./types.js";
 export { classVocab } from "./vocab.js";
 export { emitClasses, prefixOf } from "./emit.js";
+export { DIRECT_VARIANTS, variantKeySpecs } from "./variant-keys.js";
+export type { DirectVariant, VariantKeySpec } from "./variant-keys.js";

@@ -37,7 +37,7 @@ Pairs with **eslint-plugin-fluent-html 4.0.0** (derived tables re-derive from th
 
 ### ✨ Added — migration codemod
 
-- **`npm run codemod:canonical -- <tsconfig> [--dry]`** (`scripts/codemod/canonical-names.ts`, ts-morph) — mechanically migrates a consumer repo: the 21 renames + 29 merge-source renames (call-site-pure; argument shapes carry over), plus the three non-pure rewrites `.outlineHidden()` → `.outline("hidden")`, `.bold()` → `.font("bold")`, legacy `.display("block")` → `.block()` (and the other display keywords). A call site is rewritten only if its receiver **types as `Tag`** — bare name matches (formFor's `select`, Prisma's `count`, another lib's `.padding()`) are never touched; the check passes transitively through chains whose links are error-poisoned because the target repo already links the renamed library. Unverifiable matches are left in place and reported for manual review.
+- **`npm run codemod:canonical -- <tsconfig> [--dry]`** (`scripts/codemod/canonical-names.ts`, ts-morph) — mechanically migrates a consumer repo: the 21 renames + 29 merge-source renames (call-site-pure; argument shapes carry over), plus the non-pure rewrites `.outlineHidden()` → `.outline("hidden")`, `.bold()` → `.font("bold")`, and the legacy pre-6.x keyword-dispatch methods `.display(X)` / `.position(X)` → `.X()` (unknown keyword values are skipped and reported). A call site is rewritten only if its receiver **types as `Tag`** — bare name matches (formFor's `select`, Prisma's `count`, another lib's `.padding()`) are never touched; the check passes transitively through chains whose links are error-poisoned because the target repo already links the renamed library. Unverifiable matches are left in place and reported for manual review.
 
 ### 📝 Docs
 

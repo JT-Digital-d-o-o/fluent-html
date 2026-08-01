@@ -15,7 +15,7 @@
  * @module
  */
 import { DIR_MAP, ROUNDED_CORNERS, signNeg, defineUtility, radialGradientClass } from "./types.js";
-import type { UtilityDef, ValuesSpec, LeafValuesSpec } from "./types.js";
+import type { UtilityDef, ValuesSpec, LeafValuesSpec, VariantObjectSpec, VariantKeyDef } from "./types.js";
 
 // ── Values-spec constructors ────────────────────────────────────────
 
@@ -28,7 +28,15 @@ const ref = (name: string): LeafValuesSpec => ({ kind: "typeRef", name });
 /** Merged method (canonical-names): several value families through one emit shape. */
 const group = (groups: Readonly<Record<string, LeafValuesSpec>>): ValuesSpec => ({ kind: "group", groups });
 
-type Extras = { readonly values?: ValuesSpec; readonly doc?: string };
+type Extras = { readonly values?: ValuesSpec; readonly doc?: string; readonly variantObject?: VariantObjectSpec };
+
+/**
+ * Variant-object spec shorthand (llm-styling/object-variants). One string =
+ * a value-type override for the row's single key; full `VariantKeyDef`s for
+ * positional flattening (`translate` → `translateX`/`translateY`/`translateZ`).
+ */
+const vo = (...keys: readonly (string | VariantKeyDef)[]): VariantObjectSpec =>
+  ({ keys: keys.map((k) => (typeof k === "string" ? { type: k } : k)) });
 
 // ── Row constructors (keep the table terse + uniform) ───────────────
 
@@ -86,7 +94,7 @@ const stop = (method: string, prefix: string, x?: Extras): UtilityDef =>
 export const classVocab: readonly UtilityDef[] = [
   // Spacing
   space("p", "p", "", true, true, { values: theme("--spacing"), doc: "Padding — all sides, one axis/side, or an arbitrary length via the unit overload." }),
-  space("m", "m", "", true, true, { values: theme("--spacing"), doc: "Margin — all sides, one axis/side, or an arbitrary length via the unit overload." }),
+  space("m", "m", "", true, true, { values: theme("--spacing"), doc: "Margin — all sides, one axis/side, or an arbitrary length via the unit overload.", variantObject: vo('TailwindSpacing | "auto"') }),
   // Directional shorthands (canonical-names): the Tailwind spelling models reach
   // for first (`px-4` → `.px("4")`). `.p("x", "4")` stays as the parametric form.
   size("px", "px", { values: theme("--spacing"), doc: "Horizontal padding (`px-*`)." }),
@@ -95,12 +103,12 @@ export const classVocab: readonly UtilityDef[] = [
   size("pb", "pb", { values: theme("--spacing"), doc: "Bottom padding (`pb-*`)." }),
   size("pl", "pl", { values: theme("--spacing"), doc: "Left padding (`pl-*`)." }),
   size("pr", "pr", { values: theme("--spacing"), doc: "Right padding (`pr-*`)." }),
-  size("mx", "mx", { values: theme("--spacing"), doc: "Horizontal margin (`mx-*`, incl. `auto`)." }),
-  size("my", "my", { values: theme("--spacing"), doc: "Vertical margin (`my-*`, incl. `auto`)." }),
-  size("mt", "mt", { values: theme("--spacing"), doc: "Top margin (`mt-*`, incl. `auto`)." }),
-  size("mb", "mb", { values: theme("--spacing"), doc: "Bottom margin (`mb-*`, incl. `auto`)." }),
-  size("ml", "ml", { values: theme("--spacing"), doc: "Left margin (`ml-*`, incl. `auto`)." }),
-  size("mr", "mr", { values: theme("--spacing"), doc: "Right margin (`mr-*`, incl. `auto`)." }),
+  size("mx", "mx", { values: theme("--spacing"), doc: "Horizontal margin (`mx-*`, incl. `auto`).", variantObject: vo('TailwindSpacing | "auto"') }),
+  size("my", "my", { values: theme("--spacing"), doc: "Vertical margin (`my-*`, incl. `auto`).", variantObject: vo('TailwindSpacing | "auto"') }),
+  size("mt", "mt", { values: theme("--spacing"), doc: "Top margin (`mt-*`, incl. `auto`).", variantObject: vo('TailwindSpacing | "auto"') }),
+  size("mb", "mb", { values: theme("--spacing"), doc: "Bottom margin (`mb-*`, incl. `auto`).", variantObject: vo('TailwindSpacing | "auto"') }),
+  size("ml", "ml", { values: theme("--spacing"), doc: "Left margin (`ml-*`, incl. `auto`).", variantObject: vo('TailwindSpacing | "auto"') }),
+  size("mr", "mr", { values: theme("--spacing"), doc: "Right margin (`mr-*`, incl. `auto`).", variantObject: vo('TailwindSpacing | "auto"') }),
   pre("spaceX", "space-x", { values: theme("--spacing"), doc: "Horizontal space between children (prefer flex/grid + gap)." }),
   pre("spaceY", "space-y", { values: theme("--spacing"), doc: "Vertical space between children (prefer flex/grid + gap)." }),
   space("gap", "gap", "-", false, true, { values: theme("--spacing"), doc: "Gap between flex/grid children — both axes or one." }),
@@ -165,8 +173,8 @@ export const classVocab: readonly UtilityDef[] = [
   pre("justify", "justify", { values: lit("start", "end", "center", "between", "around", "evenly"), doc: "Main-axis distribution." }),
   pre("items", "items", { values: lit("start", "end", "center", "baseline", "stretch"), doc: "Cross-axis alignment of items." }),
   pre("self", "self", { values: lit("auto", "start", "end", "center", "stretch", "baseline"), doc: "Cross-axis alignment of one item." }),
-  opt("shrink", "shrink", undefined, { doc: "Allow shrinking (bare) or `shrink-0` to forbid it." }),
-  opt("grow", "grow", undefined, { doc: "Allow growing (bare) or `grow-0` to forbid it." }),
+  opt("shrink", "shrink", undefined, { doc: "Allow shrinking (bare) or `shrink-0` to forbid it.", variantObject: vo('true | 0 | "0"') }),
+  opt("grow", "grow", undefined, { doc: "Allow growing (bare) or `grow-0` to forbid it.", variantObject: vo('true | 0 | "0"') }),
 
   // Grid
   stat("grid", "grid", { doc: "Grid container." }),
@@ -193,8 +201,9 @@ export const classVocab: readonly UtilityDef[] = [
       color: theme("--color"),
     }),
     doc: "Border width, style, or color — all sides (bare = 1px width), one side, or side + width/color.",
+    variantObject: vo('true | TailwindBorderWidth | TailwindBorderStyle | TailwindColor | "t" | "b" | "l" | "r" | "x" | "y" | "top" | "bottom" | "left" | "right" | readonly ["x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", TailwindBorderWidth | TailwindColor]'),
   }),
-  custom("rounded", emitRounded, [[], ["lg"], ["t"], ["tl", "lg"]], { values: theme("--radius"), doc: "Border radius — all corners (bare = default), one corner, or corner + size." }),
+  custom("rounded", emitRounded, [[], ["lg"], ["t"], ["tl", "lg"]], { values: theme("--radius"), doc: "Border radius — all corners (bare = default), one corner, or corner + size.", variantObject: vo("true | TailwindRounded | TailwindRoundedCorner | readonly [TailwindRoundedCorner, TailwindRounded]") }),
   opt("divideX", "divide-x", undefined, { values: ref("TailwindBorderWidth"), doc: "Border between horizontal children." }),
   opt("divideY", "divide-y", undefined, { values: ref("TailwindBorderWidth"), doc: "Border between vertical children." }),
 
@@ -252,7 +261,14 @@ export const classVocab: readonly UtilityDef[] = [
   // `.rotate(-45)` → `-rotate-45`; translate is strictly 2-arg `translate-${axis}-${value}`)
   pre("scale", "scale", { values: ref("TailwindScale"), doc: "Uniform scale (percent of original size)." }),
   custom("rotate", (args) => [signNeg("rotate", args[0]!)], [["45"], ["-45"]], { values: ref("TailwindRotate"), doc: "Rotation in degrees; negatives relocate the sign (`-rotate-45`)." }),
-  custom("translate", (args) => (args.length === 2 ? [signNeg(`translate-${args[0]}`, args[1]!)] : []), [["x", "2"], ["y", "-4"]], { values: ref("TailwindTranslate"), doc: "Translate along an axis; negatives relocate the sign." }),
+  custom("translate", (args) => (args.length === 2 ? [signNeg(`translate-${args[0]}`, args[1]!)] : []), [["x", "2"], ["y", "-4"]], {
+    values: ref("TailwindTranslate"), doc: "Translate along an axis; negatives relocate the sign.",
+    variantObject: vo(
+      { key: "translateX", pre: ["x"], type: "TailwindTranslate" },
+      { key: "translateY", pre: ["y"], type: "TailwindTranslate" },
+      { key: "translateZ", pre: ["z"], type: "TailwindTranslateZ" },
+    ),
+  }),
   custom("skewX", (args) => [signNeg("skew-x", args[0]!)], [["6"], ["-6"]], { values: ref("TailwindSkew"), doc: "Skew on the X axis in degrees." }),
   custom("skewY", (args) => [signNeg("skew-y", args[0]!)], [["6"], ["-6"]], { values: ref("TailwindSkew"), doc: "Skew on the Y axis in degrees." }),
 
@@ -278,7 +294,8 @@ export const classVocab: readonly UtilityDef[] = [
   custom("gradient", (a) => (a.length >= 2
     ? [interp(`bg-linear-${a[2] ?? "to-r"}`, a[3]), `from-${a[0]}`, `to-${a[1]}`] : []),
     [["red-500", "blue-500"], ["red-500", "blue-500", "to-br"], ["red-500", "blue-500", "to-br", "oklab"]],
-    { values: theme("--color"), doc: "Linear gradient from → to, with optional direction + interpolation." }),
+    { values: theme("--color"), doc: "Linear gradient from → to, with optional direction + interpolation.",
+      variantObject: vo("readonly [TailwindColor, TailwindColor, TailwindGradientDirection?, TailwindGradientInterpolation?]") }),
   // `.bgLinear()` merged: direction keyword or angle (negatives relocate the
   // sign), with optional interpolation — one `bg-linear-*` emitter.
   custom("bgLinear", (a) => (a.length >= 1 ? [interp(signNeg("bg-linear", a[0]!), a[1])] : []),
@@ -289,23 +306,26 @@ export const classVocab: readonly UtilityDef[] = [
         angle: ref("TailwindGradientAngle"),
       }),
       doc: "Linear-gradient direction keyword or angle, with optional interpolation.",
+      variantObject: vo("TailwindGradientDirection | TailwindGradientAngle | readonly [TailwindGradientDirection | TailwindGradientAngle, TailwindGradientInterpolation]"),
     }),
   custom("bgRadial", (a) => [radialGradientClass(a[0], a[1])],
     [[], ["top-left"], ["[at_top_left]"], ["top-right", "oklch"], ["top-right", "longer"]],
-    { values: ref("TailwindGradientOrigin"), doc: "Radial gradient, optionally positioned at an origin." }),
+    { values: ref("TailwindGradientOrigin"), doc: "Radial gradient, optionally positioned at an origin.",
+      variantObject: vo("true | TailwindGradientOrigin | readonly [TailwindGradientOrigin, TailwindGradientInterpolation]") }),
   custom("bgConic", (a) => [interp(a[0] === undefined ? "bg-conic" : signNeg("bg-conic", a[0]), a[1])],
     [[], ["180"], ["-90"], ["180", "longer"]],
-    { values: ref("TailwindGradientAngle"), doc: "Conic gradient, optionally from an angle in degrees." }),
-  stop("from", "from", { values: theme("--color"), doc: "First gradient stop — color with optional position." }),
-  stop("via", "via", { values: theme("--color"), doc: "Middle gradient stop — color with optional position." }),
-  stop("to", "to", { values: theme("--color"), doc: "Last gradient stop — color with optional position." }),
+    { values: ref("TailwindGradientAngle"), doc: "Conic gradient, optionally from an angle in degrees.",
+      variantObject: vo("true | TailwindGradientAngle | readonly [TailwindGradientAngle, TailwindGradientInterpolation]") }),
+  stop("from", "from", { values: theme("--color"), doc: "First gradient stop — color with optional position.", variantObject: vo("TailwindGradientStop | readonly [TailwindGradientStop, TailwindGradientPosition]") }),
+  stop("via", "via", { values: theme("--color"), doc: "Middle gradient stop — color with optional position.", variantObject: vo("TailwindGradientStop | readonly [TailwindGradientStop, TailwindGradientPosition]") }),
+  stop("to", "to", { values: theme("--color"), doc: "Last gradient stop — color with optional position.", variantObject: vo("TailwindGradientStop | readonly [TailwindGradientStop, TailwindGradientPosition]") }),
 
   // Group / Peer markers
-  opt("group", "group", "/", { doc: "Group marker — enables `group-*` variants on descendants; optionally named." }),
-  opt("peer", "peer", "/", { doc: "Peer marker — enables `peer-*` variants on siblings; optionally named." }),
+  opt("group", "group", "/", { doc: "Group marker — enables `group-*` variants on descendants; optionally named.", variantObject: vo("true | string") }),
+  opt("peer", "peer", "/", { doc: "Peer marker — enables `peer-*` variants on siblings; optionally named.", variantObject: vo("true | string") }),
 
   // Container-query container (v4): @container / @container/{name}
-  opt("containerQuery", "@container", "/", { doc: "Container-query container; optionally named." }),
+  opt("containerQuery", "@container", "/", { doc: "Container-query container; optionally named.", variantObject: vo("true | string") }),
 
   // Filters
   opt("blur", "blur", undefined, { values: lit("none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"), doc: "Blur filter (bare = default)." }),
@@ -314,16 +334,16 @@ export const classVocab: readonly UtilityDef[] = [
   pre("backdropBrightness", "backdrop-brightness", { values: ref("TailwindBrightness"), doc: "Backdrop brightness filter (percent)." }),
   pre("contrast", "contrast", { values: ref("TailwindContrast"), doc: "Contrast filter (percent)." }),
   pre("backdropContrast", "backdrop-contrast", { values: ref("TailwindContrast"), doc: "Backdrop contrast filter (percent)." }),
-  opt("grayscale", "grayscale", undefined, { doc: "Grayscale filter (bare = 100%)." }),
-  opt("backdropGrayscale", "backdrop-grayscale", undefined, { doc: "Backdrop grayscale filter (bare = 100%)." }),
+  opt("grayscale", "grayscale", undefined, { doc: "Grayscale filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
+  opt("backdropGrayscale", "backdrop-grayscale", undefined, { doc: "Backdrop grayscale filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
   pre("hueRotate", "hue-rotate", { values: ref("TailwindHueRotate"), doc: "Hue-rotate filter in degrees." }),
   pre("backdropHueRotate", "backdrop-hue-rotate", { values: ref("TailwindHueRotate"), doc: "Backdrop hue-rotate filter in degrees." }),
-  opt("invert", "invert", undefined, { doc: "Invert filter (bare = 100%)." }),
-  opt("backdropInvert", "backdrop-invert", undefined, { doc: "Backdrop invert filter (bare = 100%)." }),
+  opt("invert", "invert", undefined, { doc: "Invert filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
+  opt("backdropInvert", "backdrop-invert", undefined, { doc: "Backdrop invert filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
   pre("saturate", "saturate", { values: ref("TailwindSaturate"), doc: "Saturation filter (percent)." }),
   pre("backdropSaturate", "backdrop-saturate", { values: ref("TailwindSaturate"), doc: "Backdrop saturation filter (percent)." }),
-  opt("sepia", "sepia", undefined, { doc: "Sepia filter (bare = 100%)." }),
-  opt("backdropSepia", "backdrop-sepia", undefined, { doc: "Backdrop sepia filter (bare = 100%)." }),
+  opt("sepia", "sepia", undefined, { doc: "Sepia filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
+  opt("backdropSepia", "backdrop-sepia", undefined, { doc: "Backdrop sepia filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
 
   // Timing / Resize / Performance / Overscroll
   pre("willChange", "will-change", { values: lit("auto", "scroll", "contents", "transform"), doc: "Hint the browser about upcoming changes." }),
@@ -331,7 +351,7 @@ export const classVocab: readonly UtilityDef[] = [
   space("overscroll", "overscroll", "-", false, false, { values: lit("auto", "contain", "none"), doc: "Overscroll behavior — both axes or one." }),
 
   // Negative value prefix
-  val("neg", "-", { doc: "Prefix an arbitrary utility with `-` (negative value passthrough)." }),
+  val("neg", "-", { doc: "Prefix an arbitrary utility with `-` (negative value passthrough).", variantObject: vo("string") }),
 
   // Typed escape (llm-styling/escape-hatch): arbitrary CSS property → Tailwind's
   // `[prop:value]` arbitrary-property form (spaces → `_`). A vocab row so the
@@ -339,16 +359,17 @@ export const classVocab: readonly UtilityDef[] = [
   // tracked as unresolved (build error under `onUnresolved: "error"`).
   custom("cssProp", (a) => (a.length === 2 ? [`[${a[0]}:${a[1]!.replace(/\s+/g, "_")}]`] : []),
     [["mask-repeat", "no-repeat"], ["border", "1px solid red"], ["--brand-glow", "0 0 4px red"]],
-    { doc: "Arbitrary-CSS escape — emits `[prop:value]` (spaces become `_`); variant-composable." }),
+    { doc: "Arbitrary-CSS escape — emits `[prop:value]` (spaces become `_`); variant-composable.", variantObject: vo("readonly [CssPropertyName, string]") }),
 
   // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
   stat("htmxIndicator", "htmx-indicator", { doc: "htmx loading-indicator marker class." }),
 
-  pre("fill", "fill", { values: theme("--color"), doc: "SVG fill color (`none` to unset)." }),
+  pre("fill", "fill", { values: theme("--color"), doc: "SVG fill color (`none` to unset).", variantObject: vo('TailwindColor | "none"') }),
   // `.stroke()` merged: color or width through `stroke-*` (widths are bare numerals).
   size("stroke", "stroke", {
     values: group({ color: theme("--color"), width: ref("TailwindStrokeWidth") }),
     doc: "SVG stroke color or width — one merged `stroke-*` emitter; arbitrary width via the unit overload.",
+    variantObject: vo('TailwindColor | "none" | TailwindStrokeWidth'),
   }),
   pre("accent", "accent", { values: theme("--color"), doc: "Accent color of form controls." }),
   pre("caret", "caret", { values: theme("--color"), doc: "Text-input caret color." }),
@@ -416,7 +437,7 @@ export const classVocab: readonly UtilityDef[] = [
   pre("breakAfter", "break-after", { values: lit("auto", "avoid", "all", "avoid-page", "page", "left", "right", "column"), doc: "Column/page break after the element." }),
   pre("breakInside", "break-inside", { values: lit("auto", "avoid", "avoid-page", "avoid-column"), doc: "Column/page break inside the element." }),
   pre("boxDecoration", "box-decoration", { values: lit("clone", "slice"), doc: "How box decorations behave across fragments." }),
-  custom("snap", (a) => (a.length <= 1 ? [`snap-${a[0] ?? "none"}`] : [`snap-${a[0]}`, `snap-${a[1]}`]), [["x"], ["both"], ["x", "mandatory"], ["y", "proximity"]], { values: ref("TailwindSnapAxis"), doc: "Scroll-snap axis with optional strictness." }),
+  custom("snap", (a) => (a.length <= 1 ? [`snap-${a[0] ?? "none"}`] : [`snap-${a[0]}`, `snap-${a[1]}`]), [["x"], ["both"], ["x", "mandatory"], ["y", "proximity"]], { values: ref("TailwindSnapAxis"), doc: "Scroll-snap axis with optional strictness.", variantObject: vo('TailwindSnapAxis | readonly [Exclude<TailwindSnapAxis, "none">, TailwindSnapStrictness]') }),
   custom("snapAlign", (a) => [a[0] === "none" ? "snap-align-none" : `snap-${a[0]}`], [["start"], ["center"], ["none"]], { values: lit("start", "end", "center", "none"), doc: "Snap alignment of a snapped child." }),
   pre("snapStop", "snap", { values: lit("normal", "always"), doc: "Whether scrolling may skip past snap positions." }),
   pre("scroll", "scroll", { values: lit("auto", "smooth"), doc: "Programmatic scrolling behavior." }),
@@ -427,7 +448,7 @@ export const classVocab: readonly UtilityDef[] = [
   // Pseudo-element content — bare = empty string (the common `before:`/`after:` case)
   custom("content", (a) => [a[0] === undefined ? "content-['']" : `content-${a[0]}`],
     [[], ["none"], ["[attr(data-label)]"]],
-    { values: lit("none"), doc: "Pseudo-element content — `none`, arbitrary `[…]`, or bare for the empty string." }),
+    { values: lit("none"), doc: "Pseudo-element content — `none`, arbitrary `[…]`, or bare for the empty string.", variantObject: vo("true | TailwindContent") }),
 
   // `.mask()` merged: image (`none` / arbitrary source) or composite mode
   // through the one `mask-*` emitter.
@@ -436,9 +457,10 @@ export const classVocab: readonly UtilityDef[] = [
     {
       values: group({ composite: lit("add", "subtract", "intersect", "exclude") }),
       doc: "Mask image (`none` or an arbitrary source) or mask-composite mode.",
+      variantObject: vo('"none" | `[${string}]` | TailwindMaskComposite'),
     }),
-  custom("maskFrom", (a) => (a.length === 2 ? [`mask-${a[0]}-from-${a[1]}`] : []), [["t", "50%"], ["x", "70%"], ["r", "blue-500"], ["l", "4"], ["t", "[20px]"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask start — edge + stop." }),
-  custom("maskTo", (a) => (a.length === 2 ? [`mask-${a[0]}-to-${a[1]}`] : []), [["b", "90%"], ["y", "95%"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask end — edge + stop." }),
+  custom("maskFrom", (a) => (a.length === 2 ? [`mask-${a[0]}-from-${a[1]}`] : []), [["t", "50%"], ["x", "70%"], ["r", "blue-500"], ["l", "4"], ["t", "[20px]"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask start — edge + stop.", variantObject: vo("readonly [TailwindMaskEdge, TailwindMaskStop]") }),
+  custom("maskTo", (a) => (a.length === 2 ? [`mask-${a[0]}-to-${a[1]}`] : []), [["b", "90%"], ["y", "95%"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask end — edge + stop.", variantObject: vo("readonly [TailwindMaskEdge, TailwindMaskStop]") }),
   pre("maskType", "mask-type", { values: lit("alpha", "luminance"), doc: "SVG mask interpretation mode." }),
 
   // CSS Anchor Positioning (B-010) emits *inline style*, never a class — anchorName /
