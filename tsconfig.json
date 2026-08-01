@@ -36,7 +36,8 @@
     "src/**/*",
     "test/**/*",
     "bench/**/*",
-    "scripts/gen-vocab/**/*"
+    "scripts/gen-vocab/**/*",
+    "scripts/codemod/**/*"
   ],
   "exclude": [
     "node_modules",

@@ -35,6 +35,10 @@ One method per Tailwind class prefix; the argument's (statically disjoint) union
 
 Pairs with **eslint-plugin-fluent-html 4.0.0** (derived tables re-derive from the canonical vocab; autofixes now emit `.bg()`/`.p()`/`.mt()`/… and the directional shorthands own their prefixes).
 
+### ✨ Added — migration codemod
+
+- **`npm run codemod:canonical -- <tsconfig> [--dry]`** (`scripts/codemod/canonical-names.ts`, ts-morph) — mechanically migrates a consumer repo: the 21 renames + 29 merge-source renames (call-site-pure; argument shapes carry over), plus the three non-pure rewrites `.outlineHidden()` → `.outline("hidden")`, `.bold()` → `.font("bold")`, legacy `.display("block")` → `.block()` (and the other display keywords). A call site is rewritten only if its receiver **types as `Tag`** — bare name matches (formFor's `select`, Prisma's `count`, another lib's `.padding()`) are never touched; the check passes transitively through chains whose links are error-poisoned because the target repo already links the renamed library. Unverifiable matches are left in place and reported for manual review.
+
 ### 📝 Docs
 
 - README, FLUENT-STYLING.md, TAILWIND-SETUP.md, examples/, the guidelines surface, and the tooling READMEs (extractor, eslint plugin) teach only the canonical names (directional shorthands as the preferred spelling). FLUENT-STYLING states the prefix rule up front and documents the residual divergences ("Where names diverge from raw Tailwind": compound-prefix boundary, `.neg()`, translate axis form, `containerQuery`/`gradient`/`snap`).

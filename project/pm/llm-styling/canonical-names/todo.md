@@ -14,7 +14,7 @@
 
 ### As a maintainer I want a mechanical codemod so that demos and apps migrate without hand-editing 1,800 call sites
 
-- [ ] [P1] ts-morph codemod: rename map + receiver-type check against `Tag`; handle the 3 non-pure-rename rewrites
+- [x] [P1] ts-morph codemod: rename map + receiver-type check against `Tag`; handle the 3 non-pure-rename rewrites (`scripts/codemod/canonical-names.ts`, `npm run codemod:canonical -- <tsconfig> [--dry]`; 50-entry map = 21 renames + 29 merge sources; `display(X)` generalized to all 9 display-keyword methods, unknown values skip+report; receiver check walks apparent/base types to fluent-html's `Tag` decl **and passes transitively through to-be-renamed chain links** — needed because target repos link the already-renamed lib, so old-name calls error-poison downstream receiver types; unverified name-matches are reported for manual review, never rewritten; verified on a fixture (25 rewrites, 4 correct skips incl. non-Tag `padding`/`display`/`bold` receivers, migrated file typechecks) + demos dry run: 1,210 sites / 0 skips, consistent with the 1,185-site corpus measurement)
 - [ ] [P1] Run over fluent-html-demos; verify by render-diffing class sets before/after
 - [ ] [P2] ~Run over ttl/rideshare/mngmt when those repos bump to the release
 - [ ] [P1] Write tests — codemod fixture suite (incl. false-positive guards: formFor `select`, non-Tag receivers)
