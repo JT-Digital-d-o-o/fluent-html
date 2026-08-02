@@ -238,7 +238,7 @@ export type TailwindState =
   | `has-[${string}]` | `group-has-[${string}]` | `peer-has-[${string}]` | `in-[${string}]`
   // unnamed + named group/peer states, aria/data attribute variants, extra
   // pseudo-classes, the structural `nth-*` family, and child/descendant (`*`/`**`)
-  // variants. Each member is the bare prefix; the base utility goes in the callback.
+  // variants. Each member is the bare prefix; the styles go in the variant object.
   | `group-${GroupPeerState}` | `peer-${GroupPeerState}`
   | `group-${GroupPeerState}/${string}` | `peer-${GroupPeerState}/${string}`
   | AriaBoolVariant | `aria-[${string}]`
@@ -254,7 +254,7 @@ export type TailwindContainerBreakpoint =
   | `${TailwindContainerSize}/${string}`                    // named scope: @lg/sidebar
   | `@[${string}]` | `@min-[${string}]` | `@max-[${string}]`;  // arbitrary widths (escape hatch)
 
-// Responsive breakpoints — folded with container queries so `.at("@sm", …)` type-checks.
+// Responsive breakpoints — folded with container queries so `.variant("@sm", {…})` type-checks.
 export type TailwindBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl" | TailwindContainerBreakpoint;
 
 // Font family (fonts family). CLOSED (escape-hatch): custom families come from
@@ -423,8 +423,8 @@ export type TailwindTranslateZ = TailwindSpacing | `-${number}` | "-px";
 export type TailwindTransformStyle = "3d" | "flat";
 export type TailwindBackfaceVisibility = "visible" | "hidden";
 
-// Variant selectors for `.on()` — aria / group / peer / pseudo / nth / child.
-// Each member is the bare prefix; the base utility is added inside the callback.
+// Variant selectors for `.variant()` — aria / group / peer / pseudo / nth / child.
+// Each member is the bare prefix; the styles go in the variant object.
 export type AriaBoolVariant =
   | "aria-busy" | "aria-checked" | "aria-disabled" | "aria-expanded"
   | "aria-hidden" | "aria-pressed" | "aria-readonly" | "aria-required"
@@ -444,7 +444,7 @@ export type StructuralNthVariant =
 // Direct children (`*`) or all descendants (`**`)
 export type ChildDescendantVariant = "*" | "**";
 
-// Container-query sizes for `.at()` (@3xs … @7xl)
+// Container-query sizes for `.variant()` (@3xs … @7xl)
 export type TailwindContainerSize =
   | "@3xs" | "@2xs" | "@xs" | "@sm" | "@md" | "@lg" | "@xl"
   | "@2xl" | "@3xl" | "@4xl" | "@5xl" | "@6xl" | "@7xl";

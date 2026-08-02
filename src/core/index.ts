@@ -13,6 +13,9 @@ import "./register.js";
 // Overlay position type (the method itself is registered via ./register.js)
 export type { OverlayPosition } from "./overlay.js";
 
+// Object-form variants (llm-styling/object-variants)
+export type { VariantStyleObject, StyleProps, NestedVariants, DirectVariant } from "./variant-object.js";
+
 // Raw HTML support
 export { RawString, Raw } from "./raw-string.js";
 

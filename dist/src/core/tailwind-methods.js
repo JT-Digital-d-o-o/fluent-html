@@ -1,38 +1,30 @@
 /**
  * Tailwind CSS utility methods for Tag — extracted as a mixin.
- * This file adds all Tailwind styling methods, variant proxy (.on/.at),
- * and layout helpers to Tag.prototype via declaration merging.
+ * This file adds all Tailwind styling methods, the object-form variant
+ * surface (`.hover({…})`/`.md({…})`/`.variant(name, {…})`), and layout
+ * helpers to Tag.prototype via declaration merging.
  *
  * @module
  */
 import { Tag } from "./tag.js";
+import { DIRECT_VARIANTS } from "../class-vocab/index.js";
+import { applyVariantObject } from "./variant-object.js";
 // Shared with the class-vocab source of truth (C-05) — one home for these
 // constants (the extractor + ESLint maps derive from the same module).
 import { DIR_MAP, ROUNDED_CORNERS, signNeg, radialGradientClass } from "../class-vocab/types.js";
 import { extractId } from "../ids.js";
-// ── Variant helper (local, not on prototype) ────────────────────────
-function withVariant(tag, prefix, fn) {
-    const outer = tag._variantPrefix;
-    tag._variantPrefix = outer ? `${outer}:${prefix}` : prefix;
-    // try/finally so a throw inside the callback can't leak the variant prefix onto
-    // later classes on a reused tag (e.g. `hover:` bleeding into subsequent .addClass).
-    try {
-        fn(tag);
-    }
-    finally {
-        tag._variantPrefix = outer;
-    }
-    return tag;
-}
 // ── Prototype implementations ───────────────────────────────────────
 /* eslint-disable fluent-html/no-known-modifiers-in-setclass */
 const p = Tag.prototype;
-// Variant Proxy
-p.on = function (state, fn) {
-    return withVariant(this, state, fn);
-};
-p.at = function (breakpoint, fn) {
-    return withVariant(this, breakpoint, fn);
+// Object-form variants — every tier-1 method is the same one-liner over its
+// DIRECT_VARIANTS prefix, so the map stays the single source of the tier-1 set
+// (a parity test asserts each declared method exists and emits its prefix).
+for (const [method, prefix] of Object.entries(DIRECT_VARIANTS)) {
+    p[method] =
+        function (styles) { return applyVariantObject(this, prefix, styles); };
+}
+p.variant = function (name, styles) {
+    return applyVariantObject(this, name, styles);
 };
 // Spacing
 p.p = function (directionOrValue, value) {

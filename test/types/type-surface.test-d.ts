@@ -11,6 +11,7 @@ import {
   Th, Td, Select, Output, Textarea,
   Ins, Del, Q, Blockquote,
   type InsTag, type DelTag, type QTag, type BlockquoteTag,
+  type VariantStyleObject,
 } from "../../src/index.js";
 
 const ids = defineIds(["card"] as const);
@@ -84,7 +85,7 @@ defineRoutes({
 } as const);
 
 // ── Styling/control: :has() variant, viewTransitionName, ForEachKeyed ──────
-Div().on("has-[:checked]", (t) => t.bg("blue-50"));   // F-B-180 relational hook
+Div().variant("has-[:checked]", { bg: "blue-50" });   // F-B-180 relational hook
 Div().viewTransitionName("hero");                              // F-B-181 string
 Div().viewTransitionName(ids.card);                           // F-B-181 Id overload
 
@@ -214,19 +215,19 @@ Div().translate("z", 12);
 // @ts-expect-error — TailwindBackfaceVisibility closed
 Div().backface("collapse");
 
-// Variants on .on()/.at()
-Div().on("aria-checked", (t) => t.bg("blue-50"));
-Div().on("group-hover/item", (t) => t.opacity(100));
-Div().on("nth-3", (t) => t);
-Div().on("*", (t) => t.p("4"));
-Div().at("@sm", (t) => t.flex());
-Div().at("@lg/sidebar", (t) => t);
+// Long-tail variant names on .variant()
+Div().variant("aria-checked", { bg: "blue-50" });
+Div().variant("group-hover/item", { opacity: 100 });
+Div().variant("nth-3", {});
+Div().variant("*", { p: "4" });
+Div().variant("@sm", { flex: true });
+Div().variant("@lg/sidebar", {});
 // @ts-expect-error — typo'd aria boolean head
-Div().on("aria-pressd", (t) => t);
+Div().variant("aria-pressd", {});
 // @ts-expect-error — bare data- form omitted (use data-[…])
-Div().on("data-open", (t) => t);
+Div().variant("data-open", {});
 // @ts-expect-error — @8xl is outside the @3xs..@7xl scale
-Div().at("@8xl", (t) => t);
+Div().variant("@8xl", {});
 
 // Layout
 Div().colStart(-1);
@@ -264,16 +265,16 @@ Div().wrap("break-word");
 Div().wrap("anywhere");
 // @ts-expect-error — TailwindWrap is overflow-wrap; "break-all" is word-break (.breakAll())
 Div().wrap("break-all");
-Div().on("before", (t) => t.content());          // bare → content-['']
+Div().before({ content: true });                 // true → content-['']
 Div().content("none");
 Div().content("[attr(data-label)]");
 // @ts-expect-error — TailwindContent is none | [..] (bare for the empty string)
 Div().content("empty");
-// Arbitrary selector variant on .on() — verbatim pass-through
-Div().on("[&>li]", (t) => t.p("2"));
-Div().on("[&_svg]", (t) => t.w("4"));
+// Arbitrary selector variant on .variant() — verbatim pass-through
+Div().variant("[&>li]", { p: "2" });
+Div().variant("[&_svg]", { w: "4" });
 // @ts-expect-error — an arbitrary selector must anchor on & ("[li]" is not a variant)
-Div().on("[li]", (t) => t);
+Div().variant("[li]", {});
 // TailwindFontFamily is CLOSED: built-ins + declared tokens + [..] only
 Div().font("mono");
 Div().font("[Inter,sans-serif]");
@@ -400,3 +401,48 @@ Div().px("auto");
 Div().mt("full");
 // @ts-expect-error — angle is a number; a string angle needs the direction keywords or [..]
 Div().bgLinear("45deg");
+
+// ── Object variants (llm-styling/object-variants) ──────────────────────────
+// Positive: keys are the canonical style names; values are the same closed
+// unions the methods take; nested tier-1 names stack; tuples for multi-arg.
+Div().hover({ bg: "blue-600", scale: "105", truncate: true });
+Div().md({ px: "8", text: "lg", hover: { bg: "blue-700" } });
+Div().md({ hover: { first: { bg: "amber-50" } } });          // two-level nesting
+Div().hover({ bg: cond() ? "blue-600" : undefined });        // conditional value
+Div().hover({ italic: cond() });                             // boolean flag form
+Div().focus({ ring: true });                                 // optional-value utility bare form
+Div().focus({ ring: 2 });
+Div().hover({ border: ["top", "red-500"] });                 // side + color tuple
+Div().hover({ gradient: ["red-500", "blue-500", "to-br"] }); // multi-arg tuple
+Div().hover({ translateY: "-0.5", rotate: -45 });            // flattened axis keys, sign values
+Div().hover({ cssProp: ["--glow", "0 0 4px"] });             // escape hatch composes
+Div().before({ content: true, w: "2" });
+Div().md({ xl2: { p: "4" } });                               // xl2 nested key
+Div().xl2({ p: "4" });
+Div().variant("data-[state=open]", { rounded: "lg" });
+Div().variant("aria-[busy]", { opacity: "50" });
+declare function cond(): boolean;
+// An extracted const pins itself with `satisfies` (excess-property checking
+// doesn't reach through a plain variable).
+const glowPreset = { shadow: "lg", ring: 2 } satisfies VariantStyleObject;
+Div().hover({ ...glowPreset, bg: "blue-600" });
+// Negative: keys and values are spell-checked at every literal use — no
+// silent dead classes, no unprefixed emissions.
+// @ts-expect-error — key typo: 'opcaity' (did you mean 'opacity'?)
+Div().hover({ opcaity: "50" });
+// @ts-expect-error — value typo: "blue-60" is not a Tailwind shade
+Div().hover({ bg: "blue-60" });
+// @ts-expect-error — key typo two levels deep: nested objects are spell-checked too
+Div().md({ hover: { opcaity: "50" } });
+// @ts-expect-error — a style key takes a value, not a nested object (TS2322)
+Div().hover({ bg: { md: "blue-600" } });
+// @ts-expect-error — "hovr" is not a tier-1 variant or style key
+Div().md({ hovr: { bg: "blue-600" } });
+// @ts-expect-error — border side tuple needs a width or color as its second member
+Div().hover({ border: ["top"] });
+// @ts-expect-error — gradient needs at least [from, to]
+Div().hover({ gradient: ["red-500"] });
+// @ts-expect-error — "2xl" is spelled xl2 as a member (exact spelling via .variant("2xl", …))
+Div().md({ "2xl": { p: "4" } });
+// @ts-expect-error — variant name typo on the generic form
+Div().variant("hovr", { bg: "blue-600" });

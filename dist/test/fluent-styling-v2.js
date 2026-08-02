@@ -94,7 +94,7 @@ describe("Accessibility", () => {
 describe("Text Decoration", () => {
     it("noUnderline", () => { assert.strictEqual(render(new Tag("a").noUnderline()), '<a class="no-underline"></a>'); });
     it("underline + noUnderline on hover", () => {
-        assert.strictEqual(render(new Tag("a").underline().on("hover", t => t.noUnderline())), '<a class="underline hover:no-underline"></a>');
+        assert.strictEqual(render(new Tag("a").underline().hover({ noUnderline: true })), '<a class="underline hover:no-underline"></a>');
     });
 });
 describe("Outline", () => {
@@ -141,126 +141,134 @@ describe("v4 variants (C-06): widened states + container queries", () => {
         assert.strictEqual(render(Div().containerQuery()), '<div class="@container"></div>');
         assert.strictEqual(render(Div().containerQuery("sidebar")), '<div class="@container/sidebar"></div>');
     });
-    it(".at() accepts container-query breakpoints", () => {
-        assert.strictEqual(render(Div().at("@sm", t => t.p("4"))), '<div class="@sm:p-4"></div>');
-        assert.strictEqual(render(Div().at("@max-lg", t => t.hidden())), '<div class="@max-lg:hidden"></div>');
-        assert.strictEqual(render(Div().at("@[480px]", t => t.flex())), '<div class="@[480px]:flex"></div>');
+    it(".variant() accepts container-query breakpoints", () => {
+        assert.strictEqual(render(Div().variant("@sm", { p: "4" })), '<div class="@sm:p-4"></div>');
+        assert.strictEqual(render(Div().variant("@max-lg", { hidden: true })), '<div class="@max-lg:hidden"></div>');
+        assert.strictEqual(render(Div().variant("@[480px]", { flex: true })), '<div class="@[480px]:flex"></div>');
     });
-    it(".on() accepts the widened v4 states", () => {
-        assert.strictEqual(render(Div().on("not-hover", t => t.opacity("50"))), '<div class="not-hover:opacity-50"></div>');
-        assert.strictEqual(render(Div().on("print", t => t.hidden())), '<div class="print:hidden"></div>');
-        assert.strictEqual(render(Div().on("starting", t => t.opacity("0"))), '<div class="starting:opacity-0"></div>');
-        assert.strictEqual(render(Div().on("open", t => t.rotate("90"))), '<div class="open:rotate-90"></div>');
-        assert.strictEqual(render(Div().on("motion-reduce", t => t.transition("none"))), '<div class="motion-reduce:transition-none"></div>');
+    it(".variant() accepts the widened v4 states", () => {
+        assert.strictEqual(render(Div().variant("not-hover", { opacity: "50" })), '<div class="not-hover:opacity-50"></div>');
+        assert.strictEqual(render(Div().variant("print", { hidden: true })), '<div class="print:hidden"></div>');
+        assert.strictEqual(render(Div().variant("starting", { opacity: "0" })), '<div class="starting:opacity-0"></div>');
+        assert.strictEqual(render(Div().variant("open", { rotate: "90" })), '<div class="open:rotate-90"></div>');
+        assert.strictEqual(render(Div().variant("motion-reduce", { transition: "none" })), '<div class="motion-reduce:transition-none"></div>');
     });
-    it(".on() accepts arbitrary supports-[…] / nth-[…]", () => {
-        assert.strictEqual(render(Div().on("supports-[display:grid]", t => t.grid())), '<div class="supports-[display:grid]:grid"></div>');
-        assert.strictEqual(render(Div().on("nth-[3]", t => t.bg("red-500"))), '<div class="nth-[3]:bg-red-500"></div>');
+    it(".variant() accepts arbitrary supports-[…] / nth-[…]", () => {
+        assert.strictEqual(render(Div().variant("supports-[display:grid]", { grid: true })), '<div class="supports-[display:grid]:grid"></div>');
+        assert.strictEqual(render(Div().variant("nth-[3]", { bg: "red-500" })), '<div class="nth-[3]:bg-red-500"></div>');
     });
-    it(".on() accepts arbitrary [&…] selectors (escape-hatch)", () => {
+    it(".variant() accepts arbitrary [&…] selectors (escape-hatch)", () => {
         // & and > are entity-encoded by escapeAttr; the DOM class decodes back to [&>li]:p-2.
-        assert.strictEqual(render(Div().on("[&>li]", t => t.p("2"))), '<div class="[&amp;&gt;li]:p-2"></div>');
-        assert.strictEqual(render(Div().on("[&_svg]", t => t.w("4").h("4"))), '<div class="[&amp;_svg]:w-4 [&amp;_svg]:h-4"></div>');
+        assert.strictEqual(render(Div().variant("[&>li]", { p: "2" })), '<div class="[&amp;&gt;li]:p-2"></div>');
+        assert.strictEqual(render(Div().variant("[&_svg]", { w: "4", h: "4" })), '<div class="[&amp;_svg]:w-4 [&amp;_svg]:h-4"></div>');
     });
     it(".cssProp() emits the arbitrary-property class and composes with variants", () => {
         assert.strictEqual(render(Div().cssProp("mask-repeat", "no-repeat")), '<div class="[mask-repeat:no-repeat]"></div>');
         assert.strictEqual(render(Div().cssProp("border", "1px solid red")), '<div class="[border:1px_solid_red]"></div>');
-        assert.strictEqual(render(Div().on("hover", t => t.cssProp("--glow", "0 0 4px"))), '<div class="hover:[--glow:0_0_4px]"></div>');
-        assert.strictEqual(render(Div().at("md", t => t.cssProp("scrollbar-width", "none"))), '<div class="md:[scrollbar-width:none]"></div>');
+        assert.strictEqual(render(Div().hover({ cssProp: ["--glow", "0 0 4px"] })), '<div class="hover:[--glow:0_0_4px]"></div>');
+        assert.strictEqual(render(Div().md({ cssProp: ["scrollbar-width", "none"] })), '<div class="md:[scrollbar-width:none]"></div>');
     });
     it(".cssClass() appends verbatim (non-Tailwind intent marker)", () => {
         assert.strictEqual(render(Div().cssClass("js-map-container")), '<div class="js-map-container"></div>');
         assert.strictEqual(render(Div().p("4").cssClass("shepherd-target")), '<div class="p-4 shepherd-target"></div>');
     });
-    it(".on(before) + bare .content() renders the empty-string content class", () => {
+    it(".before({ content: true }) renders the empty-string content class", () => {
         // escapeAttr entity-encodes the quotes; the browser decodes the DOM class
         // back to before:content-[''].
-        assert.strictEqual(render(Div().on("before", t => t.content().bg("red-500"))), '<div class="before:content-[&#39;&#39;] before:bg-red-500"></div>');
+        assert.strictEqual(render(Div().before({ content: true, bg: "red-500" })), '<div class="before:content-[&#39;&#39;] before:bg-red-500"></div>');
     });
 });
-describe("Variant Proxy - .on()", () => {
-    it("on hover - single property", () => {
-        assert.strictEqual(render(Button().on("hover", t => t.bg("blue-600"))), '<button class="hover:bg-blue-600"></button>');
+describe("Object variants — states", () => {
+    it("hover — single key", () => {
+        assert.strictEqual(render(Button().hover({ bg: "blue-600" })), '<button class="hover:bg-blue-600"></button>');
     });
-    it("on hover - multiple properties", () => {
-        assert.strictEqual(render(Button().on("hover", t => t.bg("blue-600").scale(105))), '<button class="hover:bg-blue-600 hover:scale-105"></button>');
+    it("hover — multiple keys", () => {
+        assert.strictEqual(render(Button().hover({ bg: "blue-600", scale: 105 })), '<button class="hover:bg-blue-600 hover:scale-105"></button>');
     });
-    it("on focus - ring + outline", () => {
-        assert.strictEqual(render(Button().on("focus", t => t.ring(2).ring("blue-300").outline("none"))), '<button class="focus:ring-2 focus:ring-blue-300 focus:outline-none"></button>');
+    it("focus — two ring families chain as two calls", () => {
+        // One object key per prefix: ring width + ring color need two .focus() calls.
+        assert.strictEqual(render(Button().focus({ ring: 2, outline: "none" }).focus({ ring: "blue-300" })), '<button class="focus:ring-2 focus:outline-none focus:ring-blue-300"></button>');
     });
-    it("on disabled", () => {
-        assert.strictEqual(render(Button().on("disabled", t => t.opacity(50).cursor("not-allowed"))), '<button class="disabled:opacity-50 disabled:cursor-not-allowed"></button>');
+    it("disabled", () => {
+        assert.strictEqual(render(Button().disabled({ opacity: 50, cursor: "not-allowed" })), '<button class="disabled:opacity-50 disabled:cursor-not-allowed"></button>');
     });
-    it("on dark", () => {
-        assert.strictEqual(render(Div().on("dark", t => t.bg("gray-900"))), '<div class="dark:bg-gray-900"></div>');
+    it("dark", () => {
+        assert.strictEqual(render(Div().dark({ bg: "gray-900" })), '<div class="dark:bg-gray-900"></div>');
     });
-    it("on group-hover", () => {
-        assert.strictEqual(render(Div().on("group-hover", t => t.opacity(100))), '<div class="group-hover:opacity-100"></div>');
+    it("groupHover", () => {
+        assert.strictEqual(render(Div().groupHover({ opacity: 100 })), '<div class="group-hover:opacity-100"></div>');
     });
-    it("empty callback is no-op", () => {
-        assert.strictEqual(render(Div().on("hover", t => t)), '<div></div>');
+    it("empty object is a no-op", () => {
+        assert.strictEqual(render(Div().hover({})), '<div></div>');
     });
-    it("addClass with multi-class string inside variant", () => {
-        assert.strictEqual(render(Div().on("hover", t => t.addClass("foo bar baz"))), '<div class="hover:foo hover:bar hover:baz"></div>');
+    it("false and undefined values are skipped", () => {
+        assert.strictEqual(render(Div().hover({ truncate: false, bg: undefined, opacity: "50" })), '<div class="hover:opacity-50"></div>');
     });
-    it("addClass with single-class string inside variant", () => {
-        assert.strictEqual(render(Div().on("hover", t => t.addClass("foo"))), '<div class="hover:foo"></div>');
+    it("conditional value expressions replace in-variant conditionals", () => {
+        const active = false;
+        assert.strictEqual(render(Div().hover({ bg: active ? "blue-600" : undefined, italic: !active })), '<div class="hover:italic"></div>');
     });
 });
-describe("Variant Proxy - .at()", () => {
-    it("at md", () => { assert.strictEqual(render(Div().at("md", t => t.w("1/2"))), '<div class="md:w-1/2"></div>'); });
-    it("at lg", () => { assert.strictEqual(render(Div().at("lg", t => t.w("1/3"))), '<div class="lg:w-1/3"></div>'); });
+describe("Object variants — breakpoints", () => {
+    it("md", () => { assert.strictEqual(render(Div().md({ w: "1/2" })), '<div class="md:w-1/2"></div>'); });
+    it("lg", () => { assert.strictEqual(render(Div().lg({ w: "1/3" })), '<div class="lg:w-1/3"></div>'); });
     it("responsive chain", () => {
-        assert.strictEqual(render(Div().w("full").at("md", t => t.w("1/2")).at("lg", t => t.w("1/3"))), '<div class="w-full md:w-1/2 lg:w-1/3"></div>');
+        assert.strictEqual(render(Div().w("full").md({ w: "1/2" }).lg({ w: "1/3" })), '<div class="w-full md:w-1/2 lg:w-1/3"></div>');
     });
-    it("at with multiple properties", () => {
-        assert.strictEqual(render(Div().at("md", t => t.p("x", "8").text("lg"))), '<div class="md:px-8 md:text-lg"></div>');
+    it("md with multiple keys", () => {
+        assert.strictEqual(render(Div().md({ px: "8", text: "lg" })), '<div class="md:px-8 md:text-lg"></div>');
+    });
+    it("xl2 emits the 2xl: prefix (and .variant keeps the exact spelling)", () => {
+        assert.strictEqual(render(Div().xl2({ px: "16" })), '<div class="2xl:px-16"></div>');
+        assert.strictEqual(render(Div().variant("2xl", { px: "16" })), '<div class="2xl:px-16"></div>');
     });
 });
-describe("Variant Proxy - Nesting", () => {
+describe("Object variants — nesting", () => {
     it("nested dark:hover", () => {
-        assert.strictEqual(render(Div().on("dark", t => t.on("hover", t => t.bg("gray-700")))), '<div class="dark:hover:bg-gray-700"></div>');
+        assert.strictEqual(render(Div().dark({ hover: { bg: "gray-700" } })), '<div class="dark:hover:bg-gray-700"></div>');
     });
     it("nested md:hover", () => {
-        assert.strictEqual(render(Div().at("md", t => t.on("hover", t => t.shadow("lg")))), '<div class="md:hover:shadow-lg"></div>');
+        assert.strictEqual(render(Div().md({ hover: { shadow: "lg" } })), '<div class="md:hover:shadow-lg"></div>');
     });
     it("complex nesting dark + hover + base", () => {
-        assert.strictEqual(render(Div().bg("white").on("dark", t => t
-            .bg("gray-900")
-            .on("hover", t => t.bg("gray-800")))), '<div class="bg-white dark:bg-gray-900 dark:hover:bg-gray-800"></div>');
+        assert.strictEqual(render(Div().bg("white").dark({ bg: "gray-900", hover: { bg: "gray-800" } })), '<div class="bg-white dark:bg-gray-900 dark:hover:bg-gray-800"></div>');
+    });
+    it("two-level nesting md:hover:first", () => {
+        assert.strictEqual(render(Div().md({ hover: { first: { bg: "amber-50" } } })), '<div class="md:hover:first:bg-amber-50"></div>');
     });
 });
-describe("Variant Proxy - Integration", () => {
+describe("Object variants — integration", () => {
     it("base + hover + focus + disabled", () => {
         assert.strictEqual(render(Button()
             .bg("blue-500").text("white").rounded()
-            .on("hover", t => t.bg("blue-600"))
-            .on("focus", t => t.ring(2))
-            .on("disabled", t => t.opacity(50))), '<button class="bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 disabled:opacity-50"></button>');
+            .hover({ bg: "blue-600" })
+            .focus({ ring: 2 })
+            .disabled({ opacity: 50 })), '<button class="bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 disabled:opacity-50"></button>');
     });
-    it("transition + variant proxy", () => {
+    it("transition + object variant", () => {
         assert.strictEqual(render(Button()
             .bg("blue-500")
             .transition().duration(200)
-            .on("hover", t => t.bg("blue-600").scale(105))), '<button class="bg-blue-500 transition duration-200 hover:bg-blue-600 hover:scale-105"></button>');
+            .hover({ bg: "blue-600", scale: 105 })), '<button class="bg-blue-500 transition duration-200 hover:bg-blue-600 hover:scale-105"></button>');
     });
-    it("variant proxy with .when()", () => {
+    it("object variant with .when()", () => {
         assert.strictEqual(render(Button()
-            .on("hover", t => t.bg("blue-600"))
-            .when(true, t => t.on("disabled", t => t.opacity(50)))), '<button class="hover:bg-blue-600 disabled:opacity-50"></button>');
+            .hover({ bg: "blue-600" })
+            .when(true, t => t.disabled({ opacity: 50 }))), '<button class="hover:bg-blue-600 disabled:opacity-50"></button>');
     });
-    it("variant proxy skipped with .when(false)", () => {
+    it("object variant skipped with .when(false)", () => {
         assert.strictEqual(render(Button()
-            .on("hover", t => t.bg("blue-600"))
-            .when(false, t => t.on("disabled", t => t.opacity(50)))), '<button class="hover:bg-blue-600"></button>');
+            .hover({ bg: "blue-600" })
+            .when(false, t => t.disabled({ opacity: 50 }))), '<button class="hover:bg-blue-600"></button>');
     });
-    it("variant proxy with .apply()", () => {
+    it("object variant with .apply()", () => {
         assert.strictEqual(render(Div().apply(t => t
             .transition().duration(200)
-            .on("hover", t => t.shadow("lg").translate("y", "1")))), '<div class="transition duration-200 hover:shadow-lg hover:translate-y-1"></div>');
+            .hover({ shadow: "lg", translateY: "1" }))), '<div class="transition duration-200 hover:shadow-lg hover:translate-y-1"></div>');
     });
-    it("addClass inside variant callback with multiple classes", () => {
-        assert.strictEqual(render(Div().on("hover", t => t.addClass("foo bar"))), '<div class="hover:foo hover:bar"></div>');
+    it("presets spread into variant objects", () => {
+        const glow = { shadow: "lg", ring: 2 };
+        assert.strictEqual(render(Div().hover({ ...glow, bg: "blue-600" })), '<div class="hover:shadow-lg hover:ring-2 hover:bg-blue-600"></div>');
     });
     it("raw addClass outside variant still works", () => {
         assert.strictEqual(render(Div().addClass("hover:bg-blue-600")), '<div class="hover:bg-blue-600"></div>');
@@ -282,8 +290,8 @@ describe("Custom theme tokens (defineTheme seam)", () => {
     it("custom color in ringColor()", () => {
         assert.strictEqual(render(Button().ring(2).ring("accent")), '<button class="ring-2 ring-accent"></button>');
     });
-    it("custom color in variant proxy", () => {
-        assert.strictEqual(render(Div().on("hover", t => t.bg("accent"))), '<div class="hover:bg-accent"></div>');
+    it("custom color in a variant object", () => {
+        assert.strictEqual(render(Div().hover({ bg: "accent" })), '<div class="hover:bg-accent"></div>');
     });
     it("custom spacing in padding()", () => {
         assert.strictEqual(render(Div().p("18")), '<div class="p-18"></div>');
@@ -334,12 +342,12 @@ describe("Arbitrary value overloads (unit, amount)", () => {
     it("padding with direction still works", () => { assert.strictEqual(render(Div().p("x", "4")), '<div class="px-4"></div>'); });
     it("gap with direction still works", () => { assert.strictEqual(render(Div().gap("x", "2")), '<div class="gap-x-2"></div>'); });
     it("margin auto still works", () => { assert.strictEqual(render(Div().m("auto")), '<div class="m-auto"></div>'); });
-    // Works with variant proxy
-    it("unit overload inside .on()", () => {
-        assert.strictEqual(render(Div().on("hover", t => t.w("px", 300))), '<div class="hover:w-[300px]"></div>');
+    // Works with object variants — arbitrary lengths use the bracket arm
+    it("bracket arm inside .hover()", () => {
+        assert.strictEqual(render(Div().hover({ w: "[300px]" })), '<div class="hover:w-[300px]"></div>');
     });
-    it("unit overload inside .at()", () => {
-        assert.strictEqual(render(Div().w("full").at("md", t => t.w("px", 640))), '<div class="w-full md:w-[640px]"></div>');
+    it("bracket arm inside .md()", () => {
+        assert.strictEqual(render(Div().w("full").md({ w: "[640px]" })), '<div class="w-full md:w-[640px]"></div>');
     });
     // Decimal values
     it("fractional rem", () => { assert.strictEqual(render(Div().p("rem", 0.75)), '<div class="p-[0.75rem]"></div>'); });
@@ -402,11 +410,11 @@ describe("Numeric values", () => {
     it("divideX 2", () => { assert.strictEqual(render(Div().divideX(2)), '<div class="divide-x-2"></div>'); });
     it("divideY 4", () => { assert.strictEqual(render(Div().divideY(4)), '<div class="divide-y-4"></div>'); });
     it("divideX 8", () => { assert.strictEqual(render(Div().divideX(8)), '<div class="divide-x-8"></div>'); });
-    // Numeric in variant proxy
-    it("numeric opacity in .on()", () => { assert.strictEqual(render(Div().on("disabled", t => t.opacity(50))), '<div class="disabled:opacity-50"></div>'); });
-    it("numeric scale in .on()", () => { assert.strictEqual(render(Div().on("hover", t => t.scale(105))), '<div class="hover:scale-105"></div>'); });
-    it("numeric ring in .on()", () => { assert.strictEqual(render(Div().on("focus", t => t.ring(2))), '<div class="focus:ring-2"></div>'); });
-    it("numeric duration in .at()", () => { assert.strictEqual(render(Div().at("md", t => t.duration(300))), '<div class="md:duration-300"></div>'); });
+    // Numeric values in variant objects
+    it("numeric opacity in .disabled()", () => { assert.strictEqual(render(Div().disabled({ opacity: 50 })), '<div class="disabled:opacity-50"></div>'); });
+    it("numeric scale in .hover()", () => { assert.strictEqual(render(Div().hover({ scale: 105 })), '<div class="hover:scale-105"></div>'); });
+    it("numeric ring in .focus()", () => { assert.strictEqual(render(Div().focus({ ring: 2 })), '<div class="focus:ring-2"></div>'); });
+    it("numeric duration in .md()", () => { assert.strictEqual(render(Div().md({ duration: 300 })), '<div class="md:duration-300"></div>'); });
 });
 describe("Bracket escape hatches", () => {
     it("custom textSize", () => { assert.strictEqual(render(Div().text("[13px]")), '<div class="text-[13px]"></div>'); });
@@ -460,7 +468,7 @@ describe("Filters", () => {
     it("sepia 0", () => { assert.strictEqual(render(Div().sepia(0)), '<div class="sepia-0"></div>'); });
     it("backdropSepia", () => { assert.strictEqual(render(Div().backdropSepia()), '<div class="backdrop-sepia"></div>'); });
     it("brightness with escape hatch", () => { assert.strictEqual(render(Div().brightness("[1.75]")), '<div class="brightness-[1.75]"></div>'); });
-    it("filter in variant", () => { assert.strictEqual(render(Div().on("hover", t => t.brightness(110))), '<div class="hover:brightness-110"></div>'); });
+    it("filter in variant", () => { assert.strictEqual(render(Div().hover({ brightness: 110 })), '<div class="hover:brightness-110"></div>'); });
 });
 describe("Layout — Place, Grid Auto, Order", () => {
     it("placeContent center", () => { assert.strictEqual(render(Div().placeContent("center")), '<div class="place-content-center"></div>'); });
@@ -484,7 +492,7 @@ describe("Modern features — Skew, WillChange, Overscroll", () => {
     it("skewX", () => { assert.strictEqual(render(Div().skewX(6)), '<div class="skew-x-6"></div>'); });
     it("skewY", () => { assert.strictEqual(render(Div().skewY(12)), '<div class="skew-y-12"></div>'); });
     it("skewX escape hatch", () => { assert.strictEqual(render(Div().skewX("[17deg]")), '<div class="skew-x-[17deg]"></div>'); });
-    it("skew in variant", () => { assert.strictEqual(render(Div().on("hover", t => t.skewX(3))), '<div class="hover:skew-x-3"></div>'); });
+    it("skew in variant", () => { assert.strictEqual(render(Div().hover({ skewX: 3 })), '<div class="hover:skew-x-3"></div>'); });
     it("willChange transform", () => { assert.strictEqual(render(Div().willChange("transform")), '<div class="will-change-transform"></div>'); });
     it("willChange scroll", () => { assert.strictEqual(render(Div().willChange("scroll")), '<div class="will-change-scroll"></div>'); });
     it("willChange auto", () => { assert.strictEqual(render(Div().willChange("auto")), '<div class="will-change-auto"></div>'); });
@@ -497,28 +505,30 @@ describe("Modern features — Skew, WillChange, Overscroll", () => {
 describe("Full Example (Plan Before/After)", () => {
     it("complete button with all features", () => {
         assert.strictEqual(render(Button()
-            .p("x", "4").p("y", "2")
+            .px("4").py("2")
             .bg("blue-500").text("white").rounded()
             .transition().duration(200)
-            .on("hover", t => t.bg("blue-600").scale(105).shadow("lg"))
-            .on("focus", t => t.ring(2).ring("blue-300").outline("none"))
-            .on("disabled", t => t.opacity(50).cursor("not-allowed"))
-            .at("md", t => t.p("x", "8").text("lg"))), '<button class="px-4 py-2 bg-blue-500 text-white rounded transition duration-200 hover:bg-blue-600 hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-blue-300 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed md:px-8 md:text-lg"></button>');
+            .hover({ bg: "blue-600", scale: 105, shadow: "lg" })
+            .focus({ ring: 2, outline: "none" }).focus({ ring: "blue-300" })
+            .disabled({ opacity: 50, cursor: "not-allowed" })
+            .md({ px: "8", text: "lg" })), '<button class="px-4 py-2 bg-blue-500 text-white rounded transition duration-200 hover:bg-blue-600 hover:scale-105 hover:shadow-lg focus:ring-2 focus:outline-none focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed md:px-8 md:text-lg"></button>');
     });
 });
 describe("Variant exception-safety (D-06)", () => {
-    it("a throw inside .on(...) does not leak the variant prefix onto later classes", () => {
+    it("an unknown style key throws and does not leak the variant prefix onto later classes", () => {
         const tag = Div();
-        assert.throws(() => tag.on("hover", (t) => { t.bg("blue-600"); throw new Error("boom"); }));
-        // The prefix is restored even though the callback threw — the next class is unprefixed.
+        // Only reachable by defeating the types — the runtime still fails loudly
+        // rather than emitting an unprefixed or missing class.
+        assert.throws(() => tag.hover({ bg: "blue-600", bogus: "x" }), /unknown style key "bogus"/);
+        // The prefix is restored even though apply threw — the next class is unprefixed.
         tag.text("white");
         const html = render(tag);
         assert.ok(html.includes("text-white"), html);
         assert.ok(!html.includes("hover:text-white"), html);
     });
-    it("a throw inside .at(...) does not leak the breakpoint prefix", () => {
+    it("a throw inside .variant(...) does not leak the breakpoint prefix", () => {
         const tag = Span();
-        assert.throws(() => tag.at("md", (t) => { t.p("x", "8"); throw new Error("boom"); }));
+        assert.throws(() => tag.variant("md", { nope: true }));
         tag.text("black");
         assert.ok(!render(tag).includes("md:text-black"));
     });
@@ -527,12 +537,12 @@ describe("Variant exception-safety (D-06)", () => {
 // TW4 relational hooks + View Transitions (F-B-180 / F-B-181)
 // ------------------------------------
 describe("TW4 relational hooks & View Transitions", () => {
-    it(".on(\"has-[:checked]\", …) emits the has- variant prefix", () => {
-        assert.strictEqual(render(Div().on("has-[:checked]", (t) => t.bg("blue-50"))), `<div class="has-[:checked]:bg-blue-50"></div>`);
+    it('.variant("has-[:checked]", …) emits the has- variant prefix', () => {
+        assert.strictEqual(render(Div().variant("has-[:checked]", { bg: "blue-50" })), `<div class="has-[:checked]:bg-blue-50"></div>`);
     });
-    it(".on(\"group-has-[:invalid]\", …) and in-[…] compile and emit", () => {
-        assert.strictEqual(render(Div().on("group-has-[:invalid]", (t) => t.text("red-600"))), `<div class="group-has-[:invalid]:text-red-600"></div>`);
-        assert.strictEqual(render(Div().on("in-[.dark]", (t) => t.text("white"))), `<div class="in-[.dark]:text-white"></div>`);
+    it('.variant("group-has-[:invalid]", …) and in-[…] compile and emit', () => {
+        assert.strictEqual(render(Div().variant("group-has-[:invalid]", { text: "red-600" })), `<div class="group-has-[:invalid]:text-red-600"></div>`);
+        assert.strictEqual(render(Div().variant("in-[.dark]", { text: "white" })), `<div class="in-[.dark]:text-white"></div>`);
     });
     it("viewTransitionName emits inline view-transition-name style (dynamic-ident safe)", () => {
         assert.strictEqual(render(Div().viewTransitionName("hero")), `<div style="view-transition-name: hero"></div>`);

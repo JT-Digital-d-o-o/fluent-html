@@ -1,0 +1,1 @@
+{"version":3,"file":"emit-variant-object.d.ts","sourceRoot":"","sources":["../../../scripts/gen-vocab/emit-variant-object.ts"],"names":[],"mappings":"AA6BA,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,gCAAgC,CAAC;AAkBrE,2CAA2C;AAC3C,wBAAgB,0BAA0B,IAAI,MAAM,CAGnD;AA+CD,qDAAqD;AACrD,wBAAgB,OAAO,CAAC,IAAI,EAAE,cAAc,GAAG,MAAM,CASpD;AAWD,0DAA0D;AAC1D,wBAAgB,sBAAsB,IAAI,MAAM,CAwC/C"}

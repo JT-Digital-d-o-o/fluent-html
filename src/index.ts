@@ -24,6 +24,9 @@ export type {
 } from './core/index.js';
 export type { CssPropertyName } from './core/index.js';
 
+// Object-form variants (llm-styling/object-variants)
+export type { VariantStyleObject, StyleProps, NestedVariants, DirectVariant } from './core/index.js';
+
 // HTML attribute types
 export type {
   InputType,

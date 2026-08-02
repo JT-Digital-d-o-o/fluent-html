@@ -1,11 +1,15 @@
 /**
  * Tailwind CSS utility methods for Tag — extracted as a mixin.
- * This file adds all Tailwind styling methods, variant proxy (.on/.at),
- * and layout helpers to Tag.prototype via declaration merging.
+ * This file adds all Tailwind styling methods, the object-form variant
+ * surface (`.hover({…})`/`.md({…})`/`.variant(name, {…})`), and layout
+ * helpers to Tag.prototype via declaration merging.
  *
  * @module
  */
 import { Tag } from "./tag.js";
+import { DIRECT_VARIANTS } from "../class-vocab/index.js";
+import { applyVariantObject } from "./variant-object.js";
+import type { VariantStyleObject } from "./variant-object.js";
 // Shared with the class-vocab source of truth (C-05) — one home for these
 // constants (the extractor + ESLint maps derive from the same module).
 import { DIR_MAP, ROUNDED_CORNERS, signNeg, radialGradientClass } from "../class-vocab/types.js";
@@ -129,30 +133,67 @@ import type { CssPropertyName } from "./css-props.gen.js";
 import type { Id } from "../ids.js";
 import { extractId } from "../ids.js";
 
-// ── Variant helper (local, not on prototype) ────────────────────────
-
-function withVariant(tag: Tag, prefix: string, fn: (tag: Tag) => Tag): Tag {
-  const outer = tag._variantPrefix;
-  tag._variantPrefix = outer ? `${outer}:${prefix}` : prefix;
-  // try/finally so a throw inside the callback can't leak the variant prefix onto
-  // later classes on a reused tag (e.g. `hover:` bleeding into subsequent .addClass).
-  try {
-    fn(tag);
-  } finally {
-    tag._variantPrefix = outer;
-  }
-  return tag;
-}
-
 // `DIR_MAP` (padding/margin/border directions) is imported from class-vocab.
 
 // ── Declaration merging — adds types to Tag ─────────────────────────
 
 declare module "./tag.js" {
   interface Tag {
-    // Variant Proxy
-    on(state: TailwindState, fn: (tag: this) => this): this;
-    at(breakpoint: TailwindBreakpoint, fn: (tag: this) => this): this;
+    // Object-form variants (llm-styling/object-variants). Tier-1 names are
+    // wired from DIRECT_VARIANTS below; nesting stacks prefixes:
+    // `.md({ hover: { bg: "blue-700" } })` → `md:hover:bg-blue-700`.
+    /** `hover:` styles as a typed object: `.hover({ bg: "blue-600", scale: "105" })`. */
+    hover(styles: VariantStyleObject): this;
+    /** `focus:` styles as a typed object. */
+    focus(styles: VariantStyleObject): this;
+    /** `focus-visible:` styles as a typed object. */
+    focusVisible(styles: VariantStyleObject): this;
+    /** `focus-within:` styles as a typed object. */
+    focusWithin(styles: VariantStyleObject): this;
+    /** `active:` styles as a typed object. */
+    active(styles: VariantStyleObject): this;
+    /** `disabled:` styles as a typed object. */
+    disabled(styles: VariantStyleObject): this;
+    /** `checked:` styles as a typed object. */
+    checked(styles: VariantStyleObject): this;
+    /** `dark:` styles as a typed object. */
+    dark(styles: VariantStyleObject): this;
+    /** `first:` styles as a typed object. */
+    first(styles: VariantStyleObject): this;
+    /** `last:` styles as a typed object. */
+    last(styles: VariantStyleObject): this;
+    /** `odd:` styles as a typed object. */
+    odd(styles: VariantStyleObject): this;
+    /** `even:` styles as a typed object. */
+    even(styles: VariantStyleObject): this;
+    /** `group-hover:` styles as a typed object (pair with a `.group()` ancestor). */
+    groupHover(styles: VariantStyleObject): this;
+    /** `peer-checked:` styles as a typed object (pair with a `.peer()` sibling). */
+    peerChecked(styles: VariantStyleObject): this;
+    /** `before:` pseudo-element styles as a typed object (add `content: true` to render). */
+    before(styles: VariantStyleObject): this;
+    /** `after:` pseudo-element styles as a typed object (add `content: true` to render). */
+    after(styles: VariantStyleObject): this;
+    /** `sm:` (≥640px) styles as a typed object. */
+    sm(styles: VariantStyleObject): this;
+    /** `md:` (≥768px) styles as a typed object. */
+    md(styles: VariantStyleObject): this;
+    /** `lg:` (≥1024px) styles as a typed object. */
+    lg(styles: VariantStyleObject): this;
+    /** `xl:` (≥1280px) styles as a typed object. */
+    xl(styles: VariantStyleObject): this;
+    /** `2xl:` (≥1536px) styles as a typed object — spelled `xl2` (`2xl` is not an identifier); `.variant("2xl", …)` keeps the exact spelling. */
+    xl2(styles: VariantStyleObject): this;
+    /**
+     * Generic variant — the long tail beyond the tier-1 methods: arbitrary
+     * selectors and attribute states (`"data-[state=open]"`, `"aria-[busy]"`,
+     * `"group-focus"`, `"not-first"`), container queries (`"@sm"`, `"@max-lg"`),
+     * and the exact `"2xl"` spelling.
+     * @example
+     * Div().variant("data-[state=open]", { rounded: "lg" })
+     * Div().variant("@sm", { flex: "row" })
+     */
+    variant(name: TailwindState | TailwindBreakpoint, styles: VariantStyleObject): this;
 
     // Spacing
     p(value: TailwindSpacing): this;
@@ -377,7 +418,7 @@ declare module "./tag.js" {
     group(name?: string): this;
     peer(name?: string): this;
 
-    /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.at("@sm", …)`. */
+    /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.variant("@sm", {…})`. */
     containerQuery(name?: string): this;
 
     // Filters
@@ -434,14 +475,14 @@ declare module "./tag.js" {
     /**
      * Arbitrary-CSS escape hatch — emits Tailwind's arbitrary-property class
      * `[prop:value]` (spaces become `_`), so the style composes with variants
-     * (`.on()`/`.at()`) and stays visible to the safelist extractor: a literal
-     * call is safelisted, a non-literal argument is a build error. Decision
-     * rule: static arbitrary CSS → `cssProp`; runtime-computed → `.setStyle()`;
-     * non-Tailwind class hooks → `.cssClass()`.
+     * (`.hover({…})`/`.variant()`) and stays visible to the safelist extractor:
+     * a literal call is safelisted, a non-literal argument is a build error.
+     * Decision rule: static arbitrary CSS → `cssProp`; runtime-computed →
+     * `.setStyle()`; non-Tailwind class hooks → `.cssClass()`.
      * @example
-     * Div().cssProp("mask-repeat", "no-repeat")            // [mask-repeat:no-repeat]
-     * Div().cssProp("border", "1px solid red")             // [border:1px_solid_red]
-     * Div().on("hover", t => t.cssProp("--glow", "0 0 4px")) // hover:[--glow:0_0_4px]
+     * Div().cssProp("mask-repeat", "no-repeat")             // [mask-repeat:no-repeat]
+     * Div().cssProp("border", "1px solid red")              // [border:1px_solid_red]
+     * Div().hover({ cssProp: ["--glow", "0 0 4px"] })       // hover:[--glow:0_0_4px]
      */
     cssProp(property: CssPropertyName, value: string): this;
 
@@ -567,10 +608,11 @@ declare module "./tag.js" {
 
     /**
      * Pseudo-element content. Bare `.content()` emits `content-['']` — the empty
-     * string every `before:`/`after:` decoration needs to render.
+     * string every `before:`/`after:` decoration needs to render (`content: true`
+     * in a variant object).
      * @example
-     * Span().on("before", t => t.content().w("2").h("2").bg("red-500"))
-     * Span().on("after", t => t.content("[attr(data-label)]"))
+     * Span().before({ content: true, w: "2", h: "2", bg: "red-500" })
+     * Span().after({ content: "[attr(data-label)]" })
      */
     content(value?: TailwindContent): this;
 
@@ -587,14 +629,17 @@ declare module "./tag.js" {
 
 const p = Tag.prototype;
 
-// Variant Proxy
+// Object-form variants — every tier-1 method is the same one-liner over its
+// DIRECT_VARIANTS prefix, so the map stays the single source of the tier-1 set
+// (a parity test asserts each declared method exists and emits its prefix).
 
-p.on = function (state: string, fn: (tag: Tag) => Tag) {
-  return withVariant(this, state, fn);
-};
+for (const [method, prefix] of Object.entries(DIRECT_VARIANTS)) {
+  (p as unknown as Record<string, (this: Tag, styles: VariantStyleObject) => Tag>)[method] =
+    function (this: Tag, styles: VariantStyleObject) { return applyVariantObject(this, prefix, styles); };
+}
 
-p.at = function (breakpoint: string, fn: (tag: Tag) => Tag) {
-  return withVariant(this, breakpoint, fn);
+p.variant = function (name: string, styles: VariantStyleObject) {
+  return applyVariantObject(this, name, styles);
 };
 
 // Spacing

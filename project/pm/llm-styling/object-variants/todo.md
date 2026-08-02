@@ -2,19 +2,19 @@
 
 ### As an LLM author I want variant styling as typed objects so that variant groups cost prefix-like tokens while staying structurally scoped
 
-- [ ] [P0] Generate `VariantStyleObject` (`StyleProps` + `NestedVariants`) and `KEY_EMIT` from vocab `valueType` rows (depends: vocab-generator schema enrichment)
-- [ ] [P0] Implement `applyVariantObject` (port the spike's ~25-LOC core; `_variantPrefix` push/restore, `finally`-guarded)
-- [ ] [P0] Tier-1 variant methods (~21, generated one-liners) + generic `.variant(name, obj)`
-- [ ] [P0] DECISION: `2xl` member naming (`xl2` vs `.variant("2xl", …)`-only) — record in decisions.md
-- [ ] [P1] Multi-arg composite keys as readonly tuples (`gradient`, `maskFrom`, snap family)
-- [ ] [P0] Write tests — port spike proofs: emission (incl. 2-level nesting → `md:hover:first:`), key/value `@ts-expect-error` rejections, `undefined`-value conditionals, `.variant()` arbitrary forms
+- [x] [P0] Generate `VariantStyleObject` (`StyleProps` + `NestedVariants`) and `KEY_EMIT` from vocab `valueType` rows (depends: vocab-generator schema enrichment) (shipped as: shared key derivation `src/class-vocab/variant-keys.ts` (mechanical from emit shapes + per-row `variantObject` specs for multi-arg customs/flattening/curated types) → `StyleProps` emitted to `src/core/variant-object.gen.ts` by `scripts/gen-vocab/emit-variant-object.ts` (209 keys; literals resolve to the template's named unions by `method[.group]` address with a deep-equal fallback, theme namespaces via a 9-entry table, loud error otherwise); the runtime key→emit map derives from the same specs at module init — no hand table anywhere; wired into `gen:vocab --check` CI)
+- [x] [P0] Implement `applyVariantObject` (port the spike's ~25-LOC core; `_variantPrefix` push/restore, `finally`-guarded) (`src/core/variant-object.ts`; skips `false`/`undefined`, recurses nested tier-1 keys, throws loudly on unknown keys (only reachable past a cast), trailing-`undefined` tuple trim with positional pass-through for gradient's optional middle member)
+- [x] [P0] Tier-1 variant methods (~21, generated one-liners) + generic `.variant(name, obj)` (prototype wiring is a loop over `DIRECT_VARIANTS` so the map is the single source; 21 hand JSDoc declarations + a completeness test asserting every map entry exists and emits its prefix; `.variant()` takes the existing `TailwindState | TailwindBreakpoint` unions — `data-[…]`/`@sm`/`[&>li]` verified)
+- [x] [P0] DECISION: `2xl` member naming (`xl2` vs `.variant("2xl", …)`-only) — record in decisions.md (decided `xl2` in both method and nested-key position; `.variant("2xl", …)` keeps the exact spelling; recorded 2026-08-01 in project/pm/decisions.md)
+- [x] [P1] Multi-arg composite keys as readonly tuples (`gradient`, `maskFrom`, snap family) (readonly-tuple `variantObject.type` specs on border/rounded/gradient/bgLinear/bgRadial/bgConic/from/via/to/snap/maskFrom/maskTo/cssProp; translate flattens to `translateX/translateY/translateZ` keys)
+- [x] [P0] Write tests — port spike proofs: emission (incl. 2-level nesting → `md:hover:first:`), key/value `@ts-expect-error` rejections, `undefined`-value conditionals, `.variant()` arbitrary forms (209-key object↔vocab parity suite + tier-1 completeness in `class-vocab.test.ts`; object-variant describes in `fluent-styling-v2.ts` (nesting, xl2, conditionals, presets-spread, exception-safety); 9 rejection + 20 positive lines in `type-surface.test-d.ts`; lib 2179 green)
 - [ ] [P0] Check for bugs
 
 ### As a maintainer I want `.on()`/`.at()` removed and all consumers migrated so that there is one variant mechanism
 
-- [ ] [P0] Remove `.on()`/`.at()` + lambda `withVariant` registration; rewrite internal consumers (`overlay.ts`, any `FluentCustomMethods` docs pattern)
+- [x] [P0] Remove `.on()`/`.at()` + lambda `withVariant` registration; rewrite internal consumers (`overlay.ts`, any `FluentCustomMethods` docs pattern) (decl + impl + `withVariant` deleted; `overlay.ts` had no sites — real consumers were `examples/tailwind.ts`, `bench/render.ts`, and 4 test files, all object-form now; JSDoc examples (`cssProp`, `content`, `containerQuery`) and the types-template variant comments rewritten; duplicate-family sites (ring width+color) use the chained two-call form)
 - [ ] [P1] Codemod the 25 demo sites (fold into the canonical-names codemod run); render-diff class sets before/after
-- [ ] [P1] ESLint: extend derived tables for object keys; add `require-satisfies-variant-object` for non-literal variant args (the excess-property hole)
+- [ ] [P1] ESLint: extend derived tables for object keys; add `require-satisfies-variant-object` for non-literal variant args (the excess-property hole) (note: plugin autofix messages still teach `.on("hover", …)` — fix with this task)
 - [ ] [P1] Extractor: verify variant-object emission is covered by `scanFluent` (object args are literal → resolvable); add unresolved-arg fixture
 - [ ] [P0] Docs in the same release: README/FLUENT-STYLING/guidelines variant sections rewritten to object form
 - [ ] [P1] Write tests — extractor variant-object fixtures; eslint rule fixtures

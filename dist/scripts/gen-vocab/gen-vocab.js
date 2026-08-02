@@ -12,10 +12,12 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { generatedPath, renderTailwindTypesGen } from "./emit-types.js";
 import { cssPropsGeneratedPath, renderCssPropsGen } from "./emit-css-props.js";
+import { variantObjectGeneratedPath, renderVariantObjectGen } from "./emit-variant-object.js";
 const check = process.argv.includes("--check");
 const artifacts = [
     { path: generatedPath(), next: renderTailwindTypesGen() },
     { path: cssPropsGeneratedPath(), next: renderCssPropsGen() },
+    { path: variantObjectGeneratedPath(), next: renderVariantObjectGen() },
 ];
 let failed = false;
 for (const { path: outPath, next } of artifacts) {

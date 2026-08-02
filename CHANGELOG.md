@@ -44,6 +44,18 @@ Pairs with **eslint-plugin-fluent-html 4.0.0** (derived tables re-derive from th
 - README, FLUENT-STYLING.md, TAILWIND-SETUP.md, examples/, the guidelines surface, and the tooling READMEs (extractor, eslint plugin) teach only the canonical names (directional shorthands as the preferred spelling). FLUENT-STYLING states the prefix rule up front and documents the residual divergences ("Where names diverge from raw Tailwind": compound-prefix boundary, `.neg()`, translate axis form, `containerQuery`/`gradient`/`snap`).
 - Examples now typecheck under strict; fixed two latent example bugs (a dynamic-interpolation badge helper → `whenMatch` with literal branches, and a flow-narrowed `null` in the `IfThen` narrowing demo).
 
+### 💥 Breaking — object variants replace `.on()`/`.at()` (`llm-styling/object-variants`)
+
+Variants are typed style objects, not lambdas. `.on("hover", t => t.bg("blue-600"))` → **`.hover({ bg: "blue-600" })`**; `.at("md", …)` → **`.md({ px: "8" })`**. Object keys ARE the canonical method names (why the two scopes ship together); TypeScript spell-checks keys and values two levels deep, `false`/`undefined` values are skipped (conditionals become plain expressions), and a misplaced callback can no longer style the wrong tag or silently emit an unprefixed class. Measured: −28.5% characters at variant sites.
+
+- **Tier-1 methods (21):** `hover focus focusVisible focusWithin active disabled checked dark first last odd even groupHover peerChecked before after sm md lg xl xl2` — `xl2` emits `2xl:` (`2xl` is not an identifier; decision recorded 2026-08-01).
+- **`.variant(name, styles)`** — the generic long tail: `data-[…]`/`aria-[…]`/`has-[…]`/`group-*`/`peer-*`/`not-*`, container queries (`@sm`, `@max-lg`), arbitrary `[&>li]` selectors, and the exact `"2xl"` spelling. `TailwindState`/`TailwindBreakpoint` unchanged.
+- **Nesting stacks prefixes:** `.md({ hover: { bg: "blue-700" } })` → `md:hover:bg-blue-700` (any depth).
+- **Flattened positional keys:** `translateX/translateY/translateZ`, `gapX/gapY`, `overflowX/overflowY`, `overscrollX/overscrollY`, `scrollMx…scrollMr`, `scrollPx…scrollPr` (directional spacing keys were already methods). Multi-arg utilities take readonly tuples: `border: ["top", "red-500"]`, `gradient: ["red-500", "blue-500", "to-br"]`, `cssProp: ["--glow", "0 0 4px"]`. No-arg utilities are boolean flags (`truncate: true`, `content: true`); optional-value utilities accept `true` (`ring: true`).
+- **One key per prefix per object** — a second value family for the same prefix (ring width + ring color) chains a second variant call: `.focus({ ring: 2 }).focus({ ring: "blue-300" })`.
+- **Generated, not hand-written:** `StyleProps` (`variant-object.gen.ts`, 209 keys) is emitted from the shared key derivation in `class-vocab/variant-keys.ts` + per-row `variantObject` specs; the runtime key→emit map derives from the same specs, and a 209-key parity suite renders every key against the vocab emitters. Extracted style consts should pin with `satisfies VariantStyleObject` (excess-property checking doesn't reach through variables).
+- **Removed:** `.on()`, `.at()`, and the lambda `withVariant` helper. No aliases. There is deliberately no object hatch for `.cssClass()` under a variant — non-Tailwind classes have no variant story.
+
 ## [6.8.0] - Escape hatch closure: vocab gap fills + font-family theme tokens
 
 First stage of `llm-styling/escape-hatch` — the last vocab gaps are filled so no styling need forces an author off the typed surface.

@@ -66,11 +66,11 @@ function benchVariantHeavy() {
     return Div(ForEach(100, (i) => Button(`Button ${i}`)
         .p("x", "4").p("y", "2").bg("blue-500").text("white").rounded()
         .transition("colors")
-        .on("hover", t => t.bg("blue-600").scale("105").text("white").shadow("lg"))
-        .on("focus", t => t.ring("2").ring("blue-300").outline("none").shadow("md"))
-        .on("disabled", t => t.opacity("50").cursor("not-allowed").bg("gray-400"))
-        .at("md", t => t.p("x", "8").text("lg").rounded("lg"))
-        .at("lg", t => t.p("x", "12").text("xl"))));
+        .hover({ bg: "blue-600", scale: "105", text: "white", shadow: "lg" })
+        .focus({ ring: "2", outline: "none", shadow: "md" }).focus({ ring: "blue-300" })
+        .disabled({ opacity: "50", cursor: "not-allowed", bg: "gray-400" })
+        .md({ px: "8", text: "lg", rounded: "lg" })
+        .lg({ px: "12", text: "xl" })));
 }
 function benchLargeForEach() {
     return Div(ForEach(5000, (i) => Div(`Item ${i}`).setId(`item-${i}`)));

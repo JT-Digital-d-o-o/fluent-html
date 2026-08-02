@@ -8,6 +8,7 @@ export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from './core/i
 export { defineTheme } from './core/index.js';
 export type { ThemeSpec, ThemeKeys, FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, FluentCustomFontFamily, } from './core/index.js';
 export type { CssPropertyName } from './core/index.js';
+export type { VariantStyleObject, StyleProps, NestedVariants, DirectVariant } from './core/index.js';
 export type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, AutofillField, AddressField, AddressPurpose, FormEnctype, FormMethod, BrowsingContext, LinkRel, ReferrerPolicy, BooleanAttribute, SandboxToken, PermissionsPolicyDirective, FetchPriority, LinkElementRel, LinkAs, LinkType, ScriptType, MetaName, Charset, PopoverState, PopoverAction, CommandFor, ClosedBy, EnterKeyHint, ContentEditable, Autocapitalize, Spellcheck, } from './elements/html-types.js';
 export type { TableCellScope } from './elements/index.js';
 export { render, renderWithNonce } from './render/index.js';

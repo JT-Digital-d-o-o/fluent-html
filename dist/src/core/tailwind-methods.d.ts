@@ -1,10 +1,61 @@
+import type { VariantStyleObject } from "./variant-object.js";
 import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindTranslate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll, TailwindPositionArea, TailwindStrokeWidth, TailwindDecorationStyle, TailwindDecorationThickness, TailwindColorScheme, TailwindTextWrap, TailwindHyphens, TailwindTextShadow, TailwindDropShadow, TailwindInsetShadow, TailwindMixBlendMode, TailwindBgBlendMode, TailwindIsolation, TailwindDelay, TailwindTransitionBehavior, TailwindGradientPosition, TailwindGradientAngle, TailwindGradientOrigin, TailwindGradientInterpolation, TailwindPerspective, TailwindPerspectiveOrigin, TailwindTranslateZ, TailwindTransformStyle, TailwindBackfaceVisibility, TailwindGridLine, TailwindRowSpan, TailwindColumns, TailwindBreakBeforeAfter, TailwindBreakInside, TailwindBoxDecoration, TailwindSnapAxis, TailwindSnapStrictness, TailwindSnapAlign, TailwindSnapStop, TailwindScrollBehavior, TailwindFieldSizing, TailwindMaskEdge, TailwindMaskStop, TailwindMaskComposite, TailwindMaskType, TailwindAppearance, TailwindWrap, TailwindContent } from "./tailwind-types.js";
 import type { CssPropertyName } from "./css-props.gen.js";
 import type { Id } from "../ids.js";
 declare module "./tag.js" {
     interface Tag {
-        on(state: TailwindState, fn: (tag: this) => this): this;
-        at(breakpoint: TailwindBreakpoint, fn: (tag: this) => this): this;
+        /** `hover:` styles as a typed object: `.hover({ bg: "blue-600", scale: "105" })`. */
+        hover(styles: VariantStyleObject): this;
+        /** `focus:` styles as a typed object. */
+        focus(styles: VariantStyleObject): this;
+        /** `focus-visible:` styles as a typed object. */
+        focusVisible(styles: VariantStyleObject): this;
+        /** `focus-within:` styles as a typed object. */
+        focusWithin(styles: VariantStyleObject): this;
+        /** `active:` styles as a typed object. */
+        active(styles: VariantStyleObject): this;
+        /** `disabled:` styles as a typed object. */
+        disabled(styles: VariantStyleObject): this;
+        /** `checked:` styles as a typed object. */
+        checked(styles: VariantStyleObject): this;
+        /** `dark:` styles as a typed object. */
+        dark(styles: VariantStyleObject): this;
+        /** `first:` styles as a typed object. */
+        first(styles: VariantStyleObject): this;
+        /** `last:` styles as a typed object. */
+        last(styles: VariantStyleObject): this;
+        /** `odd:` styles as a typed object. */
+        odd(styles: VariantStyleObject): this;
+        /** `even:` styles as a typed object. */
+        even(styles: VariantStyleObject): this;
+        /** `group-hover:` styles as a typed object (pair with a `.group()` ancestor). */
+        groupHover(styles: VariantStyleObject): this;
+        /** `peer-checked:` styles as a typed object (pair with a `.peer()` sibling). */
+        peerChecked(styles: VariantStyleObject): this;
+        /** `before:` pseudo-element styles as a typed object (add `content: true` to render). */
+        before(styles: VariantStyleObject): this;
+        /** `after:` pseudo-element styles as a typed object (add `content: true` to render). */
+        after(styles: VariantStyleObject): this;
+        /** `sm:` (≥640px) styles as a typed object. */
+        sm(styles: VariantStyleObject): this;
+        /** `md:` (≥768px) styles as a typed object. */
+        md(styles: VariantStyleObject): this;
+        /** `lg:` (≥1024px) styles as a typed object. */
+        lg(styles: VariantStyleObject): this;
+        /** `xl:` (≥1280px) styles as a typed object. */
+        xl(styles: VariantStyleObject): this;
+        /** `2xl:` (≥1536px) styles as a typed object — spelled `xl2` (`2xl` is not an identifier); `.variant("2xl", …)` keeps the exact spelling. */
+        xl2(styles: VariantStyleObject): this;
+        /**
+         * Generic variant — the long tail beyond the tier-1 methods: arbitrary
+         * selectors and attribute states (`"data-[state=open]"`, `"aria-[busy]"`,
+         * `"group-focus"`, `"not-first"`), container queries (`"@sm"`, `"@max-lg"`),
+         * and the exact `"2xl"` spelling.
+         * @example
+         * Div().variant("data-[state=open]", { rounded: "lg" })
+         * Div().variant("@sm", { flex: "row" })
+         */
+        variant(name: TailwindState | TailwindBreakpoint, styles: VariantStyleObject): this;
         p(value: TailwindSpacing): this;
         p(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
         p(unit: TailwindUnit, amount: number): this;
@@ -177,7 +228,7 @@ declare module "./tag.js" {
         to(color: TailwindGradientStop, position?: TailwindGradientPosition): this;
         group(name?: string): this;
         peer(name?: string): this;
-        /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.at("@sm", …)`. */
+        /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.variant("@sm", {…})`. */
         containerQuery(name?: string): this;
         blur(value?: TailwindBlur): this;
         backdropBlur(value?: TailwindBlur): this;
@@ -218,14 +269,14 @@ declare module "./tag.js" {
         /**
          * Arbitrary-CSS escape hatch — emits Tailwind's arbitrary-property class
          * `[prop:value]` (spaces become `_`), so the style composes with variants
-         * (`.on()`/`.at()`) and stays visible to the safelist extractor: a literal
-         * call is safelisted, a non-literal argument is a build error. Decision
-         * rule: static arbitrary CSS → `cssProp`; runtime-computed → `.setStyle()`;
-         * non-Tailwind class hooks → `.cssClass()`.
+         * (`.hover({…})`/`.variant()`) and stays visible to the safelist extractor:
+         * a literal call is safelisted, a non-literal argument is a build error.
+         * Decision rule: static arbitrary CSS → `cssProp`; runtime-computed →
+         * `.setStyle()`; non-Tailwind class hooks → `.cssClass()`.
          * @example
-         * Div().cssProp("mask-repeat", "no-repeat")            // [mask-repeat:no-repeat]
-         * Div().cssProp("border", "1px solid red")             // [border:1px_solid_red]
-         * Div().on("hover", t => t.cssProp("--glow", "0 0 4px")) // hover:[--glow:0_0_4px]
+         * Div().cssProp("mask-repeat", "no-repeat")             // [mask-repeat:no-repeat]
+         * Div().cssProp("border", "1px solid red")              // [border:1px_solid_red]
+         * Div().hover({ cssProp: ["--glow", "0 0 4px"] })       // hover:[--glow:0_0_4px]
          */
         cssProp(property: CssPropertyName, value: string): this;
         /**
@@ -335,10 +386,11 @@ declare module "./tag.js" {
         fieldSizing(value: TailwindFieldSizing): this;
         /**
          * Pseudo-element content. Bare `.content()` emits `content-['']` — the empty
-         * string every `before:`/`after:` decoration needs to render.
+         * string every `before:`/`after:` decoration needs to render (`content: true`
+         * in a variant object).
          * @example
-         * Span().on("before", t => t.content().w("2").h("2").bg("red-500"))
-         * Span().on("after", t => t.content("[attr(data-label)]"))
+         * Span().before({ content: true, w: "2", h: "2", bg: "red-500" })
+         * Span().after({ content: "[attr(data-label)]" })
          */
         content(value?: TailwindContent): this;
         /** Merged `mask-*` method — mask image (`"none"` or an arbitrary `[url(…)]` source) or mask-composite mode. */

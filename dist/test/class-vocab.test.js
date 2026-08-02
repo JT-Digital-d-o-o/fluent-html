@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { render, Div } from "../src/index.js";
 import { Tag } from "../src/core/index.js";
-import { classVocab, emitClasses, prefixOf } from "../src/class-vocab/index.js";
+import { classVocab, emitClasses, prefixOf, variantKeySpecs, DIRECT_VARIANTS } from "../src/class-vocab/index.js";
 // ---------------------------------------------------------------------------
 // 1. emitClasses — hand-picked exact assertions (one+ per shape kind).
 //    Independent of the lib, so an emit-logic bug is caught even if the lib
@@ -166,6 +166,64 @@ describe("lib parity — vocab emit matches tailwind-methods render", () => {
                 const expected = emitClasses(def.emit, sample.emit).join(" ");
                 assert.equal(renderedClass(tag), expected, `.${def.method}(${sample.lib.map((a) => JSON.stringify(a)).join(", ")})`);
             }
+        });
+    }
+});
+// ---------------------------------------------------------------------------
+// 2b. Object-variant parity — every VariantStyleObject key must emit exactly
+//     the vocab's classes under the variant prefix. Drives `.hover({key: v})`
+//     for each derived key spec and compares against `hover:` + emitClasses().
+//     This is the drift guard between the generated StyleProps surface, the
+//     shared key derivation, and the runtime emitters.
+// ---------------------------------------------------------------------------
+/**
+ * Per-spec sample arg tuples (each INCLUDES the spec's fixed `pre` args, so it
+ * can feed emitClasses directly). The object value is the remainder after
+ * `pre`: `[]` → `true`, one arg → scalar, more → tuple.
+ */
+function variantSamplesFor(spec) {
+    const s = spec.emit;
+    switch (s.kind) {
+        case "static": return [[]];
+        case "prefix": return [[...spec.pre, "v"]];
+        case "optional": return [[...spec.pre], [...spec.pre, "v"]];
+        case "value": return [[...spec.pre, "inset-px"]];
+        case "spacing": return [[...spec.pre, "4"]];
+        case "sizing": return [[...spec.pre, "full"]];
+        case "custom":
+            // Keep only the samples this key owns (translate's `translateY` takes
+            // the ["y", …] samples) and that yield a representable object value.
+            return (spec.def.samples ?? []).filter((args) => spec.pre.every((p, i) => args[i] === p));
+    }
+}
+describe("object-variant parity — every style key emits the vocab classes under the prefix", () => {
+    for (const spec of variantKeySpecs) {
+        it(`${spec.key} emits under hover:`, () => {
+            for (const args of variantSamplesFor(spec)) {
+                const rest = args.slice(spec.pre.length);
+                const value = rest.length === 0 ? true : rest.length === 1 ? rest[0] : rest;
+                const tag = Div().hover({ [spec.key]: value });
+                const expected = emitClasses(spec.emit, args).map((c) => `hover:${c}`).join(" ");
+                assert.equal(renderedClass(tag), expected, `${spec.key}: ${JSON.stringify(value)}`);
+            }
+        });
+    }
+    it("covers every StyleProps key exactly once (no duplicate derivation)", () => {
+        const keys = variantKeySpecs.map((s) => s.key);
+        assert.equal(new Set(keys).size, keys.length);
+    });
+});
+// ---------------------------------------------------------------------------
+// 2c. Tier-1 variant methods — every DIRECT_VARIANTS entry must exist on the
+//     prototype and emit its Tailwind prefix (incl. the xl2 → 2xl divergence).
+// ---------------------------------------------------------------------------
+describe("tier-1 variant methods — DIRECT_VARIANTS completeness", () => {
+    const proto = Tag.prototype;
+    for (const [method, prefix] of Object.entries(DIRECT_VARIANTS)) {
+        it(`.${method}() emits the ${prefix}: prefix`, () => {
+            assert.equal(typeof proto[method], "function", `Tag.prototype.${method} exists`);
+            const tag = proto[method].call(Div(), { bg: "red-500" });
+            assert.equal(renderedClass(tag), `${prefix}:bg-red-500`);
         });
     }
 });

@@ -3,6 +3,7 @@ export { Tag } from "./tag.js";
 export type { FluentCustomMethods } from "./tag.js";
 import "./register.js";
 export type { OverlayPosition } from "./overlay.js";
+export type { VariantStyleObject, StyleProps, NestedVariants, DirectVariant } from "./variant-object.js";
 export { RawString, Raw } from "./raw-string.js";
 export { Empty, El } from "./utils.js";
 export { isTag, isRawString } from "./guards.js";

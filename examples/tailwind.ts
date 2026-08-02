@@ -33,8 +33,9 @@ const styledCard = Div(
   Button("View Reports")
     .apply(primaryBtn)
     .mt("4")
-    .on("hover", t => t.bg("blue-600").scale("105"))
-    .on("focus", t => t.ring("2").ring("blue-300").outline("none")),
+    .hover({ bg: "blue-600", scale: "105" })
+    .focus({ ring: "2", outline: "none" })
+    .focus({ ring: "blue-300" }),
 )
   .apply(card)
   .maxW("md")
