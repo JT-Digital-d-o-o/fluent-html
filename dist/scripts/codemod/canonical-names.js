@@ -1,6 +1,7 @@
 /**
  * `npm run codemod:canonical -- <tsconfig> [--dry]` — migrate a consumer repo
- * to the 7.0.0 canonical method names (method name = Tailwind class prefix).
+ * to the 7.0.0 canonical method names (method name = Tailwind class prefix)
+ * AND the object variant surface (llm-styling/object-variants).
  *
  * Mechanics: every `CallExpression` whose callee is a `PropertyAccessExpression`
  * with a name in the rename map is rewritten **only if the receiver types as
@@ -15,12 +16,23 @@
  *   `.bold()`            → `.font("bold")`
  *   `.display("block")`  → `.block()`   (legacy pre-6.x method; demos only)
  *
+ * Variant lambdas convert to typed style objects, using the same key
+ * derivation the library runtime uses (`variantKeySpecs`):
+ *   `.on("hover", t => t.bg("blue-600"))`   → `.hover({ bg: "blue-600" })`
+ *   `.at("md", t => t.p("x", "8"))`         → `.md({ px: "8" })`
+ *   `.on("dark", t => t.on("hover", …))`    → `.dark({ hover: { … } })`
+ *   `.on("aria-checked", …)`                → `.variant("aria-checked", { … })`
+ * A repeated key (two `.ring()` calls) chains a second variant call. Lambdas
+ * the transform can't express (non-literal args, `.addClass()` inside, a
+ * non-tier-1 nested variant) are left untouched and reported.
+ *
  * Name matches whose receiver cannot be verified are left untouched and
  * reported for manual review.
  *
  * @module
  */
-import { Node, Project } from "ts-morph";
+import { Node, Project, ts } from "ts-morph";
+import { variantKeySpecs, DIRECT_VARIANTS, DIR_MAP, UNITS } from "../../src/class-vocab/index.js";
 /** Old → canonical name. 21 simple renames + 29 merge sources (call-site-pure: argument shapes carried over). */
 const RENAMES = {
     // (b) simple renames
@@ -98,7 +110,7 @@ const KEYWORD_DISPATCH = {
     },
 };
 const REWRITES = new Set(["outlineHidden", "bold", ...Object.keys(KEYWORD_DISPATCH)]);
-const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES]);
+const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES, "on", "at"]);
 function typeIsTag(type, seen = new Set()) {
     if (seen.has(type))
         return false;
@@ -152,9 +164,168 @@ function rewriteText(name, call) {
         return { skipReason: `no canonical method for ${name}("${arg.getLiteralValue()}")` };
     return { text: `${method}()` };
 }
+// ── Variant-lambda → object-form conversion (object-variants) ────────
+/** Tailwind variant prefix → tier-1 method/nested-key name (`2xl` → `xl2`). */
+const TIER1_BY_PREFIX = Object.fromEntries(Object.entries(DIRECT_VARIANTS).map(([name, prefix]) => [prefix, name]));
+/** Canonical method → its variant-key specs, longest fixed-`pre` first. */
+const SPECS_BY_METHOD = (() => {
+    const map = new Map();
+    for (const spec of variantKeySpecs) {
+        const list = map.get(spec.def.method) ?? [];
+        list.push(spec);
+        map.set(spec.def.method, list);
+    }
+    for (const list of map.values())
+        list.sort((a, b) => b.pre.length - a.pre.length);
+    return map;
+})();
+/** Source text of a literal argument (string keeps its quotes, numbers incl. unary minus), or null. */
+function literalArg(node) {
+    if (Node.isStringLiteral(node))
+        return { text: node.getText(), value: node.getLiteralValue() };
+    if (Node.isNumericLiteral(node))
+        return { text: node.getText(), value: node.getText() };
+    if (Node.isPrefixUnaryExpression(node) && node.getOperatorToken() === ts.SyntaxKind.MinusToken && Node.isNumericLiteral(node.getOperand())) {
+        return { text: node.getText(), value: node.getText() };
+    }
+    return null;
+}
+/** One styling call inside a variant lambda → its object entry, or a skip reason. */
+function entryFor(name, args) {
+    // Normalize legacy/renamed spellings first (the lambda may predate canonical names).
+    if (name === "bold")
+        return args.length === 0 ? { entry: { key: "font", value: '"bold"' } } : { reason: "bold() with args" };
+    if (name === "outlineHidden")
+        return { entry: { key: "outline", value: '"hidden"' } };
+    const dispatch = KEYWORD_DISPATCH[name];
+    if (dispatch !== undefined) {
+        const lit = args.length === 1 ? literalArg(args[0]) : null;
+        const method = lit ? dispatch[lit.value] : undefined;
+        return method !== undefined ? { entry: { key: method, value: "true" } } : { reason: `unconvertible ${name}() in variant` };
+    }
+    const canonical = RENAMES[name] ?? name;
+    const specs = SPECS_BY_METHOD.get(canonical);
+    if (specs === undefined)
+        return { reason: `.${canonical}() has no variant-object key` };
+    const lits = args.map(literalArg);
+    if (lits.some((l) => l === null))
+        return { reason: `.${canonical}() has a non-literal argument` };
+    const values = lits;
+    let spec = specs.find((s) => s.pre.length > 0 && s.pre.every((p, i) => {
+        const v = values[i]?.value;
+        return v !== undefined && (v === p || DIR_MAP[v] === p);
+    })) ?? specs.find((s) => s.pre.length === 0);
+    if (spec === undefined)
+        return { reason: `.${canonical}() arguments match no object key` };
+    let rest = values.slice(spec.pre.length);
+    // `.p("x", "8")` / `.m("top", "2")`: the directional keys of p/m are their
+    // own rows (`px`, `mt`, …), not derived expansions — route through them.
+    if (spec.emit.kind === "spacing" && rest.length === 2 && DIR_MAP[rest[0].value] !== undefined && !UNITS.has(rest[0].value)) {
+        const dirSpec = SPECS_BY_METHOD.get(`${canonical}${DIR_MAP[rest[0].value]}`)?.[0];
+        if (dirSpec !== undefined) {
+            spec = dirSpec;
+            rest = rest.slice(1);
+        }
+    }
+    // Unit overload → the bracket arm (`.w("px", 300)` → `w: "[300px]"`).
+    if (rest.length === 2 && UNITS.has(rest[0].value) && /^-?\d/.test(rest[1].value)) {
+        return { entry: { key: spec.key, value: `"[${rest[1].value}${rest[0].value}]"` } };
+    }
+    if (rest.length === 0)
+        return { entry: { key: spec.key, value: "true" } };
+    if (rest.length === 1)
+        return { entry: { key: spec.key, value: rest[0].text } };
+    return { entry: { key: spec.key, value: `[${rest.map((r) => r.text).join(", ")}]` } };
+}
+/**
+ * Convert a variant lambda body (a call chain rooted at the arrow's parameter)
+ * into object entries, recursing into nested `.on()`/`.at()`. Returns null with
+ * a reason when any link is not object-expressible.
+ */
+function chainEntries(body, param) {
+    const calls = [];
+    let cursor = body;
+    while (Node.isCallExpression(cursor)) {
+        const callee = cursor.getExpression();
+        if (!Node.isPropertyAccessExpression(callee))
+            return { reason: "non-method call in variant lambda" };
+        calls.push({ name: callee.getName(), node: cursor });
+        cursor = callee.getExpression();
+    }
+    if (!Node.isIdentifier(cursor) || cursor.getText() !== param)
+        return { reason: "lambda body is not a chain on its parameter" };
+    const entries = [];
+    for (const { name, node } of calls.reverse()) {
+        if (name === "on" || name === "at") {
+            const nested = variantObjectText(node);
+            if (nested.chunks === undefined)
+                return { reason: nested.reason ?? "unconvertible nested variant" };
+            const tier1 = TIER1_BY_PREFIX[nested.prefix];
+            if (tier1 === undefined)
+                return { reason: `nested variant "${nested.prefix}" is not a tier-1 member` };
+            if (nested.chunks.length !== 1)
+                return { reason: "nested variant needs a repeated key" };
+            entries.push({ key: tier1, value: nested.chunks[0] });
+            continue;
+        }
+        const { entry, reason } = entryFor(name, node.getArguments());
+        if (entry === undefined)
+            return { reason: reason ?? "unconvertible call" };
+        entries.push(entry);
+    }
+    return { entries };
+}
+/** Entries → object-literal chunks, starting a new chunk whenever a key repeats. */
+function chunkEntries(entries) {
+    const chunks = [[]];
+    for (const e of entries) {
+        if (chunks[chunks.length - 1].some((x) => x.key === e.key))
+            chunks.push([]);
+        chunks[chunks.length - 1].push(e);
+    }
+    return chunks.filter((c) => c.length > 0).map((c) => `{ ${c.map((e) => `${e.key}: ${e.value}`).join(", ")} }`);
+}
+/** Convert one `.on()`/`.at()` call into its variant prefix + object chunk(s). */
+function variantObjectText(call) {
+    const args = call.getArguments();
+    if (args.length !== 2)
+        return { reason: "variant call is not (name, lambda)" };
+    const nameArg = args[0];
+    if (!Node.isStringLiteral(nameArg))
+        return { reason: "variant name is not a string literal" };
+    const arrow = args[1];
+    if (!Node.isArrowFunction(arrow))
+        return { reason: "variant callback is not an arrow function" };
+    const params = arrow.getParameters();
+    if (params.length !== 1)
+        return { reason: "variant callback must take one parameter" };
+    const body = arrow.getBody();
+    if (!Node.isExpression(body))
+        return { reason: "variant callback has a block body" };
+    const { entries, reason } = chainEntries(body, params[0].getName());
+    if (entries === undefined)
+        return { reason };
+    return { prefix: nameArg.getLiteralValue(), chunks: chunkEntries(entries) };
+}
+/** The full replacement text for a top-level variant call's `on(...)`/`at(...)` span, or a skip. */
+function variantRewriteText(call) {
+    const { prefix, chunks, reason } = variantObjectText(call);
+    if (prefix === undefined || chunks === undefined)
+        return { skipReason: reason ?? "unconvertible variant" };
+    if (chunks.length === 0)
+        return { text: "" }; // empty lambda — drop the call entirely
+    const tier1 = TIER1_BY_PREFIX[prefix];
+    const calls = chunks.map((c) => (tier1 !== undefined ? `${tier1}(${c})` : `variant("${prefix}", ${c})`));
+    return { text: calls.join(".") };
+}
 function collectEdits(file) {
     const edits = [];
     const skips = [];
+    // Spans of .on/.at calls already handled (converted or reported) by an
+    // enclosing conversion — inner calls and renames there must not double-edit.
+    const variantSpans = [];
+    const converted = [];
+    const inSpan = (spans, pos) => spans.some(([s, e]) => pos >= s && pos < e);
     file.forEachDescendant((node) => {
         if (!Node.isCallExpression(node))
             return;
@@ -165,11 +336,39 @@ function collectEdits(file) {
         if (!ALL_SOURCE_NAMES.has(name))
             return;
         const line = callee.getNameNode().getStartLineNumber();
+        const nameStart = callee.getNameNode().getStart();
+        // Anything inside an already-converted variant span is folded into the
+        // object text — no separate edits, no receiver-check noise. (Inside a
+        // FAILED span, renames still apply where the receiver verifies.)
+        if (inSpan(converted, nameStart))
+            return;
         if (!receiverIsTag(callee.getExpression())) {
-            skips.push({ line, name, reason: "receiver does not type as Tag" });
+            // Calls on a variant-lambda parameter type as `any` once the linked lib
+            // has dropped .on/.at — inside a reported (failed) span that's implied
+            // by the span's own skip, so don't double-report.
+            if (!inSpan(variantSpans, nameStart))
+                skips.push({ line, name, reason: "receiver does not type as Tag" });
             return;
         }
-        const nameStart = callee.getNameNode().getStart();
+        if (name === "on" || name === "at") {
+            if (inSpan(variantSpans, nameStart))
+                return; // handled by the enclosing conversion
+            variantSpans.push([nameStart, node.getEnd()]);
+            const { text, skipReason } = variantRewriteText(node);
+            if (text === undefined) {
+                skips.push({ line, name, reason: skipReason ?? "unconvertible variant lambda" });
+            }
+            else {
+                converted.push([nameStart, node.getEnd()]);
+                // An empty-lambda drop must also consume the leading dot.
+                edits.push(text === "" ? { start: nameStart - 1, end: node.getEnd(), text: "" } : { start: nameStart, end: node.getEnd(), text });
+            }
+            return;
+        }
+        // A rename inside a successfully converted variant span is already folded
+        // into the object text; inside a FAILED span it still applies.
+        if (inSpan(converted, nameStart))
+            return;
         if (REWRITES.has(name)) {
             const { text, skipReason } = rewriteText(name, node);
             if (text === undefined)
