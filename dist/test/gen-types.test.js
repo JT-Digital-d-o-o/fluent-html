@@ -15,6 +15,7 @@ import { readFileSync } from "node:fs";
 import { classVocab } from "../src/class-vocab/index.js";
 import { generatedPath, renderTailwindTypesGen, templateUnions, literalsOf } from "../scripts/gen-vocab/emit-types.js";
 import { cssPropsGeneratedPath, renderCssPropsGen, cssPropertyNames } from "../scripts/gen-vocab/emit-css-props.js";
+import { variantObjectGeneratedPath, renderVariantObjectGen } from "../scripts/gen-vocab/emit-variant-object.js";
 /** follower address → union-source address it must stay identical to. */
 const SHARED_UNION_FOLLOWERS = new Map([
     ["backdropBlur", "blur"],
@@ -27,6 +28,9 @@ describe("generated tailwind types", () => {
     });
     it("committed css-props.gen.ts matches a fresh render (run `npm run gen:vocab`)", () => {
         assert.equal(readFileSync(cssPropsGeneratedPath(), "utf8"), renderCssPropsGen());
+    });
+    it("committed variant-object.gen.ts matches a fresh render (run `npm run gen:vocab`)", () => {
+        assert.equal(readFileSync(variantObjectGeneratedPath(), "utf8"), renderVariantObjectGen());
     });
     it("css property names are kebab-case, deduped, and plausibly complete", () => {
         const names = cssPropertyNames();
