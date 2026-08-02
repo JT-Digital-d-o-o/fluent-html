@@ -7,37 +7,49 @@ Div()
   .p("4").bg("red-500").text("white").rounded("lg").shadow("md")
 ```
 
-## Variants: `.on()` and `.at()`
+## Variants: Typed Style Objects
 
-**`.on(state, fn)`** — pseudo-classes and states:
+A variant is a typed object whose keys are the same canonical style names as the methods — `hover:bg-blue-600` is `.hover({ bg: "blue-600" })`. TypeScript spell-checks keys and values (two levels deep), so a variant can never silently emit a dead or unprefixed class.
+
+**Tier-1 variants** are direct methods — states `hover` `focus` `focusVisible` `focusWithin` `active` `disabled` `checked` `dark` `first` `last` `odd` `even` `groupHover` `peerChecked` `before` `after`, breakpoints `sm` `md` `lg` `xl` `xl2` (`xl2` emits `2xl:` — `2xl` isn't an identifier):
 
 ```typescript
 Button("Save")
   .bg("blue-500").text("white").transition("colors")
-  .on("hover", t => t.bg("blue-600").scale("105"))
-  .on("focus", t => t.ring("2").ring("blue-300").outline("none"))
-  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
+  .hover({ bg: "blue-600", scale: "105" })
+  .focus({ ring: "2", outline: "none" })
+  .disabled({ opacity: "50", cursor: "not-allowed" })
+  .md({ w: "1/2", gridCols: "2" })
 ```
 
-States: `hover` `focus` `focus-within` `focus-visible` `active` `disabled` `checked` `required` `invalid` `valid` `first` `last` `odd` `even` `placeholder` `before` `after` `dark` `group-hover` `group-focus` `peer-hover` `peer-checked` and more — plus typed `aria-*`/`aria-[…]`, `data-[…]`, named `group-…/name`/`peer-…/name`, structural `nth-3`/`nth-[3n+1]`, and child/descendant `*`/`**`.
-
-Variants nest:
+**Value forms:** no-arg utilities are boolean flags (`truncate: true`, `content: true`); optional-value utilities take `true` for the bare form (`ring: true` → `ring`); arbitrary values use the `[…]` arm (`minH: "[180px]"`); positional args flatten into keys (`translateY`, `gapX`, `overflowY`, `scrollMt`); multi-arg utilities take readonly tuples (`border: ["top", "red-500"]`, `gradient: ["red-500", "blue-500", "to-br"]`, `cssProp: ["--glow", "0 0 4px"]`). `false`/`undefined` values are skipped, so conditionals are plain expressions:
 
 ```typescript
-Div().on("dark", t => t.bg("gray-900").on("hover", t => t.bg("gray-800")))
+Div().hover({ bg: isActive ? "blue-600" : undefined, italic: isDraft })
+```
+
+One key per prefix per object — two value families for the same prefix chain a second call: `.focus({ ring: "2" }).focus({ ring: "blue-300" })`.
+
+**Variants nest** — tier-1 names are also object keys, stacking prefixes:
+
+```typescript
+Div().dark({ bg: "gray-900", hover: { bg: "gray-800" } })
 // -> dark:bg-gray-900 dark:hover:bg-gray-800
 ```
 
-**`.at(breakpoint, fn)`** — responsive breakpoints:
+**`.variant(name, styles)`** — the generic form for the long tail (same object, typed `TailwindState | TailwindBreakpoint` name): `required` `invalid` `valid` `placeholder` `group-focus` `peer-hover`, typed `aria-*`/`aria-[…]`, `data-[…]`, named `group-…/name`/`peer-…/name`, structural `nth-3`/`nth-[3n+1]`, child/descendant `*`/`**`, `not-*`, `supports-[…]`, arbitrary `[&>li]` selectors, relational `has-[…]`/`in-[…]` — and container-query breakpoints `@3xs`…`@7xl` (`@max-lg`, `@[480px]`, named scope `@lg/sidebar`) for children of a `.containerQuery()` element, plus the exact `"2xl"` spelling:
 
 ```typescript
-Div()
-  .w("full").gridCols("1")
-  .at("md", t => t.w("1/2").gridCols("2"))
-  .at("lg", t => t.gridCols("3"))
+Div().variant("data-[state=open]", { rounded: "lg" })
+Div().variant("@sm", { flex: "row" })
 ```
 
-Breakpoints: `sm` `md` `lg` `xl` `2xl`, plus container-query breakpoints `@3xs`…`@7xl` (`@max-lg`, `@[480px]`, named scope `@lg/sidebar`) for children of a `.containerQuery()` element.
+**Reusable fragments** are plain objects — spread them; pin extracted consts with `satisfies VariantStyleObject` (excess-property spell-checking doesn't reach through a plain variable):
+
+```typescript
+const glow = { shadow: "lg", ring: "2" } satisfies VariantStyleObject;
+Button("Go").hover({ ...glow, bg: "blue-600" })
+```
 
 ## Conditional: `.when()`
 
@@ -52,7 +64,7 @@ Button("Save")
 ```typescript
 const card = (t: Tag) => t.p("6").bg("white").rounded("lg").shadow("md");
 const hoverLift = (t: Tag) => t.transition().duration("200")
-  .on("hover", t => t.shadow("lg").translate("y", "-1"));
+  .hover({ shadow: "lg", translateY: "-1" });
 
 Div("Content").apply(card, hoverLift)
 ```
@@ -75,7 +87,8 @@ The prefix rule has a few deliberate exceptions — worth knowing when deriving 
 
 - **Compound prefixes: the longest camelCase prefix wins.** `text-shadow-lg` → `.textShadow("lg")`, never `.text("shadow-lg")`; likewise `.dropShadow("lg")`, `.insetShadow("sm")`, `.insetRing("2")`, `.gridCols("3")`, `.scrollM("t", "24")`.
 - **Negative utilities go through `.neg()`.** `-mt-2` → `.neg("mt-2")`, `-inset-px` → `.neg("inset-px")`. Methods with numeric arguments relocate the sign themselves: `.rotate(-45)` → `-rotate-45`, `.colEnd(-1)` → `-col-end-1`, `.bgLinear(-65)` → `-bg-linear-65`.
-- **Translate takes its axis as an argument** — `.translate("y", "-1")` → `-translate-y-1` — while rotate/scale use per-axis methods (`.rotateX("45")`, `.scaleX("110")`).
+- **Translate takes its axis as an argument** — `.translate("y", "-1")` → `-translate-y-1` — while rotate/scale use per-axis methods (`.rotateX("45")`, `.scaleX("110")`). In variant objects the axis flattens into the key: `translateY: "-1"`.
+- **The `2xl` breakpoint is spelled `xl2`** as a variant method and nested key (`2xl` isn't a valid identifier); `.variant("2xl", {…})` keeps the exact spelling.
 - **A few names can't equal their prefix:** `.containerQuery()` (`@container` isn't a valid identifier), `.gradient(from, to, dir?)` (a multi-class convenience over `.bgLinear()`/`.from()`/`.to()`), and `.snap("x", "mandatory")` (emits the `snap-x snap-mandatory` pair; `"none"` would collide between the axis and align families, so children use `.snapAlign()`/`.snapStop()`).
 
 ### Spacing
@@ -281,12 +294,12 @@ All filters have `backdrop` variants: `.backdropBlur()`, `.backdropBrightness()`
 .peer("input")             // peer/input (named peer)
 ```
 
-Use with `.on()` for group/peer state variants:
+Use with the variant surface for group/peer state variants (`.groupHover()`/`.peerChecked()` are tier-1; the rest via `.variant()`):
 
 ```typescript
 Div(
   Input().peer(),
-  Span("Error").on("peer-invalid", t => t.block()),
+  Span("Error").variant("peer-invalid", { block: true }),
 ).group()
 ```
 
@@ -313,16 +326,16 @@ const Card = ({ title, body }: { title: string; body: string }) =>
     P(body).text("gray-600"),
     Div(
       Button("Cancel").px("4").py("2").border().rounded()
-        .on("hover", t => t.bg("gray-50")),
+        .hover({ bg: "gray-50" }),
       Button("Submit").px("4").py("2")
         .bg("blue-500").text("white").rounded()
-        .on("hover", t => t.bg("blue-600"))
+        .hover({ bg: "blue-600" })
     ).flex().gap("4").justify("end").mt("6")
   )
     .bg("white").p("6").rounded("xl").shadow("lg")
     .border().border("gray-200")
-    .at("md", t => t.p("8"))
-    .on("dark", t => t.bg("gray-800").border("gray-700"))
+    .md({ p: "8" })
+    .dark({ bg: "gray-800", border: "gray-700" })
 ```
 
 ## Theming: `defineTheme()`

@@ -170,16 +170,18 @@ Div("Content").apply(card)
 
 **Method name = Tailwind class prefix** (`.bg`, `.p`, `.text`, `.px`/`.mt`, …) — derive the method from the class you know. Merged prefixes take every value family their prefix does; the argument discriminates (`.text("lg")` / `.text("red-500")` / `.text("center")`). Negative utilities go through `.neg("mt-2")`; compound prefixes keep the longest camelCase name (`text-shadow-lg` → `.textShadow("lg")`).
 
-**Fluent methods** — not `setClass` with Tailwind strings (fluent methods provide type safety + IDE autocomplete). **`.on()` for pseudo-classes, `.at()` for breakpoints** — not `addClass`:
+**Fluent methods** — not `setClass` with Tailwind strings (fluent methods provide type safety + IDE autocomplete). **Variants are typed style objects** — tier-1 states/breakpoints are direct methods (`.hover({…})`, `.md({…})`), the long tail goes through `.variant(name, {…})` — never `addClass`:
 ```typescript
 Button("Save")
   .px("4").bg("blue-500").text("white").rounded()
   .transition("colors")
-  .on("hover", t => t.bg("blue-600").scale("105"))
-  .on("focus", t => t.ring("2").ring("blue-300").outline("none"))
-  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
-  .at("md", t => t.px("8").text("lg"))
+  .hover({ bg: "blue-600", scale: "105" })
+  .focus({ ring: "2", outline: "none" })
+  .focus({ ring: "blue-300" })              // one key per prefix — 2nd family chains
+  .disabled({ opacity: "50", cursor: "not-allowed" })
+  .md({ px: "8", text: "lg", hover: { bg: "blue-700" } })  // nesting stacks: md:hover:*
 ```
+Keys = the canonical style names; `true` for no-arg utilities (`truncate: true`), `undefined`/`false` skipped (`bg: cond ? "blue-600" : undefined`), tuples for multi-arg (`border: ["top", "red-500"]`). Tier-1: `hover focus focusVisible focusWithin active disabled checked dark first last odd even groupHover peerChecked before after sm md lg xl xl2` (`xl2` → `2xl:`). Everything else: `.variant("data-[state=open]", {…})`, `.variant("@sm", {…})`.
 
 **Theming** — define tokens once with `defineTheme(tokens)`; never hand-maintain theme objects, per-app `inputStyle`, or `@theme` CSS by hand. One `tokens` const → typed methods + `@theme` CSS + safelist. Custom tokens become typed via a once-written `declare module` that **derives** from the const (`ThemeKeys<typeof tokens, "colors">`) — add tokens to the const, never edit the augmentation. Component "presets" (card/button styles) are user-land `.apply()` helpers, **not** `defineTheme` (tokens only: colors/spacing/fontSize/radius/shadow).
 ```typescript

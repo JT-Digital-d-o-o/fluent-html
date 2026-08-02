@@ -137,7 +137,7 @@ export const Card = () =>
       .bg("blue-500")
       .text("white")
       .rounded()
-      .on("hover", t => t.bg("blue-600")),
+      .hover({ bg: "blue-600" }),
   )
     .bg("white")
     .p("6")

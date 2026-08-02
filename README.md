@@ -78,12 +78,12 @@ Card(
   .rounded("xl")
   .shadow("lg")
 
-// Pseudo-classes with .on() and breakpoints with .at()
+// Variants are typed style objects — keys are the same canonical names
 Button("Save")
   .bg("blue-500").text("white").px("4").rounded()
-  .on("hover", t => t.bg("blue-600"))
-  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
-  .at("md", t => t.px("8").text("lg"))
+  .hover({ bg: "blue-600" })
+  .disabled({ opacity: "50", cursor: "not-allowed" })
+  .md({ px: "8", text: "lg" })
 
 // Escape hatches, in order: arbitrary CSS → .cssProp(); non-Tailwind class hooks → .cssClass()
 Div("Content").cssProp("mask-repeat", "no-repeat").cssClass("js-map-container")
@@ -1104,9 +1104,9 @@ Method names equal Tailwind class prefixes — if you know the class, you know t
 .overflow("hidden")              // overflow-hidden
 ```
 
-### Pseudo-Classes with `.on()`
+### Variants Are Typed Style Objects
 
-Use `.on(state, fn)` for hover, focus, active, disabled, and other pseudo-class variants. The callback receives the tag with the variant prefix active — every fluent method inside it produces prefixed classes.
+A variant takes an object whose keys are the same canonical style names as the methods — `hover:bg-blue-600` is `.hover({ bg: "blue-600" })`. Keys and values are spell-checked by TypeScript (`opcaity` → "Did you mean 'opacity'?" — two levels deep), so a variant can never silently emit an unprefixed or dead class.
 
 ```typescript
 Button("Save")
@@ -1114,66 +1114,85 @@ Button("Save")
   .bg("blue-500")
   .text("white")
   .rounded()
-  .on("hover", t => t.bg("blue-600").scale("105"))
-  .on("focus", t => t.ring("2").ring("blue-300").outline("none"))
-  .on("disabled", t => t.opacity("50").cursor("not-allowed"))
+  .hover({ bg: "blue-600", scale: "105" })
+  .focus({ ring: "2", outline: "none" })
+  .disabled({ opacity: "50", cursor: "not-allowed" })
 // → px-4 py-2 bg-blue-500 text-white rounded
 //   hover:bg-blue-600 hover:scale-105
-//   focus:ring-2 focus:ring-blue-300 focus:outline-none
+//   focus:ring-2 focus:outline-none
 //   disabled:opacity-50 disabled:cursor-not-allowed
 ```
 
-**Supported states** (fully type-safe via `TailwindState`):
+**Tier-1 variants** — the common states and breakpoints are direct methods:
 
-| Category | Values |
+| Category | Methods |
 |---|---|
-| Interaction | `hover`, `focus`, `focus-within`, `focus-visible`, `active`, `visited` |
-| Form state | `disabled`, `enabled`, `checked`, `indeterminate`, `required`, `invalid`, `valid` |
-| Position | `first`, `last`, `odd`, `even`, `empty`, `first-of-type`, `last-of-type`, `only-child` |
-| Pseudo-elements | `placeholder`, `selection`, `marker`, `file`, `before`, `after` |
-| Theme | `dark` |
-| Group/peer | `group-hover`, `group-focus`, `group-active`, `group-disabled`, `peer-hover`, `peer-focus`, `peer-checked`, `peer-invalid` |
-| Named group/peer | `group-{state}/name`, `peer-{state}/name` (pair with `.group("name")`/`.peer("name")`) |
-| ARIA | the nine boolean heads (`aria-checked`, `aria-expanded`, `aria-disabled`, …) plus `aria-[…]`, `group-aria-[…]`, `peer-aria-[…]` |
-| Data attributes | `data-[…]`, `group-data-[…]`, `peer-data-[…]` |
-| Structural | `nth-3`, `nth-[3n+1]`, `nth-of-type-…`, `nth-last-…` |
-| Children | `*` (direct children), `**` (all descendants) |
-| More v4 | `read-only`, `target`, `autofill`, `user-valid`, `user-invalid`, `rtl`, `ltr`, `print`, `motion-reduce`/`safe`, `starting`, `open`, `inert`, and relational `has-[…]`/`group-has-[…]`/`peer-has-[…]`/`in-[…]` |
+| Interaction | `.hover()` `.focus()` `.focusVisible()` `.focusWithin()` `.active()` |
+| Form state | `.disabled()` `.checked()` |
+| Theme | `.dark()` |
+| Position | `.first()` `.last()` `.odd()` `.even()` |
+| Group/peer | `.groupHover()` `.peerChecked()` (pair with `.group()`/`.peer()`) |
+| Pseudo-elements | `.before()` `.after()` (add `content: true` to render) |
+| Breakpoints | `.sm()` `.md()` `.lg()` `.xl()` `.xl2()` (`xl2` emits `2xl:` — `2xl` isn't an identifier) |
 
-### Responsive Breakpoints with `.at()`
-
-Use `.at(breakpoint, fn)` for responsive variants — same pattern as `.on()` but for screen sizes.
+**Value forms** inside the object:
 
 ```typescript
-Div("Sidebar")
-  .p("4")
-  .text("sm")
-  .at("md", t => t.p("6").text("base"))
-  .at("lg", t => t.p("8").text("lg"))
-// → p-4 text-sm md:p-6 md:text-base lg:p-8 lg:text-lg
+Div().hover({
+  bg: "blue-600",                       // value utilities — same unions as the methods
+  truncate: true,                       // no-arg utilities are boolean flags
+  ring: true,                           // optional-value utilities: true = bare form (ring)
+  minH: "[180px]",                      // arbitrary values use the [...] arm
+  translateY: "-0.5",                   // positional args flatten into keys (gapX, overflowY, …)
+  border: ["top", "red-500"],           // multi-arg utilities take readonly tuples
+  bold: undefined,                      // undefined and false are skipped
+})
 ```
 
-**Supported breakpoints:** `sm` | `md` | `lg` | `xl` | `2xl` — plus container-query breakpoints `@3xs`…`@7xl` (and `@max-lg`, `@[480px]`, named scope `@lg/sidebar`) for children of a `.containerQuery()` element.
+`undefined`-valued keys make conditionals plain expressions — no wrapper, no lambda:
+
+```typescript
+Div().hover({ bg: isActive ? "blue-600" : undefined, italic: isDraft })
+```
+
+One key per prefix per object — when one prefix takes two value families (ring width *and* ring color), chain a second call: `.focus({ ring: "2" }).focus({ ring: "blue-300" })`.
+
+### The Long Tail: `.variant(name, styles)`
+
+Everything beyond the tier-1 set goes through the generic form — same object, any `TailwindState | TailwindBreakpoint` name (fully type-safe):
+
+```typescript
+Div().variant("data-[state=open]", { rounded: "lg" })
+Div().variant("group-focus", { ring: "2" })
+Div().variant("has-[:checked]", { bg: "blue-50" })
+Div().variant("@sm", { flex: "row" })          // container query (see .containerQuery())
+Div().variant("2xl", { px: "16" })             // exact Tailwind spelling of xl2
+```
+
+**Supported states** (via `TailwindState`): interaction (`visited`, …), form (`enabled`, `indeterminate`, `required`, `invalid`, `valid`), position (`empty`, `first-of-type`, `last-of-type`, `only`, `only-of-type`), pseudo-elements (`placeholder`, `selection`, `marker`, `file`), group/peer states incl. named scopes (`group-hover/name`), the nine ARIA boolean heads plus `aria-[…]`, `data-[…]`, structural `nth-*`, children `*`/`**`, `not-*` negation, `supports-[…]`, arbitrary `[&>li]` selectors, relational `has-[…]`/`group-has-[…]`/`peer-has-[…]`/`in-[…]`, and the v4 additions (`print`, `motion-reduce`/`safe`, `starting`, `open`, `inert`, `rtl`/`ltr`, …).
+
+**Breakpoints** (via `TailwindBreakpoint`): `sm`–`2xl` plus container-query forms `@3xs`…`@7xl`, `@max-lg`, `@[480px]`, and named scopes `@lg/sidebar` for children of a `.containerQuery()` element.
 
 ### Composing Variants
 
-Variants compose naturally — nest `.on()` inside `.at()` (or vice versa) for combinations like "on hover, at medium screens":
+Nest tier-1 names inside the object to stack prefixes — "on hover, at medium screens" is a nested key:
 
 ```typescript
 Button("Save")
   .bg("blue-500")
-  .at("md", t => t
-    .px("8")
-    .on("hover", t2 => t2.bg("blue-700"))
-  )
+  .md({ px: "8", hover: { bg: "blue-700" } })
 // → bg-blue-500 md:px-8 md:hover:bg-blue-700
 
 Card()
-  .on("dark", t => t
-    .bg("gray-900")
-    .on("hover", t2 => t2.bg("gray-800"))
-  )
+  .dark({ bg: "gray-900", hover: { bg: "gray-800" } })
 // → dark:bg-gray-900 dark:hover:bg-gray-800
+```
+
+Reusable variant fragments are plain objects — spread them, and pin extracted consts with `satisfies` (excess-property spell-checking doesn't reach through a plain variable):
+
+```typescript
+const glow = { shadow: "lg", ring: "2" } satisfies VariantStyleObject;
+Button("Go").hover({ ...glow, bg: "blue-600" })
 ```
 
 ### Real-World Example
@@ -1225,7 +1244,7 @@ You can freely mix fluent methods with traditional class names:
 Div()
   .p("4")                              // Typed utility
   .bg("red-500")                       // Typed utility
-  .on("hover", t => t.bg("red-600"))   // Variants via .on()/.at()
+  .hover({ bg: "red-600" })            // Variant style object
   .cssProp("mask-repeat", "no-repeat") // Arbitrary CSS → [mask-repeat:no-repeat]
   .cssClass("js-hook");                // Non-Tailwind class marker
 ```
@@ -1457,7 +1476,7 @@ All elements support fluent method chaining:
 const card = Div("Content")
   .setId("my-card")
   .rounded("lg").shadow("lg")
-  .on("hover", t => t.shadow("xl"))
+  .hover({ shadow: "xl" })
   .setStyle("max-width: 400px")
   .addAttribute("data-testid", "card-component")
   .setHtmx(hx("/api/card", { trigger: "click" }));
@@ -1916,7 +1935,7 @@ It also catches `.setClass()` inside `.when()` / `.apply()` callbacks and multip
 
 | Rule | Severity | Fix | What it catches |
 |------|----------|-----|-----------------|
-| `no-tailwind-in-raw-class` | error | ✅ | Tailwind utilities in raw class strings — autofixes to the fluent chain (incl. `.on()`/`.at()` for variant tokens) |
+| `no-tailwind-in-raw-class` | error | ✅ | Tailwind utilities in raw class strings — autofixes to the fluent chain (incl. variant objects for variant tokens) |
 | `no-dynamic-class-argument` | error | — | Non-literal `.addClass()`/`.setClass()`/`.cssClass()` args — invisible to the safelist extractor |
 | `no-tailwind-in-cssclass` | error | ✅ | Tailwind utilities mis-filed in the `.cssClass()` non-Tailwind marker |
 | `no-setclass-after-fluent-modifier` | error | — | `.setClass()` after fluent methods overwrites styles |
@@ -1959,7 +1978,7 @@ See the [full documentation](https://github.com/JT-Digital-d-o-o/fluent-html-tai
 
 Everything is fully typed, so your editor's autocomplete is the fastest reference. For the complete surface:
 
-- **Styling** — [FLUENT-STYLING.md](FLUENT-STYLING.md): every chainable Tailwind method, `.on()`/`.at()` variants, and `defineTheme()`.
+- **Styling** — [FLUENT-STYLING.md](FLUENT-STYLING.md): every chainable Tailwind method, object-form variants (`.hover({…})`/`.variant()`), and `defineTheme()`.
 - **Tailwind v4 setup** — [TAILWIND-SETUP.md](TAILWIND-SETUP.md).
 - **Generated TypeDoc** — run `npm run docs` for element factories, control-flow combinators, and HTMX/route/id helpers with full signatures.
 
