@@ -6,7 +6,7 @@ A systematic framework for testing acquisition channels, optimizing conversion, 
 
 ## Experiment Framework
 
-Use the experiment template defined in [lean-startup-manifesto.md](../product-development/lean-startup/lean-startup-manifesto.md) (see "Experiment Design"). Every growth experiment follows that same hypothesis → metric → target → result → decision structure.
+Use the experiment template defined in [lean-startup-manifesto.md](../product-development/resources/lean-startup/lean-startup-manifesto.md) (see "Experiment Design"). Every growth experiment follows that same hypothesis → metric → target → result → decision structure.
 
 ### DO: Log every experiment — wins and failures
 ```

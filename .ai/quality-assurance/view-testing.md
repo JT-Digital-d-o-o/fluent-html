@@ -125,21 +125,21 @@ describe("UserList", () => {
 ### DO: Test Match — all branches including default
 ```typescript
 // Match(status, {
-//   active: () => Span("Active").textColor("green-600"),
-//   error:  () => Span("Error").textColor("red-600"),
+//   active: () => Span("Active").textColor("success"),
+//   error:  () => Span("Error").textColor("danger"),
 // }, () => Span("Unknown"))
 
 describe("StatusBadge", () => {
   it("should render active status", () => {
     const html = render(StatusBadge({ status: "active" }));
     expect(html).toContain("Active");
-    expect(html).toContain("green");
+    expect(html).toContain("success");
   });
 
   it("should render error status", () => {
     const html = render(StatusBadge({ status: "error" }));
     expect(html).toContain("Error");
-    expect(html).toContain("red");
+    expect(html).toContain("danger");
   });
 
   it("should render default for unknown status", () => {
@@ -148,6 +148,8 @@ describe("StatusBadge", () => {
   });
 });
 ```
+
+The same rule applies to `.whenMatch()` (fluent-html 6.5+): every case is a branch — render each variant and assert its classes, plus the `defaultFn` branch when the partial form is used.
 
 ---
 

@@ -72,7 +72,7 @@ Validate value first. Growth without value fills a leaky bucket.
 
 ### DON'T: Scale acquisition before retention
 
-Fix retention before acquisition — see [Analytics Guidelines](../../analytics/CLAUDE.md) for thresholds and funnel diagnosis.
+Fix retention before acquisition — see [Analytics Guidelines](../../../analytics/CLAUDE.md) for thresholds and funnel diagnosis.
 
 ---
 

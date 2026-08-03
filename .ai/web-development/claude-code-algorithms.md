@@ -116,13 +116,13 @@ AGENT: integration
 ## References
 
 - `CLAUDE.md` — project conventions, Fastify patterns
-- `src/core/plugins/mailer.ts` — existing mailer plugin
+- `src/core/server/plugins/mailer.ts` — existing mailer plugin
 - `src/projects/projects.schema.ts` — project status types
 
 ## Phase 0 — Email Templates (sequential)
 
 AGENT: email-templates
-  READ  src/core/plugins/mailer.ts      // how emails are sent
+  READ  src/core/server/plugins/mailer.ts      // how emails are sent
   READ  src/projects/projects.schema.ts  // status enum values
 
   STEP 1 — Create email template builder
@@ -141,7 +141,7 @@ AGENT: email-templates
 
 PARALLEL [
   AGENT: notification-service
-    READ  src/core/plugins/mailer.ts
+    READ  src/core/server/plugins/mailer.ts
     READ  src/notifications/email-templates.ts  // from Phase 0
 
     CREATE src/notifications/notification.service.ts

@@ -2,6 +2,10 @@
 
 How we move from raw idea to shipped, high-quality product — and what each framework teaches us along the way.
 
+> This is the concept map. For the actionable version, see the [Roadmap](./roadmap.md) (the
+> phase-by-phase checklist every project works through) and the [Algorithms](./algorithms/)
+> (the runnable procedures for the Job intake, research crawl, and naming/design phases).
+
 ---
 
 ```mermaid

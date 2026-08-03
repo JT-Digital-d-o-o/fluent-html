@@ -1,6 +1,8 @@
 # Product Development Guidelines
 
-Precedence: [Brand Book](../brand-book/CLAUDE.md) overrides Refactoring UI on concrete choices (fonts, colors, components, spacing, shadows). Deep-dive files in `lean-startup/`, `shape-up/`, `refactoring-ui/`, `loonshots/`, `competing-against-luck/`.
+Precedence: [Brand Book](../brand-book/CLAUDE.md) overrides Refactoring UI on concrete choices (fonts, colors, components, spacing, shadows). Deep-dive files in `resources/lean-startup/`, `resources/shape-up/`, `resources/refactoring-ui/`, `resources/loonshots/`, `resources/competing-against-luck/`.
+
+The nudges below are per-framework. For the phase order a project runs them in, see the [Roadmap](./roadmap.md); for the runnable procedures (Job intake, research crawl, naming/design), see the [Algorithms](./algorithms/).
 
 ## Lean Startup — validate before you build
 

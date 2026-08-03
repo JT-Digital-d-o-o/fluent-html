@@ -54,7 +54,7 @@ Without it, a CDN may cache Brotli and serve it to a gzip-only client.
 ## Compression
 
 - **DO:** Enable Brotli (preferred) + gzip (fallback) for HTML, CSS, JS, JSON, SVG
-- On shared hosting, compression is typically proxy-level — if not, use `AddOutputFilterByType DEFLATE` in `.htaccess`
+- On shared hosting, compression is proxy-level — if not, use `AddOutputFilterByType DEFLATE` in `.htaccess`
 
 ---
 
@@ -93,6 +93,40 @@ Without it, a CDN may cache Brotli and serve it to a gzip-only client.
 - **`preload`** — critical CSS/JS that must load immediately
 - **`dns-prefetch`** — non-critical origins loaded later (analytics, widgets)
 - **DON'T:** Over-preload — each hint competes for bandwidth
+
+### DO: Typed resource hints in `<head>` — fluent setters, not `addAttribute`
+
+The `<link rel>`, `as`, and `type` setters are typed unions (autocomplete for the canonical set; custom values still compile). Use them over `addAttribute`:
+
+```typescript
+Link().setRel("preconnect").setHref("https://fonts.gstatic.com").setCrossOrigin("");
+Link().setRel("preload").setHref("/fonts/inter.woff2").setAs("font").setType("font/woff2").setCrossOrigin("");
+Link().setRel("modulepreload").setHref("/app.js");
+```
+
+```typescript
+Link().setRel("prelod").setAs("fnt");          // ✗ a typo today slips past bare string — the typed union surfaces the right list
+Link().addAttribute("fetchpriority", "high");   // ✗ untyped escape hatch — use setFetchPriority
+```
+
+### DO: Promote the LCP resource with `fetchpriority`
+
+`setFetchPriority('high' | 'low' | 'auto')` on `Img` / `Link` / `Script` / `Iframe` — a closed union, so typos are compile errors.
+
+```typescript
+Img().setSrc("/hero.avif").setAlt("").setFetchPriority("high");                    // LCP image — one high hint per page
+Link().setRel("preload").setHref("/below-fold.css").setAs("style").setFetchPriority("low");
+```
+
+For a **responsive** LCP image, preload it with `setImagesrcset` / `setImagesizes` (the responsive `<link rel=preload as=image>` grammar — distinct from the icon `setSizes`) so the browser fetches the right candidate before layout:
+
+```typescript
+Link().setRel("preload").setAs("image")
+  .setImagesrcset("/hero-480.jpg 480w, /hero-1080.jpg 1080w").setImagesizes("100vw").setFetchPriority("high");
+```
+
+- **DON'T:** Over-promote — a single `fetchpriority="high"` per page; promoting everything promotes nothing.
+- `preconnect` to a CORS origin needs `.setCrossOrigin("")`; without it the hint is wasted.
 
 ---
 
@@ -133,6 +167,7 @@ Without it, a CDN may cache Brotli and serve it to a gzip-only client.
 ## Images
 
 - **DO:** Set `width` and `height` on all `<img>` — prevents layout shift (CLS)
+- **DO:** In art-directed `<picture>`, also size each `<source>` (`Source().setWidth(1280).setHeight(720)`) — reserves the aspect-ratio box per breakpoint so swaps don't shift layout
 - **DO:** `loading="lazy"` on below-fold images
 - **DO:** Use modern formats: AVIF > WebP > JPEG, with `<picture>` fallbacks
 - **DO:** Use `srcset` + `sizes` for responsive images

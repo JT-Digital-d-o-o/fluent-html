@@ -25,9 +25,9 @@ src/
 
 ## Route Controllers
 
-Export a default async function receiving `FastifyInstance`. Use the `handle` helper to bind routes — it connects directly to `defineRoutes` route refs.
+Export a default async function receiving `FastifyInstance`. Bind routes with the `handle` helper (connects to `defineRoutes` route refs).
 
-**Naming convention:** `httpVerb` + `SemanticName` in camelCase. This makes VS Code `@` symbol search work by both method and meaning:
+**Naming convention:** `httpVerb` + `SemanticName` in camelCase (makes VS Code `@` symbol search work by method and meaning):
 
 ```typescript
 export default async function routes(server: FastifyInstance) {
@@ -53,7 +53,7 @@ server.register(require("../feature/feature.controller"), { prefix: "/feature" }
 
 ## Module Augmentation
 
-Extend Fastify types in `src/core/types.ts` (uses `interface`, not `type`):
+Extend Fastify types in `src/core/server/types.ts` (use `interface`, not `type`):
 
 ```typescript
 declare module "fastify" {
@@ -101,7 +101,7 @@ const getAdmin = handle(server, adminRoutes.index,
 );
 ```
 
-`request.user` is populated by a global preHandler from signed cookies. `null` for unauthenticated.
+`request.user` populated by a global preHandler from signed cookies; `null` for unauthenticated.
 
 ## Plugins
 
@@ -115,11 +115,11 @@ export default fp(async (fastify: FastifyInstance) => {
 }, { name: "myPlugin" });
 ```
 
-Register in `src/core/server.ts` before routes.
+Register in `src/core/server/server.ts` before routes.
 
 ## Error Handling
 
-SSR app — re-render views with errors, never send JSON:
+SSR app — re-render views with errors, never send JSON. Global error handler in `src/core/index.ts` is the safety net.
 
 ```typescript
 const existing = await server.prisma.user.findUnique({ where: { email } });
@@ -127,8 +127,6 @@ if (existing) {
   return reply.code(422).renderView(RegisterView({ error: "Email already in use" }));
 }
 ```
-
-Global error handler in `src/core/index.ts` is the safety net.
 
 ## Testing
 

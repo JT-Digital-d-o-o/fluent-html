@@ -93,6 +93,7 @@ Pattern: **[Benefit for you]**. **[How we deliver it]**.
 - Use blockquotes (`>`) for key takeaways or standout lines.
 - Use tables and bullet points over long paragraphs.
 - Use real numbers: "16ms median response time", not "blazing fast".
+- **No em-dashes or en-dashes** (—, –). Use a comma, colon, parentheses, or a full stop instead. A plain hyphen (-) joining words is fine. This is a hard rule: the giveaway "AI dash" reads as machine-written.
 
 ## Words We Use
 
@@ -110,9 +111,10 @@ Pattern: **[Benefit for you]**. **[How we deliver it]**.
 
 - "Leverage", "utilize", "synergy", "paradigm"
 - "World-class", "cutting-edge", "revolutionary"
-- "Agile" (as a brand identity — we're agile in practice, we don't sell it)
+- "Agile" (as a brand identity: we're agile in practice, we don't sell it)
 - "Full-stack" (we're specific about what we use: TypeScript, HTMX, Fastify)
-- Buzzwords without substance — if we mention AI, we show what it actually does
+- AI-tell filler: "delve", "seamless", "robust", "elevate", "unlock", "game-changer", "in today's fast-paced world", "it's not just X, it's Y", "thrilled/excited to"
+- Buzzwords without substance. If we mention AI, we show what it actually does
 
 ## Blog Newsletter
 

@@ -35,7 +35,7 @@ Integration tests (server.inject, real or test DB):
 ## When to write tests
 
 Always test:
-- Functions with if/else, switch, or Match() branching
+- Functions with if/else, switch, or Match()/whenMatch() branching
 - Schema validation (valid input passes, invalid input fails)
 - Auth guards and permission checks
 - Data transformations (DB row → view props)

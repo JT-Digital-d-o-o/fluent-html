@@ -2,11 +2,11 @@
 
 Focus: **make illegal states unrepresentable** — use the type system to eliminate bugs at compile time.
 
-Principle: **prefer the narrowest type possible** — default to `as const`, `satisfies`, `const` type parameters, and literal types. Widen only when you have a reason to.
+Principle: **prefer the narrowest type possible** — default to `as const`, `satisfies`, `const` type parameters, literal types. Widen only with a reason.
 
 ## `type` over `interface`
 
-Types are more composable (unions, intersections, mapped/conditional types).
+More composable (unions, intersections, mapped/conditional types).
 
 ```typescript
 type User = { id: string; name: string; email: string };
@@ -17,7 +17,7 @@ Exception: `interface` only for Fastify module augmentation.
 
 ## Discriminated Unions — the core pattern
 
-Model states as a union with a literal discriminant. Each branch carries only its data:
+Model states as a union with a literal discriminant; each branch carries only its data:
 
 ```typescript
 type ViewState<T> =
@@ -26,7 +26,7 @@ type ViewState<T> =
   | { status: "success"; data: T };
 ```
 
-Use `Match` with a discriminant key for automatic narrowing — each callback receives the narrowed variant:
+`Match` with a discriminant key narrows automatically — each callback receives the narrowed variant:
 ```typescript
 function UserPage(state: ViewState<User[]>) {
   return Match(state, "status", {
@@ -46,16 +46,16 @@ type Status = "active" | "pending" | "suspended";
 
 function StatusBadge(status: Status) {
   return Match(status, {
-    active:    () => Span("Active").background("green-100").textColor("green-800"),
-    pending:   () => Span("Pending").background("yellow-100").textColor("yellow-800"),
-    suspended: () => Span("Suspended").background("red-100").textColor("red-800"),
+    active:    () => Span("Active").bg("success/10").text("success"),
+    pending:   () => Span("Pending").bg("warning/10").text("warning"),
+    suspended: () => Span("Suspended").bg("danger/10").text("danger"),
   });
 }
 ```
 
 ## Narrow Props with Unions
 
-No bags of optionals — each variant carries only its relevant fields:
+No bags of optionals — each variant carries only its fields:
 
 ```typescript
 // ✗ loose props, many impossible combinations
@@ -76,11 +76,11 @@ Force the compiler to catch unhandled union members:
 function assertNever(x: never): never { throw new Error(`Unhandled: ${x}`); }
 ```
 
-Adding a new member to a union immediately surfaces every switch/Match that needs updating.
+Adding a union member surfaces every switch/Match that needs updating.
 
 ## Branded Types
 
-Prevent mixing up values that share the same underlying type:
+Prevent mixing values that share an underlying type:
 
 ```typescript
 type Brand<T, B extends string> = T & { readonly __brand: B };
@@ -100,11 +100,13 @@ getUser(PostId("xyz"));  // Compile error
 Validate a value matches a type **without widening**:
 
 ```typescript
-const themes = {
-  light: { bg: "white", text: "gray-900" },
-  dark:  { bg: "gray-900", text: "white" },
-} satisfies Record<string, { bg: string; text: string }>;
-// themes.light.bg is type "white", not string
+const limits = {
+  free: { seats: 3,  storageGb: 5 },
+  pro:  { seats: 25, storageGb: 500 },
+} satisfies Record<string, { seats: number; storageGb: number }>;
+// limits.free.seats is type 3, not number
+// ✗ don't model styling this way — a hand-maintained theme record is what defineTheme replaces,
+//   and record[var] reaches a fluent method as a non-literal arg → dropped class
 ```
 
 ## `as const` Assertions
@@ -121,7 +123,7 @@ const config = { retries: 3, timeout: 5000 };           // ✗ { retries: number
 
 ## `const` Type Parameters
 
-Use `const` on generic type parameters to infer literal types from callers — the function-level equivalent of `as const`:
+`const` on generic type parameters infers literal types from callers — the function-level equivalent of `as const`:
 
 ```typescript
 // ✓ infers literal tuple types from arguments
@@ -184,3 +186,18 @@ function findById<T extends HasId>(items: T[], id: string): T | undefined {
 type Column<T> = { key: keyof T; label: string };
 function DataTable<T extends HasId>(items: T[], columns: Column<T>[]) { ... }
 ```
+
+## Type-level tests (lock the compile-time contract)
+
+Closed unions, `Form<T>` field-name narrowing, and typed route params are headline features — but `tsc` building + runtime tests passing does **not** catch a *type-only* regression (widened union, broken narrowing). Guard with compile-only `test/types/*.test-d.ts` files, checked by `tsc` in the build:
+
+```typescript
+// positive: compiles
+Img().setFetchPriority("high");
+// @ts-expect-error — FetchPriority is closed; a typo must NOT compile
+Img().setFetchPriority("highh");
+// @ts-expect-error — "emial" is not a key of the schema
+Form<CreateUserReq>((f) => f.input("emial", "email"));
+```
+
+A `@ts-expect-error` whose line stops erroring becomes an "unused directive" build error — so a widened union or broken narrowing **fails the build**, not silently degrades. Zero deps (no tsd): `test/**` already in `tsconfig`.

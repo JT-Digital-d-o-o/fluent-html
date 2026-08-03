@@ -193,7 +193,8 @@ class="hover:border-accent/50 transition-colors"
 Key rules:
 - **Write like an experienced engineer talking to a peer** — direct, confident, technical, honest
 - **Word choice:** build (not develop), ship (not deliver), simple (not streamlined), conversation (not consultation)
-- **Ban list:** leverage, utilize, synergy, paradigm, world-class, cutting-edge, revolutionary, seamlessly, full-stack
+- **Ban list:** leverage, utilize, synergy, paradigm, world-class, cutting-edge, revolutionary, seamlessly, full-stack, delve, robust, elevate, unlock, game-changer
+- **No em-dashes or en-dashes** (—, –) - use a comma, colon, parentheses, or a full stop; a plain hyphen is fine. The "AI dash" reads as machine-written.
 - **CTAs:** "Start a Conversation" (primary), "Let's Build Something Together" (secondary), "Don't miss the next one" (blog). Never: "Learn More", "Get Started", "Contact Us"
 - **Blog hooks:** lead with a concrete statement, never a question or "In this post, we'll explore..."
 
