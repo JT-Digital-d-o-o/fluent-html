@@ -15,11 +15,12 @@ deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
 - W5 glue: asset route + BehaviorRuntimeScript + X-Fluent-Behaviors hardening +
   the row-30 dev render-throw (lives with the template)
 - W6 eslint: raw `data-behavior*` ban, behavior-client-purity, framework-only imports
-- **llm-styling (P8)**: vocab-generator is DONE (6.6.0 oracle + 6.7.0 emitters +
-  plugin 2.0.0 derivation) — next sub-scope is [escape-hatch](llm-styling/escape-hatch/)
-  (gap fills, `.cssProp()`/`.cssClass()`, CI-blocking lint; depends on the derived
-  vocab tables, now available); canonical-names + object-variants later as ONE
-  breaking release. Scope + decision record: [llm-styling/](llm-styling/)
+- **llm-styling (P8)**: vocab-generator (6.6.0/6.7.0), escape-hatch (6.8.0),
+  canonical-names + object-variants (7.0.0-unreleased, incl. codemod + fixture
+  suite) are all DONE — next is shipping the 7.0.0 breaking release, then the
+  deferred P2s unblock (demos leak-site autofix, codemod over ttl/rideshare/mngmt
+  when those repos bump). tl-sink stays decision-gated until 7.0.0 soaks.
+  Scope + decision record: [llm-styling/](llm-styling/)
 - Publish note: nothing since 6.4.0 is on npm (registry still pre-v6) and
   `main..v6.6.0` holds the whole train — plugin 2.0.0 must NOT publish before
   fluent-html 6.7.0 (peer dep)

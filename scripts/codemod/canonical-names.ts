@@ -31,6 +31,8 @@
  *
  * @module
  */
+import { pathToFileURL } from "node:url";
+
 import { Node, Project, ts, type CallExpression, type Expression, type SourceFile, type Type } from "ts-morph";
 
 import { variantKeySpecs, DIRECT_VARIANTS, DIR_MAP, UNITS } from "../../src/class-vocab/index.js";
@@ -118,8 +120,8 @@ const REWRITES = new Set(["outlineHidden", "bold", ...Object.keys(KEYWORD_DISPAT
 const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES, "on", "at"]);
 
 /** A pending text edit: [start, end) replaced by `text`. Applied per file in descending `start` order. */
-type Edit = { readonly start: number; readonly end: number; readonly text: string };
-type Skip = { readonly line: number; readonly name: string; readonly reason: string };
+export type Edit = { readonly start: number; readonly end: number; readonly text: string };
+export type Skip = { readonly line: number; readonly name: string; readonly reason: string };
 
 function typeIsTag(type: Type, seen = new Set<Type>()): boolean {
   if (seen.has(type)) return false;
@@ -313,7 +315,7 @@ function variantRewriteText(call: CallExpression): { text?: string; skipReason?:
   return { text: calls.join(".") };
 }
 
-function collectEdits(file: SourceFile): { edits: Edit[]; skips: Skip[] } {
+export function collectEdits(file: SourceFile): { edits: Edit[]; skips: Skip[] } {
   const edits: Edit[] = [];
   const skips: Skip[] = [];
   // Spans of .on/.at calls already handled (converted or reported) by an
@@ -349,8 +351,9 @@ function collectEdits(file: SourceFile): { edits: Edit[]; skips: Skip[] } {
         skips.push({ line, name, reason: skipReason ?? "unconvertible variant lambda" });
       } else {
         converted.push([nameStart, node.getEnd()]);
-        // An empty-lambda drop must also consume the leading dot.
-        edits.push(text === "" ? { start: nameStart - 1, end: node.getEnd(), text: "" } : { start: nameStart, end: node.getEnd(), text });
+        // An empty-lambda drop must also consume the leading dot (both chars of a `?.` chain).
+        const dotStart = file.getFullText()[nameStart - 2] === "?" ? nameStart - 2 : nameStart - 1;
+        edits.push(text === "" ? { start: dotStart, end: node.getEnd(), text: "" } : { start: nameStart, end: node.getEnd(), text });
       }
       return;
     }
@@ -367,6 +370,13 @@ function collectEdits(file: SourceFile): { edits: Edit[]; skips: Skip[] } {
     }
   });
   return { edits, skips };
+}
+
+/** Apply edits to `file` in descending start order, so a later edit never shifts an earlier span. */
+export function applyEdits(file: SourceFile, edits: readonly Edit[]): void {
+  for (const edit of [...edits].sort((a, b) => b.start - a.start)) {
+    file.replaceText([edit.start, edit.end], edit.text);
+  }
 }
 
 function run(): void {
@@ -393,10 +403,7 @@ function run(): void {
     }
     totalSkips += skips.length;
     if (edits.length === 0) continue;
-    // Descending start order: applying a later edit never shifts an earlier span.
-    for (const edit of [...edits].sort((a, b) => b.start - a.start)) {
-      file.replaceText([edit.start, edit.end], edit.text);
-    }
+    applyEdits(file, edits);
     totalEdits += edits.length;
     console.log(`${dry ? "[dry] " : ""}${file.getFilePath()} — ${edits.length} call site(s)`);
   }
@@ -407,4 +414,5 @@ function run(): void {
   );
 }
 
-run();
+// CLI entry only — importing this module (e.g. from the fixture tests) must not run it.
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) run();
