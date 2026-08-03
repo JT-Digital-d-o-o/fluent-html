@@ -92,6 +92,11 @@ describe("canonical-names codemod: renames & rewrites (pre-rename lib)", () => {
         assert.equal(out, "Div().block();\nDiv().absolute();\nDiv().inlineFlex();\n");
         assert.equal(skips.length, 0);
     });
+    it("keyword-dispatch: table display keywords (2026-08-03 vocab promotion)", () => {
+        const { out, skips } = migrate('Div().display("table-cell");\nDiv().display("table-row");\nDiv().display("table");\n');
+        assert.equal(out, "Div().tableCell();\nDiv().tableRow();\nDiv().table();\n");
+        assert.equal(skips.length, 0);
+    });
     it("keyword-dispatch guards: non-literal and unknown values skip with a report", () => {
         const src = 'Div().display(dyn);\nDiv().position("bogus");\n';
         const { out, skips } = migrate(src);

@@ -220,6 +220,20 @@ Div().wrap("break-word");
 Div().wrap("anywhere");
 // @ts-expect-error — TailwindWrap is overflow-wrap; "break-all" is word-break (.breakAll())
 Div().wrap("break-all");
+// ── Evidence-based backlog promotions (2026-08-03) ─────────────────────────
+Div().table();
+Div().table("auto");
+Div().table("fixed");
+// @ts-expect-error — TailwindTable is closed ("auto" | "fixed")
+Div().table("collapse");
+Div().tableCell();
+Div().tableRow();
+Div().divide("red-500");
+// @ts-expect-error — .divide() takes a color, widths live on .divideX()/.divideY()
+Div().divide("2");
+Div().invisible();
+Div().hidden().sm({ tableCell: true });
+Div().divideY().hover({ divide: "slate-200" });
 Div().before({ content: true }); // true → content-['']
 Div().content("none");
 Div().content("[attr(data-label)]");

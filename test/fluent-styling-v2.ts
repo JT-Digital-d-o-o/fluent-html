@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { Div, Button, Span, render, Tag } from "../src/index.js";
+import { Div, Button, Span, Th, render, Tag } from "../src/index.js";
 import type { VariantStyleObject } from "../src/index.js";
 
 // C-02: the themeable unions are now CLOSED — undeclared custom strings no longer
@@ -208,6 +208,21 @@ describe("v4 variants (C-06): widened states + container queries", () => {
       render(Div().md({ cssProp: ["scrollbar-width", "none"] })),
       '<div class="md:[scrollbar-width:none]"></div>',
     );
+  });
+  it("table display + divide color + invisible (2026-08-03 backlog promotions)", () => {
+    // The responsive column pattern the promotion was measured on: hidden below sm.
+    assert.strictEqual(
+      render(Th("ASIN").hidden().sm({ tableCell: true })),
+      '<th class="hidden sm:table-cell">ASIN</th>',
+    );
+    assert.strictEqual(render(Div().table("fixed")), '<div class="table-fixed"></div>');
+    assert.strictEqual(render(Div().table()), '<div class="table"></div>');
+    assert.strictEqual(render(Div().tableRow()), '<div class="table-row"></div>');
+    assert.strictEqual(
+      render(Div().divideY().divide("slate-100")),
+      '<div class="divide-y divide-slate-100"></div>',
+    );
+    assert.strictEqual(render(Span("↑").invisible()), '<span class="invisible">↑</span>');
   });
   it(".cssProp() escapes literal underscores and leaves url(…) untouched", () => {
     // Tailwind decodes unescaped `_` back to a space — `card_1` must emit `card\_1`.

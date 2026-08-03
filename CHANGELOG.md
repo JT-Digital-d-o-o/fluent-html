@@ -56,6 +56,16 @@ Variants are typed style objects, not lambdas. `.on("hover", t => t.bg("blue-600
 - **Generated, not hand-written:** `StyleProps` (`variant-object.gen.ts`, 209 keys) is emitted from the shared key derivation in `class-vocab/variant-keys.ts` + per-row `variantObject` specs; the runtime key→emit map derives from the same specs, and a 209-key parity suite renders every key against the vocab emitters. Extracted style consts should pin with `satisfies VariantStyleObject` (excess-property checking doesn't reach through variables).
 - **Removed:** `.on()`, `.at()`, and the lambda `withVariant` helper. No aliases. There is deliberately no object hatch for `.cssClass()` under a variant — non-Tailwind classes have no variant story.
 
+### ✨ Added — evidence-based vocab promotions (2026-08-03)
+
+A usage sweep of 8 production fluent-html apps found only ~10 of the 231 backlogged Tailwind roots in real use; the three families carrying ~⅔ of all occurrences are promoted to typed methods (the rest stay backlogged — zero measured demand):
+
+- **`.table()` / `.tableCell()` / `.tableRow()`** — table display keywords (`table-cell` was the most common escape-hatch leak: responsive column show/hide, `Th().hidden().sm({ tableCell: true })`); `.table("auto" | "fixed")` covers the table-layout algorithm on the same prefix.
+- **`.divide(color)`** — color of the between-children borders; completes `.divideX()`/`.divideY()` (every observed use chained `.addClass("divide-…")` onto them).
+- **`.invisible()`** — `visibility: hidden` (keeps layout space, unlike `.hidden()`); `visible`/`collapse` stay backlogged.
+
+All three derive the full artifact set (generated unions, `StyleProps` keys, extractor/ESLint tables) from their vocab rows; the coverage-watch ignore entries are retired, and the codemod's legacy `display()` dispatch learned the table keywords.
+
 ### 🐛 Fixed
 
 - **`.cssProp()` no longer corrupts values containing literal underscores** (post-release review of the 6.8.0 escape hatch). Tailwind decodes every unescaped `_` in an arbitrary property back to a space, so `.cssProp("view-transition-name", "card_1")` emitted CSS `view-transition-name: card 1` — invalid and silently dropped. Values now escape literal `_` as `\_`, substitute each whitespace char individually (quoted-string spacing round-trips exactly), and leave `url(…)` segments untouched (Tailwind preserves their underscores; substituting corrupted URLs). One shared `cssPropValue` encoder feeds both the runtime emitter and the vocab row, oracle-verified against the pinned Tailwind.

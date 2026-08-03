@@ -206,6 +206,7 @@ export const classVocab: readonly UtilityDef[] = [
   custom("rounded", emitRounded, [[], ["lg"], ["t"], ["tl", "lg"]], { values: theme("--radius"), doc: "Border radius — all corners (bare = default), one corner, or corner + size.", variantObject: vo("true | TailwindRounded | TailwindRoundedCorner | readonly [TailwindRoundedCorner, TailwindRounded]") }),
   opt("divideX", "divide-x", undefined, { values: ref("TailwindBorderWidth"), doc: "Border between horizontal children." }),
   opt("divideY", "divide-y", undefined, { values: ref("TailwindBorderWidth"), doc: "Border between vertical children." }),
+  pre("divide", "divide", { values: theme("--color"), doc: "Color of the between-children borders (pairs with `.divideX()`/`.divideY()`)." }),
 
   // Effects & Appearance — `.shadow()` merged: size or color through `shadow-*`.
   opt("shadow", "shadow", undefined, {
@@ -232,6 +233,10 @@ export const classVocab: readonly UtilityDef[] = [
   stat("inlineGrid", "inline-grid", { doc: "Inline-level grid container." }),
   stat("contents", "contents", { doc: "Children participate in the parent's layout (`display: contents`)." }),
   stat("hidden", "hidden", { doc: "Remove from layout (`display: none`)." }),
+  stat("invisible", "invisible", { doc: "Hide but keep layout space (`visibility: hidden`) — unlike `.hidden()`." }),
+  opt("table", "table", undefined, { values: lit("auto", "fixed"), doc: "Table display (bare) or the table-layout algorithm (`auto`/`fixed`)." }),
+  stat("tableCell", "table-cell", { doc: "Table-cell display (responsive column show/hide)." }),
+  stat("tableRow", "table-row", { doc: "Table-row display." }),
   size("inset", "inset", { values: ref("TailwindInset"), doc: "All four inset offsets at once." }),
   size("top", "top", { values: ref("TailwindInset"), doc: "Top offset of a positioned element." }),
   size("right", "right", { values: ref("TailwindInset"), doc: "Right offset of a positioned element." }),

@@ -189,6 +189,9 @@ export type TailwindRotate =
 /** Translate distance — the spacing scale plus its negatives (`-translate-y-1`). */
 export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${number}` | "-full" | "-px";
 
+// Layout — tables
+export type TailwindTable = "auto" | "fixed";
+
 // Interactivity
 export type TailwindSelect = "none" | "text" | "all" | "auto";
 export type TailwindPointerEvents = "none" | "auto";

@@ -101,6 +101,14 @@ describe("emitClasses — per-shape exact output", () => {
         ["custom cssProp spaces → underscores", "cssProp", ["border", "1px solid red"], ["[border:1px_solid_red]"]],
         ["custom cssProp custom property", "cssProp", ["--brand-glow", "0 0 4px red"], ["[--brand-glow:0_0_4px_red]"]],
         // literal `_` must escape (unescaped `_` decodes to a space in Tailwind); url(…) stays untouched
+        // evidence-based backlog promotions (2026-08-03): table display, divide color, invisible
+        ["opt table bare (display)", "table", [], ["table"]],
+        ["opt table layout auto", "table", ["auto"], ["table-auto"]],
+        ["opt table layout fixed", "table", ["fixed"], ["table-fixed"]],
+        ["stat tableCell", "tableCell", [], ["table-cell"]],
+        ["stat tableRow", "tableRow", [], ["table-row"]],
+        ["prefix divide color", "divide", ["slate-100"], ["divide-slate-100"]],
+        ["stat invisible", "invisible", [], ["invisible"]],
         ["custom cssProp literal underscore escaped", "cssProp", ["view-transition-name", "card_1"], ["[view-transition-name:card\\_1]"]],
         ["custom cssProp quoted string round-trips", "cssProp", ["content", "'a  b'"], ["[content:'a__b']"]],
         ["custom cssProp url untouched", "cssProp", ["background-image", "url(/my_file.png)"], ["[background-image:url(/my_file.png)]"]],

@@ -83,6 +83,11 @@ const ORACLE_ARGS: Readonly<Record<string, readonly (readonly string[])[]>> = {
   placeSelf: [["center"]],
   // Borders
   divideX: [[], ["2"]],
+  divide: [["red-500"], ["slate-100"]],
+  table: [[], ["auto"], ["fixed"]],
+  tableCell: [[]],
+  tableRow: [[]],
+  invisible: [[]],
   divideY: [[], ["2"]],
   // Effects & Appearance (merged .shadow())
   shadow: [[], ["md"], ["red-500"]],

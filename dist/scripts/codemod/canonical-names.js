@@ -101,6 +101,9 @@ const KEYWORD_DISPATCH = {
         "inline-block": "inlineBlock",
         "inline-flex": "inlineFlex",
         "inline-grid": "inlineGrid",
+        table: "table",
+        "table-cell": "tableCell",
+        "table-row": "tableRow",
     },
     position: {
         static: "static",

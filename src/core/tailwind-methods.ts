@@ -126,6 +126,7 @@ import type {
   TailwindMaskComposite,
   TailwindMaskType,
   TailwindAppearance,
+  TailwindTable,
   TailwindWrap,
   TailwindContent,
 } from "./tailwind-types.js";
@@ -332,6 +333,12 @@ declare module "./tag.js" {
     inlineGrid(): this;
     contents(): this;
     hidden(): this;
+    /** Hide but keep layout space (`visibility: hidden`) — unlike `.hidden()`, which removes the element from layout. */
+    invisible(): this;
+    /** Bare `.table()` is `display: table`; `.table("auto" | "fixed")` sets the table-layout algorithm. */
+    table(value?: TailwindTable): this;
+    tableCell(): this;
+    tableRow(): this;
     inset(value: TailwindInset): this;
     inset(unit: TailwindUnit, amount: number): this;
     top(value: TailwindInset): this;
@@ -361,6 +368,8 @@ declare module "./tag.js" {
     spaceY(value: TailwindSpacing): this;
     divideX(value?: TailwindBorderWidth): this;
     divideY(value?: TailwindBorderWidth): this;
+    /** Color of the between-children borders — pairs with `.divideX()`/`.divideY()`. */
+    divide(color: TailwindColor): this;
 
     // Transitions & Animation
     /** Merged `transition-*` method — property group (bare = default set) or discrete-transition behavior (`"discrete"`/`"normal"`). */
@@ -836,6 +845,12 @@ p.inlineFlex = function () { return this.addClass("inline-flex"); };
 p.inlineGrid = function () { return this.addClass("inline-grid"); };
 p.contents = function () { return this.addClass("contents"); };
 p.hidden = function () { return this.addClass("hidden"); };
+p.invisible = function () { return this.addClass("invisible"); };
+p.table = function (value?: string) {
+  return value === undefined ? this.addClass("table") : this.addClass(`table-${value}`);
+};
+p.tableCell = function () { return this.addClass("table-cell"); };
+p.tableRow = function () { return this.addClass("table-row"); };
 p.inset = function (unitOrValue: string, amount?: number) {
   if (amount !== undefined) return this.addClass(`inset-[${amount}${unitOrValue}]`);
   return this.addClass(`inset-${unitOrValue}`);
@@ -886,6 +901,7 @@ p.divideX = function (value?: string | number) {
 p.divideY = function (value?: string | number) {
   return value === undefined ? this.addClass("divide-y") : this.addClass(`divide-y-${value}`);
 };
+p.divide = function (color: string) { return this.addClass(`divide-${color}`); };
 
 // Transitions & Animation
 

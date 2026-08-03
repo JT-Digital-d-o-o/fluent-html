@@ -96,6 +96,7 @@ import type {
   TailwindSnapStrictness,
   TailwindSpacing,
   TailwindStrokeWidth,
+  TailwindTable,
   TailwindTextAlign,
   TailwindTextShadow,
   TailwindTextSize,
@@ -251,6 +252,8 @@ export interface StyleProps {
   divideX?: true | TailwindBorderWidth | undefined;
   /** Border between vertical children. */
   divideY?: true | TailwindBorderWidth | undefined;
+  /** Color of the between-children borders (pairs with `.divideX()`/`.divideY()`). */
+  divide?: TailwindColor | undefined;
   /** Box shadow — bare default, a theme size, or a shadow color. */
   shadow?: true | TailwindShadow | TailwindColor | undefined;
   /** Element opacity (0–100). */
@@ -287,6 +290,14 @@ export interface StyleProps {
   contents?: boolean | undefined;
   /** Remove from layout (`display: none`). */
   hidden?: boolean | undefined;
+  /** Hide but keep layout space (`visibility: hidden`) — unlike `.hidden()`. */
+  invisible?: boolean | undefined;
+  /** Table display (bare) or the table-layout algorithm (`auto`/`fixed`). */
+  table?: true | TailwindTable | undefined;
+  /** Table-cell display (responsive column show/hide). */
+  tableCell?: boolean | undefined;
+  /** Table-row display. */
+  tableRow?: boolean | undefined;
   /** All four inset offsets at once. */
   inset?: TailwindInset | undefined;
   /** Top offset of a positioned element. */

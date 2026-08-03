@@ -1,4 +1,4 @@
-import type { TailwindAlignItems, TailwindAlignSelf, TailwindAnimate, TailwindAppearance, TailwindAspect, TailwindBackfaceVisibility, TailwindBgBlendMode, TailwindBlur, TailwindBorderStyle, TailwindBorderWidth, TailwindBoxDecoration, TailwindBreakBeforeAfter, TailwindBreakInside, TailwindBrightness, TailwindColSpan, TailwindColor, TailwindColorScheme, TailwindColumns, TailwindContent, TailwindContrast, TailwindCursor, TailwindDecorationStyle, TailwindDecorationThickness, TailwindDelay, TailwindDropShadow, TailwindDuration, TailwindEase, TailwindFieldSizing, TailwindFlex, TailwindFlexDirection, TailwindFlexWrap, TailwindFontFamily, TailwindFontWeight, TailwindGradientAngle, TailwindGradientDirection, TailwindGradientInterpolation, TailwindGradientOrigin, TailwindGradientPosition, TailwindGradientStop, TailwindGridAuto, TailwindGridAutoFlow, TailwindGridCols, TailwindGridLine, TailwindGridRows, TailwindHeight, TailwindHueRotate, TailwindHyphens, TailwindInset, TailwindInsetShadow, TailwindIsolation, TailwindJustifyContent, TailwindLeading, TailwindLineClamp, TailwindListStylePosition, TailwindListStyleType, TailwindMaskComposite, TailwindMaskEdge, TailwindMaskStop, TailwindMaskType, TailwindMaxHeight, TailwindMaxWidth, TailwindMinHeight, TailwindMinWidth, TailwindMixBlendMode, TailwindObjectFit, TailwindOpacity, TailwindOrder, TailwindOutline, TailwindOverflow, TailwindOverscroll, TailwindPerspective, TailwindPerspectiveOrigin, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindPointerEvents, TailwindResize, TailwindRingWidth, TailwindRotate, TailwindRounded, TailwindRoundedCorner, TailwindRowSpan, TailwindSaturate, TailwindScale, TailwindScrollBehavior, TailwindSelect, TailwindShadow, TailwindSkew, TailwindSnapAlign, TailwindSnapAxis, TailwindSnapStop, TailwindSnapStrictness, TailwindSpacing, TailwindStrokeWidth, TailwindTextAlign, TailwindTextShadow, TailwindTextSize, TailwindTextWrap, TailwindTracking, TailwindTransformStyle, TailwindTransition, TailwindTransitionBehavior, TailwindTranslate, TailwindTranslateZ, TailwindUnderlineOffset, TailwindWhitespace, TailwindWidth, TailwindWillChange, TailwindWrap, TailwindZIndex } from "./tailwind-types.js";
+import type { TailwindAlignItems, TailwindAlignSelf, TailwindAnimate, TailwindAppearance, TailwindAspect, TailwindBackfaceVisibility, TailwindBgBlendMode, TailwindBlur, TailwindBorderStyle, TailwindBorderWidth, TailwindBoxDecoration, TailwindBreakBeforeAfter, TailwindBreakInside, TailwindBrightness, TailwindColSpan, TailwindColor, TailwindColorScheme, TailwindColumns, TailwindContent, TailwindContrast, TailwindCursor, TailwindDecorationStyle, TailwindDecorationThickness, TailwindDelay, TailwindDropShadow, TailwindDuration, TailwindEase, TailwindFieldSizing, TailwindFlex, TailwindFlexDirection, TailwindFlexWrap, TailwindFontFamily, TailwindFontWeight, TailwindGradientAngle, TailwindGradientDirection, TailwindGradientInterpolation, TailwindGradientOrigin, TailwindGradientPosition, TailwindGradientStop, TailwindGridAuto, TailwindGridAutoFlow, TailwindGridCols, TailwindGridLine, TailwindGridRows, TailwindHeight, TailwindHueRotate, TailwindHyphens, TailwindInset, TailwindInsetShadow, TailwindIsolation, TailwindJustifyContent, TailwindLeading, TailwindLineClamp, TailwindListStylePosition, TailwindListStyleType, TailwindMaskComposite, TailwindMaskEdge, TailwindMaskStop, TailwindMaskType, TailwindMaxHeight, TailwindMaxWidth, TailwindMinHeight, TailwindMinWidth, TailwindMixBlendMode, TailwindObjectFit, TailwindOpacity, TailwindOrder, TailwindOutline, TailwindOverflow, TailwindOverscroll, TailwindPerspective, TailwindPerspectiveOrigin, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindPointerEvents, TailwindResize, TailwindRingWidth, TailwindRotate, TailwindRounded, TailwindRoundedCorner, TailwindRowSpan, TailwindSaturate, TailwindScale, TailwindScrollBehavior, TailwindSelect, TailwindShadow, TailwindSkew, TailwindSnapAlign, TailwindSnapAxis, TailwindSnapStop, TailwindSnapStrictness, TailwindSpacing, TailwindStrokeWidth, TailwindTable, TailwindTextAlign, TailwindTextShadow, TailwindTextSize, TailwindTextWrap, TailwindTracking, TailwindTransformStyle, TailwindTransition, TailwindTransitionBehavior, TailwindTranslate, TailwindTranslateZ, TailwindUnderlineOffset, TailwindWhitespace, TailwindWidth, TailwindWillChange, TailwindWrap, TailwindZIndex } from "./tailwind-types.js";
 import type { CssPropertyName } from "./css-props.gen.js";
 /**
  * The style half of a variant object (llm-styling/object-variants): one
@@ -136,6 +136,8 @@ export interface StyleProps {
     divideX?: true | TailwindBorderWidth | undefined;
     /** Border between vertical children. */
     divideY?: true | TailwindBorderWidth | undefined;
+    /** Color of the between-children borders (pairs with `.divideX()`/`.divideY()`). */
+    divide?: TailwindColor | undefined;
     /** Box shadow — bare default, a theme size, or a shadow color. */
     shadow?: true | TailwindShadow | TailwindColor | undefined;
     /** Element opacity (0–100). */
@@ -172,6 +174,14 @@ export interface StyleProps {
     contents?: boolean | undefined;
     /** Remove from layout (`display: none`). */
     hidden?: boolean | undefined;
+    /** Hide but keep layout space (`visibility: hidden`) — unlike `.hidden()`. */
+    invisible?: boolean | undefined;
+    /** Table display (bare) or the table-layout algorithm (`auto`/`fixed`). */
+    table?: true | TailwindTable | undefined;
+    /** Table-cell display (responsive column show/hide). */
+    tableCell?: boolean | undefined;
+    /** Table-row display. */
+    tableRow?: boolean | undefined;
     /** All four inset offsets at once. */
     inset?: TailwindInset | undefined;
     /** Top offset of a positioned element. */

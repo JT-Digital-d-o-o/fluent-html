@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { Div, Button, Span, render, Tag } from "../src/index.js";
+import { Div, Button, Span, Th, render, Tag } from "../src/index.js";
 describe("Layout & Display", () => {
     it("block", () => { assert.strictEqual(render(Div().block()), '<div class="block"></div>'); });
     it("inlineFlex", () => { assert.strictEqual(render(Div().inlineFlex()), '<div class="inline-flex"></div>'); });
@@ -167,6 +167,15 @@ describe("v4 variants (C-06): widened states + container queries", () => {
         assert.strictEqual(render(Div().cssProp("border", "1px solid red")), '<div class="[border:1px_solid_red]"></div>');
         assert.strictEqual(render(Div().hover({ cssProp: ["--glow", "0 0 4px"] })), '<div class="hover:[--glow:0_0_4px]"></div>');
         assert.strictEqual(render(Div().md({ cssProp: ["scrollbar-width", "none"] })), '<div class="md:[scrollbar-width:none]"></div>');
+    });
+    it("table display + divide color + invisible (2026-08-03 backlog promotions)", () => {
+        // The responsive column pattern the promotion was measured on: hidden below sm.
+        assert.strictEqual(render(Th("ASIN").hidden().sm({ tableCell: true })), '<th class="hidden sm:table-cell">ASIN</th>');
+        assert.strictEqual(render(Div().table("fixed")), '<div class="table-fixed"></div>');
+        assert.strictEqual(render(Div().table()), '<div class="table"></div>');
+        assert.strictEqual(render(Div().tableRow()), '<div class="table-row"></div>');
+        assert.strictEqual(render(Div().divideY().divide("slate-100")), '<div class="divide-y divide-slate-100"></div>');
+        assert.strictEqual(render(Span("↑").invisible()), '<span class="invisible">↑</span>');
     });
     it(".cssProp() escapes literal underscores and leaves url(…) untouched", () => {
         // Tailwind decodes unescaped `_` back to a space — `card_1` must emit `card\_1`.

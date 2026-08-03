@@ -1098,6 +1098,8 @@ Method names equal Tailwind class prefixes — if you know the class, you know t
 .relative()                      // relative
 .absolute()                      // absolute  (also .fixed() .sticky() .static())
 .block()                         // block     (also .inline() .inlineFlex() .inlineGrid() .contents())
+.hidden()                        // hidden    (.invisible() keeps the layout space)
+.table()                         // table     (.tableCell() .tableRow(); .table("auto"|"fixed") = table-layout)
 .z("10")                         // z-10
 .opacity("50")                   // opacity-50
 .cursor("pointer")               // cursor-pointer

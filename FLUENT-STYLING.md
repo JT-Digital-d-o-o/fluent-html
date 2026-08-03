@@ -204,6 +204,7 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 .ring("2")                 // ring-2 (widths 0|1|2|3|4|8; colors on the same method)
 .opacity("50")             // opacity-50
 .divideX()  .divideY("2")  // divide-x, divide-y-2
+.divide("slate-100")       // divide-slate-100 (color of the between-children borders)
 .dropShadow("lg")          // drop-shadow-lg (v4.1 colors on the same method: .dropShadow("red-500/50"))
 .insetShadow("sm")         // inset-shadow-sm (.insetRing("2") inner ring; both take colors too)
 .mixBlend("multiply")      // mix-blend-multiply (.bgBlend() for background layers)
@@ -215,7 +216,8 @@ Units: `px` `rem` `em` `%` `vh` `vw` `dvh` `svh` `lvh`. Available on: `w`, `h`, 
 ```typescript
 .relative()                // relative  (.absolute() .fixed() .sticky() .static())
 .block()                   // block     (.inline() .inlineFlex() .inlineGrid() .contents())
-.hidden()                  // hidden
+.hidden()                  // hidden (removed from layout; .invisible() hides but keeps the space)
+.table()                   // table     (.tableCell() .tableRow(); .table("auto" | "fixed") = table-layout)
 .z("10")                   // z-10
 .inset("0")                // inset-0
 .top("4")  .right("0")  .bottom("0")  .left("0")

@@ -230,6 +230,12 @@ p.inlineFlex = function () { return this.addClass("inline-flex"); };
 p.inlineGrid = function () { return this.addClass("inline-grid"); };
 p.contents = function () { return this.addClass("contents"); };
 p.hidden = function () { return this.addClass("hidden"); };
+p.invisible = function () { return this.addClass("invisible"); };
+p.table = function (value) {
+    return value === undefined ? this.addClass("table") : this.addClass(`table-${value}`);
+};
+p.tableCell = function () { return this.addClass("table-cell"); };
+p.tableRow = function () { return this.addClass("table-row"); };
 p.inset = function (unitOrValue, amount) {
     if (amount !== undefined)
         return this.addClass(`inset-[${amount}${unitOrValue}]`);
@@ -279,6 +285,7 @@ p.divideX = function (value) {
 p.divideY = function (value) {
     return value === undefined ? this.addClass("divide-y") : this.addClass(`divide-y-${value}`);
 };
+p.divide = function (color) { return this.addClass(`divide-${color}`); };
 // Transitions & Animation
 p.transition = function (value) {
     return value === undefined ? this.addClass("transition") : this.addClass(`transition-${value}`);

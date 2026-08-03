@@ -2,6 +2,13 @@
 
 > The governing architecture decisions, made during the v6 research curation and recorded before implementation. Full reasoning + evidence: [`curation.md`](../../product/research/v6/40-synthesis/curation.md) §0 constraints. Per-phase decisions live in each scope's `decisions.md`.
 
+## Vocab backlog promotions are evidence-gated (first batch: table display, divide color, invisible)
+**Date:** 03. 08. 26
+**Context:** The coverage watch tracks 231 Tailwind roots with no fluent method. New-root naming is a human decision (vocab-generator PRD); the open question was which, if any, to promote for 7.0.0.
+**Decision:** Promote only roots with measured real-world demand. A usage sweep of 8 production apps (planet-positive-sport, varnoska, storysell-ai primary) found ~10 roots in actual use; the top three families — `.table()`/`.tableCell()`/`.tableRow()` (+ `table-layout` values), `.divide(color)`, `.invisible()` — cover ~⅔ of all occurrences and shipped in 7.0.0. Everything else (incl. the entire logical-properties family, `size-*`, `basis`, `float`: zero hits) stays backlogged until evidence appears.
+**Reasoning:** Speculative vocabulary contradicts the instruction-set principle (converge, don't accumulate); usage data makes the promotion criterion mechanical instead of taste-based. Notably `container` had zero class-uses while two apps hand-wrote identical `.apply()` presets — confirming presets stay user-land.
+**Consequences:** Future promotions repeat the sweep (evidence in [vocab-generator/backlog.md](llm-styling/vocab-generator/backlog.md)). `visible`/`collapse`, divide styles, and the remaining table display groups are consciously NOT added despite being trivial siblings.
+
 ## v6 is greenfield — no v5 backward-compatibility
 **Date:** 23. 06. 26
 **Context:** v5 is in production across the app fleet; v6 changes many signatures (boolean setters, renames, closed unions, `.overlay()`, `ForEachElse`).

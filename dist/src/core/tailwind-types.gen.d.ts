@@ -43,6 +43,7 @@ export type TailwindScale = 0 | 50 | 75 | 90 | 95 | 100 | 105 | 110 | 125 | 150 
 export type TailwindRotate = 0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | -1 | -2 | -3 | -6 | -12 | -45 | -90 | -180 | Stringified<0 | 1 | 2 | 3 | 6 | 12 | 45 | 90 | 180 | -1 | -2 | -3 | -6 | -12 | -45 | -90 | -180> | `[${string}]`;
 /** Translate distance — the spacing scale plus its negatives (`-translate-y-1`). */
 export type TailwindTranslate = TailwindSpacing | `-${number}` | `-${number}/${number}` | "-full" | "-px";
+export type TailwindTable = "auto" | "fixed";
 export type TailwindSelect = "none" | "text" | "all" | "auto";
 export type TailwindPointerEvents = "none" | "auto";
 export type TailwindAppearance = "none" | "auto";

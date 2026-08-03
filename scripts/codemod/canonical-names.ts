@@ -106,6 +106,9 @@ const KEYWORD_DISPATCH: Readonly<Record<string, Readonly<Record<string, string>>
     "inline-block": "inlineBlock",
     "inline-flex": "inlineFlex",
     "inline-grid": "inlineGrid",
+    table: "table",
+    "table-cell": "tableCell",
+    "table-row": "tableRow",
   },
   position: {
     static: "static",
