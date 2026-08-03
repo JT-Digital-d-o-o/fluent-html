@@ -4,7 +4,7 @@ import type { CssPropertyName } from "./css-props.gen.js";
  * The style half of a variant object (llm-styling/object-variants): one
  * optional property per fluent styling key. `false`/`undefined` values are
  * skipped at apply time, so conditional styling is a plain expression
- * (`bold: isImportant`, `bg: active ? "blue-600" : undefined`). Multi-arg
+ * (`italic: isDraft`, `bg: active ? "blue-600" : undefined`). Multi-arg
  * utilities take readonly tuples; arbitrary values use the `[…]` arms.
  */
 export interface StyleProps {
@@ -278,7 +278,7 @@ export interface StyleProps {
     overscroll?: TailwindOverscroll | undefined;
     /** Prefix an arbitrary utility with `-` (negative value passthrough). */
     neg?: string | undefined;
-    /** Arbitrary-CSS escape — emits `[prop:value]` (spaces become `_`); variant-composable. */
+    /** Arbitrary-CSS escape — emits `[prop:value]` (spaces → `_`, literal `_` escaped); variant-composable. */
     cssProp?: readonly [CssPropertyName, string] | undefined;
     /** htmx loading-indicator marker class. */
     htmxIndicator?: boolean | undefined;

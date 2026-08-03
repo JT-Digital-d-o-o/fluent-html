@@ -1145,7 +1145,7 @@ Div().hover({
   minH: "[180px]",                      // arbitrary values use the [...] arm
   translateY: "-0.5",                   // positional args flatten into keys (gapX, overflowY, …)
   border: ["top", "red-500"],           // multi-arg utilities take readonly tuples
-  bold: undefined,                      // undefined and false are skipped
+  italic: undefined,                    // undefined and false are skipped
 })
 ```
 

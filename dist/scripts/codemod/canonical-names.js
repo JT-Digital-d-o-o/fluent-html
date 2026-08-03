@@ -264,8 +264,10 @@ function chainEntries(body, param) {
             const tier1 = TIER1_BY_PREFIX[nested.prefix];
             if (tier1 === undefined)
                 return { reason: `nested variant "${nested.prefix}" is not a tier-1 member` };
-            if (nested.chunks.length !== 1)
-                return { reason: "nested variant needs a repeated key" };
+            if (nested.chunks.length === 0)
+                continue; // empty nested lambda — a no-op, drop it
+            if (nested.chunks.length > 1)
+                return { reason: "nested variant has a repeated key (cannot nest)" };
             entries.push({ key: tier1, value: nested.chunks[0] });
             continue;
         }
@@ -346,8 +348,12 @@ export function collectEdits(file) {
         if (!receiverIsTag(callee.getExpression())) {
             // Calls on a variant-lambda parameter type as `any` once the linked lib
             // has dropped .on/.at — inside a reported (failed) span that's implied
-            // by the span's own skip, so don't double-report.
-            if (!inSpan(variantSpans, nameStart))
+            // by the span's own skip, so don't double-report. `.on`/`.at` on a
+            // receiver that types cleanly (EventEmitter, Array, string) is stdlib,
+            // not fluent — reporting those would bury real review items; an
+            // `any`/error-poisoned receiver still reports (may be a broken Tag chain).
+            const stdlib = (name === "on" || name === "at") && !callee.getExpression().getType().isAny();
+            if (!stdlib && !inSpan(variantSpans, nameStart))
                 skips.push({ line, name, reason: "receiver does not type as Tag" });
             return;
         }
@@ -361,8 +367,16 @@ export function collectEdits(file) {
             }
             else {
                 converted.push([nameStart, node.getEnd()]);
-                // An empty-lambda drop must also consume the leading dot (both chars of a `?.` chain).
-                const dotStart = file.getFullText()[nameStart - 2] === "?" ? nameStart - 2 : nameStart - 1;
+                // An empty-lambda drop must also consume the leading dot: scan back
+                // over whitespace (`x\n  .on(…)`), take the `?.`'s `?` too, then any
+                // whitespace before that — deleting up to the previous token's end.
+                const fileText = file.getFullText();
+                let dot = nameStart - 1;
+                while (dot > 0 && /\s/.test(fileText[dot]))
+                    dot--;
+                let dotStart = fileText[dot - 1] === "?" ? dot - 1 : dot;
+                while (dotStart > 0 && /\s/.test(fileText[dotStart - 1]))
+                    dotStart--;
                 edits.push(text === "" ? { start: dotStart, end: node.getEnd(), text: "" } : { start: nameStart, end: node.getEnd(), text });
             }
             return;

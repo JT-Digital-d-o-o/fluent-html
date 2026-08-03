@@ -12,7 +12,7 @@ import { applyVariantObject } from "./variant-object.js";
 import type { VariantStyleObject } from "./variant-object.js";
 // Shared with the class-vocab source of truth (C-05) — one home for these
 // constants (the extractor + ESLint maps derive from the same module).
-import { DIR_MAP, ROUNDED_CORNERS, signNeg, radialGradientClass } from "../class-vocab/types.js";
+import { DIR_MAP, ROUNDED_CORNERS, signNeg, cssPropValue, radialGradientClass } from "../class-vocab/types.js";
 import type {
   TailwindSpacing,
   TailwindWidth,
@@ -1044,7 +1044,7 @@ p.neg = function (cls: string) { return this.addClass(`-${cls}`); };
 // Typed escapes (llm-styling/escape-hatch)
 
 p.cssProp = function (property: string, value: string) {
-  return this.addClass(`[${property}:${value.replace(/\s+/g, "_")}]`);
+  return this.addClass(`[${property}:${cssPropValue(value)}]`);
 };
 p.cssClass = function (name: string) { return this.addClass(name); };
 

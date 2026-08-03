@@ -105,6 +105,11 @@ describe("emitClasses — per-shape exact output", () => {
     ["custom cssProp simple", "cssProp", ["mask-repeat", "no-repeat"], ["[mask-repeat:no-repeat]"]],
     ["custom cssProp spaces → underscores", "cssProp", ["border", "1px solid red"], ["[border:1px_solid_red]"]],
     ["custom cssProp custom property", "cssProp", ["--brand-glow", "0 0 4px red"], ["[--brand-glow:0_0_4px_red]"]],
+    // literal `_` must escape (unescaped `_` decodes to a space in Tailwind); url(…) stays untouched
+    ["custom cssProp literal underscore escaped", "cssProp", ["view-transition-name", "card_1"], ["[view-transition-name:card\\_1]"]],
+    ["custom cssProp quoted string round-trips", "cssProp", ["content", "'a  b'"], ["[content:'a__b']"]],
+    ["custom cssProp url untouched", "cssProp", ["background-image", "url(/my_file.png)"], ["[background-image:url(/my_file.png)]"]],
+    ["custom cssProp mixed url + spaces", "cssProp", ["background", "url(/img_2.png) no-repeat"], ["[background:url(/img_2.png)_no-repeat]"]],
   ];
 
   const byMethod = new Map(classVocab.map((d) => [d.method, d]));

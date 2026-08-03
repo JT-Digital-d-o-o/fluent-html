@@ -146,7 +146,7 @@ export function renderVariantObjectGen(): string {
     " * The style half of a variant object (llm-styling/object-variants): one",
     " * optional property per fluent styling key. `false`/`undefined` values are",
     " * skipped at apply time, so conditional styling is a plain expression",
-    " * (`bold: isImportant`, `bg: active ? \"blue-600\" : undefined`). Multi-arg",
+    " * (`italic: isDraft`, `bg: active ? \"blue-600\" : undefined`). Multi-arg",
     " * utilities take readonly tuples; arbitrary values use the `[…]` arms.",
     " */",
     "export interface StyleProps {",

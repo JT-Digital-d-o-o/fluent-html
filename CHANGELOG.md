@@ -56,6 +56,12 @@ Variants are typed style objects, not lambdas. `.on("hover", t => t.bg("blue-600
 - **Generated, not hand-written:** `StyleProps` (`variant-object.gen.ts`, 209 keys) is emitted from the shared key derivation in `class-vocab/variant-keys.ts` + per-row `variantObject` specs; the runtime key→emit map derives from the same specs, and a 209-key parity suite renders every key against the vocab emitters. Extracted style consts should pin with `satisfies VariantStyleObject` (excess-property checking doesn't reach through variables).
 - **Removed:** `.on()`, `.at()`, and the lambda `withVariant` helper. No aliases. There is deliberately no object hatch for `.cssClass()` under a variant — non-Tailwind classes have no variant story.
 
+### 🐛 Fixed
+
+- **`.cssProp()` no longer corrupts values containing literal underscores** (post-release review of the 6.8.0 escape hatch). Tailwind decodes every unescaped `_` in an arbitrary property back to a space, so `.cssProp("view-transition-name", "card_1")` emitted CSS `view-transition-name: card 1` — invalid and silently dropped. Values now escape literal `_` as `\_`, substitute each whitespace char individually (quoted-string spacing round-trips exactly), and leave `url(…)` segments untouched (Tailwind preserves their underscores; substituting corrupted URLs). One shared `cssPropValue` encoder feeds both the runtime emitter and the vocab row, oracle-verified against the pinned Tailwind.
+- **Codemod robustness** (post-release review): an empty-lambda drop now scans back to the previous token, so `?.` chains and whitespace-separated dots (`x\n  .on(…)`) can't yield syntactically broken output; an empty *nested* variant lambda is dropped as a no-op instead of failing the whole conversion with a misleading reason; and stdlib `.on()`/`.at()` calls (EventEmitter, `Array.prototype.at`) on cleanly-typed receivers no longer flood the SKIP report — only `any`/error-poisoned receivers (potential broken Tag chains) are surfaced for manual review.
+- Docs: the variant-object examples in README and the generated `StyleProps` JSDoc used a nonexistent `bold:` key (the method is `.font("bold")`); examples now use `italic`.
+
 ## [6.8.0] - Escape hatch closure: vocab gap fills + font-family theme tokens
 
 First stage of `llm-styling/escape-hatch` — the last vocab gaps are filled so no styling need forces an author off the typed surface.

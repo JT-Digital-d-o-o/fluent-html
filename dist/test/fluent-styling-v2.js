@@ -168,6 +168,14 @@ describe("v4 variants (C-06): widened states + container queries", () => {
         assert.strictEqual(render(Div().hover({ cssProp: ["--glow", "0 0 4px"] })), '<div class="hover:[--glow:0_0_4px]"></div>');
         assert.strictEqual(render(Div().md({ cssProp: ["scrollbar-width", "none"] })), '<div class="md:[scrollbar-width:none]"></div>');
     });
+    it(".cssProp() escapes literal underscores and leaves url(…) untouched", () => {
+        // Tailwind decodes unescaped `_` back to a space — `card_1` must emit `card\_1`.
+        assert.strictEqual(render(Div().cssProp("view-transition-name", "card_1")), '<div class="[view-transition-name:card\\_1]"></div>');
+        assert.strictEqual(render(Div().cssProp("background-image", "url(/my_file.png)")), '<div class="[background-image:url(/my_file.png)]"></div>');
+        // Each whitespace char maps to its own `_`, so quoted-string spacing
+        // round-trips (quotes entity-encode in the attribute, like [&>li] above).
+        assert.strictEqual(render(Div().cssProp("content", "'a  b'")), '<div class="[content:&#39;a__b&#39;]"></div>');
+    });
     it(".cssClass() appends verbatim (non-Tailwind intent marker)", () => {
         assert.strictEqual(render(Div().cssClass("js-map-container")), '<div class="js-map-container"></div>');
         assert.strictEqual(render(Div().p("4").cssClass("shepherd-target")), '<div class="p-4 shepherd-target"></div>');

@@ -41,6 +41,23 @@ export function signNeg(prefix, value) {
     return value.startsWith("-") ? `-${prefix}-${value.slice(1)}` : `${prefix}-${value}`;
 }
 /**
+ * Encode a CSS value for Tailwind's arbitrary-property form (`[prop:value]`).
+ * Tailwind decodes every unescaped `_` in an arbitrary value back to a space,
+ * so literal underscores must be escaped (`card_1` → `card\_1`) before each
+ * whitespace char becomes `_` (char-by-char, not run-collapsed, so spacing
+ * inside quoted strings round-trips). `url(…)` segments are left untouched —
+ * Tailwind preserves their underscores as-is, and substituting there would
+ * corrupt the URL (a space inside `url(…)` is not representable in a class
+ * name; quote such URLs at the CSS level instead). Shared by the lib emitter
+ * and the vocab row so lib-parity holds.
+ */
+export function cssPropValue(value) {
+    return value
+        .split(/(url\([^)]*\))/i)
+        .map((part, i) => (i % 2 === 1 ? part : part.replace(/_/g, "\\_").replace(/\s/g, "_")))
+        .join("");
+}
+/**
  * The `bg-radial-*` gradient class. Single source of truth for both the render-time
  * emitter and the class-vocab row so they cannot drift.
  *

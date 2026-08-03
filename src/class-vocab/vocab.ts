@@ -14,7 +14,7 @@
  *
  * @module
  */
-import { DIR_MAP, ROUNDED_CORNERS, signNeg, defineUtility, radialGradientClass } from "./types.js";
+import { DIR_MAP, ROUNDED_CORNERS, signNeg, cssPropValue, defineUtility, radialGradientClass } from "./types.js";
 import type { UtilityDef, ValuesSpec, LeafValuesSpec, VariantObjectSpec, VariantKeyDef } from "./types.js";
 
 // ── Values-spec constructors ────────────────────────────────────────
@@ -354,12 +354,13 @@ export const classVocab: readonly UtilityDef[] = [
   val("neg", "-", { doc: "Prefix an arbitrary utility with `-` (negative value passthrough).", variantObject: vo("string") }),
 
   // Typed escape (llm-styling/escape-hatch): arbitrary CSS property → Tailwind's
-  // `[prop:value]` arbitrary-property form (spaces → `_`). A vocab row so the
+  // `[prop:value]` arbitrary-property form (spaces → `_`, literal `_` escaped
+  // as `\_`, `url(…)` left as-is — see `cssPropValue`). A vocab row so the
   // extractor scans it — literal args are safelisted, non-literal args are
   // tracked as unresolved (build error under `onUnresolved: "error"`).
-  custom("cssProp", (a) => (a.length === 2 ? [`[${a[0]}:${a[1]!.replace(/\s+/g, "_")}]`] : []),
+  custom("cssProp", (a) => (a.length === 2 ? [`[${a[0]}:${cssPropValue(a[1]!)}]`] : []),
     [["mask-repeat", "no-repeat"], ["border", "1px solid red"], ["--brand-glow", "0 0 4px red"]],
-    { doc: "Arbitrary-CSS escape — emits `[prop:value]` (spaces become `_`); variant-composable.", variantObject: vo("readonly [CssPropertyName, string]") }),
+    { doc: "Arbitrary-CSS escape — emits `[prop:value]` (spaces → `_`, literal `_` escaped); variant-composable.", variantObject: vo("readonly [CssPropertyName, string]") }),
 
   // htmx (B-04): sanctioned loading-indicator class, so the extractor/ESLint accept it
   stat("htmxIndicator", "htmx-indicator", { doc: "htmx loading-indicator marker class." }),

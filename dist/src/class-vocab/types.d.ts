@@ -30,6 +30,18 @@ export declare const ROUNDED_CORNERS: ReadonlySet<string>;
  * the vocab so lib-parity holds. A bracketed arbitrary value is left untouched.
  */
 export declare function signNeg(prefix: string, value: string): string;
+/**
+ * Encode a CSS value for Tailwind's arbitrary-property form (`[prop:value]`).
+ * Tailwind decodes every unescaped `_` in an arbitrary value back to a space,
+ * so literal underscores must be escaped (`card_1` → `card\_1`) before each
+ * whitespace char becomes `_` (char-by-char, not run-collapsed, so spacing
+ * inside quoted strings round-trips). `url(…)` segments are left untouched —
+ * Tailwind preserves their underscores as-is, and substituting there would
+ * corrupt the URL (a space inside `url(…)` is not representable in a class
+ * name; quote such URLs at the CSS level instead). Shared by the lib emitter
+ * and the vocab row so lib-parity holds.
+ */
+export declare function cssPropValue(value: string): string;
 export declare function radialGradientClass(origin?: string, interpolation?: string): string;
 /** Which generated artifact(s) a row should be excluded from. */
 export type VocabTarget = "lib" | "extractor" | "eslint";

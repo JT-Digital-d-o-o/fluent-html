@@ -147,6 +147,20 @@ describe("canonical-names codemod: variant lambdas → object form", () => {
         assert.equal(out, "Div();\n");
         assert.equal(skips.length, 0);
     });
+    it("an empty-lambda drop scans back over whitespace to the previous token", () => {
+        const { out } = migrate('Div()\n  .on("hover", (t) => t);\n');
+        assert.equal(out, "Div();\n");
+        const spaced = migrate('Div() ?. on("hover", (t) => t);\n');
+        assert.equal(spaced.out, "Div();\n");
+    });
+    it("an empty nested lambda is a no-op: dropped, siblings still convert", () => {
+        const { out, skips } = migrate('Div().on("dark", (t) => t.on("hover", (u) => u).bg("blue-600"));\n');
+        assert.equal(out, 'Div().dark({ bg: "blue-600" });\n');
+        assert.equal(skips.length, 0);
+        const onlyEmpty = migrate('Div().on("dark", (t) => t.on("hover", (u) => u));\n');
+        assert.equal(onlyEmpty.out, "Div();\n");
+        assert.equal(onlyEmpty.skips.length, 0);
+    });
     it("an unconvertible link skips the lambda whole, but renames inside the failed span still apply", () => {
         const { out, skips } = migrate('Div().on("hover", (t) => t.padding("4").setStyle("color:red"));\n');
         assert.equal(out, 'Div().on("hover", (t) => t.p("4").setStyle("color:red"));\n');
@@ -201,6 +215,19 @@ describe("canonical-names codemod: false-positive guards", () => {
         const { out, skips } = migrate(src);
         assert.equal(out, src);
         assert.equal(skips.length, 0);
+    });
+    it("stdlib .on()/.at() on cleanly-typed receivers is silent, not SKIP noise", () => {
+        const src = "class Emitter { on(_e: string, _cb: () => void): this { return this; } }\n" +
+            'new Emitter().on("exit", () => {});\n[1, 2].at(0);\n"abc".at(1);\n';
+        const { out, skips } = migrate(src);
+        assert.equal(out, src);
+        assert.equal(skips.length, 0);
+    });
+    it("`.on()` on an any-typed receiver still reports (may be a broken Tag chain)", () => {
+        const src = 'declare const d: any;\nd.on("hover", (t: unknown) => t);\n';
+        const { out, skips } = migrate(src);
+        assert.equal(out, src);
+        assert.deepEqual(skipSummaries(skips), [{ name: "on", reason: "receiver does not type as Tag" }]);
     });
 });
 describe("canonical-names codemod: transitive receiver check (post-rename lib)", () => {
