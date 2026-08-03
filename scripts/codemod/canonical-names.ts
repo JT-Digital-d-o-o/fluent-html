@@ -405,10 +405,15 @@ function run(): void {
     .getSourceFiles()
     .filter((f) => !f.isDeclarationFile() && !f.getFilePath().includes("/node_modules/"));
 
+  // Two-phase: collect edits for EVERY file before applying any. Applying as
+  // we iterate would error-poison the in-memory program against a pre-rename
+  // library (an already-edited file's `.p()` doesn't exist on the old `Tag`,
+  // so components imported from it collapse to `any` and later files' chains
+  // fail the receiver check with bogus skips).
   let totalEdits = 0;
   let totalSkips = 0;
-  for (const file of files) {
-    const { edits, skips } = collectEdits(file);
+  const collected = files.map((file) => ({ file, ...collectEdits(file) }));
+  for (const { file, edits, skips } of collected) {
     for (const skip of skips) {
       console.warn(`SKIP ${file.getFilePath()}:${skip.line} .${skip.name}() — ${skip.reason}`);
     }

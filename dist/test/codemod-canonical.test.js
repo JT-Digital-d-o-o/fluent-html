@@ -248,6 +248,35 @@ describe("canonical-names codemod: transitive receiver check (post-rename lib)",
         assert.equal(out, src);
         assert.deepEqual(skipSummaries(skips), [{ name: "on", reason: "variant name is not a string literal" }]);
     });
+    it("cross-file: collect-before-apply keeps imported components typed (pre-rename lib)", () => {
+        // Regression for the projects-template dry run: applying file A's edits
+        // before analyzing file B broke A's types against the OLD lib (no `.p()`),
+        // so B's chain on the imported component collapsed to `any` and skipped.
+        const project = new Project({
+            useInMemoryFileSystem: true,
+            compilerOptions: {
+                target: ts.ScriptTarget.ES2020,
+                module: ts.ModuleKind.ESNext,
+                moduleResolution: ts.ModuleResolutionKind.Bundler,
+                strict: true,
+            },
+        });
+        project.createSourceFile("/lib/tag.ts", PRE_TAG);
+        const a = project.createSourceFile("/a-components.ts", 'import { Div } from "./lib/tag.js";\nexport function Pill() { return Div().padding("2"); }\n');
+        const b = project.createSourceFile("/b-view.ts", 'import { Pill } from "./a-components.js";\nPill().padding("4").background("blue-500");\n');
+        // Phase 1: collect for BOTH files before applying anything (mirrors run()).
+        const collected = [a, b].map((f) => ({ f, ...collectEdits(f) }));
+        for (const { f, edits } of collected)
+            applyEdits(f, edits);
+        assert.equal(collected.flatMap((c) => c.skips).length, 0);
+        assert.equal(b.getFullText(), 'import { Pill } from "./a-components.js";\nPill().p("4").bg("blue-500");\n');
+        // The interleaved order (apply A, then analyze B) is exactly what run() must NOT do:
+        const a2 = project.createSourceFile("/a2-components.ts", 'import { Div } from "./lib/tag.js";\nexport function Chip() { return Div().padding("2"); }\n');
+        const b2 = project.createSourceFile("/b2-view.ts", 'import { Chip } from "./a2-components.js";\nChip().padding("4");\n');
+        applyEdits(a2, collectEdits(a2).edits);
+        const poisoned = collectEdits(b2);
+        assert.equal(poisoned.skips.length, 1, "interleaving reproduces the any-collapse skip");
+    });
     it("a chain rooted at a non-Tag receiver stays guarded transitively", () => {
         const src = 'class Q { padding(_v: string): this { return this; } }\nnew Q().padding("4").padding("2");\n';
         const { out, skips } = migrate(src);
