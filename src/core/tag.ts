@@ -1,4 +1,5 @@
 import { setDiscriminant } from "./proto.js";
+import { devChecks, assertMutable, countParents } from "./dev-checks.js";
 import type { SchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id} from "../ids.js";
@@ -85,6 +86,7 @@ export class Tag {
   constructor(element: string, ...children: View[]) {
     this.el = element;
     this.child = children.length === 0 ? "" : children.length === 1 ? children[0]! : children;
+    if (devChecks) countParents(children);
   }
 
   /**
@@ -98,6 +100,7 @@ export class Tag {
    * Div("Content").setId("main-content")
    */
   setId(id?: string | Id): this {
+    if (devChecks) assertMutable(this, "setId");
     this.id = id ? (isId(id) ? id.id : id) : undefined;
     return this;
   }
@@ -112,6 +115,7 @@ export class Tag {
    * Div("Content").setClass("container mx-auto")
    */
   setClass(c?: string): this {
+    if (devChecks) assertMutable(this, "setClass");
     this.class = c;
     return this;
   }
@@ -128,6 +132,7 @@ export class Tag {
    * @returns `this` for chaining
    */
   addClass(c: string): this {
+    if (devChecks) assertMutable(this, "addClass");
     const classes = this._variantPrefix
       ? (c.indexOf(' ') === -1
           ? this._variantPrefix + ':' + c
@@ -155,6 +160,7 @@ export class Tag {
    * Div("Content").setStyle("color: red; font-size: 16px")
    */
   setStyle(style?: string): this {
+    if (devChecks) assertMutable(this, "setStyle");
     this.style = style;
     return this;
   }
@@ -174,6 +180,7 @@ export class Tag {
    * // → style="color: red; anchor-name: --menu"
    */
   addStyle(declaration: string): this {
+    if (devChecks) assertMutable(this, "addStyle");
     const existing = this.style?.trim().replace(/;+$/, "");
     this.style = existing ? `${existing}; ${declaration}` : declaration;
     return this;
@@ -191,6 +198,7 @@ export class Tag {
    * Div("Content").addAttribute("data-testid", "my-div")
    */
   addAttribute(key: string, value: string): this {
+    if (devChecks) assertMutable(this, "addAttribute");
     validateAttributeKey(key);
     if (this.attributes === EMPTY_ATTRS) {
       this.attributes = Object.create(null) as Record<string, string>;
@@ -207,6 +215,7 @@ export class Tag {
    * Style(".cls { color: red }").setNonce(nonce)
    */
   setNonce(nonce: string): this {
+    if (devChecks) assertMutable(this, "setNonce");
     if (this.attributes === EMPTY_ATTRS) {
       this.attributes = Object.create(null) as Record<string, string>;
     }
@@ -226,6 +235,7 @@ export class Tag {
    * Input().toggle("disabled").toggle("disabled", false)  // removed — renders nothing
    */
   toggle(name: BooleanAttribute, condition: boolean = true): this {
+    if (devChecks) assertMutable(this, "toggle");
     if (condition) {
       if (this.toggles) {
         if (!this.toggles.includes(name)) this.toggles.push(name);
@@ -348,6 +358,7 @@ export class Tag {
    */
   addChild(...views: View[]): this {
     if (views.length === 0) return this;
+    if (devChecks) { assertMutable(this, "addChild"); countParents(views); }
     const current = this.child;
     if (current === "" || current === undefined || current === null) {
       this.child = views.length === 1 ? views[0]! : views;
@@ -373,6 +384,7 @@ export class Tag {
    * ])
    */
   setClasses(classes: (string | false | null | undefined)[]): this {
+    if (devChecks) assertMutable(this, "setClasses");
     this.class = classes.filter(Boolean).join(" ");
     return this;
   }
@@ -392,6 +404,7 @@ export class Tag {
    * })
    */
   setStyles(styles: Record<string, string | number>): this {
+    if (devChecks) assertMutable(this, "setStyles");
     const styleString = Object.entries(styles)
       .map(([key, value]) => `${kebabCase(key)}: ${value}`)
       .join("; ");
@@ -416,6 +429,7 @@ export class Tag {
    * // Renders: <button data-testid="submit-btn" data-action="save" data-user-id="123">
    */
   setDataAttrs(attrs: Record<string, string>): this {
+    if (devChecks) assertMutable(this, "setDataAttrs");
     if (this.attributes === EMPTY_ATTRS) this.attributes = Object.create(null) as Record<string, string>;
     for (const [key, value] of Object.entries(attrs)) {
       const attrKey = `data-${kebabCase(key)}`;
@@ -473,6 +487,7 @@ export class Tag {
    * })
    */
   setAria(attrs: AriaAttrs): this {
+    if (devChecks) assertMutable(this, "setAria");
     if (this.attributes === EMPTY_ATTRS) this.attributes = Object.create(null) as Record<string, string>;
     for (const [key, value] of Object.entries(attrs)) {
       if (value === undefined) continue;
@@ -590,6 +605,16 @@ export class Tag {
 
   /** @internal Variant prefix state — used by tailwind-methods mixin */
   _variantPrefix: string | null = null;
+
+  /**
+   * @internal Render epoch this tag was last serialized in (0 = never). Written
+   * by the emitter, read by the dev-mode mutation gate. Declared as a field so
+   * every instance shares one hidden class.
+   */
+  _e: number = 0;
+
+  /** @internal How many parents have taken this tag as a child (dev-mode aliasing gate). */
+  _p: number = 0;
 }
 
 setDiscriminant(Tag, 1);

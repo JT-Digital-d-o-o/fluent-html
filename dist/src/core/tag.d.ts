@@ -360,5 +360,13 @@ export declare class Tag {
     setForm(form?: string | Id): this;
     /** @internal Variant prefix state — used by tailwind-methods mixin */
     _variantPrefix: string | null;
+    /**
+     * @internal Render epoch this tag was last serialized in (0 = never). Written
+     * by the emitter, read by the dev-mode mutation gate. Declared as a field so
+     * every instance shares one hidden class.
+     */
+    _e: number;
+    /** @internal How many parents have taken this tag as a child (dev-mode aliasing gate). */
+    _p: number;
 }
 //# sourceMappingURL=tag.d.ts.map

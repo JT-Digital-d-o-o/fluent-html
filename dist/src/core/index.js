@@ -10,6 +10,8 @@ export { RawString, Raw } from "./raw-string.js";
 export { Empty, El } from "./utils.js";
 // Type guards
 export { isTag, isRawString } from "./guards.js";
+// Dev-mode structural guards for the mutable builder
+export { setDevChecks } from "./dev-checks.js";
 // Theming — defineTheme + the augmentation seams (C-02)
 export { defineTheme } from "./define-theme.js";
 //# sourceMappingURL=index.js.map

@@ -25,6 +25,9 @@ export { Empty, El } from "./utils.js";
 // Type guards
 export { isTag, isRawString } from "./guards.js";
 
+// Dev-mode structural guards for the mutable builder
+export { setDevChecks } from "./dev-checks.js";
+
 // ARIA types — for setRole / setAria (A-02)
 export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from "./aria-types.js";
 

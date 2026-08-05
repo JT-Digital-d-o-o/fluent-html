@@ -7,6 +7,7 @@ export type { VariantStyleObject, StyleProps, NestedVariants, DirectVariant } fr
 export { RawString, Raw } from "./raw-string.js";
 export { Empty, El } from "./utils.js";
 export { isTag, isRawString } from "./guards.js";
+export { setDevChecks } from "./dev-checks.js";
 export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from "./aria-types.js";
 export { defineTheme } from "./define-theme.js";
 export type { ThemeSpec } from "./define-theme.js";

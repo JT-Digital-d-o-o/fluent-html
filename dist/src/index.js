@@ -2,6 +2,8 @@ export { Tag } from './core/index.js';
 export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';
+// Dev-mode structural guards — mutate-after-render / aliased-child detection
+export { setDevChecks } from './core/index.js';
 // Theming — defineTheme + the augmentation seams (C-02).
 // Users augment the FluentCustom* interfaces via `declare module "fluent-html"`.
 export { defineTheme } from './core/index.js';

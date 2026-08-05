@@ -2,6 +2,48 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [7.0.1] - Dev-mode structural guards for the mutable builder
+
+`Tag` is a mutable builder: every fluent method writes to the instance and returns it. That is what keeps the chain allocation-free, but it leaves two shapes that are wrong and **silent** — no type error, no runtime error, just drifting markup:
+
+```typescript
+const SHARED = Div("x").p("4");        // module scope, reused per request
+render(SHARED.bg("red-500"))           // <div class="p-4 bg-red-500">
+render(SHARED.bg("blue-500"))          // <div class="p-4 bg-red-500 bg-blue-500">  ← accumulates
+
+const child = Span("hi");
+const a = Div(child), b = Div(child);  // one instance, two parents
+child.text("lg");                      // silently changes both
+```
+
+Both now throw in development, at the point of mutation, with the element and method named. Presets are functions for exactly this reason (`.apply(card)`, never a shared `const card = Div()`); the guards enforce what the docs already teach.
+
+### ✨ Added — mutate-after-render + aliased-child detection
+
+- Two dev-only fields on `Tag`: `_e` (the render epoch it was last serialized in) and `_p` (how many parents took it as a child). The emitter stamps `_e` during the walk it already does; the constructor and `addChild` count `_p`, walking nested arrays so `ForEach` output is covered.
+- The gate lives on the 13 `Tag` primitives every styling and generic-attribute method funnels through (`addClass`, `addAttribute`, `setStyle`, `toggle`, `addChild`, …), so all 268 styling methods and every `set*` attribute setter that routes through `addAttribute` are covered by construction.
+- **Legal patterns stay legal:** re-rendering an unmutated tree (a cached fragment), a shared-but-never-mutated child (the documented non-thunk `Intersperse` separator form), and a fresh tag per render.
+
+### ✨ Added — `setDevChecks(boolean)`
+
+On by default outside `NODE_ENV=production`. Turn it off if you deliberately build, render, then mutate and re-render one tree.
+
+### 📊 Cost
+
+Production (`NODE_ENV=production`) is unchanged: 17.2K vs 17.4K ops/sec median on "Build+render realistic (per req)", inside the harness's run-to-run spread. With guards on, that path costs ~12% — a development-only price for turning two silent bugs loud.
+
+### ⚠️ Known boundary
+
+Element subclasses write their own storage fields directly (`InputTag.type`, `ImgTag.src`, …), so **element-specific setters are not gated** — instrumenting ~200 of them is out of scope for a patch. `test/dev-checks.test.ts` pins this as a known gap rather than an assumed catch. The generic attribute path on the same tag (`.setTitle()`, `.setRole()`, `.setAria()`) *is* gated.
+
+### 🔧 Fixed — test script drift
+
+`form-for.test.js` and `define-theme.test.js` ran under `npm test` but were missing from `npm run test:coverage`, which is the command CI runs — so `defineTheme`, a headline v6 feature, had no coverage gate. Both lists are now identical (33 entries).
+
+### 📝 Not in this release
+
+The second silent failure, a losing override (`.apply(preset).p("8")` emits `p-6 p-8`, and which wins is decided by stylesheet order rather than call order), is **not** addressed here. The correct fix is keyed emission with last-write-wins, which changes rendered output and so is not patch material; a dev-mode duplicate-prefix throw was designed and rejected because it would outlaw the `.apply(preset)` + override idiom the library teaches. Needs a decision against the "no runtime class merger" no-go before it can be scheduled.
+
 ## [Unreleased — 7.0.0] - Canonical names: method name = Tailwind class prefix
 
 Library stage of `llm-styling/canonical-names` — the styling surface is renamed to the model author's Tailwind prior. **Breaking, no aliases, no shims** (greenfield-major); ships together with `object-variants` in one release. Measured on the demos corpus: 0.80× styling tokens, 0.76× with the directional shorthands.

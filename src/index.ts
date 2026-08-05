@@ -6,6 +6,9 @@ export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';
 
+// Dev-mode structural guards — mutate-after-render / aliased-child detection
+export { setDevChecks } from './core/index.js';
+
 // ARIA types — for setRole / setAria (A-02)
 export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from './core/index.js';
 

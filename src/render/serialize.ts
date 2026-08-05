@@ -4,6 +4,7 @@ import { EMPTY_ATTRS } from "../core/tag.js";
 import type { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import { isTag, isRawString } from "../core/guards.js";
+import { devChecks, nextRenderEpoch } from "../core/dev-checks.js";
 import { escapeHtml, escapeAttr, sanitizeUrl } from "./escape.js";
 
 // URL-valued attributes emitted by the typed setters. Their values are run
@@ -313,6 +314,9 @@ export function* emitChunks(
 ): Generator<string, void, undefined> {
   const stack: Frame[] = [{ v: view, c: ctx }];
   let buf = '';
+  // Dev-only: stamp each tag with this render's epoch so a later mutation is
+  // identifiable as a mutate-after-render (see core/dev-checks.ts).
+  const epoch = devChecks ? nextRenderEpoch() : 0;
 
   while (stack.length > 0) {
     const item = stack.pop()!;
@@ -330,6 +334,7 @@ export function* emitChunks(
         buf += c === 'script' || c === 'style' ? sanitizeRawContent(v.html, c) : v.html;
       } else if (isTag(v)) {
         const el = v.el;
+        if (epoch !== 0) v._e = epoch;
         let open = '<' + el + buildAttrs(v);
         // Render-time CSP nonce: stamp <script>/<style> that have no author nonce.
         if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
@@ -384,6 +389,8 @@ export function* emitChunks(
  */
 export function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): void {
   const stack: Frame[] = [{ v: view, c: ctx }];
+  // Dev-only: see emitChunks.
+  const epoch = devChecks ? nextRenderEpoch() : 0;
 
   while (stack.length > 0) {
     const item = stack.pop()!;
@@ -410,6 +417,7 @@ export function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): vo
 
     if (isTag(v)) {
       const el = v.el;
+      if (epoch !== 0) v._e = epoch;
       let open = '<' + el + buildAttrs(v);
       if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
         open += ' nonce="' + escapeAttr(nonce) + '"';

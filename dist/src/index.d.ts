@@ -4,6 +4,7 @@ export type { FluentCustomMethods } from './core/index.js';
 export { RawString, Raw } from './core/index.js';
 export { Empty, El } from './core/index.js';
 export { isTag, isRawString } from './core/index.js';
+export { setDevChecks } from './core/index.js';
 export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from './core/index.js';
 export { defineTheme } from './core/index.js';
 export type { ThemeSpec, ThemeKeys, FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, FluentCustomFontFamily, } from './core/index.js';
