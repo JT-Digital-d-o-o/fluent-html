@@ -2,6 +2,23 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [7.1.0] - Sitemap stances on route defs + exported registry types
+
+Groundwork for exhaustive typed controllers (`defineController` in the template layer): the route registry stays a dependency-free contract leaf, but now carries everything a server-side binder needs — a declared sitemap stance and the param/query type maps at runtime.
+
+### ✨ Added — `sitemap` stance on `RouteDef`
+
+- `sitemap?: true | "exclude" | "dynamic"` on route definitions, surfaced on the callable (`routes.home.sitemap`). Pure data; server-side helpers perform the actual registration.
+- Enforced at compile time **and** definition time: only GET routes may carry a stance; `true` requires a paramless path; `"dynamic"` requires params. Prefixed registries validate against the joined path.
+
+### ✨ Added — def maps carried to runtime
+
+- Callables now expose the declared `params` / `query` maps (`routes.detail.params` → `{ id: "number" }`), read-only, so server-side helpers can emit coercing validation schemas from the declaration instead of re-typing it.
+
+### ✨ Added — exported registry types
+
+- `RouteRegistry`, `RouteCallable`, `RouteDefinitions`, `AnyRouteCallable`, `AnyRouteRegistry`, `SitemapStance`, `ExtractParams`, `HasAnyParams`, `ResolveParam`, `ResolveParamTypes`, `ResolveAllParamTypes`, `ResolveQuery` are now exported from the barrel — consumers generic over registries no longer need structural stand-ins or duplicated path conditionals (which silently drift).
+
 ## [7.0.1] - Dev-mode structural guards for the mutable builder
 
 `Tag` is a mutable builder: every fluent method writes to the instance and returns it. That is what keeps the chain allocation-free, but it leaves two shapes that are wrong and **silent** — no type error, no runtime error, just drifting markup:

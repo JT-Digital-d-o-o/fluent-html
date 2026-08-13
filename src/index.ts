@@ -398,9 +398,21 @@ export {
 
 export type {
   RouteDef,
+  RouteDefinitions,
   RouteHxOptions,
   ParamTypeName,
   ParamType,
+  SitemapStance,
+  RouteCallable,
+  RouteRegistry,
+  AnyRouteCallable,
+  AnyRouteRegistry,
+  ExtractParams,
+  HasAnyParams,
+  ResolveParam,
+  ResolveParamTypes,
+  ResolveAllParamTypes,
+  ResolveQuery,
 } from './routes.js';
 
 // Behavior system (v4 — flat data-behavior-* emission, ADR-01)

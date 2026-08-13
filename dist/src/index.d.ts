@@ -41,7 +41,7 @@ export type { HtmxGlobalConfig, HxResponseResult, HxLocationConfig, } from './pa
 export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
 export type { Id } from './ids.js';
 export { defineRoutes, } from './routes.js';
-export type { RouteDef, RouteHxOptions, ParamTypeName, ParamType, } from './routes.js';
+export type { RouteDef, RouteDefinitions, RouteHxOptions, ParamTypeName, ParamType, SitemapStance, RouteCallable, RouteRegistry, AnyRouteCallable, AnyRouteRegistry, ExtractParams, HasAnyParams, ResolveParam, ResolveParamTypes, ResolveAllParamTypes, ResolveQuery, } from './routes.js';
 export type { BehaviorMap, BehaviorName, BehaviorTarget } from './behaviors/map.js';
 export type { BehaviorEvent, LifecycleEvent } from './behaviors/events.js';
 export { EVENT_TABLE, HTMX_EVENTS } from './behaviors/events.js';

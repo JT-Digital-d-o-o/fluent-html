@@ -630,3 +630,102 @@ describe("route definition & value guards", () => {
     assert.throws(() => r.u.resolve({ id: 1e21 }), /finite integer/);
   });
 });
+
+// ------------------------------------
+// Sitemap stance + runtime def data (7.1.0)
+// ------------------------------------
+
+const stanceRoutes = defineRoutes({
+  home:    { path: "/", sitemap: true },
+  login:   { path: "/login", sitemap: "exclude" },
+  post:    { path: "/posts/:slug", sitemap: "dynamic", params: { slug: "string" } as const },
+  detail:  { path: "/posts/:id/stats", sitemap: "exclude", params: { id: "number" } as const,
+             query: { format: ["short", "long"] } as const },
+  submit:  { method: "post", path: "/posts" },
+} as const);
+
+const prefixedStanceRoutes = defineRoutes("/admin", {
+  index: { path: "/", sitemap: "exclude" },
+  item:  { path: "/:id", sitemap: "dynamic", params: { id: "number" } as const },
+} as const);
+
+describe("Sitemap stance: surfaced on callables", () => {
+  it("true stance is carried", () => {
+    assert.deepStrictEqual(stanceRoutes.home.sitemap, true);
+  });
+  it("exclude stance is carried", () => {
+    assert.deepStrictEqual(stanceRoutes.login.sitemap, "exclude");
+  });
+  it("dynamic stance is carried", () => {
+    assert.deepStrictEqual(stanceRoutes.post.sitemap, "dynamic");
+  });
+  it("no stance means undefined", () => {
+    assert.deepStrictEqual(stanceRoutes.submit.sitemap, undefined);
+  });
+  it("prefixed registries carry the stance too", () => {
+    assert.deepStrictEqual(prefixedStanceRoutes.index.sitemap, "exclude");
+    assert.deepStrictEqual(prefixedStanceRoutes.item.sitemap, "dynamic");
+  });
+});
+
+describe("Declared def maps: surfaced on callables at runtime", () => {
+  it("params map is carried", () => {
+    assert.deepStrictEqual(stanceRoutes.post.params, { slug: "string" });
+  });
+  it("query map is carried", () => {
+    assert.deepStrictEqual(stanceRoutes.detail.query, { format: ["short", "long"] });
+  });
+  it("routes without maps expose undefined", () => {
+    assert.deepStrictEqual(stanceRoutes.home.params, undefined);
+    assert.deepStrictEqual(stanceRoutes.home.query, undefined);
+  });
+  it("carried maps are read-only", () => {
+    assert.throws(() => {
+      (stanceRoutes.post as { params?: unknown }).params = { slug: "number" };
+    });
+  });
+});
+
+describe("Sitemap stance: definition-time validation", () => {
+  it("throws on a stance on a non-GET route", () => {
+    assert.throws(
+      () => defineRoutes({ bad: { method: "post", path: "/x", sitemap: "exclude" } } as never),
+      /only GET routes may declare a sitemap stance/,
+    );
+  });
+  it("throws on sitemap: true with path params", () => {
+    assert.throws(
+      () => defineRoutes({ bad: { path: "/x/:id", sitemap: true } } as never),
+      /param'd route can't be a single sitemap entry/,
+    );
+  });
+  it("throws on sitemap: \"dynamic\" without path params", () => {
+    assert.throws(
+      () => defineRoutes({ bad: { path: "/x", sitemap: "dynamic" } } as never),
+      /use sitemap: true instead of "dynamic"/,
+    );
+  });
+});
+
+describe("Sitemap stance: compile-time enforcement", () => {
+  it("rejects a stance on a non-GET route", () => {
+    // @ts-expect-error — only GET routes may declare a sitemap stance
+    void (() => defineRoutes({ bad: { method: "post", path: "/x", sitemap: "exclude" } } as const));
+  });
+  it("rejects sitemap: true on a param'd route", () => {
+    // @ts-expect-error — a param'd route must use "dynamic" or "exclude"
+    void (() => defineRoutes({ bad: { path: "/x/:id", sitemap: true } } as const));
+  });
+  it("rejects sitemap: \"dynamic\" on a paramless route", () => {
+    // @ts-expect-error — a paramless route is one URL; use true
+    void (() => defineRoutes({ bad: { path: "/x", sitemap: "dynamic" } } as const));
+  });
+  it("rejects a stance on a non-GET route under a prefix", () => {
+    // @ts-expect-error — only GET routes may declare a sitemap stance
+    void (() => defineRoutes("/p", { bad: { method: "post", path: "/x", sitemap: "exclude" } } as const));
+  });
+  it("stance literal survives on the callable type", () => {
+    const stance: "dynamic" = stanceRoutes.post.sitemap;
+    void stance;
+  });
+});

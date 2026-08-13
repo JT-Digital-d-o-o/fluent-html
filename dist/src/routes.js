@@ -102,6 +102,18 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
             throw new Error(`Route "${name}" path "${fullPath}" has a mid-path wildcard — only a trailing "/*" or "/*name" splat is supported.`);
         }
         const hasParams = fullPath.includes(":") || SPLAT_RE.test(fullPath);
+        // Mirror the compile-time AllowedStance rules for JS callers.
+        if (def.sitemap !== undefined) {
+            if (method !== "get") {
+                throw new Error(`Route "${name}" is a ${method.toUpperCase()} route — only GET routes may declare a sitemap stance.`);
+            }
+            if (def.sitemap === true && hasParams) {
+                throw new Error(`Route "${name}" has path params — a param'd route can't be a single sitemap entry; use sitemap: "dynamic" (with a provider) or "exclude".`);
+            }
+            if (def.sitemap === "dynamic" && !hasParams) {
+                throw new Error(`Route "${name}" has no path params — a paramless route is one URL; use sitemap: true instead of "dynamic".`);
+            }
+        }
         const routeFn = hasParams
             ? function (params, options) {
                 const resolvedPath = substituteParams(fullPath, params);
@@ -123,6 +135,17 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
         Object.defineProperty(routeFn, "method", { value: method, writable: false, enumerable: true });
         Object.defineProperty(routeFn, "path", { value: fullPath, writable: false, enumerable: true });
         Object.defineProperty(routeFn, "resolve", { value: resolve, writable: false, enumerable: true });
+        // Carry the declared def data through to runtime so server-side helpers can emit
+        // coercing validation schemas and perform sitemap registration from the callable alone.
+        if (def.params !== undefined) {
+            Object.defineProperty(routeFn, "params", { value: def.params, writable: false, enumerable: true });
+        }
+        if (def.query !== undefined) {
+            Object.defineProperty(routeFn, "query", { value: def.query, writable: false, enumerable: true });
+        }
+        if (def.sitemap !== undefined) {
+            Object.defineProperty(routeFn, "sitemap", { value: def.sitemap, writable: false, enumerable: true });
+        }
         registry[name] = routeFn;
     }
     return Object.freeze(registry);

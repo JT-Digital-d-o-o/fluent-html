@@ -15,7 +15,7 @@ type ParamName<S extends string> = S extends `${infer Head}.${string}` ? ParamNa
  * ExtractParams<"/export/:id.csv">               // "id"  (dot-suffix trimmed)
  * ExtractParams<"/users">                        // never
  */
-type ExtractParams<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? ParamName<Param> | ExtractParams<`/${Rest}`> : Path extends `${string}:${infer Param}` ? ParamName<Param> : never;
+export type ExtractParams<Path extends string> = Path extends `${string}:${infer Param}/${infer Rest}` ? ParamName<Param> | ExtractParams<`/${Rest}`> : Path extends `${string}:${infer Param}` ? ParamName<Param> : never;
 /**
  * Extract a trailing catch-all (splat) param key from a path.
  * `/scope/*` → "splat"; `/files/*path` → "path". Only a trailing `/*` is a splat — the
@@ -28,7 +28,7 @@ type AnyParamKey<Path extends string> = ExtractParams<Path> | ExtractSplat<Path>
  * Whether a path contains any `:param` segments or a trailing splat.
  * `[T] extends [never]` tuple-wraps to stop `never` distributing to `false`.
  */
-type HasAnyParams<Path extends string> = [
+export type HasAnyParams<Path extends string> = [
     AnyParamKey<Path>
 ] extends [never] ? false : true;
 /** Supported scalar param type names. Determines the TypeScript type required at call sites. */
@@ -44,14 +44,30 @@ type ParamTypeMap = {
     string: string;
     number: number;
 };
+/**
+ * A route definition's declared sitemap stance — pure data on the contract leaf, read by
+ * server-side helpers (e.g. a controller binder) that perform the actual registration:
+ *
+ * - `true` — a static public page; belongs in the sitemap.
+ * - `"exclude"` — reachable but not search material (auth pages, token links).
+ * - `"dynamic"` — per-entity public pages; the server side supplies a row provider.
+ *
+ * Only GET routes may carry a stance. `true` requires a paramless path (a param'd URL
+ * can't be a single sitemap entry); `"dynamic"` requires params (a paramless route has
+ * exactly one URL — use `true`). Both rules are enforced at compile time and at
+ * definition time.
+ */
+export type SitemapStance = true | "exclude" | "dynamic";
+/** The stances a given def may declare: GET only; `true` ⟷ paramless, `"dynamic"` ⟷ param'd. */
+type AllowedStance<Def extends RouteDef, Path extends string> = MethodOf<Def> extends "get" ? HasAnyParams<Path> extends true ? "exclude" | "dynamic" : true | "exclude" : never;
 /** Resolve one declared param type to the TS type accepted at call sites (tuple → its member union). */
-type ResolveParam<P> = P extends ParamTypeName ? ParamTypeMap[P] : P extends readonly string[] ? P[number] : string;
+export type ResolveParam<P> = P extends ParamTypeName ? ParamTypeMap[P] : P extends readonly string[] ? P[number] : string;
 /**
  * Resolve the TypeScript type for each extracted path param.
  * When a `params` map is provided, each param uses its declared type (scalar or enum tuple).
  * Params not listed in the map (or routes without `params`) default to `string`.
  */
-type ResolveParamTypes<Path extends string, Params extends Readonly<Record<string, ParamType>> | undefined> = {
+export type ResolveParamTypes<Path extends string, Params extends Readonly<Record<string, ParamType>> | undefined> = {
     [K in ExtractParams<Path>]: Params extends Readonly<Record<string, ParamType>> ? K extends keyof Params ? ResolveParam<Params[K]> : string : string;
 };
 /**
@@ -59,18 +75,19 @@ type ResolveParamTypes<Path extends string, Params extends Readonly<Record<strin
  * trailing splat (always `string`). When `ExtractSplat` is `never` the splat half is `{}`, so
  * non-wildcard routes resolve EXACTLY as before — additive, zero behavior change.
  */
-type ResolveAllParamTypes<Path extends string, Params extends Readonly<Record<string, ParamType>> | undefined> = ResolveParamTypes<Path, Params> & {
+export type ResolveAllParamTypes<Path extends string, Params extends Readonly<Record<string, ParamType>> | undefined> = ResolveParamTypes<Path, Params> & {
     [K in ExtractSplat<Path>]: string;
 };
-/** A single route definition: HTTP method + path (plus optional typed `query` params). `method` defaults to `"get"` when omitted. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
+/** A single route definition: HTTP method + path (plus optional typed `query` params and a `sitemap` stance). `method` defaults to `"get"` when omitted. Path must start with `/`. Use `as const` on your definition object to preserve literal types. */
 export type RouteDef = {
     readonly method?: HxHttpMethod;
     readonly path: `/${string}`;
     readonly params?: Readonly<Record<string, ParamType>>;
     readonly query?: Readonly<Record<string, ParamType>>;
+    readonly sitemap?: SitemapStance;
 };
 /** Input object for defineRoutes(). */
-type RouteDefinitions = {
+export type RouteDefinitions = {
     readonly [name: string]: RouteDef;
 };
 /**
@@ -84,6 +101,7 @@ type CheckRouteParams<T extends RouteDefinitions> = {
         readonly params?: {
             readonly [P in keyof T[K]['params']]: P extends ExtractParams<T[K]['path']> ? ParamType : never;
         };
+        readonly sitemap?: AllowedStance<T[K], T[K]['path']>;
     };
 };
 /** Join a prefix and a sub-path, collapsing a bare "/" into the prefix. */
@@ -99,6 +117,7 @@ type CheckRouteParamsPrefixed<P extends `/${string}`, T extends RouteDefinitions
         readonly params?: {
             readonly [Q in keyof T[K]['params']]: Q extends ExtractParams<JoinPath<P, T[K]['path']>> ? ParamType : never;
         };
+        readonly sitemap?: AllowedStance<T[K], JoinPath<P, T[K]['path']>>;
     };
 };
 /** Map each route definition's path to include the prefix. */
@@ -108,6 +127,7 @@ type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
         readonly path: JoinPath<P, T[K]['path']> & `/${string}`;
         readonly params: T[K]['params'];
         readonly query: T[K]['query'];
+        readonly sitemap: T[K]['sitemap'];
     };
 };
 /**
@@ -128,7 +148,7 @@ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target'
  * `ParamType` (scalar or enum tuple). A route with no `query` map keeps the loose
  * `QueryParams`, so undeclared routes are byte-for-byte unchanged.
  */
-type ResolveQuery<Q extends Readonly<Record<string, ParamType>> | undefined> = Q extends Readonly<Record<string, ParamType>> ? {
+export type ResolveQuery<Q extends Readonly<Record<string, ParamType>> | undefined> = Q extends Readonly<Record<string, ParamType>> ? {
     readonly [K in keyof Q]?: ResolveParam<Q[K]>;
 } : QueryParams;
 /** Per-route HTMX options — `RouteHxOptions` with the route's typed `query` in place of the loose bag. */
@@ -143,6 +163,12 @@ type MethodOf<Def extends RouteDef> = Def extends {
 type RouteProperties<Def extends RouteDef> = {
     readonly method: MethodOf<Def>;
     readonly path: Def['path'];
+    /** The declared param type map, carried through to runtime for server-side schema emission. */
+    readonly params: Def['params'];
+    /** The declared query type map, carried through to runtime for server-side schema emission. */
+    readonly query: Def['query'];
+    /** The def's sitemap stance, carried through for server-side registration. */
+    readonly sitemap: Def['sitemap'];
     readonly resolve: HasAnyParams<Def['path']> extends true ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => string : (query?: ResolveQuery<Def['query']>) => string;
 };
 /**
@@ -153,11 +179,28 @@ type RouteProperties<Def extends RouteDef> = {
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
  * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
-type RouteCallable<Def extends RouteDef> = HasAnyParams<Def['path']> extends true ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptionsFor<Def>) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptionsFor<Def>) => HTMX) & RouteProperties<Def>;
+export type RouteCallable<Def extends RouteDef> = HasAnyParams<Def['path']> extends true ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptionsFor<Def>) => HTMX) & RouteProperties<Def> : ((options?: RouteHxOptionsFor<Def>) => HTMX) & RouteProperties<Def>;
 /** The full registry object returned by defineRoutes(). */
-type RouteRegistry<T extends RouteDefinitions> = {
+export type RouteRegistry<T extends RouteDefinitions> = {
     readonly [K in keyof T]: RouteCallable<T[K]>;
 };
+/**
+ * The loosest shape of a route callable — what server-side helpers generic over "any
+ * route from any registry" should constrain on. Every `RouteCallable` is assignable to
+ * it; `resolve`'s parameter types still encode the route's typed params/query, so
+ * consumers can recover them via `Parameters<C["resolve"]>` without re-deriving path
+ * conditionals.
+ */
+export type AnyRouteCallable = {
+    readonly method: HxHttpMethod;
+    readonly path: string;
+    readonly params?: Readonly<Record<string, ParamType>>;
+    readonly query?: Readonly<Record<string, ParamType>>;
+    readonly sitemap?: SitemapStance;
+    readonly resolve: (...args: never[]) => string;
+};
+/** A registry of unknown shape — the constraint for helpers generic over whole registries. */
+export type AnyRouteRegistry = Readonly<Record<string, AnyRouteCallable>>;
 /**
  * Define a type-safe route registry for a feature/controller.
  *
