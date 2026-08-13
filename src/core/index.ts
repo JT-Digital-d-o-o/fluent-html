@@ -35,6 +35,7 @@ export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from "./aria-t
 export { defineTheme } from "./define-theme.js";
 export type { ThemeSpec } from "./define-theme.js";
 export type {
+  FluentColorConfig,
   FluentCustomColors,
   FluentCustomSpacing,
   FluentCustomFontSize,

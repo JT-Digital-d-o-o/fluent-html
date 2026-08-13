@@ -140,18 +140,6 @@ describe("setAria key injection prevention", () => {
 // A-006 — escape/injection holes (6.0.1)
 // ------------------------------------
 
-describe("hx-preload string injection prevention (A-006)", () => {
-  it("escapes a preload string crafted to break out of the attribute", () => {
-    const html = render(Div().setHtmx(hx("/p", { preload: 'mouseover" onload="alert(1)' as never })));
-    assert.ok(!html.includes('" onload="'), html);
-    assert.ok(html.includes(`hx-preload="mouseover&quot; onload=&quot;alert(1)"`), html);
-  });
-
-  it("leaves a typed preload value byte-identical", () => {
-    assert.strictEqual(render(Div().setHtmx(hx("/p", { preload: "mouseover" }))), `<div hx-get="/p" hx-preload="mouseover"></div>`);
-  });
-});
-
 describe("setDataAttrs key injection prevention (A-006)", () => {
   it("throws on a data-* key that would break out of the tag", () => {
     assert.throws(() => render(Div().setDataAttrs({ ['x" onmouseover="alert(1)']: "v" } as never)), /Invalid attribute key/);

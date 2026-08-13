@@ -18,6 +18,7 @@ export { defineTheme } from './core/index.js';
 export type {
   ThemeSpec,
   ThemeKeys,
+  FluentColorConfig,
   FluentCustomColors,
   FluentCustomSpacing,
   FluentCustomFontSize,

@@ -97,8 +97,6 @@ export interface HTMX {
     boost?: boolean;
     ignore?: boolean;
     config?: HxConfig | string;
-    optimistic?: boolean;
-    preload?: 'mousedown' | 'mouseover' | boolean;
     status?: Partial<Record<HxStatusKey, string | HxStatusConfig>>;
 }
 /** Values accepted in a query-parameter object. `undefined` and `null` entries are silently skipped. */

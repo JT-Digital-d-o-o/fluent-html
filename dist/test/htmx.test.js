@@ -90,13 +90,14 @@ describe("HTMX - Attribute Escaping", () => {
     it("hx-config object escapes special chars", () => { assert.strictEqual(render(Div().setHtmx(hx("/api", { config: { mode: "no-cors" } }))), `<div hx-get="/api" hx-config="{&quot;mode&quot;:&quot;no-cors&quot;}"></div>`); });
 });
 // ------------------------------------
-// HTMX - Optimistic & Preload
+// HTMX - Removed phantom attributes (T3)
 // ------------------------------------
-describe("HTMX - Optimistic & Preload", () => {
-    it("hx-optimistic", () => { assert.strictEqual(render(Button("Like").setHtmx(hx("/like", { method: "post", optimistic: true }))), `<button hx-post="/like" hx-optimistic>Like</button>`); });
-    it("hx-preload boolean", () => { assert.strictEqual(render(Div().setHtmx(hx("/page", { preload: true }))), `<div hx-get="/page" hx-preload></div>`); });
-    it("hx-preload mouseover", () => { assert.strictEqual(render(Div().setHtmx(hx("/page", { preload: "mouseover" }))), `<div hx-get="/page" hx-preload="mouseover"></div>`); });
-    it("hx-preload mousedown", () => { assert.strictEqual(render(Div().setHtmx(hx("/page", { preload: "mousedown" }))), `<div hx-get="/page" hx-preload="mousedown"></div>`); });
+describe("HTMX - preload/optimistic are gone (not in the htmx 4 runtime)", () => {
+    it("never emits hx-preload or hx-optimistic, even smuggled past the types", () => {
+        const html = render(Div().setHtmx(hx("/page", { preload: true, optimistic: true })));
+        assert.ok(!html.includes("hx-preload"), html);
+        assert.ok(!html.includes("hx-optimistic"), html);
+    });
 });
 // ------------------------------------
 // HTMX - Status Code Handling
@@ -236,15 +237,12 @@ describe("HTMX - hx() query params", () => {
 // Regression (htmx-emission-3): a falsy boolean option must not emit the enabling attribute
 describe("htmx boolean options gate on truthiness, not presence", () => {
     const r = (opts) => render(Div().setHtmx(hx("/x", opts)));
-    it("optimistic:false / preload:false / swapOob:false emit nothing", () => {
-        assert.ok(!r({ optimistic: false }).includes("hx-optimistic"));
-        assert.ok(!r({ preload: false }).includes("hx-preload"));
+    it("ignore:false / swapOob:false emit nothing", () => {
+        assert.ok(!r({ ignore: false }).includes("hx-ignore"));
         assert.ok(!r({ swapOob: false }).includes("hx-swap-oob"));
     });
     it("truthy values still emit", () => {
-        assert.ok(r({ optimistic: true }).includes("hx-optimistic"));
-        assert.ok(r({ preload: true }).includes("hx-preload"));
-        assert.ok(r({ preload: "mouseover" }).includes('hx-preload="mouseover"'));
+        assert.ok(r({ ignore: true }).includes("hx-ignore"));
         assert.ok(r({ swapOob: true }).includes('hx-swap-oob="true"'));
         assert.ok(r({ swapOob: "innerHTML" }).includes('hx-swap-oob="innerHTML"'));
     });

@@ -19,7 +19,7 @@ type Stringified<T extends number> = `${T}`;
 // One EMPTY augmentable interface per themeable @theme family (+ `ThemeKeys`);
 // `defineTheme()` targets them, so regeneration must never touch them.
 import type {
-  FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow,
+  FluentColorConfig, FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow,
   FluentCustomTextShadow, FluentCustomDropShadow, FluentCustomInsetShadow, FluentCustomFontFamily,
 } from "./tailwind-types.seams.js";
 
@@ -68,9 +68,15 @@ export type TailwindColorName =
 // Full color type. CLOSED (C-02): custom colors come from FluentCustomColors
 // (defineTheme), not `(string & {})`. The opacity + arbitrary forms that the
 // open tail gave for free are restated as explicit arms.
+// The built-in palette arm is gated behind FluentColorConfig (T2): an app that
+// augments `{ defaultPalette: false }` collapses it to `never`, making every
+// palette literal a compile error while tokens and keywords keep working.
+type DefaultPaletteColor = FluentColorConfig extends { defaultPalette: false }
+  ? never
+  : `${TailwindColorName}-${TailwindShade}`;
 type BaseColor =
   | "inherit" | "current" | "transparent" | "black" | "white"
-  | `${TailwindColorName}-${TailwindShade}`;
+  | DefaultPaletteColor;
 type CustomColor = keyof FluentCustomColors & string;
 export type TailwindColor =
   | BaseColor

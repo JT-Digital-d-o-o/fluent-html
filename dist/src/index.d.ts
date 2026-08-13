@@ -7,7 +7,7 @@ export { isTag, isRawString } from './core/index.js';
 export { setDevChecks } from './core/index.js';
 export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from './core/index.js';
 export { defineTheme } from './core/index.js';
-export type { ThemeSpec, ThemeKeys, FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, FluentCustomFontFamily, } from './core/index.js';
+export type { ThemeSpec, ThemeKeys, FluentColorConfig, FluentCustomColors, FluentCustomSpacing, FluentCustomFontSize, FluentCustomRadius, FluentCustomShadow, FluentCustomFontFamily, } from './core/index.js';
 export type { CssPropertyName } from './core/index.js';
 export type { VariantStyleObject, StyleProps, NestedVariants, DirectVariant } from './core/index.js';
 export type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType, AutocompleteHint, AutofillField, AddressField, AddressPurpose, FormEnctype, FormMethod, BrowsingContext, LinkRel, ReferrerPolicy, BooleanAttribute, SandboxToken, PermissionsPolicyDirective, FetchPriority, LinkElementRel, LinkAs, LinkType, ScriptType, MetaName, Charset, PopoverState, PopoverAction, CommandFor, ClosedBy, EnterKeyHint, ContentEditable, Autocapitalize, Spellcheck, } from './elements/html-types.js';

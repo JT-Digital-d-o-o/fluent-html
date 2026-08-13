@@ -3,7 +3,7 @@
 // stops erroring (e.g. a closed union gets widened, or Form<T>/route-param narrowing
 // breaks) becomes an "unused directive" error and FAILS the build. This makes
 // "a typo is a compile error" an enforced contract, not a comment.
-import { Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, Video, Audio, Source, Meta, Script, Area, Th, Td, Select, Output, Textarea, Ins, Del, Q, Blockquote, } from "../../src/index.js";
+import { hx, Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, Video, Audio, Source, Meta, Script, Area, Th, Td, Select, Output, Textarea, Ins, Del, Q, Blockquote, } from "../../src/index.js";
 const ids = defineIds(["card"]);
 // `_`-prefixed param is exempt from noUnusedParameters; statements below are expressions, not bindings.
 const expectType = (_v) => undefined;
@@ -407,4 +407,14 @@ Div().hover({ gradient: ["red-500"] });
 Div().md({ "2xl": { p: "4" } });
 // @ts-expect-error — variant name typo on the generic form
 Div().variant("hovr", { bg: "blue-600" });
+// ── T3: preload/optimistic are gone — they never existed in the htmx 4 runtime ──
+hx("/x", {});
+// @ts-expect-error — hx-preload is not an htmx 4 attribute (T3)
+hx("/x", { preload: true });
+// @ts-expect-error — hx-optimistic is not an htmx 4 attribute (T3)
+hx("/x", { optimistic: true });
+// ── T2: the default palette stays ON without an opt-out augmentation ──
+// (The opt-out arm compiles separately in test/types/color-optout — module
+// augmentation is global, so both states can't share one compilation.)
+Div().bg("blue-600").text("gray-900").border("slate-200/50");
 //# sourceMappingURL=type-surface.test-d.js.map

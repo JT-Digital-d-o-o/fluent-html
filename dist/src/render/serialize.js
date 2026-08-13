@@ -129,20 +129,13 @@ export function buildHtmx(htmx) {
         result += ' hx-boost="' + htmx.boost + '"';
     if (htmx.config !== undefined)
         result += ' hx-config="' + escapeAttr(typeof htmx.config === 'string' ? htmx.config : JSON.stringify(htmx.config)) + '"';
-    // Special cases: boolean-only attrs. Gate on truthiness, not `!== undefined` —
-    // `optimistic: false` (e.g. from a feature flag) must NOT emit the enabling attribute.
-    if (htmx.optimistic)
-        result += ' hx-optimistic';
+    // Special case: boolean-only attr. Gate on truthiness, not `!== undefined` —
+    // `ignore: false` (e.g. from a feature flag) must NOT emit the enabling attribute.
     // `ignore` emits htmx 4's bare-boolean disable-processing attribute `hx-ignore`. (htmx 4
     // renamed htmx 2's `hx-disable` boolean to `hx-ignore`; in htmx 4 `hx-disable` is the
     // disabled-ELEMENTS selector — the `disable` field — so the two must not collide.)
     if (htmx.ignore)
         result += ' hx-ignore';
-    if (htmx.preload) {
-        result += typeof htmx.preload === 'string'
-            ? ' hx-preload="' + escapeAttr(htmx.preload) + '"'
-            : ' hx-preload';
-    }
     // Status-code-specific swap behavior — the key becomes part of the attribute
     // NAME (`hx-status:<code>`), so a malformed key would be attribute-name injection.
     // The HxStatusKey type blocks it at compile time; this guards untyped callers.

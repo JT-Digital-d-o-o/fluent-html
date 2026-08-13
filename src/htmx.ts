@@ -258,12 +258,6 @@ export interface HTMX {
   // Per-element request configuration (replaces hx-request)
   config?: HxConfig | string;
 
-  // Optimistic UI — show expected content before server responds
-  optimistic?: boolean;
-
-  // Preload on hover — cache response before click
-  preload?: 'mousedown' | 'mouseover' | boolean;
-
   // Status-code-specific swap behavior
   status?: Partial<Record<HxStatusKey, string | HxStatusConfig>>;
 }

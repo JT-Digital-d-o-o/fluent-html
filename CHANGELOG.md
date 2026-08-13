@@ -2,6 +2,29 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [7.2.0] - Token-only colors behind an opt-out seam; phantom htmx attrs deleted
+
+The compile-time arm of the guideline-enforcement scope: the two prose rules with the worst audit numbers (554 palette literals; anything built on `preload`) become type errors.
+
+### ✨ Added — `FluentColorConfig` (T2)
+
+- New augmentation seam next to the `FluentCustom*` family. An app that declares
+  `interface FluentColorConfig { defaultPalette: false }` collapses the built-in
+  `${color}-${shade}` palette arm to `never`: every palette literal (`bg("gray-100")`,
+  `hover({ bg: "slate-200" })`, `"red-500/20"`) is a compile error, while theme tokens,
+  the functional keywords (`inherit`/`current`/`transparent`/`black`/`white`), token
+  opacity tints, and `[...]` arbitrary values keep working. Backward compatible: without
+  the augmentation nothing changes.
+- Compile-proof both ways: the default-on arm asserts in `test/types/type-surface.test-d.ts`;
+  the opt-out arm compiles as its own unit (`test/types/color-optout`, module augmentation
+  is global) wired into `npm test`.
+
+### 💥 Removed — phantom `preload` / `optimistic` (T3)
+
+- The `HTMX` options `preload` and `optimistic` and their `hx-preload` / `hx-optimistic`
+  emit branches are gone. Neither attribute exists in the htmx 4.0.0-beta4 runtime, so
+  anything built on them silently did nothing — now it's a compile error instead.
+
 ## [7.1.0] - Sitemap stances on route defs + exported registry types
 
 Groundwork for exhaustive typed controllers (`defineController` in the template layer): the route registry stays a dependency-free contract leaf, but now carries everything a server-side binder needs — a declared sitemap stance and the param/query type maps at runtime.

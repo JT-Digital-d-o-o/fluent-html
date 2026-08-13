@@ -43,6 +43,7 @@
     "node_modules",
     "dist",
     "src/behaviors/client",
-    "test/acceptance"
+    "test/acceptance",
+    "test/types/color-optout"
   ]
 }
