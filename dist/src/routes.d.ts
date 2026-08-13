@@ -125,9 +125,9 @@ type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
     readonly [K in keyof T]: {
         readonly method: MethodOf<T[K]>;
         readonly path: JoinPath<P, T[K]['path']> & `/${string}`;
-        readonly params: T[K]['params'];
-        readonly query: T[K]['query'];
-        readonly sitemap: T[K]['sitemap'];
+        readonly params: DefProp<T[K], 'params'>;
+        readonly query: DefProp<T[K], 'query'>;
+        readonly sitemap: DefProp<T[K], 'sitemap'>;
     };
 };
 /**
@@ -159,16 +159,22 @@ type RouteHxOptionsFor<Def extends RouteDef> = Omit<RouteHxOptions, 'query'> & {
 type MethodOf<Def extends RouteDef> = Def extends {
     readonly method: infer M extends HxHttpMethod;
 } ? M : "get";
+/**
+ * Read an optional key off a def, resolving to `undefined` when the def never declared
+ * it. A bare indexed access (`Def['params']`) yields `unknown` for an absent key, which
+ * would poison every structural consumer of the surfaced properties.
+ */
+type DefProp<Def, K extends PropertyKey> = K extends keyof Def ? Def[K] : undefined;
 /** Base properties available on every route callable. */
 type RouteProperties<Def extends RouteDef> = {
     readonly method: MethodOf<Def>;
     readonly path: Def['path'];
     /** The declared param type map, carried through to runtime for server-side schema emission. */
-    readonly params: Def['params'];
+    readonly params: DefProp<Def, 'params'>;
     /** The declared query type map, carried through to runtime for server-side schema emission. */
-    readonly query: Def['query'];
+    readonly query: DefProp<Def, 'query'>;
     /** The def's sitemap stance, carried through for server-side registration. */
-    readonly sitemap: Def['sitemap'];
+    readonly sitemap: DefProp<Def, 'sitemap'>;
     readonly resolve: HasAnyParams<Def['path']> extends true ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => string : (query?: ResolveQuery<Def['query']>) => string;
 };
 /**
