@@ -12,6 +12,14 @@ The agent-fitness fix for the worst error on the most common guess. Blind unpref
 - The two reads consumer repos were measured to make keep public, non-shadowing accessors: `Tag.getClass()` and `FormTag.getEnctype()`. Other storage has no getter by design — a new legitimate read should become a library accessor, not a cast.
 - **Codemod**: `npm run codemod:storage-fields -- <tsconfig> [--dry]` rewrites accessor-backed reads to the getters and field writes to the typed setters (type-verified `Tag` receivers only, canonical-names mechanics); accessor-less reads are reported for review, never guessed at.
 
+### ✨ Fixed — `Partial()` emitted an element htmx 4 never processes
+
+**Every partial swap has been inert in the browser since the htmx-4 cutover.** `Partial()` rendered `<hx-partial hx-target="…" hx-swap="…">`, an element name htmx 4 does not look for: it collects partials with `root.querySelectorAll("template[hx]")` and dispatches each hit on its `type` attribute. The vendored htmx 4.0.0-beta4 bundle contains **zero** occurrences of the string `hx-partial`, so the markup parsed, validated and shipped — tsc-clean, lint-clean, extractor-clean, boot-clean — and then did nothing: the targeted region was never swapped.
+
+- `Partial()` now emits `<template type="partial" hx-target="#member-list" hx-swap="outerMorph" hx>…</template>`. The **bare `hx` marker** is the load-bearing part (`template[hx]` is a presence selector, so attribute order is irrelevant); `type="partial"` picks the partial branch; the swapped content is the template's parsed `content` fragment.
+- Unchanged: selector resolution (`Id` → `.selector`, bare `^[A-Za-z][\w-]*$` token → `#token`, any other selector passed through verbatim) and the `outerMorph` default, including the "pass `outerHTML` when the target contains a poller" rule.
+- `test/patterns.ts` now pins the **whole emitted string** for the Id-resolved, bare-token, explicit-selector and custom-swap cases, plus the bare-`hx` marker and a guard that the `hx-partial` name cannot come back. The three older tests that asserted `<hx-partial` / attribute substrings were rewritten — they passed against markup that could not work.
+
 ### ✨ Fixed — the 7.0.1 dev-check gap is closed
 
 - 7.0.1 shipped the mutate-after-render/aliased-child guards with an admitted hole: element-specific setters wrote their public fields directly, so ~200 of them bypassed the gate. With the storage privatized, every element setter that writes storage now runs `assertMutable` (283 gated methods), and the htmx mixin setters (`setHtmx`, `hxGet`, …) route through a gated `Tag._setHx` primitive. The dev-checks suite's "known gap" pin is now an "is gated" assertion.
@@ -51,7 +59,9 @@ The natural token-record pattern (`Record<Status, TailwindColor>` styler maps) n
 
 ### 📖 Changed — census-ranked head README
 
-The package README was a 79.5KB full-surface document; it is now a **12.7KB census-ranked head**: the top 50 methods (≈87% of the fleet's ~31K method call sites, counts embedded) with one-line signatures, plus the 10 structural patterns (routes, ids, `Form<T>`, `Match` family, `ForEach`/`ForEachKeyed`, `IfThen` family, `when` family, variants, theming, escape hatches). The long-form prose moved intact to `REFERENCE.md`; the complete callable surface with call-site counts is generated into `generated/full-surface.md`. The census is reproducible: `node scripts/census/method-census.mjs [--json | --markdown 50 | --tail]` (committed; corrects the `Array.from`/`res.text()`/`el.focus()` name collisions).
+The package README was a 79.5KB full-surface document; it is now a **census-ranked head**: the top 50 methods (**92.5%** of the fleet's 197,837 method call sites, counts embedded) with one-line signatures, plus the 10 structural patterns (routes, ids, `Form<T>`, `Match` family, `ForEach`/`ForEachKeyed`, `IfThen` family, `when` family, variants, theming, escape hatches). The long-form prose moved intact to `REFERENCE.md`; the complete callable surface with call-site counts is generated into `generated/full-surface.md`.
+
+**Corpus and basis.** The ranking runs over the agent-fitness protocol's Phase-1 corpus — **every** package.json under the org root depending on the library (including under an npm alias, e.g. `lambda.html`), minus the library, its tooling, `fluent-svg`, the demos repo and the generated scaffolds: **46 consumer repos, 8,817 non-generated `.ts` files**, sub-packages collapsed to their git repo. Counts are **alias-merged**: 43 of the 46 repos are pinned pre-7.0.0, where today's canonical name did not exist, so pre-rename spellings fold onto the canonical name using the codemod's own map (`scripts/codemod/canonical-names.ts`, now exported rather than copied) plus the variant-lambda (`.on("hover", …)` → `hover`, `.at("md", …)` → `md`) and keyword-dispatch (`.display("block")` → `block`) folds. Both numbers ship: alias-merged fleet and canonical-era-only (repos ≥ 7.0.0), so the version skew stays visible. This corrects the first cut of the head, which scanned 11 hand-listed roots and counted canonical spellings only — that ranking put `.addAttribute()` at #1 and the class hatches at #5/#8, an artifact of never seeing `.textColor()`/`.padding()`; alias-merged they are #13/#12/#9 fleet-wide and #87/#42/#81 in canonical-era code. Six methods whose pre-7 spelling was an argument rather than a name were missing from the head entirely (`.md()` `.sm()` `.lg()` from `.at("md", …)`; `.block()` `.hidden()` `.relative()` from `.display(…)`/`.position(…)`), `.hover()` was understated at #48 (now #17, folded from `.on("hover", …)`), and `.behavior()` sits at #51 fleet-wide but #31 among 7.0.0+ repos. The census is reproducible: `node scripts/census/method-census.mjs [--corpus | --json | --markdown 50 | --tail]` (committed; corrects the `Array.from`/`Readable.from`/`res.text()`/`el.focus()` collisions and, via a receiver guard, route-callable lookalikes such as `userRoutes.list()`).
 
 ## [7.2.0] - Token-only colors behind an opt-out seam; phantom htmx attrs deleted
 
@@ -411,7 +421,7 @@ Mostly additive, plus two intentional type-narrowing breaks and a couple of beha
 ### 💥 Breaking
 
 - **The six sizing unions are now closed** (`TailwindWidth`/`Height`/`MaxWidth`/`MinWidth`/`MaxHeight`/`MinHeight`) — the `(string & {})` open tail is removed, so `.w("brnad")` is a **compile error** instead of silently emitting a dead `w-brnad` class. This finishes the v6 union-closure that colors/spacing/fontSize/radius/shadow already got. Arbitrary values are unaffected — use the bracket arm (`.w("[37px]")`) or the `(unit, amount)` overload (`.w("px", 37)`); `MaxWidth`/`MinWidth`/`MinHeight` gained an explicit `` `[${string}]` `` arm.
-- **Removed the deprecated `OOB` / `withOOB` helpers** — replaced by `Partial()` (htmx 4's `<hx-partial>`) since 6.0. Migrate `OOB(id, content)` → `Partial(id, content)`; `withOOB(main, ...oob)` → a plain array `[main, ...partials]`.
+- **Removed the deprecated `OOB` / `withOOB` helpers** — replaced by `Partial()` (then `<hx-partial>`; that element name was wrong and inert — corrected to `<template hx type="partial">` in 8.0.0) since 6.0. Migrate `OOB(id, content)` → `Partial(id, content)`; `withOOB(main, ...oob)` → a plain array `[main, ...partials]`.
 
 ### ✨ Added
 
@@ -710,7 +720,7 @@ Short swap aliases: `before`, `after`, `prepend`, `append`.
 
 #### Partial Multi-Swap (`Partial`)
 
-New `Partial()` helper replaces OOB swaps with htmx 4's `<hx-partial>` element:
+New `Partial()` helper replaces OOB swaps with what was believed to be htmx 4's partial element, `<hx-partial>` (wrong and inert in the browser — corrected to `<template hx type="partial">` in 8.0.0):
 
 ```typescript
 render(

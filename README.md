@@ -20,8 +20,8 @@ render(
 );
 ```
 
-This README is the **census-ranked head**: the top 50 methods (≈ 87% of all real call sites
-across the consumer fleet) and the 10 structural patterns. It is intentionally short — the
+This README is the **census-ranked head**: the top 50 methods (**92.5%** of every method call
+site measured across the consumer fleet) and the 10 structural patterns. It is intentionally short — the
 type system and your repo's exemplar code teach the rest.
 
 **Where everything else lives**
@@ -33,8 +33,12 @@ type system and your repo's exemplar code teach the rest.
 | [FLUENT-STYLING.md](FLUENT-STYLING.md) | The styling system in depth |
 | [TAILWIND-SETUP.md](TAILWIND-SETUP.md) | Tailwind v4 build wiring + safelist extractor |
 
-Regenerate the census: `node scripts/census/method-census.mjs --markdown 50` (counts below
-are from that script; it scans the consumer repos and corrects JS/DOM name collisions).
+Counts below come from `node scripts/census/method-census.mjs --markdown 50`: **46 consumer
+repos, 8,817 non-generated `.ts` files, 197,837 method call sites**. They are **alias-merged** —
+most of the fleet is still pinned pre-7.0.0, so a pre-rename spelling (`.textColor()`,
+`.padding()`, `.on("hover", …)`, `.at("md", …)`) counts for the canonical name it became; the
+second column counts only the repos already on 7.0.0+. JS/DOM name collisions are corrected
+(`Array.from`, `res.text()`, `userRoutes.list()`, …). `--corpus` prints the repo list.
 
 ---
 
@@ -45,61 +49,77 @@ Method name = Tailwind class prefix — derive the method from the class you kno
 argument discriminates (`.text("lg")` / `.text("primary")` / `.text("center")`). All values
 are closed unions: a typo or an off-scale value is a compile error.
 
-| # | Method | Call sites | One-line signature |
-|---|---|---|---|
-| 1 | `.addAttribute(name, value)` | 2229 | Untyped attribute escape hatch — use the typed `set*` setter when one exists |
-| 2 | `.flex(value?)` | 2225 | Flex container (bare), shorthand (`"1"`), direction (`"col"`), or wrap |
-| 3 | `.text(value)` | 1612 | Merged `text-*`: size, color, align, or wrap; `.text("px", 13)` for arbitrary |
-| 4 | `.rounded(value?)` | 1564 | Border radius — all corners, or `(corner, size)` |
-| 5 | `.addClass(cls)` | 1561 | Raw class append — legacy-heavy count; Tailwind styling through it is lint-blocked |
-| 6 | `.gap(value)` | 1519 | Flex/grid gap — both axes or `("x"\|"y", value)` |
-| 7 | `.border(...)` | 1242 | Merged: width, style, or color; all sides, one side, or `(side, value)` |
-| 8 | `.setClass(cls)` | 1204 | Replace the class attribute — same lint rule as `.addClass` |
-| 9 | `.w(value)` | 963 | Width — scale, fractions, keywords, or `("px", 180)` |
-| 10 | `.cursor(value)` | 829 | Mouse cursor (buttons need `.cursor("pointer")` — no default) |
-| 11 | `.apply(styler)` | 690 | Apply a reusable `Styler` preset (`(t) => t.p("6").rounded("card")`) |
-| 12 | `.h(value)` | 628 | Height — same forms as `.w()` |
-| 13 | `.setType(type)` | 590 | `type` attribute (`Button().setType("submit")`, `Input().setType("email")`) |
-| 14 | `.transition(value?)` | 536 | Transitioned property group (bare = default set) |
-| 15 | `.m(...)` | 520 | Margin — all sides, `(axis/side, value)`, or unit overload; also `.mx/.my/.mt/…` |
-| 16 | `.p(...)` | 496 | Padding — same forms; also `.px/.py/.pt/…` |
-| 17 | `.maxW(value)` | 490 | Max-width — named container sizes or unit overload |
-| 18 | `.setHtmx(htmx)` | 481 | Attach an HTMX request (`setHtmx(route())` or `setHtmx(hx(url, opts))`) |
-| 19 | `.setId(id)` | 440 | Element id — takes an `Id` from `defineIds` (or a string) |
-| 20 | `.bg(color)` | 427 | Background color token |
-| 21 | `.setHref(href)` | 416 | Anchor href — branded: `ResolvedRoute` \| literal external (`https://…`, `mailto:…`, `#…`) |
-| 22 | `.when(cond, fn)` | 379 | Conditional modifier: `t => t.…` runs when cond is truthy (narrowed non-null value passed) |
-| 23 | `.font(value)` | 369 | Merged `font-*`: weight or family |
-| 24 | `.setName(name)` | 342 | Form control `name` (schema-typed inside `Form<T>`) |
-| 25 | `route.resolve(params?, query?)` | 327 | Resolved URL as a branded `ResolvedRoute` — the only sanctioned query-string path |
-| 26 | `.tracking(value)` | 326 | Letter spacing |
-| 27 | `.gridCols(n)` | 324 | Grid column count / `none` / `subgrid` |
-| 28 | `.toggle(attr, cond?)` | 322 | Boolean attribute (`required`, `selected`, `disabled`) — optionally conditional |
-| 29 | `.shadow(value?)` | 320 | Box shadow — bare default, theme size, or color |
-| 30 | `.leading(value)` | 276 | Line height |
-| 31 | `.uppercase()` | 273 | Uppercase transform |
-| 32 | `.setValue(value)` | 256 | Form control `value` attribute |
-| 33 | `.setFill(color)` | 219 | SVG `fill` presentation attribute (class-based color is `.fill()`) |
-| 34 | `.items(value)` | 217 | Cross-axis alignment (`"center"`, `"start"`, …) |
-| 35 | `.grid()` | 196 | Grid container |
-| 36 | `.overflow(value)` | 189 | Overflow — both axes or `("x"\|"y", value)` |
-| 37 | `.shrink(0?)` | 188 | Allow shrinking (bare) or `shrink-0` |
-| 38 | `.setPlaceholder(text)` | 179 | Input placeholder |
-| 39 | `.setD(path)` | 131 | SVG path data |
-| 40 | `.setContent(content)` | 130 | Meta tag content |
-| 41 | `.setStrokeWidth(n)` | 128 | SVG stroke-width presentation attribute |
-| 42 | `.setStyles(record)` | 126 | Inline styles from an object — extractor-opaque, for runtime-computed values |
-| 43 | `.ring(value?)` | 115 | Ring width (bare = **1px** in v4) or color |
-| 44 | `.setViewBox(str)` | 115 | SVG viewBox |
-| 45 | `.justify(value)` | 114 | Main-axis distribution (`"between"`, `"center"`, …) |
-| 46 | `.setStroke(color)` | 111 | SVG `stroke` presentation attribute |
-| 47 | `.setSrc(url)` | 110 | Image/script/media source |
-| 48 | `.hover(styles)` | 108 | `hover:` styles as a typed object (see pattern 8) |
-| 49 | `.opacity(value)` | 103 | Element opacity 0–100 |
-| 50 | `.fill(color)` | 102 | SVG fill color via `fill-*` class (`"none"` to unset) |
+| # | Method | Fleet | 7.0.0+ | One-line signature |
+|---|---|---|---|---|
+| 1 | `.text(value)` | 35682 | 1919 | Merged `text-*`: size, color, align, or wrap; `.text("px", 13)` for arbitrary |
+| 2 | `.p(...)` | 14550 | 625 | Padding — all sides, `(side, value)`, or unit overload; also `.px/.py/.pt/…` |
+| 3 | `.m(...)` | 12138 | 614 | Margin — same forms; also `.mx/.my/.mt/…` |
+| 4 | `.font(value)` | 10157 | 484 | Merged `font-*`: weight or family |
+| 5 | `.flex(value?)` | 9843 | 487 | Flex container (bare), shorthand (`"1"`), direction (`"col"`), or wrap |
+| 6 | `.border(...)` | 9248 | 423 | Merged: width, style, or color; all sides, one side, or `(side, value)` |
+| 7 | `.bg(color)` | 8293 | 441 | Background color token |
+| 8 | `.rounded(value?)` | 6552 | 306 | Border radius — all corners, or `(corner, size)` |
+| 9 | `.setClass(cls)` | 5961 | 21 | **Escape hatch** — replaces the class attribute; styling through it is lint-blocked (see below) |
+| 10 | `.gap(value)` | 5596 | 286 | Flex/grid gap — both axes or `("x"\|"y", value)` |
+| 11 | `.items(value)` | 4972 | 241 | Cross-axis alignment (`"center"`, `"start"`, …) |
+| 12 | `.addClass(cls)` | 4780 | 45 | **Escape hatch** — raw class append; same lint block as `.setClass` (see below) |
+| 13 | `.addAttribute(name, value)` | 3946 | 18 | **Escape hatch** — untyped attribute for the long tail; use the typed `set*` setter when one exists |
+| 14 | `.w(value)` | 3538 | 280 | Width — scale, fractions, keywords, or `("px", 180)` |
+| 15 | `.cursor(value)` | 3118 | 248 | Mouse cursor (buttons need `.cursor("pointer")` — no default) |
+| 16 | `.apply(styler)` | 2660 | 461 | Apply a reusable `Styler` preset (`(t) => t.p("6").rounded("card")`) |
+| 17 | `.hover(styles)` | 2657 | 147 | `hover:` styles as a typed object (see pattern 8) |
+| 18 | `.justify(value)` | 2551 | 128 | Main-axis distribution (`"between"`, `"center"`, …) |
+| 19 | `.setType(type)` | 2353 | 119 | `type` attribute (`Button().setType("submit")`, `Input().setType("email")`) |
+| 20 | `.h(value)` | 2249 | 197 | Height — same forms as `.w()` |
+| 21 | `.transition(value?)` | 2188 | 99 | Transitioned property group (bare = default set) |
+| 22 | `.maxW(value)` | 2187 | 95 | Max-width — named container sizes or unit overload |
+| 23 | `.setHtmx(htmx)` | 2127 | 44 | Attach an HTMX request (`setHtmx(route())` or `setHtmx(hx(url, opts))`) |
+| 24 | `.setId(id)` | 1538 | 98 | Element id — takes an `Id` from `defineIds` (or a string) |
+| 25 | `.gridCols(n)` | 1524 | 10 | Grid column count / `none` / `subgrid` |
+| 26 | `.setName(name)` | 1465 | 44 | Form control `name` (schema-typed inside `Form<T>`) |
+| 27 | `.setHref(href)` | 1408 | 82 | Anchor href — branded: `ResolvedRoute` \| literal external (`https://…`, `mailto:…`, `#…`) |
+| 28 | `.shadow(value?)` | 1375 | 111 | Box shadow — bare default, theme size, or color |
+| 29 | `.when(cond, fn)` | 1336 | 32 | Conditional modifier: `t => t.…` runs when cond is truthy (narrowed non-null value passed) |
+| 30 | `.md(styles)` | 1279 | 57 | `md:` styles as a typed object; nesting stacks (`md: { hover: … }`) |
+| 31 | `.setValue(value)` | 1195 | 28 | Form control `value` attribute |
+| 32 | `.toggle(attr, cond?)` | 1130 | 108 | Boolean attribute (`required`, `selected`, `disabled`) — optionally conditional |
+| 33 | `.tracking(value)` | 1124 | 37 | Letter spacing |
+| 34 | `.sm(styles)` | 1031 | 68 | `sm:` styles — same object form as `.md` |
+| 35 | `.setPlaceholder(text)` | 996 | 41 | Input placeholder |
+| 36 | `route.resolve(params?, query?)` | 983 | 132 | Resolved URL as a branded `ResolvedRoute` — the only sanctioned query-string path |
+| 37 | `.grid()` | 935 | 49 | Grid container |
+| 38 | `.leading(value)` | 889 | 39 | Line height |
+| 39 | `.block()` | 875 | 50 | `display: block` — one method per display value, not `.display("block")` |
+| 40 | `.uppercase()` | 842 | 23 | Uppercase transform |
+| 41 | `.lg(styles)` | 836 | 71 | `lg:` styles — same object form as `.md` |
+| 42 | `.shrink(0?)` | 758 | 42 | Allow shrinking (bare) or `shrink-0` |
+| 43 | `.overflow(value)` | 719 | 36 | Overflow — both axes or `("x"\|"y", value)` |
+| 44 | `.setFill(color)` | 680 | 71 | SVG `fill` presentation attribute (class-based color is `.fill()`) |
+| 45 | `.setContent(content)` | 488 | 66 | Meta tag content |
+| 46 | `.hidden()` | 477 | 33 | `display: none` — the sibling of `.block()`/`.inlineBlock()`/`.grid()` |
+| 47 | `.setStyles(record)` | 473 | 26 | Inline styles from an object — extractor-opaque, for runtime-computed values |
+| 48 | `.setSrc(url)` | 435 | 28 | Image/script/media source |
+| 49 | `.setRel(rel)` | 422 | 33 | Link/anchor `rel` (`"stylesheet"`, `"preconnect"`, `"noopener"`) |
+| 50 | `.relative()` | 417 | 36 | `position: relative` — siblings `.absolute()`/`.fixed()`/`.sticky()`/`.static()` |
 
-The standalone pattern functions rank alongside the head: `IfThen` (1010), `ForEach` (608),
-`IfThenElse` (274), `hx` (170), `defineRoutes` (129), `defineIds` (79), `Match` (54).
+**The three escape hatches in this table are not vocabulary to imitate.** `.setClass()` (#9),
+`.addClass()` (#12) and `.addAttribute()` (#13) rank where they do on *legacy* code: in the repos
+already on 7.0.0+ they collapse to #81 (21 sites, 0.19%), #42 (45 sites) and #87 (18 sites,
+0.16%). Tailwind styling through `.addClass`/`.setClass` is **lint-blocked at error level** — use
+the typed methods, and reach for the narrowest hatch when a utility genuinely has no method
+(pattern 10). `.addAttribute()` stays the sanctioned hatch for the untyped attribute long tail;
+anything with a typed `set*` setter should use it.
+
+**Just outside the head, and rising:** `.behavior(name, options)` — 402 sites, #51 fleet-wide but
+**#31 among 7.0.0+ repos** — is the sanctioned client-side interaction primitive (`toggle`,
+`drawer`, `clipboard`, `back`, `onEscape`, …), emitted as `data-behavior-*` attributes with zero
+inline JS: `Button("Menu").behavior("drawer", { target: ids.menu, trapFocus: true })`. Also
+climbing in canonical-era code: `.ring()`, `.whenElse()`, and the 7.0.0-new directional
+shorthands (`.mt()`, `.px()`, …), whose fleet counts understate them because most repos predate
+them.
+
+The standalone pattern functions rank alongside the head: `IfThen` (3843), `ForEach` (2283),
+`IfThenElse` (991), `defineRoutes` (673), `hx` (612), `defineIds` (348), `Match` (169).
 
 ---
 

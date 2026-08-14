@@ -42,7 +42,7 @@ import { variantKeySpecs, DIRECT_VARIANTS, DIR_MAP, UNITS } from "../../src/clas
  * successors are `.variant()` / `.cssProp("backface-visibility", …)` /
  * `.cssProp("scroll-margin", …)`.
  */
-const RENAMES = {
+export const RENAMES = {
     // (b) simple renames
     padding: "p",
     margin: "m",
@@ -95,7 +95,7 @@ const RENAMES = {
     gradientTo: "bgLinear",
 };
 /** Legacy keyword-dispatch methods (pre-6.x) — `.display(value)` / `.position(value)` → canonical no-arg method. */
-const KEYWORD_DISPATCH = {
+export const KEYWORD_DISPATCH = {
     display: {
         block: "block",
         flex: "flex",

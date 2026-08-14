@@ -590,7 +590,7 @@ The prefix is optional — you can still pass route definitions directly without
 
 ## Partial Multi-Swap
 
-HTMX 4 replaces OOB swaps with the `<hx-partial>` element. Fluent HTML's `Partial()` helper generates these for you:
+HTMX 4 replaces OOB swaps with `<template hx type="partial">` elements — it scans a response with `querySelectorAll("template[hx]")` and dispatches each hit on its `type` attribute, so the bare `hx` marker is what makes a partial visible at all. Fluent HTML's `Partial()` helper generates that shape for you:
 
 ```typescript
 import { Partial, render } from 'fluent-html';
@@ -601,6 +601,12 @@ render(
   Partial(ids.userCount, Span(`${users.length} users`)),
   Partial(ids.pageTitle, H1("Users")),
 )
+```
+
+Each call renders one element:
+
+```html
+<template type="partial" hx-target="#user-count" hx-swap="outerMorph" hx><span>3 users</span></template>
 ```
 
 Each `Partial` targets a specific element by ID and uses `outerMorph` by default (preserves focus, scroll, animations). You can override the swap strategy:

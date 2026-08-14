@@ -3,10 +3,16 @@ import type { View } from "./core/types.js";
 import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
 import type { Id } from "./ids.js";
 /**
- * Create an `<hx-partial>` element for multi-swap responses.
+ * Create a `<template hx type="partial">` element for multi-swap responses.
  *
  * Each partial independently declares its target and swap strategy.
  * This replaces OOB swaps with a cleaner, more explicit pattern.
+ *
+ * htmx 4 scans a response with `root.querySelectorAll("template[hx]")` and routes
+ * each hit on its `type` attribute (`type="partial"` → target + swap spec, content
+ * taken from the template's parsed `content` fragment). The **bare `hx` marker is
+ * what makes the element visible to that scan** — an element htmx never looks for
+ * (the pre-4 `<hx-partial>` shape) is silently inert in the browser.
  *
  * When the target is (or contains) a self-polling element (`trigger: "every …"`),
  * pass `"outerHTML"` — the default morph preserves settled poller nodes and their
@@ -15,13 +21,14 @@ import type { Id } from "./ids.js";
  * @param target - CSS selector string or Id object
  * @param content - Content to swap in
  * @param swap - Swap strategy (default: "outerMorph")
- * @returns Tag with `<hx-partial>` element
+ * @returns Tag rendering as `<template hx type="partial" hx-target=… hx-swap=…>`
  *
  * @example
  * render(
  *   Partial(ids.userList, UserList(users)),
  *   Partial(ids.userCount, Span(`${users.length} users`)),
  * )
+ * // <template type="partial" hx-target="#user-list" hx-swap="outerMorph" hx>…</template>
  */
 export declare function Partial(target: HxTarget | Id, content: View, swap?: HxSwap): Tag;
 /**

@@ -47,6 +47,11 @@ hx("/users", { target: ids.userList, swap: "outerMorph" })
 
 ## 2. `<hx-partial>` — Multiple Targeted Swaps ✅
 
+> **Superseded (8.0.0):** shipped htmx 4 has no `<hx-partial>` element — it scans
+> `template[hx]` and dispatches on `type`. The real shape is
+> `<template hx type="partial" hx-target="…" hx-swap="…">`; the snippets below are the
+> planning-era guess and must not be copied. See the 8.0.0 CHANGELOG entry and `Partial()`.
+
 The biggest DX improvement. Instead of OOB swaps (which require elements to have matching IDs and use the awkward `hx-swap-oob` attribute), `<hx-partial>` lets you send multiple independently-targeted swaps in a single response.
 
 ### How it works

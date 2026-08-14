@@ -46,7 +46,7 @@ import type { VariantKeySpec } from "../../src/class-vocab/index.js";
  * successors are `.variant()` / `.cssProp("backface-visibility", …)` /
  * `.cssProp("scroll-margin", …)`.
  */
-const RENAMES: Readonly<Record<string, string>> = {
+export const RENAMES: Readonly<Record<string, string>> = {
   // (b) simple renames
   padding: "p",
   margin: "m",
@@ -100,7 +100,7 @@ const RENAMES: Readonly<Record<string, string>> = {
 };
 
 /** Legacy keyword-dispatch methods (pre-6.x) — `.display(value)` / `.position(value)` → canonical no-arg method. */
-const KEYWORD_DISPATCH: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+export const KEYWORD_DISPATCH: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   display: {
     block: "block",
     flex: "flex",

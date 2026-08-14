@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import { render, Div, Button, Span, Empty } from "../src/index.js";
 import { clss, closest, find } from "../src/htmx.js";
+import { defineIds } from "../src/ids.js";
 import {
   Partial,
   HtmxConfig,
@@ -159,11 +160,42 @@ describe("HTMX Patterns", () => {
 });
 
 describe("Partial (htmx 4)", () => {
-  it("creates hx-partial element with string target", () => {
-    const html = render(Partial("user-list", Div("Users")));
-    assert.ok(html.includes("<hx-partial"));
-    assert.ok(html.includes('hx-target="#user-list"'));
-    assert.ok(html.includes('hx-swap="outerMorph"'));
+  // htmx 4 processes `root.querySelectorAll("template[hx]")` and dispatches on `type`.
+  // These pin the whole emitted element: a shape htmx never scans for is inert in the
+  // browser while staying tsc-, lint- and test-clean (the 8.0.0 `<hx-partial>` defect).
+  it("emits template[hx] with type=partial for a bare-token target", () => {
+    assert.strictEqual(
+      render(Partial("user-list", Div("Users"))),
+      '<template type="partial" hx-target="#user-list" hx-swap="outerMorph" hx><div>Users</div></template>',
+    );
+  });
+
+  it("emits template[hx] for an Id-resolved target", () => {
+    const ids = defineIds(["member-list"] as const);
+    assert.strictEqual(
+      render(Partial(ids.memberList, Div("Members"))),
+      '<template type="partial" hx-target="#member-list" hx-swap="outerMorph" hx><div>Members</div></template>',
+    );
+  });
+
+  it("emits template[hx] for an explicit selector target", () => {
+    assert.strictEqual(
+      render(Partial(".items", Span("X"))),
+      '<template type="partial" hx-target=".items" hx-swap="outerMorph" hx><span>X</span></template>',
+    );
+  });
+
+  it("emits template[hx] with a custom swap", () => {
+    assert.strictEqual(
+      render(Partial("list", Div("Items"), "innerHTML")),
+      '<template type="partial" hx-target="#list" hx-swap="innerHTML" hx><div>Items</div></template>',
+    );
+  });
+
+  it("carries the bare hx marker htmx's template[hx] scan selects on", () => {
+    const html = render(Partial("user-list", "X"));
+    assert.ok(/<template[^>]*\shx(?=[\s>])/.test(html), "expected a valueless hx attribute");
+    assert.ok(!html.includes("hx-partial"), "the pre-htmx-4 element name must not come back");
   });
 
   it("handles # prefix in target", () => {
@@ -181,6 +213,7 @@ describe("Partial (htmx 4)", () => {
       Partial("content", Div("Main")),
       Partial("count", Span("5")),
     );
+    assert.strictEqual(html.match(/<template type="partial"/g)?.length, 2);
     assert.ok(html.includes('hx-target="#content"'));
     assert.ok(html.includes('hx-target="#count"'));
   });

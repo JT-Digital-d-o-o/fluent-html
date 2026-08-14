@@ -2,387 +2,391 @@
 # fluent-html — full callable surface (census-ranked)
 
 Every callable in the package (378 names) with its fleet call-site count
-(1628 source files scanned). The README head documents the top of this list;
-everything below it exists, autocompletes, and stays supported — zero-count names
-are frozen (kept, undocumented, candidates for a future prune).
+(46 consumer repos, 8817 source files). Counts are **alias-merged**: a
+pre-7.0.0 spelling (`.textColor()`, `.padding()`, `.on("hover", …)`, `.at("md", …)`)
+counts for the canonical name it was renamed to, so the ranking measures intent rather
+than which repos have upgraded. The second column counts only the 3 repos already
+pinned to >= 7.0.0. The README head documents the top of this list; everything below it
+exists, autocompletes, and stays supported — zero-count names are frozen (kept,
+undocumented, candidates for a future prune).
 
-| Callable | Call sites | Kind |
-|---|---|---|
-| `.addAttribute()` | 2229 | Tag method |
-| `.flex()` | 2225 | Tag method |
-| `.text()` | 1612 | Tag method |
-| `.rounded()` | 1564 | Tag method |
-| `.addClass()` | 1561 | Tag method |
-| `.gap()` | 1519 | Tag method |
-| `.border()` | 1242 | Tag method |
-| `.setClass()` | 1204 | Tag method |
-| `IfThen()` | 1010 | standalone |
-| `.w()` | 963 | Tag method |
-| `.cursor()` | 829 | Tag method |
-| `.apply()` | 690 | Tag method |
-| `.h()` | 628 | Tag method |
-| `ForEach()` | 608 | standalone |
-| `.setType()` | 590 | element setter |
-| `.transition()` | 536 | Tag method |
-| `.m()` | 520 | Tag method |
-| `.p()` | 496 | Tag method |
-| `.maxW()` | 490 | Tag method |
-| `.setHtmx()` | 481 | Tag method |
-| `.setId()` | 440 | Tag method |
-| `.bg()` | 427 | Tag method |
-| `.setHref()` | 416 | element setter |
-| `.when()` | 379 | Tag method |
-| `.font()` | 369 | Tag method |
-| `.setName()` | 342 | element setter |
-| `.resolve()` | 327 | route callable |
-| `.tracking()` | 326 | Tag method |
-| `.gridCols()` | 324 | Tag method |
-| `.toggle()` | 322 | Tag method |
-| `.shadow()` | 320 | Tag method |
-| `.leading()` | 276 | Tag method |
-| `IfThenElse()` | 274 | standalone |
-| `.uppercase()` | 273 | Tag method |
-| `.setValue()` | 256 | element setter |
-| `.setFill()` | 219 | element setter |
-| `.items()` | 217 | Tag method |
-| `.grid()` | 196 | Tag method |
-| `.overflow()` | 189 | Tag method |
-| `.shrink()` | 188 | Tag method |
-| `.setPlaceholder()` | 179 | element setter |
-| `hx()` | 170 | standalone |
-| `.setD()` | 131 | element setter |
-| `.setContent()` | 130 | element setter |
-| `defineRoutes()` | 129 | standalone |
-| `.setStrokeWidth()` | 128 | element setter |
-| `.setStyles()` | 126 | Tag method |
-| `.ring()` | 115 | Tag method |
-| `.setViewBox()` | 115 | element setter |
-| `.justify()` | 114 | Tag method |
-| `.setStroke()` | 111 | element setter |
-| `.setSrc()` | 110 | element setter |
-| `.hover()` | 108 | Tag method |
-| `.opacity()` | 103 | Tag method |
-| `.fill()` | 102 | Tag method |
-| `.setWidth()` | 91 | element setter |
-| `.hidden()` | 89 | Tag method |
-| `.setX()` | 89 | element setter |
-| `.setY()` | 89 | element setter |
-| `.setHeight()` | 88 | element setter |
-| `.setRel()` | 85 | element setter |
-| `.setCx()` | 81 | element setter |
-| `.setCy()` | 81 | element setter |
-| `defineIds()` | 79 | standalone |
-| `.block()` | 77 | Tag method |
-| `.underline()` | 75 | Tag method |
-| `.setStrokeLinecap()` | 74 | element setter |
-| `.top()` | 73 | Tag method |
-| `.setR()` | 69 | element setter |
-| `.whenElse()` | 67 | Tag method |
-| `.absolute()` | 66 | Tag method |
-| `.left()` | 65 | Tag method |
-| `.lg()` | 63 | Tag method |
-| `.minW()` | 62 | Tag method |
-| `.from()` | 61 | Tag method |
-| `.setAria()` | 59 | Tag method |
-| `.truncate()` | 58 | Tag method |
-| `.minH()` | 57 | Tag method |
-| `.inlineBlock()` | 56 | Tag method |
-| `.mt()` | 56 | Tag method |
-| `.sm()` | 55 | Tag method |
-| `Match()` | 54 | standalone |
-| `.relative()` | 54 | Tag method |
-| `.setProperty()` | 53 | element setter |
-| `.to()` | 53 | Tag method |
-| `.right()` | 52 | Tag method |
-| `.duration()` | 50 | Tag method |
-| `.setRx()` | 49 | element setter |
-| `.setStrokeLinejoin()` | 49 | element setter |
-| `.behavior()` | 47 | Tag method |
-| `.setAlt()` | 47 | element setter |
-| `hxResponse()` | 45 | standalone |
-| `.inset()` | 45 | Tag method |
-| `.md()` | 45 | Tag method |
-| `.setOpacity()` | 44 | element setter |
-| `.setDataAttrs()` | 43 | Tag method |
-| `.outline()` | 42 | Tag method |
-| `.scale()` | 42 | Tag method |
-| `.inlineFlex()` | 41 | Tag method |
-| `.spaceY()` | 41 | Tag method |
-| `.neg()` | 40 | Tag method |
-| `.setStyle()` | 40 | Tag method |
-| `.animate()` | 38 | Tag method |
-| `.bottom()` | 35 | Tag method |
-| `.list()` | 35 | Tag method |
-| `.setClasses()` | 35 | Tag method |
-| `.setFontSize()` | 35 | element setter |
-| `.pointerEvents()` | 34 | Tag method |
-| `.translate()` | 32 | Tag method |
-| `.setFor()` | 30 | element setter |
-| `Partial()` | 29 | standalone |
-| `.select()` | 28 | Tag method |
-| `.setMin()` | 27 | element setter |
-| `.setTextAnchor()` | 27 | element setter |
-| `.noUnderline()` | 26 | Tag method |
-| `.setCharset()` | 24 | element setter |
-| `.whenMatch()` | 24 | Tag method |
-| `.whitespace()` | 24 | Tag method |
-| `.px()` | 23 | Tag method |
-| `.setPreload()` | 23 | element setter |
-| `.setAction()` | 22 | element setter |
-| `.setMethod()` | 22 | element setter |
-| `.setRows()` | 22 | element setter |
-| `.setStep()` | 22 | element setter |
-| `.rotate()` | 21 | Tag method |
-| `.setMax()` | 20 | element setter |
-| `.setTarget()` | 20 | element setter |
-| `.blur()` | 19 | Tag method |
-| `.italic()` | 19 | Tag method |
-| `MatchValue()` | 19 | standalone |
-| `.stroke()` | 19 | Tag method |
-| `.aspect()` | 17 | Tag method |
-| `.group()` | 17 | Tag method |
-| `.hxPost()` | 17 | Tag method |
-| `.py()` | 17 | Tag method |
-| `.setDominantBaseline()` | 17 | element setter |
-| `.setTitle()` | 17 | Tag method |
-| `.setMaxlength()` | 16 | element setter |
-| `.setMinlength()` | 16 | element setter |
-| `.bgLinear()` | 15 | Tag method |
-| `.pt()` | 15 | Tag method |
-| `.setPoints()` | 15 | element setter |
-| `.setX1()` | 15 | element setter |
-| `.setX2()` | 15 | element setter |
-| `.setY1()` | 15 | element setter |
-| `.setY2()` | 15 | element setter |
-| `.z()` | 15 | Tag method |
-| `assetUrl()` | 14 | standalone |
-| `.via()` | 14 | Tag method |
-| `.backdropBlur()` | 13 | Tag method |
-| `.cssProp()` | 13 | Tag method |
-| `.srOnly()` | 13 | Tag method |
-| `.colSpan()` | 12 | Tag method |
-| `.hxGet()` | 12 | Tag method |
-| `.setLang()` | 12 | Tag method |
-| `.setRy()` | 12 | element setter |
-| `.setStrokeDasharray()` | 12 | element setter |
-| `.peer()` | 11 | Tag method |
-| `.setAccept()` | 11 | element setter |
-| `.focus()` | 10 | Tag method |
-| `.grow()` | 10 | Tag method |
-| `.setEnctype()` | 10 | element setter |
-| `.setRole()` | 10 | Tag method |
-| `.setTransform()` | 10 | element setter |
-| `.variant()` | 10 | Tag method |
-| `.decoration()` | 9 | Tag method |
-| `.setIntegrity()` | 9 | element setter |
-| `.setLoading()` | 9 | element setter |
-| `.lineClamp()` | 8 | Tag method |
-| `.htmxIndicator()` | 7 | Tag method |
-| `.setPoster()` | 7 | element setter |
-| `.sticky()` | 7 | Tag method |
-| `.object()` | 6 | Tag method |
-| `.self()` | 6 | Tag method |
-| `.setFontFamily()` | 6 | element setter |
-| `.setXmlns()` | 6 | element setter |
-| `.antialiased()` | 5 | Tag method |
-| `.breakAll()` | 5 | Tag method |
-| `.fixed()` | 5 | Tag method |
-| `.groupHover()` | 5 | Tag method |
-| `.setTabindex()` | 5 | Tag method |
-| `.underlineOffset()` | 5 | Tag method |
-| `defineTheme()` | 4 | standalone |
-| `.disabled()` | 4 | Tag method |
-| `ForEachKeyed()` | 4 | standalone |
-| `.insetX()` | 4 | Tag method |
-| `.maxH()` | 4 | Tag method |
-| `.mx()` | 4 | Tag method |
-| `.overlay()` | 4 | Tag method |
-| `.peerChecked()` | 4 | Tag method |
-| `.resize()` | 4 | Tag method |
-| `.setCommand()` | 4 | element setter |
-| `.setCommandfor()` | 4 | element setter |
-| `.setCrossOrigin()` | 4 | element setter |
-| `.tabularNums()` | 4 | Tag method |
-| `.anchorName()` | 3 | Tag method |
-| `.insetY()` | 3 | Tag method |
-| `.pb()` | 3 | Tag method |
-| `.setAutocomplete()` | 3 | element setter |
-| `.setDownload()` | 3 | element setter |
-| `.setFontWeight()` | 3 | element setter |
-| `.setStrokeDashoffset()` | 3 | element setter |
-| `.capitalize()` | 2 | Tag method |
-| `.ease()` | 2 | Tag method |
-| `Intersperse()` | 2 | standalone |
-| `.setClosedby()` | 2 | element setter |
-| `.setOffset()` | 2 | element setter |
-| `.setPopovertarget()` | 2 | Tag method |
-| `.setStopColor()` | 2 | element setter |
-| `.before()` | 1 | Tag method |
-| `.boxDecoration()` | 1 | Tag method |
-| `.breakInside()` | 1 | Tag method |
-| `.columns()` | 1 | Tag method |
-| `.cssClass()` | 1 | Tag method |
-| `.divide()` | 1 | Tag method |
-| `.divideY()` | 1 | Tag method |
-| `.dropShadow()` | 1 | Tag method |
-| `.last()` | 1 | Tag method |
-| `.lineThrough()` | 1 | Tag method |
-| `.lowercase()` | 1 | Tag method |
-| `.mb()` | 1 | Tag method |
-| `.perspective()` | 1 | Tag method |
-| `.positionAnchor()` | 1 | Tag method |
-| `.positionArea()` | 1 | Tag method |
-| `.setAs()` | 1 | element setter |
-| `.setDx()` | 1 | element setter |
-| `.setPopover()` | 1 | Tag method |
-| `.setPopovertargetaction()` | 1 | Tag method |
-| `.xl()` | 1 | Tag method |
-| `.accent()` | 0 | Tag method |
-| `.active()` | 0 | Tag method |
-| `.addChild()` | 0 | Tag method |
-| `.addHeaders()` | 0 | element setter |
-| `.addStyle()` | 0 | Tag method |
-| `.after()` | 0 | Tag method |
-| `.appearance()` | 0 | Tag method |
-| `.autoCols()` | 0 | Tag method |
-| `.autoRows()` | 0 | Tag method |
-| `.bgBlend()` | 0 | Tag method |
-| `.bgConic()` | 0 | Tag method |
-| `.bgRadial()` | 0 | Tag method |
-| `.brightness()` | 0 | Tag method |
-| `.caret()` | 0 | Tag method |
-| `.checked()` | 0 | Tag method |
-| `.colEnd()` | 0 | Tag method |
-| `.colStart()` | 0 | Tag method |
-| `.containerQuery()` | 0 | Tag method |
-| `.content()` | 0 | Tag method |
-| `.contents()` | 0 | Tag method |
-| `.contrast()` | 0 | Tag method |
-| `.dark()` | 0 | Tag method |
-| `.delay()` | 0 | Tag method |
-| `.divideX()` | 0 | Tag method |
-| `.even()` | 0 | Tag method |
-| `externalUrl()` | 0 | standalone |
-| `.first()` | 0 | Tag method |
-| `.focusVisible()` | 0 | Tag method |
-| `.focusWithin()` | 0 | Tag method |
-| `.getClass()` | 0 | Tag method |
-| `.getEnctype()` | 0 | element setter |
-| `.gradient()` | 0 | Tag method |
-| `.grayscale()` | 0 | Tag method |
-| `.gridFlow()` | 0 | Tag method |
-| `.gridRows()` | 0 | Tag method |
-| `.hueRotate()` | 0 | Tag method |
-| `.inline()` | 0 | Tag method |
-| `.inlineGrid()` | 0 | Tag method |
-| `.insetE()` | 0 | Tag method |
-| `.insetRing()` | 0 | Tag method |
-| `.insetS()` | 0 | Tag method |
-| `.insetShadow()` | 0 | Tag method |
-| `.invert()` | 0 | Tag method |
-| `.invisible()` | 0 | Tag method |
-| `.isolate()` | 0 | Tag method |
-| `.mixBlend()` | 0 | Tag method |
-| `.ml()` | 0 | Tag method |
-| `.mr()` | 0 | Tag method |
-| `.multipart()` | 0 | element setter |
-| `.my()` | 0 | Tag method |
-| `.odd()` | 0 | Tag method |
-| `.order()` | 0 | Tag method |
-| `.overscroll()` | 0 | Tag method |
-| `.pl()` | 0 | Tag method |
-| `.pr()` | 0 | Tag method |
-| `Repeat()` | 0 | standalone |
-| `.rowEnd()` | 0 | Tag method |
-| `.rowSpan()` | 0 | Tag method |
-| `.rowStart()` | 0 | Tag method |
-| `.saturate()` | 0 | Tag method |
-| `.scroll()` | 0 | Tag method |
-| `.scrollP()` | 0 | Tag method |
-| `.sepia()` | 0 | Tag method |
-| `.setAbbr()` | 0 | element setter |
-| `.setAllow()` | 0 | element setter |
-| `.setAutocapitalize()` | 0 | Tag method |
-| `.setCapture()` | 0 | element setter |
-| `.setCite()` | 0 | element setter |
-| `.setClipPathUnits()` | 0 | element setter |
-| `.setClipRule()` | 0 | element setter |
-| `.setCols()` | 0 | element setter |
-| `.setColspan()` | 0 | element setter |
-| `.setContenteditable()` | 0 | Tag method |
-| `.setCoords()` | 0 | element setter |
-| `.setData()` | 0 | element setter |
-| `.setDatetime()` | 0 | element setter |
-| `.setDecoding()` | 0 | element setter |
-| `.setDir()` | 0 | Tag method |
-| `.setDirname()` | 0 | element setter |
-| `.setDy()` | 0 | element setter |
-| `.setEdgeMode()` | 0 | element setter |
-| `.setEnterkeyhint()` | 0 | Tag method |
-| `.setFetchPriority()` | 0 | element setter |
-| `.setFillRule()` | 0 | element setter |
-| `.setFilter()` | 0 | element setter |
-| `.setFilterUnits()` | 0 | element setter |
-| `.setFontStyle()` | 0 | element setter |
-| `.setForm()` | 0 | Tag method |
-| `.setFormaction()` | 0 | element setter |
-| `.setFormenctype()` | 0 | element setter |
-| `.setFormmethod()` | 0 | element setter |
-| `.setFormtarget()` | 0 | element setter |
-| `.setFx()` | 0 | element setter |
-| `.setFy()` | 0 | element setter |
-| `.setGradientTransform()` | 0 | element setter |
-| `.setGradientUnits()` | 0 | element setter |
-| `.setHeaders()` | 0 | element setter |
-| `.setHidden()` | 0 | Tag method |
-| `.setHigh()` | 0 | element setter |
-| `.setHreflang()` | 0 | element setter |
-| `.setHttpEquiv()` | 0 | element setter |
-| `.setImagesizes()` | 0 | element setter |
-| `.setImagesrcset()` | 0 | element setter |
-| `.setIn()` | 0 | element setter |
-| `.setInputmode()` | 0 | element setter |
-| `.setKind()` | 0 | element setter |
-| `.setLabel()` | 0 | element setter |
-| `.setLetterSpacing()` | 0 | element setter |
-| `.setList()` | 0 | element setter |
-| `.setLow()` | 0 | element setter |
-| `.setMaskContentUnits()` | 0 | element setter |
-| `.setMaskUnits()` | 0 | element setter |
-| `.setMedia()` | 0 | element setter |
-| `.setMicrodata()` | 0 | Tag method |
-| `.setNonce()` | 0 | Tag method |
-| `.setOptimum()` | 0 | element setter |
-| `.setPattern()` | 0 | element setter |
-| `.setPrimitiveUnits()` | 0 | element setter |
-| `.setReferrerPolicy()` | 0 | element setter |
-| `.setResult()` | 0 | element setter |
-| `.setRowspan()` | 0 | element setter |
-| `.setSandbox()` | 0 | element setter |
-| `.setScope()` | 0 | element setter |
-| `.setShape()` | 0 | element setter |
-| `.setSize()` | 0 | element setter |
-| `.setSizes()` | 0 | element setter |
-| `.setSpan()` | 0 | element setter |
-| `.setSpellcheck()` | 0 | Tag method |
-| `.setSpreadMethod()` | 0 | element setter |
-| `.setSrcdoc()` | 0 | element setter |
-| `.setSrclang()` | 0 | element setter |
-| `.setSrcset()` | 0 | element setter |
-| `.setStdDeviation()` | 0 | element setter |
-| `.setStopOpacity()` | 0 | element setter |
-| `.setStrokeOpacity()` | 0 | element setter |
-| `.setTextDecoration()` | 0 | element setter |
-| `.setTranslate()` | 0 | Tag method |
-| `.setWrap()` | 0 | element setter |
-| `.spaceX()` | 0 | Tag method |
-| `.static()` | 0 | Tag method |
-| `.table()` | 0 | Tag method |
-| `.tableCell()` | 0 | Tag method |
-| `.tableRow()` | 0 | Tag method |
-| `.textShadow()` | 0 | Tag method |
-| `.transform()` | 0 | Tag method |
-| `.viewTransitionName()` | 0 | Tag method |
-| `.willChange()` | 0 | Tag method |
-| `.wrap()` | 0 | Tag method |
-| `.xl2()` | 0 | Tag method |
+| Callable | Call sites (alias-merged) | Canonical-era only | Kind |
+|---|---|---|---|
+| `.text()` | 35682 | 1919 | Tag method |
+| `.p()` | 14550 | 625 | Tag method |
+| `.m()` | 12138 | 614 | Tag method |
+| `.font()` | 10157 | 484 | Tag method |
+| `.flex()` | 9843 | 487 | Tag method |
+| `.border()` | 9248 | 423 | Tag method |
+| `.bg()` | 8293 | 441 | Tag method |
+| `.rounded()` | 6552 | 306 | Tag method |
+| `.setClass()` | 5961 | 21 | Tag method |
+| `.gap()` | 5596 | 286 | Tag method |
+| `.items()` | 4972 | 241 | Tag method |
+| `.addClass()` | 4780 | 45 | Tag method |
+| `.addAttribute()` | 3946 | 18 | Tag method |
+| `IfThen()` | 3843 | 283 | standalone |
+| `.w()` | 3538 | 280 | Tag method |
+| `.cursor()` | 3118 | 248 | Tag method |
+| `.apply()` | 2660 | 461 | Tag method |
+| `.hover()` | 2657 | 147 | Tag method |
+| `.justify()` | 2551 | 128 | Tag method |
+| `.setType()` | 2353 | 119 | element setter |
+| `ForEach()` | 2283 | 168 | standalone |
+| `.h()` | 2249 | 197 | Tag method |
+| `.transition()` | 2188 | 99 | Tag method |
+| `.maxW()` | 2187 | 95 | Tag method |
+| `.setHtmx()` | 2127 | 44 | Tag method |
+| `.setId()` | 1538 | 98 | Tag method |
+| `.gridCols()` | 1524 | 10 | Tag method |
+| `.setName()` | 1465 | 44 | element setter |
+| `.setHref()` | 1408 | 82 | element setter |
+| `.shadow()` | 1375 | 111 | Tag method |
+| `.when()` | 1336 | 32 | Tag method |
+| `.md()` | 1279 | 57 | Tag method |
+| `.setValue()` | 1195 | 28 | element setter |
+| `.toggle()` | 1130 | 108 | Tag method |
+| `.tracking()` | 1124 | 37 | Tag method |
+| `.sm()` | 1031 | 68 | Tag method |
+| `.setPlaceholder()` | 996 | 41 | element setter |
+| `IfThenElse()` | 991 | 87 | standalone |
+| `.resolve()` | 983 | 132 | route callable |
+| `.grid()` | 935 | 49 | Tag method |
+| `.leading()` | 889 | 39 | Tag method |
+| `.block()` | 875 | 50 | Tag method |
+| `.uppercase()` | 842 | 23 | Tag method |
+| `.lg()` | 836 | 71 | Tag method |
+| `.shrink()` | 758 | 42 | Tag method |
+| `.overflow()` | 719 | 36 | Tag method |
+| `.setFill()` | 680 | 71 | element setter |
+| `defineRoutes()` | 673 | 102 | standalone |
+| `hx()` | 612 | 2 | standalone |
+| `.setContent()` | 488 | 66 | element setter |
+| `.hidden()` | 477 | 33 | Tag method |
+| `.setStyles()` | 473 | 26 | Tag method |
+| `.setSrc()` | 435 | 28 | element setter |
+| `.setRel()` | 422 | 33 | element setter |
+| `.relative()` | 417 | 36 | Tag method |
+| `.behavior()` | 402 | 59 | Tag method |
+| `.ring()` | 392 | 54 | Tag method |
+| `.inlineBlock()` | 384 | 24 | Tag method |
+| `.absolute()` | 362 | 47 | Tag method |
+| `defineIds()` | 348 | 43 | standalone |
+| `.underline()` | 315 | 4 | Tag method |
+| `.setX()` | 313 | 42 | element setter |
+| `.setY()` | 311 | 42 | element setter |
+| `.spaceY()` | 311 | 12 | Tag method |
+| `.setStroke()` | 304 | 29 | element setter |
+| `.setStrokeWidth()` | 304 | 48 | element setter |
+| `.opacity()` | 288 | 18 | Tag method |
+| `.inlineFlex()` | 285 | 18 | Tag method |
+| `.z()` | 278 | 18 | Tag method |
+| `.minH()` | 262 | 22 | Tag method |
+| `.animate()` | 258 | 30 | Tag method |
+| `.setStyle()` | 249 | 11 | Tag method |
+| `.focus()` | 242 | 15 | Tag method |
+| `.setViewBox()` | 236 | 30 | element setter |
+| `.top()` | 232 | 33 | Tag method |
+| `.outline()` | 230 | 0 | Tag method |
+| `.setWidth()` | 230 | 27 | element setter |
+| `.minW()` | 223 | 12 | Tag method |
+| `.setAlt()` | 219 | 12 | element setter |
+| `.setCx()` | 216 | 57 | element setter |
+| `.setCy()` | 216 | 57 | element setter |
+| `.setProperty()` | 200 | 40 | element setter |
+| `.setFontSize()` | 196 | 21 | element setter |
+| `.left()` | 194 | 33 | Tag method |
+| `.setTextAnchor()` | 190 | 21 | element setter |
+| `.setD()` | 188 | 43 | element setter |
+| `.setAria()` | 183 | 61 | Tag method |
+| `.fill()` | 178 | 103 | Tag method |
+| `.setR()` | 174 | 45 | element setter |
+| `Match()` | 169 | 28 | standalone |
+| `.right()` | 167 | 23 | Tag method |
+| `.setHeight()` | 167 | 24 | element setter |
+| `.whitespace()` | 161 | 10 | Tag method |
+| `.whenElse()` | 160 | 56 | Tag method |
+| `.noUnderline()` | 158 | 0 | Tag method |
+| `.setStrokeLinecap()` | 142 | 25 | element setter |
+| `.setRx()` | 141 | 33 | element setter |
+| `.truncate()` | 133 | 6 | Tag method |
+| `.setTarget()` | 130 | 9 | element setter |
+| `.setRows()` | 126 | 6 | element setter |
+| `assetUrl()` | 125 | 43 | standalone |
+| `.inset()` | 122 | 2 | Tag method |
+| `.setDominantBaseline()` | 122 | 15 | element setter |
+| `.select()` | 121 | 21 | Tag method |
+| `.setCharset()` | 118 | 7 | element setter |
+| `.from()` | 111 | 17 | Tag method |
+| `.list()` | 111 | 2 | Tag method |
+| `.to()` | 111 | 17 | Tag method |
+| `.fixed()` | 107 | 4 | Tag method |
+| `.setFor()` | 106 | 8 | element setter |
+| `.whenMatch()` | 105 | 37 | Tag method |
+| `.duration()` | 100 | 11 | Tag method |
+| `.bottom()` | 97 | 11 | Tag method |
+| `.setMinlength()` | 92 | 10 | element setter |
+| `.setStrokeLinejoin()` | 91 | 7 | element setter |
+| `.setMin()` | 88 | 5 | element setter |
+| `hxResponse()` | 87 | 8 | standalone |
+| `.object()` | 83 | 6 | Tag method |
+| `.setClasses()` | 79 | 1 | Tag method |
+| `.setDataAttrs()` | 78 | 19 | Tag method |
+| `.pointerEvents()` | 76 | 21 | Tag method |
+| `.hxGet()` | 74 | 0 | Tag method |
+| `.scale()` | 74 | 1 | Tag method |
+| `.translate()` | 72 | 10 | Tag method |
+| `.group()` | 70 | 6 | Tag method |
+| `.setMaxlength()` | 69 | 19 | element setter |
+| `.italic()` | 67 | 12 | Tag method |
+| `.neg()` | 64 | 40 | Tag method |
+| `.setTitle()` | 63 | 5 | Tag method |
+| `MatchValue()` | 62 | 14 | standalone |
+| `.setStrokeDasharray()` | 61 | 9 | element setter |
+| `.setAction()` | 60 | 2 | element setter |
+| `.setMethod()` | 60 | 2 | element setter |
+| `.setStep()` | 60 | 5 | element setter |
+| `.setLang()` | 58 | 4 | Tag method |
+| `.colSpan()` | 56 | 1 | Tag method |
+| `.mt()` | 56 | 56 | Tag method |
+| `.setMax()` | 56 | 3 | element setter |
+| `.setX1()` | 56 | 7 | element setter |
+| `.setX2()` | 56 | 7 | element setter |
+| `.setY1()` | 56 | 7 | element setter |
+| `.setY2()` | 56 | 7 | element setter |
+| `Partial()` | 54 | 10 | standalone |
+| `.setOpacity()` | 51 | 39 | element setter |
+| `.setRole()` | 50 | 9 | Tag method |
+| `.sticky()` | 50 | 5 | Tag method |
+| `.setPoints()` | 49 | 14 | element setter |
+| `.groupHover()` | 48 | 5 | Tag method |
+| `.aspect()` | 44 | 5 | Tag method |
+| `.hxPost()` | 42 | 0 | Tag method |
+| `.setAccept()` | 42 | 3 | element setter |
+| `.setRy()` | 42 | 12 | element setter |
+| `.tabularNums()` | 41 | 0 | Tag method |
+| `.via()` | 40 | 3 | Tag method |
+| `.setIntegrity()` | 39 | 0 | element setter |
+| `.backdropBlur()` | 38 | 0 | Tag method |
+| `.grow()` | 34 | 0 | Tag method |
+| `.setEnctype()` | 32 | 4 | element setter |
+| `.setLoading()` | 31 | 5 | element setter |
+| `.rotate()` | 30 | 17 | Tag method |
+| `.srOnly()` | 30 | 6 | Tag method |
+| `.setPreload()` | 29 | 4 | element setter |
+| `.bgLinear()` | 28 | 17 | Tag method |
+| `.disabled()` | 27 | 6 | Tag method |
+| `.self()` | 26 | 5 | Tag method |
+| `.htmxIndicator()` | 25 | 4 | Tag method |
+| `.setTabindex()` | 25 | 5 | Tag method |
+| `.active()` | 23 | 0 | Tag method |
+| `.px()` | 23 | 23 | Tag method |
+| `.setCrossOrigin()` | 23 | 3 | element setter |
+| `.blur()` | 22 | 12 | Tag method |
+| `.gradient()` | 22 | 1 | Tag method |
+| `.resize()` | 22 | 1 | Tag method |
+| `.divideY()` | 20 | 2 | Tag method |
+| `.inline()` | 20 | 0 | Tag method |
+| `.lineClamp()` | 20 | 4 | Tag method |
+| `defineTheme()` | 19 | 4 | standalone |
+| `.maxH()` | 19 | 0 | Tag method |
+| `.setXmlns()` | 19 | 6 | element setter |
+| `.stroke()` | 19 | 19 | Tag method |
+| `.antialiased()` | 18 | 1 | Tag method |
+| `.peer()` | 18 | 4 | Tag method |
+| `.anchorName()` | 17 | 3 | Tag method |
+| `.last()` | 17 | 1 | Tag method |
+| `.py()` | 17 | 17 | Tag method |
+| `.variant()` | 16 | 16 | Tag method |
+| `.pt()` | 15 | 15 | Tag method |
+| `.setStrokeDashoffset()` | 15 | 3 | element setter |
+| `.cssProp()` | 14 | 14 | Tag method |
+| `externalUrl()` | 14 | 14 | standalone |
+| `.positionArea()` | 14 | 1 | Tag method |
+| `.setFontFamily()` | 14 | 0 | element setter |
+| `.viewTransitionName()` | 14 | 0 | Tag method |
+| `ForEachKeyed()` | 13 | 5 | standalone |
+| `.setCommand()` | 13 | 10 | element setter |
+| `.setCommandfor()` | 13 | 10 | element setter |
+| `.accent()` | 12 | 1 | Tag method |
+| `.setDownload()` | 12 | 1 | element setter |
+| `.underlineOffset()` | 12 | 3 | Tag method |
+| `.focusVisible()` | 11 | 0 | Tag method |
+| `.setTransform()` | 11 | 4 | element setter |
+| `.breakAll()` | 10 | 1 | Tag method |
+| `.decoration()` | 10 | 9 | Tag method |
+| `.lineThrough()` | 10 | 0 | Tag method |
+| `.overlay()` | 10 | 0 | Tag method |
+| `.setAs()` | 9 | 1 | element setter |
+| `.setPoster()` | 9 | 0 | element setter |
+| `.xl()` | 9 | 1 | Tag method |
+| `.order()` | 8 | 0 | Tag method |
+| `.positionAnchor()` | 8 | 1 | Tag method |
+| `.setAutocomplete()` | 8 | 1 | element setter |
+| `.setClosedby()` | 8 | 6 | element setter |
+| `.setFontWeight()` | 8 | 0 | element setter |
+| `.ease()` | 7 | 0 | Tag method |
+| `Intersperse()` | 7 | 2 | standalone |
+| `.setFetchPriority()` | 7 | 1 | element setter |
+| `.setPopovertarget()` | 7 | 2 | Tag method |
+| `.peerChecked()` | 6 | 4 | Tag method |
+| `.setAllow()` | 6 | 0 | element setter |
+| `.tableCell()` | 6 | 0 | Tag method |
+| `.setPopover()` | 5 | 1 | Tag method |
+| `.gridRows()` | 4 | 0 | Tag method |
+| `.insetX()` | 4 | 4 | Tag method |
+| `.mx()` | 4 | 4 | Tag method |
+| `.setPattern()` | 4 | 0 | element setter |
+| `.capitalize()` | 3 | 2 | Tag method |
+| `.focusWithin()` | 3 | 0 | Tag method |
+| `.getClass()` | 3 | 3 | Tag method |
+| `.insetY()` | 3 | 3 | Tag method |
+| `.pb()` | 3 | 3 | Tag method |
+| `.setSizes()` | 3 | 0 | element setter |
+| `.content()` | 2 | 1 | Tag method |
+| `.cssClass()` | 2 | 2 | Tag method |
+| `.divide()` | 2 | 2 | Tag method |
+| `.getEnctype()` | 2 | 2 | element setter |
+| `.lowercase()` | 2 | 1 | Tag method |
+| `.multipart()` | 2 | 0 | element setter |
+| `.rowSpan()` | 2 | 0 | Tag method |
+| `.setImagesizes()` | 2 | 0 | element setter |
+| `.setImagesrcset()` | 2 | 0 | element setter |
+| `.setOffset()` | 2 | 2 | element setter |
+| `.setPopovertargetaction()` | 2 | 1 | Tag method |
+| `.setReferrerPolicy()` | 2 | 0 | element setter |
+| `.setSrcset()` | 2 | 0 | element setter |
+| `.setStopColor()` | 2 | 2 | element setter |
+| `.setStrokeOpacity()` | 2 | 0 | element setter |
+| `.tableRow()` | 2 | 0 | Tag method |
+| `.appearance()` | 1 | 1 | Tag method |
+| `.before()` | 1 | 1 | Tag method |
+| `.boxDecoration()` | 1 | 1 | Tag method |
+| `.breakInside()` | 1 | 1 | Tag method |
+| `.columns()` | 1 | 1 | Tag method |
+| `.contents()` | 1 | 0 | Tag method |
+| `.dropShadow()` | 1 | 1 | Tag method |
+| `.mb()` | 1 | 1 | Tag method |
+| `Repeat()` | 1 | 0 | standalone |
+| `.setClipRule()` | 1 | 0 | element setter |
+| `.setColspan()` | 1 | 0 | element setter |
+| `.setDx()` | 1 | 0 | element setter |
+| `.setFormmethod()` | 1 | 1 | element setter |
+| `.setSandbox()` | 1 | 0 | element setter |
+| `.setSrcdoc()` | 1 | 0 | element setter |
+| `.addChild()` | 0 | 0 | Tag method |
+| `.addHeaders()` | 0 | 0 | element setter |
+| `.addStyle()` | 0 | 0 | Tag method |
+| `.after()` | 0 | 0 | Tag method |
+| `.autoCols()` | 0 | 0 | Tag method |
+| `.autoRows()` | 0 | 0 | Tag method |
+| `.bgBlend()` | 0 | 0 | Tag method |
+| `.bgConic()` | 0 | 0 | Tag method |
+| `.bgRadial()` | 0 | 0 | Tag method |
+| `.brightness()` | 0 | 0 | Tag method |
+| `.caret()` | 0 | 0 | Tag method |
+| `.checked()` | 0 | 0 | Tag method |
+| `.colEnd()` | 0 | 0 | Tag method |
+| `.colStart()` | 0 | 0 | Tag method |
+| `.containerQuery()` | 0 | 0 | Tag method |
+| `.contrast()` | 0 | 0 | Tag method |
+| `.dark()` | 0 | 0 | Tag method |
+| `.delay()` | 0 | 0 | Tag method |
+| `.divideX()` | 0 | 0 | Tag method |
+| `.even()` | 0 | 0 | Tag method |
+| `.first()` | 0 | 0 | Tag method |
+| `.grayscale()` | 0 | 0 | Tag method |
+| `.gridFlow()` | 0 | 0 | Tag method |
+| `.hueRotate()` | 0 | 0 | Tag method |
+| `.inlineGrid()` | 0 | 0 | Tag method |
+| `.insetE()` | 0 | 0 | Tag method |
+| `.insetRing()` | 0 | 0 | Tag method |
+| `.insetS()` | 0 | 0 | Tag method |
+| `.insetShadow()` | 0 | 0 | Tag method |
+| `.invert()` | 0 | 0 | Tag method |
+| `.invisible()` | 0 | 0 | Tag method |
+| `.isolate()` | 0 | 0 | Tag method |
+| `.mixBlend()` | 0 | 0 | Tag method |
+| `.ml()` | 0 | 0 | Tag method |
+| `.mr()` | 0 | 0 | Tag method |
+| `.my()` | 0 | 0 | Tag method |
+| `.odd()` | 0 | 0 | Tag method |
+| `.overscroll()` | 0 | 0 | Tag method |
+| `.perspective()` | 0 | 0 | Tag method |
+| `.pl()` | 0 | 0 | Tag method |
+| `.pr()` | 0 | 0 | Tag method |
+| `.rowEnd()` | 0 | 0 | Tag method |
+| `.rowStart()` | 0 | 0 | Tag method |
+| `.saturate()` | 0 | 0 | Tag method |
+| `.scroll()` | 0 | 0 | Tag method |
+| `.scrollP()` | 0 | 0 | Tag method |
+| `.sepia()` | 0 | 0 | Tag method |
+| `.setAbbr()` | 0 | 0 | element setter |
+| `.setAutocapitalize()` | 0 | 0 | Tag method |
+| `.setCapture()` | 0 | 0 | element setter |
+| `.setCite()` | 0 | 0 | element setter |
+| `.setClipPathUnits()` | 0 | 0 | element setter |
+| `.setCols()` | 0 | 0 | element setter |
+| `.setContenteditable()` | 0 | 0 | Tag method |
+| `.setCoords()` | 0 | 0 | element setter |
+| `.setData()` | 0 | 0 | element setter |
+| `.setDatetime()` | 0 | 0 | element setter |
+| `.setDecoding()` | 0 | 0 | element setter |
+| `.setDir()` | 0 | 0 | Tag method |
+| `.setDirname()` | 0 | 0 | element setter |
+| `.setDy()` | 0 | 0 | element setter |
+| `.setEdgeMode()` | 0 | 0 | element setter |
+| `.setEnterkeyhint()` | 0 | 0 | Tag method |
+| `.setFillRule()` | 0 | 0 | element setter |
+| `.setFilter()` | 0 | 0 | element setter |
+| `.setFilterUnits()` | 0 | 0 | element setter |
+| `.setFontStyle()` | 0 | 0 | element setter |
+| `.setForm()` | 0 | 0 | Tag method |
+| `.setFormaction()` | 0 | 0 | element setter |
+| `.setFormenctype()` | 0 | 0 | element setter |
+| `.setFormtarget()` | 0 | 0 | element setter |
+| `.setFx()` | 0 | 0 | element setter |
+| `.setFy()` | 0 | 0 | element setter |
+| `.setGradientTransform()` | 0 | 0 | element setter |
+| `.setGradientUnits()` | 0 | 0 | element setter |
+| `.setHeaders()` | 0 | 0 | element setter |
+| `.setHidden()` | 0 | 0 | Tag method |
+| `.setHigh()` | 0 | 0 | element setter |
+| `.setHreflang()` | 0 | 0 | element setter |
+| `.setHttpEquiv()` | 0 | 0 | element setter |
+| `.setIn()` | 0 | 0 | element setter |
+| `.setInputmode()` | 0 | 0 | element setter |
+| `.setKind()` | 0 | 0 | element setter |
+| `.setLabel()` | 0 | 0 | element setter |
+| `.setLetterSpacing()` | 0 | 0 | element setter |
+| `.setList()` | 0 | 0 | element setter |
+| `.setLow()` | 0 | 0 | element setter |
+| `.setMaskContentUnits()` | 0 | 0 | element setter |
+| `.setMaskUnits()` | 0 | 0 | element setter |
+| `.setMedia()` | 0 | 0 | element setter |
+| `.setMicrodata()` | 0 | 0 | Tag method |
+| `.setNonce()` | 0 | 0 | Tag method |
+| `.setOptimum()` | 0 | 0 | element setter |
+| `.setPrimitiveUnits()` | 0 | 0 | element setter |
+| `.setResult()` | 0 | 0 | element setter |
+| `.setRowspan()` | 0 | 0 | element setter |
+| `.setScope()` | 0 | 0 | element setter |
+| `.setShape()` | 0 | 0 | element setter |
+| `.setSize()` | 0 | 0 | element setter |
+| `.setSpan()` | 0 | 0 | element setter |
+| `.setSpellcheck()` | 0 | 0 | Tag method |
+| `.setSpreadMethod()` | 0 | 0 | element setter |
+| `.setSrclang()` | 0 | 0 | element setter |
+| `.setStdDeviation()` | 0 | 0 | element setter |
+| `.setStopOpacity()` | 0 | 0 | element setter |
+| `.setTextDecoration()` | 0 | 0 | element setter |
+| `.setTranslate()` | 0 | 0 | Tag method |
+| `.setWrap()` | 0 | 0 | element setter |
+| `.spaceX()` | 0 | 0 | Tag method |
+| `.static()` | 0 | 0 | Tag method |
+| `.table()` | 0 | 0 | Tag method |
+| `.textShadow()` | 0 | 0 | Tag method |
+| `.transform()` | 0 | 0 | Tag method |
+| `.willChange()` | 0 | 0 | Tag method |
+| `.wrap()` | 0 | 0 | Tag method |
+| `.xl2()` | 0 | 0 | Tag method |
