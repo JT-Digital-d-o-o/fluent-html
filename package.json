@@ -128,7 +128,7 @@
     "esbuild": "0.28.1",
     "eslint-plugin-fluent-html": "file:../fluent-html-eslint-plugin",
     "fastify": "5.10.0",
-    "htmx.org": "4.0.0-beta5",
+    "htmx.org": "4.0.0-beta6",
     "tailwindcss": "4.3.3",
     "ts-morph": "^28.0.0",
     "typedoc": "^0.28.17",
