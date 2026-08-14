@@ -3,7 +3,7 @@
 // stops erroring (e.g. a closed union gets widened, or Form<T>/route-param narrowing
 // breaks) becomes an "unused directive" error and FAILS the build. This makes
 // "a typo is a compile error" an enforced contract, not a comment.
-import { hx, Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, Video, Audio, Source, Meta, Script, Area, Th, Td, Select, Output, Textarea, Ins, Del, Q, Blockquote, } from "../../src/index.js";
+import { hx, Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds, ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle, Video, Audio, Source, Meta, Script, Area, Th, Td, Select, Output, Textarea, Match, Span, Ins, Del, Q, Blockquote, } from "../../src/index.js";
 import { assetUrl } from "../../src/htmx.js";
 const ids = defineIds(["card"]);
 // `_`-prefixed param is exempt from noUnusedParameters; statements below are expressions, not bindings.
@@ -389,4 +389,22 @@ hx(assetUrl("/x"), { optimistic: true });
 // (The opt-out arm compiles separately in test/types/color-optout — module
 // augmentation is global, so both states can't share one compilation.)
 Div().bg("blue-600").text("gray-900").border("slate-200/50");
+// Element factories all return `Tag` today, so the visible win here is `Tag` rather than
+// the four-way `View` union — which is what lets a branded Tag subtype survive a Match at all.
+expectType(Match(matchState, "kind", {
+    ok: (s) => Div(String(s.n)),
+    err: (s) => Span(s.msg),
+}));
+expectType(Match(matchTone, { active: () => Div("a"), closed: () => Div("c") }));
+// Mixed branches keep both arms instead of collapsing to View.
+expectType(Match(matchTone, { active: () => Div("a"), closed: () => "none" }));
+expectType(Match(matchTone, { active: () => Div("a") }, () => "fallback"));
+// @ts-expect-error — non-exhaustive without a default ("closed" is unhandled)
+Match(matchTone, { active: () => Div("a") });
+// @ts-expect-error — a case key that is not in the union (typo'd or stale)
+Match(matchTone, { active: () => Div("a"), closed: () => Div("c"), typo: () => Div("t") });
+// @ts-expect-error — `msg` is not on the narrowed "ok" branch
+Match(matchState, "kind", { ok: (s) => Div(s.msg), err: (s) => Span(s.msg) });
+// @ts-expect-error — a branch must still return a View
+Match(matchTone, { active: () => 42, closed: () => Div("c") });
 //# sourceMappingURL=type-surface.test-d.js.map

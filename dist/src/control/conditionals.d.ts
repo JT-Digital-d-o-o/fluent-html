@@ -41,6 +41,16 @@ export declare function IfThenElse<T>(value: boolean extends T ? never : T | nul
 export declare function IfThen(condition: boolean, then: Thunk<View>): View;
 export declare function IfThen<T>(value: boolean extends T ? never : T | null | undefined, then: (value: T) => View): View;
 /**
+ * Forces a case key that is not a member of the matched value's union to `never`, so a
+ * typo'd or stale case is a compile error rather than a silently-unreachable branch.
+ * Inferring the cases object (`C`) is what lets `Match` report the branch return types
+ * instead of a flat `View`, but inference also switches off excess-property checking —
+ * this restores it. Same mechanism as `CheckRouteParams` in routes.ts.
+ */
+type NoExtraCases<C, Allowed extends PropertyKey> = {
+    [K in Exclude<keyof C, Allowed>]: never;
+};
+/**
  * Exhaustive value matching — maps a string or number to a corresponding view.
  *
  * Without a default, TypeScript ensures every possible value has a handler (exhaustive).
@@ -85,16 +95,17 @@ export declare function IfThen<T>(value: boolean extends T ? never : T | null | 
  *   error: (s) => Alert(s.message),
  * }, () => Spinner())
  */
-export declare function Match<T extends string | number>(value: string extends T ? never : number extends T ? never : T, cases: {
+export declare function Match<T extends string | number, C extends {
     [K in T]: Thunk<View>;
-}): View;
-export declare function Match<T extends string | number>(value: T, cases: Partial<{
+} & NoExtraCases<C, T>>(value: string extends T ? never : number extends T ? never : T, cases: C): ReturnType<C[keyof C]>;
+export declare function Match<T extends string | number, C extends Partial<{
     [K in T]: Thunk<View>;
-}>, defaultView: Thunk<View>): View;
-export declare function Match<T extends Record<K, string | number>, K extends keyof T & string>(value: T, key: K, cases: {
+}> & NoExtraCases<C, T>, D extends View>(value: T, cases: C, defaultView: Thunk<D>): ReturnType<NonNullable<C[keyof C]>> | D;
+export declare function Match<T extends Record<K, string | number>, K extends keyof T & string, C extends {
     [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View;
-}): View;
-export declare function Match<T extends Record<K, string | number>, K extends keyof T & string>(value: T, key: K, cases: Partial<{
+} & NoExtraCases<C, T[K]>>(value: T, key: K, cases: C): ReturnType<C[keyof C]>;
+export declare function Match<T extends Record<K, string | number>, K extends keyof T & string, C extends Partial<{
     [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View;
-}>, defaultView: Thunk<View>): View;
+}> & NoExtraCases<C, T[K]>, D extends View>(value: T, key: K, cases: C, defaultView: Thunk<D>): ReturnType<NonNullable<C[keyof C]>> | D;
+export {};
 //# sourceMappingURL=conditionals.d.ts.map

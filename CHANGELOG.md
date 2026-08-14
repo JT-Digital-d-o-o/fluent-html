@@ -2,6 +2,43 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [8.1.0] - Match reports what its branches built
+
+`Match` declared `View` as its return type, so every branch's type was thrown away at the call
+boundary. That is invisible until something downstream needs to know *which* view came back —
+a branded `Tag` subtype, a narrowed element type — and then it is fatal: the brand is erased on
+contact and the error (`Type 'string' is not assignable to …`) points at the union member, not
+at the `Match` that dropped it. `MatchValue` has always preserved its `R`; `Match` now does the
+same for all four overloads.
+
+### ✨ Changed — the return type is the union of the branches
+
+- `Match(state, "kind", { ok: …, err: … })` returns what the branches return, not `View`.
+  Element factories all return `Tag` today, so the immediate effect is `Tag` in place of the
+  four-way `View` union; the point is that a *subtype* now survives a `Match` instead of being
+  flattened.
+- The partial-with-default forms return `ReturnType<…> | D`, so the fallback's own type is
+  carried too.
+- Backwards compatible: the result is still assignable everywhere `View` was expected, and the
+  branch constraint is still `View`, so a branch returning a non-view is still rejected.
+
+### 🛡️ Kept — everything the old signature guaranteed
+
+Inferring the cases object (`C`) is what makes the return type readable, and it silently
+switches off two checks that had to be restored:
+
+- **Excess-property checking.** A typo'd or stale case key became a silently-unreachable
+  branch. `NoExtraCases<C, Allowed>` forces any key outside the matched union to `never` — the
+  same mechanism `CheckRouteParams` already uses for stale `params` keys in `routes.ts`.
+- **Contextual typing of the case callbacks.** The guard has to live in `C`'s **constraint**,
+  not on the `cases` parameter. Written as `cases: C & NoExtraCases<…>` it compiles and then
+  drops contextual typing: every case callback goes implicitly `any` and discriminated-union
+  narrowing dies silently. Six existing tests caught that; the trap is commented at the tests.
+
+Exhaustiveness without a default is unchanged. `test/types/type-surface.test-d.ts` pins all of
+it (return union, mixed branches, non-exhaustive, typo'd key, per-branch narrowing, `View`
+floor) as compile-only assertions, so a `@ts-expect-error` that stops erroring fails the build.
+
 ## [8.0.0] - Storage privatized: no public field shadows its setter
 
 The agent-fitness fix for the worst error on the most common guess. Blind unprefixed-setter guesses (`.src()`, `.value()`, `.id()`) used to hit the public storage field sitting beside the setter (`ImgTag.src?: string` beside `setSrc()`) and die as a `Type 'String' has no call signatures` cascade. Every element storage field (280 fields across 62 element classes) plus the `Tag` base storage (`id`, `class`, `style`, `htmx`) is now **protected, `_`-prefixed storage** — the wrong guess errors as a missing property (TS2339, or TS2551 with the `Did you mean 'setPlaceholder'?` self-heal where the checker's spelling window reaches the `set*` name), and the `_`-storage never leaks into suggestions. `test/setter-errors.test.ts` runs the real checker over a probe fixture and pins the diagnostic shape per guess.

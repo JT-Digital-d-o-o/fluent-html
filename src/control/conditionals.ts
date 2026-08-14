@@ -76,6 +76,17 @@ export function IfThen<T>(
 }
 
 /**
+ * Forces a case key that is not a member of the matched value's union to `never`, so a
+ * typo'd or stale case is a compile error rather than a silently-unreachable branch.
+ * Inferring the cases object (`C`) is what lets `Match` report the branch return types
+ * instead of a flat `View`, but inference also switches off excess-property checking —
+ * this restores it. Same mechanism as `CheckRouteParams` in routes.ts.
+ */
+type NoExtraCases<C, Allowed extends PropertyKey> = {
+  [K in Exclude<keyof C, Allowed>]: never;
+};
+
+/**
  * Exhaustive value matching — maps a string or number to a corresponding view.
  *
  * Without a default, TypeScript ensures every possible value has a handler (exhaustive).
@@ -124,35 +135,47 @@ export function IfThen<T>(
 // to an index signature, so any subset would satisfy the "exhaustive" form while a
 // real miss renders an invisible Empty(). Reject the widened value here so an
 // unconstrained input must use the partial-with-default form (which supplies a fallback).
-export function Match<T extends string | number>(
+export function Match<
+  T extends string | number,
+  C extends { [K in T]: Thunk<View> } & NoExtraCases<C, T>,
+>(
   value: string extends T ? never : number extends T ? never : T,
-  cases: { [K in T]: Thunk<View> }
-): View;
+  cases: C
+): ReturnType<C[keyof C]>;
 // Value matching — partial with default
-export function Match<T extends string | number>(
+export function Match<
+  T extends string | number,
+  C extends Partial<{ [K in T]: Thunk<View> }> & NoExtraCases<C, T>,
+  D extends View,
+>(
   value: T,
-  cases: Partial<{ [K in T]: Thunk<View> }>,
-  defaultView: Thunk<View>
-): View;
+  cases: C,
+  defaultView: Thunk<D>
+): ReturnType<NonNullable<C[keyof C]>> | D;
 // Discriminated union — exhaustive
 export function Match<
   T extends Record<K, string | number>,
   K extends keyof T & string,
+  C extends { [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View }
+          & NoExtraCases<C, T[K]>,
 >(
   value: T,
   key: K,
-  cases: { [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View },
-): View;
+  cases: C,
+): ReturnType<C[keyof C]>;
 // Discriminated union — partial with default
 export function Match<
   T extends Record<K, string | number>,
   K extends keyof T & string,
+  C extends Partial<{ [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View }>
+          & NoExtraCases<C, T[K]>,
+  D extends View,
 >(
   value: T,
   key: K,
-  cases: Partial<{ [V in T[K] & (string | number)]: (value: Extract<T, Record<K, V>>) => View }>,
-  defaultView: Thunk<View>,
-): View;
+  cases: C,
+  defaultView: Thunk<D>,
+): ReturnType<NonNullable<C[keyof C]>> | D;
 // Implementation
 export function Match(
   value: unknown,
