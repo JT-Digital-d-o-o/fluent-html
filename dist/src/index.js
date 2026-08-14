@@ -50,7 +50,9 @@ export { Slot, } from './elements/index.js';
 // Control flow
 export { IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, ForEachKeyed, Repeat, Intersperse, } from './control/index.js';
 // HTMX
-export { hx, resolveSelector, 
+export { hx, 
+// Branded-route escape constructors (8.0.0) — runtime identity
+externalUrl, assetUrl, resolveSelector, 
 // Selector helpers
 id, clss, closest, find, next, previous, } from './htmx.js';
 // Common Patterns

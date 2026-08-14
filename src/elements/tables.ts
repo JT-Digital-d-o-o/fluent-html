@@ -1,4 +1,5 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -34,42 +35,48 @@ export function Tr(...children: View[]): Tag {
 }
 
 export class ThTag extends Tag {
-  colspan?: number;
-  rowspan?: number;
-  scope?: TableCellScope;
-  headers?: string;
-  abbr?: string;
+  protected _colspan?: number;
+  protected _rowspan?: number;
+  protected _scope?: TableCellScope;
+  protected _headers?: string;
+  protected _abbr?: string;
 
   setColspan(colspan: number): this {
-    this.colspan = colspan;
+    if (devChecks) assertMutable(this, "setColspan");
+    this._colspan = colspan;
     return this;
   }
 
   setRowspan(rowspan: number): this {
-    this.rowspan = rowspan;
+    if (devChecks) assertMutable(this, "setRowspan");
+    this._rowspan = rowspan;
     return this;
   }
 
   setScope(scope: TableCellScope): this {
-    this.scope = scope;
+    if (devChecks) assertMutable(this, "setScope");
+    this._scope = scope;
     return this;
   }
 
   setHeaders(...ids: (string | Id)[]): this {
+    if (devChecks) assertMutable(this, "setHeaders");
     const j = joinHeaderIds(ids);
-    this.headers = j.length ? j.join(' ') : undefined;
+    this._headers = j.length ? j.join(' ') : undefined;
     return this;
   }
 
   addHeaders(...ids: (string | Id)[]): this {
-    const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+    if (devChecks) assertMutable(this, "addHeaders");
+    const existing = this._headers ? this._headers.split(/\s+/).filter(Boolean) : [];
     const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
-    this.headers = merged.length ? merged.join(' ') : undefined;
+    this._headers = merged.length ? merged.join(' ') : undefined;
     return this;
   }
 
   setAbbr(abbr: string): this {
-    this.abbr = abbr;
+    if (devChecks) assertMutable(this, "setAbbr");
+    this._abbr = abbr;
     return this;
   }
 }
@@ -81,30 +88,34 @@ export function Th(...children: View[]): ThTag {
 }
 
 export class TdTag extends Tag {
-  colspan?: number;
-  rowspan?: number;
-  headers?: string;
+  protected _colspan?: number;
+  protected _rowspan?: number;
+  protected _headers?: string;
 
   setColspan(colspan: number): this {
-    this.colspan = colspan;
+    if (devChecks) assertMutable(this, "setColspan");
+    this._colspan = colspan;
     return this;
   }
 
   setRowspan(rowspan: number): this {
-    this.rowspan = rowspan;
+    if (devChecks) assertMutable(this, "setRowspan");
+    this._rowspan = rowspan;
     return this;
   }
 
   setHeaders(...ids: (string | Id)[]): this {
+    if (devChecks) assertMutable(this, "setHeaders");
     const j = joinHeaderIds(ids);
-    this.headers = j.length ? j.join(' ') : undefined;
+    this._headers = j.length ? j.join(' ') : undefined;
     return this;
   }
 
   addHeaders(...ids: (string | Id)[]): this {
-    const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+    if (devChecks) assertMutable(this, "addHeaders");
+    const existing = this._headers ? this._headers.split(/\s+/).filter(Boolean) : [];
     const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
-    this.headers = merged.length ? merged.join(' ') : undefined;
+    this._headers = merged.length ? merged.join(' ') : undefined;
     return this;
   }
 }
@@ -120,10 +131,11 @@ export function Caption(...children: View[]): Tag {
 }
 
 export class ColgroupTag extends Tag {
-  span?: number;
+  protected _span?: number;
 
   setSpan(span: number): this {
-    this.span = span;
+    if (devChecks) assertMutable(this, "setSpan");
+    this._span = span;
     return this;
   }
 }
@@ -135,10 +147,11 @@ export function Colgroup(...children: View[]): ColgroupTag {
 }
 
 export class ColTag extends Tag {
-  span?: number;
+  protected _span?: number;
 
   setSpan(span: number): this {
-    this.span = span;
+    if (devChecks) assertMutable(this, "setSpan");
+    this._span = span;
     return this;
   }
 }

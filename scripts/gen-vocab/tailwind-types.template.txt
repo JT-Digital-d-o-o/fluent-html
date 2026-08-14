@@ -290,10 +290,7 @@ export type TailwindContrast = 0 | 50 | 75 | 100 | 125 | 150 | 200 | Stringified
 export type TailwindHueRotate = 0 | 15 | 30 | 60 | 90 | 180 | Stringified<0 | 15 | 30 | 60 | 90 | 180> | `[${string}]`;
 export type TailwindSaturate = 0 | 50 | 100 | 150 | 200 | Stringified<0 | 50 | 100 | 150 | 200> | `[${string}]`;
 
-// Layout: Place & Grid Auto
-@@UNION TailwindPlaceContent placeContent@@
-@@UNION TailwindPlaceItems placeItems@@
-@@UNION TailwindPlaceSelf placeSelf@@
+// Layout: Grid Auto
 @@UNION TailwindGridAutoFlow gridFlow@@
 @@UNION TailwindGridAuto autoRows +arb@@
 export type TailwindOrder = "first" | "last" | "none" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Stringified<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12> | `[${string}]`;
@@ -311,12 +308,6 @@ export type TailwindPositionArea =
   | `[${string}]`;
 
 // Modern features
-// v4 (A-07): admit negatives — `.skewX(-12)` emits `-skew-x-12`.
-export type TailwindSkew =
-  | 0 | 1 | 2 | 3 | 6 | 12
-  | -1 | -2 | -3 | -6 | -12
-  | Stringified<0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12>
-  | `[${string}]`;
 @@UNION TailwindWillChange willChange +arb@@
 @@UNION TailwindOverscroll overscroll@@
 
@@ -337,13 +328,9 @@ export type TailwindDecorationThickness =
   | Stringified<0 | 1 | 2 | 4 | 8>
   | `[${string}]`;
 
-// Color scheme
-@@UNION TailwindColorScheme scheme@@
-
-// Text wrap / hyphenation / overflow-wrap
+// Text wrap / overflow-wrap
 @@UNION TailwindTextWrap text.wrap@@
 @@UNION TailwindWrap wrap@@
-@@UNION TailwindHyphens hyphens@@
 
 // Pseudo-element content — `none` or arbitrary; the bare `.content()` form emits `content-['']`.
 @@UNION TailwindContent content +arb@@
@@ -369,9 +356,6 @@ export type TailwindInsetShadow =
 // Blend modes — mix-blend (18, incl. plus-*) and bg-blend (16, no plus-*)
 @@UNION TailwindMixBlendMode mixBlend@@
 @@UNION TailwindBgBlendMode bgBlend@@
-
-// Isolation (the reset value; `isolate` is its own zero-arg method)
-@@UNION TailwindIsolation isolation@@
 
 // Transition delay / behavior
 export type TailwindDelay =
@@ -404,13 +388,11 @@ export type TailwindGradientHueInterpolation =
 export type TailwindGradientInterpolation =
   TailwindGradientColorSpace | TailwindGradientHueInterpolation;
 
-// 3D transforms — depth gate (set on the parent), per-axis leaves
+// 3D transforms — depth gate (set on the parent)
 @@UNION TailwindPerspective perspective +arb@@
-@@UNION TailwindPerspectiveOrigin perspectiveOrigin +arb@@
 // Narrower than TailwindTranslate: translate-z has no `-full` and no fractions.
 export type TailwindTranslateZ = TailwindSpacing | `-${number}` | "-px";
 @@UNION TailwindTransformStyle transform@@
-@@UNION TailwindBackfaceVisibility backface@@
 
 // Variant selectors for `.variant()` — aria / group / peer / pseudo / nth / child.
 // Each member is the bare prefix; the styles go in the variant object.
@@ -460,25 +442,8 @@ export type TailwindColumns =
   | "3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl"
   | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"
   | `[${string}]`;
-@@UNION TailwindBreakBeforeAfter breakBefore@@
 @@UNION TailwindBreakInside breakInside@@
 @@UNION TailwindBoxDecoration boxDecoration@@
 
-// Scroll snap / behavior / field-sizing
-export type TailwindSnapAxis = "none" | "x" | "y" | "both";
-export type TailwindSnapStrictness = "mandatory" | "proximity";
-@@UNION TailwindSnapAlign snapAlign@@
-@@UNION TailwindSnapStop snapStop@@
+// Scroll behavior
 @@UNION TailwindScrollBehavior scroll@@
-@@UNION TailwindFieldSizing fieldSizing@@
-
-// Masks (v4.1) — edge fades, composite, SVG mask-type
-export type TailwindMaskEdge = "t" | "r" | "b" | "l" | "x" | "y";
-export type TailwindMaskStop =
-  | `${number}%`
-  | TailwindColor
-  | TailwindSpacing
-  | `(${string})`
-  | `[${string}]`;
-@@UNION TailwindMaskComposite mask.composite@@
-@@UNION TailwindMaskType maskType@@

@@ -2,8 +2,8 @@ import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { BrowsingContext, Charset, CrossOrigin, FetchPriority, HttpEquiv, LinkAs, LinkElementRel, LinkType, MetaName, ReferrerPolicy, ScriptType } from "./html-types.js";
 export declare class HtmlTag extends Tag {
-    lang?: string;
-    dir?: 'ltr' | 'rtl' | 'auto';
+    protected _lang?: string;
+    protected _dir?: 'ltr' | 'rtl' | 'auto';
     setLang(lang?: string): this;
     setDir(dir?: 'ltr' | 'rtl' | 'auto'): this;
 }
@@ -24,12 +24,12 @@ export declare function Head(...children: View[]): Tag;
 export declare function Body(...children: View[]): Tag;
 export declare function Title(...children: View[]): Tag;
 export declare class MetaTag extends Tag {
-    name?: MetaName;
-    contentValue?: string;
-    charset?: Charset;
-    httpEquiv?: string;
-    property?: string;
-    media?: string;
+    protected _name?: MetaName;
+    protected _contentValue?: string;
+    protected _charset?: Charset;
+    protected _httpEquiv?: string;
+    protected _property?: string;
+    protected _media?: string;
     /**
      * Set the `<meta name>` (named-meta grammar: `viewport`/`description`/`theme-color`/…).
      * `MetaName` is meta-specific — do **not** reuse it for the unrelated `name` on
@@ -46,19 +46,19 @@ export declare class MetaTag extends Tag {
 }
 export declare function Meta(): MetaTag;
 export declare class LinkTag extends Tag {
-    rel?: LinkElementRel;
-    href?: string;
-    type?: LinkType;
-    media?: string;
-    sizes?: string;
-    crossorigin?: CrossOrigin | '';
-    integrity?: string;
-    as?: LinkAs;
-    hreflang?: string;
-    fetchpriority?: FetchPriority;
-    referrerpolicy?: ReferrerPolicy;
-    imagesrcset?: string;
-    imagesizes?: string;
+    protected _rel?: LinkElementRel;
+    protected _href?: string;
+    protected _type?: LinkType;
+    protected _media?: string;
+    protected _sizes?: string;
+    protected _crossorigin?: CrossOrigin | '';
+    protected _integrity?: string;
+    protected _as?: LinkAs;
+    protected _hreflang?: string;
+    protected _fetchpriority?: FetchPriority;
+    protected _referrerpolicy?: ReferrerPolicy;
+    protected _imagesrcset?: string;
+    protected _imagesizes?: string;
     /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
     setRel(...rels: LinkElementRel[]): this;
     setHreflang(hreflang?: string): this;
@@ -79,15 +79,15 @@ export declare class LinkTag extends Tag {
 }
 export declare function Link(): LinkTag;
 export declare class StyleTag extends Tag {
-    media?: string;
-    type?: string;
+    protected _media?: string;
+    protected _type?: string;
     setMedia(media?: string): this;
     setType(type?: string): this;
 }
 export declare function Style(css: string): StyleTag;
 export declare class BaseTag extends Tag {
-    href?: string;
-    target?: BrowsingContext;
+    protected _href?: string;
+    protected _target?: BrowsingContext;
     setHref(href?: string): this;
     setTarget(target?: BrowsingContext): this;
 }
@@ -95,12 +95,12 @@ export declare function Base(): BaseTag;
 export declare function Noscript(...children: View[]): Tag;
 export declare function Template(...children: View[]): Tag;
 export declare class ScriptTag extends Tag {
-    src?: string;
-    type?: ScriptType;
-    crossorigin?: CrossOrigin | '';
-    integrity?: string;
-    fetchpriority?: FetchPriority;
-    referrerpolicy?: ReferrerPolicy;
+    protected _src?: string;
+    protected _type?: ScriptType;
+    protected _crossorigin?: CrossOrigin | '';
+    protected _integrity?: string;
+    protected _fetchpriority?: FetchPriority;
+    protected _referrerpolicy?: ReferrerPolicy;
     setSrc(src?: string): this;
     setType(type?: ScriptType): this;
     setCrossOrigin(crossorigin?: CrossOrigin | ''): this;

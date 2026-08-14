@@ -13,7 +13,7 @@ export declare function Sup(...children: View[]): Tag;
 export declare function Abbr(...children: View[]): Tag;
 export declare function Cite(...children: View[]): Tag;
 export declare class QTag extends Tag {
-    cite?: string;
+    protected _cite?: string;
     setCite(cite?: string): this;
 }
 export declare function Q(...children: View[]): QTag;

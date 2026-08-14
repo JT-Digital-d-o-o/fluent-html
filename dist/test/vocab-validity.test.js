@@ -74,10 +74,6 @@ const ORACLE_ARGS = {
     autoCols: [["fr"]],
     colSpan: [["2"], ["full"]],
     order: [["1"], ["first"]],
-    // Place
-    placeContent: [["center"]],
-    placeItems: [["center"]],
-    placeSelf: [["center"]],
     // Borders
     divideX: [[], ["2"]],
     divide: [["red-500"], ["slate-100"]],
@@ -148,19 +144,12 @@ const ORACLE_ARGS = {
     blur: [[], ["sm"]],
     backdropBlur: [[], ["sm"]],
     brightness: [["50"]],
-    backdropBrightness: [["50"]],
     contrast: [["125"]],
-    backdropContrast: [["125"]],
     grayscale: [[], ["0"]],
-    backdropGrayscale: [[], ["0"]],
     hueRotate: [["90"]],
-    backdropHueRotate: [["90"]],
     invert: [[], ["0"]],
-    backdropInvert: [[], ["0"]],
     saturate: [["150"]],
-    backdropSaturate: [["150"]],
     sepia: [[], ["0"]],
-    backdropSepia: [[], ["0"]],
     // Timing / Resize / Overscroll
     willChange: [["transform"]],
     resize: [[], ["y"]],
@@ -172,7 +161,6 @@ const ORACLE_ARGS = {
     stroke: [["red-500"], ["none"], ["2"], ["px", "3"]],
     accent: [["pink-500"]],
     caret: [["blue-500"]],
-    scheme: [["light"], ["dark"]],
     decoration: [["red-500"], ["wavy"], ["2"], ["px", "3"], ["from-font"]],
     // Logical / axis insets
     insetX: [["0"], ["px", "10"]],
@@ -181,7 +169,6 @@ const ORACLE_ARGS = {
     insetE: [["0"]],
     // Text extras
     wrap: [["break-word"], ["anywhere"]],
-    hyphens: [["auto"]],
     // Shadow-family merges (size | color)
     textShadow: [["md"], ["red-500"]],
     dropShadow: [["md"], ["red-500"]],
@@ -190,30 +177,19 @@ const ORACLE_ARGS = {
     mixBlend: [["multiply"]],
     bgBlend: [["multiply"]],
     isolate: [[]],
-    isolation: [["auto"]],
     // Transition extras
     delay: [["150"]],
     // 3D transforms
     perspective: [["distant"]],
-    perspectiveOrigin: [["center"]],
     transform: [["flat"], ["3d"]],
-    backface: [["hidden"]],
-    scale3d: [[]],
     // Grid placement extras
     rowSpan: [["2"]],
     columns: [["3"]],
-    breakBefore: [["page"]],
-    breakAfter: [["page"]],
     breakInside: [["avoid"]],
     boxDecoration: [["clone"]],
-    // Scroll & snap
-    snapStop: [["always"]],
+    // Scroll
     scroll: [["smooth"]],
-    scrollM: [["4"], ["top", "2"], ["px", "16"]],
     scrollP: [["4"], ["top", "2"], ["px", "16"]],
-    fieldSizing: [["content"]],
-    // Mask
-    maskType: [["luminance"]],
     // Deliberately non-Tailwind rows (validated by the KNOWN_NON_TAILWIND test)
     group: [[], ["nav"]],
     peer: [[], ["checkbox"]],

@@ -1,9 +1,12 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 export class DetailsTag extends Tag {
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
 }
@@ -24,7 +27,9 @@ export class DialogTag extends Tag {
      * Dialog(...).setClosedby("any").setId(ids.modal)
      */
     setClosedby(closedby) {
-        this.closedby = closedby;
+        if (devChecks)
+            assertMutable(this, "setClosedby");
+        this._closedby = closedby;
         return this;
     }
 }

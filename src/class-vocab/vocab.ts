@@ -186,11 +186,6 @@ export const classVocab: readonly UtilityDef[] = [
   pre("colSpan", "col-span", { values: ref("TailwindColSpan"), doc: "How many columns an item spans." }),
   pre("order", "order", { values: ref("TailwindOrder"), doc: "Visual order of a flex/grid item." }),
 
-  // Place
-  pre("placeContent", "place-content", { values: lit("center", "start", "end", "between", "around", "evenly", "baseline", "stretch"), doc: "Shorthand for align-content + justify-content." }),
-  pre("placeItems", "place-items", { values: lit("start", "end", "center", "baseline", "stretch"), doc: "Shorthand for align-items + justify-items." }),
-  pre("placeSelf", "place-self", { values: lit("auto", "start", "end", "center", "stretch"), doc: "Shorthand for align-self + justify-self." }),
-
   // Borders — `.border()` is merged: width, style, and color through the one
   // `border-*` emitter (widths are bare numerals, colors carry letters, styles
   // are keywords — disjoint). Side forms take a width or color; style is all-sides.
@@ -274,9 +269,6 @@ export const classVocab: readonly UtilityDef[] = [
       { key: "translateZ", pre: ["z"], type: "TailwindTranslateZ" },
     ),
   }),
-  custom("skewX", (args) => [signNeg("skew-x", args[0]!)], [["6"], ["-6"]], { values: ref("TailwindSkew"), doc: "Skew on the X axis in degrees." }),
-  custom("skewY", (args) => [signNeg("skew-y", args[0]!)], [["6"], ["-6"]], { values: ref("TailwindSkew"), doc: "Skew on the Y axis in degrees." }),
-
   // Interactivity
   pre("select", "select", { values: lit("none", "text", "all", "auto"), doc: "Text selection behavior." }),
   pre("pointerEvents", "pointer-events", { values: lit("none", "auto"), doc: "Whether the element receives pointer events." }),
@@ -336,19 +328,12 @@ export const classVocab: readonly UtilityDef[] = [
   opt("blur", "blur", undefined, { values: lit("none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"), doc: "Blur filter (bare = default)." }),
   opt("backdropBlur", "backdrop-blur", undefined, { values: lit("none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"), doc: "Backdrop blur filter (bare = default)." }),
   pre("brightness", "brightness", { values: ref("TailwindBrightness"), doc: "Brightness filter (percent)." }),
-  pre("backdropBrightness", "backdrop-brightness", { values: ref("TailwindBrightness"), doc: "Backdrop brightness filter (percent)." }),
   pre("contrast", "contrast", { values: ref("TailwindContrast"), doc: "Contrast filter (percent)." }),
-  pre("backdropContrast", "backdrop-contrast", { values: ref("TailwindContrast"), doc: "Backdrop contrast filter (percent)." }),
   opt("grayscale", "grayscale", undefined, { doc: "Grayscale filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
-  opt("backdropGrayscale", "backdrop-grayscale", undefined, { doc: "Backdrop grayscale filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
   pre("hueRotate", "hue-rotate", { values: ref("TailwindHueRotate"), doc: "Hue-rotate filter in degrees." }),
-  pre("backdropHueRotate", "backdrop-hue-rotate", { values: ref("TailwindHueRotate"), doc: "Backdrop hue-rotate filter in degrees." }),
   opt("invert", "invert", undefined, { doc: "Invert filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
-  opt("backdropInvert", "backdrop-invert", undefined, { doc: "Backdrop invert filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
   pre("saturate", "saturate", { values: ref("TailwindSaturate"), doc: "Saturation filter (percent)." }),
-  pre("backdropSaturate", "backdrop-saturate", { values: ref("TailwindSaturate"), doc: "Backdrop saturation filter (percent)." }),
   opt("sepia", "sepia", undefined, { doc: "Sepia filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
-  opt("backdropSepia", "backdrop-sepia", undefined, { doc: "Backdrop sepia filter (bare = 100%).", variantObject: vo('true | 0 | "0"') }),
 
   // Timing / Resize / Performance / Overscroll
   pre("willChange", "will-change", { values: lit("auto", "scroll", "contents", "transform"), doc: "Hint the browser about upcoming changes." }),
@@ -379,7 +364,6 @@ export const classVocab: readonly UtilityDef[] = [
   }),
   pre("accent", "accent", { values: theme("--color"), doc: "Accent color of form controls." }),
   pre("caret", "caret", { values: theme("--color"), doc: "Text-input caret color." }),
-  pre("scheme", "scheme", { values: lit("normal", "light", "dark", "light-dark", "only-light", "only-dark"), doc: "color-scheme of the element." }),
   // `.decoration()` merged: color, style, or thickness through `decoration-*`.
   size("decoration", "decoration", {
     values: group({
@@ -396,7 +380,6 @@ export const classVocab: readonly UtilityDef[] = [
   size("insetE", "inset-e", { values: ref("TailwindInset"), doc: "Logical inline-end offset." }),
 
   pre("wrap", "wrap", { values: lit("break-word", "anywhere", "normal"), doc: "Overflow-wrap — where long words may break." }),
-  pre("hyphens", "hyphens", { values: lit("none", "manual", "auto"), doc: "Hyphenation behavior." }),
   // Shadow-family merges: size or color through the one prefix each.
   pre("textShadow", "text-shadow", {
     values: group({ size: theme("--text-shadow"), color: theme("--color") }),
@@ -417,21 +400,11 @@ export const classVocab: readonly UtilityDef[] = [
   pre("mixBlend", "mix-blend", { values: lit("normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity", "plus-darker", "plus-lighter"), doc: "Blend mode of the element against its backdrop." }),
   pre("bgBlend", "bg-blend", { values: lit("normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"), doc: "Blend mode of the background layers." }),
   stat("isolate", "isolate", { doc: "Create a new stacking context." }),
-  pre("isolation", "isolation", { values: lit("auto"), doc: "Reset stacking-context isolation." }),
 
   pre("delay", "delay", { values: ref("TailwindDelay"), doc: "Transition delay in ms." }),
 
   pre("perspective", "perspective", { values: lit("dramatic", "near", "normal", "midrange", "distant", "none"), doc: "3D perspective depth on the parent." }),
-  pre("perspectiveOrigin", "perspective-origin", { values: lit("center", "top", "top-right", "right", "bottom-right", "bottom", "bottom-left", "left", "top-left"), doc: "Vanishing-point origin for 3D perspective." }),
   pre("transform", "transform", { values: lit("3d", "flat"), doc: "Whether children are positioned in 3D space (transform-style)." }),
-  pre("backface", "backface", { values: lit("visible", "hidden"), doc: "Visibility of an element's back face." }),
-  stat("scale3d", "scale-3d", { doc: "Apply scale on all three axes." }),
-  custom("rotateX", (args) => [signNeg("rotate-x", args[0]!)], [["45"], ["-45"]], { values: ref("TailwindRotate"), doc: "Rotation around the X axis in degrees." }),
-  custom("rotateY", (args) => [signNeg("rotate-y", args[0]!)], [["30"], ["-30"]], { values: ref("TailwindRotate"), doc: "Rotation around the Y axis in degrees." }),
-  custom("rotateZ", (args) => [signNeg("rotate-z", args[0]!)], [["90"], ["-90"]], { values: ref("TailwindRotate"), doc: "Rotation around the Z axis in degrees." }),
-  custom("scaleX", (args) => [signNeg("scale-x", args[0]!)], [["110"], ["-100"]], { values: ref("TailwindScale"), doc: "Scale on the X axis (percent)." }),
-  custom("scaleY", (args) => [signNeg("scale-y", args[0]!)], [["75"], ["-75"]], { values: ref("TailwindScale"), doc: "Scale on the Y axis (percent)." }),
-  custom("scaleZ", (args) => [signNeg("scale-z", args[0]!)], [["150"], ["-150"]], { values: ref("TailwindScale"), doc: "Scale on the Z axis (percent)." }),
 
   custom("colStart", (a) => [signNeg("col-start", a[0]!)], [["2"], ["-1"], ["auto"]], { values: ref("TailwindGridLine"), doc: "Grid column start line (negatives count from the end)." }),
   custom("colEnd", (a) => [signNeg("col-end", a[0]!)], [["2"], ["-1"], ["auto"]], { values: ref("TailwindGridLine"), doc: "Grid column end line (negatives count from the end)." }),
@@ -439,35 +412,15 @@ export const classVocab: readonly UtilityDef[] = [
   custom("rowEnd", (a) => [signNeg("row-end", a[0]!)], [["3"], ["-1"], ["auto"]], { values: ref("TailwindGridLine"), doc: "Grid row end line (negatives count from the end)." }),
   pre("rowSpan", "row-span", { values: ref("TailwindRowSpan"), doc: "How many rows an item spans." }),
   pre("columns", "columns", { values: ref("TailwindColumns"), doc: "Multi-column count or width." }),
-  pre("breakBefore", "break-before", { values: lit("auto", "avoid", "all", "avoid-page", "page", "left", "right", "column"), doc: "Column/page break before the element." }),
-  pre("breakAfter", "break-after", { values: lit("auto", "avoid", "all", "avoid-page", "page", "left", "right", "column"), doc: "Column/page break after the element." }),
   pre("breakInside", "break-inside", { values: lit("auto", "avoid", "avoid-page", "avoid-column"), doc: "Column/page break inside the element." }),
   pre("boxDecoration", "box-decoration", { values: lit("clone", "slice"), doc: "How box decorations behave across fragments." }),
-  custom("snap", (a) => (a.length <= 1 ? [`snap-${a[0] ?? "none"}`] : [`snap-${a[0]}`, `snap-${a[1]}`]), [["x"], ["both"], ["x", "mandatory"], ["y", "proximity"]], { values: ref("TailwindSnapAxis"), doc: "Scroll-snap axis with optional strictness.", variantObject: vo('TailwindSnapAxis | readonly [Exclude<TailwindSnapAxis, "none">, TailwindSnapStrictness]') }),
-  custom("snapAlign", (a) => [a[0] === "none" ? "snap-align-none" : `snap-${a[0]}`], [["start"], ["center"], ["none"]], { values: lit("start", "end", "center", "none"), doc: "Snap alignment of a snapped child." }),
-  pre("snapStop", "snap", { values: lit("normal", "always"), doc: "Whether scrolling may skip past snap positions." }),
   pre("scroll", "scroll", { values: lit("auto", "smooth"), doc: "Programmatic scrolling behavior." }),
-  space("scrollM", "scroll-m", "", true, true, { values: theme("--spacing"), doc: "Scroll margin — all sides, one axis/side, or the unit overload." }),
   space("scrollP", "scroll-p", "", true, true, { values: theme("--spacing"), doc: "Scroll padding — all sides, one axis/side, or the unit overload." }),
-  pre("fieldSizing", "field-sizing", { values: lit("content", "fixed"), doc: "Whether form fields size to their content." }),
 
   // Pseudo-element content — bare = empty string (the common `before:`/`after:` case)
   custom("content", (a) => [a[0] === undefined ? "content-['']" : `content-${a[0]}`],
     [[], ["none"], ["[attr(data-label)]"]],
     { values: lit("none"), doc: "Pseudo-element content — `none`, arbitrary `[…]`, or bare for the empty string.", variantObject: vo("true | TailwindContent") }),
-
-  // `.mask()` merged: image (`none` / arbitrary source) or composite mode
-  // through the one `mask-*` emitter.
-  custom("mask", (a) => (a[0] === "none" ? ["mask-none"] : [`mask-${a[0]}`]),
-    [["none"], ["[url(/x.png)]"], ["add"], ["subtract"], ["intersect"], ["exclude"]],
-    {
-      values: group({ composite: lit("add", "subtract", "intersect", "exclude") }),
-      doc: "Mask image (`none` or an arbitrary source) or mask-composite mode.",
-      variantObject: vo('"none" | `[${string}]` | TailwindMaskComposite'),
-    }),
-  custom("maskFrom", (a) => (a.length === 2 ? [`mask-${a[0]}-from-${a[1]}`] : []), [["t", "50%"], ["x", "70%"], ["r", "blue-500"], ["l", "4"], ["t", "[20px]"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask start — edge + stop.", variantObject: vo("readonly [TailwindMaskEdge, TailwindMaskStop]") }),
-  custom("maskTo", (a) => (a.length === 2 ? [`mask-${a[0]}-to-${a[1]}`] : []), [["b", "90%"], ["y", "95%"]], { values: ref("TailwindMaskStop"), doc: "Edge-fade mask end — edge + stop.", variantObject: vo("readonly [TailwindMaskEdge, TailwindMaskStop]") }),
-  pre("maskType", "mask-type", { values: lit("alpha", "luminance"), doc: "SVG mask interpretation mode." }),
 
   // CSS Anchor Positioning (B-010) emits *inline style*, never a class — anchorName /
   // positionAnchor / positionArea (and viewTransitionName, F-B-181) all take arbitrary

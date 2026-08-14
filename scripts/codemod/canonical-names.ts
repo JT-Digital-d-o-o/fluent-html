@@ -38,7 +38,14 @@ import { Node, Project, ts, type CallExpression, type Expression, type SourceFil
 import { variantKeySpecs, DIRECT_VARIANTS, DIR_MAP, UNITS } from "../../src/class-vocab/index.js";
 import type { VariantKeySpec } from "../../src/class-vocab/index.js";
 
-/** Old → canonical name. 21 simple renames + 29 merge sources (call-site-pure: argument shapes carried over). */
+/**
+ * Old → canonical name. Simple renames + merge sources (call-site-pure:
+ * argument shapes carried over). `backfaceVisibility` and `scrollMargin` are
+ * NOT mapped: their 8.0.0 canonical targets (`backface`, `scrollM`) were
+ * pruned with the zero-use surface — those calls skip+report, and the
+ * successors are `.variant()` / `.cssProp("backface-visibility", …)` /
+ * `.cssProp("scroll-margin", …)`.
+ */
 const RENAMES: Readonly<Record<string, string>> = {
   // (b) simple renames
   padding: "p",
@@ -55,10 +62,8 @@ const RENAMES: Readonly<Record<string, string>> = {
   fillColor: "fill",
   accentColor: "accent",
   caretColor: "caret",
-  backfaceVisibility: "backface",
   transformStyle: "transform",
   scrollBehavior: "scroll",
-  scrollMargin: "scrollM",
   scrollPadding: "scrollP",
   gradientRadial: "bgRadial",
   gradientConic: "bgConic",
@@ -119,8 +124,14 @@ const KEYWORD_DISPATCH: Readonly<Record<string, Readonly<Record<string, string>>
   },
 };
 
+/** Legacy names whose canonical targets were pruned in 8.0.0 — skip+report with the successor. */
+const PRUNED: Readonly<Record<string, string>> = {
+  backfaceVisibility: 'canonical target "backface" was pruned in 8.0.0 — use .cssProp("backface-visibility", …) or a .variant() cssProp key',
+  scrollMargin: 'canonical target "scrollM" was pruned in 8.0.0 — use .cssProp("scroll-margin", …) or a .variant() cssProp key',
+};
+
 const REWRITES = new Set(["outlineHidden", "bold", ...Object.keys(KEYWORD_DISPATCH)]);
-const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES, "on", "at"]);
+const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES, ...Object.keys(PRUNED), "on", "at"]);
 
 /** A pending text edit: [start, end) replaced by `text`. Applied per file in descending `start` order. */
 export type Edit = { readonly start: number; readonly end: number; readonly text: string };
@@ -374,6 +385,10 @@ export function collectEdits(file: SourceFile): { edits: Edit[]; skips: Skip[] }
     // A rename inside a successfully converted variant span is already folded
     // into the object text; inside a FAILED span it still applies.
     if (inSpan(converted, nameStart)) return;
+    if (PRUNED[name] !== undefined) {
+      skips.push({ line, name, reason: PRUNED[name] });
+      return;
+    }
     if (REWRITES.has(name)) {
       const { text, skipReason } = rewriteText(name, node);
       if (text === undefined) skips.push({ line, name, reason: skipReason ?? "unsupported call shape" });

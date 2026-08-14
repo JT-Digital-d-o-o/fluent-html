@@ -58,6 +58,37 @@ describe("packaging invariants", () => {
     });
   });
 
+  describe("8.0.0 surface prune — the deleted methods stay deleted", () => {
+    const PRUNED = [
+      "hxDelete", "hxPut", "hxPatch",
+      "backdropBrightness", "backdropContrast", "backdropGrayscale", "backdropHueRotate",
+      "backdropInvert", "backdropSaturate", "backdropSepia",
+      "mask", "maskFrom", "maskTo", "maskType",
+      "rotateX", "rotateY", "rotateZ", "scaleX", "scaleY", "scaleZ", "scale3d",
+      "skewX", "skewY", "perspectiveOrigin", "backface",
+      "snap", "snapAlign", "snapStop", "scrollM",
+      "placeContent", "placeItems", "placeSelf",
+      "breakBefore", "breakAfter",
+      "isolation", "hyphens", "scheme", "fieldSizing",
+    ] as const;
+
+    it("none of the pruned methods is on Tag.prototype", async () => {
+      const { Tag } = await import("../src/core/tag.js");
+      await import("../src/index.js");
+      for (const name of PRUNED) {
+        assert.equal(name in Tag.prototype, false, `pruned method .${name}() resurfaced on Tag.prototype`);
+      }
+    });
+
+    it("the census-verified live uses survived the prune", async () => {
+      const { Tag } = await import("../src/core/tag.js");
+      await import("../src/index.js");
+      for (const name of ["backdropBlur", "breakInside", "hxGet", "hxPost", "rotate", "scale", "translate", "perspective", "transform", "isolate", "scroll", "scrollP", "breakAll"]) {
+        assert.equal(typeof (Tag.prototype as unknown as Record<string, unknown>)[name], "function", `.${name}() must stay`);
+      }
+    });
+  });
+
   describe("exports map (architecture-6)", () => {
     it("exposes ./package.json for tooling introspection", () => {
       assert.equal(pkg.exports["./package.json"], "./package.json");

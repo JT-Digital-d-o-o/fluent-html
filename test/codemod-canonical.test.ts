@@ -112,6 +112,16 @@ describe("canonical-names codemod: renames & rewrites (pre-rename lib)", () => {
     assert.equal(skips.length, 0);
   });
 
+  it("names whose canonical targets were pruned in 8.0.0 skip+report with the successor", () => {
+    const src = 'Div().backfaceVisibility("hidden");\nDiv().scrollMargin("4");\n';
+    const { out, skips } = migrate(src);
+    assert.equal(out, src);
+    assert.deepEqual(skipSummaries(skips), [
+      { name: "backfaceVisibility", reason: 'canonical target "backface" was pruned in 8.0.0 — use .cssProp("backface-visibility", …) or a .variant() cssProp key' },
+      { name: "scrollMargin", reason: 'canonical target "scrollM" was pruned in 8.0.0 — use .cssProp("scroll-margin", …) or a .variant() cssProp key' },
+    ]);
+  });
+
   it("keyword-dispatch guards: non-literal and unknown values skip with a report", () => {
     const src = 'Div().display(dyn);\nDiv().position("bogus");\n';
     const { out, skips } = migrate(src);

@@ -1,14 +1,16 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
 import type { ClosedBy } from "./html-types.js";
 
 export class DetailsTag extends Tag {
-  name?: string;
+  protected _name?: string;
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 }
@@ -24,7 +26,7 @@ export function Summary(...children: View[]): Tag {
 }
 
 export class DialogTag extends Tag {
-  closedby?: ClosedBy;
+  protected _closedby?: ClosedBy;
 
   /**
    * Set `closedby` — how the dialog light-dismisses: `"any"` (click-outside + Esc),
@@ -35,7 +37,8 @@ export class DialogTag extends Tag {
    * Dialog(...).setClosedby("any").setId(ids.modal)
    */
   setClosedby(closedby?: ClosedBy): this {
-    this.closedby = closedby;
+    if (devChecks) assertMutable(this, "setClosedby");
+    this._closedby = closedby;
     return this;
   }
 }

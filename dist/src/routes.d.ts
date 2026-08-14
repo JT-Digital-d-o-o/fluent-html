@@ -1,4 +1,4 @@
-import type { HTMX, HxHttpMethod, HxTarget, QueryParams } from "./htmx.js";
+import type { HTMX, HxHttpMethod, HxTarget, QueryParams, ResolvedRoute } from "./htmx.js";
 import type { Id } from "./ids.js";
 /**
  * Trim a captured `:param` token at the first non-identifier character, mirroring the
@@ -175,7 +175,7 @@ type RouteProperties<Def extends RouteDef> = {
     readonly query: DefProp<Def, 'query'>;
     /** The def's sitemap stance, carried through for server-side registration. */
     readonly sitemap: DefProp<Def, 'sitemap'>;
-    readonly resolve: HasAnyParams<Def['path']> extends true ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => string : (query?: ResolveQuery<Def['query']>) => string;
+    readonly resolve: HasAnyParams<Def['path']> extends true ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => ResolvedRoute : (query?: ResolveQuery<Def['query']>) => ResolvedRoute;
 };
 /**
  * A type-safe route callable.
@@ -203,7 +203,7 @@ export type AnyRouteCallable = {
     readonly params?: Readonly<Record<string, ParamType>>;
     readonly query?: Readonly<Record<string, ParamType>>;
     readonly sitemap?: SitemapStance;
-    readonly resolve: (...args: never[]) => string;
+    readonly resolve: (...args: never[]) => ResolvedRoute;
 };
 /** A registry of unknown shape — the constraint for helpers generic over whole registries. */
 export type AnyRouteRegistry = Readonly<Record<string, AnyRouteCallable>>;

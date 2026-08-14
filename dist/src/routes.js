@@ -73,7 +73,7 @@ function substituteParams(template, params) {
 /** Internal: build an HTMX object from a resolved path + method + options. */
 function buildHtmxFromRoute(endpoint, method, options) {
     if (!options) {
-        return { endpoint, method };
+        return { endpoint: endpoint, method };
     }
     const { target, select, indicator, disable, include, query, ...rest } = options;
     const resolvedEndpoint = query ? buildQueryString(endpoint, query) : endpoint;

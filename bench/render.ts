@@ -6,6 +6,7 @@ import {
   ForEach,
 } from "../src/index.js";
 import type { View } from "../src/index.js";
+import { assetUrl } from "../src/htmx.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -78,7 +79,7 @@ function benchHtmxAttributes(): View {
   return Div(
     ForEach(100, (i) =>
       Button(`Button ${i}`)
-        .setHtmx(`/api/button/${i}`, { method: "post", swap: "none" })
+        .setHtmx(assetUrl(`/api/button/${i}`), { method: "post", swap: "none" })
         .p("x", "4").p("y", "2").bg("blue-500").text("white").rounded()
     )
   );
@@ -135,7 +136,7 @@ function benchRealisticPage(): View {
                 P(`$${(i + 1) * 9.99}`).text("green-600").font("bold"),
                 P("Lorem ipsum dolor sit amet, consectetur adipiscing elit.").text("gray-500").text("sm"),
                 Button("Add to Cart")
-                  .setHtmx(`/cart/add/${i}`, { method: "post", swap: "none" })
+                  .setHtmx(assetUrl(`/cart/add/${i}`), { method: "post", swap: "none" })
                   .p("x", "4").p("y", "2").bg("blue-500").text("white").rounded(),
               ).p("4"),
             ).border().rounded("lg").overflow("hidden")

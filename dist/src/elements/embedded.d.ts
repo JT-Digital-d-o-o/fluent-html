@@ -2,16 +2,16 @@ import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { FetchPriority, PermissionsPolicyDirective, ReferrerPolicy, SandboxToken } from "./html-types.js";
 export declare class IframeTag extends Tag {
-    src?: string;
-    srcdoc?: string;
-    width?: string;
-    height?: string;
-    allow?: string;
-    loading?: 'lazy' | 'eager';
-    sandbox?: string;
-    name?: string;
-    referrerpolicy?: ReferrerPolicy;
-    fetchpriority?: FetchPriority;
+    protected _src?: string;
+    protected _srcdoc?: string;
+    protected _width?: string;
+    protected _height?: string;
+    protected _allow?: string;
+    protected _loading?: 'lazy' | 'eager';
+    protected _sandbox?: string;
+    protected _name?: string;
+    protected _referrerpolicy?: ReferrerPolicy;
+    protected _fetchpriority?: FetchPriority;
     setSrc(src?: string): this;
     setSrcdoc(srcdoc?: string): this;
     setWidth(width?: string | number): this;
@@ -27,11 +27,11 @@ export declare class IframeTag extends Tag {
 }
 export declare function Iframe(...children: View[]): IframeTag;
 export declare class ObjectTag extends Tag {
-    data?: string;
-    type?: string;
-    width?: string;
-    height?: string;
-    name?: string;
+    protected _data?: string;
+    protected _type?: string;
+    protected _width?: string;
+    protected _height?: string;
+    protected _name?: string;
     setData(data?: string): this;
     setType(type?: string): this;
     setWidth(width?: string | number): this;
@@ -40,10 +40,10 @@ export declare class ObjectTag extends Tag {
 }
 export declare function ObjectEl(...children: View[]): ObjectTag;
 export declare class EmbedTag extends Tag {
-    src?: string;
-    type?: string;
-    width?: string;
-    height?: string;
+    protected _src?: string;
+    protected _type?: string;
+    protected _width?: string;
+    protected _height?: string;
     setSrc(src?: string): this;
     setType(type?: string): this;
     setWidth(width?: string | number): this;

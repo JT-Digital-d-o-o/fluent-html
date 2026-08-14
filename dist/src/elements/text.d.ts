@@ -9,7 +9,7 @@ export declare function H5(...children: View[]): Tag;
 export declare function H6(...children: View[]): Tag;
 export declare function Span(...children: View[]): Tag;
 export declare class BlockquoteTag extends Tag {
-    cite?: string;
+    protected _cite?: string;
     setCite(cite?: string): this;
 }
 export declare function Blockquote(...children: View[]): BlockquoteTag;

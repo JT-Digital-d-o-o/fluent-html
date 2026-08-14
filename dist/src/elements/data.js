@@ -1,8 +1,11 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 export class TimeTag extends Tag {
     setDatetime(datetime) {
-        this.datetime = datetime;
+        if (devChecks)
+            assertMutable(this, "setDatetime");
+        this._datetime = datetime;
         return this;
     }
 }
@@ -12,7 +15,9 @@ export function Time(...children) {
 }
 export class DataTag extends Tag {
     setValue(value) {
-        this.value = value;
+        if (devChecks)
+            assertMutable(this, "setValue");
+        this._value = value;
         return this;
     }
 }
@@ -22,11 +27,15 @@ export function Data(...children) {
 }
 export class ProgressTag extends Tag {
     setValue(value) {
-        this.value = value;
+        if (devChecks)
+            assertMutable(this, "setValue");
+        this._value = value;
         return this;
     }
     setMax(max) {
-        this.max = max;
+        if (devChecks)
+            assertMutable(this, "setMax");
+        this._max = max;
         return this;
     }
 }
@@ -36,27 +45,39 @@ export function Progress(...children) {
 }
 export class MeterTag extends Tag {
     setValue(value) {
-        this.value = value;
+        if (devChecks)
+            assertMutable(this, "setValue");
+        this._value = value;
         return this;
     }
     setMin(min) {
-        this.min = min;
+        if (devChecks)
+            assertMutable(this, "setMin");
+        this._min = min;
         return this;
     }
     setMax(max) {
-        this.max = max;
+        if (devChecks)
+            assertMutable(this, "setMax");
+        this._max = max;
         return this;
     }
     setLow(low) {
-        this.low = low;
+        if (devChecks)
+            assertMutable(this, "setLow");
+        this._low = low;
         return this;
     }
     setHigh(high) {
-        this.high = high;
+        if (devChecks)
+            assertMutable(this, "setHigh");
+        this._high = high;
         return this;
     }
     setOptimum(optimum) {
-        this.optimum = optimum;
+        if (devChecks)
+            assertMutable(this, "setOptimum");
+        this._optimum = optimum;
         return this;
     }
 }
@@ -66,11 +87,15 @@ export function Meter(...children) {
 }
 export class InsTag extends Tag {
     setCite(cite) {
-        this.cite = cite;
+        if (devChecks)
+            assertMutable(this, "setCite");
+        this._cite = cite;
         return this;
     }
     setDatetime(datetime) {
-        this.datetime = datetime;
+        if (devChecks)
+            assertMutable(this, "setDatetime");
+        this._datetime = datetime;
         return this;
     }
 }
@@ -80,11 +105,15 @@ export function Ins(...children) {
 }
 export class DelTag extends Tag {
     setCite(cite) {
-        this.cite = cite;
+        if (devChecks)
+            assertMutable(this, "setCite");
+        this._cite = cite;
         return this;
     }
     setDatetime(datetime) {
-        this.datetime = datetime;
+        if (devChecks)
+            assertMutable(this, "setDatetime");
+        this._datetime = datetime;
         return this;
     }
 }

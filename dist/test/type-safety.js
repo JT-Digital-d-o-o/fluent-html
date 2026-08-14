@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { render, Raw, Div, Span, Input, Textarea, Button, Form, A, Area, isTag, isRawString, defineRoutes, IfThen, IfThenElse, Match, MatchValue, Empty, } from "../src/index.js";
 import { createId } from "../src/ids.js";
+import { assetUrl } from "../src/htmx.js";
 // -------------------------------------------------------
 // Phase 1: String literal unions render correctly
 // -------------------------------------------------------
@@ -177,19 +178,24 @@ describe("Tag._sk property", () => {
         const tag = Div();
         assert.strictEqual(tag._sk, undefined);
     });
-    it("InputTag has _sk with element-specific keys", () => {
+    it("InputTag has _sk with normalized [storage, attr] element-specific keys", () => {
         const tag = Input();
         assert.ok(tag._sk !== undefined);
-        assert.ok(tag._sk.includes("type"));
-        assert.ok(tag._sk.includes("placeholder"));
-        assert.ok(tag._sk.includes("name"));
+        const attrs = tag._sk.map(([, attr]) => attr);
+        const storage = tag._sk.map(([prop]) => prop);
+        assert.ok(attrs.includes("type"));
+        assert.ok(attrs.includes("placeholder"));
+        assert.ok(attrs.includes("name"));
+        assert.ok(storage.includes("_type"));
+        assert.ok(storage.includes("_placeholder"));
     });
-    it("AnchorTag has _sk with element-specific keys", () => {
+    it("AnchorTag has _sk with normalized element-specific keys", () => {
         const tag = A("link");
         assert.ok(tag._sk !== undefined);
-        assert.ok(tag._sk.includes("href"));
-        assert.ok(tag._sk.includes("target"));
-        assert.ok(tag._sk.includes("rel"));
+        const attrs = tag._sk.map(([, attr]) => attr);
+        assert.ok(attrs.includes("href"));
+        assert.ok(attrs.includes("target"));
+        assert.ok(attrs.includes("rel"));
     });
     it("_sk drives attribute rendering", () => {
         const html = render(Input().setType("email").setName("e").setPlaceholder("Enter"));
@@ -271,8 +277,8 @@ describe("Typed prototype writes (D-07 migration)", () => {
     it("defineSchemaKeys drives _sk attribute rendering across element files", () => {
         // One element per migrated file family — proves the 51 defineSchemaKeys() calls landed.
         assert.ok(render(Input().setType("email").setName("e")).includes('type="email" name="e"')); // forms.ts
-        assert.ok(render(A("x").setHref("/p")).includes('href="/p"')); // links.ts
-        assert.ok(render(Area().setHref("/a").setAlt("a")).includes('href="/a"')); // links.ts (void)
+        assert.ok(render(A("x").setHref(assetUrl("/p"))).includes('href="/p"')); // links.ts
+        assert.ok(render(Area().setHref(assetUrl("/a")).setAlt("a")).includes('href="/a"')); // links.ts (void)
     });
     it("setDiscriminant keeps the _t node discriminants correct", () => {
         assert.equal(isTag(Div()), true); // Tag _t = 1
@@ -451,10 +457,10 @@ describe("type honesty — types that used to lie", () => {
     });
     it("HxSwap accepts arbitrary delays + ignoreTitle, rejects typos (closed union)", () => {
         for (const s of ["innerHTML settle:250ms", "outerHTML swap:1.5s", "outerHTML ignoreTitle:true", "outerHTML scroll:top swap:500ms"]) {
-            assert.ok(render(Div().setHtmx({ method: "get", endpoint: "/x", swap: s })).includes(`hx-swap="${s}"`));
+            assert.ok(render(Div().setHtmx({ method: "get", endpoint: assetUrl("/x"), swap: s })).includes(`hx-swap="${s}"`));
         }
         // @ts-expect-error "innerHTM" is a typo — closed union rejects it
-        Div().setHtmx({ method: "get", endpoint: "/x", swap: "innerHTM" });
+        Div().setHtmx({ method: "get", endpoint: assetUrl("/x"), swap: "innerHTM" });
     });
     it("dot-suffixed route params key on the identifier, not the whole segment", () => {
         const r = defineRoutes({ exportCsv: { method: "get", path: "/export/:id.csv" } });

@@ -25,6 +25,7 @@ Time, Data, Ins, Del, Progress, Meter,
 Slot, 
 // Utilities
 Empty, Input, Button, } from "../src/index.js";
+import { assetUrl } from "../src/htmx.js";
 // ------------------------------------
 // Basic Elements
 // ------------------------------------
@@ -160,11 +161,11 @@ describe("Interactive Elements", () => {
 describe("Links", () => {
     it("Basic anchor", () => { assert.strictEqual(render(A("Click here").setHref("https://example.com")), `<a href="https://example.com">Click here</a>`); });
     it("Anchor with target", () => { assert.strictEqual(render(A("External").setHref("https://example.com").setTarget("_blank")), `<a href="https://example.com" target="_blank">External</a>`); });
-    it("Anchor with rel", () => { assert.strictEqual(render(A("Nofollow").setHref("/page").setRel("nofollow noopener")), `<a href="/page" rel="nofollow noopener">Nofollow</a>`); });
-    it("Download link", () => { assert.strictEqual(render(A("Download PDF").setHref("/file.pdf").setDownload("document.pdf")), `<a href="/file.pdf" download="document.pdf">Download PDF</a>`); });
+    it("Anchor with rel", () => { assert.strictEqual(render(A("Nofollow").setHref(assetUrl("/page")).setRel("nofollow noopener")), `<a href="/page" rel="nofollow noopener">Nofollow</a>`); });
+    it("Download link", () => { assert.strictEqual(render(A("Download PDF").setHref(assetUrl("/file.pdf")).setDownload("document.pdf")), `<a href="/file.pdf" download="document.pdf">Download PDF</a>`); });
     it("Email link", () => { assert.strictEqual(render(A("Contact us").setHref("mailto:info@example.com")), `<a href="mailto:info@example.com">Contact us</a>`); });
-    it("Anchor with hreflang + referrerPolicy", () => { assert.strictEqual(render(A("FR").setHref("/fr").setHreflang("fr").setReferrerPolicy("no-referrer")), `<a href="/fr" referrerpolicy="no-referrer" hreflang="fr">FR</a>`); });
-    it("Area with referrerpolicy", () => { assert.strictEqual(render(Area().setShape("rect").setCoords("0,0,80,80").setHref("/a").setReferrerPolicy("no-referrer-when-downgrade")), `<area shape="rect" coords="0,0,80,80" href="/a" referrerpolicy="no-referrer-when-downgrade">`); });
+    it("Anchor with hreflang + referrerPolicy", () => { assert.strictEqual(render(A("FR").setHref(assetUrl("/fr")).setHreflang("fr").setReferrerPolicy("no-referrer")), `<a href="/fr" referrerpolicy="no-referrer" hreflang="fr">FR</a>`); });
+    it("Area with referrerpolicy", () => { assert.strictEqual(render(Area().setShape("rect").setCoords("0,0,80,80").setHref(assetUrl("/a")).setReferrerPolicy("no-referrer-when-downgrade")), `<area shape="rect" coords="0,0,80,80" href="/a" referrerpolicy="no-referrer-when-downgrade">`); });
     // Regression (elements-symmetry-4): setRel is variadic — the security pair gets autocomplete;
     // a single space-joined string still works, and no args clears.
     it("setRel joins multiple tokens; single-string and empty forms preserved", () => {
@@ -175,7 +176,7 @@ describe("Links", () => {
     });
     // Regression (elements-symmetry-6): Area.setDownload accepts the boolean form like Anchor.
     it("Area.setDownload accepts the boolean form", () => {
-        assert.strictEqual(render(Area().setHref("/f").setDownload(true)), `<area href="/f" download="true">`);
+        assert.strictEqual(render(Area().setHref(assetUrl("/f")).setDownload(true)), `<area href="/f" download="true">`);
     });
 });
 // ------------------------------------
@@ -380,14 +381,14 @@ describe("Document Structure", () => {
     it("Meta http-equiv emits the real attribute name (not httpEquiv)", () => {
         assert.strictEqual(render(Meta().setHttpEquiv("x-ua-compatible").setContent("IE=edge")), `<meta http-equiv="x-ua-compatible" content="IE=edge">`);
     });
-    it("Link stylesheet", () => { assert.strictEqual(render(Link().setRel("stylesheet").setHref("styles.css")), `<link rel="stylesheet" href="styles.css">`); });
-    it("Link favicon", () => { assert.strictEqual(render(Link().setRel("icon").setHref("favicon.ico").setType("image/x-icon")), `<link rel="icon" href="favicon.ico" type="image/x-icon">`); });
-    it("Link preload", () => { assert.strictEqual(render(Link().setRel("preload").setHref("font.woff2").setAs("font").setCrossOrigin("anonymous")), `<link rel="preload" href="font.woff2" as="font" crossorigin="anonymous">`); });
+    it("Link stylesheet", () => { assert.strictEqual(render(Link().setRel("stylesheet").setHref(assetUrl("styles.css"))), `<link rel="stylesheet" href="styles.css">`); });
+    it("Link favicon", () => { assert.strictEqual(render(Link().setRel("icon").setHref(assetUrl("favicon.ico")).setType("image/x-icon")), `<link rel="icon" href="favicon.ico" type="image/x-icon">`); });
+    it("Link preload", () => { assert.strictEqual(render(Link().setRel("preload").setHref(assetUrl("font.woff2")).setAs("font").setCrossOrigin("anonymous")), `<link rel="preload" href="font.woff2" as="font" crossorigin="anonymous">`); });
     it("Link preconnect with bare crossorigin", () => { assert.strictEqual(render(Link().setRel("preconnect").setHref("https://fonts.gstatic.com").setCrossOrigin("")), `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">`); });
-    it("Link modulepreload with fetchpriority", () => { assert.strictEqual(render(Link().setRel("modulepreload").setHref("/app.js").setFetchPriority("low")), `<link rel="modulepreload" href="/app.js" fetchpriority="low">`); });
+    it("Link modulepreload with fetchpriority", () => { assert.strictEqual(render(Link().setRel("modulepreload").setHref(assetUrl("/app.js")).setFetchPriority("low")), `<link rel="modulepreload" href="/app.js" fetchpriority="low">`); });
     it("Link rel/as/type stay open unions (custom values still compile + render)", () => { assert.strictEqual(render(Link().setRel("custom-rel").setAs("font").setType("font/woff2")), `<link rel="custom-rel" type="font/woff2" as="font">`); });
     it("Link responsive image preload (imagesrcset/imagesizes)", () => { assert.strictEqual(render(Link().setRel("preload").setAs("image").setImagesrcset("/hero-480.jpg 480w, /hero-1080.jpg 1080w").setImagesizes("100vw")), `<link rel="preload" as="image" imagesrcset="/hero-480.jpg 480w, /hero-1080.jpg 1080w" imagesizes="100vw">`); });
-    it("Link with referrerpolicy", () => { assert.strictEqual(render(Link().setRel("stylesheet").setHref("/s.css").setReferrerPolicy("strict-origin-when-cross-origin")), `<link rel="stylesheet" href="/s.css" referrerpolicy="strict-origin-when-cross-origin">`); });
+    it("Link with referrerpolicy", () => { assert.strictEqual(render(Link().setRel("stylesheet").setHref(assetUrl("/s.css")).setReferrerPolicy("strict-origin-when-cross-origin")), `<link rel="stylesheet" href="/s.css" referrerpolicy="strict-origin-when-cross-origin">`); });
     it("Meta theme-color per color scheme (media)", () => { assert.strictEqual(render(Meta().setName("theme-color").setContent("#0b0b0b").setMedia("(prefers-color-scheme: dark)")), `<meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)">`); });
     it("Base", () => { assert.strictEqual(render(Base().setHref("https://example.com/").setTarget("_blank")), `<base href="https://example.com/" target="_blank">`); });
     it("Noscript", () => { assert.strictEqual(render(Noscript(P("JavaScript is required"))), `<noscript><p>JavaScript is required</p></noscript>`); });

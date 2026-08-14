@@ -24,6 +24,26 @@ type IgnoredRoot = { readonly prefix: string; readonly reason: string };
  * the staleness test below — the list can only shrink consciously.
  */
 const IGNORED_ROOTS: readonly IgnoredRoot[] = [
+  // Pruned in 8.0.0 — zero call sites across the 40-repo census; the classes
+  // stay reachable via `.variant()`/`.cssProp()` (see CHANGELOG [8.0.0]).
+  { prefix: "backdrop-brightness", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "backdrop-contrast", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "backdrop-grayscale", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "backdrop-hue-rotate", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "backdrop-invert", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "backdrop-saturate", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "backdrop-sepia", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "backface", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "break-after", reason: "pruned 8.0.0: zero fleet use (break-inside stays — live use)" },
+  { prefix: "break-before", reason: "pruned 8.0.0: zero fleet use (break-inside stays — live use)" },
+  { prefix: "field-sizing", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "hyphens", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "isolation", reason: "pruned 8.0.0: zero fleet use (isolate stays)" },
+  { prefix: "mask", reason: "pruned 8.0.0: zero fleet use (whole mask family)" },
+  { prefix: "place", reason: "pruned 8.0.0: zero fleet use (place-content/items/self)" },
+  { prefix: "scheme", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "skew", reason: "pruned 8.0.0: zero fleet use" },
+  { prefix: "snap", reason: "pruned 8.0.0: zero fleet use (whole snap family)" },
   // Backlog — no fluent method yet (see vocab-generator/backlog.md)
   { prefix: "align", reason: "backlog: vertical-align" },
   { prefix: "basis", reason: "backlog: flex-basis" },

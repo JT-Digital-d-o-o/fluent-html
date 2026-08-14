@@ -14,6 +14,7 @@ import {
   type InsTag, type DelTag, type QTag, type BlockquoteTag,
   type VariantStyleObject,
 } from "../../src/index.js";
+import { assetUrl } from "../../src/htmx.js";
 
 const ids = defineIds(["card"] as const);
 
@@ -143,15 +144,12 @@ Circle().stroke("red-500");
 Div().fill("[#1a2b3c]");
 Div().stroke("px", 1.5);
 Div().decoration("from-font");
-Div().scheme("light-dark");
 // @ts-expect-error — TailwindColor closed
 Div().fill("nope");
 // @ts-expect-error — v4 ships no stroke-3
 Div().stroke(3);
 // @ts-expect-error — TailwindDecorationStyle closed
 Div().decoration("squiggly");
-// @ts-expect-error — TailwindColorScheme closed
-Div().scheme("blue");
 
 // Inset shorthands
 Div().insetX("0");
@@ -162,7 +160,6 @@ Div().insetS("nope");
 // Typography & text effects
 Div().text("balance");
 Div().textShadow("lg/30");
-Div().hyphens("auto");
 // @ts-expect-error — not in TailwindTextWrap
 Div().text("baalance");
 // @ts-expect-error — "xl" not in the v4.1 text-shadow scale
@@ -179,8 +176,6 @@ Div().dropShadow();
 Div().insetShadow("md");
 // @ts-expect-error — bg-blend has no plus-* modes
 Div().bgBlend("plus-lighter");
-// @ts-expect-error — only "auto" is valid
-Div().isolation("isolate");
 
 // Transitions
 Div().delay("150");
@@ -204,17 +199,6 @@ Div().bgLinear("to-r", "oklhc");
 // @ts-expect-error — off-ladder stop must use the [..] form
 Div().from("indigo-500", "ten");
 
-// 3D transforms
-Div().rotateX(-45);
-Div().perspectiveOrigin("top-left");
-Div().transform("3d");
-Div().translate("z", "-px");
-// @ts-expect-error — TailwindPerspective closed
-Div().perspective("dramtic");
-// @ts-expect-error — translate-z has no numeric arm
-Div().translate("z", 12);
-// @ts-expect-error — TailwindBackfaceVisibility closed
-Div().backface("collapse");
 
 // Long-tail variant names on .variant()
 Div().variant("aria-checked", { bg: "blue-50" });
@@ -230,32 +214,23 @@ Div().variant("data-open", {});
 // @ts-expect-error — @8xl is outside the @3xs..@7xl scale
 Div().variant("@8xl", {});
 
+// 3D transforms (depth gate + translate-z stay; per-axis leaves pruned in 8.0.0)
+Div().transform("3d");
+Div().translate("z", "-px");
+// @ts-expect-error — TailwindPerspective closed
+Div().perspective("dramtic");
+// @ts-expect-error — translate-z has no numeric arm
+Div().translate("z", 12);
+
 // Layout
 Div().colStart(-1);
 Div().rowSpan("full");
 Div().columns("xs");
 Div().breakInside("avoid");
-Div().snap("x", "mandatory");
-Div().snapAlign("none");
-Div().scrollM("t", "24");
-Div().fieldSizing("content");
 // @ts-expect-error — TailwindGridLine closed
 Div().colStart("aut");
 // @ts-expect-error — use "avoid-page", not "page"
 Div().breakInside("page");
-// @ts-expect-error — 2-arg snap excludes "none"
-Div().snap("none", "mandatory");
-
-// Masks (v4.1)
-Div().mask("none");
-Div().maskFrom("b", "50%");
-Div().maskTo("b", "90%");
-Div().mask("intersect");
-Div().maskType("luminance");
-// @ts-expect-error — TailwindMaskEdge closed; "top" is not an edge
-Div().maskFrom("top", "50%");
-// @ts-expect-error — TailwindMaskType closed
-Div().maskType("alfa");
 
 // ── Escape-hatch gap fills (llm-styling/escape-hatch) ──────────────────────
 Div().appearance("none");
@@ -392,7 +367,6 @@ Div().decoration("red-500").decoration("wavy").decoration("2");
 Div().flex().flex("1").flex("col").flex("wrap");
 Div().list("disc").list("inside");
 Div().outline("hidden");
-Div().mask("none").mask("add").mask("[url(/m.png)]");
 Div().bgLinear("to-r").bgLinear(45, "oklch");
 Div().px("4").mx("auto").mt("2").pt("px", 12);
 // Negative: the unions stay disjoint and closed — a wrong-family or typo'd
@@ -409,8 +383,6 @@ Div().border("wavy");
 Div().flex("center");
 // @ts-expect-error — "outside-in" is not a list value
 Div().list("outside-in");
-// @ts-expect-error — "multiply" is a blend mode, not a mask composite
-Div().mask("multiply");
 // @ts-expect-error — margin-only "auto" is rejected on padding shorthands
 Div().px("auto");
 // @ts-expect-error — directional shorthands take the spacing scale, not width keywords
@@ -464,11 +436,11 @@ Div().md({ "2xl": { p: "4" } });
 Div().variant("hovr", { bg: "blue-600" });
 
 // ── T3: preload/optimistic are gone — they never existed in the htmx 4 runtime ──
-hx("/x", {});
+hx(assetUrl("/x"), {});
 // @ts-expect-error — hx-preload is not an htmx 4 attribute (T3)
-hx("/x", { preload: true });
+hx(assetUrl("/x"), { preload: true });
 // @ts-expect-error — hx-optimistic is not an htmx 4 attribute (T3)
-hx("/x", { optimistic: true });
+hx(assetUrl("/x"), { optimistic: true });
 
 // ── T2: the default palette stays ON without an opt-out augmentation ──
 // (The opt-out arm compiles separately in test/types/color-optout — module

@@ -22,7 +22,6 @@ import { variantObjectGeneratedPath, renderVariantObjectGen } from "../scripts/g
 const SHARED_UNION_FOLLOWERS: ReadonlyMap<string, string> = new Map([
   ["backdropBlur", "blur"],
   ["autoCols", "autoRows"],
-  ["breakAfter", "breakBefore"],
 ]);
 
 describe("generated tailwind types", () => {
@@ -53,7 +52,8 @@ describe("generated tailwind types", () => {
 
   it("every template union resolves to a literals vocab row", () => {
     const unions = templateUnions();
-    assert.ok(unions.length >= 50, `template lost its union markers (found ${unions.length})`);
+    // Floor lowered 50 → 40 with the 8.0.0 surface prune (12 unions left with their methods).
+    assert.ok(unions.length >= 40, `template lost its union markers (found ${unions.length})`);
     for (const u of unions) {
       assert.ok(literalsOf(u.method).length > 0, `union ${u.typeName}: empty literals for ${u.method}`);
     }

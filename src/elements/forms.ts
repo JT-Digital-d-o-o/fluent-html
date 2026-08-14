@@ -1,4 +1,5 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El, Empty } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -13,107 +14,123 @@ import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType,
  * Input().setType("email").setName("email").setPlaceholder("you@example.com")
  */
 export class InputTag extends Tag {
-  type?: InputType;
-  placeholder?: string;
-  name?: string;
-  value?: string;
-  accept?: string;
-  min?: number | string;
-  max?: number | string;
-  step?: number | 'any';
-  pattern?: string;
-  minlength?: number;
-  maxlength?: number;
-  autocomplete?: AutocompleteHint;
-  inputmode?: InputMode;
-  capture?: 'user' | 'environment';
+  protected _type?: InputType;
+  protected _placeholder?: string;
+  protected _name?: string;
+  protected _value?: string;
+  protected _accept?: string;
+  protected _min?: number | string;
+  protected _max?: number | string;
+  protected _step?: number | 'any';
+  protected _pattern?: string;
+  protected _minlength?: number;
+  protected _maxlength?: number;
+  protected _autocomplete?: AutocompleteHint;
+  protected _inputmode?: InputMode;
+  protected _capture?: 'user' | 'environment';
   // Storage is `listId` (aliased to the `list` attribute in the schema) so the
   // field doesn't shadow the Tag `.list()` styling method (canonical-names).
-  listId?: string;
-  dirname?: string;
+  protected _listId?: string;
+  protected _dirname?: string;
 
   setType(type?: InputType): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
   setPlaceholder(placeholder?: string): this {
-    this.placeholder = placeholder;
+    if (devChecks) assertMutable(this, "setPlaceholder");
+    this._placeholder = placeholder;
     return this;
   }
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 
   setValue(value?: string): this {
-    this.value = value;
+    if (devChecks) assertMutable(this, "setValue");
+    this._value = value;
     return this;
   }
 
   setAccept(accept?: string): this;
   setAccept(accept: readonly string[]): this;
   setAccept(accept?: string | readonly string[]): this {
-    this.accept = Array.isArray(accept)
+    if (devChecks) assertMutable(this, "setAccept");
+    this._accept = Array.isArray(accept)
       ? (accept.length ? accept.join(',') : undefined)
       : (accept as string | undefined);
     return this;
   }
 
   setMin(min?: number | string): this {
-    this.min = min;
+    if (devChecks) assertMutable(this, "setMin");
+    this._min = min;
     return this;
   }
 
   setMax(max?: number | string): this {
-    this.max = max;
+    if (devChecks) assertMutable(this, "setMax");
+    this._max = max;
     return this;
   }
 
   setStep(step?: number | 'any'): this {
-    this.step = step;
+    if (devChecks) assertMutable(this, "setStep");
+    this._step = step;
     return this;
   }
 
   setPattern(pattern?: string): this {
-    this.pattern = pattern;
+    if (devChecks) assertMutable(this, "setPattern");
+    this._pattern = pattern;
     return this;
   }
 
   setMinlength(minlength?: number): this {
-    this.minlength = minlength;
+    if (devChecks) assertMutable(this, "setMinlength");
+    this._minlength = minlength;
     return this;
   }
 
   setMaxlength(maxlength?: number): this {
-    this.maxlength = maxlength;
+    if (devChecks) assertMutable(this, "setMaxlength");
+    this._maxlength = maxlength;
     return this;
   }
 
   setAutocomplete(autocomplete?: AutocompleteHint): this {
-    this.autocomplete = autocomplete;
+    if (devChecks) assertMutable(this, "setAutocomplete");
+    this._autocomplete = autocomplete;
     return this;
   }
 
   setInputmode(inputmode?: InputMode): this {
-    this.inputmode = inputmode;
+    if (devChecks) assertMutable(this, "setInputmode");
+    this._inputmode = inputmode;
     return this;
   }
 
   /** Set `capture` — hints the camera/mic source for file inputs on mobile. */
   setCapture(capture?: 'user' | 'environment'): this {
-    this.capture = capture;
+    if (devChecks) assertMutable(this, "setCapture");
+    this._capture = capture;
     return this;
   }
 
   setList(list?: string | Id): this {
-    this.listId = list === undefined ? undefined : extractId(list);
+    if (devChecks) assertMutable(this, "setList");
+    this._listId = list === undefined ? undefined : extractId(list);
     return this;
   }
 
   setDirname(dirname?: string): this {
-    this.dirname = dirname;
+    if (devChecks) assertMutable(this, "setDirname");
+    this._dirname = dirname;
     return this;
   }
 }
@@ -146,7 +163,7 @@ export function Input(type: DateTimeInputType): DateTimeInputTag;
 export function Input(type: NoMinMaxInputType): NoMinMaxInputTag;
 export function Input(type?: InputType): InputTag {
   const tag = new InputTag("input");
-  if (type) tag.type = type;
+  if (type) tag.setType(type);
   return tag;
 }
 
@@ -157,66 +174,76 @@ export function Input(type?: InputType): InputTag {
  * Textarea().setName("comment").setRows(5).setPlaceholder("Write a comment...")
  */
 export class TextareaTag extends Tag {
-  placeholder?: string;
-  name?: string;
-  rows?: number;
-  cols?: number;
-  minlength?: number;
-  maxlength?: number;
+  protected _placeholder?: string;
+  protected _name?: string;
+  protected _rows?: number;
+  protected _cols?: number;
+  protected _minlength?: number;
+  protected _maxlength?: number;
   // Storage is `wrapMode` (aliased to the `wrap` attribute in the schema) so the
   // field doesn't shadow Tag's `.wrap()` styling method.
-  wrapMode?: 'hard' | 'soft' | 'off';
-  autocomplete?: AutocompleteHint;
-  inputmode?: InputMode;
-  dirname?: string;
+  protected _wrapMode?: 'hard' | 'soft' | 'off';
+  protected _autocomplete?: AutocompleteHint;
+  protected _inputmode?: InputMode;
+  protected _dirname?: string;
 
   setPlaceholder(placeholder?: string): this {
-    this.placeholder = placeholder;
+    if (devChecks) assertMutable(this, "setPlaceholder");
+    this._placeholder = placeholder;
     return this;
   }
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 
   setRows(rows?: number): this {
-    this.rows = rows;
+    if (devChecks) assertMutable(this, "setRows");
+    this._rows = rows;
     return this;
   }
 
   setCols(cols?: number): this {
-    this.cols = cols;
+    if (devChecks) assertMutable(this, "setCols");
+    this._cols = cols;
     return this;
   }
 
   setMinlength(minlength?: number): this {
-    this.minlength = minlength;
+    if (devChecks) assertMutable(this, "setMinlength");
+    this._minlength = minlength;
     return this;
   }
 
   setMaxlength(maxlength?: number): this {
-    this.maxlength = maxlength;
+    if (devChecks) assertMutable(this, "setMaxlength");
+    this._maxlength = maxlength;
     return this;
   }
 
   setWrap(wrap?: 'hard' | 'soft' | 'off'): this {
-    this.wrapMode = wrap;
+    if (devChecks) assertMutable(this, "setWrap");
+    this._wrapMode = wrap;
     return this;
   }
 
   setAutocomplete(autocomplete?: AutocompleteHint): this {
-    this.autocomplete = autocomplete;
+    if (devChecks) assertMutable(this, "setAutocomplete");
+    this._autocomplete = autocomplete;
     return this;
   }
 
   setInputmode(inputmode?: InputMode): this {
-    this.inputmode = inputmode;
+    if (devChecks) assertMutable(this, "setInputmode");
+    this._inputmode = inputmode;
     return this;
   }
 
   setDirname(dirname?: string): this {
-    this.dirname = dirname;
+    if (devChecks) assertMutable(this, "setDirname");
+    this._dirname = dirname;
     return this;
   }
 }
@@ -235,18 +262,19 @@ export function Textarea(...children: View[]): TextareaTag {
  * Button("Submit").setType("submit").toggle("disabled", isLoading)
  */
 export class ButtonTag extends Tag {
-  type?: 'submit' | 'reset' | 'button';
-  name?: string;
-  value?: string;
-  formaction?: string;
-  formmethod?: FormMethod;
-  formtarget?: BrowsingContext;
-  formenctype?: FormEnctype;
-  command?: CommandFor;
-  commandfor?: string;
+  protected _type?: 'submit' | 'reset' | 'button';
+  protected _name?: string;
+  protected _value?: string;
+  protected _formaction?: string;
+  protected _formmethod?: FormMethod;
+  protected _formtarget?: BrowsingContext;
+  protected _formenctype?: FormEnctype;
+  protected _command?: CommandFor;
+  protected _commandfor?: string;
 
   setType(type?: 'submit' | 'reset' | 'button'): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
@@ -262,44 +290,52 @@ export class ButtonTag extends Tag {
    * Button("Edit").setCommand("show-modal").setCommandfor(ids.dialog)
    */
   setCommand(command: CommandFor): this {
-    this.command = command;
+    if (devChecks) assertMutable(this, "setCommand");
+    this._command = command;
     return this;
   }
 
   /** Wire this invoker to its target element by `Id`, rendering `commandfor="<id>"`. */
   setCommandfor(target: Id): this {
-    this.commandfor = extractId(target);
+    if (devChecks) assertMutable(this, "setCommandfor");
+    this._commandfor = extractId(target);
     return this;
   }
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 
   setValue(value?: string): this {
-    this.value = value;
+    if (devChecks) assertMutable(this, "setValue");
+    this._value = value;
     return this;
   }
 
   setFormaction(formaction?: string): this {
-    this.formaction = formaction;
+    if (devChecks) assertMutable(this, "setFormaction");
+    this._formaction = formaction;
     return this;
   }
 
   /** Override the form's method for this submit button. `"dialog"` closes an ancestor `<dialog>` with the button's value. */
   setFormmethod(formmethod?: FormMethod): this {
-    this.formmethod = formmethod;
+    if (devChecks) assertMutable(this, "setFormmethod");
+    this._formmethod = formmethod;
     return this;
   }
 
   setFormtarget(formtarget?: BrowsingContext): this {
-    this.formtarget = formtarget;
+    if (devChecks) assertMutable(this, "setFormtarget");
+    this._formtarget = formtarget;
     return this;
   }
 
   setFormenctype(formenctype?: FormEnctype): this {
-    this.formenctype = formenctype;
+    if (devChecks) assertMutable(this, "setFormenctype");
+    this._formenctype = formenctype;
     return this;
   }
 }
@@ -312,10 +348,11 @@ export function Button(...children: View[]): ButtonTag {
 }
 
 export class LabelTag extends Tag {
-  for?: string;
+  protected _for?: string;
 
   setFor(forId?: string | Id): this {
-    this.for = forId === undefined ? undefined : extractId(forId);
+    if (devChecks) assertMutable(this, "setFor");
+    this._for = forId === undefined ? undefined : extractId(forId);
     return this;
   }
 }
@@ -327,40 +364,55 @@ export function Label(...children: View[]): LabelTag {
 }
 
 export class FormTag extends Tag {
-  action?: string;
-  method?: FormMethod;
-  enctype?: FormEnctype;
-  target?: BrowsingContext;
-  autocomplete?: 'on' | 'off';
+  protected _action?: string;
+  protected _method?: FormMethod;
+  protected _enctype?: FormEnctype;
+  protected _target?: BrowsingContext;
+  protected _autocomplete?: 'on' | 'off';
 
   setAction(action?: string): this {
-    this.action = action;
+    if (devChecks) assertMutable(this, "setAction");
+    this._action = action;
     return this;
   }
 
   setMethod(method?: FormMethod): this {
-    this.method = method;
+    if (devChecks) assertMutable(this, "setMethod");
+    this._method = method;
     return this;
   }
 
   setEnctype(enctype?: FormEnctype): this {
-    this.enctype = enctype;
+    if (devChecks) assertMutable(this, "setEnctype");
+    this._enctype = enctype;
     return this;
   }
 
   setTarget(target?: BrowsingContext): this {
-    this.target = target;
+    if (devChecks) assertMutable(this, "setTarget");
+    this._target = target;
     return this;
   }
 
   setAutocomplete(autocomplete?: 'on' | 'off'): this {
-    this.autocomplete = autocomplete;
+    if (devChecks) assertMutable(this, "setAutocomplete");
+    this._autocomplete = autocomplete;
     return this;
+  }
+
+  /**
+   * Read the form's `enctype` (or `undefined` when unset). The storage field is
+   * protected so it cannot shadow `setEnctype`; framework code that stamps an
+   * encoding only when the author hasn't set one reads through this accessor.
+   */
+  getEnctype(): FormEnctype | undefined {
+    return this._enctype;
   }
 
   /** Set `enctype="multipart/form-data"` (required for file uploads). */
   multipart(): this {
-    this.enctype = 'multipart/form-data';
+    if (devChecks) assertMutable(this, "multipart");
+    this._enctype = 'multipart/form-data';
     return this;
   }
 }
@@ -499,22 +551,25 @@ export function Form(...args: unknown[]): FormTag {
 }
 
 export class SelectTag extends Tag {
-  name?: string;
-  size?: number;
-  autocomplete?: AutocompleteHint;
+  protected _name?: string;
+  protected _size?: number;
+  protected _autocomplete?: AutocompleteHint;
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 
   setSize(size?: number): this {
-    this.size = size;
+    if (devChecks) assertMutable(this, "setSize");
+    this._size = size;
     return this;
   }
 
   setAutocomplete(autocomplete?: AutocompleteHint): this {
-    this.autocomplete = autocomplete;
+    if (devChecks) assertMutable(this, "setAutocomplete");
+    this._autocomplete = autocomplete;
     return this;
   }
 }
@@ -526,16 +581,18 @@ export function Select(...children: View[]): SelectTag {
 }
 
 export class OptionTag extends Tag {
-  value?: string;
-  label?: string;
+  protected _value?: string;
+  protected _label?: string;
 
   setValue(value?: string): this {
-    this.value = value;
+    if (devChecks) assertMutable(this, "setValue");
+    this._value = value;
     return this;
   }
 
   setLabel(label?: string): this {
-    this.label = label;
+    if (devChecks) assertMutable(this, "setLabel");
+    this._label = label;
     return this;
   }
 }
@@ -547,10 +604,11 @@ export function Option(...children: View[]): OptionTag {
 }
 
 export class OptgroupTag extends Tag {
-  label?: string;
+  protected _label?: string;
 
   setLabel(label?: string): this {
-    this.label = label;
+    if (devChecks) assertMutable(this, "setLabel");
+    this._label = label;
     return this;
   }
 }
@@ -566,10 +624,11 @@ export function Datalist(...children: View[]): Tag {
 }
 
 export class FieldsetTag extends Tag {
-  name?: string;
+  protected _name?: string;
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 }
@@ -585,18 +644,20 @@ export function Legend(...children: View[]): Tag {
 }
 
 export class OutputTag extends Tag {
-  for?: string;
-  name?: string;
+  protected _for?: string;
+  protected _name?: string;
 
   setFor(...forIds: (string | Id)[]): this {
-    this.for = forIds.length
+    if (devChecks) assertMutable(this, "setFor");
+    this._for = forIds.length
       ? forIds.map(extractId).map(s => s.trim()).filter(Boolean).join(' ')
       : undefined;
     return this;
   }
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 }

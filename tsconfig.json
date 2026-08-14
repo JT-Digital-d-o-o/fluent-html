@@ -44,6 +44,8 @@
     "dist",
     "src/behaviors/client",
     "test/acceptance",
-    "test/types/color-optout"
+    "test/types/color-optout",
+    "test/types/setter-probe",
+    "test/types/brand-probe"
   ]
 }

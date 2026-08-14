@@ -34,7 +34,14 @@
 import { pathToFileURL } from "node:url";
 import { Node, Project, ts } from "ts-morph";
 import { variantKeySpecs, DIRECT_VARIANTS, DIR_MAP, UNITS } from "../../src/class-vocab/index.js";
-/** Old → canonical name. 21 simple renames + 29 merge sources (call-site-pure: argument shapes carried over). */
+/**
+ * Old → canonical name. Simple renames + merge sources (call-site-pure:
+ * argument shapes carried over). `backfaceVisibility` and `scrollMargin` are
+ * NOT mapped: their 8.0.0 canonical targets (`backface`, `scrollM`) were
+ * pruned with the zero-use surface — those calls skip+report, and the
+ * successors are `.variant()` / `.cssProp("backface-visibility", …)` /
+ * `.cssProp("scroll-margin", …)`.
+ */
 const RENAMES = {
     // (b) simple renames
     padding: "p",
@@ -51,10 +58,8 @@ const RENAMES = {
     fillColor: "fill",
     accentColor: "accent",
     caretColor: "caret",
-    backfaceVisibility: "backface",
     transformStyle: "transform",
     scrollBehavior: "scroll",
-    scrollMargin: "scrollM",
     scrollPadding: "scrollP",
     gradientRadial: "bgRadial",
     gradientConic: "bgConic",
@@ -113,8 +118,13 @@ const KEYWORD_DISPATCH = {
         sticky: "sticky",
     },
 };
+/** Legacy names whose canonical targets were pruned in 8.0.0 — skip+report with the successor. */
+const PRUNED = {
+    backfaceVisibility: 'canonical target "backface" was pruned in 8.0.0 — use .cssProp("backface-visibility", …) or a .variant() cssProp key',
+    scrollMargin: 'canonical target "scrollM" was pruned in 8.0.0 — use .cssProp("scroll-margin", …) or a .variant() cssProp key',
+};
 const REWRITES = new Set(["outlineHidden", "bold", ...Object.keys(KEYWORD_DISPATCH)]);
-const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES, "on", "at"]);
+const ALL_SOURCE_NAMES = new Set([...Object.keys(RENAMES), ...REWRITES, ...Object.keys(PRUNED), "on", "at"]);
 function typeIsTag(type, seen = new Set()) {
     if (seen.has(type))
         return false;
@@ -388,6 +398,10 @@ export function collectEdits(file) {
         // into the object text; inside a FAILED span it still applies.
         if (inSpan(converted, nameStart))
             return;
+        if (PRUNED[name] !== undefined) {
+            skips.push({ line, name, reason: PRUNED[name] });
+            return;
+        }
         if (REWRITES.has(name)) {
             const { text, skipReason } = rewriteText(name, node);
             if (text === undefined)

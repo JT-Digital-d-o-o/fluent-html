@@ -1,6 +1,8 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
+import type { ResolvedRoute, ExternalHref } from "../htmx.js";
 import type { BrowsingContext, LinkRel, ReferrerPolicy } from "./html-types.js";
 
 
@@ -8,49 +10,62 @@ import type { BrowsingContext, LinkRel, ReferrerPolicy } from "./html-types.js";
  * Specialized Tag for `<a>` (anchor) elements with typed attribute setters.
  *
  * @example
- * A("Dashboard").setHref("/dashboard").setTarget("_blank")
+ * A("Dashboard").nav(dashboardRoutes.index())   // or .setHref(route.resolve(...)) for a plain link
  */
 export class AnchorTag extends Tag {
-  href?: string;
-  target?: BrowsingContext;
-  rel?: LinkRel;
-  download?: string | boolean;
-  type?: string;
-  referrerpolicy?: ReferrerPolicy;
-  hreflang?: string;
+  protected _href?: string;
+  protected _target?: BrowsingContext;
+  protected _rel?: LinkRel;
+  protected _download?: string | boolean;
+  protected _type?: string;
+  protected _referrerpolicy?: ReferrerPolicy;
+  protected _hreflang?: string;
 
-  setHref(href?: string): this {
-    this.href = href;
+  /**
+   * Branded (8.0.0): accepts a `ResolvedRoute` (route callable `.resolve()`,
+   * `assetUrl()`) or an `ExternalHref` — literal `https://…`/`mailto:…`/
+   * `tel:…`/`#…` pass directly; runtime externals go through `externalUrl()`.
+   * In-app navigation should prefer the swap verbs (`.nav()`) over `setHref`.
+   */
+  setHref(href?: ResolvedRoute | ExternalHref): this {
+    if (devChecks) assertMutable(this, "setHref");
+    this._href = href;
     return this;
   }
 
   setHreflang(hreflang?: string): this {
-    this.hreflang = hreflang;
+    if (devChecks) assertMutable(this, "setHreflang");
+    this._hreflang = hreflang;
     return this;
   }
 
   setTarget(target?: BrowsingContext): this {
-    this.target = target;
+    if (devChecks) assertMutable(this, "setTarget");
+    this._target = target;
     return this;
   }
 
   setRel(...rels: LinkRel[]): this {
-    this.rel = rels.length ? rels.join(" ") : undefined;
+    if (devChecks) assertMutable(this, "setRel");
+    this._rel = rels.length ? rels.join(" ") : undefined;
     return this;
   }
 
   setDownload(download?: string | boolean): this {
-    this.download = download;
+    if (devChecks) assertMutable(this, "setDownload");
+    this._download = download;
     return this;
   }
 
   setType(type?: string): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
   setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
-    this.referrerpolicy = referrerpolicy;
+    if (devChecks) assertMutable(this, "setReferrerPolicy");
+    this._referrerpolicy = referrerpolicy;
     return this;
   }
 }
@@ -63,10 +78,11 @@ export function A(...children: View[]): AnchorTag {
 }
 
 export class MapTag extends Tag {
-  name?: string;
+  protected _name?: string;
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 }
@@ -78,52 +94,60 @@ export function MapEl(...children: View[]): MapTag {
 }
 
 export class AreaTag extends Tag {
-  shape?: 'rect' | 'circle' | 'poly' | 'default';
-  coords?: string;
-  href?: string;
-  alt?: string;
-  target?: BrowsingContext;
-  rel?: LinkRel;
-  download?: string | boolean;
-  referrerpolicy?: ReferrerPolicy;
+  protected _shape?: 'rect' | 'circle' | 'poly' | 'default';
+  protected _coords?: string;
+  protected _href?: string;
+  protected _alt?: string;
+  protected _target?: BrowsingContext;
+  protected _rel?: LinkRel;
+  protected _download?: string | boolean;
+  protected _referrerpolicy?: ReferrerPolicy;
 
   setShape(shape?: 'rect' | 'circle' | 'poly' | 'default'): this {
-    this.shape = shape;
+    if (devChecks) assertMutable(this, "setShape");
+    this._shape = shape;
     return this;
   }
 
   setCoords(coords?: string): this {
-    this.coords = coords;
+    if (devChecks) assertMutable(this, "setCoords");
+    this._coords = coords;
     return this;
   }
 
   setHref(href?: string): this {
-    this.href = href;
+    if (devChecks) assertMutable(this, "setHref");
+    this._href = href;
     return this;
   }
 
   setAlt(alt?: string): this {
-    this.alt = alt;
+    if (devChecks) assertMutable(this, "setAlt");
+    this._alt = alt;
     return this;
   }
 
   setTarget(target?: BrowsingContext): this {
-    this.target = target;
+    if (devChecks) assertMutable(this, "setTarget");
+    this._target = target;
     return this;
   }
 
   setRel(...rels: LinkRel[]): this {
-    this.rel = rels.length ? rels.join(" ") : undefined;
+    if (devChecks) assertMutable(this, "setRel");
+    this._rel = rels.length ? rels.join(" ") : undefined;
     return this;
   }
 
   setDownload(download?: string | boolean): this {
-    this.download = download;
+    if (devChecks) assertMutable(this, "setDownload");
+    this._download = download;
     return this;
   }
 
   setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
-    this.referrerpolicy = referrerpolicy;
+    if (devChecks) assertMutable(this, "setReferrerPolicy");
+    this._referrerpolicy = referrerpolicy;
     return this;
   }
 }

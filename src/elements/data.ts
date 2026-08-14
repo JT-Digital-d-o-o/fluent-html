@@ -1,13 +1,15 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 
 
 export class TimeTag extends Tag {
-  datetime?: string;
+  protected _datetime?: string;
 
   setDatetime(datetime?: string): this {
-    this.datetime = datetime;
+    if (devChecks) assertMutable(this, "setDatetime");
+    this._datetime = datetime;
     return this;
   }
 }
@@ -19,10 +21,11 @@ export function Time(...children: View[]): TimeTag {
 }
 
 export class DataTag extends Tag {
-  value?: string;
+  protected _value?: string;
 
   setValue(value?: string): this {
-    this.value = value;
+    if (devChecks) assertMutable(this, "setValue");
+    this._value = value;
     return this;
   }
 }
@@ -34,16 +37,18 @@ export function Data(...children: View[]): DataTag {
 }
 
 export class ProgressTag extends Tag {
-  value?: number;
-  max?: number;
+  protected _value?: number;
+  protected _max?: number;
 
   setValue(value?: number): this {
-    this.value = value;
+    if (devChecks) assertMutable(this, "setValue");
+    this._value = value;
     return this;
   }
 
   setMax(max?: number): this {
-    this.max = max;
+    if (devChecks) assertMutable(this, "setMax");
+    this._max = max;
     return this;
   }
 }
@@ -55,40 +60,46 @@ export function Progress(...children: View[]): ProgressTag {
 }
 
 export class MeterTag extends Tag {
-  value?: number;
-  min?: number;
-  max?: number;
-  low?: number;
-  high?: number;
-  optimum?: number;
+  protected _value?: number;
+  protected _min?: number;
+  protected _max?: number;
+  protected _low?: number;
+  protected _high?: number;
+  protected _optimum?: number;
 
   setValue(value?: number): this {
-    this.value = value;
+    if (devChecks) assertMutable(this, "setValue");
+    this._value = value;
     return this;
   }
 
   setMin(min?: number): this {
-    this.min = min;
+    if (devChecks) assertMutable(this, "setMin");
+    this._min = min;
     return this;
   }
 
   setMax(max?: number): this {
-    this.max = max;
+    if (devChecks) assertMutable(this, "setMax");
+    this._max = max;
     return this;
   }
 
   setLow(low?: number): this {
-    this.low = low;
+    if (devChecks) assertMutable(this, "setLow");
+    this._low = low;
     return this;
   }
 
   setHigh(high?: number): this {
-    this.high = high;
+    if (devChecks) assertMutable(this, "setHigh");
+    this._high = high;
     return this;
   }
 
   setOptimum(optimum?: number): this {
-    this.optimum = optimum;
+    if (devChecks) assertMutable(this, "setOptimum");
+    this._optimum = optimum;
     return this;
   }
 }
@@ -100,16 +111,18 @@ export function Meter(...children: View[]): MeterTag {
 }
 
 export class InsTag extends Tag {
-  cite?: string;
-  datetime?: string;
+  protected _cite?: string;
+  protected _datetime?: string;
 
   setCite(cite?: string): this {
-    this.cite = cite;
+    if (devChecks) assertMutable(this, "setCite");
+    this._cite = cite;
     return this;
   }
 
   setDatetime(datetime?: string): this {
-    this.datetime = datetime;
+    if (devChecks) assertMutable(this, "setDatetime");
+    this._datetime = datetime;
     return this;
   }
 }
@@ -121,16 +134,18 @@ export function Ins(...children: View[]): InsTag {
 }
 
 export class DelTag extends Tag {
-  cite?: string;
-  datetime?: string;
+  protected _cite?: string;
+  protected _datetime?: string;
 
   setCite(cite?: string): this {
-    this.cite = cite;
+    if (devChecks) assertMutable(this, "setCite");
+    this._cite = cite;
     return this;
   }
 
   setDatetime(datetime?: string): this {
-    this.datetime = datetime;
+    if (devChecks) assertMutable(this, "setDatetime");
+    this._datetime = datetime;
     return this;
   }
 }

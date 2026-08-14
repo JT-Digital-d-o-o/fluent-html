@@ -9,22 +9,22 @@ import type { InputType, NumericInputType, DateTimeInputType, NoMinMaxInputType,
  * Input().setType("email").setName("email").setPlaceholder("you@example.com")
  */
 export declare class InputTag extends Tag {
-    type?: InputType;
-    placeholder?: string;
-    name?: string;
-    value?: string;
-    accept?: string;
-    min?: number | string;
-    max?: number | string;
-    step?: number | 'any';
-    pattern?: string;
-    minlength?: number;
-    maxlength?: number;
-    autocomplete?: AutocompleteHint;
-    inputmode?: InputMode;
-    capture?: 'user' | 'environment';
-    listId?: string;
-    dirname?: string;
+    protected _type?: InputType;
+    protected _placeholder?: string;
+    protected _name?: string;
+    protected _value?: string;
+    protected _accept?: string;
+    protected _min?: number | string;
+    protected _max?: number | string;
+    protected _step?: number | 'any';
+    protected _pattern?: string;
+    protected _minlength?: number;
+    protected _maxlength?: number;
+    protected _autocomplete?: AutocompleteHint;
+    protected _inputmode?: InputMode;
+    protected _capture?: 'user' | 'environment';
+    protected _listId?: string;
+    protected _dirname?: string;
     setType(type?: InputType): this;
     setPlaceholder(placeholder?: string): this;
     setName(name?: string): this;
@@ -72,16 +72,16 @@ export declare function Input(type: NoMinMaxInputType): NoMinMaxInputTag;
  * Textarea().setName("comment").setRows(5).setPlaceholder("Write a comment...")
  */
 export declare class TextareaTag extends Tag {
-    placeholder?: string;
-    name?: string;
-    rows?: number;
-    cols?: number;
-    minlength?: number;
-    maxlength?: number;
-    wrapMode?: 'hard' | 'soft' | 'off';
-    autocomplete?: AutocompleteHint;
-    inputmode?: InputMode;
-    dirname?: string;
+    protected _placeholder?: string;
+    protected _name?: string;
+    protected _rows?: number;
+    protected _cols?: number;
+    protected _minlength?: number;
+    protected _maxlength?: number;
+    protected _wrapMode?: 'hard' | 'soft' | 'off';
+    protected _autocomplete?: AutocompleteHint;
+    protected _inputmode?: InputMode;
+    protected _dirname?: string;
     setPlaceholder(placeholder?: string): this;
     setName(name?: string): this;
     setRows(rows?: number): this;
@@ -102,15 +102,15 @@ export declare function Textarea(...children: View[]): TextareaTag;
  * Button("Submit").setType("submit").toggle("disabled", isLoading)
  */
 export declare class ButtonTag extends Tag {
-    type?: 'submit' | 'reset' | 'button';
-    name?: string;
-    value?: string;
-    formaction?: string;
-    formmethod?: FormMethod;
-    formtarget?: BrowsingContext;
-    formenctype?: FormEnctype;
-    command?: CommandFor;
-    commandfor?: string;
+    protected _type?: 'submit' | 'reset' | 'button';
+    protected _name?: string;
+    protected _value?: string;
+    protected _formaction?: string;
+    protected _formmethod?: FormMethod;
+    protected _formtarget?: BrowsingContext;
+    protected _formenctype?: FormEnctype;
+    protected _command?: CommandFor;
+    protected _commandfor?: string;
     setType(type?: 'submit' | 'reset' | 'button'): this;
     /**
      * Set the invoker `command` (Commands API) — a JS-free, nonce-free way to drive a
@@ -137,21 +137,27 @@ export declare class ButtonTag extends Tag {
 /** Create a `<button>` element with typed attribute methods. */
 export declare function Button(...children: View[]): ButtonTag;
 export declare class LabelTag extends Tag {
-    for?: string;
+    protected _for?: string;
     setFor(forId?: string | Id): this;
 }
 export declare function Label(...children: View[]): LabelTag;
 export declare class FormTag extends Tag {
-    action?: string;
-    method?: FormMethod;
-    enctype?: FormEnctype;
-    target?: BrowsingContext;
-    autocomplete?: 'on' | 'off';
+    protected _action?: string;
+    protected _method?: FormMethod;
+    protected _enctype?: FormEnctype;
+    protected _target?: BrowsingContext;
+    protected _autocomplete?: 'on' | 'off';
     setAction(action?: string): this;
     setMethod(method?: FormMethod): this;
     setEnctype(enctype?: FormEnctype): this;
     setTarget(target?: BrowsingContext): this;
     setAutocomplete(autocomplete?: 'on' | 'off'): this;
+    /**
+     * Read the form's `enctype` (or `undefined` when unset). The storage field is
+     * protected so it cannot shadow `setEnctype`; framework code that stamps an
+     * encoding only when the author hasn't set one reads through this accessor.
+     */
+    getEnctype(): FormEnctype | undefined;
     /** Set `enctype="multipart/form-data"` (required for file uploads). */
     multipart(): this;
 }
@@ -206,36 +212,36 @@ export declare function Form<T>(build: (f: FormBinding<T>) => View): FormTag;
 /** Typed-binding form with `state` — values/errors auto-wire into the controls. */
 export declare function Form<T>(state: FormState<T> | undefined, build: (f: FormBinding<T>) => View): FormTag;
 export declare class SelectTag extends Tag {
-    name?: string;
-    size?: number;
-    autocomplete?: AutocompleteHint;
+    protected _name?: string;
+    protected _size?: number;
+    protected _autocomplete?: AutocompleteHint;
     setName(name?: string): this;
     setSize(size?: number): this;
     setAutocomplete(autocomplete?: AutocompleteHint): this;
 }
 export declare function Select(...children: View[]): SelectTag;
 export declare class OptionTag extends Tag {
-    value?: string;
-    label?: string;
+    protected _value?: string;
+    protected _label?: string;
     setValue(value?: string): this;
     setLabel(label?: string): this;
 }
 export declare function Option(...children: View[]): OptionTag;
 export declare class OptgroupTag extends Tag {
-    label?: string;
+    protected _label?: string;
     setLabel(label?: string): this;
 }
 export declare function Optgroup(...children: View[]): OptgroupTag;
 export declare function Datalist(...children: View[]): Tag;
 export declare class FieldsetTag extends Tag {
-    name?: string;
+    protected _name?: string;
     setName(name?: string): this;
 }
 export declare function Fieldset(...children: View[]): FieldsetTag;
 export declare function Legend(...children: View[]): Tag;
 export declare class OutputTag extends Tag {
-    for?: string;
-    name?: string;
+    protected _for?: string;
+    protected _name?: string;
     setFor(...forIds: (string | Id)[]): this;
     setName(name?: string): this;
 }

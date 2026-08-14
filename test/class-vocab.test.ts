@@ -22,8 +22,6 @@ describe("emitClasses — per-shape exact output", () => {
     // prefix
     ["prefix bg", "bg", ["blue-500"], ["bg-blue-500"]],
     ["prefix gridCols", "gridCols", ["3"], ["grid-cols-3"]],
-    ["custom skewX", "skewX", ["6"], ["skew-x-6"]],
-    ["custom skewX negative", "skewX", ["-6"], ["-skew-x-6"]],
     // optional
     ["optional shadow bare", "shadow", [], ["shadow"]],
     ["optional shadow value", "shadow", ["md"], ["shadow-md"]],
@@ -87,10 +85,6 @@ describe("emitClasses — per-shape exact output", () => {
     ["merged bgLinear angle", "bgLinear", ["45"], ["bg-linear-45"]],
     ["merged bgLinear negative angle", "bgLinear", ["-65"], ["-bg-linear-65"]],
     ["merged bgLinear interpolation", "bgLinear", ["to-r", "oklch"], ["bg-linear-to-r/oklch"]],
-    // merged mask (image | composite)
-    ["merged mask none", "mask", ["none"], ["mask-none"]],
-    ["merged mask composite", "mask", ["add"], ["mask-add"]],
-    ["merged mask arbitrary", "mask", ["[url(/x.png)]"], ["mask-[url(/x.png)]"]],
     // merged list / outline absorb
     ["merged list type", "list", ["disc"], ["list-disc"]],
     ["merged list position", "list", ["inside"], ["list-inside"]],

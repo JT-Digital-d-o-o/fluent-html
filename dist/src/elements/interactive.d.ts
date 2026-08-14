@@ -2,13 +2,13 @@ import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { ClosedBy } from "./html-types.js";
 export declare class DetailsTag extends Tag {
-    name?: string;
+    protected _name?: string;
     setName(name?: string): this;
 }
 export declare function Details(...children: View[]): DetailsTag;
 export declare function Summary(...children: View[]): Tag;
 export declare class DialogTag extends Tag {
-    closedby?: ClosedBy;
+    protected _closedby?: ClosedBy;
     /**
      * Set `closedby` — how the dialog light-dismisses: `"any"` (click-outside + Esc),
      * `"closerequest"` (Esc only), `"none"` (explicit close only). The native replacement

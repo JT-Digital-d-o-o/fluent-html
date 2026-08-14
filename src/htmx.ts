@@ -6,6 +6,64 @@
 import type { Id} from "./ids.js";
 import { isId } from "./ids.js";
 
+// ------------------------------------
+// Branded Route Strings (8.0.0)
+// ------------------------------------
+
+declare const RouteBrand: unique symbol;
+
+/**
+ * A URL string proven to come from the typed route system. Route-bearing sinks
+ * (`hx()`, `setHtmx()`, `hxGet`/`hxPost`, `AnchorTag.setHref`, and app-side
+ * `reply.redirect` wrappers) accept only this brand or an {@link ExternalHref},
+ * so hardcoded route strings, hand-concatenated query strings, and raw user
+ * input all fail to compile. Three ways to produce one:
+ *
+ * 1. `route.resolve(params?, query?)` or a route callable from `defineRoutes`
+ *    — the normal path; `.resolve({ query })` is the only query-string path
+ *    (concatenation loses the brand).
+ * 2. `externalUrl(u)` for a runtime-computed TRUE external URL (payment
+ *    provider redirects, presigned storage URLs). Literal `https://…`,
+ *    `mailto:…`, `tel:…`, and `#…` strings already pass as {@link ExternalHref}
+ *    with zero ceremony.
+ * 3. `validateReturnTo(raw)` (app auth core) for user-supplied return targets
+ *    — never pass request input into a sink directly.
+ *
+ * `assetUrl("/favicon.svg")` covers static assets no route models.
+ */
+export type ResolvedRoute = string & { readonly [RouteBrand]: true };
+
+/**
+ * A literal external (non-route) href — `https://`/`http://` URLs, `mailto:`,
+ * `tel:`, and same-page `#fragment` targets. Literals of these shapes pass the
+ * route-bearing sinks directly; a runtime-computed external URL goes through
+ * {@link externalUrl}.
+ */
+export type ExternalHref =
+  | `https://${string}`
+  | `http://${string}`
+  | `mailto:${string}`
+  | `tel:${string}`
+  | `#${string}`;
+
+/**
+ * Mark a runtime-computed TRUE external URL (Stripe checkout, OAuth authorize,
+ * presigned storage URL) as safe for the route-bearing sinks. Runtime identity
+ * — this is a type-level assertion, not validation; never pass user input.
+ */
+export function externalUrl(url: string): ExternalHref {
+  return url as ExternalHref;
+}
+
+/**
+ * Mark a static asset path (`/favicon.svg`, `/apple-touch-icon.png`) — a URL
+ * served outside the route system — as a {@link ResolvedRoute}. Runtime
+ * identity — a type-level assertion; never pass user input.
+ */
+export function assetUrl(path: string): ResolvedRoute {
+  return path as ResolvedRoute;
+}
+
 // HTTP Methods
 export type HxHttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
@@ -212,8 +270,9 @@ export type HxStatusKey =
 // ------------------------------------
 
 export interface HTMX {
-  // Required
-  endpoint: string;
+  // Required — branded (8.0.0): a hand-written bag with a raw route string
+  // fails to compile; build endpoints with a route callable or hx().
+  endpoint: ResolvedRoute | ExternalHref;
   method: HxHttpMethod;
 
   // Targeting & Swapping
@@ -358,12 +417,12 @@ export function resolveSelector(value: string | Id | undefined): string | undefi
  * the request body and is not url-encoded — never reach for `vals` to build a query string.
  */
 export function hx(
-  endpoint: string,
+  endpoint: ResolvedRoute | ExternalHref,
   options: HxOptions = {}
 ): HTMX {
   const { method, target, select, indicator, disable, include, query, ...rest } = options;
   return {
-    endpoint: query ? buildQueryString(endpoint, query) : endpoint,
+    endpoint: (query ? buildQueryString(endpoint, query) : endpoint) as ResolvedRoute,
     method: method ?? "get",
     target: resolveSelector(target),
     select: resolveSelector(select),

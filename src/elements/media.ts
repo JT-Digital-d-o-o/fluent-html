@@ -1,4 +1,5 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import type { View } from "../core/types.js";
@@ -11,71 +12,82 @@ import type { CrossOrigin, FetchPriority, ReferrerPolicy } from "./html-types.js
  * Img().setSrc("/photo.jpg").setAlt("A photo").setLoading("lazy")
  */
 export class ImgTag extends Tag {
-  src?: string;
-  alt?: string;
-  width?: string;
-  height?: string;
-  loading?: 'lazy' | 'eager';
-  decoding?: 'sync' | 'async' | 'auto';
-  srcset?: string;
-  sizes?: string;
-  crossorigin?: CrossOrigin | '';
-  fetchpriority?: FetchPriority;
-  referrerpolicy?: ReferrerPolicy;
+  protected _src?: string;
+  protected _alt?: string;
+  protected _width?: string;
+  protected _height?: string;
+  protected _loading?: 'lazy' | 'eager';
+  protected _decoding?: 'sync' | 'async' | 'auto';
+  protected _srcset?: string;
+  protected _sizes?: string;
+  protected _crossorigin?: CrossOrigin | '';
+  protected _fetchpriority?: FetchPriority;
+  protected _referrerpolicy?: ReferrerPolicy;
 
   setSrc(src?: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setAlt(alt?: string): this {
-    this.alt = alt;
+    if (devChecks) assertMutable(this, "setAlt");
+    this._alt = alt;
     return this;
   }
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 
   setLoading(loading?: 'lazy' | 'eager'): this {
-    this.loading = loading;
+    if (devChecks) assertMutable(this, "setLoading");
+    this._loading = loading;
     return this;
   }
 
   setDecoding(decoding?: 'sync' | 'async' | 'auto'): this {
-    this.decoding = decoding;
+    if (devChecks) assertMutable(this, "setDecoding");
+    this._decoding = decoding;
     return this;
   }
 
   setSrcset(srcset?: string): this {
-    this.srcset = srcset;
+    if (devChecks) assertMutable(this, "setSrcset");
+    this._srcset = srcset;
     return this;
   }
 
   setSizes(sizes?: string): this {
-    this.sizes = sizes;
+    if (devChecks) assertMutable(this, "setSizes");
+    this._sizes = sizes;
     return this;
   }
 
   setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
-    this.crossorigin = crossorigin;
+    if (devChecks) assertMutable(this, "setCrossOrigin");
+    this._crossorigin = crossorigin;
     return this;
   }
 
   /** Core Web Vitals priority hint — promote the LCP image (`'high'`) or de-prioritise (`'low'`). */
   setFetchPriority(fetchpriority?: FetchPriority): this {
-    this.fetchpriority = fetchpriority;
+    if (devChecks) assertMutable(this, "setFetchPriority");
+    this._fetchpriority = fetchpriority;
     return this;
   }
 
   setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
-    this.referrerpolicy = referrerpolicy;
+    if (devChecks) assertMutable(this, "setReferrerPolicy");
+    this._referrerpolicy = referrerpolicy;
     return this;
   }
 }
@@ -92,46 +104,53 @@ export function Picture(...children: View[]): Tag {
 }
 
 export class SourceTag extends Tag {
-  src?: string;
-  srcset?: string;
-  sizes?: string;
-  type?: string;
-  media?: string;
-  width?: string;
-  height?: string;
+  protected _src?: string;
+  protected _srcset?: string;
+  protected _sizes?: string;
+  protected _type?: string;
+  protected _media?: string;
+  protected _width?: string;
+  protected _height?: string;
 
   setSrc(src?: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setSrcset(srcset?: string): this {
-    this.srcset = srcset;
+    if (devChecks) assertMutable(this, "setSrcset");
+    this._srcset = srcset;
     return this;
   }
 
   setSizes(sizes?: string): this {
-    this.sizes = sizes;
+    if (devChecks) assertMutable(this, "setSizes");
+    this._sizes = sizes;
     return this;
   }
 
   setType(type?: string): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
   setMedia(media?: string): this {
-    this.media = media;
+    if (devChecks) assertMutable(this, "setMedia");
+    this._media = media;
     return this;
   }
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 }
@@ -143,40 +162,46 @@ export function Source(): SourceTag {
 }
 
 export class VideoTag extends Tag {
-  width?: string;
-  height?: string;
-  src?: string;
-  preload?: 'none' | 'metadata' | 'auto';
-  poster?: string;
-  crossorigin?: CrossOrigin | '';
+  protected _width?: string;
+  protected _height?: string;
+  protected _src?: string;
+  protected _preload?: 'none' | 'metadata' | 'auto';
+  protected _poster?: string;
+  protected _crossorigin?: CrossOrigin | '';
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 
   setSrc(src: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setPreload(preload?: 'none' | 'metadata' | 'auto'): this {
-    this.preload = preload;
+    if (devChecks) assertMutable(this, "setPreload");
+    this._preload = preload;
     return this;
   }
 
   setPoster(poster?: string): this {
-    this.poster = poster;
+    if (devChecks) assertMutable(this, "setPoster");
+    this._poster = poster;
     return this;
   }
 
   setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
-    this.crossorigin = crossorigin;
+    if (devChecks) assertMutable(this, "setCrossOrigin");
+    this._crossorigin = crossorigin;
     return this;
   }
 }
@@ -188,22 +213,25 @@ export function Video(...children: View[]): VideoTag {
 }
 
 export class AudioTag extends Tag {
-  src?: string;
-  preload?: 'none' | 'metadata' | 'auto';
-  crossorigin?: CrossOrigin | '';
+  protected _src?: string;
+  protected _preload?: 'none' | 'metadata' | 'auto';
+  protected _crossorigin?: CrossOrigin | '';
 
   setSrc(src?: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setPreload(preload?: 'none' | 'metadata' | 'auto'): this {
-    this.preload = preload;
+    if (devChecks) assertMutable(this, "setPreload");
+    this._preload = preload;
     return this;
   }
 
   setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
-    this.crossorigin = crossorigin;
+    if (devChecks) assertMutable(this, "setCrossOrigin");
+    this._crossorigin = crossorigin;
     return this;
   }
 }
@@ -215,28 +243,32 @@ export function Audio(...children: View[]): AudioTag {
 }
 
 export class TrackTag extends Tag {
-  src?: string;
-  kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
-  srclang?: string;
-  label?: string;
+  protected _src?: string;
+  protected _kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
+  protected _srclang?: string;
+  protected _label?: string;
 
   setSrc(src?: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setKind(kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata'): this {
-    this.kind = kind;
+    if (devChecks) assertMutable(this, "setKind");
+    this._kind = kind;
     return this;
   }
 
   setSrclang(srclang?: string): this {
-    this.srclang = srclang;
+    if (devChecks) assertMutable(this, "setSrclang");
+    this._srclang = srclang;
     return this;
   }
 
   setLabel(label?: string): this {
-    this.label = label;
+    if (devChecks) assertMutable(this, "setLabel");
+    this._label = label;
     return this;
   }
 }
@@ -248,16 +280,18 @@ export function Track(): TrackTag {
 }
 
 export class CanvasTag extends Tag {
-  width?: string;
-  height?: string;
+  protected _width?: string;
+  protected _height?: string;
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 }
@@ -269,48 +303,55 @@ export function Canvas(...children: View[]): CanvasTag {
 }
 
 export class SvgTag extends Tag {
-  width?: string;
-  height?: string;
-  viewBox?: string;
-  xmlns?: string;
+  protected _width?: string;
+  protected _height?: string;
+  protected _viewBox?: string;
+  protected _xmlns?: string;
   // Storage is `fillValue`/`strokeValue` (aliased to the `fill`/`stroke` attributes in
   // the schema) so the fields don't shadow the Tag `.fill()`/`.stroke()` styling methods.
-  fillValue?: string;
-  strokeValue?: string;
-  'stroke-width'?: string;
+  protected _fillValue?: string;
+  protected _strokeValue?: string;
+  protected '_stroke-width'?: string;
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 
   setViewBox(viewBox: string): this {
-    this.viewBox = viewBox;
+    if (devChecks) assertMutable(this, "setViewBox");
+    this._viewBox = viewBox;
     return this;
   }
 
   setXmlns(xmlns: string = "http://www.w3.org/2000/svg"): this {
-    this.xmlns = xmlns;
+    if (devChecks) assertMutable(this, "setXmlns");
+    this._xmlns = xmlns;
     return this;
   }
 
   setFill(fill: string): this {
-    this.fillValue = fill;
+    if (devChecks) assertMutable(this, "setFill");
+    this._fillValue = fill;
     return this;
   }
 
   setStroke(stroke: string): this {
-    this.strokeValue = stroke;
+    if (devChecks) assertMutable(this, "setStroke");
+    this._strokeValue = stroke;
     return this;
   }
 
   setStrokeWidth(width: string | number): this {
-    this['stroke-width'] = String(width);
+    if (devChecks) assertMutable(this, "setStrokeWidth");
+    this['_stroke-width'] = String(width);
     return this;
   }
 }

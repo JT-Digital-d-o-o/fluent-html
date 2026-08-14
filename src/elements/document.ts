@@ -1,4 +1,5 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import { Raw } from "../core/raw-string.js";
@@ -18,16 +19,18 @@ import type {
 } from "./html-types.js";
 
 export class HtmlTag extends Tag {
-  lang?: string;
-  dir?: 'ltr' | 'rtl' | 'auto';
+  protected _lang?: string;
+  protected _dir?: 'ltr' | 'rtl' | 'auto';
 
   override setLang(lang?: string): this {
-    this.lang = lang;
+    if (devChecks) assertMutable(this, "setLang");
+    this._lang = lang;
     return this;
   }
 
   override setDir(dir?: 'ltr' | 'rtl' | 'auto'): this {
-    this.dir = dir;
+    if (devChecks) assertMutable(this, "setDir");
+    this._dir = dir;
     return this;
   }
 }
@@ -71,14 +74,14 @@ export function Title(...children: View[]): Tag {
 }
 
 export class MetaTag extends Tag {
-  name?: MetaName;
+  protected _name?: MetaName;
   // Storage is `contentValue` (aliased to the `content` attribute in the schema) so the
   // field doesn't shadow Tag's `.content()` styling method.
-  contentValue?: string;
-  charset?: Charset;
-  httpEquiv?: string;
-  property?: string;
-  media?: string;
+  protected _contentValue?: string;
+  protected _charset?: Charset;
+  protected _httpEquiv?: string;
+  protected _property?: string;
+  protected _media?: string;
 
   /**
    * Set the `<meta name>` (named-meta grammar: `viewport`/`description`/`theme-color`/…).
@@ -86,34 +89,40 @@ export class MetaTag extends Tag {
    * `<iframe>`/`<object>`/`<map>` (browsing-context / form-association grammar).
    */
   setName(name?: MetaName): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 
   setContent(content?: string): this {
-    this.contentValue = content;
+    if (devChecks) assertMutable(this, "setContent");
+    this._contentValue = content;
     return this;
   }
 
   /** Set `charset` — canonical lowercase `"utf-8"`; custom values stay legal via the open tail. */
   setCharset(charset?: Charset): this {
-    this.charset = charset;
+    if (devChecks) assertMutable(this, "setCharset");
+    this._charset = charset;
     return this;
   }
 
   /** Set `http-equiv` (emits the real `http-equiv` attribute, not the dead `httpEquiv`). */
   setHttpEquiv(httpEquiv?: HttpEquiv): this {
-    this.httpEquiv = httpEquiv;
+    if (devChecks) assertMutable(this, "setHttpEquiv");
+    this._httpEquiv = httpEquiv;
     return this;
   }
 
   setProperty(property?: string): this {
-    this.property = property;
+    if (devChecks) assertMutable(this, "setProperty");
+    this._property = property;
     return this;
   }
 
   setMedia(media?: string): this {
-    this.media = media;
+    if (devChecks) assertMutable(this, "setMedia");
+    this._media = media;
     return this;
   }
 }
@@ -125,86 +134,99 @@ export function Meta(): MetaTag {
 }
 
 export class LinkTag extends Tag {
-  rel?: LinkElementRel;
-  href?: string;
-  type?: LinkType;
-  media?: string;
-  sizes?: string;
-  crossorigin?: CrossOrigin | '';
-  integrity?: string;
-  as?: LinkAs;
-  hreflang?: string;
-  fetchpriority?: FetchPriority;
-  referrerpolicy?: ReferrerPolicy;
-  imagesrcset?: string;
-  imagesizes?: string;
+  protected _rel?: LinkElementRel;
+  protected _href?: string;
+  protected _type?: LinkType;
+  protected _media?: string;
+  protected _sizes?: string;
+  protected _crossorigin?: CrossOrigin | '';
+  protected _integrity?: string;
+  protected _as?: LinkAs;
+  protected _hreflang?: string;
+  protected _fetchpriority?: FetchPriority;
+  protected _referrerpolicy?: ReferrerPolicy;
+  protected _imagesrcset?: string;
+  protected _imagesizes?: string;
 
   /** Set `<link rel>` — resource hints + document relations (`preconnect`/`preload`/`stylesheet`/…). */
   setRel(...rels: LinkElementRel[]): this {
-    this.rel = rels.length ? rels.join(" ") : undefined;
+    if (devChecks) assertMutable(this, "setRel");
+    this._rel = rels.length ? rels.join(" ") : undefined;
     return this;
   }
 
   setHreflang(hreflang?: string): this {
-    this.hreflang = hreflang;
+    if (devChecks) assertMutable(this, "setHreflang");
+    this._hreflang = hreflang;
     return this;
   }
 
   setHref(href?: string): this {
-    this.href = href;
+    if (devChecks) assertMutable(this, "setHref");
+    this._href = href;
     return this;
   }
 
   setType(type?: LinkType): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
   setMedia(media?: string): this {
-    this.media = media;
+    if (devChecks) assertMutable(this, "setMedia");
+    this._media = media;
     return this;
   }
 
   setSizes(sizes?: string): this {
-    this.sizes = sizes;
+    if (devChecks) assertMutable(this, "setSizes");
+    this._sizes = sizes;
     return this;
   }
 
   /** Set `crossorigin`. The bare `""` overload is for preconnect / Google Fonts. */
   setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
-    this.crossorigin = crossorigin;
+    if (devChecks) assertMutable(this, "setCrossOrigin");
+    this._crossorigin = crossorigin;
     return this;
   }
 
   setIntegrity(integrity?: string): this {
-    this.integrity = integrity;
+    if (devChecks) assertMutable(this, "setIntegrity");
+    this._integrity = integrity;
     return this;
   }
 
   setAs(as?: LinkAs): this {
-    this.as = as;
+    if (devChecks) assertMutable(this, "setAs");
+    this._as = as;
     return this;
   }
 
   /** Core Web Vitals priority hint — promote the LCP resource (`'high'`) or de-prioritise (`'low'`). */
   setFetchPriority(fetchpriority?: FetchPriority): this {
-    this.fetchpriority = fetchpriority;
+    if (devChecks) assertMutable(this, "setFetchPriority");
+    this._fetchpriority = fetchpriority;
     return this;
   }
 
   setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
-    this.referrerpolicy = referrerpolicy;
+    if (devChecks) assertMutable(this, "setReferrerPolicy");
+    this._referrerpolicy = referrerpolicy;
     return this;
   }
 
   /** `<link rel=preload as=image>` responsive srcset — distinct from `setSizes` (the icon `sizes` grammar). */
   setImagesrcset(imagesrcset?: string): this {
-    this.imagesrcset = imagesrcset;
+    if (devChecks) assertMutable(this, "setImagesrcset");
+    this._imagesrcset = imagesrcset;
     return this;
   }
 
   setImagesizes(imagesizes?: string): this {
-    this.imagesizes = imagesizes;
+    if (devChecks) assertMutable(this, "setImagesizes");
+    this._imagesizes = imagesizes;
     return this;
   }
 }
@@ -216,16 +238,18 @@ export function Link(): LinkTag {
 }
 
 export class StyleTag extends Tag {
-  media?: string;
-  type?: string;
+  protected _media?: string;
+  protected _type?: string;
 
   setMedia(media?: string): this {
-    this.media = media;
+    if (devChecks) assertMutable(this, "setMedia");
+    this._media = media;
     return this;
   }
 
   setType(type?: string): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 }
@@ -237,16 +261,18 @@ export function Style(css: string): StyleTag {
 }
 
 export class BaseTag extends Tag {
-  href?: string;
-  target?: BrowsingContext;
+  protected _href?: string;
+  protected _target?: BrowsingContext;
 
   setHref(href?: string): this {
-    this.href = href;
+    if (devChecks) assertMutable(this, "setHref");
+    this._href = href;
     return this;
   }
 
   setTarget(target?: BrowsingContext): this {
-    this.target = target;
+    if (devChecks) assertMutable(this, "setTarget");
+    this._target = target;
     return this;
   }
 }
@@ -266,41 +292,47 @@ export function Template(...children: View[]): Tag {
 }
 
 export class ScriptTag extends Tag {
-  src?: string;
-  type?: ScriptType;
-  crossorigin?: CrossOrigin | '';
-  integrity?: string;
-  fetchpriority?: FetchPriority;
-  referrerpolicy?: ReferrerPolicy;
+  protected _src?: string;
+  protected _type?: ScriptType;
+  protected _crossorigin?: CrossOrigin | '';
+  protected _integrity?: string;
+  protected _fetchpriority?: FetchPriority;
+  protected _referrerpolicy?: ReferrerPolicy;
 
   setSrc(src?: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setType(type?: ScriptType): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
   setCrossOrigin(crossorigin?: CrossOrigin | ''): this {
-    this.crossorigin = crossorigin;
+    if (devChecks) assertMutable(this, "setCrossOrigin");
+    this._crossorigin = crossorigin;
     return this;
   }
 
   setIntegrity(integrity?: string): this {
-    this.integrity = integrity;
+    if (devChecks) assertMutable(this, "setIntegrity");
+    this._integrity = integrity;
     return this;
   }
 
   /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) script fetching. */
   setFetchPriority(fetchpriority?: FetchPriority): this {
-    this.fetchpriority = fetchpriority;
+    if (devChecks) assertMutable(this, "setFetchPriority");
+    this._fetchpriority = fetchpriority;
     return this;
   }
 
   setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
-    this.referrerpolicy = referrerpolicy;
+    if (devChecks) assertMutable(this, "setReferrerPolicy");
+    this._referrerpolicy = referrerpolicy;
     return this;
   }
 }

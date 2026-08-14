@@ -1,47 +1,53 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import type { View } from "../core/types.js";
 import type { FetchPriority, PermissionsPolicyDirective, ReferrerPolicy, SandboxToken } from "./html-types.js";
 
 
 export class IframeTag extends Tag {
-  src?: string;
-  srcdoc?: string;
-  width?: string;
-  height?: string;
-  allow?: string;
-  loading?: 'lazy' | 'eager';
-  sandbox?: string;
-  name?: string;
-  referrerpolicy?: ReferrerPolicy;
-  fetchpriority?: FetchPriority;
+  protected _src?: string;
+  protected _srcdoc?: string;
+  protected _width?: string;
+  protected _height?: string;
+  protected _allow?: string;
+  protected _loading?: 'lazy' | 'eager';
+  protected _sandbox?: string;
+  protected _name?: string;
+  protected _referrerpolicy?: ReferrerPolicy;
+  protected _fetchpriority?: FetchPriority;
 
   setSrc(src?: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setSrcdoc(srcdoc?: string): this {
-    this.srcdoc = srcdoc;
+    if (devChecks) assertMutable(this, "setSrcdoc");
+    this._srcdoc = srcdoc;
     return this;
   }
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 
   setAllow(policy?: Partial<Record<PermissionsPolicyDirective, string>>): this {
+    if (devChecks) assertMutable(this, "setAllow");
     if (policy === undefined) {
-      this.allow = undefined;
+      this._allow = undefined;
       return this;
     }
-    this.allow = Object.entries(policy)
+    this._allow = Object.entries(policy)
       .filter(([, v]) => v !== undefined)
       .map(([k, v]) => (v === '' ? k : `${k} ${v}`))
       .join('; ');
@@ -49,29 +55,34 @@ export class IframeTag extends Tag {
   }
 
   setLoading(loading?: 'lazy' | 'eager'): this {
-    this.loading = loading;
+    if (devChecks) assertMutable(this, "setLoading");
+    this._loading = loading;
     return this;
   }
 
   /** Set `sandbox` from closed `SandboxToken`s; each call replaces the list. No args → `sandbox=""` (fully locked). */
   setSandbox(...tokens: SandboxToken[]): this {
-    this.sandbox = tokens.join(' ');
+    if (devChecks) assertMutable(this, "setSandbox");
+    this._sandbox = tokens.join(' ');
     return this;
   }
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 
   setReferrerPolicy(referrerpolicy?: ReferrerPolicy): this {
-    this.referrerpolicy = referrerpolicy;
+    if (devChecks) assertMutable(this, "setReferrerPolicy");
+    this._referrerpolicy = referrerpolicy;
     return this;
   }
 
   /** Core Web Vitals priority hint — promote (`'high'`) or de-prioritise (`'low'`) iframe loading. */
   setFetchPriority(fetchpriority?: FetchPriority): this {
-    this.fetchpriority = fetchpriority;
+    if (devChecks) assertMutable(this, "setFetchPriority");
+    this._fetchpriority = fetchpriority;
     return this;
   }
 }
@@ -83,34 +94,39 @@ export function Iframe(...children: View[]): IframeTag {
 }
 
 export class ObjectTag extends Tag {
-  data?: string;
-  type?: string;
-  width?: string;
-  height?: string;
-  name?: string;
+  protected _data?: string;
+  protected _type?: string;
+  protected _width?: string;
+  protected _height?: string;
+  protected _name?: string;
 
   setData(data?: string): this {
-    this.data = data;
+    if (devChecks) assertMutable(this, "setData");
+    this._data = data;
     return this;
   }
 
   setType(type?: string): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 
   setName(name?: string): this {
-    this.name = name;
+    if (devChecks) assertMutable(this, "setName");
+    this._name = name;
     return this;
   }
 }
@@ -122,28 +138,32 @@ export function ObjectEl(...children: View[]): ObjectTag {
 }
 
 export class EmbedTag extends Tag {
-  src?: string;
-  type?: string;
-  width?: string;
-  height?: string;
+  protected _src?: string;
+  protected _type?: string;
+  protected _width?: string;
+  protected _height?: string;
 
   setSrc(src?: string): this {
-    this.src = src;
+    if (devChecks) assertMutable(this, "setSrc");
+    this._src = src;
     return this;
   }
 
   setType(type?: string): this {
-    this.type = type;
+    if (devChecks) assertMutable(this, "setType");
+    this._type = type;
     return this;
   }
 
   setWidth(width?: string | number): this {
-    this.width = width === undefined ? undefined : String(width);
+    if (devChecks) assertMutable(this, "setWidth");
+    this._width = width === undefined ? undefined : String(width);
     return this;
   }
 
   setHeight(height?: string | number): this {
-    this.height = height === undefined ? undefined : String(height);
+    if (devChecks) assertMutable(this, "setHeight");
+    this._height = height === undefined ? undefined : String(height);
     return this;
   }
 }

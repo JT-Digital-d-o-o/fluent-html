@@ -31,6 +31,11 @@ export type { CssPropertyName } from './core/index.js';
 // Object-form variants (llm-styling/object-variants)
 export type { VariantStyleObject, StyleProps, NestedVariants, DirectVariant } from './core/index.js';
 
+// The color union (theme tokens + keywords + arbitrary) — exported from the
+// root so token records (`Record<Status, TailwindColor>`) never need the
+// `fluent-html/core` internal path.
+export type { TailwindColor } from './core/index.js';
+
 // HTML attribute types
 export type {
   InputType,
@@ -340,6 +345,9 @@ export {
 // HTMX
 export {
   hx,
+  // Branded-route escape constructors (8.0.0) — runtime identity
+  externalUrl,
+  assetUrl,
   resolveSelector,
   // Selector helpers
   id,
@@ -352,6 +360,8 @@ export {
 // Type-only re-exports (`export type` — TS1205-safe under verbatimModuleSyntax).
 export type {
   HTMX,
+  ResolvedRoute,
+  ExternalHref,
   HxSwap,
   HxSwapStyle,
   HxTrigger,

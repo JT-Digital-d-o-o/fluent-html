@@ -69,7 +69,7 @@ export class Tag {
     setId(id) {
         if (devChecks)
             assertMutable(this, "setId");
-        this.id = id ? (isId(id) ? id.id : id) : undefined;
+        this._id = id ? (isId(id) ? id.id : id) : undefined;
         return this;
     }
     /**
@@ -84,8 +84,19 @@ export class Tag {
     setClass(c) {
         if (devChecks)
             assertMutable(this, "setClass");
-        this.class = c;
+        this._class = c;
         return this;
+    }
+    /**
+     * Read the accumulated `class` attribute value (or `undefined` when unstyled).
+     * The storage field is protected so it cannot shadow `setClass`; framework code
+     * that inspects a built tag's classes reads through this accessor.
+     *
+     * @example
+     * const isInteractive = /(?:^|\s)cursor-/.test(tag.getClass() ?? "")
+     */
+    getClass() {
+        return this._class;
     }
     /**
      * Append classes to the element's existing `class` attribute.
@@ -106,11 +117,11 @@ export class Tag {
                 ? this._variantPrefix + ':' + c
                 : c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" "))
             : c;
-        if (this.class) {
-            this.class += ' ' + classes;
+        if (this._class) {
+            this._class += ' ' + classes;
         }
         else {
-            this.class = classes;
+            this._class = classes;
         }
         return this;
     }
@@ -130,7 +141,7 @@ export class Tag {
     setStyle(style) {
         if (devChecks)
             assertMutable(this, "setStyle");
-        this.style = style;
+        this._style = style;
         return this;
     }
     /**
@@ -150,8 +161,8 @@ export class Tag {
     addStyle(declaration) {
         if (devChecks)
             assertMutable(this, "addStyle");
-        const existing = this.style?.trim().replace(/;+$/, "");
-        this.style = existing ? `${existing}; ${declaration}` : declaration;
+        const existing = this._style?.trim().replace(/;+$/, "");
+        this._style = existing ? `${existing}; ${declaration}` : declaration;
         return this;
     }
     /**
@@ -310,7 +321,7 @@ export class Tag {
     setClasses(classes) {
         if (devChecks)
             assertMutable(this, "setClasses");
-        this.class = classes.filter(Boolean).join(" ");
+        this._class = classes.filter(Boolean).join(" ");
         return this;
     }
     /**
@@ -333,7 +344,7 @@ export class Tag {
         const styleString = Object.entries(styles)
             .map(([key, value]) => `${kebabCase(key)}: ${value}`)
             .join("; ");
-        this.style = styleString;
+        this._style = styleString;
         return this;
     }
     /**
@@ -519,6 +530,17 @@ export class Tag {
      */
     setForm(form) {
         return form === undefined ? this : this.addAttribute("form", extractId(form));
+    }
+    /**
+     * @internal The gated write path for the `_htmx` storage — called by the
+     * prototype-registered htmx mixin methods (`setHtmx`, `hxGet`, …), which sit
+     * outside the class body and so cannot write the private field directly.
+     */
+    _setHx(htmx, method) {
+        if (devChecks)
+            assertMutable(this, method);
+        this._htmx = htmx;
+        return this;
     }
 }
 setDiscriminant(Tag, 1);

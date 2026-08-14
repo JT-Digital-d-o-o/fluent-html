@@ -12,6 +12,7 @@ import {
 
 import { hx } from "../src/htmx.js";
 import type { View } from "../src/index.js";
+import { assetUrl } from "../src/htmx.js";
 
 /** Collect a stream's chunks (as strings) preserving boundaries. */
 function collectChunks(stream: Readable): Promise<string[]> {
@@ -137,7 +138,7 @@ describe("Stream: Attributes", () => {
   });
 
   it("renders element-specific attributes (href)", async () => {
-    const view = A("Link").setHref("/path");
+    const view = A("Link").setHref(assetUrl("/path"));
     assert.equal(await streamToString(view), render(view));
   });
 
@@ -174,7 +175,7 @@ describe("Stream: Void elements", () => {
   });
 
   it("renders <link>", async () => {
-    const view = Link().setHref("/style.css").setRel("stylesheet");
+    const view = Link().setHref(assetUrl("/style.css")).setRel("stylesheet");
     assert.equal(await streamToString(view), render(view));
   });
 
@@ -252,57 +253,57 @@ describe("Stream: Script/Style raw context", () => {
 
 describe("Stream: HTMX", () => {
   it("renders hx-get", async () => {
-    const view = Div().setHtmx(hx("/api/data"));
+    const view = Div().setHtmx(hx(assetUrl("/api/data")));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-post", async () => {
-    const view = Button("Submit").setHtmx(hx("/api/submit", { method: "post" }));
+    const view = Button("Submit").setHtmx(hx(assetUrl("/api/submit"), { method: "post" }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-target + hx-swap", async () => {
-    const view = Button("Load").setHtmx(hx("/api", { target: "#main", swap: "innerHTML" }));
+    const view = Button("Load").setHtmx(hx(assetUrl("/api"), { target: "#main", swap: "innerHTML" }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-push-url", async () => {
-    const view = A("Page").setHtmx(hx("/page", { pushUrl: true }));
+    const view = A("Page").setHtmx(hx(assetUrl("/page"), { pushUrl: true }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-trigger", async () => {
-    const view = Input().setHtmx(hx("/search", { trigger: "keyup changed delay:500ms" }));
+    const view = Input().setHtmx(hx(assetUrl("/search"), { trigger: "keyup changed delay:500ms" }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-vals", async () => {
-    const view = Button("Go").setHtmx(hx("/api", { method: "post", vals: { key: "value" } }));
+    const view = Button("Go").setHtmx(hx(assetUrl("/api"), { method: "post", vals: { key: "value" } }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-headers", async () => {
-    const view = Div().setHtmx(hx("/api", { headers: { "X-Custom": "yes" } }));
+    const view = Div().setHtmx(hx(assetUrl("/api"), { headers: { "X-Custom": "yes" } }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-confirm", async () => {
-    const view = Button("Delete").setHtmx(hx("/delete", { method: "delete", confirm: "Are you sure?" }));
+    const view = Button("Delete").setHtmx(hx(assetUrl("/delete"), { method: "delete", confirm: "Are you sure?" }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-swap-oob", async () => {
-    const view = Div("Updated").setHtmx(hx("/api", { swapOob: "true" }));
+    const view = Div("Updated").setHtmx(hx(assetUrl("/api"), { swapOob: "true" }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-boost", async () => {
-    const view = Nav().setHtmx(hx("/nav", { boost: true }));
+    const view = Nav().setHtmx(hx(assetUrl("/nav"), { boost: true }));
     assert.equal(await streamToString(view), render(view));
   });
 
   it("renders hx-indicator", async () => {
-    const view = Form().setHtmx(hx("/submit", { method: "post", indicator: "#spinner" }));
+    const view = Form().setHtmx(hx(assetUrl("/submit"), { method: "post", indicator: "#spinner" }));
     assert.equal(await streamToString(view), render(view));
   });
 });
@@ -313,8 +314,8 @@ describe("Stream: Complex structures", () => {
   it("renders a realistic page", async () => {
     const view = Div(
       Nav(
-        A("Home").setHref("/"),
-        A("About").setHref("/about"),
+        A("Home").setHref(assetUrl("/")),
+        A("About").setHref(assetUrl("/about")),
       ).setClass("nav"),
       Section(
         H1("Welcome"),
@@ -344,7 +345,7 @@ describe("Stream: Complex structures", () => {
         Input().setType("password").setName("password").addAttribute("placeholder", "Password"),
       ).setClass("field"),
       Button("Login").setType("submit"),
-    ).setHtmx(hx("/login", { method: "post" }));
+    ).setHtmx(hx(assetUrl("/login"), { method: "post" }));
     assert.equal(await streamToString(view), render(view));
   });
 
@@ -352,7 +353,7 @@ describe("Stream: Complex structures", () => {
     const view = Div(
       H1("Title"),
       Raw("<hr>"),
-      P("Paragraph with ", A("link").setHref("/foo"), " inside."),
+      P("Paragraph with ", A("link").setHref(assetUrl("/foo")), " inside."),
       Raw("<!-- comment -->"),
     );
     assert.equal(await streamToString(view), render(view));
@@ -423,7 +424,7 @@ describe("Stream: backpressure + renderToIterable", () => {
   });
 
   it("destroys the stream if the walk throws mid-stream (invalid hx-status key)", async () => {
-    const evil = hx("/x", { status: { "bad key": "swap:none" } } as unknown as Parameters<typeof hx>[1]);
+    const evil = hx(assetUrl("/x"), { status: { "bad key": "swap:none" } } as unknown as Parameters<typeof hx>[1]);
     const stream = renderToStream(Div().setHtmx(evil));
     await assert.rejects(
       new Promise<void>((resolve, reject) => {
@@ -472,7 +473,7 @@ describe("Stream: fuzz equivalence with render", () => {
     if (r < 0.64) return Script("a < b; </script> end");                       // raw (script) ctx
     if (r < 0.72) return Style("/* </style> */ body{margin:0}");               // raw (style) ctx
     if (r < 0.82) {
-      return Button("go").setHtmx(hx("/api", {
+      return Button("go").setHtmx(hx(assetUrl("/api"), {
         method: "post", target: "#m", swap: "outerHTML", pushUrl: true,
         vals: { k: "v" }, headers: { "X-Y": "z" }, confirm: "ok?", boost: true,
       }));

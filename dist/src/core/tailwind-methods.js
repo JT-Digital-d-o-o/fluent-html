@@ -272,10 +272,6 @@ p.self = function (value) { return this.addClass(`self-${value}`); };
 p.colSpan = function (value) { return this.addClass(`col-span-${value}`); };
 p.aspect = function (value) { return this.addClass(`aspect-${value}`); };
 p.order = function (value) { return this.addClass(`order-${value}`); };
-// Place (Grid/Flex alignment)
-p.placeContent = function (value) { return this.addClass(`place-content-${value}`); };
-p.placeItems = function (value) { return this.addClass(`place-items-${value}`); };
-p.placeSelf = function (value) { return this.addClass(`place-self-${value}`); };
 // Spacing Between Children
 p.spaceX = function (value) { return this.addClass(`space-x-${value}`); };
 p.spaceY = function (value) { return this.addClass(`space-y-${value}`); };
@@ -302,8 +298,6 @@ p.rotate = function (value) { return this.addClass(signNeg("rotate", String(valu
 p.translate = function (direction, value) {
     return this.addClass(signNeg(`translate-${direction}`, String(value)));
 };
-p.skewX = function (value) { return this.addClass(signNeg("skew-x", String(value))); };
-p.skewY = function (value) { return this.addClass(signNeg("skew-y", String(value))); };
 // Interactivity
 p.select = function (value) { return this.addClass(`select-${value}`); };
 p.pointerEvents = function (value) { return this.addClass(`pointer-events-${value}`); };
@@ -353,30 +347,17 @@ p.backdropBlur = function (value) {
     return value === undefined ? this.addClass("backdrop-blur") : this.addClass(`backdrop-blur-${value}`);
 };
 p.brightness = function (value) { return this.addClass(`brightness-${value}`); };
-p.backdropBrightness = function (value) { return this.addClass(`backdrop-brightness-${value}`); };
 p.contrast = function (value) { return this.addClass(`contrast-${value}`); };
-p.backdropContrast = function (value) { return this.addClass(`backdrop-contrast-${value}`); };
 p.grayscale = function (value) {
     return value === undefined ? this.addClass("grayscale") : this.addClass(`grayscale-${value}`);
 };
-p.backdropGrayscale = function (value) {
-    return value === undefined ? this.addClass("backdrop-grayscale") : this.addClass(`backdrop-grayscale-${value}`);
-};
 p.hueRotate = function (value) { return this.addClass(`hue-rotate-${value}`); };
-p.backdropHueRotate = function (value) { return this.addClass(`backdrop-hue-rotate-${value}`); };
 p.invert = function (value) {
     return value === undefined ? this.addClass("invert") : this.addClass(`invert-${value}`);
 };
-p.backdropInvert = function (value) {
-    return value === undefined ? this.addClass("backdrop-invert") : this.addClass(`backdrop-invert-${value}`);
-};
 p.saturate = function (value) { return this.addClass(`saturate-${value}`); };
-p.backdropSaturate = function (value) { return this.addClass(`backdrop-saturate-${value}`); };
 p.sepia = function (value) {
     return value === undefined ? this.addClass("sepia") : this.addClass(`sepia-${value}`);
-};
-p.backdropSepia = function (value) {
-    return value === undefined ? this.addClass("backdrop-sepia") : this.addClass(`backdrop-sepia-${value}`);
 };
 // Line Clamp
 p.lineClamp = function (value) { return this.addClass(`line-clamp-${value}`); };
@@ -442,7 +423,6 @@ p.stroke = function (unitOrValue, amount) {
 };
 p.accent = function (color) { return this.addClass(`accent-${color}`); };
 p.caret = function (color) { return this.addClass(`caret-${color}`); };
-p.scheme = function (value) { return this.addClass(`scheme-${value}`); };
 p.decoration = function (unitOrValue, amount) {
     if (amount !== undefined)
         return this.addClass(`decoration-[${amount}${unitOrValue}]`);
@@ -469,7 +449,6 @@ p.insetE = function (unitOrValue, amount) {
     return this.addClass(`inset-e-${unitOrValue}`);
 };
 p.wrap = function (value) { return this.addClass(`wrap-${value}`); };
-p.hyphens = function (value) { return this.addClass(`hyphens-${value}`); };
 p.textShadow = function (value) { return this.addClass(`text-shadow-${value}`); };
 p.dropShadow = function (value) { return this.addClass(`drop-shadow-${value}`); };
 p.insetShadow = function (value) { return this.addClass(`inset-shadow-${value}`); };
@@ -479,47 +458,18 @@ p.insetRing = function (value) {
 p.mixBlend = function (mode) { return this.addClass(`mix-blend-${mode}`); };
 p.bgBlend = function (mode) { return this.addClass(`bg-blend-${mode}`); };
 p.isolate = function () { return this.addClass("isolate"); };
-p.isolation = function (value) { return this.addClass(`isolation-${value}`); };
 p.delay = function (value) { return this.addClass(`delay-${value}`); };
 p.perspective = function (value) { return this.addClass(`perspective-${value}`); };
-p.perspectiveOrigin = function (value) { return this.addClass(`perspective-origin-${value}`); };
 p.transform = function (value) { return this.addClass(`transform-${value}`); };
-p.backface = function (value) { return this.addClass(`backface-${value}`); };
-p.rotateX = function (value) { return this.addClass(signNeg("rotate-x", String(value))); };
-p.rotateY = function (value) { return this.addClass(signNeg("rotate-y", String(value))); };
-p.rotateZ = function (value) { return this.addClass(signNeg("rotate-z", String(value))); };
-p.scaleX = function (value) { return this.addClass(signNeg("scale-x", String(value))); };
-p.scaleY = function (value) { return this.addClass(signNeg("scale-y", String(value))); };
-p.scaleZ = function (value) { return this.addClass(signNeg("scale-z", String(value))); };
-p.scale3d = function () { return this.addClass("scale-3d"); };
 p.colStart = function (value) { return this.addClass(signNeg("col-start", String(value))); };
 p.colEnd = function (value) { return this.addClass(signNeg("col-end", String(value))); };
 p.rowStart = function (value) { return this.addClass(signNeg("row-start", String(value))); };
 p.rowEnd = function (value) { return this.addClass(signNeg("row-end", String(value))); };
 p.rowSpan = function (value) { return this.addClass(`row-span-${value}`); };
 p.columns = function (value) { return this.addClass(`columns-${value}`); };
-p.breakBefore = function (value) { return this.addClass(`break-before-${value}`); };
-p.breakAfter = function (value) { return this.addClass(`break-after-${value}`); };
 p.breakInside = function (value) { return this.addClass(`break-inside-${value}`); };
 p.boxDecoration = function (value) { return this.addClass(`box-decoration-${value}`); };
-p.snap = function (axis, strictness) {
-    if (strictness === undefined)
-        return this.addClass(`snap-${axis}`);
-    return this.addClass(`snap-${axis}`).addClass(`snap-${strictness}`);
-};
-p.snapAlign = function (value) {
-    return this.addClass(value === "none" ? "snap-align-none" : `snap-${value}`);
-};
-p.snapStop = function (value) { return this.addClass(`snap-${value}`); };
 p.scroll = function (value) { return this.addClass(`scroll-${value}`); };
-p.scrollM = function (directionOrValue, value) {
-    if (value === undefined)
-        return this.addClass(`scroll-m-${directionOrValue}`);
-    if (typeof value === "number")
-        return this.addClass(`scroll-m-[${value}${directionOrValue}]`);
-    const dir = DIR_MAP[directionOrValue] || directionOrValue;
-    return this.addClass(`scroll-m${dir}-${value}`);
-};
 p.scrollP = function (directionOrValue, value) {
     if (value === undefined)
         return this.addClass(`scroll-p-${directionOrValue}`);
@@ -528,14 +478,7 @@ p.scrollP = function (directionOrValue, value) {
     const dir = DIR_MAP[directionOrValue] || directionOrValue;
     return this.addClass(`scroll-p${dir}-${value}`);
 };
-p.fieldSizing = function (value) { return this.addClass(`field-sizing-${value}`); };
 p.content = function (value) {
     return this.addClass(value === undefined ? "content-['']" : `content-${value}`);
 };
-p.mask = function (value) {
-    return value === "none" ? this.addClass("mask-none") : this.addClass(`mask-${value}`);
-};
-p.maskFrom = function (edge, stop) { return this.addClass(`mask-${edge}-from-${stop}`); };
-p.maskTo = function (edge, stop) { return this.addClass(`mask-${edge}-to-${stop}`); };
-p.maskType = function (value) { return this.addClass(`mask-type-${value}`); };
 //# sourceMappingURL=tailwind-methods.js.map

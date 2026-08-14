@@ -1,5 +1,5 @@
 import type { VariantStyleObject } from "./variant-object.js";
-import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindTranslate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindPlaceContent, TailwindPlaceItems, TailwindPlaceSelf, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindSkew, TailwindWillChange, TailwindOverscroll, TailwindPositionArea, TailwindStrokeWidth, TailwindDecorationStyle, TailwindDecorationThickness, TailwindColorScheme, TailwindTextWrap, TailwindHyphens, TailwindTextShadow, TailwindDropShadow, TailwindInsetShadow, TailwindMixBlendMode, TailwindBgBlendMode, TailwindIsolation, TailwindDelay, TailwindTransitionBehavior, TailwindGradientPosition, TailwindGradientAngle, TailwindGradientOrigin, TailwindGradientInterpolation, TailwindPerspective, TailwindPerspectiveOrigin, TailwindTranslateZ, TailwindTransformStyle, TailwindBackfaceVisibility, TailwindGridLine, TailwindRowSpan, TailwindColumns, TailwindBreakBeforeAfter, TailwindBreakInside, TailwindBoxDecoration, TailwindSnapAxis, TailwindSnapStrictness, TailwindSnapAlign, TailwindSnapStop, TailwindScrollBehavior, TailwindFieldSizing, TailwindMaskEdge, TailwindMaskStop, TailwindMaskComposite, TailwindMaskType, TailwindAppearance, TailwindTable, TailwindWrap, TailwindContent } from "./tailwind-types.js";
+import type { TailwindSpacing, TailwindWidth, TailwindHeight, TailwindMaxWidth, TailwindMinWidth, TailwindMaxHeight, TailwindMinHeight, TailwindColor, TailwindTextSize, TailwindFontWeight, TailwindLeading, TailwindTracking, TailwindRounded, TailwindRoundedCorner, TailwindShadow, TailwindBorderWidth, TailwindBorderStyle, TailwindOpacity, TailwindCursor, TailwindZIndex, TailwindGridCols, TailwindGridRows, TailwindFlex, TailwindOverflow, TailwindObjectFit, TailwindInset, TailwindFlexWrap, TailwindAlignSelf, TailwindColSpan, TailwindAspect, TailwindTransition, TailwindDuration, TailwindAnimate, TailwindRingWidth, TailwindScale, TailwindRotate, TailwindTranslate, TailwindSelect, TailwindPointerEvents, TailwindWhitespace, TailwindListStyleType, TailwindListStylePosition, TailwindOutline, TailwindTextAlign, TailwindFlexDirection, TailwindJustifyContent, TailwindAlignItems, TailwindState, TailwindBreakpoint, TailwindUnit, TailwindFontFamily, TailwindGradientDirection, TailwindGradientStop, TailwindBlur, TailwindLineClamp, TailwindUnderlineOffset, TailwindEase, TailwindResize, TailwindBrightness, TailwindContrast, TailwindHueRotate, TailwindSaturate, TailwindGridAutoFlow, TailwindGridAuto, TailwindOrder, TailwindWillChange, TailwindOverscroll, TailwindPositionArea, TailwindStrokeWidth, TailwindDecorationStyle, TailwindDecorationThickness, TailwindTextWrap, TailwindTextShadow, TailwindDropShadow, TailwindInsetShadow, TailwindMixBlendMode, TailwindBgBlendMode, TailwindDelay, TailwindTransitionBehavior, TailwindGradientPosition, TailwindGradientAngle, TailwindGradientOrigin, TailwindGradientInterpolation, TailwindPerspective, TailwindTranslateZ, TailwindTransformStyle, TailwindGridLine, TailwindRowSpan, TailwindColumns, TailwindBreakInside, TailwindBoxDecoration, TailwindScrollBehavior, TailwindAppearance, TailwindTable, TailwindWrap, TailwindContent } from "./tailwind-types.js";
 import type { CssPropertyName } from "./css-props.gen.js";
 import type { Id } from "../ids.js";
 declare module "./tag.js" {
@@ -196,9 +196,6 @@ declare module "./tag.js" {
         colSpan(value: TailwindColSpan): this;
         aspect(value: TailwindAspect): this;
         order(value: TailwindOrder): this;
-        placeContent(value: TailwindPlaceContent): this;
-        placeItems(value: TailwindPlaceItems): this;
-        placeSelf(value: TailwindPlaceSelf): this;
         spaceX(value: TailwindSpacing): this;
         spaceY(value: TailwindSpacing): this;
         divideX(value?: TailwindBorderWidth): this;
@@ -215,8 +212,6 @@ declare module "./tag.js" {
         rotate(value: TailwindRotate): this;
         translate(direction: "x" | "y", value: TailwindTranslate): this;
         translate(direction: "z", value: TailwindTranslateZ): this;
-        skewX(value: TailwindSkew): this;
-        skewY(value: TailwindSkew): this;
         select(value: TailwindSelect): this;
         pointerEvents(value: TailwindPointerEvents): this;
         appearance(value: TailwindAppearance): this;
@@ -241,19 +236,12 @@ declare module "./tag.js" {
         blur(value?: TailwindBlur): this;
         backdropBlur(value?: TailwindBlur): this;
         brightness(value: TailwindBrightness): this;
-        backdropBrightness(value: TailwindBrightness): this;
         contrast(value: TailwindContrast): this;
-        backdropContrast(value: TailwindContrast): this;
         grayscale(value?: 0 | "0"): this;
-        backdropGrayscale(value?: 0 | "0"): this;
         hueRotate(value: TailwindHueRotate): this;
-        backdropHueRotate(value: TailwindHueRotate): this;
         invert(value?: 0 | "0"): this;
-        backdropInvert(value?: 0 | "0"): this;
         saturate(value: TailwindSaturate): this;
-        backdropSaturate(value: TailwindSaturate): this;
         sepia(value?: 0 | "0"): this;
-        backdropSepia(value?: 0 | "0"): this;
         lineClamp(value: TailwindLineClamp): this;
         antialiased(): this;
         tabularNums(): this;
@@ -333,7 +321,6 @@ declare module "./tag.js" {
         /** Merged `decoration-*` method — text-decoration color, style, or thickness (arbitrary thickness via the unit overload). */
         decoration(value: TailwindColor | TailwindDecorationStyle | TailwindDecorationThickness): this;
         decoration(unit: TailwindUnit, amount: number): this;
-        scheme(value: TailwindColorScheme): this;
         insetX(value: TailwindInset): this;
         insetX(unit: TailwindUnit, amount: number): this;
         insetY(value: TailwindInset): this;
@@ -344,7 +331,6 @@ declare module "./tag.js" {
         insetE(unit: TailwindUnit, amount: number): this;
         /** Overflow-wrap (v4 `wrap-*`): where long words may break. Text wrapping (`text-balance`, …) merged into `.text()`. */
         wrap(value: TailwindWrap): this;
-        hyphens(value: TailwindHyphens): this;
         /** Merged `text-shadow-*` method — theme size or shadow color (value required). */
         textShadow(value: TailwindTextShadow | TailwindColor): this;
         /** Merged `drop-shadow-*` method — theme size or shadow color (value required). */
@@ -356,42 +342,22 @@ declare module "./tag.js" {
         mixBlend(mode: TailwindMixBlendMode): this;
         bgBlend(mode: TailwindBgBlendMode): this;
         isolate(): this;
-        isolation(value: TailwindIsolation): this;
         delay(value: TailwindDelay): this;
         perspective(value: TailwindPerspective): this;
-        perspectiveOrigin(value: TailwindPerspectiveOrigin): this;
         /** `transform-style` (`transform-3d`/`transform-flat`). Distinct from the SVG presentation-attribute setter `setTransform` — this styles via a class. */
         transform(value: TailwindTransformStyle): this;
-        backface(value: TailwindBackfaceVisibility): this;
-        rotateX(value: TailwindRotate): this;
-        rotateY(value: TailwindRotate): this;
-        rotateZ(value: TailwindRotate): this;
-        scaleX(value: TailwindScale): this;
-        scaleY(value: TailwindScale): this;
-        scaleZ(value: TailwindScale): this;
-        scale3d(): this;
         colStart(value: TailwindGridLine): this;
         colEnd(value: TailwindGridLine): this;
         rowStart(value: TailwindGridLine): this;
         rowEnd(value: TailwindGridLine): this;
         rowSpan(value: TailwindRowSpan): this;
         columns(value: TailwindColumns): this;
-        breakBefore(value: TailwindBreakBeforeAfter): this;
-        breakAfter(value: TailwindBreakBeforeAfter): this;
         breakInside(value: TailwindBreakInside): this;
         boxDecoration(value: TailwindBoxDecoration): this;
-        snap(axis: TailwindSnapAxis): this;
-        snap(axis: Exclude<TailwindSnapAxis, "none">, strictness: TailwindSnapStrictness): this;
-        snapAlign(value: TailwindSnapAlign): this;
-        snapStop(value: TailwindSnapStop): this;
         scroll(value: TailwindScrollBehavior): this;
-        scrollM(value: TailwindSpacing): this;
-        scrollM(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
-        scrollM(unit: TailwindUnit, amount: number): this;
         scrollP(value: TailwindSpacing): this;
         scrollP(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value: TailwindSpacing): this;
         scrollP(unit: TailwindUnit, amount: number): this;
-        fieldSizing(value: TailwindFieldSizing): this;
         /**
          * Pseudo-element content. Bare `.content()` emits `content-['']` — the empty
          * string every `before:`/`after:` decoration needs to render (`content: true`
@@ -401,11 +367,6 @@ declare module "./tag.js" {
          * Span().after({ content: "[attr(data-label)]" })
          */
         content(value?: TailwindContent): this;
-        /** Merged `mask-*` method — mask image (`"none"` or an arbitrary `[url(…)]` source) or mask-composite mode. */
-        mask(value: "none" | `[${string}]` | TailwindMaskComposite): this;
-        maskFrom(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
-        maskTo(edge: TailwindMaskEdge, stop: TailwindMaskStop): this;
-        maskType(value: TailwindMaskType): this;
     }
 }
 //# sourceMappingURL=tailwind-methods.d.ts.map

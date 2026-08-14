@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { render, Div, Button, Span, Partial } from "../src/index.js";
 import { hx } from "../src/htmx.js";
 import { createId, defineIds, isId, extractId, extractSelector } from "../src/ids.js";
+import { assetUrl } from "../src/htmx.js";
 describe("createId()", () => {
     it("returns correct id", () => {
         assert.strictEqual(createId("user-list").id, "user-list");
@@ -113,13 +114,13 @@ describe("hx() with Id target", () => {
         "modal",
     ]);
     it("target accepts Id object", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { target: ids.userList }))), '<button hx-get="/api/users" hx-target="#user-list">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { target: ids.userList }))), '<button hx-get="/api/users" hx-target="#user-list">Load</button>');
     });
     it("target accepts Id.selector", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { target: ids.userList.selector }))), '<button hx-get="/api/users" hx-target="#user-list">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { target: ids.userList.selector }))), '<button hx-get="/api/users" hx-target="#user-list">Load</button>');
     });
     it("target still accepts string", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { target: "#other" }))), '<button hx-get="/api/users" hx-target="#other">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { target: "#other" }))), '<button hx-get="/api/users" hx-target="#other">Load</button>');
     });
 });
 describe("hx() with Id for select, indicator, disable, include", () => {
@@ -130,22 +131,22 @@ describe("hx() with Id for select, indicator, disable, include", () => {
         "modal",
     ]);
     it("select accepts Id object", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { select: ids.userList }))), '<button hx-get="/api/users" hx-select="#user-list">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { select: ids.userList }))), '<button hx-get="/api/users" hx-select="#user-list">Load</button>');
     });
     it("select still accepts string", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { select: "#other" }))), '<button hx-get="/api/users" hx-select="#other">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { select: "#other" }))), '<button hx-get="/api/users" hx-select="#other">Load</button>');
     });
     it("indicator accepts Id object", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { indicator: ids.userList }))), '<button hx-get="/api/users" hx-indicator="#user-list">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { indicator: ids.userList }))), '<button hx-get="/api/users" hx-indicator="#user-list">Load</button>');
     });
     it("disable accepts Id object", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { disable: ids.userCount }))), '<button hx-get="/api/users" hx-disable="#user-count">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { disable: ids.userCount }))), '<button hx-get="/api/users" hx-disable="#user-count">Load</button>');
     });
     it("include accepts Id object", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", { include: ids.notificationArea }))), '<button hx-get="/api/users" hx-include="#notification-area">Load</button>');
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), { include: ids.notificationArea }))), '<button hx-get="/api/users" hx-include="#notification-area">Load</button>');
     });
     it("multiple Id fields together", () => {
-        assert.strictEqual(render(Button("Load").setHtmx(hx("/api/users", {
+        assert.strictEqual(render(Button("Load").setHtmx(hx(assetUrl("/api/users"), {
             target: ids.userList,
             select: ids.userCount,
             indicator: ids.notificationArea,
@@ -160,13 +161,13 @@ describe("hxGet/hxPost shorthands with Id fields", () => {
         "modal",
     ]);
     it("hxGet with Id select", () => {
-        assert.strictEqual(render(Button("Load").hxGet("/api", { select: ids.userList })), '<button hx-get="/api" hx-select="#user-list">Load</button>');
+        assert.strictEqual(render(Button("Load").hxGet(assetUrl("/api"), { select: ids.userList })), '<button hx-get="/api" hx-select="#user-list">Load</button>');
     });
     it("hxPost with Id indicator", () => {
-        assert.strictEqual(render(Button("Save").hxPost("/api", { indicator: ids.notificationArea })), '<button hx-post="/api" hx-indicator="#notification-area">Save</button>');
+        assert.strictEqual(render(Button("Save").hxPost(assetUrl("/api"), { indicator: ids.notificationArea })), '<button hx-post="/api" hx-indicator="#notification-area">Save</button>');
     });
     it("hxGet with Id include", () => {
-        assert.strictEqual(render(Button("Load").hxGet("/api", { include: ids.userCount })), '<button hx-get="/api" hx-include="#user-count">Load</button>');
+        assert.strictEqual(render(Button("Load").hxGet(assetUrl("/api"), { include: ids.userCount })), '<button hx-get="/api" hx-include="#user-count">Load</button>');
     });
 });
 describe("Full Integration: Type-safe page and controller", () => {
@@ -180,7 +181,7 @@ describe("Full Integration: Type-safe page and controller", () => {
             Div("Main content").setId(PageIds.mainContent),
             Div("Sidebar").setId(PageIds.sidebar),
             Span("0").setId(PageIds.notificationCount),
-            Button("Refresh").setHtmx(hx("/api/refresh", {
+            Button("Refresh").setHtmx(hx(assetUrl("/api/refresh"), {
                 target: PageIds.mainContent,
                 swap: "innerHTML"
             })),

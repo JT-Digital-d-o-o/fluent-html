@@ -1,4 +1,4 @@
-import type { SchemaKey } from "./proto.js";
+import type { ResolvedSchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id } from "../ids.js";
 import type { View } from "./types.js";
@@ -25,16 +25,16 @@ export interface Tag extends FluentCustomMethods {
 export declare class Tag {
     el: string;
     child: View;
-    id?: string;
-    class?: string;
-    style?: string;
+    protected _id?: string;
+    protected _class?: string;
+    protected _style?: string;
     attributes: Readonly<Record<string, string>>;
-    htmx?: HTMX;
+    protected _htmx?: HTMX;
     toggles?: string[];
     /** @internal type discriminant for fast render checks */
     readonly _t: 1;
-    /** @internal Schema keys for element-specific attributes */
-    readonly _sk?: readonly SchemaKey[];
+    /** @internal Normalized [storage, attr] schema keys for element-specific attributes */
+    readonly _sk?: readonly ResolvedSchemaKey[];
     /** @internal `Document()` brand — when true, the emitter prefixes `<!DOCTYPE html>`. */
     readonly _doc?: true;
     constructor(element: string, ...children: View[]);
@@ -59,6 +59,15 @@ export declare class Tag {
      * Div("Content").setClass("container mx-auto")
      */
     setClass(c?: string): this;
+    /**
+     * Read the accumulated `class` attribute value (or `undefined` when unstyled).
+     * The storage field is protected so it cannot shadow `setClass`; framework code
+     * that inspects a built tag's classes reads through this accessor.
+     *
+     * @example
+     * const isInteractive = /(?:^|\s)cursor-/.test(tag.getClass() ?? "")
+     */
+    getClass(): string | undefined;
     /**
      * Append classes to the element's existing `class` attribute.
      *
@@ -358,6 +367,12 @@ export declare class Tag {
      * footer outside the `<form>`. Accepts a string or `Id`.
      */
     setForm(form?: string | Id): this;
+    /**
+     * @internal The gated write path for the `_htmx` storage — called by the
+     * prototype-registered htmx mixin methods (`setHtmx`, `hxGet`, …), which sit
+     * outside the class body and so cannot write the private field directly.
+     */
+    _setHx(htmx: HTMX | undefined, method: string): this;
     /** @internal Variant prefix state — used by tailwind-methods mixin */
     _variantPrefix: string | null;
     /**

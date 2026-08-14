@@ -8,7 +8,7 @@
 // Complementary to defineIds() which protects target selectors,
 // defineRoutes() protects endpoint URLs and HTTP methods.
 
-import type { HTMX, HxHttpMethod, HxTarget, QueryParams } from "./htmx.js";
+import type { HTMX, HxHttpMethod, HxTarget, QueryParams, ResolvedRoute } from "./htmx.js";
 import { resolveSelector, buildQueryString } from "./htmx.js";
 import type { Id } from "./ids.js";
 
@@ -265,8 +265,8 @@ type RouteProperties<Def extends RouteDef> = {
   /** The def's sitemap stance, carried through for server-side registration. */
   readonly sitemap: DefProp<Def, 'sitemap'>;
   readonly resolve: HasAnyParams<Def['path']> extends true
-    ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => string
-    : (query?: ResolveQuery<Def['query']>) => string;
+    ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => ResolvedRoute
+    : (query?: ResolveQuery<Def['query']>) => ResolvedRoute;
 };
 
 /**
@@ -302,7 +302,7 @@ export type AnyRouteCallable = {
   readonly params?: Readonly<Record<string, ParamType>>;
   readonly query?: Readonly<Record<string, ParamType>>;
   readonly sitemap?: SitemapStance;
-  readonly resolve: (...args: never[]) => string;
+  readonly resolve: (...args: never[]) => ResolvedRoute;
 };
 
 /** A registry of unknown shape — the constraint for helpers generic over whole registries. */
@@ -385,12 +385,12 @@ function buildHtmxFromRoute(
   options?: RouteHxOptions
 ): HTMX {
   if (!options) {
-    return { endpoint, method };
+    return { endpoint: endpoint as ResolvedRoute, method };
   }
   const { target, select, indicator, disable, include, query, ...rest } = options;
   const resolvedEndpoint = query ? buildQueryString(endpoint, query) : endpoint;
   return {
-    endpoint: resolvedEndpoint,
+    endpoint: resolvedEndpoint as ResolvedRoute,
     method,
     target: resolveSelector(target),
     select: resolveSelector(select),

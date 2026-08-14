@@ -1,38 +1,59 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 /**
  * Specialized Tag for `<a>` (anchor) elements with typed attribute setters.
  *
  * @example
- * A("Dashboard").setHref("/dashboard").setTarget("_blank")
+ * A("Dashboard").nav(dashboardRoutes.index())   // or .setHref(route.resolve(...)) for a plain link
  */
 export class AnchorTag extends Tag {
+    /**
+     * Branded (8.0.0): accepts a `ResolvedRoute` (route callable `.resolve()`,
+     * `assetUrl()`) or an `ExternalHref` — literal `https://…`/`mailto:…`/
+     * `tel:…`/`#…` pass directly; runtime externals go through `externalUrl()`.
+     * In-app navigation should prefer the swap verbs (`.nav()`) over `setHref`.
+     */
     setHref(href) {
-        this.href = href;
+        if (devChecks)
+            assertMutable(this, "setHref");
+        this._href = href;
         return this;
     }
     setHreflang(hreflang) {
-        this.hreflang = hreflang;
+        if (devChecks)
+            assertMutable(this, "setHreflang");
+        this._hreflang = hreflang;
         return this;
     }
     setTarget(target) {
-        this.target = target;
+        if (devChecks)
+            assertMutable(this, "setTarget");
+        this._target = target;
         return this;
     }
     setRel(...rels) {
-        this.rel = rels.length ? rels.join(" ") : undefined;
+        if (devChecks)
+            assertMutable(this, "setRel");
+        this._rel = rels.length ? rels.join(" ") : undefined;
         return this;
     }
     setDownload(download) {
-        this.download = download;
+        if (devChecks)
+            assertMutable(this, "setDownload");
+        this._download = download;
         return this;
     }
     setType(type) {
-        this.type = type;
+        if (devChecks)
+            assertMutable(this, "setType");
+        this._type = type;
         return this;
     }
     setReferrerPolicy(referrerpolicy) {
-        this.referrerpolicy = referrerpolicy;
+        if (devChecks)
+            assertMutable(this, "setReferrerPolicy");
+        this._referrerpolicy = referrerpolicy;
         return this;
     }
 }
@@ -43,7 +64,9 @@ export function A(...children) {
 }
 export class MapTag extends Tag {
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
 }
@@ -53,35 +76,51 @@ export function MapEl(...children) {
 }
 export class AreaTag extends Tag {
     setShape(shape) {
-        this.shape = shape;
+        if (devChecks)
+            assertMutable(this, "setShape");
+        this._shape = shape;
         return this;
     }
     setCoords(coords) {
-        this.coords = coords;
+        if (devChecks)
+            assertMutable(this, "setCoords");
+        this._coords = coords;
         return this;
     }
     setHref(href) {
-        this.href = href;
+        if (devChecks)
+            assertMutable(this, "setHref");
+        this._href = href;
         return this;
     }
     setAlt(alt) {
-        this.alt = alt;
+        if (devChecks)
+            assertMutable(this, "setAlt");
+        this._alt = alt;
         return this;
     }
     setTarget(target) {
-        this.target = target;
+        if (devChecks)
+            assertMutable(this, "setTarget");
+        this._target = target;
         return this;
     }
     setRel(...rels) {
-        this.rel = rels.length ? rels.join(" ") : undefined;
+        if (devChecks)
+            assertMutable(this, "setRel");
+        this._rel = rels.length ? rels.join(" ") : undefined;
         return this;
     }
     setDownload(download) {
-        this.download = download;
+        if (devChecks)
+            assertMutable(this, "setDownload");
+        this._download = download;
         return this;
     }
     setReferrerPolicy(referrerpolicy) {
-        this.referrerpolicy = referrerpolicy;
+        if (devChecks)
+            assertMutable(this, "setReferrerPolicy");
+        this._referrerpolicy = referrerpolicy;
         return this;
     }
 }

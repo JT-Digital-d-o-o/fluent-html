@@ -2,6 +2,57 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
+## [8.0.0] - Storage privatized: no public field shadows its setter
+
+The agent-fitness fix for the worst error on the most common guess. Blind unprefixed-setter guesses (`.src()`, `.value()`, `.id()`) used to hit the public storage field sitting beside the setter (`ImgTag.src?: string` beside `setSrc()`) and die as a `Type 'String' has no call signatures` cascade. Every element storage field (280 fields across 62 element classes) plus the `Tag` base storage (`id`, `class`, `style`, `htmx`) is now **protected, `_`-prefixed storage** — the wrong guess errors as a missing property (TS2339, or TS2551 with the `Did you mean 'setPlaceholder'?` self-heal where the checker's spelling window reaches the `set*` name), and the `_`-storage never leaks into suggestions. `test/setter-errors.test.ts` runs the real checker over a probe fixture and pins the diagnostic shape per guess.
+
+### 💥 Changed — storage fields are no longer public API
+
+- Reading `tag.src`, `form.enctype`, `tag.class`, … no longer compiles. Schema keys stay spelled as the attribute grammar; `defineSchemaKeys` normalizes each entry to a `[storage, attr]` pair (the `_` prefix is applied once, at definition time), and the serializer reads the resolved pairs.
+- The two reads consumer repos were measured to make keep public, non-shadowing accessors: `Tag.getClass()` and `FormTag.getEnctype()`. Other storage has no getter by design — a new legitimate read should become a library accessor, not a cast.
+- **Codemod**: `npm run codemod:storage-fields -- <tsconfig> [--dry]` rewrites accessor-backed reads to the getters and field writes to the typed setters (type-verified `Tag` receivers only, canonical-names mechanics); accessor-less reads are reported for review, never guessed at.
+
+### ✨ Fixed — the 7.0.1 dev-check gap is closed
+
+- 7.0.1 shipped the mutate-after-render/aliased-child guards with an admitted hole: element-specific setters wrote their public fields directly, so ~200 of them bypassed the gate. With the storage privatized, every element setter that writes storage now runs `assertMutable` (283 gated methods), and the htmx mixin setters (`setHtmx`, `hxGet`, …) route through a gated `Tag._setHx` primitive. The dev-checks suite's "known gap" pin is now an "is gated" assertion.
+- `SvgShapeTag`'s public `filter` field is privatized like the rest of the storage (`_filter`). No `.filter()` method exists today — CSS filters go through `blur`/`brightness`/… or `.cssProp()` — but the rename frees the bare `filter` name on SVG chains, so a future utility could claim it without another breaking rename.
+
+### 💥 Removed — the zero-use surface (38 methods)
+
+The 40-repo call-site census (research: fluent-html-agent-fitness, table d) measured ~40% of the 397-method surface at zero uses. The dead core is deleted; **no codemod ships because none is needed — every deleted name has 0 call sites fleet-wide** (verified again at release time by grep across the template, rideshare, and ttl trees). The underlying CSS stays reachable through the escape hatches: `.cssProp("backdrop-filter", "sepia(100%)")` for one-off properties, `.variant()`'s `cssProp` key for stateful forms — both extractor-safelisted for literal arguments, exactly like every other vocab row.
+
+- **htmx shorthands**: `hxPut`, `hxPatch`, `hxDelete`. `hxGet`/`hxPost` stay; a non-GET/POST verb goes through `setHtmx(hx(endpoint, { method: "put" | "patch" | "delete" }))` — same emitted attributes, one shorthand fewer to learn.
+- **Backdrop filters (7)**: `backdropBrightness`, `backdropContrast`, `backdropGrayscale`, `backdropHueRotate`, `backdropInvert`, `backdropSaturate`, `backdropSepia`. **`backdropBlur` stays** — the census re-check found a live use (rideshare landing header).
+- **Mask family (4)**: `mask`, `maskFrom`, `maskTo`, `maskType`.
+- **3D-transform family (11)**: `rotateX`, `rotateY`, `rotateZ`, `scaleX`, `scaleY`, `scaleZ`, `scale3d`, `skewX`, `skewY`, `perspectiveOrigin`, `backface`. The depth gate (`perspective`), `transform` (transform-style), and `translate("z", …)` stay.
+- **Snap family (3)**: `snap`, `snapAlign`, `snapStop`; **scroll-margin**: `scrollM` (`scrollP` and `scroll` stay).
+- **Alignment/fragmentation/misc (9)**: `placeContent`, `placeItems`, `placeSelf`, `breakBefore`, `breakAfter` (**`breakInside` stays** — live use in the web template's image gallery), `isolation` (`isolate` stays), `hyphens`, `scheme`, `fieldSizing`.
+- The version-skew exemptions were honored: `table`/`tableCell`/`divide`/`invisible` and the 7.0.0 directional shorthands (`px`/`py`/`pt`/`pb`/`pl`/`pr`/`mx`/`my`/`mt`/`mb`/`ml`/`mr`) are untouched.
+- Deleted with the methods: their vocab rows, generated type unions (`TailwindSkew`, `TailwindSnapAxis`, `TailwindMask*`, `TailwindPlace*`, …), and variant-object keys. The coverage watch (`test/vocab-coverage.test.ts`) records each pruned root with a `pruned 8.0.0` reason so a future re-add is a conscious act.
+
+### 🧊 Frozen — the remaining zero-use set is de-documented, not deleted
+
+The rest of the measured zero-use surface (~100 names, including ~60 exotic element setters like `setAbbr`/`setCoords`/`setSpreadMethod`) **stays in the package** — still typed, still rendered, still tested — but is no longer taught: the regenerated README head documents only the census head, and the frozen names appear only in the generated full-surface listing. They are candidates for deletion in a future major if the census stays at zero; `addAttribute` remains the sanctioned long-tail hatch.
+
+### 💥 Added — `ResolvedRoute` brand: route sinks reject raw strings
+
+The security half (prose-to-compiler candidate 2): every route-bearing sink now accepts only a **branded** `ResolvedRoute` or an `ExternalHref` literal type. Type-only — zero runtime change, zero emitted-byte change.
+
+- `export type ResolvedRoute = string & { readonly [RouteBrand]: true }` and `ExternalHref` — the template-literal union of `https://` / `http://` / `mailto:` / `tel:` / `#` literals — both exported from the barrel.
+- **Branded producers**: `.resolve()` (both conditional branches, param'd and paramless) and `AnyRouteCallable["resolve"]` return `ResolvedRoute`; route callables produce `HTMX` whose `endpoint` is branded.
+- **Branded sinks**: `HTMX["endpoint"]` (hand-written bags with raw strings fail), `hx(endpoint)`, `setHtmx(endpoint, …)`, `hxGet`/`hxPost`, and `AnchorTag.setHref`. `LinkTag`/`BaseTag` `setHref` are deliberately unbranded (head machinery). `AreaTag.setHref` IS user navigation but stays unbranded too — the brand mandate covers `AnchorTag` only, and the fleet census has zero `<area>` call sites; brand it when an image map actually ships. `FormTag.setAction` and `ButtonTag.setFormaction` are likewise conscious out-of-mandate raw-string sinks: forms route through the swap verbs, which stamp the action from a route callable.
+- **Escape constructors** (runtime identity): `externalUrl(url)` for runtime-computed true externals (Stripe checkout, OAuth authorize, presigned URLs) and `assetUrl(path)` for static assets no route models (`/favicon.svg`). Literal externals (`setHref("https://…")`, `"mailto:…"`, `"#top"`) pass with zero ceremony via the template-literal union.
+- What this kills at compile time: hardcoded route strings into sinks, hand-concatenated query strings (`route.resolve() + "?offset=" + x` — concatenation strips the brand; `.resolve(params, { query })` is the only query path), and the open-redirect shape (`setHref(request.body.redirect)` — a raw string never carries the brand). `test/brand-errors.test.ts` runs the real checker over a mixed probe fixture and pins each unsafe shape's failure and each sanctioned shape's silence.
+- **Migration**: sites already on route callables/`.resolve()` need nothing. Literal externals need nothing. Static asset hrefs wrap in `assetUrl(…)`; runtime externals wrap in `externalUrl(…)`; helper functions annotated `: string` strip the brand — re-annotate as `ResolvedRoute` (hover on the type names the three fixes). Fastify's own `reply.redirect(string)` overload cannot be closed from here; the template layer pairs this brand with a typed lint backstop.
+
+### ✨ Added — `TailwindColor` exported from the package root
+
+The natural token-record pattern (`Record<Status, TailwindColor>` styler maps) no longer needs the `fluent-html/core` internal path — `import type { TailwindColor } from "fluent-html"`.
+
+### 📖 Changed — census-ranked head README
+
+The package README was a 79.5KB full-surface document; it is now a **12.7KB census-ranked head**: the top 50 methods (≈87% of the fleet's ~31K method call sites, counts embedded) with one-line signatures, plus the 10 structural patterns (routes, ids, `Form<T>`, `Match` family, `ForEach`/`ForEachKeyed`, `IfThen` family, `when` family, variants, theming, escape hatches). The long-form prose moved intact to `REFERENCE.md`; the complete callable surface with call-site counts is generated into `generated/full-surface.md`. The census is reproducible: `node scripts/census/method-census.mjs [--json | --markdown 50 | --tail]` (committed; corrects the `Array.from`/`res.text()`/`el.focus()` name collisions).
+
 ## [7.2.0] - Token-only colors behind an opt-out seam; phantom htmx attrs deleted
 
 The compile-time arm of the guideline-enforcement scope: the two prose rules with the worst audit numbers (554 palette literals; anything built on `preload`) become type errors.

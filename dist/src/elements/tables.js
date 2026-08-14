@@ -1,4 +1,5 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 import { extractId } from "../ids.js";
@@ -22,30 +23,42 @@ export function Tr(...children) {
 }
 export class ThTag extends Tag {
     setColspan(colspan) {
-        this.colspan = colspan;
+        if (devChecks)
+            assertMutable(this, "setColspan");
+        this._colspan = colspan;
         return this;
     }
     setRowspan(rowspan) {
-        this.rowspan = rowspan;
+        if (devChecks)
+            assertMutable(this, "setRowspan");
+        this._rowspan = rowspan;
         return this;
     }
     setScope(scope) {
-        this.scope = scope;
+        if (devChecks)
+            assertMutable(this, "setScope");
+        this._scope = scope;
         return this;
     }
     setHeaders(...ids) {
+        if (devChecks)
+            assertMutable(this, "setHeaders");
         const j = joinHeaderIds(ids);
-        this.headers = j.length ? j.join(' ') : undefined;
+        this._headers = j.length ? j.join(' ') : undefined;
         return this;
     }
     addHeaders(...ids) {
-        const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+        if (devChecks)
+            assertMutable(this, "addHeaders");
+        const existing = this._headers ? this._headers.split(/\s+/).filter(Boolean) : [];
         const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
-        this.headers = merged.length ? merged.join(' ') : undefined;
+        this._headers = merged.length ? merged.join(' ') : undefined;
         return this;
     }
     setAbbr(abbr) {
-        this.abbr = abbr;
+        if (devChecks)
+            assertMutable(this, "setAbbr");
+        this._abbr = abbr;
         return this;
     }
 }
@@ -55,22 +68,30 @@ export function Th(...children) {
 }
 export class TdTag extends Tag {
     setColspan(colspan) {
-        this.colspan = colspan;
+        if (devChecks)
+            assertMutable(this, "setColspan");
+        this._colspan = colspan;
         return this;
     }
     setRowspan(rowspan) {
-        this.rowspan = rowspan;
+        if (devChecks)
+            assertMutable(this, "setRowspan");
+        this._rowspan = rowspan;
         return this;
     }
     setHeaders(...ids) {
+        if (devChecks)
+            assertMutable(this, "setHeaders");
         const j = joinHeaderIds(ids);
-        this.headers = j.length ? j.join(' ') : undefined;
+        this._headers = j.length ? j.join(' ') : undefined;
         return this;
     }
     addHeaders(...ids) {
-        const existing = this.headers ? this.headers.split(/\s+/).filter(Boolean) : [];
+        if (devChecks)
+            assertMutable(this, "addHeaders");
+        const existing = this._headers ? this._headers.split(/\s+/).filter(Boolean) : [];
         const merged = [...new Set([...existing, ...joinHeaderIds(ids)])];
-        this.headers = merged.length ? merged.join(' ') : undefined;
+        this._headers = merged.length ? merged.join(' ') : undefined;
         return this;
     }
 }
@@ -83,7 +104,9 @@ export function Caption(...children) {
 }
 export class ColgroupTag extends Tag {
     setSpan(span) {
-        this.span = span;
+        if (devChecks)
+            assertMutable(this, "setSpan");
+        this._span = span;
         return this;
     }
 }
@@ -93,7 +116,9 @@ export function Colgroup(...children) {
 }
 export class ColTag extends Tag {
     setSpan(span) {
-        this.span = span;
+        if (devChecks)
+            assertMutable(this, "setSpan");
+        this._span = span;
         return this;
     }
 }

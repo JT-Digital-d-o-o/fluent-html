@@ -8,17 +8,17 @@ import type { CrossOrigin, FetchPriority, ReferrerPolicy } from "./html-types.js
  * Img().setSrc("/photo.jpg").setAlt("A photo").setLoading("lazy")
  */
 export declare class ImgTag extends Tag {
-    src?: string;
-    alt?: string;
-    width?: string;
-    height?: string;
-    loading?: 'lazy' | 'eager';
-    decoding?: 'sync' | 'async' | 'auto';
-    srcset?: string;
-    sizes?: string;
-    crossorigin?: CrossOrigin | '';
-    fetchpriority?: FetchPriority;
-    referrerpolicy?: ReferrerPolicy;
+    protected _src?: string;
+    protected _alt?: string;
+    protected _width?: string;
+    protected _height?: string;
+    protected _loading?: 'lazy' | 'eager';
+    protected _decoding?: 'sync' | 'async' | 'auto';
+    protected _srcset?: string;
+    protected _sizes?: string;
+    protected _crossorigin?: CrossOrigin | '';
+    protected _fetchpriority?: FetchPriority;
+    protected _referrerpolicy?: ReferrerPolicy;
     setSrc(src?: string): this;
     setAlt(alt?: string): this;
     setWidth(width?: string | number): this;
@@ -36,13 +36,13 @@ export declare class ImgTag extends Tag {
 export declare function Img(): ImgTag;
 export declare function Picture(...children: View[]): Tag;
 export declare class SourceTag extends Tag {
-    src?: string;
-    srcset?: string;
-    sizes?: string;
-    type?: string;
-    media?: string;
-    width?: string;
-    height?: string;
+    protected _src?: string;
+    protected _srcset?: string;
+    protected _sizes?: string;
+    protected _type?: string;
+    protected _media?: string;
+    protected _width?: string;
+    protected _height?: string;
     setSrc(src?: string): this;
     setSrcset(srcset?: string): this;
     setSizes(sizes?: string): this;
@@ -53,12 +53,12 @@ export declare class SourceTag extends Tag {
 }
 export declare function Source(): SourceTag;
 export declare class VideoTag extends Tag {
-    width?: string;
-    height?: string;
-    src?: string;
-    preload?: 'none' | 'metadata' | 'auto';
-    poster?: string;
-    crossorigin?: CrossOrigin | '';
+    protected _width?: string;
+    protected _height?: string;
+    protected _src?: string;
+    protected _preload?: 'none' | 'metadata' | 'auto';
+    protected _poster?: string;
+    protected _crossorigin?: CrossOrigin | '';
     setWidth(width?: string | number): this;
     setHeight(height?: string | number): this;
     setSrc(src: string): this;
@@ -68,19 +68,19 @@ export declare class VideoTag extends Tag {
 }
 export declare function Video(...children: View[]): VideoTag;
 export declare class AudioTag extends Tag {
-    src?: string;
-    preload?: 'none' | 'metadata' | 'auto';
-    crossorigin?: CrossOrigin | '';
+    protected _src?: string;
+    protected _preload?: 'none' | 'metadata' | 'auto';
+    protected _crossorigin?: CrossOrigin | '';
     setSrc(src?: string): this;
     setPreload(preload?: 'none' | 'metadata' | 'auto'): this;
     setCrossOrigin(crossorigin?: CrossOrigin | ''): this;
 }
 export declare function Audio(...children: View[]): AudioTag;
 export declare class TrackTag extends Tag {
-    src?: string;
-    kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
-    srclang?: string;
-    label?: string;
+    protected _src?: string;
+    protected _kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata';
+    protected _srclang?: string;
+    protected _label?: string;
     setSrc(src?: string): this;
     setKind(kind?: 'subtitles' | 'captions' | 'descriptions' | 'chapters' | 'metadata'): this;
     setSrclang(srclang?: string): this;
@@ -88,20 +88,20 @@ export declare class TrackTag extends Tag {
 }
 export declare function Track(): TrackTag;
 export declare class CanvasTag extends Tag {
-    width?: string;
-    height?: string;
+    protected _width?: string;
+    protected _height?: string;
     setWidth(width?: string | number): this;
     setHeight(height?: string | number): this;
 }
 export declare function Canvas(...children: View[]): CanvasTag;
 export declare class SvgTag extends Tag {
-    width?: string;
-    height?: string;
-    viewBox?: string;
-    xmlns?: string;
-    fillValue?: string;
-    strokeValue?: string;
-    'stroke-width'?: string;
+    protected _width?: string;
+    protected _height?: string;
+    protected _viewBox?: string;
+    protected _xmlns?: string;
+    protected _fillValue?: string;
+    protected _strokeValue?: string;
+    protected '_stroke-width'?: string;
     setWidth(width?: string | number): this;
     setHeight(height?: string | number): this;
     setViewBox(viewBox: string): this;

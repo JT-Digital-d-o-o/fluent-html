@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { render, Div, Main, Header, Footer, Section, Article, Nav, P, H1, H2, Span, Strong, Ul, Li, Table, Thead, Tbody, Tr, Th, Td, Form, Input, Button, Label, Select, Option, Details, Summary, A, Img, El, Empty, } from "../src/index.js";
+import { assetUrl } from "../src/htmx.js";
 // ------------------------------------
 // render() variadic
 // ------------------------------------
@@ -21,8 +22,8 @@ describe("Nested Structures", () => {
         assert.strictEqual(render(Div([
             Header([
                 Nav([
-                    A("Home").setHref("/"),
-                    A("About").setHref("/about"),
+                    A("Home").setHref(assetUrl("/")),
+                    A("About").setHref(assetUrl("/about")),
                 ])
             ]).setClass("header"),
             Main([
@@ -95,7 +96,7 @@ describe("Variadic Children", () => {
         assert.strictEqual(render(Form(Label("Name"), Input().setType("text").setName("name"), Button("Submit").setType("submit"))), `<form><label>Name</label>\n<input type="text" name="name">\n<button type="submit">Submit</button></form>`);
     });
     it("Variadic Nav with links", () => {
-        assert.strictEqual(render(Nav(A("Home").setHref("/"), A("About").setHref("/about"), A("Contact").setHref("/contact"))), `<nav><a href="/">Home</a>\n<a href="/about">About</a>\n<a href="/contact">Contact</a></nav>`);
+        assert.strictEqual(render(Nav(A("Home").setHref(assetUrl("/")), A("About").setHref(assetUrl("/about")), A("Contact").setHref(assetUrl("/contact")))), `<nav><a href="/">Home</a>\n<a href="/about">About</a>\n<a href="/contact">Contact</a></nav>`);
     });
     it("Variadic Section with mixed content", () => {
         assert.strictEqual(render(Section(H2("Section Title"), P("Description"), Div(Button("Action 1"), Button("Action 2")))), `<section><h2>Section Title</h2>\n<p>Description</p>\n<div><button>Action 1</button>\n<button>Action 2</button></div></section>`);

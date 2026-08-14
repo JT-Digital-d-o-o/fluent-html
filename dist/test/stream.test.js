@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { render, renderToStream, renderToIterable, Div, P, H1, H2, Span, A, Ul, Li, Button, Form, Input, Img, Br, Hr, Meta, Link, Script, Style, Source, Col, Raw, Table, Tr, Td, Th, Thead, Tbody, Nav, Section, Document, Head, Body, Title, } from "../src/index.js";
 import { hx } from "../src/htmx.js";
+import { assetUrl } from "../src/htmx.js";
 /** Collect a stream's chunks (as strings) preserving boundaries. */
 function collectChunks(stream) {
     return new Promise((resolve, reject) => {
@@ -103,7 +104,7 @@ describe("Stream: Attributes", () => {
         assert.equal(await streamToString(view), render(view));
     });
     it("renders element-specific attributes (href)", async () => {
-        const view = A("Link").setHref("/path");
+        const view = A("Link").setHref(assetUrl("/path"));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders element-specific attributes (src)", async () => {
@@ -132,7 +133,7 @@ describe("Stream: Void elements", () => {
         assert.equal(await streamToString(view), render(view));
     });
     it("renders <link>", async () => {
-        const view = Link().setHref("/style.css").setRel("stylesheet");
+        const view = Link().setHref(assetUrl("/style.css")).setRel("stylesheet");
         assert.equal(await streamToString(view), render(view));
     });
     it("renders <source>", async () => {
@@ -196,54 +197,54 @@ describe("Stream: Script/Style raw context", () => {
 // ─── HTMX attributes ───────────────────────────────────────────
 describe("Stream: HTMX", () => {
     it("renders hx-get", async () => {
-        const view = Div().setHtmx(hx("/api/data"));
+        const view = Div().setHtmx(hx(assetUrl("/api/data")));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-post", async () => {
-        const view = Button("Submit").setHtmx(hx("/api/submit", { method: "post" }));
+        const view = Button("Submit").setHtmx(hx(assetUrl("/api/submit"), { method: "post" }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-target + hx-swap", async () => {
-        const view = Button("Load").setHtmx(hx("/api", { target: "#main", swap: "innerHTML" }));
+        const view = Button("Load").setHtmx(hx(assetUrl("/api"), { target: "#main", swap: "innerHTML" }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-push-url", async () => {
-        const view = A("Page").setHtmx(hx("/page", { pushUrl: true }));
+        const view = A("Page").setHtmx(hx(assetUrl("/page"), { pushUrl: true }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-trigger", async () => {
-        const view = Input().setHtmx(hx("/search", { trigger: "keyup changed delay:500ms" }));
+        const view = Input().setHtmx(hx(assetUrl("/search"), { trigger: "keyup changed delay:500ms" }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-vals", async () => {
-        const view = Button("Go").setHtmx(hx("/api", { method: "post", vals: { key: "value" } }));
+        const view = Button("Go").setHtmx(hx(assetUrl("/api"), { method: "post", vals: { key: "value" } }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-headers", async () => {
-        const view = Div().setHtmx(hx("/api", { headers: { "X-Custom": "yes" } }));
+        const view = Div().setHtmx(hx(assetUrl("/api"), { headers: { "X-Custom": "yes" } }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-confirm", async () => {
-        const view = Button("Delete").setHtmx(hx("/delete", { method: "delete", confirm: "Are you sure?" }));
+        const view = Button("Delete").setHtmx(hx(assetUrl("/delete"), { method: "delete", confirm: "Are you sure?" }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-swap-oob", async () => {
-        const view = Div("Updated").setHtmx(hx("/api", { swapOob: "true" }));
+        const view = Div("Updated").setHtmx(hx(assetUrl("/api"), { swapOob: "true" }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-boost", async () => {
-        const view = Nav().setHtmx(hx("/nav", { boost: true }));
+        const view = Nav().setHtmx(hx(assetUrl("/nav"), { boost: true }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders hx-indicator", async () => {
-        const view = Form().setHtmx(hx("/submit", { method: "post", indicator: "#spinner" }));
+        const view = Form().setHtmx(hx(assetUrl("/submit"), { method: "post", indicator: "#spinner" }));
         assert.equal(await streamToString(view), render(view));
     });
 });
 // ─── Complex / realistic structures ─────────────────────────────
 describe("Stream: Complex structures", () => {
     it("renders a realistic page", async () => {
-        const view = Div(Nav(A("Home").setHref("/"), A("About").setHref("/about")).setClass("nav"), Section(H1("Welcome"), P("This is a ", Span("fluent-html").setClass("brand"), " page.")).setId("content")).setId("app");
+        const view = Div(Nav(A("Home").setHref(assetUrl("/")), A("About").setHref(assetUrl("/about"))).setClass("nav"), Section(H1("Welcome"), P("This is a ", Span("fluent-html").setClass("brand"), " page.")).setId("content")).setId("app");
         assert.equal(await streamToString(view), render(view));
     });
     it("renders a table", async () => {
@@ -251,11 +252,11 @@ describe("Stream: Complex structures", () => {
         assert.equal(await streamToString(view), render(view));
     });
     it("renders a form with inputs", async () => {
-        const view = Form(Div(Input().setType("text").setName("username").addAttribute("placeholder", "Username")).setClass("field"), Div(Input().setType("password").setName("password").addAttribute("placeholder", "Password")).setClass("field"), Button("Login").setType("submit")).setHtmx(hx("/login", { method: "post" }));
+        const view = Form(Div(Input().setType("text").setName("username").addAttribute("placeholder", "Username")).setClass("field"), Div(Input().setType("password").setName("password").addAttribute("placeholder", "Password")).setClass("field"), Button("Login").setType("submit")).setHtmx(hx(assetUrl("/login"), { method: "post" }));
         assert.equal(await streamToString(view), render(view));
     });
     it("renders mixed content with Raw", async () => {
-        const view = Div(H1("Title"), Raw("<hr>"), P("Paragraph with ", A("link").setHref("/foo"), " inside."), Raw("<!-- comment -->"));
+        const view = Div(H1("Title"), Raw("<hr>"), P("Paragraph with ", A("link").setHref(assetUrl("/foo")), " inside."), Raw("<!-- comment -->"));
         assert.equal(await streamToString(view), render(view));
     });
     it("produces correct chunks for large array", async () => {
@@ -311,7 +312,7 @@ describe("Stream: backpressure + renderToIterable", () => {
         assert.ok(out.includes('nonce="n9"'));
     });
     it("destroys the stream if the walk throws mid-stream (invalid hx-status key)", async () => {
-        const evil = hx("/x", { status: { "bad key": "swap:none" } });
+        const evil = hx(assetUrl("/x"), { status: { "bad key": "swap:none" } });
         const stream = renderToStream(Div().setHtmx(evil));
         await assert.rejects(new Promise((resolve, reject) => {
             stream.on("data", () => { });
@@ -355,7 +356,7 @@ describe("Stream: fuzz equivalence with render", () => {
         if (r < 0.72)
             return Style("/* </style> */ body{margin:0}"); // raw (style) ctx
         if (r < 0.82) {
-            return Button("go").setHtmx(hx("/api", {
+            return Button("go").setHtmx(hx(assetUrl("/api"), {
                 method: "post", target: "#m", swap: "outerHTML", pushUrl: true,
                 vals: { k: "v" }, headers: { "X-Y": "z" }, confirm: "ok?", boost: true,
             }));

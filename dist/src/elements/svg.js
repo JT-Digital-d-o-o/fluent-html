@@ -1,50 +1,73 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 // ─── Shared SVG presentation attributes ────────────────────────────
 export class SvgShapeTag extends Tag {
     setFill(fill) {
-        this.fillValue = fill;
+        if (devChecks)
+            assertMutable(this, "setFill");
+        this._fillValue = fill;
         return this;
     }
     setStroke(stroke) {
-        this.strokeValue = stroke;
+        if (devChecks)
+            assertMutable(this, "setStroke");
+        this._strokeValue = stroke;
         return this;
     }
     setStrokeWidth(width) {
-        this['stroke-width'] = String(width);
+        if (devChecks)
+            assertMutable(this, "setStrokeWidth");
+        this['_stroke-width'] = String(width);
         return this;
     }
     setStrokeLinecap(linecap) {
-        this['stroke-linecap'] = linecap;
+        if (devChecks)
+            assertMutable(this, "setStrokeLinecap");
+        this['_stroke-linecap'] = linecap;
         return this;
     }
     setStrokeLinejoin(linejoin) {
-        this['stroke-linejoin'] = linejoin;
+        if (devChecks)
+            assertMutable(this, "setStrokeLinejoin");
+        this['_stroke-linejoin'] = linejoin;
         return this;
     }
     setStrokeDasharray(dasharray) {
-        this['stroke-dasharray'] = dasharray;
+        if (devChecks)
+            assertMutable(this, "setStrokeDasharray");
+        this['_stroke-dasharray'] = dasharray;
         return this;
     }
     setStrokeDashoffset(offset) {
-        this['stroke-dashoffset'] = String(offset);
+        if (devChecks)
+            assertMutable(this, "setStrokeDashoffset");
+        this['_stroke-dashoffset'] = String(offset);
         return this;
     }
     setStrokeOpacity(opacity) {
-        this['stroke-opacity'] = String(opacity);
+        if (devChecks)
+            assertMutable(this, "setStrokeOpacity");
+        this['_stroke-opacity'] = String(opacity);
         return this;
     }
     setOpacity(opacity) {
-        this.svgOpacity = opacity;
+        if (devChecks)
+            assertMutable(this, "setOpacity");
+        this._svgOpacity = opacity;
         return this;
     }
     setTransform(transform) {
-        this.transformValue = transform;
+        if (devChecks)
+            assertMutable(this, "setTransform");
+        this._transformValue = transform;
         return this;
     }
     setFilter(filter) {
-        this.filter = filter;
+        if (devChecks)
+            assertMutable(this, "setFilter");
+        this._filter = filter;
         return this;
     }
 }
@@ -54,15 +77,21 @@ defineSchemaKeys(SvgShapeTag, [...SHAPE_SK]);
 // ─── Circle ─────────────────────────────────────────────────────────
 export class CircleTag extends SvgShapeTag {
     setCx(cx) {
-        this.cx = cx;
+        if (devChecks)
+            assertMutable(this, "setCx");
+        this._cx = cx;
         return this;
     }
     setCy(cy) {
-        this.cy = cy;
+        if (devChecks)
+            assertMutable(this, "setCy");
+        this._cy = cy;
         return this;
     }
     setR(r) {
-        this.r = r;
+        if (devChecks)
+            assertMutable(this, "setR");
+        this._r = r;
         return this;
     }
 }
@@ -73,27 +102,39 @@ export function Circle(...children) {
 // ─── Rect ───────────────────────────────────────────────────────────
 export class RectTag extends SvgShapeTag {
     setX(x) {
-        this.x = x;
+        if (devChecks)
+            assertMutable(this, "setX");
+        this._x = x;
         return this;
     }
     setY(y) {
-        this.y = y;
+        if (devChecks)
+            assertMutable(this, "setY");
+        this._y = y;
         return this;
     }
     setWidth(width) {
-        this.width = String(width);
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = String(width);
         return this;
     }
     setHeight(height) {
-        this.height = String(height);
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = String(height);
         return this;
     }
     setRx(rx) {
-        this.rx = rx;
+        if (devChecks)
+            assertMutable(this, "setRx");
+        this._rx = rx;
         return this;
     }
     setRy(ry) {
-        this.ry = ry;
+        if (devChecks)
+            assertMutable(this, "setRy");
+        this._ry = ry;
         return this;
     }
 }
@@ -104,19 +145,27 @@ export function Rect(...children) {
 // ─── Line ───────────────────────────────────────────────────────────
 export class LineTag extends SvgShapeTag {
     setX1(x1) {
-        this.x1 = x1;
+        if (devChecks)
+            assertMutable(this, "setX1");
+        this._x1 = x1;
         return this;
     }
     setY1(y1) {
-        this.y1 = y1;
+        if (devChecks)
+            assertMutable(this, "setY1");
+        this._y1 = y1;
         return this;
     }
     setX2(x2) {
-        this.x2 = x2;
+        if (devChecks)
+            assertMutable(this, "setX2");
+        this._x2 = x2;
         return this;
     }
     setY2(y2) {
-        this.y2 = y2;
+        if (devChecks)
+            assertMutable(this, "setY2");
+        this._y2 = y2;
         return this;
     }
 }
@@ -127,15 +176,21 @@ export function Line(...children) {
 // ─── Path ───────────────────────────────────────────────────────────
 export class PathTag extends SvgShapeTag {
     setD(d) {
-        this.d = d;
+        if (devChecks)
+            assertMutable(this, "setD");
+        this._d = d;
         return this;
     }
     setFillRule(rule) {
-        this['fill-rule'] = rule;
+        if (devChecks)
+            assertMutable(this, "setFillRule");
+        this['_fill-rule'] = rule;
         return this;
     }
     setClipRule(rule) {
-        this['clip-rule'] = rule;
+        if (devChecks)
+            assertMutable(this, "setClipRule");
+        this['_clip-rule'] = rule;
         return this;
     }
 }
@@ -146,19 +201,27 @@ export function Path(...children) {
 // ─── Ellipse ────────────────────────────────────────────────────────
 export class EllipseTag extends SvgShapeTag {
     setCx(cx) {
-        this.cx = cx;
+        if (devChecks)
+            assertMutable(this, "setCx");
+        this._cx = cx;
         return this;
     }
     setCy(cy) {
-        this.cy = cy;
+        if (devChecks)
+            assertMutable(this, "setCy");
+        this._cy = cy;
         return this;
     }
     setRx(rx) {
-        this.rx = rx;
+        if (devChecks)
+            assertMutable(this, "setRx");
+        this._rx = rx;
         return this;
     }
     setRy(ry) {
-        this.ry = ry;
+        if (devChecks)
+            assertMutable(this, "setRy");
+        this._ry = ry;
         return this;
     }
 }
@@ -169,7 +232,9 @@ export function Ellipse(...children) {
 // ─── Polygon ────────────────────────────────────────────────────────
 export class PolygonTag extends SvgShapeTag {
     setPoints(points) {
-        this.points = Array.isArray(points)
+        if (devChecks)
+            assertMutable(this, "setPoints");
+        this._points = Array.isArray(points)
             ? points.map(([x, y]) => `${x},${y}`).join(' ')
             : points;
         return this;
@@ -182,7 +247,9 @@ export function Polygon(...children) {
 // ─── Polyline ───────────────────────────────────────────────────────
 export class PolylineTag extends SvgShapeTag {
     setPoints(points) {
-        this.points = Array.isArray(points)
+        if (devChecks)
+            assertMutable(this, "setPoints");
+        this._points = Array.isArray(points)
             ? points.map(([x, y]) => `${x},${y}`).join(' ')
             : points;
         return this;
@@ -195,51 +262,75 @@ export function Polyline(...children) {
 // ─── Text ───────────────────────────────────────────────────────────
 export class SvgTextTag extends SvgShapeTag {
     setX(x) {
-        this.x = x;
+        if (devChecks)
+            assertMutable(this, "setX");
+        this._x = x;
         return this;
     }
     setY(y) {
-        this.y = y;
+        if (devChecks)
+            assertMutable(this, "setY");
+        this._y = y;
         return this;
     }
     setDx(dx) {
-        this.dx = dx;
+        if (devChecks)
+            assertMutable(this, "setDx");
+        this._dx = dx;
         return this;
     }
     setDy(dy) {
-        this.dy = dy;
+        if (devChecks)
+            assertMutable(this, "setDy");
+        this._dy = dy;
         return this;
     }
     setTextAnchor(anchor) {
-        this['text-anchor'] = anchor;
+        if (devChecks)
+            assertMutable(this, "setTextAnchor");
+        this['_text-anchor'] = anchor;
         return this;
     }
     setDominantBaseline(baseline) {
-        this['dominant-baseline'] = baseline;
+        if (devChecks)
+            assertMutable(this, "setDominantBaseline");
+        this['_dominant-baseline'] = baseline;
         return this;
     }
     setFontSize(size) {
-        this['font-size'] = size;
+        if (devChecks)
+            assertMutable(this, "setFontSize");
+        this['_font-size'] = size;
         return this;
     }
     setFontFamily(family) {
-        this['font-family'] = family;
+        if (devChecks)
+            assertMutable(this, "setFontFamily");
+        this['_font-family'] = family;
         return this;
     }
     setFontWeight(weight) {
-        this['font-weight'] = `${weight}`;
+        if (devChecks)
+            assertMutable(this, "setFontWeight");
+        this['_font-weight'] = `${weight}`;
         return this;
     }
     setFontStyle(style) {
-        this['font-style'] = style;
+        if (devChecks)
+            assertMutable(this, "setFontStyle");
+        this['_font-style'] = style;
         return this;
     }
     setTextDecoration(decoration) {
-        this['text-decoration'] = decoration;
+        if (devChecks)
+            assertMutable(this, "setTextDecoration");
+        this['_text-decoration'] = decoration;
         return this;
     }
     setLetterSpacing(spacing) {
-        this['letter-spacing'] = spacing;
+        if (devChecks)
+            assertMutable(this, "setLetterSpacing");
+        this['_letter-spacing'] = spacing;
         return this;
     }
 }
@@ -250,43 +341,63 @@ export function Text(...children) {
 // ─── Tspan ──────────────────────────────────────────────────────────
 export class TspanTag extends SvgShapeTag {
     setX(x) {
-        this.x = x;
+        if (devChecks)
+            assertMutable(this, "setX");
+        this._x = x;
         return this;
     }
     setY(y) {
-        this.y = y;
+        if (devChecks)
+            assertMutable(this, "setY");
+        this._y = y;
         return this;
     }
     setDx(dx) {
-        this.dx = dx;
+        if (devChecks)
+            assertMutable(this, "setDx");
+        this._dx = dx;
         return this;
     }
     setDy(dy) {
-        this.dy = dy;
+        if (devChecks)
+            assertMutable(this, "setDy");
+        this._dy = dy;
         return this;
     }
     setFontSize(size) {
-        this['font-size'] = size;
+        if (devChecks)
+            assertMutable(this, "setFontSize");
+        this['_font-size'] = size;
         return this;
     }
     setFontFamily(family) {
-        this['font-family'] = family;
+        if (devChecks)
+            assertMutable(this, "setFontFamily");
+        this['_font-family'] = family;
         return this;
     }
     setFontWeight(weight) {
-        this['font-weight'] = `${weight}`;
+        if (devChecks)
+            assertMutable(this, "setFontWeight");
+        this['_font-weight'] = `${weight}`;
         return this;
     }
     setFontStyle(style) {
-        this['font-style'] = style;
+        if (devChecks)
+            assertMutable(this, "setFontStyle");
+        this['_font-style'] = style;
         return this;
     }
     setTextDecoration(decoration) {
-        this['text-decoration'] = decoration;
+        if (devChecks)
+            assertMutable(this, "setTextDecoration");
+        this['_text-decoration'] = decoration;
         return this;
     }
     setLetterSpacing(spacing) {
-        this['letter-spacing'] = spacing;
+        if (devChecks)
+            assertMutable(this, "setLetterSpacing");
+        this['_letter-spacing'] = spacing;
         return this;
     }
 }
@@ -297,23 +408,33 @@ export function Tspan(...children) {
 // ─── Use ────────────────────────────────────────────────────────────
 export class UseTag extends Tag {
     setHref(href) {
-        this.href = href;
+        if (devChecks)
+            assertMutable(this, "setHref");
+        this._href = href;
         return this;
     }
     setX(x) {
-        this.x = x;
+        if (devChecks)
+            assertMutable(this, "setX");
+        this._x = x;
         return this;
     }
     setY(y) {
-        this.y = y;
+        if (devChecks)
+            assertMutable(this, "setY");
+        this._y = y;
         return this;
     }
     setWidth(width) {
-        this.width = String(width);
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = String(width);
         return this;
     }
     setHeight(height) {
-        this.height = String(height);
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = String(height);
         return this;
     }
 }
@@ -329,36 +450,126 @@ export function Defs(...children) {
     return El("defs", ...children);
 }
 export class LinearGradientTag extends Tag {
-    setX1(v) { this.x1 = String(v); return this; }
-    setY1(v) { this.y1 = String(v); return this; }
-    setX2(v) { this.x2 = String(v); return this; }
-    setY2(v) { this.y2 = String(v); return this; }
-    setGradientUnits(v) { this.gradientUnits = v; return this; }
-    setGradientTransform(v) { this.gradientTransform = v; return this; }
-    setSpreadMethod(v) { this.spreadMethod = v; return this; }
+    setX1(v) {
+        if (devChecks)
+            assertMutable(this, "setX1");
+        this._x1 = String(v);
+        return this;
+    }
+    setY1(v) {
+        if (devChecks)
+            assertMutable(this, "setY1");
+        this._y1 = String(v);
+        return this;
+    }
+    setX2(v) {
+        if (devChecks)
+            assertMutable(this, "setX2");
+        this._x2 = String(v);
+        return this;
+    }
+    setY2(v) {
+        if (devChecks)
+            assertMutable(this, "setY2");
+        this._y2 = String(v);
+        return this;
+    }
+    setGradientUnits(v) {
+        if (devChecks)
+            assertMutable(this, "setGradientUnits");
+        this._gradientUnits = v;
+        return this;
+    }
+    setGradientTransform(v) {
+        if (devChecks)
+            assertMutable(this, "setGradientTransform");
+        this._gradientTransform = v;
+        return this;
+    }
+    setSpreadMethod(v) {
+        if (devChecks)
+            assertMutable(this, "setSpreadMethod");
+        this._spreadMethod = v;
+        return this;
+    }
 }
 defineSchemaKeys(LinearGradientTag, ['x1', 'y1', 'x2', 'y2', 'gradientUnits', 'gradientTransform', 'spreadMethod']);
 export function LinearGradient(...children) {
     return new LinearGradientTag("linearGradient", ...children);
 }
 export class RadialGradientTag extends Tag {
-    setCx(v) { this.cx = String(v); return this; }
-    setCy(v) { this.cy = String(v); return this; }
-    setR(v) { this.r = String(v); return this; }
-    setFx(v) { this.fx = String(v); return this; }
-    setFy(v) { this.fy = String(v); return this; }
-    setGradientUnits(v) { this.gradientUnits = v; return this; }
-    setGradientTransform(v) { this.gradientTransform = v; return this; }
-    setSpreadMethod(v) { this.spreadMethod = v; return this; }
+    setCx(v) {
+        if (devChecks)
+            assertMutable(this, "setCx");
+        this._cx = String(v);
+        return this;
+    }
+    setCy(v) {
+        if (devChecks)
+            assertMutable(this, "setCy");
+        this._cy = String(v);
+        return this;
+    }
+    setR(v) {
+        if (devChecks)
+            assertMutable(this, "setR");
+        this._r = String(v);
+        return this;
+    }
+    setFx(v) {
+        if (devChecks)
+            assertMutable(this, "setFx");
+        this._fx = String(v);
+        return this;
+    }
+    setFy(v) {
+        if (devChecks)
+            assertMutable(this, "setFy");
+        this._fy = String(v);
+        return this;
+    }
+    setGradientUnits(v) {
+        if (devChecks)
+            assertMutable(this, "setGradientUnits");
+        this._gradientUnits = v;
+        return this;
+    }
+    setGradientTransform(v) {
+        if (devChecks)
+            assertMutable(this, "setGradientTransform");
+        this._gradientTransform = v;
+        return this;
+    }
+    setSpreadMethod(v) {
+        if (devChecks)
+            assertMutable(this, "setSpreadMethod");
+        this._spreadMethod = v;
+        return this;
+    }
 }
 defineSchemaKeys(RadialGradientTag, ['cx', 'cy', 'r', 'fx', 'fy', 'gradientUnits', 'gradientTransform', 'spreadMethod']);
 export function RadialGradient(...children) {
     return new RadialGradientTag("radialGradient", ...children);
 }
 export class StopTag extends Tag {
-    setOffset(v) { this.offset = String(v); return this; }
-    setStopColor(v) { this['stop-color'] = v; return this; }
-    setStopOpacity(v) { this['stop-opacity'] = String(v); return this; }
+    setOffset(v) {
+        if (devChecks)
+            assertMutable(this, "setOffset");
+        this._offset = String(v);
+        return this;
+    }
+    setStopColor(v) {
+        if (devChecks)
+            assertMutable(this, "setStopColor");
+        this['_stop-color'] = v;
+        return this;
+    }
+    setStopOpacity(v) {
+        if (devChecks)
+            assertMutable(this, "setStopOpacity");
+        this['_stop-opacity'] = String(v);
+        return this;
+    }
 }
 defineSchemaKeys(StopTag, ['offset', 'stop-color', 'stop-opacity']);
 export function Stop(...children) {
@@ -366,41 +577,126 @@ export function Stop(...children) {
 }
 // ─── Clipping, masking, filters ────────────────────────────────────
 export class ClipPathTag extends Tag {
-    setClipPathUnits(v) { this.clipPathUnits = v; return this; }
+    setClipPathUnits(v) {
+        if (devChecks)
+            assertMutable(this, "setClipPathUnits");
+        this._clipPathUnits = v;
+        return this;
+    }
 }
 defineSchemaKeys(ClipPathTag, ['clipPathUnits']);
 export function ClipPath(...children) {
     return new ClipPathTag("clipPath", ...children);
 }
 export class MaskTag extends Tag {
-    setMaskUnits(v) { this.maskUnits = v; return this; }
-    setMaskContentUnits(v) { this.maskContentUnits = v; return this; }
-    setX(v) { this.x = String(v); return this; }
-    setY(v) { this.y = String(v); return this; }
-    setWidth(v) { this.width = String(v); return this; }
-    setHeight(v) { this.height = String(v); return this; }
+    setMaskUnits(v) {
+        if (devChecks)
+            assertMutable(this, "setMaskUnits");
+        this._maskUnits = v;
+        return this;
+    }
+    setMaskContentUnits(v) {
+        if (devChecks)
+            assertMutable(this, "setMaskContentUnits");
+        this._maskContentUnits = v;
+        return this;
+    }
+    setX(v) {
+        if (devChecks)
+            assertMutable(this, "setX");
+        this._x = String(v);
+        return this;
+    }
+    setY(v) {
+        if (devChecks)
+            assertMutable(this, "setY");
+        this._y = String(v);
+        return this;
+    }
+    setWidth(v) {
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = String(v);
+        return this;
+    }
+    setHeight(v) {
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = String(v);
+        return this;
+    }
 }
 defineSchemaKeys(MaskTag, ['maskUnits', 'maskContentUnits', 'x', 'y', 'width', 'height']);
 export function Mask(...children) {
     return new MaskTag("mask", ...children);
 }
 export class FilterTag extends Tag {
-    setX(v) { this.x = String(v); return this; }
-    setY(v) { this.y = String(v); return this; }
-    setWidth(v) { this.width = String(v); return this; }
-    setHeight(v) { this.height = String(v); return this; }
-    setFilterUnits(v) { this.filterUnits = v; return this; }
-    setPrimitiveUnits(v) { this.primitiveUnits = v; return this; }
+    setX(v) {
+        if (devChecks)
+            assertMutable(this, "setX");
+        this._x = String(v);
+        return this;
+    }
+    setY(v) {
+        if (devChecks)
+            assertMutable(this, "setY");
+        this._y = String(v);
+        return this;
+    }
+    setWidth(v) {
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = String(v);
+        return this;
+    }
+    setHeight(v) {
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = String(v);
+        return this;
+    }
+    setFilterUnits(v) {
+        if (devChecks)
+            assertMutable(this, "setFilterUnits");
+        this._filterUnits = v;
+        return this;
+    }
+    setPrimitiveUnits(v) {
+        if (devChecks)
+            assertMutable(this, "setPrimitiveUnits");
+        this._primitiveUnits = v;
+        return this;
+    }
 }
 defineSchemaKeys(FilterTag, ['x', 'y', 'width', 'height', 'filterUnits', 'primitiveUnits']);
 export function Filter(...children) {
     return new FilterTag("filter", ...children);
 }
 export class FeGaussianBlurTag extends Tag {
-    setIn(v) { this.in = v; return this; }
-    setStdDeviation(v) { this.stdDeviation = String(v); return this; }
-    setResult(v) { this.result = v; return this; }
-    setEdgeMode(v) { this.edgeMode = v; return this; }
+    setIn(v) {
+        if (devChecks)
+            assertMutable(this, "setIn");
+        this._in = v;
+        return this;
+    }
+    setStdDeviation(v) {
+        if (devChecks)
+            assertMutable(this, "setStdDeviation");
+        this._stdDeviation = String(v);
+        return this;
+    }
+    setResult(v) {
+        if (devChecks)
+            assertMutable(this, "setResult");
+        this._result = v;
+        return this;
+    }
+    setEdgeMode(v) {
+        if (devChecks)
+            assertMutable(this, "setEdgeMode");
+        this._edgeMode = v;
+        return this;
+    }
 }
 defineSchemaKeys(FeGaussianBlurTag, ['in', 'stdDeviation', 'result', 'edgeMode']);
 export function FeGaussianBlur(...children) {

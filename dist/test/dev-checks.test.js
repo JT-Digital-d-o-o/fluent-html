@@ -1,6 +1,7 @@
 import { describe, it, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { render, renderToIterable, setDevChecks, Div, Span, Ul, Li, Input, Button, ForEach, } from "../src/index.js";
+import { assetUrl } from "../src/htmx.js";
 // The guards are on by default outside NODE_ENV=production; a test that turns
 // them off restores them here so ordering can't leak.
 afterEach(() => setDevChecks(true));
@@ -119,20 +120,23 @@ describe("dev-checks — setDevChecks", () => {
     });
 });
 // ------------------------------------
-// Documented boundary
+// Element setters are gated
 // ------------------------------------
-describe("dev-checks — coverage boundary", () => {
-    // The gates live on the Tag primitives every styling and generic-attribute
-    // method funnels through. Element subclasses write their own storage fields
-    // directly (InputTag.type, ImgTag.src, …), so those setters are deliberately
-    // NOT gated — instrumenting ~200 of them is out of scope for a patch. This
-    // test pins the boundary so it is a known gap rather than an assumed catch.
-    it("element-specific setters are not gated (known gap)", () => {
+describe("dev-checks — element-specific setters", () => {
+    // The 7.0.1 boundary ("~200 element setters are ungated") is closed: element
+    // storage fields are protected `_`-prefixed storage and every setter that
+    // writes one runs the same assertMutable gate as the Tag primitives.
+    it("element-specific setters are gated (7.0.1 gap closed)", () => {
         const input = Input().setType("text");
         render(input);
-        assert.doesNotThrow(() => input.setType("email"));
+        throws(() => input.setType("email"), /already been rendered/);
     });
-    it("but the generic attribute path on the same tag is gated", () => {
+    it("htmx mixin setters are gated too", () => {
+        const div = Div("x").setHtmx(assetUrl("/x"));
+        render(div);
+        throws(() => div.setHtmx(assetUrl("/y")), /already been rendered/);
+    });
+    it("the generic attribute path on the same tag is gated", () => {
         const input = Input();
         render(input);
         throws(() => input.setTitle("x"), /already been rendered/);

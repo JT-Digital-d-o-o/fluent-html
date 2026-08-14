@@ -50,7 +50,6 @@ describe("Layout & Display", () => {
   it("negative transforms relocate the sign", () => {
     assert.strictEqual(render(Div().rotate(-45)), '<div class="-rotate-45"></div>');
     assert.strictEqual(render(Div().translate("y", "-1")), '<div class="-translate-y-1"></div>');
-    assert.strictEqual(render(Div().skewX(-6)), '<div class="-skew-x-6"></div>');
     assert.strictEqual(render(Div().rotate(45)), '<div class="rotate-45"></div>');
   });
 });
@@ -604,33 +603,20 @@ describe("List Style", () => {
 
 describe("Filters", () => {
   it("brightness", () => { assert.strictEqual(render(Div().brightness(50)), '<div class="brightness-50"></div>'); });
-  it("backdropBrightness", () => { assert.strictEqual(render(Div().backdropBrightness(125)), '<div class="backdrop-brightness-125"></div>'); });
   it("contrast", () => { assert.strictEqual(render(Div().contrast(200)), '<div class="contrast-200"></div>'); });
-  it("backdropContrast", () => { assert.strictEqual(render(Div().backdropContrast(75)), '<div class="backdrop-contrast-75"></div>'); });
   it("grayscale default", () => { assert.strictEqual(render(Div().grayscale()), '<div class="grayscale"></div>'); });
   it("grayscale 0", () => { assert.strictEqual(render(Div().grayscale(0)), '<div class="grayscale-0"></div>'); });
-  it("backdropGrayscale", () => { assert.strictEqual(render(Div().backdropGrayscale()), '<div class="backdrop-grayscale"></div>'); });
   it("hueRotate", () => { assert.strictEqual(render(Div().hueRotate(90)), '<div class="hue-rotate-90"></div>'); });
-  it("backdropHueRotate", () => { assert.strictEqual(render(Div().backdropHueRotate(180)), '<div class="backdrop-hue-rotate-180"></div>'); });
   it("invert default", () => { assert.strictEqual(render(Div().invert()), '<div class="invert"></div>'); });
   it("invert 0", () => { assert.strictEqual(render(Div().invert(0)), '<div class="invert-0"></div>'); });
-  it("backdropInvert", () => { assert.strictEqual(render(Div().backdropInvert()), '<div class="backdrop-invert"></div>'); });
   it("saturate", () => { assert.strictEqual(render(Div().saturate(150)), '<div class="saturate-150"></div>'); });
-  it("backdropSaturate", () => { assert.strictEqual(render(Div().backdropSaturate(50)), '<div class="backdrop-saturate-50"></div>'); });
   it("sepia default", () => { assert.strictEqual(render(Div().sepia()), '<div class="sepia"></div>'); });
   it("sepia 0", () => { assert.strictEqual(render(Div().sepia(0)), '<div class="sepia-0"></div>'); });
-  it("backdropSepia", () => { assert.strictEqual(render(Div().backdropSepia()), '<div class="backdrop-sepia"></div>'); });
   it("brightness with escape hatch", () => { assert.strictEqual(render(Div().brightness("[1.75]")), '<div class="brightness-[1.75]"></div>'); });
   it("filter in variant", () => { assert.strictEqual(render(Div().hover({ brightness: 110 })), '<div class="hover:brightness-110"></div>'); });
 });
 
-describe("Layout — Place, Grid Auto, Order", () => {
-  it("placeContent center", () => { assert.strictEqual(render(Div().placeContent("center")), '<div class="place-content-center"></div>'); });
-  it("placeContent between", () => { assert.strictEqual(render(Div().placeContent("between")), '<div class="place-content-between"></div>'); });
-  it("placeItems start", () => { assert.strictEqual(render(Div().placeItems("start")), '<div class="place-items-start"></div>'); });
-  it("placeItems center", () => { assert.strictEqual(render(Div().placeItems("center")), '<div class="place-items-center"></div>'); });
-  it("placeSelf auto", () => { assert.strictEqual(render(Div().placeSelf("auto")), '<div class="place-self-auto"></div>'); });
-  it("placeSelf end", () => { assert.strictEqual(render(Div().placeSelf("end")), '<div class="place-self-end"></div>'); });
+describe("Layout — Grid Auto, Order", () => {
   it("gridAutoFlow row", () => { assert.strictEqual(render(Div().gridFlow("row")), '<div class="grid-flow-row"></div>'); });
   it("gridAutoFlow col-dense", () => { assert.strictEqual(render(Div().gridFlow("col-dense")), '<div class="grid-flow-col-dense"></div>'); });
   it("gridAutoRows min", () => { assert.strictEqual(render(Div().autoRows("min")), '<div class="auto-rows-min"></div>'); });
@@ -643,11 +629,7 @@ describe("Layout — Place, Grid Auto, Order", () => {
   it("order none", () => { assert.strictEqual(render(Div().order("none")), '<div class="order-none"></div>'); });
 });
 
-describe("Modern features — Skew, WillChange, Overscroll", () => {
-  it("skewX", () => { assert.strictEqual(render(Div().skewX(6)), '<div class="skew-x-6"></div>'); });
-  it("skewY", () => { assert.strictEqual(render(Div().skewY(12)), '<div class="skew-y-12"></div>'); });
-  it("skewX escape hatch", () => { assert.strictEqual(render(Div().skewX("[17deg]")), '<div class="skew-x-[17deg]"></div>'); });
-  it("skew in variant", () => { assert.strictEqual(render(Div().hover({ skewX: 3 })), '<div class="hover:skew-x-3"></div>'); });
+describe("Modern features — WillChange, Overscroll", () => {
   it("willChange transform", () => { assert.strictEqual(render(Div().willChange("transform")), '<div class="will-change-transform"></div>'); });
   it("willChange scroll", () => { assert.strictEqual(render(Div().willChange("scroll")), '<div class="will-change-scroll"></div>'); });
   it("willChange auto", () => { assert.strictEqual(render(Div().willChange("auto")), '<div class="will-change-auto"></div>'); });

@@ -14,6 +14,7 @@ import {
   Img,
   El, Empty,
 } from "../src/index.js";
+import { assetUrl } from "../src/htmx.js";
 
 // ------------------------------------
 // render() variadic
@@ -50,8 +51,8 @@ describe("Nested Structures", () => {
     assert.strictEqual(render(Div([
       Header([
         Nav([
-          A("Home").setHref("/"),
-          A("About").setHref("/about"),
+          A("Home").setHref(assetUrl("/")),
+          A("About").setHref(assetUrl("/about")),
         ])
       ]).setClass("header"),
       Main([
@@ -165,9 +166,9 @@ describe("Variadic Children", () => {
 
   it("Variadic Nav with links", () => {
     assert.strictEqual(render(Nav(
-      A("Home").setHref("/"),
-      A("About").setHref("/about"),
-      A("Contact").setHref("/contact")
+      A("Home").setHref(assetUrl("/")),
+      A("About").setHref(assetUrl("/about")),
+      A("Contact").setHref(assetUrl("/contact"))
     )), `<nav><a href="/">Home</a>\n<a href="/about">About</a>\n<a href="/contact">Contact</a></nav>`);
   });
 

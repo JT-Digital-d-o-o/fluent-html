@@ -1,6 +1,6 @@
 import { setDiscriminant } from "./proto.js";
 import { devChecks, assertMutable, countParents } from "./dev-checks.js";
-import type { SchemaKey } from "./proto.js";
+import type { ResolvedSchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
 import type { Id} from "../ids.js";
 import { isId, extractId } from "../ids.js";
@@ -66,20 +66,23 @@ export class Tag {
   el: string;
   child: View;
 
-  id?: string;
-  class?: string;
-  style?: string;
+  // Storage is protected and `_`-prefixed so no public field shadows its setter — a
+  // blind `.id("x")` guess errors as a missing property, not a "String has no call
+  // signatures" cascade. The serializer reads the storage through an internal cast.
+  protected _id?: string;
+  protected _class?: string;
+  protected _style?: string;
   // Public type is Readonly: the bag defaults to a shared frozen object (EMPTY_ATTRS), so a
   // direct `tag.attributes.foo = "x"` would compile then throw at runtime. Go through
   // addAttribute()/setDataAttrs()/setAria() (which swap in a fresh mutable record first).
   declare attributes: Readonly<Record<string, string>>;
-  htmx?: HTMX;
+  protected _htmx?: HTMX;
   toggles?: string[];
 
   /** @internal type discriminant for fast render checks */
   declare readonly _t: 1;
-  /** @internal Schema keys for element-specific attributes */
-  declare readonly _sk?: readonly SchemaKey[];
+  /** @internal Normalized [storage, attr] schema keys for element-specific attributes */
+  declare readonly _sk?: readonly ResolvedSchemaKey[];
   /** @internal `Document()` brand — when true, the emitter prefixes `<!DOCTYPE html>`. */
   declare readonly _doc?: true;
 
@@ -101,7 +104,7 @@ export class Tag {
    */
   setId(id?: string | Id): this {
     if (devChecks) assertMutable(this, "setId");
-    this.id = id ? (isId(id) ? id.id : id) : undefined;
+    this._id = id ? (isId(id) ? id.id : id) : undefined;
     return this;
   }
 
@@ -116,8 +119,20 @@ export class Tag {
    */
   setClass(c?: string): this {
     if (devChecks) assertMutable(this, "setClass");
-    this.class = c;
+    this._class = c;
     return this;
+  }
+
+  /**
+   * Read the accumulated `class` attribute value (or `undefined` when unstyled).
+   * The storage field is protected so it cannot shadow `setClass`; framework code
+   * that inspects a built tag's classes reads through this accessor.
+   *
+   * @example
+   * const isInteractive = /(?:^|\s)cursor-/.test(tag.getClass() ?? "")
+   */
+  getClass(): string | undefined {
+    return this._class;
   }
 
   /**
@@ -138,10 +153,10 @@ export class Tag {
           ? this._variantPrefix + ':' + c
           : c.split(" ").map(cls => `${this._variantPrefix}:${cls}`).join(" "))
       : c;
-    if (this.class) {
-      this.class += ' ' + classes;
+    if (this._class) {
+      this._class += ' ' + classes;
     } else {
-      this.class = classes;
+      this._class = classes;
     }
     return this;
   }
@@ -161,7 +176,7 @@ export class Tag {
    */
   setStyle(style?: string): this {
     if (devChecks) assertMutable(this, "setStyle");
-    this.style = style;
+    this._style = style;
     return this;
   }
 
@@ -181,8 +196,8 @@ export class Tag {
    */
   addStyle(declaration: string): this {
     if (devChecks) assertMutable(this, "addStyle");
-    const existing = this.style?.trim().replace(/;+$/, "");
-    this.style = existing ? `${existing}; ${declaration}` : declaration;
+    const existing = this._style?.trim().replace(/;+$/, "");
+    this._style = existing ? `${existing}; ${declaration}` : declaration;
     return this;
   }
 
@@ -385,7 +400,7 @@ export class Tag {
    */
   setClasses(classes: (string | false | null | undefined)[]): this {
     if (devChecks) assertMutable(this, "setClasses");
-    this.class = classes.filter(Boolean).join(" ");
+    this._class = classes.filter(Boolean).join(" ");
     return this;
   }
 
@@ -408,7 +423,7 @@ export class Tag {
     const styleString = Object.entries(styles)
       .map(([key, value]) => `${kebabCase(key)}: ${value}`)
       .join("; ");
-    this.style = styleString;
+    this._style = styleString;
     return this;
   }
 
@@ -601,6 +616,17 @@ export class Tag {
    */
   setForm(form?: string | Id): this {
     return form === undefined ? this : this.addAttribute("form", extractId(form));
+  }
+
+  /**
+   * @internal The gated write path for the `_htmx` storage — called by the
+   * prototype-registered htmx mixin methods (`setHtmx`, `hxGet`, …), which sit
+   * outside the class body and so cannot write the private field directly.
+   */
+  _setHx(htmx: HTMX | undefined, method: string): this {
+    if (devChecks) assertMutable(this, method);
+    this._htmx = htmx;
+    return this;
   }
 
   /** @internal Variant prefix state — used by tailwind-methods mixin */

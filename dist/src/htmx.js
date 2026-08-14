@@ -4,6 +4,22 @@
 // ------------------------------------
 import { isId } from "./ids.js";
 /**
+ * Mark a runtime-computed TRUE external URL (Stripe checkout, OAuth authorize,
+ * presigned storage URL) as safe for the route-bearing sinks. Runtime identity
+ * — this is a type-level assertion, not validation; never pass user input.
+ */
+export function externalUrl(url) {
+    return url;
+}
+/**
+ * Mark a static asset path (`/favicon.svg`, `/apple-touch-icon.png`) — a URL
+ * served outside the route system — as a {@link ResolvedRoute}. Runtime
+ * identity — a type-level assertion; never pass user input.
+ */
+export function assetUrl(path) {
+    return path;
+}
+/**
  * Internal: append a query-params bag to a base endpoint, joining with `?` or `&` as
  * appropriate. Skips nullish entries; url-encodes keys and values. An empty or all-nullish
  * bag returns `base` unchanged (no stray separator). Shared by `hx()` and the route-callable
@@ -67,7 +83,7 @@ export function resolveSelector(value) {
 export function hx(endpoint, options = {}) {
     const { method, target, select, indicator, disable, include, query, ...rest } = options;
     return {
-        endpoint: query ? buildQueryString(endpoint, query) : endpoint,
+        endpoint: (query ? buildQueryString(endpoint, query) : endpoint),
         method: method ?? "get",
         target: resolveSelector(target),
         select: resolveSelector(select),

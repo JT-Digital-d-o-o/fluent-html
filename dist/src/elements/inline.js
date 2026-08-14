@@ -1,4 +1,5 @@
 import { Tag } from "../core/tag.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { defineSchemaKeys } from "../core/proto.js";
 import { El } from "../core/utils.js";
 export function Strong(...children) {
@@ -39,7 +40,9 @@ export function Cite(...children) {
 }
 export class QTag extends Tag {
     setCite(cite) {
-        this.cite = cite;
+        if (devChecks)
+            assertMutable(this, "setCite");
+        this._cite = cite;
         return this;
     }
 }

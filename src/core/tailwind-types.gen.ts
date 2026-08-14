@@ -301,11 +301,7 @@ export type TailwindContrast = 0 | 50 | 75 | 100 | 125 | 150 | 200 | Stringified
 export type TailwindHueRotate = 0 | 15 | 30 | 60 | 90 | 180 | Stringified<0 | 15 | 30 | 60 | 90 | 180> | `[${string}]`;
 export type TailwindSaturate = 0 | 50 | 100 | 150 | 200 | Stringified<0 | 50 | 100 | 150 | 200> | `[${string}]`;
 
-// Layout: Place & Grid Auto
-export type TailwindPlaceContent =
-  | "center" | "start" | "end" | "between" | "around" | "evenly" | "baseline" | "stretch";
-export type TailwindPlaceItems = "start" | "end" | "center" | "baseline" | "stretch";
-export type TailwindPlaceSelf = "auto" | "start" | "end" | "center" | "stretch";
+// Layout: Grid Auto
 export type TailwindGridAutoFlow = "row" | "col" | "dense" | "row-dense" | "col-dense";
 export type TailwindGridAuto = "auto" | "min" | "max" | "fr" | `[${string}]`;
 export type TailwindOrder = "first" | "last" | "none" | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Stringified<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12> | `[${string}]`;
@@ -323,12 +319,6 @@ export type TailwindPositionArea =
   | `[${string}]`;
 
 // Modern features
-// v4 (A-07): admit negatives — `.skewX(-12)` emits `-skew-x-12`.
-export type TailwindSkew =
-  | 0 | 1 | 2 | 3 | 6 | 12
-  | -1 | -2 | -3 | -6 | -12
-  | Stringified<0 | 1 | 2 | 3 | 6 | 12 | -1 | -2 | -3 | -6 | -12>
-  | `[${string}]`;
 export type TailwindWillChange = "auto" | "scroll" | "contents" | "transform" | `[${string}]`;
 export type TailwindOverscroll = "auto" | "contain" | "none";
 
@@ -349,13 +339,9 @@ export type TailwindDecorationThickness =
   | Stringified<0 | 1 | 2 | 4 | 8>
   | `[${string}]`;
 
-// Color scheme
-export type TailwindColorScheme = "normal" | "light" | "dark" | "light-dark" | "only-light" | "only-dark";
-
-// Text wrap / hyphenation / overflow-wrap
+// Text wrap / overflow-wrap
 export type TailwindTextWrap = "wrap" | "nowrap" | "balance" | "pretty";
 export type TailwindWrap = "break-word" | "anywhere" | "normal";
-export type TailwindHyphens = "none" | "manual" | "auto";
 
 // Pseudo-element content — `none` or arbitrary; the bare `.content()` form emits `content-['']`.
 export type TailwindContent = "none" | `[${string}]`;
@@ -386,9 +372,6 @@ export type TailwindMixBlendMode =
 export type TailwindBgBlendMode =
   | "normal" | "multiply" | "screen" | "overlay" | "darken" | "lighten" | "color-dodge" | "color-burn"
   | "hard-light" | "soft-light" | "difference" | "exclusion" | "hue" | "saturation" | "color" | "luminosity";
-
-// Isolation (the reset value; `isolate` is its own zero-arg method)
-export type TailwindIsolation = "auto";
 
 // Transition delay / behavior
 export type TailwindDelay =
@@ -421,16 +404,12 @@ export type TailwindGradientHueInterpolation =
 export type TailwindGradientInterpolation =
   TailwindGradientColorSpace | TailwindGradientHueInterpolation;
 
-// 3D transforms — depth gate (set on the parent), per-axis leaves
+// 3D transforms — depth gate (set on the parent)
 export type TailwindPerspective =
   | "dramatic" | "near" | "normal" | "midrange" | "distant" | "none" | `[${string}]`;
-export type TailwindPerspectiveOrigin =
-  | "center" | "top" | "top-right" | "right" | "bottom-right" | "bottom" | "bottom-left" | "left" | "top-left"
-  | `[${string}]`;
 // Narrower than TailwindTranslate: translate-z has no `-full` and no fractions.
 export type TailwindTranslateZ = TailwindSpacing | `-${number}` | "-px";
 export type TailwindTransformStyle = "3d" | "flat";
-export type TailwindBackfaceVisibility = "visible" | "hidden";
 
 // Variant selectors for `.variant()` — aria / group / peer / pseudo / nth / child.
 // Each member is the bare prefix; the styles go in the variant object.
@@ -480,26 +459,8 @@ export type TailwindColumns =
   | "3xs" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl"
   | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"
   | `[${string}]`;
-export type TailwindBreakBeforeAfter =
-  | "auto" | "avoid" | "all" | "avoid-page" | "page" | "left" | "right" | "column";
 export type TailwindBreakInside = "auto" | "avoid" | "avoid-page" | "avoid-column";
 export type TailwindBoxDecoration = "clone" | "slice";
 
-// Scroll snap / behavior / field-sizing
-export type TailwindSnapAxis = "none" | "x" | "y" | "both";
-export type TailwindSnapStrictness = "mandatory" | "proximity";
-export type TailwindSnapAlign = "start" | "end" | "center" | "none";
-export type TailwindSnapStop = "normal" | "always";
+// Scroll behavior
 export type TailwindScrollBehavior = "auto" | "smooth";
-export type TailwindFieldSizing = "content" | "fixed";
-
-// Masks (v4.1) — edge fades, composite, SVG mask-type
-export type TailwindMaskEdge = "t" | "r" | "b" | "l" | "x" | "y";
-export type TailwindMaskStop =
-  | `${number}%`
-  | TailwindColor
-  | TailwindSpacing
-  | `(${string})`
-  | `[${string}]`;
-export type TailwindMaskComposite = "add" | "subtract" | "intersect" | "exclude";
-export type TailwindMaskType = "alpha" | "luminance";

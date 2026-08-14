@@ -10,6 +10,7 @@ import {
 import { defineIds } from "../src/ids.js";
 import { hx } from "../src/htmx.js";
 import { escapeJs } from "../src/render/escape.js";
+import { assetUrl } from "../src/htmx.js";
 
 // ------------------------------------
 // XSS Prevention
@@ -85,16 +86,16 @@ describe("Behavior injection prevention (v4: attributes-only, no JS emission)", 
 
 describe("hx-status key injection prevention", () => {
   it("renders a valid numeric status key", () => {
-    assert.ok(render(Div().setHtmx(hx("/x", { status: { 404: "swap:none" } }))).includes('hx-status:404="swap:none"'));
+    assert.ok(render(Div().setHtmx(hx(assetUrl("/x"), { status: { 404: "swap:none" } }))).includes('hx-status:404="swap:none"'));
   });
 
   it("renders a valid Nxx wildcard key", () => {
-    assert.ok(render(Div().setHtmx(hx("/x", { status: { "5xx": "swap:none" } }))).includes('hx-status:5xx="swap:none"'));
+    assert.ok(render(Div().setHtmx(hx(assetUrl("/x"), { status: { "5xx": "swap:none" } }))).includes('hx-status:5xx="swap:none"'));
   });
 
   it("throws at render on a malformed status key (attribute-name injection)", () => {
     const evilOpts = { status: { "404 onload=alert(1)": "swap:none" } } as unknown as Parameters<typeof hx>[1];
-    assert.throws(() => render(Div().setHtmx(hx("/x", evilOpts))), /Invalid hx-status key/);
+    assert.throws(() => render(Div().setHtmx(hx(assetUrl("/x"), evilOpts))), /Invalid hx-status key/);
   });
 });
 
@@ -170,20 +171,20 @@ describe("script break-out prevention (A-006)", () => {
 
 describe("URL scheme sanitization on typed setters (XSS-1)", () => {
   it("neutralizes javascript: on href/src/action to about:blank", () => {
-    assert.strictEqual(render(A("x").setHref("javascript:alert(1)")), `<a href="about:blank">x</a>`);
+    assert.strictEqual(render(A("x").setHref(assetUrl("javascript:alert(1)"))), `<a href="about:blank">x</a>`);
     assert.strictEqual(render(Img().setSrc("javascript:alert(1)")), `<img src="about:blank">`);
     assert.strictEqual(render(Form().setAction("javascript:alert(1)")), `<form action="about:blank"></form>`);
   });
 
   it("blocks obfuscated schemes (case, embedded tab, leading whitespace, vbscript)", () => {
-    assert.ok(render(A("x").setHref("JaVaScript:alert(1)")).includes(`href="about:blank"`));
-    assert.ok(render(A("x").setHref("java\tscript:alert(1)")).includes(`href="about:blank"`));
-    assert.ok(render(A("x").setHref("   javascript:alert(1)")).includes(`href="about:blank"`));
-    assert.ok(render(A("x").setHref("vbscript:msgbox(1)")).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref(assetUrl("JaVaScript:alert(1)"))).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref(assetUrl("java\tscript:alert(1)"))).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref(assetUrl("   javascript:alert(1)"))).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref(assetUrl("vbscript:msgbox(1)"))).includes(`href="about:blank"`));
   });
 
   it("blocks scriptable data: URLs (text/html, image/svg+xml) but allows raster/media", () => {
-    assert.ok(render(A("x").setHref("data:text/html,<script>alert(1)</script>")).includes(`href="about:blank"`));
+    assert.ok(render(A("x").setHref(assetUrl("data:text/html,<script>alert(1)</script>"))).includes(`href="about:blank"`));
     assert.ok(render(Img().setSrc("data:image/svg+xml,<svg onload=alert(1)>")).includes(`src="about:blank"`));
     assert.strictEqual(render(Img().setSrc("data:image/png;base64,iVBOR")), `<img src="data:image/png;base64,iVBOR">`);
   });
@@ -195,12 +196,12 @@ describe("URL scheme sanitization on typed setters (XSS-1)", () => {
   });
 
   it("leaves safe URLs byte-identical (relative, https, mailto, tel, fragment, protocol-relative)", () => {
-    assert.strictEqual(render(A("x").setHref("/dashboard")), `<a href="/dashboard">x</a>`);
+    assert.strictEqual(render(A("x").setHref(assetUrl("/dashboard"))), `<a href="/dashboard">x</a>`);
     assert.strictEqual(render(A("x").setHref("https://example.com/a?b=c:d")), `<a href="https://example.com/a?b=c:d">x</a>`);
     assert.strictEqual(render(A("x").setHref("mailto:a@b.com")), `<a href="mailto:a@b.com">x</a>`);
     assert.strictEqual(render(A("x").setHref("tel:+123")), `<a href="tel:+123">x</a>`);
     assert.strictEqual(render(A("x").setHref("#section")), `<a href="#section">x</a>`);
-    assert.strictEqual(render(A("x").setHref("//cdn.example.com/a.js")), `<a href="//cdn.example.com/a.js">x</a>`);
+    assert.strictEqual(render(A("x").setHref(assetUrl("//cdn.example.com/a.js"))), `<a href="//cdn.example.com/a.js">x</a>`);
   });
 
   it("does NOT sanitize the untyped addAttribute escape hatch (explicit opt-out)", () => {
@@ -209,7 +210,7 @@ describe("URL scheme sanitization on typed setters (XSS-1)", () => {
 
   it("still escapes attribute breakout inside an allowed value", () => {
     assert.strictEqual(
-      render(A("x").setHref('/a"><img src=x onerror=alert(1)>')),
+      render(A("x").setHref(assetUrl('/a"><img src=x onerror=alert(1)>'))),
       `<a href="/a&quot;&gt;&lt;img src=x onerror=alert(1)&gt;">x</a>`,
     );
   });

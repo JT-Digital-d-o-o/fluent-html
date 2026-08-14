@@ -1,4 +1,5 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El } from "../core/utils.js";
 /**
@@ -9,48 +10,70 @@ import { El } from "../core/utils.js";
  */
 export class ImgTag extends Tag {
     setSrc(src) {
-        this.src = src;
+        if (devChecks)
+            assertMutable(this, "setSrc");
+        this._src = src;
         return this;
     }
     setAlt(alt) {
-        this.alt = alt;
+        if (devChecks)
+            assertMutable(this, "setAlt");
+        this._alt = alt;
         return this;
     }
     setWidth(width) {
-        this.width = width === undefined ? undefined : String(width);
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height === undefined ? undefined : String(height);
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = height === undefined ? undefined : String(height);
         return this;
     }
     setLoading(loading) {
-        this.loading = loading;
+        if (devChecks)
+            assertMutable(this, "setLoading");
+        this._loading = loading;
         return this;
     }
     setDecoding(decoding) {
-        this.decoding = decoding;
+        if (devChecks)
+            assertMutable(this, "setDecoding");
+        this._decoding = decoding;
         return this;
     }
     setSrcset(srcset) {
-        this.srcset = srcset;
+        if (devChecks)
+            assertMutable(this, "setSrcset");
+        this._srcset = srcset;
         return this;
     }
     setSizes(sizes) {
-        this.sizes = sizes;
+        if (devChecks)
+            assertMutable(this, "setSizes");
+        this._sizes = sizes;
         return this;
     }
     setCrossOrigin(crossorigin) {
-        this.crossorigin = crossorigin;
+        if (devChecks)
+            assertMutable(this, "setCrossOrigin");
+        this._crossorigin = crossorigin;
         return this;
     }
     /** Core Web Vitals priority hint — promote the LCP image (`'high'`) or de-prioritise (`'low'`). */
     setFetchPriority(fetchpriority) {
-        this.fetchpriority = fetchpriority;
+        if (devChecks)
+            assertMutable(this, "setFetchPriority");
+        this._fetchpriority = fetchpriority;
         return this;
     }
     setReferrerPolicy(referrerpolicy) {
-        this.referrerpolicy = referrerpolicy;
+        if (devChecks)
+            assertMutable(this, "setReferrerPolicy");
+        this._referrerpolicy = referrerpolicy;
         return this;
     }
 }
@@ -64,31 +87,45 @@ export function Picture(...children) {
 }
 export class SourceTag extends Tag {
     setSrc(src) {
-        this.src = src;
+        if (devChecks)
+            assertMutable(this, "setSrc");
+        this._src = src;
         return this;
     }
     setSrcset(srcset) {
-        this.srcset = srcset;
+        if (devChecks)
+            assertMutable(this, "setSrcset");
+        this._srcset = srcset;
         return this;
     }
     setSizes(sizes) {
-        this.sizes = sizes;
+        if (devChecks)
+            assertMutable(this, "setSizes");
+        this._sizes = sizes;
         return this;
     }
     setType(type) {
-        this.type = type;
+        if (devChecks)
+            assertMutable(this, "setType");
+        this._type = type;
         return this;
     }
     setMedia(media) {
-        this.media = media;
+        if (devChecks)
+            assertMutable(this, "setMedia");
+        this._media = media;
         return this;
     }
     setWidth(width) {
-        this.width = width === undefined ? undefined : String(width);
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height === undefined ? undefined : String(height);
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = height === undefined ? undefined : String(height);
         return this;
     }
 }
@@ -98,27 +135,39 @@ export function Source() {
 }
 export class VideoTag extends Tag {
     setWidth(width) {
-        this.width = width === undefined ? undefined : String(width);
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height === undefined ? undefined : String(height);
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = height === undefined ? undefined : String(height);
         return this;
     }
     setSrc(src) {
-        this.src = src;
+        if (devChecks)
+            assertMutable(this, "setSrc");
+        this._src = src;
         return this;
     }
     setPreload(preload) {
-        this.preload = preload;
+        if (devChecks)
+            assertMutable(this, "setPreload");
+        this._preload = preload;
         return this;
     }
     setPoster(poster) {
-        this.poster = poster;
+        if (devChecks)
+            assertMutable(this, "setPoster");
+        this._poster = poster;
         return this;
     }
     setCrossOrigin(crossorigin) {
-        this.crossorigin = crossorigin;
+        if (devChecks)
+            assertMutable(this, "setCrossOrigin");
+        this._crossorigin = crossorigin;
         return this;
     }
 }
@@ -128,15 +177,21 @@ export function Video(...children) {
 }
 export class AudioTag extends Tag {
     setSrc(src) {
-        this.src = src;
+        if (devChecks)
+            assertMutable(this, "setSrc");
+        this._src = src;
         return this;
     }
     setPreload(preload) {
-        this.preload = preload;
+        if (devChecks)
+            assertMutable(this, "setPreload");
+        this._preload = preload;
         return this;
     }
     setCrossOrigin(crossorigin) {
-        this.crossorigin = crossorigin;
+        if (devChecks)
+            assertMutable(this, "setCrossOrigin");
+        this._crossorigin = crossorigin;
         return this;
     }
 }
@@ -146,19 +201,27 @@ export function Audio(...children) {
 }
 export class TrackTag extends Tag {
     setSrc(src) {
-        this.src = src;
+        if (devChecks)
+            assertMutable(this, "setSrc");
+        this._src = src;
         return this;
     }
     setKind(kind) {
-        this.kind = kind;
+        if (devChecks)
+            assertMutable(this, "setKind");
+        this._kind = kind;
         return this;
     }
     setSrclang(srclang) {
-        this.srclang = srclang;
+        if (devChecks)
+            assertMutable(this, "setSrclang");
+        this._srclang = srclang;
         return this;
     }
     setLabel(label) {
-        this.label = label;
+        if (devChecks)
+            assertMutable(this, "setLabel");
+        this._label = label;
         return this;
     }
 }
@@ -168,11 +231,15 @@ export function Track() {
 }
 export class CanvasTag extends Tag {
     setWidth(width) {
-        this.width = width === undefined ? undefined : String(width);
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height === undefined ? undefined : String(height);
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = height === undefined ? undefined : String(height);
         return this;
     }
 }
@@ -182,31 +249,45 @@ export function Canvas(...children) {
 }
 export class SvgTag extends Tag {
     setWidth(width) {
-        this.width = width === undefined ? undefined : String(width);
+        if (devChecks)
+            assertMutable(this, "setWidth");
+        this._width = width === undefined ? undefined : String(width);
         return this;
     }
     setHeight(height) {
-        this.height = height === undefined ? undefined : String(height);
+        if (devChecks)
+            assertMutable(this, "setHeight");
+        this._height = height === undefined ? undefined : String(height);
         return this;
     }
     setViewBox(viewBox) {
-        this.viewBox = viewBox;
+        if (devChecks)
+            assertMutable(this, "setViewBox");
+        this._viewBox = viewBox;
         return this;
     }
     setXmlns(xmlns = "http://www.w3.org/2000/svg") {
-        this.xmlns = xmlns;
+        if (devChecks)
+            assertMutable(this, "setXmlns");
+        this._xmlns = xmlns;
         return this;
     }
     setFill(fill) {
-        this.fillValue = fill;
+        if (devChecks)
+            assertMutable(this, "setFill");
+        this._fillValue = fill;
         return this;
     }
     setStroke(stroke) {
-        this.strokeValue = stroke;
+        if (devChecks)
+            assertMutable(this, "setStroke");
+        this._strokeValue = stroke;
         return this;
     }
     setStrokeWidth(width) {
-        this['stroke-width'] = String(width);
+        if (devChecks)
+            assertMutable(this, "setStrokeWidth");
+        this['_stroke-width'] = String(width);
         return this;
     }
 }

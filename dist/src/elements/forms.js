@@ -1,4 +1,5 @@
 import { defineSchemaKeys } from "../core/proto.js";
+import { devChecks, assertMutable } from "../core/dev-checks.js";
 import { Tag } from "../core/tag.js";
 import { El, Empty } from "../core/utils.js";
 import { extractId } from "../ids.js";
@@ -10,70 +11,102 @@ import { extractId } from "../ids.js";
  */
 export class InputTag extends Tag {
     setType(type) {
-        this.type = type;
+        if (devChecks)
+            assertMutable(this, "setType");
+        this._type = type;
         return this;
     }
     setPlaceholder(placeholder) {
-        this.placeholder = placeholder;
+        if (devChecks)
+            assertMutable(this, "setPlaceholder");
+        this._placeholder = placeholder;
         return this;
     }
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
     setValue(value) {
-        this.value = value;
+        if (devChecks)
+            assertMutable(this, "setValue");
+        this._value = value;
         return this;
     }
     setAccept(accept) {
-        this.accept = Array.isArray(accept)
+        if (devChecks)
+            assertMutable(this, "setAccept");
+        this._accept = Array.isArray(accept)
             ? (accept.length ? accept.join(',') : undefined)
             : accept;
         return this;
     }
     setMin(min) {
-        this.min = min;
+        if (devChecks)
+            assertMutable(this, "setMin");
+        this._min = min;
         return this;
     }
     setMax(max) {
-        this.max = max;
+        if (devChecks)
+            assertMutable(this, "setMax");
+        this._max = max;
         return this;
     }
     setStep(step) {
-        this.step = step;
+        if (devChecks)
+            assertMutable(this, "setStep");
+        this._step = step;
         return this;
     }
     setPattern(pattern) {
-        this.pattern = pattern;
+        if (devChecks)
+            assertMutable(this, "setPattern");
+        this._pattern = pattern;
         return this;
     }
     setMinlength(minlength) {
-        this.minlength = minlength;
+        if (devChecks)
+            assertMutable(this, "setMinlength");
+        this._minlength = minlength;
         return this;
     }
     setMaxlength(maxlength) {
-        this.maxlength = maxlength;
+        if (devChecks)
+            assertMutable(this, "setMaxlength");
+        this._maxlength = maxlength;
         return this;
     }
     setAutocomplete(autocomplete) {
-        this.autocomplete = autocomplete;
+        if (devChecks)
+            assertMutable(this, "setAutocomplete");
+        this._autocomplete = autocomplete;
         return this;
     }
     setInputmode(inputmode) {
-        this.inputmode = inputmode;
+        if (devChecks)
+            assertMutable(this, "setInputmode");
+        this._inputmode = inputmode;
         return this;
     }
     /** Set `capture` — hints the camera/mic source for file inputs on mobile. */
     setCapture(capture) {
-        this.capture = capture;
+        if (devChecks)
+            assertMutable(this, "setCapture");
+        this._capture = capture;
         return this;
     }
     setList(list) {
-        this.listId = list === undefined ? undefined : extractId(list);
+        if (devChecks)
+            assertMutable(this, "setList");
+        this._listId = list === undefined ? undefined : extractId(list);
         return this;
     }
     setDirname(dirname) {
-        this.dirname = dirname;
+        if (devChecks)
+            assertMutable(this, "setDirname");
+        this._dirname = dirname;
         return this;
     }
 }
@@ -81,7 +114,7 @@ defineSchemaKeys(InputTag, ['type', 'name', 'placeholder', 'value', 'accept', 'm
 export function Input(type) {
     const tag = new InputTag("input");
     if (type)
-        tag.type = type;
+        tag.setType(type);
     return tag;
 }
 /**
@@ -92,43 +125,63 @@ export function Input(type) {
  */
 export class TextareaTag extends Tag {
     setPlaceholder(placeholder) {
-        this.placeholder = placeholder;
+        if (devChecks)
+            assertMutable(this, "setPlaceholder");
+        this._placeholder = placeholder;
         return this;
     }
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
     setRows(rows) {
-        this.rows = rows;
+        if (devChecks)
+            assertMutable(this, "setRows");
+        this._rows = rows;
         return this;
     }
     setCols(cols) {
-        this.cols = cols;
+        if (devChecks)
+            assertMutable(this, "setCols");
+        this._cols = cols;
         return this;
     }
     setMinlength(minlength) {
-        this.minlength = minlength;
+        if (devChecks)
+            assertMutable(this, "setMinlength");
+        this._minlength = minlength;
         return this;
     }
     setMaxlength(maxlength) {
-        this.maxlength = maxlength;
+        if (devChecks)
+            assertMutable(this, "setMaxlength");
+        this._maxlength = maxlength;
         return this;
     }
     setWrap(wrap) {
-        this.wrapMode = wrap;
+        if (devChecks)
+            assertMutable(this, "setWrap");
+        this._wrapMode = wrap;
         return this;
     }
     setAutocomplete(autocomplete) {
-        this.autocomplete = autocomplete;
+        if (devChecks)
+            assertMutable(this, "setAutocomplete");
+        this._autocomplete = autocomplete;
         return this;
     }
     setInputmode(inputmode) {
-        this.inputmode = inputmode;
+        if (devChecks)
+            assertMutable(this, "setInputmode");
+        this._inputmode = inputmode;
         return this;
     }
     setDirname(dirname) {
-        this.dirname = dirname;
+        if (devChecks)
+            assertMutable(this, "setDirname");
+        this._dirname = dirname;
         return this;
     }
 }
@@ -145,7 +198,9 @@ export function Textarea(...children) {
  */
 export class ButtonTag extends Tag {
     setType(type) {
-        this.type = type;
+        if (devChecks)
+            assertMutable(this, "setType");
+        this._type = type;
         return this;
     }
     /**
@@ -160,37 +215,53 @@ export class ButtonTag extends Tag {
      * Button("Edit").setCommand("show-modal").setCommandfor(ids.dialog)
      */
     setCommand(command) {
-        this.command = command;
+        if (devChecks)
+            assertMutable(this, "setCommand");
+        this._command = command;
         return this;
     }
     /** Wire this invoker to its target element by `Id`, rendering `commandfor="<id>"`. */
     setCommandfor(target) {
-        this.commandfor = extractId(target);
+        if (devChecks)
+            assertMutable(this, "setCommandfor");
+        this._commandfor = extractId(target);
         return this;
     }
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
     setValue(value) {
-        this.value = value;
+        if (devChecks)
+            assertMutable(this, "setValue");
+        this._value = value;
         return this;
     }
     setFormaction(formaction) {
-        this.formaction = formaction;
+        if (devChecks)
+            assertMutable(this, "setFormaction");
+        this._formaction = formaction;
         return this;
     }
     /** Override the form's method for this submit button. `"dialog"` closes an ancestor `<dialog>` with the button's value. */
     setFormmethod(formmethod) {
-        this.formmethod = formmethod;
+        if (devChecks)
+            assertMutable(this, "setFormmethod");
+        this._formmethod = formmethod;
         return this;
     }
     setFormtarget(formtarget) {
-        this.formtarget = formtarget;
+        if (devChecks)
+            assertMutable(this, "setFormtarget");
+        this._formtarget = formtarget;
         return this;
     }
     setFormenctype(formenctype) {
-        this.formenctype = formenctype;
+        if (devChecks)
+            assertMutable(this, "setFormenctype");
+        this._formenctype = formenctype;
         return this;
     }
 }
@@ -201,7 +272,9 @@ export function Button(...children) {
 }
 export class LabelTag extends Tag {
     setFor(forId) {
-        this.for = forId === undefined ? undefined : extractId(forId);
+        if (devChecks)
+            assertMutable(this, "setFor");
+        this._for = forId === undefined ? undefined : extractId(forId);
         return this;
     }
 }
@@ -211,28 +284,48 @@ export function Label(...children) {
 }
 export class FormTag extends Tag {
     setAction(action) {
-        this.action = action;
+        if (devChecks)
+            assertMutable(this, "setAction");
+        this._action = action;
         return this;
     }
     setMethod(method) {
-        this.method = method;
+        if (devChecks)
+            assertMutable(this, "setMethod");
+        this._method = method;
         return this;
     }
     setEnctype(enctype) {
-        this.enctype = enctype;
+        if (devChecks)
+            assertMutable(this, "setEnctype");
+        this._enctype = enctype;
         return this;
     }
     setTarget(target) {
-        this.target = target;
+        if (devChecks)
+            assertMutable(this, "setTarget");
+        this._target = target;
         return this;
     }
     setAutocomplete(autocomplete) {
-        this.autocomplete = autocomplete;
+        if (devChecks)
+            assertMutable(this, "setAutocomplete");
+        this._autocomplete = autocomplete;
         return this;
+    }
+    /**
+     * Read the form's `enctype` (or `undefined` when unset). The storage field is
+     * protected so it cannot shadow `setEnctype`; framework code that stamps an
+     * encoding only when the author hasn't set one reads through this accessor.
+     */
+    getEnctype() {
+        return this._enctype;
     }
     /** Set `enctype="multipart/form-data"` (required for file uploads). */
     multipart() {
-        this.enctype = 'multipart/form-data';
+        if (devChecks)
+            assertMutable(this, "multipart");
+        this._enctype = 'multipart/form-data';
         return this;
     }
 }
@@ -323,15 +416,21 @@ export function Form(...args) {
 }
 export class SelectTag extends Tag {
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
     setSize(size) {
-        this.size = size;
+        if (devChecks)
+            assertMutable(this, "setSize");
+        this._size = size;
         return this;
     }
     setAutocomplete(autocomplete) {
-        this.autocomplete = autocomplete;
+        if (devChecks)
+            assertMutable(this, "setAutocomplete");
+        this._autocomplete = autocomplete;
         return this;
     }
 }
@@ -341,11 +440,15 @@ export function Select(...children) {
 }
 export class OptionTag extends Tag {
     setValue(value) {
-        this.value = value;
+        if (devChecks)
+            assertMutable(this, "setValue");
+        this._value = value;
         return this;
     }
     setLabel(label) {
-        this.label = label;
+        if (devChecks)
+            assertMutable(this, "setLabel");
+        this._label = label;
         return this;
     }
 }
@@ -355,7 +458,9 @@ export function Option(...children) {
 }
 export class OptgroupTag extends Tag {
     setLabel(label) {
-        this.label = label;
+        if (devChecks)
+            assertMutable(this, "setLabel");
+        this._label = label;
         return this;
     }
 }
@@ -368,7 +473,9 @@ export function Datalist(...children) {
 }
 export class FieldsetTag extends Tag {
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
 }
@@ -381,13 +488,17 @@ export function Legend(...children) {
 }
 export class OutputTag extends Tag {
     setFor(...forIds) {
-        this.for = forIds.length
+        if (devChecks)
+            assertMutable(this, "setFor");
+        this._for = forIds.length
             ? forIds.map(extractId).map(s => s.trim()).filter(Boolean).join(' ')
             : undefined;
         return this;
     }
     setName(name) {
-        this.name = name;
+        if (devChecks)
+            assertMutable(this, "setName");
+        this._name = name;
         return this;
     }
 }
