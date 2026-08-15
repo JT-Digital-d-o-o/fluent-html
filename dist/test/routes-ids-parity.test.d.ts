@@ -48,12 +48,12 @@ export type _RouteParamKeyParity = [
     Expect<Equals<ParamKeys<typeof P.posts.resolve>, "userId">>
 ];
 declare const ids: {
-    readonly modal: import("../src/ids.js").Id;
-    readonly userList: import("../src/ids.js").Id;
-    readonly notificationArea: import("../src/ids.js").Id;
-    readonly col2: import("../src/ids.js").Id;
-    readonly step3Panel: import("../src/ids.js").Id;
-    readonly tab1: import("../src/ids.js").Id;
+    readonly modal: import("../src/ids.js").Id<"modal">;
+    readonly userList: import("../src/ids.js").Id<"user-list">;
+    readonly notificationArea: import("../src/ids.js").Id<"notification-area">;
+    readonly col2: import("../src/ids.js").Id<"col-2">;
+    readonly step3Panel: import("../src/ids.js").Id<"step-3-panel">;
+    readonly tab1: import("../src/ids.js").Id<"tab-1">;
 };
 export type _IdKeyParity = Expect<Equals<keyof typeof ids, "userList" | "col2" | "step3Panel" | "tab1" | "modal" | "notificationArea">>;
 export {};

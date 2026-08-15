@@ -12,20 +12,34 @@
  * hx("/api", { target: ids.userList.selector })  // "#user-list"
  */
 declare const __idBrand: unique symbol;
-export interface Id {
+declare const __rootIdBrand: unique symbol;
+/**
+ * A view whose outermost element carries `id="N"`, as witnessed by `setId(ids.…)`.
+ *
+ * The root id of a response is what an outer swap replaces, so it is the one property a
+ * consumer of a view actually needs to know — and it was previously unknowable, because
+ * `setId` returned a bare `this`. `Rooted<N>` makes it a type, so "answer me a view rooted
+ * at #user-count" is expressible and a mismatch is a compile error.
+ *
+ * Phantom only: nothing reads this at runtime, and only `setId` with a typed `Id` produces it.
+ */
+export type Rooted<N extends string> = {
+    readonly [__rootIdBrand]: N;
+};
+export interface Id<N extends string = string> {
     /** @internal Prevents structural spoofing — only `createId`/`defineIds` produce valid Ids */
     readonly [__idBrand]: true;
     /** The raw ID string (e.g., "user-list") */
-    readonly id: string;
+    readonly id: N;
     /** The CSS selector (e.g., "#user-list") */
-    readonly selector: string;
+    readonly selector: `#${N}`;
     /** Returns the selector when used as a string */
     toString(): string;
 }
-export declare function createId(name: string): Id;
+export declare function createId<const N extends string>(name: N): Id<N>;
 type KebabToCamel<S extends string> = S extends `${infer Head}-${infer Tail}` ? `${Head}${Capitalize<KebabToCamel<Tail>>}` : S;
 type IdRegistry<T extends readonly string[]> = {
-    readonly [K in T[number] as KebabToCamel<K>]: Id;
+    readonly [K in T[number] as KebabToCamel<K>]: Id<K>;
 };
 export declare function defineIds<const T extends readonly string[]>(names: T): IdRegistry<T>;
 /**

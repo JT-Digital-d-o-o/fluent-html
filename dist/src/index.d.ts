@@ -40,7 +40,7 @@ export type { HTMX, ResolvedRoute, ExternalHref, HxSwap, HxSwapStyle, HxTrigger,
 export { Partial, HtmxConfig, hxResponse, HxResponse, } from './patterns.js';
 export type { HtmxGlobalConfig, HxResponseResult, HxLocationConfig, } from './patterns.js';
 export { createId, defineIds, isId, extractId, extractSelector, } from './ids.js';
-export type { Id } from './ids.js';
+export type { Id, Rooted } from './ids.js';
 export { defineRoutes, } from './routes.js';
 export type { RouteDef, RouteDefinitions, RouteHxOptions, ParamTypeName, ParamType, SitemapStance, RouteCallable, RouteRegistry, AnyRouteCallable, AnyRouteRegistry, ExtractParams, HasAnyParams, ResolveParam, ResolveParamTypes, ResolveAllParamTypes, ResolveQuery, } from './routes.js';
 export type { BehaviorMap, BehaviorName, BehaviorTarget } from './behaviors/map.js';

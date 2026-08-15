@@ -2,7 +2,7 @@ import { setDiscriminant } from "./proto.js";
 import { devChecks, assertMutable, countParents } from "./dev-checks.js";
 import type { ResolvedSchemaKey } from "./proto.js";
 import type { HTMX } from "../htmx.js";
-import type { Id} from "../ids.js";
+import type { Id, Rooted } from "../ids.js";
 import { isId, extractId } from "../ids.js";
 import type { View } from "./types.js";
 import type { BooleanAttribute, PopoverState, PopoverAction, EnterKeyHint, ContentEditable, Autocapitalize, Spellcheck } from "../elements/html-types.js";
@@ -95,13 +95,25 @@ export class Tag {
   /**
    * Set the element's `id` attribute. Accepts a string or a type-safe `Id` object.
    *
+   * Passing a typed `Id` brands the result `Rooted<N>`, so "this element carries id N"
+   * becomes a fact the type system knows. A consumer can then require a view rooted at a
+   * particular id — `renderFragment(ids.userCount, view)` — and a mismatch is a compile
+   * error naming both ids, rather than markup that silently morphs the target away.
+   *
+   * The brand rides on the polymorphic `this` type, so it survives the rest of a fluent
+   * chain (`.setId(ids.x).p("4").bg("surface")`) and any control-flow helper that
+   * preserves its branch types. A dynamic `setId(someString)` is deliberately unbranded:
+   * a runtime-computed id is not a compile-time guarantee.
+   *
    * @param id - The ID string or Id object (from `defineIds` / `createId`)
-   * @returns `this` for chaining
+   * @returns `this` for chaining, branded when the id is a typed `Id`
    *
    * @example
-   * Div("Content").setId(ids.mainContent)
-   * Div("Content").setId("main-content")
+   * Div("Content").setId(ids.mainContent)   // Tag & Rooted<"main-content">
+   * Div("Content").setId("main-content")    // Tag — a bare string proves nothing
    */
+  setId<const N extends string>(id: Id<N>): this & Rooted<N>;
+  setId(id?: string): this;
   setId(id?: string | Id): this {
     if (devChecks) assertMutable(this, "setId");
     this._id = id ? (isId(id) ? id.id : id) : undefined;

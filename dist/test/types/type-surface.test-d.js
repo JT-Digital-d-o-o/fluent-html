@@ -422,4 +422,34 @@ expectType(ForEach(1, 4, (i) => Li(String(i))));
 IfThen(true, () => 42);
 // @ts-expect-error — the nullable overload still narrows: `label` is string, not string|null
 IfThen(maybeLabel, (label) => Span(String(label)));
+// ── setId brands the root, and the brand survives composition ──────────────
+// The root id is what an outer swap replaces, so a consumer of a view needs to know it.
+// `setId(ids.…)` is the witness; everything below checks the witness is not lost on the way.
+const rootIds = defineIds(["main-content", "user-count"]);
+needsMainRoot(Div("body").setId(rootIds.mainContent));
+// survives the rest of a fluent chain
+needsMainRoot(Div("body").setId(rootIds.mainContent).p("4").bg("blue-600"));
+// survives an un-annotated component function
+function MainRegion() { return Div("body").setId(rootIds.mainContent); }
+needsMainRoot(MainRegion());
+// survives IfThenElse when BOTH arms are rooted (the multi-state page case)
+needsMainRoot(IfThenElse(maybeLabel, (l) => Div(l).setId(rootIds.mainContent), () => Div("empty").setId(rootIds.mainContent)));
+// survives Match when every branch is rooted
+needsMainRoot(Match(matchTone, {
+    active: () => Div("a").setId(rootIds.mainContent),
+    closed: () => Div("c").setId(rootIds.mainContent),
+}));
+// @ts-expect-error — built #main-content, asked for #user-count
+needsCountRoot(Div("body").setId(rootIds.mainContent));
+// @ts-expect-error — a dynamic id proves nothing at compile time
+needsMainRoot(Div("body").setId(dynamicId));
+// @ts-expect-error — nesting does not leak the brand to the parent
+needsMainRoot(Div(Div("body").setId(rootIds.mainContent)));
+// @ts-expect-error — one Match branch forgot the id, poisoning the union
+needsMainRoot(Match(matchTone, {
+    active: () => Div("a").setId(rootIds.mainContent),
+    closed: () => Div("c"),
+}));
+// @ts-expect-error — IfThen may render "", so a conditional root is not a guaranteed one
+needsMainRoot(IfThen(true, () => Div("x").setId(rootIds.mainContent)));
 //# sourceMappingURL=type-surface.test-d.js.map

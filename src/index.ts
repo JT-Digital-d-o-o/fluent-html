@@ -400,7 +400,7 @@ export {
   extractId,
   extractSelector,
 } from './ids.js';
-export type { Id } from './ids.js';
+export type { Id, Rooted } from './ids.js';
 
 // Type-safe Routes
 export {

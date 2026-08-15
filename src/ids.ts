@@ -19,14 +19,27 @@
  * hx("/api", { target: ids.userList.selector })  // "#user-list"
  */
 declare const __idBrand: unique symbol;
+declare const __rootIdBrand: unique symbol;
 
-export interface Id {
+/**
+ * A view whose outermost element carries `id="N"`, as witnessed by `setId(ids.…)`.
+ *
+ * The root id of a response is what an outer swap replaces, so it is the one property a
+ * consumer of a view actually needs to know — and it was previously unknowable, because
+ * `setId` returned a bare `this`. `Rooted<N>` makes it a type, so "answer me a view rooted
+ * at #user-count" is expressible and a mismatch is a compile error.
+ *
+ * Phantom only: nothing reads this at runtime, and only `setId` with a typed `Id` produces it.
+ */
+export type Rooted<N extends string> = { readonly [__rootIdBrand]: N };
+
+export interface Id<N extends string = string> {
   /** @internal Prevents structural spoofing — only `createId`/`defineIds` produce valid Ids */
   readonly [__idBrand]: true;
   /** The raw ID string (e.g., "user-list") */
-  readonly id: string;
+  readonly id: N;
   /** The CSS selector (e.g., "#user-list") */
-  readonly selector: string;
+  readonly selector: `#${N}`;
   /** Returns the selector when used as a string */
   toString(): string;
 }
@@ -48,7 +61,7 @@ export interface Id {
 // launder itself into an Id, making the interface's "no structural spoofing" claim true.
 const ID_BRAND = Symbol.for("fluent-html.Id");
 
-export function createId(name: string): Id {
+export function createId<const N extends string>(name: N): Id<N> {
   // "@self" is a reserved BehaviorTarget sentinel (behavior wire grammar) — an Id
   // carrying it would be indistinguishable from the sentinel on the wire.
   if (name === "@self") {
@@ -59,7 +72,7 @@ export function createId(name: string): Id {
     selector: `#${name}`,
     [ID_BRAND]: true,
     toString() { return this.selector; }
-  }) as unknown as Id; // cast is safe — the compile-time brand is erased; ID_BRAND is the runtime marker
+  }) as unknown as Id<N>; // cast is safe — the compile-time brand is erased; ID_BRAND is the runtime marker
 }
 
 // Type helper: Convert kebab-case to camelCase
@@ -73,7 +86,7 @@ type KebabToCamel<S extends string> = S extends `${infer Head}-${infer Tail}`
 
 // Type for the registry object
 type IdRegistry<T extends readonly string[]> = {
-  readonly [K in T[number] as KebabToCamel<K>]: Id;
+  readonly [K in T[number] as KebabToCamel<K>]: Id<K>;
 };
 
 /**

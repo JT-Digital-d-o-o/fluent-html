@@ -56,16 +56,6 @@ export class Tag {
         if (devChecks)
             countParents(children);
     }
-    /**
-     * Set the element's `id` attribute. Accepts a string or a type-safe `Id` object.
-     *
-     * @param id - The ID string or Id object (from `defineIds` / `createId`)
-     * @returns `this` for chaining
-     *
-     * @example
-     * Div("Content").setId(ids.mainContent)
-     * Div("Content").setId("main-content")
-     */
     setId(id) {
         if (devChecks)
             assertMutable(this, "setId");
