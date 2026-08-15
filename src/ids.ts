@@ -5,6 +5,10 @@
 // This module provides compile-time safety for HTMX targets and element IDs.
 // It ensures that hx-target selectors always reference valid element IDs.
 
+// Type-only, and deliberately so: core/types.ts → core/tag.ts → ids.ts is a cycle at the
+// module-graph level, but `import type` is erased, so no runtime cycle exists.
+import type { View } from "./core/types.js";
+
 /**
  * Represents a type-safe element ID that can be used for both
  * setting element IDs and referencing them in HTMX targets.
@@ -32,6 +36,36 @@ declare const __rootIdBrand: unique symbol;
  * Phantom only: nothing reads this at runtime, and only `setId` with a typed `Id` produces it.
  */
 export type Rooted<N extends string> = { readonly [__rootIdBrand]: N };
+
+/**
+ * The type to annotate a component that answers "a view rooted at #N" with.
+ *
+ * A bare `: View` return annotation is the one way to lose the brand by accident — the
+ * annotation is a widening, so `Div().setId(ids.userCount)` goes in as
+ * `Tag & Rooted<"user-count">` and comes out as plain `View`. The call site then fails
+ * with an error that never mentions the id:
+ *
+ *     Argument of type 'View' is not assignable to parameter of type 'Rooted<"user-count"> & View'.
+ *       Type 'string' is not assignable to type 'Rooted<"user-count"> & View'.
+ *
+ * (the `string` is `View`'s own `string` member — TypeScript explains a failed union
+ * check by naming its first failing constituent, so the elaboration points nowhere near
+ * the real mistake.) `RootedView<N>` is what that annotation should have been: it keeps
+ * the brand, so the component's contract is stated rather than erased, and a body that
+ * forgets `setId` — or calls it with the wrong id — fails inside the component instead
+ * of at every call site.
+ *
+ * @example
+ * function UserCount(n: number): RootedView<"user-count"> {
+ *   return Span(`${n} users`).setId(ids.userCount);
+ * }
+ * reply.renderFragment(ids.userCount, UserCount(3));   // ✓
+ *
+ * function UserCount(n: number): View {                // ✗ brand erased by the annotation
+ *   return Span(`${n} users`).setId(ids.userCount);
+ * }
+ */
+export type RootedView<N extends string> = Rooted<N> & View;
 
 export interface Id<N extends string = string> {
   /** @internal Prevents structural spoofing — only `createId`/`defineIds` produce valid Ids */

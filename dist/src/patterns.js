@@ -14,37 +14,6 @@ import { render } from "./render/render.js";
 function toHeaderSafeJson(value) {
     return JSON.stringify(value).replace(/[\u007f-\uffff]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
 }
-// ------------------------------------
-// HTMX Partial Helpers (htmx 4)
-// ------------------------------------
-/**
- * Create a `<template hx type="partial">` element for multi-swap responses.
- *
- * Each partial independently declares its target and swap strategy.
- * This replaces OOB swaps with a cleaner, more explicit pattern.
- *
- * htmx 4 scans a response with `root.querySelectorAll("template[hx]")` and routes
- * each hit on its `type` attribute (`type="partial"` → target + swap spec, content
- * taken from the template's parsed `content` fragment). The **bare `hx` marker is
- * what makes the element visible to that scan** — an element htmx never looks for
- * (the pre-4 `<hx-partial>` shape) is silently inert in the browser.
- *
- * When the target is (or contains) a self-polling element (`trigger: "every …"`),
- * pass `"outerHTML"` — the default morph preserves settled poller nodes and their
- * `every` timers, resurrecting a poll that a plain replace would have stopped.
- *
- * @param target - CSS selector string or Id object
- * @param content - Content to swap in
- * @param swap - Swap strategy (default: "outerMorph")
- * @returns Tag rendering as `<template hx type="partial" hx-target=… hx-swap=…>`
- *
- * @example
- * render(
- *   Partial(ids.userList, UserList(users)),
- *   Partial(ids.userCount, Span(`${users.length} users`)),
- * )
- * // <template type="partial" hx-target="#user-list" hx-swap="outerMorph" hx>…</template>
- */
 export function Partial(target, content, swap = "outerMorph") {
     // Resolve an Id to its selector; pass any explicit CSS selector through verbatim
     // (HxTarget legitimately includes class/closest/find/attribute selectors — a partial

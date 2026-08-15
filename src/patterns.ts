@@ -9,7 +9,7 @@ import { Tag } from "./core/tag.js";
 import type { View } from "./core/types.js";
 import type { BooleanAttribute } from "./elements/html-types.js";
 import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
-import type { Id} from "./ids.js";
+import type { Id, Rooted } from "./ids.js";
 import { isId } from "./ids.js";
 import { render } from "./render/render.js";
 
@@ -43,10 +43,24 @@ function toHeaderSafeJson(value: unknown): string {
  * pass `"outerHTML"` — the default morph preserves settled poller nodes and their
  * `every` timers, resurrecting a poll that a plain replace would have stopped.
  *
+ * Given a typed `Id`, the returned envelope is `Rooted<N>`: the partial's target IS the
+ * region this response updates, so it satisfies a consumer asking for "a view rooted at
+ * #N" (`reply.renderFragment(ids.x, Partial(ids.x, …))`). That is the runtime's own
+ * model, not a convenient fiction — htmx resolves a partial's destination as
+ * `hx-target` **or else the template's own `id`**, i.e. target and root id are one slot;
+ * and a response body consisting only of partials performs no main swap at all (htmx
+ * removes each `template[hx]` while collecting it, then skips the main swap when what
+ * remains is empty and at least one partial was found). So the id a `Partial` names is
+ * exactly, and only, what the response changes.
+ *
+ * A raw selector target stays unbranded — `".items"` or `"closest tr"` names a region
+ * no `Id` witnesses, so there is nothing to prove.
+ *
  * @param target - CSS selector string or Id object
  * @param content - Content to swap in
  * @param swap - Swap strategy (default: "outerMorph")
- * @returns Tag rendering as `<template hx type="partial" hx-target=… hx-swap=…>`
+ * @returns Tag rendering as `<template hx type="partial" hx-target=… hx-swap=…>`,
+ *          branded `Rooted<N>` when `target` is a typed `Id`
  *
  * @example
  * render(
@@ -55,6 +69,16 @@ function toHeaderSafeJson(value: unknown): string {
  * )
  * // <template type="partial" hx-target="#user-list" hx-swap="outerMorph" hx>…</template>
  */
+export function Partial<const N extends string>(
+  target: Id<N>,
+  content: View,
+  swap?: HxSwap
+): Tag & Rooted<N>;
+export function Partial(
+  target: HxTarget,
+  content: View,
+  swap?: HxSwap
+): Tag;
 export function Partial(
   target: HxTarget | Id,
   content: View,

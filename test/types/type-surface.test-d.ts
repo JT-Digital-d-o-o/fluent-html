@@ -10,7 +10,8 @@ import {
   ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle,
   Video, Audio, Source, Meta, Script, Area,
   Th, Td, Select, Output, Textarea, Match, Span, IfThen, IfThenElse, ForEach,
-  type Tag, type Rooted, type Id, type RenderTagged,
+  Partial as HxPartial,
+  type Tag, type Rooted, type RootedView, type View, type Id, type RenderTagged, type HTMX,
   Ins, Del, Q, Blockquote,
   type InsTag, type DelTag, type QTag, type BlockquoteTag,
   type VariantStyleObject,
@@ -558,7 +559,108 @@ navVerb(stanceRoutes.count());
 // @ts-expect-error — a whole page morphed into a fragment target
 fragmentVerb(stanceIds.userCount, stanceRoutes.page());
 
+// ── A reusable control must not launder the stance through a bare `HTMX` prop ──
+// `RenderTagged<S>`'s `render` is optional, so a plain `HTMX` satisfies every verb. A
+// component that takes a route and applies a verb inside therefore erases the check for
+// every one of its callers — which is exactly what a shared component is for.
+declare const anyHtmx: HTMX;
+navVerb(anyHtmx);                                       // bare HTMX passes: the laundering
+const launder = (route: HTMX) => navVerb(route);        // …so this compiles,
+launder(stanceRoutes.count());                          // …and a fragment route reaches .nav
+
+// Typing the prop with the alias moves the check back to the caller.
+const noLaunder = (route: RenderTagged<"page" | undefined>) => navVerb(route);
+noLaunder(stanceRoutes.page());
+noLaunder(stanceRoutes.plain());
+// @ts-expect-error — the fragment route now fails at the caller, where its stance is visible
+noLaunder(stanceRoutes.count());
+
+// A control taking BOTH a target and a route must pin the route to the target with
+// NoInfer — with N inferring from both sites it widens to their union and the mismatch
+// the type exists to catch slips through.
+const stanceIds2 = defineIds(["user-count", "user-list"] as const);
+const stanceRoutes2 = defineRoutes("/probe2", {
+  count: { path: "/count", render: stanceIds2.userCount },
+  list:  { path: "/list",  render: stanceIds2.userList },
+} as const);
+
+const bothInfer = <N extends string>(p: { target: Id<N>; route: RenderTagged<Id<N> | undefined> }) =>
+  fragmentVerb(p.target, p.route);
+bothInfer({ target: stanceIds2.userCount, route: stanceRoutes2.list() }); // mismatch NOT caught
+
+const pinned = <N extends string>(p: { target: Id<N>; route: RenderTagged<Id<NoInfer<N>> | undefined> }) =>
+  fragmentVerb(p.target, p.route);
+pinned({ target: stanceIds2.userCount, route: stanceRoutes2.count() });
+// @ts-expect-error — NoInfer pins N to the target, so the wrong fragment route is caught
+pinned({ target: stanceIds2.userCount, route: stanceRoutes2.list() });
+
 // the stance is also on the callable, where server-side helpers read it
 expectType<"page">(stanceRoutes.page.render);
 expectType<Id<"user-count">>(stanceRoutes.count.render);
 expectType<undefined>(stanceRoutes.plain.render);
+
+// ── RootedView<N>: the annotation that keeps the brand ─────────────────────
+// `: View` is the one annotation that silently erases the witness, and it fails at the
+// CALL site with an error naming `string` (View's own member) rather than the id. These
+// pin that `RootedView<N>` is the correct thing to reach for instead, and that it is not
+// a rubber stamp — a body that forgets `setId`, or uses the wrong id, fails in the body.
+function CountFragment(): RootedView<"user-count"> {
+  return Span("3").setId(rootIds.userCount);
+}
+needsCountRoot(CountFragment());
+// the alias is exactly Rooted<N> & View, so it composes with a plain Rooted consumer
+expectType<Rooted<"user-count"> & View>(CountFragment());
+
+function CountAsView(): View {
+  return Span("3").setId(rootIds.userCount);
+}
+// @ts-expect-error — the `: View` annotation widened the brand away
+needsCountRoot(CountAsView());
+
+// The failure lands INSIDE the component, which is the point of annotating it: one error
+// where the mistake is, instead of one at every call site. (Directives sit on the `return`
+// — on a `const` they would silently eat the noUnusedLocals error and pass either way.)
+function UnrootedBody(): RootedView<"user-count"> {
+  // @ts-expect-error — annotated RootedView<"user-count">, body never calls setId
+  return Span("3");
+}
+function MisrootedBody(): RootedView<"user-count"> {
+  // @ts-expect-error — annotated RootedView<"user-count">, body roots at #main-content
+  return Span("3").setId(rootIds.mainContent);
+}
+needsCountRoot(UnrootedBody());
+needsCountRoot(MisrootedBody());
+
+// ── Partial() is rooted at its target, so it can BE a fragment answer ──────
+// htmx resolves a partial's destination as `hx-target` or else the template's own id,
+// and skips the main swap when the body was nothing but partials — so the id a Partial
+// names is exactly what the response changes. An Id target brands; a selector does not.
+needsCountRoot(HxPartial(rootIds.userCount, Span("3")));
+needsCountRoot(HxPartial(rootIds.userCount, Span("3"), "innerHTML"));
+expectType<Tag & Rooted<"user-count">>(HxPartial(rootIds.userCount, Span("3")));
+
+// @ts-expect-error — envelope targets #main-content, consumer wants #user-count
+needsCountRoot(HxPartial(rootIds.mainContent, Span("3")));
+// @ts-expect-error — a raw selector target witnesses nothing, so it stays unbranded
+needsCountRoot(HxPartial("user-count", Span("3")));
+// the selector overload is still there, still a Tag, and still takes extended selectors
+expectType<Tag>(HxPartial("closest tr", Span("3")));
+expectType<Tag>(HxPartial(".items", Span("3"), "innerHTML"));
+
+// ── A widened `Id` must not silently disable a root check ─────────────────
+// `Rooted<"user-count">` IS assignable to `Rooted<string>`, so a consumer that infers
+// N from a widened `Id` checks nothing. The gate is a conditional on the id parameter:
+// it reports at the id argument (where the mistake is) and leaves the ordinary
+// mismatch error untouched.
+declare function renderFragmentGated<N extends string>(
+  id: string extends N ? "renderFragment needs a narrow Id (e.g. `ids.userCount`), not a widened `Id`" : Id<N>,
+  view: RootedView<NoInfer<N>>,
+): void;
+
+renderFragmentGated(rootIds.userCount, CountFragment());
+// @ts-expect-error — built #user-count, asked for #main-content: the ordinary error survives
+renderFragmentGated(rootIds.mainContent, CountFragment());
+
+const widenedRootId: Id = rootIds.mainContent;
+// @ts-expect-error — a widened `Id` collapses N to `string`, which would accept any root
+renderFragmentGated(widenedRootId, CountFragment());

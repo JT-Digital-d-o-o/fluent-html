@@ -62,12 +62,18 @@ export type SitemapStance = true | "exclude" | "dynamic";
  * What a route answers with, declared on the contract leaf both halves already import.
  *
  * `"page"` is a full-layout response (the target every full-layout swap verb aims at); an
- * `Id` is the fragment the route owns. Carried onto the callable *and onto the HTMX bag the
+ * `Id` is the fragment the route owns; `"none"` is a route that answers something no swap can
+ * consume at all — JSON, a byte stream, a redirect off-origin, an empty body carrying only
+ * `HX-Trigger` — so every swap verb rejects it.
+ *
+ * The three values exist so `undefined` can mean exactly one thing: **not yet declared**.
+ * Without `"none"`, silence doubles as "deliberately not markup", the two are indistinguishable,
+ * and a machine endpoint stays accepted by every verb. Carried onto the callable *and onto the HTMX bag the
  * callable returns*, so a swap verb can refuse a route whose shape it cannot swap — the one
  * check neither the handler nor the call site can do alone, because the routes file is the
  * only artifact both of them import.
  */
-export type RenderStance = "page" | Id<string>;
+export type RenderStance = "page" | Id<string> | "none";
 /** The stances a given def may declare: GET only; `true` ⟷ paramless, `"dynamic"` ⟷ param'd. */
 type AllowedStance<Def extends RouteDef, Path extends string> = MethodOf<Def> extends "get" ? HasAnyParams<Path> extends true ? "exclude" | "dynamic" : true | "exclude" : never;
 /** Resolve one declared param type to the TS type accepted at call sites (tuple → its member union). */
