@@ -9,7 +9,7 @@ import {
   Img, Link, Dialog, Div, Button, Form, defineRoutes, defineIds,
   ForEachKeyed, Li, Iframe, Input, Svg, Path, Circle,
   Video, Audio, Source, Meta, Script, Area,
-  Th, Td, Select, Output, Textarea, Match, Span,
+  Th, Td, Select, Output, Textarea, Match, Span, IfThen, IfThenElse, ForEach,
   type Tag,
   Ins, Del, Q, Blockquote,
   type InsTag, type DelTag, type QTag, type BlockquoteTag,
@@ -459,6 +459,7 @@ type MatchState =
   | { kind: "err"; msg: string };
 declare const matchState: MatchState;
 declare const matchTone: "active" | "closed";
+declare const maybeLabel: string | null;
 
 // Element factories all return `Tag` today, so the visible win here is `Tag` rather than
 // the four-way `View` union — which is what lets a branded Tag subtype survive a Match at all.
@@ -479,3 +480,19 @@ Match(matchTone, { active: () => Div("a"), closed: () => Div("c"), typo: () => D
 Match(matchState, "kind", { ok: (s) => Div(s.msg), err: (s) => Span(s.msg) });
 // @ts-expect-error — a branch must still return a View
 Match(matchTone, { active: () => 42, closed: () => Div("c") });
+
+// ── IfThen / IfThenElse / ForEach report their branch types too ────────────
+// Same reason as Match: a hard-coded `View` return erases whatever the branch built.
+// IfThen unions with `""` because that is what it renders when the condition fails —
+// an honest result, and the reason a conditionally-set root is not a guaranteed one.
+expectType<Tag | "">(IfThen(true, () => Div("x")));
+expectType<Tag | "">(IfThen(maybeLabel, (label) => Span(label)));
+expectType<Tag>(IfThenElse(true, () => Div("a"), () => Div("b")));
+expectType<Tag | string>(IfThenElse(maybeLabel, (label) => Span(label), () => "none"));
+expectType<Tag[]>(ForEach(["a", "b"], (s) => Li(s)));
+expectType<Tag[]>(ForEach(3, (i) => Li(String(i))));
+expectType<Tag[]>(ForEach(1, 4, (i) => Li(String(i))));
+// @ts-expect-error — a branch must still return a View
+IfThen(true, () => 42);
+// @ts-expect-error — the nullable overload still narrows: `label` is string, not string|null
+IfThen(maybeLabel, (label: null) => Span(String(label)));

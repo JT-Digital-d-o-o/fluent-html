@@ -2,14 +2,14 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [8.1.0] - Match reports what its branches built
+## [8.1.0] - Control flow reports what its branches built
 
 `Match` declared `View` as its return type, so every branch's type was thrown away at the call
 boundary. That is invisible until something downstream needs to know *which* view came back —
 a branded `Tag` subtype, a narrowed element type — and then it is fatal: the brand is erased on
 contact and the error (`Type 'string' is not assignable to …`) points at the union member, not
 at the `Match` that dropped it. `MatchValue` has always preserved its `R`; `Match` now does the
-same for all four overloads.
+same, and so do `IfThen`, `IfThenElse` and `ForEach`.
 
 ### ✨ Changed — the return type is the union of the branches
 
@@ -19,7 +19,14 @@ same for all four overloads.
   flattened.
 - The partial-with-default forms return `ReturnType<…> | D`, so the fallback's own type is
   carried too.
-- Backwards compatible: the result is still assignable everywhere `View` was expected, and the
+- `IfThenElse` returns `R | E` — two `Layout` arms collapse to one type instead of widening,
+  which is what lets a multi-state page function keep whatever its branches built.
+- `IfThen` returns `R | ""`, unioned with the empty string it actually renders when the
+  condition fails. That is the honest result, and the reason a conditionally-set root is not a
+  guaranteed one.
+- `ForEach` returns `R[]` on all three overloads (iterable, count, range). It already built and
+  returned an array; only the declared element type was being thrown away.
+- Backwards compatible: results are still assignable everywhere `View` was expected, and the
   branch constraint is still `View`, so a branch returning a non-view is still rejected.
 
 ### 🛡️ Kept — everything the old signature guaranteed

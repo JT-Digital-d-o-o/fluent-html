@@ -23,9 +23,9 @@ import type { Tag } from "../core/tag.js";
  * // Range iteration
  * ForEach(1, 6, (i) => Span(`Page ${i}`))
  */
-export declare function ForEach<T>(views: Iterable<T>, renderItem: (item: T, index: number) => View): View;
-export declare function ForEach(high: number, renderItem: (index: number) => View): View;
-export declare function ForEach(low: number, high: number, renderItem: (index: number) => View): View;
+export declare function ForEach<T, R extends View>(views: Iterable<T>, renderItem: (item: T, index: number) => R): R[];
+export declare function ForEach<R extends View>(high: number, renderItem: (index: number) => R): R[];
+export declare function ForEach<R extends View>(low: number, high: number, renderItem: (index: number) => R): R[];
 /**
  * Iterate over items, or render a fallback when the list is empty. A separate
  * function from `ForEach` (mirrors `IfThen`→`IfThenElse`) — keeps `ForEach`'s

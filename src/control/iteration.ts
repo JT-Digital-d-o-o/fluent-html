@@ -32,19 +32,19 @@ function clampLength(n: number): number {
  * // Range iteration
  * ForEach(1, 6, (i) => Span(`Page ${i}`))
  */
-export function ForEach<T>(
+export function ForEach<T, R extends View>(
   views: Iterable<T>,
-  renderItem: (item: T, index: number) => View
-): View;
-export function ForEach(
+  renderItem: (item: T, index: number) => R
+): R[];
+export function ForEach<R extends View>(
   high: number,
-  renderItem: (index: number) => View
-): View;
-export function ForEach(
+  renderItem: (index: number) => R
+): R[];
+export function ForEach<R extends View>(
   low: number,
   high: number,
-  renderItem: (index: number) => View
-): View;
+  renderItem: (index: number) => R
+): R[];
 // Implementation
 export function ForEach<T>(
   viewsOrLowOrHigh: Iterable<T> | number,

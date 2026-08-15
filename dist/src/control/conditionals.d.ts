@@ -18,8 +18,8 @@ import type { View, Thunk } from "../core/types.js";
  * // Nullable value narrowing — `user` is narrowed to non-null `User`
  * IfThenElse(user, (u) => Span(`Welcome, ${u.name}`), () => A("Login"))
  */
-export declare function IfThenElse(condition: boolean, thenBranch: Thunk<View>, elseBranch: Thunk<View>): View;
-export declare function IfThenElse<T>(value: boolean extends T ? never : T | null | undefined, thenBranch: (value: T) => View, elseBranch: Thunk<View>): View;
+export declare function IfThenElse<R extends View, E extends View>(condition: boolean, thenBranch: Thunk<R>, elseBranch: Thunk<E>): R | E;
+export declare function IfThenElse<T, R extends View, E extends View>(value: boolean extends T ? never : T | null | undefined, thenBranch: (value: T) => R, elseBranch: Thunk<E>): R | E;
 /**
  * Conditionally render a view, or render nothing (`Empty()`).
  *
@@ -38,8 +38,8 @@ export declare function IfThenElse<T>(value: boolean extends T ? never : T | nul
  * // Nullable value narrowing — `avatar` is narrowed to `string`
  * IfThen(user.avatar, (src) => Img().setSrc(src).setAlt("Avatar"))
  */
-export declare function IfThen(condition: boolean, then: Thunk<View>): View;
-export declare function IfThen<T>(value: boolean extends T ? never : T | null | undefined, then: (value: T) => View): View;
+export declare function IfThen<R extends View>(condition: boolean, then: Thunk<R>): R | "";
+export declare function IfThen<T, R extends View>(value: boolean extends T ? never : T | null | undefined, then: (value: T) => R): R | "";
 /**
  * Forces a case key that is not a member of the matched value's union to `never`, so a
  * typo'd or stale case is a compile error rather than a silently-unreachable branch.

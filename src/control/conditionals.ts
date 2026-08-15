@@ -20,12 +20,12 @@ import { Empty } from "../core/utils.js";
  * // Nullable value narrowing — `user` is narrowed to non-null `User`
  * IfThenElse(user, (u) => Span(`Welcome, ${u.name}`), () => A("Login"))
  */
-export function IfThenElse(condition: boolean, thenBranch: Thunk<View>, elseBranch: Thunk<View>): View;
+export function IfThenElse<R extends View, E extends View>(condition: boolean, thenBranch: Thunk<R>, elseBranch: Thunk<E>): R | E;
 // A boolean-containing T would resolve here at compile time but be reinterpreted as a
 // condition at runtime (the `typeof === 'boolean'` branch), so `false` renders the else
 // and `true` calls the callback with `undefined`. Reject it — callers pass an explicit
 // comparison (`flag === true`) so the intended overload is unambiguous.
-export function IfThenElse<T>(value: boolean extends T ? never : T | null | undefined, thenBranch: (value: T) => View, elseBranch: Thunk<View>): View;
+export function IfThenElse<T, R extends View, E extends View>(value: boolean extends T ? never : T | null | undefined, thenBranch: (value: T) => R, elseBranch: Thunk<E>): R | E;
 export function IfThenElse<T>(
   conditionOrValue: boolean | T | null | undefined,
   thenBranch: Thunk<View> | ((value: T) => View),
@@ -58,10 +58,10 @@ export function IfThenElse<T>(
  * // Nullable value narrowing — `avatar` is narrowed to `string`
  * IfThen(user.avatar, (src) => Img().setSrc(src).setAlt("Avatar"))
  */
-export function IfThen(condition: boolean, then: Thunk<View>): View;
+export function IfThen<R extends View>(condition: boolean, then: Thunk<R>): R | "";
 // See IfThenElse: a boolean-containing T is rejected here because the runtime
 // treats it as a condition, not a value. Use an explicit comparison instead.
-export function IfThen<T>(value: boolean extends T ? never : T | null | undefined, then: (value: T) => View): View;
+export function IfThen<T, R extends View>(value: boolean extends T ? never : T | null | undefined, then: (value: T) => R): R | "";
 export function IfThen<T>(
   conditionOrValue: boolean | T | null | undefined,
   then: Thunk<View> | ((value: T) => View),
