@@ -36,6 +36,7 @@ declare const P: import("../src/routes.js").RouteRegistry<{
         };
         readonly query: undefined;
         readonly sitemap: undefined;
+        readonly render: undefined;
     };
 }>;
 export type _RouteParamKeyParity = [

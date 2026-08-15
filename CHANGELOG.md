@@ -2,7 +2,45 @@
 
 All notable changes to Fluent HTML will be documented in this file.
 
-## [8.1.0] - Control flow reports what its branches built
+## [8.1.0] - The swap contract becomes a type
+
+A swap verb imposes a target (`#main-content`, or an explicit `Id`) and an outer morph, which
+means the response must be **rooted at that id** — an outer swap replaces the target element,
+so a response that does not carry the id morphs it out of the DOM and every later swap on the
+page silently stops working. Nothing in the type system connected the two halves. The root id
+was a runtime value (`setId` returned a bare `this`), `Id` erased which id it was, and the call
+site could not see what the handler would answer with.
+
+Three changes make the whole contract expressible, and each is useless without the others:
+
+1. **Control flow reports its branch types** — otherwise any brand is erased on first use.
+2. **`setId` brands the root** — `Rooted<N>`, so "this view is rooted at #N" is a type.
+3. **A `render` stance on `RouteDef`** — so the call site can see what a route answers with.
+
+### ✨ Added — `Rooted<N>`: the root id becomes a type
+
+- `Id<N extends string = string>` carries its literal name (`id: N`, `` selector: `#${N}` ``).
+  The default keeps every existing annotation valid; `defineIds` yields `Id<"user-list">` per
+  key and `createId` infers from a const name.
+- `setId` gains a typed-`Id` overload returning `this & Rooted<N>`. The brand rides the
+  polymorphic `this`, so it survives the rest of a fluent chain. `setId(someString)` stays
+  unbranded on purpose: a runtime-computed id is not a compile-time guarantee.
+- A consumer can now demand one: `renderFragment(ids.userCount, view: Rooted<"user-count">)`,
+  and a mismatch is a compile error naming both ids instead of silent markup.
+
+### ✨ Added — `render` stance on `RouteDef`
+
+- `render: "page" | Id` on a route def, carried onto the callable **and onto the HTMX bag the
+  callable returns** (`RenderTagged<S>`), so a swap verb can constrain its destination:
+  `.nav` accepts `"page" | undefined` and a route declaring a fragment fails at the call site.
+- The routes file is the only artifact both the call site and the handler import, so it is the
+  only place this contract can live where both can see it.
+- The bag tag is phantom — nothing writes `render` onto it at runtime, so no stray key can
+  reach `setHtmx` and become an attribute. The stance IS stamped on the callable, like
+  `sitemap`, which is where server-side helpers read it.
+- Additive: an undeclared route carries `undefined` and stays accepted everywhere.
+
+## [8.1.0-a] - Control flow reports what its branches built
 
 `Match` declared `View` as its return type, so every branch's type was thrown away at the call
 boundary. That is invisible until something downstream needs to know *which* view came back —

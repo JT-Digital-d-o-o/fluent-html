@@ -146,6 +146,9 @@ export function defineRoutes(prefixOrDefinitions, maybeDefinitions) {
         if (def.sitemap !== undefined) {
             Object.defineProperty(routeFn, "sitemap", { value: def.sitemap, writable: false, enumerable: true });
         }
+        if (def.render !== undefined) {
+            Object.defineProperty(routeFn, "render", { value: def.render, writable: false, enumerable: true });
+        }
         registry[name] = routeFn;
     }
     return Object.freeze(registry);

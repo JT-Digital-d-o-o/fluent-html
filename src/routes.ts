@@ -103,6 +103,17 @@ type ParamTypeMap = {
  */
 export type SitemapStance = true | "exclude" | "dynamic";
 
+/**
+ * What a route answers with, declared on the contract leaf both halves already import.
+ *
+ * `"page"` is a full-layout response (the target every full-layout swap verb aims at); an
+ * `Id` is the fragment the route owns. Carried onto the callable *and onto the HTMX bag the
+ * callable returns*, so a swap verb can refuse a route whose shape it cannot swap — the one
+ * check neither the handler nor the call site can do alone, because the routes file is the
+ * only artifact both of them import.
+ */
+export type RenderStance = "page" | Id<string>;
+
 /** The stances a given def may declare: GET only; `true` ⟷ paramless, `"dynamic"` ⟷ param'd. */
 type AllowedStance<Def extends RouteDef, Path extends string> =
   MethodOf<Def> extends "get"
@@ -154,6 +165,7 @@ export type RouteDef = {
   readonly params?: Readonly<Record<string, ParamType>>;
   readonly query?: Readonly<Record<string, ParamType>>;
   readonly sitemap?: SitemapStance;
+  readonly render?: RenderStance;
 };
 
 /** Input object for defineRoutes(). */
@@ -207,6 +219,7 @@ type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
     readonly params: DefProp<T[K], 'params'>;
     readonly query: DefProp<T[K], 'query'>;
     readonly sitemap: DefProp<T[K], 'sitemap'>;
+    readonly render: DefProp<T[K], 'render'>;
   };
 };
 
@@ -264,6 +277,8 @@ type RouteProperties<Def extends RouteDef> = {
   readonly query: DefProp<Def, 'query'>;
   /** The def's sitemap stance, carried through for server-side registration. */
   readonly sitemap: DefProp<Def, 'sitemap'>;
+  /** The def's render stance, carried through so swap verbs can check what they aim at. */
+  readonly render: DefProp<Def, 'render'>;
   readonly resolve: HasAnyParams<Def['path']> extends true
     ? (params: ResolveAllParamTypes<Def['path'], Def['params']>, query?: ResolveQuery<Def['query']>) => ResolvedRoute
     : (query?: ResolveQuery<Def['query']>) => ResolvedRoute;
@@ -277,11 +292,21 @@ type RouteProperties<Def extends RouteDef> = {
  * - Both forms return an `HTMX` object for use with `setHtmx()`.
  * - `.resolve(params?, query?)` returns the resolved URL string (for redirects, links, etc.).
  */
+/**
+ * The HTMX bag a route call returns, tagged with the route's declared render stance.
+ *
+ * The tag is what lets a swap verb type-check its destination: `.nav` targets the full-layout
+ * region, so it accepts `RenderTagged<"page" | undefined>` and a route declaring a fragment id
+ * fails to compile at the call site. Undeclared routes carry `undefined` and stay accepted
+ * everywhere, so this is additive.
+ */
+export type RenderTagged<S> = HTMX & { readonly render?: S };
+
 export type RouteCallable<Def extends RouteDef> =
   HasAnyParams<Def['path']> extends true
-    ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptionsFor<Def>) => HTMX)
+    ? ((params: ResolveAllParamTypes<Def['path'], Def['params']>, options?: RouteHxOptionsFor<Def>) => RenderTagged<DefProp<Def, 'render'>>)
       & RouteProperties<Def>
-    : ((options?: RouteHxOptionsFor<Def>) => HTMX)
+    : ((options?: RouteHxOptionsFor<Def>) => RenderTagged<DefProp<Def, 'render'>>)
       & RouteProperties<Def>;
 
 /** The full registry object returned by defineRoutes(). */
@@ -302,6 +327,7 @@ export type AnyRouteCallable = {
   readonly params?: Readonly<Record<string, ParamType>>;
   readonly query?: Readonly<Record<string, ParamType>>;
   readonly sitemap?: SitemapStance;
+  readonly render?: RenderStance;
   readonly resolve: (...args: never[]) => ResolvedRoute;
 };
 
@@ -520,6 +546,9 @@ export function defineRoutes(
     }
     if (def.sitemap !== undefined) {
       Object.defineProperty(routeFn, "sitemap", { value: def.sitemap, writable: false, enumerable: true });
+    }
+    if (def.render !== undefined) {
+      Object.defineProperty(routeFn, "render", { value: def.render, writable: false, enumerable: true });
     }
 
     registry[name] = routeFn;

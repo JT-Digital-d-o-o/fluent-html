@@ -452,4 +452,25 @@ needsMainRoot(Match(matchTone, {
 }));
 // @ts-expect-error — IfThen may render "", so a conditional root is not a guaranteed one
 needsMainRoot(IfThen(true, () => Div("x").setId(rootIds.mainContent)));
+// ── The render stance rides the HTMX bag, so a swap verb can refuse a route ──
+// The routes file is the only artifact both the call site and the handler import, so it is
+// the only place a "what does this answer with" contract can live where both can see it.
+const stanceIds = defineIds(["user-count"]);
+const stanceRoutes = defineRoutes("/probe", {
+    page: { path: "/page", render: "page" },
+    count: { path: "/count", render: stanceIds.userCount },
+    plain: { path: "/plain" },
+});
+navVerb(stanceRoutes.page());
+navVerb(stanceRoutes.plain()); // undeclared stays accepted — additive
+fragmentVerb(stanceIds.userCount, stanceRoutes.count());
+fragmentVerb(stanceIds.userCount, stanceRoutes.plain());
+// @ts-expect-error — .nav aims at the full-layout region; this route answers a fragment
+navVerb(stanceRoutes.count());
+// @ts-expect-error — a whole page morphed into a fragment target
+fragmentVerb(stanceIds.userCount, stanceRoutes.page());
+// the stance is also on the callable, where server-side helpers read it
+expectType(stanceRoutes.page.render);
+expectType(stanceRoutes.count.render);
+expectType(stanceRoutes.plain.render);
 //# sourceMappingURL=type-surface.test-d.js.map

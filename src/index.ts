@@ -414,6 +414,8 @@ export type {
   ParamTypeName,
   ParamType,
   SitemapStance,
+  RenderStance,
+  RenderTagged,
   RouteCallable,
   RouteRegistry,
   AnyRouteCallable,
