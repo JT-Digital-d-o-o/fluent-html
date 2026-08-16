@@ -4,6 +4,8 @@
 unions, first-class HTMX support, typed routes/ids/forms, automatic XSS protection. Zero
 dependencies, SSR-ready.
 
+[fluent-html.com](https://fluent-html.com)
+
 ```bash
 npm install fluent-html
 ```
@@ -270,7 +272,7 @@ place/break/isolation/hyphens/scheme/field-sizing families) — their CSS stays 
 
 ## Links
 
-- [CHANGELOG](CHANGELOG.md) · [Full reference](REFERENCE.md) · [Full surface (generated)](generated/full-surface.md)
+- [Website](https://fluent-html.com) · [CHANGELOG](CHANGELOG.md) · [Full reference](REFERENCE.md) · [Full surface (generated)](generated/full-surface.md)
 - [GitHub](https://github.com/JT-Digital-d-o-o/fluent-html) · [npm](https://www.npmjs.com/package/fluent-html)
 
 ## License

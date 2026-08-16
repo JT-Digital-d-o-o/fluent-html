@@ -7,7 +7,7 @@ year: 2024
 stack: [TypeScript]
 featured: true
 order: 1
-url: "https://www.npmjs.com/package/fluent-html"
+url: "https://fluent-html.com"
 tags: [library, open-source, html, typescript, ssr, htmx, tailwind, developer-tools]
 blog: true
 blogDate: "2024-11-01"
