@@ -1,0 +1,168 @@
+### fluent-html 8.1.1, and the three template files that are only right against it
+
+The fluent-html pin moves to 8.1.1 in one commit with the three files that change meaning with
+it. The behaviors asset is named by the library version, so a scaffold does not boot on 8.1.1
+until the asset is rebuilt. The redirect hook hands its URL to a sanitizer that exists only from
+8.1.1 on. And the JSON-LD helper's hand escape was what kept the 8.1.0 bytes safe, so it can go
+only together with the lockfile.
+
+- **The htmx redirect hook writes `HX-Redirect` through `hxResponse`.** The `onSend` hook in
+  `src/core/server/server.ts` copied `Location` into `HX-Redirect` verbatim, so
+  `reply.redirect(req.query.next)` sent `javascript:alert(1)`, `js:alert(1)` and
+  ` JavaScript:alert(1)` to htmx (3/3 under Fastify inject). It now writes
+  `hxResponse(Empty()).redirect(location).getHeaders()`, which on 8.1.1 turns `javascript:`,
+  `js:` and every `data:` URL into `about:blank`. Through the real `buildServer()`, 35 of 40
+  redirect shapes are unchanged (`/team`, relative paths and absolute https URLs among them); the
+  5 that change are hostile schemes. The hook no longer writes an HX-* header by hand.
+- **The JSON-LD helper stops hand-escaping `<`.** fluent-html 8.1.1 writes every `<` in a
+  JSON-typed script body as its JSON unicode escape, which parses to the same value, so
+  `jsonLdScript` in `src/app/seo/seo.meta.ts` drops its `.replace(...)` call and the comment
+  above it. `tests/unit/seo-meta.test.ts` keeps its guard: without the helper it fails 1 of 14 on
+  8.1.0 and passes on 8.1.1, so a stale lockfile cannot ship the unescaped form. `templates/web`'s
+  `StructuredData`, which never escaped, is fixed by the library with no template edit.
+- **The behaviors runtime asset is rebuilt.** `public/js/fluent-behaviors.8.1.1.f87f375a.js`
+  replaces the 8.1.0 asset (`npm run behaviors:build`, 0 source edits). The 8.1.1 runtime keeps
+  open an `onClickOutside` panel its own toggle has just shown (21/21 shape and engine pairs, 6/21
+  on 8.1.0), keeps Tab inside a trapped drawer on WebKit (trap shapes 18/18; WebKit 0/6 on
+  8.1.0), and closes a drawer on a `.nav()` even when the drawer sits outside `#main-content`
+  (72/72 close-on-nav cells, 48/72 on 8.1.0). An app tracking `#main` fails boot until it runs
+  the same command and commits the asset, with
+  `Behavior runtime asset public/js/fluent-behaviors.8.1.1.f87f375a.js is missing`.
+  `templates/web` serves the library's asset and needs nothing.
+
+### `.search` settles on the newest query on htmx 4.0.0
+
+The verb emitted `sync: "replace"`. On htmx 4.0.0 a replaced request's cleanup frees the slot its
+replacement holds (htmx#4027, fixed by #4028, unreleased), so the next request runs beside it and
+a slower response for a query the user had typed past can land last. Typing `a`, `ab` and `abc`
+400 ms apart, 5/5 runs settled on a stale query under an asymmetric lag, and 4/20 under a seeded
+lag of 50 to 1500 ms.
+
+- **`.search` emits `sync: "queue last"`.** One request runs at a time and only the newest waits,
+  so the newest query always swaps last: 0/5 and 0/20 on the same runs. A response faster than the
+  typing gap settles as before: at 50 ms and 250 ms responses the two values settle within 4 ms
+  of each other (357/357 ms, 561/557 ms). A slow one settles later than a fixed `replace` would
+  until #4028 ships (1055 ms against 357 ms under the asymmetric lag).
+  `src/core/htmx/swap-verbs.ts` says why beside the value, and `tests/unit/swap-verbs.test.ts`
+  pins it.
+- **The smoke row that tells the two values apart runs.** `tests/e2e/specs/htmx-smoke.spec.ts`
+  un-skips "a slow filter settles on the newest query" with an asymmetric lag (1500 ms for `a`
+  and `ab`, 50 ms for `abc`). The old uniform 1200 ms lag passed 5/5 on the broken runtime; the
+  new row passes `queue last` 5/5 and fails `replace` 5/5 on 4.0.0. `smoke:htmx` stays outside
+  `verify` and runs at bump time.
+- **A tripwire names the way back.** A test in `tests/unit/htmx-grammar-contract.test.ts`, gated
+  on the 4.0.0 `RequestQueue` so an older bundle skips it, fails once `public/js/htmx.min.js`
+  carries #4028 and says to return `.search` to `sync "replace"` once the smoke row passes with
+  it. Projects on the 4.0.0 bundle take the change at their next template sync.
+
+### templates/web submits its contact form and opens post cards without htmx
+
+The web template serves no htmx runtime, yet `/contact` and both post cards carried hx-*
+attributes (since 05a2f15 and b10beed). In Chromium the form submitted as a GET with the
+visitor's data in the URL (`GET /contact?name=Ana&email=a%40b.si&…`) and the cards fired no
+request. Lint, tsc and the smoke test all passed.
+
+- **The form posts natively and the cards are links.** `ContactForm` takes
+  `.setAction(contactRoutes.submit.resolve()).setMethod("post")` and `PostCard` takes
+  `.setHref(blogRoutes.post.resolve({ slug: post.slug }))` in place of the three `setHtmx` calls.
+  A native POST replaces the document, so a 400 now renders the whole contact page with its field
+  errors, reusing the page registry's SEO with `noIndex`, instead of a bare `<form>`;
+  `ContactPage` takes the errors as an optional second argument. In Chromium, a submit posts
+  `/api/contact` and lands on `GET /contact?success=true` through a 302, an empty submit answers
+  a full 400 page with 3/3 field errors, and a card opens `GET /blog/hello`, also under the
+  template CSP. Class attributes and `public/css/fluent-safelist.css` (4,627 B) are
+  byte-identical.
+- **`template/no-htmx-without-runtime`.** A fifth template rule in
+  `templates/shared/eslint-rules/`, registered in the shared, full-stack and web configs and
+  switched on at `error` only where `public/js/htmx.min.js` is absent. It flags `setHtmx`, `hxGet`
+  and `hxPost`, `addAttribute("hx-…")`, the `hx`, `Partial`, `HtmxConfig` and `hxResponse`
+  imports (named or through a namespace import), and an `HX-*` header written through
+  `reply.header` or `reply.headers`. In that block `fluent-html/prefer-htmx-api` and
+  `template/no-manual-hx-headers` are off, since both point at htmx APIs the site cannot use.
+  Full-stack and the 15 fleet repos on the shared config vendor the bundle, so nothing there is
+  newly flagged, and setup copies the rule into every scaffold.
+- **The smoke test renders.** `templates/web/tests/smoke.test.ts` renders every registered page
+  and fails on any hx-* attribute. It sees 1 of the 3 emitters (`PostCard` is on no registered
+  page), so the lint is the primary check.
+- **The web docs stop teaching htmx.** `templates/web/CLAUDE.md` trades its HTMX section and its
+  htmx-target examples for a short "Forms and links" section (net -72 lines), and
+  `templates/web/README.md` shows the native form and the full-page 400.
+
+### A wrong argument gets an error that names the fix, and an autofix that compiles
+
+Four places answered a wrong guess without a fix that works. A raw path in a swap verb printed a
+type mismatch that names no fix (0/19 raw-shape probes). The template's own `assetUrl` returned a
+plain string, which the branded `setHref` refuses. `eslint --fix` wrote autofixes that fail tsc.
+And the vendored guidelines taught `staticManifest` as the remedy for a variable-driven token,
+which never clears the extractor's throw (11/11 calls still throw with it).
+
+- **A raw route into a swap verb names the fix on line 1.** `A("Team").nav("/team")` failed with
+  `Argument of type 'string' is not assignable to parameter of type 'PageRoute'`. Each verb
+  parameter in the declare-module block of `src/core/htmx/swap-verbs.ts` gains an unsatisfiable
+  member whose key is the fix for that verb family, so tsc prints the fix itself, for `.nav`
+  starting `.nav takes a page route callable result such as routes.x() from defineRoutes` and
+  then naming the shapes it is not; `.fragment` and the targeted `.search` print the fragment
+  sentence, and `.poll` and `.fire` one each. The sentence names the stance the verb takes, so it
+  is also true on a stance error. The fix is on line 1 in 18/19 raw probes. No valid call changes
+  type (12/12 live repos tsc-identical, 8,836 tests per side) and the verb implementations are
+  untouched. `tests/define-controller-compile.test.ts` pins three raw shapes, two stance errors
+  and the generic-wrapper forms.
+- **`assetUrl` satisfies the route brand.** `src/core/layout/assets.ts` exported an unbranded
+  `assetUrl(url): string`, so `A("Download").setHref(assetUrl("/files/guide.pdf"))` failed
+  TS2345, although fluent-html names `assetUrl()` among the producers `setHref` accepts. It now
+  wraps fluent-html's `assetUrl` and returns `ResolvedRoute`, with identical runtime output, and
+  every existing caller compiles (template tsc 0, unit 403/403, static-cache and layout 30/30).
+- **`lint:fix` no longer writes autofixes that fail tsc.** `pnpm-lock.yaml` moves
+  eslint-plugin-fluent-html to 4.2.0. Its `no-tailwind-in-raw-class` autofixes come from a fix
+  contract swept against the installed fluent-html, so every fix type-checks and renders its
+  class, and a utility with no fluent method gets a `.cssProp(...)` redirect. On the two measured
+  pure-prior agent runs, `eslint --fix` took tsc from 3 to 27 and from 4 to 30 errors on 4.1.0;
+  on 4.2.0 it leaves 3 and 4. Its dynamic-argument messages print a per-shape fix that compiles
+  instead of naming `staticManifest`.
+- **The guidelines stop teaching `staticManifest` for a variable-driven token.**
+  `guidelines:pull` re-vendors `CLAUDE.md` and `.ai/web-development/`: the `staticManifest` line
+  leaves each of the three files that carried it, and the examples the lint or the extractor
+  rejects are retargeted. The same pull brings the other guideline corrections that ship beside
+  fluent-html 8.1.1, among them `.search` no longer naming its sync value and `setClosedby("any")`
+  paired with `onClickOutside` for Safari 27, which ships no `closedby`. Arm 4 of
+  `project/pm/framework-ideation/taught-but-unused-prune/prd.md` is marked superseded.
+
+### The htmx grammar check moved to fluent-html, where it runs in a browser
+
+`tests/unit/htmx-grammar-contract.test.ts` compared the hx-* names the app emits against names
+found in the bundle, which flagged 2 of 16 broken typed lines, both for the wrong reason.
+fluent-html 8.1.1 runs every typed htmx token through an executed oracle in its own CI, against
+its pinned bundle and the htmx 4.0.0 build this template serves, so the template keeps only what
+that oracle cannot see.
+
+- **Three checks leave the contract test.** The name-only token check; its `<hx-partial>`
+  self-check, whose premise is false (the pre-8.0.0 bytes swap on beta4, alpha7, beta6 and
+  4.0.0); and the bundle regex for the form `enctype` fallback, which fluent-html now pins as an
+  executed row. The `Partial` template-grammar check, the behavior-verb registration check and
+  the bundle provenance check stay.
+- **A local lockstep check names the bump order.** It fails when the `htmx.org` pin in
+  `templates/full-stack/package.json` is not a build the installed fluent-html ran its oracle
+  against (its `htmx.org` devDependency or its `htmx-served` alias), and names that alias as the
+  thing to bump first. It passes from fluent-html 8.1.1 on, and runs locally only until template
+  CI is green.
+
+### `packages/ui` is gone; `src/shared/ui` is the component layer
+
+`@jtdigital/ui` had 0 dependents and 0 imports across 58 repos, carried 36 lint errors under
+eslint-plugin-fluent-html 4.1.0, and 11 of its 47 classes were missing from an app's safelist,
+because the extractor skips `node_modules`. Every canonical app (16/16) already keeps its shared
+components in its own `src/shared/ui`.
+
+- **Deleted:** `packages/ui` (20 files), its `pnpm-lock.yaml` importer block, its row in
+  `tests/behavior-asset-pin.test.ts`, and its line in the README's workspace tree. The
+  `design-system` PM scope is archived as killed.
+- **`selectStyle` in `src/shared/ui/form.ts`.** The package's one gap, a select styler, joins
+  `inputStyle` and `textareaStyle` with the same field look (3 fleet repos had written it by
+  hand). It renders the `inputStyle` class bytes exactly, so the safelist is byte-identical
+  (11,527 B).
+- **`tests/component-layer.test.ts`.** Fails when a workspace package under `packages/` emits
+  fluent-html classes or dynamic styling calls, in any `.ts`, `.mts`, `.cts`, `.tsx`, `.js` or
+  `.mjs` file, anywhere in the package outside `node_modules` and `dist`, and points at
+  `templates/full-stack/src/shared/ui`. It runs in `verify`, which CI reaches only once the
+  `PRIVATE_REPOS_TOKEN` secret is set.
+

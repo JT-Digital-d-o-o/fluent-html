@@ -17,20 +17,22 @@
 | Rule | Why |
 |---|---|
 | **Plan only, every repo alike.** This run writes PM files and staged patches. No repo gets code, and no CHANGELOG or README on `main` changes. | Code lands with its release's implementation run, where it is built, tested and verified. Doing some of it eagerly would split a release (template 3.8.0 half now, half later) and skip that bar. |
-| **The docs never run ahead of the code.** CHANGELOG and README edits are staged as patches per release step and applied by the PM task that ships that step. | A CHANGELOG on `main` that describes unbuilt code is a false record (the v6 docs had to be regenerated after curation overrode them). |
+| **The docs never run ahead of the code.** CHANGELOG entries are staged as `CHANGELOG.entry.md` fragments and README edits as patches, per release step, and applied by the PM task that ships that step. | A CHANGELOG on `main` that describes unbuilt code is a false record (the v6 docs had to be regenerated after curation overrode them). |
 | **One writer per repo at a time.** Lanes run in parallel across repos, sequentially within one. | Parallel agents in one working tree race on files and on the git index. |
 | **PM follows `.ai/project-management/CLAUDE.md`.** One committed scope per repo with `prd.md` + `todo.md`; one user story per release step; every story ends with "write tests" and "check for bugs"; decision-blocked stories carry `<!-- hill: uphill -->`; no counts, no dates, no status files. Child scopes are born when their release starts, not now. | Born lazy, kept live. Scaffolding every future release as its own scope now would be born dead. |
-| **Order is data.** Each task records its release step and `depends_on` from `lockstep.md`, so `npm run focus` surfaces what is unblocked; the plan never encodes dates. | The PM lint forbids dated phase plans. |
-| **Commit on `main`, never push.** The orchestrator commits each repo's PM files and staged patches, staging only the paths this run wrote. | Repo rule: no branches unless asked; path-scoped commits leave a user's work in progress untouched. |
+| **Order is data.** Each task records its release step and `depends_on` from `lockstep.md` in a Note, plus an `After <release>:` title prefix on each release-gated task, because `npm run focus` does not parse `depends_on`; one priority for every non-decision task of a story keeps focus in file order. The plan never encodes dates. | The PM lint forbids dated phase plans. |
+| **Commit on `main` and push, per the user's global rule (2026-10-01).** The orchestrator commits each repo's PM files and staged docs, staging only the paths this run wrote. | Repo rule: no branches unless asked; path-scoped commits leave a user's work in progress untouched. |
 | **House style.** No em dashes; banned words (commonly/often/rarely); every claim keeps its measure; paths per [ALGORITHM.md §3 Paths](ALGORITHM.md#3-artifacts). | Same artifact contract as the review run. |
 
 ## 1. Lanes
 
 | Lane | Repo(s) | Writes | Agents |
 |---|---|---|---|
-| **L** | fluent-html | `project/pm/<scope>/` (PM), `60-rollout/staged/fluent-html/<release>/{CHANGELOG,README}.patch` (docs) | 2 (PM, docs; disjoint files) |
-| **T** | fluent-html-eslint-plugin, fluent-html-tailwind-extractor | plugin `project/pm/<scope>/`; staged CHANGELOG/README patches for both. The extractor has no `project/pm/`; its tasks live in lane L's scope with a cross-reference. | 1 |
-| **P** | projects-template | `project/pm/<scope>/` (stories for 3.8.0, 3.9.0 and the 9.0.0 no-code pass); staged CHANGELOG `[Unreleased]` and README patches per template version | 2 (PM, docs) |
+| **L** | fluent-html | `project/pm/<scope>/` (PM), `60-rollout/staged/fluent-html/<release>/` `CHANGELOG.entry.md` and `README.patch` (docs) | 2 (PM, docs; disjoint files) |
+| **T** | fluent-html-eslint-plugin, fluent-html-tailwind-extractor | plugin `project/pm/<scope>/`; staged CHANGELOG entries and README patches for both. The extractor has no `project/pm/`; its tasks live in lane L's scope with a cross-reference. | 1 |
+| **P** | projects-template | `project/pm/<scope>/` (stories for 3.8.0, 3.9.0 and the 9.0.0 no-code pass); staged CHANGELOG `[Unreleased]` entries and README patches per template version | 2 (PM, docs) |
+
+CHANGELOG entries are staged as `CHANGELOG.entry.md` fragments: the added text alone, which the PM task pastes directly above the newest `## [` version header (fluent-html, the plugin) or directly under `## [Unreleased]` and its blank line (projects-template). A fragment has no context lines, so an earlier release's cut cannot stop it applying. A `CHANGELOG.patch` stays only where an entry edits existing lines (the extractor's, which rewords `CHANGELOG.md:10`).
 
 Guidelines (`guidelines/web-development/**`) are out of scope: their hunks land in release waves G1 to G3
 per `lockstep.md` §2, and lane L's PM tasks reference them.
@@ -82,7 +84,7 @@ Uncommitted files of the user's in projects-template do not block: lane P writes
 
 `60-rollout/`:
 - `manifest.md`: the R1 table; the source of truth for what each lane wrote and why.
-- `staged/<repo>/<release>/CHANGELOG.patch`, `README.patch`: applied by the PM task that ships that step.
+- `staged/<repo>/<release>/CHANGELOG.entry.md` (a fragment; `CHANGELOG.patch` only where an entry edits existing lines) and `README.patch`: applied by the PM task that ships that step.
 - `verification/V-<lane>.md`, `V-traceability.md`: executed checks and verdicts.
 - `report.md`: commits per repo (hash), PM scopes created, staged patches, open items.
 

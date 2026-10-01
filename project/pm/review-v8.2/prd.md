@@ -44,7 +44,7 @@ section 2 and its Track E addendum (K1 to K15). One user story per release step 
 | 9 | fluent-html 9.0.0: B-04, C-02, C-03, the E-04 and E-07 tails; one migration section | K10, K11; `test/prune-gate.test.ts` green |
 | 10 | guidelines G3: C-02 | the 9.0.0 tag |
 
-The docs never run ahead of the code: each release's CHANGELOG and README hunks are staged under
+The docs never run ahead of the code: each release's CHANGELOG entry and README hunks are staged under
 `fluent-html/project/research/v8.2.0/60-rollout/staged/<repo>/<release>/` and applied by the story
 that ships that release. Guideline and `CLAUDE.md` hunks apply by quoted text from
 [guidelines-update.md](../../research/v8.2.0/40-synthesis/guidelines-update.md); codemods follow
@@ -66,10 +66,5 @@ supersession is recorded in [decisions.md](../decisions.md).
 
 - **No code or docs ahead of their release.** No CHANGELOG or README edit on `main` before the story that ships it; no guideline line before its gate (K7); no edit to the user's memory without the user (RFC-C-04).
 - **No runtime `closedby` shim** in the behaviors runtime (C-67 keeps guardrail §5.10).
-- **No re-litigating curation.** Cut: RFC-A-04 Part B (`TdTag`/`ThTag` `colSpan`/`rowSpan` narrowing), RFC-E-05 `fluent-html/testing` `inspect()`, RFC-E-06 `f.hint`. Parked: C-81 setter casing rename, C-96 platform additions with no demand, the RFC-A-09 default-on flip (not in 9.0.0), RFC-B-02's leading and trailing `transition` arms.
-- **Deferred items that touch this repo or the extractor** stay in the seen set for the next run, with their measures in [roadmap.md](../../research/v8.2.0/40-synthesis/roadmap.md):
-  - lib, 8.1.x lane: C-20 object-variant hot loop, C-21 compiled route templates, C-22 anchor style slot, C-23 palette opt-out CI, C-24 canonical codemod fixpoint, C-25 CLAUDE.md drift check, C-26 bench gate in CI, C-27 one htmx pin, C-28 stale installs, C-34 hx-config and hx-headers values, C-35 behaviors hidden contract, C-39 diagnostic-text contract, C-40 census correctness, C-42 Match did-you-mean, C-48 textarea newline, C-63 attribute precedence, C-64 `El()` names, C-65 explicit undefined, C-66 sibling separator, C-68 union pins, C-69 TypeScript 6 and 7, C-70 compiled docs, C-72 pure-prior replay, C-74 prose token budget, C-75 CHANGELOG check, C-83 dev-check activation (with RFC-E-02's guard 1), C-87 Safari column
-  - lib, 8.2.0 lane: C-10 optional-boolean gates, C-11 numeric children, C-29 palette opt-out tokens, C-33 swapped scripts under strict-dynamic, C-43 `PageResponse` root, C-44 open arms in closed unions, C-45 `Id` in selector sinks, C-49 `Match` arity, C-50 numeric SVG setters, C-51 ARIA 1.3, C-52 generated tombstones, C-53 `defineTheme` size-like names, C-54 422 root contract, C-76 `Rooted`/`Id` gate, C-77 class-level coverage, C-78 `Styler` export, C-84 duplicate ids, C-85 htmx config types, C-89 undeclared routes, C-94 open arms with no CSS, C-95 `Rooted` soundness
-  - lib, 9.0.0 lane: C-30 inert `HxSwap` members, C-31 `addAttribute` key type, C-46 branded form setters, C-55 bare setter calls, C-56 popovertarget and form setters, C-57 `hxResponse` headers, C-58 `hxGet`/`hxPost` removal, C-79 `f.input` checkbox, C-80 `defineIds` camelCase, C-90 request-shaped bag keys, C-91 one spelling per variant
-  - extractor: C-38 silent drops, C-41 one CI gate and a real 3.0.0 tag, C-71 derived safelist manifest, C-86 type-aware mode, C-88 peer ranges and Tailwind floor
-  - Track E: RFC-E-03 schema-stamped `Form<T>` limits; cand. E-07 `scrollM`, E-19 `cssProp` union from TypeScript 6, E-20 outline width and color, E-23 motion tokens, E-24 widened value unions, E-25 table border model, E-26 `hx-nonce` stamping, E-31 snap and scrollbar roots, E-32 five backlog vocab roots
+- **No re-litigating curation.** What ships is fixed by [curation.md](../../research/v8.2.0/40-synthesis/curation.md) sections A, E and F.
+- **Deferred, cut and parked items** stay in the seen set for the next run: [roadmap.md](../../research/v8.2.0/40-synthesis/roadmap.md).

@@ -110,7 +110,7 @@
  
  ---
  
-@@ -204,11 +136,7 @@
+@@ -204,15 +136,11 @@
      Button("Create").setType("submit")
        .w("full").padding("3").background("blue-500").textColor("white").rounded("lg"),
    ])
@@ -121,8 +121,14 @@
 -    }));
 +    .setAction(userRoutes.create.resolve()).setMethod("post");
  }
- 
- // Controller re-renders the form with errors on validation failure
+
+-// Controller re-renders the form with errors on validation failure
+-reply.renderView(CreateUserForm({ email: "Email already in use" }));
++// A native POST replaces the document: answer a failed submit with the whole page
++reply.status(400).renderView(UsersPage({ errors: { email: "Email already in use" } }));
+ ```
+
+ ### DON'T: Pass loose positional arguments to views
 --- a/templates/web/README.md
 +++ b/templates/web/README.md
 @@ -131,12 +131,14 @@
@@ -155,18 +161,23 @@
  ```
  
  **Validation:** Use HTML5 attributes through fluent-html methods:
-@@ -182,8 +182,14 @@
+@@ -182,8 +182,19 @@
    const body = request.body as { name?: string; email?: string; message?: string };
- 
+
    if (!body.name || !body.email || !body.message) {
 -    // Re-render the form with an inline error (SSR pattern — no JSON responses)
 -    return reply.renderView(ContactForm({ error: "All fields are required." }));
++    const errors = {
++      name: body.name ? undefined : "Required",
++      email: body.email ? undefined : "Required",
++      message: body.message ? undefined : "Required",
++    };
 +    // A native POST replaces the document, so the 400 is the whole contact page, not a bare form
 +    return reply.status(400).renderView(
 +      Layout({
 +        seo: { ...pages["/contact"].seo, noIndex: true },
 +        config: siteConfig,
-+        children: ContactPage(siteConfig, { message: "All fields are required." }),
++        children: ContactPage(siteConfig, errors),
 +      }),
 +    );
    }
