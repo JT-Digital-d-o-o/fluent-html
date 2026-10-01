@@ -1,0 +1,15 @@
+--- a/README.md
++++ b/README.md
+@@ -265,10 +265,8 @@
+ 
+ Element storage fields are privatized (a blind `.src()` guess now self-heals as
+ "Did you mean 'setSrc'?"), route sinks are branded (pattern 1), `TailwindColor` is exported
+-from the package root, and ~38 zero-use methods were deleted (`hxPut`/`hxPatch`/`hxDelete`,
+-backdrop filters except `backdropBlur`, masks, 3D transforms, snap/scroll-margin,
+-place/break/isolation/hyphens/scheme/field-sizing families) — their CSS stays reachable via
+-`.cssProp()`/`.variant()`. See [CHANGELOG.md](CHANGELOG.md) for migration notes.
++from the package root, and ~38 zero-use methods were deleted (`hxPut`/`hxPatch`/`hxDelete` and 35
++styling methods). See [CHANGELOG.md](CHANGELOG.md) for migration notes.
+ 
+ ## Links
+ 

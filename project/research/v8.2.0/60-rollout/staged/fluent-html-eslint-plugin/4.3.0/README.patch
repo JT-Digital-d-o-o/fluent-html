@@ -1,0 +1,40 @@
+--- a/README.md
++++ b/README.md
+@@ -125,9 +125,10 @@
+ | `no-dynamic-class-argument` | error | **(v3)** Non-literal arg to `.addClass()`/`.setClass()`/`.cssClass()`: a class string held in code, which no lint rule can check. **(v4.2)** The message prints the fix for the argument's shape: a styler applied with `.apply()`, `.whenElse()` for a ternary, `.whenMatch()` for a lookup or an assembled class name, a literal hook class in `.cssClass()` |
+ | `no-tailwind-in-cssclass` 🔧 | error | **(v3)** Tailwind-shaped token inside `.cssClass()` (the non-Tailwind intent marker) — keeps the sanctioned hatch clean |
+ | `require-satisfies-variant-object` | error | **(v4)** Extracted variant style objects (passed by name or spread into `.hover({…})`/`.variant()`) must pin their declaration with `satisfies VariantStyleObject` — excess-property key spell-checking doesn't reach through a plain variable |
+-| `no-dynamic-typed-styling-arg` | error | **(v4.1)** Non-literal argument into any of the 159 *typed* styling methods (`.bg(color)`, `.w("px", width)`, ternaries included): the safelist extractor fails the css build on it. **(v4.2)** The message prints a rewrite for the argument's shape: `.whenElse()` for a ternary, `.whenMatch()` for a `MatchValue` or a keyed map (only the keys the key's type admits), `.addStyle()` for a runtime unit amount |
++| `no-dynamic-typed-styling-arg` | error | **(v4.1)** Non-literal argument into any of the 160 *typed* styling methods (`.bg(color)`, `.w("px", width)`, ternaries included): the safelist extractor fails the css build on it. **(v4.2)** The message prints a rewrite for the argument's shape: `.whenElse()` for a ternary, `.whenMatch()` for a `MatchValue` or a keyed map (only the keys the key's type admits), `.addStyle()` for a runtime unit amount |
+ | `match-subset-default` | error | **(v4.1)** Type-aware: `Match`/`whenMatch` over a finite literal union or enum carrying a default that hides a strict subset — missing members reported by name (numeric enums by member name); a default over full coverage is unreachable. No-ops without type-aware parser services |
+ | `prefer-match` 💡 | warn | **(v4.1)** 2+ sibling `IfThen` calls (or chained `.when` links) dispatching on one discriminant — suggests merging into `Match(x, "prop", {…})` / `.whenMatch(x, {…})` |
++| `prefer-if-not-empty` 🔧 | error | **(v4.3)** Type-aware: a list guard restated as a length test or a coerce-bind in `IfThen`/`IfThenElse` autofixes to `IfNotEmpty`/`IfNotEmptyElse`, which bind the list (`IfThenElse(props.orders.length > 0, …)` → `IfNotEmptyElse(props.orders, (orders) => …, …)`), and `ForEachElse(xs, f, e)` to `IfNotEmptyElse(xs, (rows) => ForEach(rows, f), e)`; an array passed straight to `IfThen` gets a suggestion (the output changes for `[]`). No-op without type information or on a fluent-html without `IfNotEmpty` (8.2.0) |
+ | `no-known-modifiers-in-setclass` 🔧 | — | **Deprecated** — superseded by `no-tailwind-in-raw-class`; no longer in the recommended preset |
+ | `no-unnecessary-spaces-in-setclass` 🔧 | warn | Extra whitespace in a class string |
+ | `no-duplicate-classes-in-setclass` 🔧 | warn | A class repeated in the same `.setClass()` |
+@@ -138,6 +139,7 @@
+ | `no-setclass-in-when-apply-callback` | error | `.setClass()` inside a `.when()`/`.apply()` callback |
+ | `prefer-variadic-children` 🔧 | warn | Pass children variadically, not as an array (`Div(a, b)`, not `Div([a, b])`) |
+ | `prefer-foreach` 🔧 | warn | `.map()` as element children → `ForEach` (`Div(...xs.map(Row))` / `Div(xs.map(Row))` → `Div(ForEach(xs, Row))`) |
++| `prefer-size` 🔧 | warn | **(v4.3)** An equal `.w(x).h(x)` / `.h(x).w(x)` pair or `{ w: x, h: x }` variant object → `.size(x)`. Autofixes only a chain rooted at an element factory with no earlier sizing, `.apply`, `.when*` or class call; elsewhere a suggestion, because Tailwind orders `size-*` before `w-*`/`h-*` and a preset's `w-4 h-6` would beat the fold. Inert on a fluent-html without `.size()` (8.2.0) |
+ | `no-conditional-in-setclass` | warn | Ternaries/conditionals embedded in a class string |
+ | `no-innerhtml-swap` 🔧 | error | `innerHTML`/`outerHTML` swaps — prefer `outerMorph` |
+ | `prefer-set-method` 🔧 | warn | `addAttribute("type", …)` → `.setType(…)`; flags `aria-*`/`data-*`/`style`/`role`/`title`/`tabindex`. **(v4.2)** An `href` on `A()` or an unknown receiver is reported without autofix unless the value already satisfies the route brand (an `https` literal, a `#…` template, a `.resolve()`, `assetUrl()` or `externalUrl()` call) |
+@@ -151,7 +153,7 @@
+ | `prefer-form-for` | warn | Untyped form fields → the typed `Form<T>` binding |
+ | `no-removed-v4-utilities` | error | **(v6)** Tailwind v3 utilities removed in v4 (`*-opacity-*`, `bg-gradient-*`, …) |
+ | `no-raw-icon-string` | warn | **(v6)** `Raw("<svg…>")` icon injection → the typed SVG builders |
+-| `no-fluent-equivalent-in-setstyle` | warn | Static CSS in `setStyle`/`setStyles` that a fluent method already covers (`width:44px` → `.w("px", 44)`) |
++| `no-fluent-equivalent-in-setstyle` | warn | Static CSS in `setStyle`/`setStyles` that a fluent method already covers (`width:44px` → `.w("px", 44)`). **(v4.3)** An equal `width` and `height` get one `.size("px", 44)` suggestion on fluent-html 8.2.0 |
+ 
+ ## Rule set: escape-hatch closure (v3)
+ 
+@@ -272,6 +274,8 @@
+ 
+ **Flagged:** static sizing/spacing/position (`width`, `height`, `min/max-*`, `top/right/bottom/left`, `inset`, `gap`, `margin`, `padding`), typography (`font-size`, `line-height`, `letter-spacing`, `font-weight`, `text-align`, `white-space`), `border-radius`, `z-index`, `opacity`, `cursor`, `overflow`, `display`/`position` keywords, and plain colors (hex / `white` / `black` / `transparent`) on `color`/`background`/`background-color`/`border-color`.
+ 
++**Equal width and height** (fluent-html 8.2.0 and later): `setStyle("width:44px;height:44px")` gets one `.size("px", 44)` suggestion instead of `.w("px", 44)` and `.h("px", 44)`, which would lead straight into a `prefer-size` warning.
++
+ **Never flagged (the legitimate escape hatch):**
+ - Interpolated values — `` setStyle(`width: ${progress}%`) ``; in a mixed template literal only the declarations touching an expression are skipped, static ones are still checked
+ - Functional values (anything containing `(`) — `linear-gradient()`, `rgba()`, `color-mix()`, `clamp()`, `calc()`, `var()`, `url()`

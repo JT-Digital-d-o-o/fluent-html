@@ -5,58 +5,35 @@
 
 ## Current Focus
 
-v8.2.0 review run ([research/v8.2.0/](../research/v8.2.0/ALGORITHM.md)): Waves 0–4 done.
-24 curated RFCs + C-67 synthesized into 40-synthesis/ (spec, roadmap, lockstep publish order
-8.1.1 → plugin 4.2.0 → template 3.8.0 → 8.2.0 → plugin 4.3.0 → 9.0.0), including 5 Track E
-new APIs (getId, select dev check, typed option values, IfNotEmpty, .size). Rollout prep is
-specified in ALGORITHM-ROLLOUT.md. Next: rollout prep, implement 8.1.1, then Wave 5.
-
-Behavior v4 release train: the library side (W1–W4, W7) is implemented on the v6.3.0
-branch as **6.4.0** — publish it, then land the lockstep repos: template glue + fork
-deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
+The v8.2.0 review rollout ([review-v8.2/](review-v8.2/todo.md)): research Waves 0-4 and rollout
+prep are done (contracts in [v8-spec.md](../research/v8.2.0/40-synthesis/v8-spec.md), order in
+[lockstep.md](../research/v8.2.0/40-synthesis/lockstep.md)). Implementation runs one release at a
+time in lockstep order, with each release's CHANGELOG and README hunks staged and applied only
+when that release ships. First up is fluent-html 8.1.1: the htmx URL sinks, JSON script bodies,
+checkbox binding and behaviors runtime fixes, with the htmx grammar oracle in lib CI.
 
 ## Next Up
 
-- **Publish 6.4.0 + template PR same day** — the fork deletion is the ratchet (W10)
-- W5 glue: asset route + BehaviorRuntimeScript + X-Fluent-Behaviors hardening +
-  the row-30 dev render-throw (lives with the template)
-- W6 eslint: raw `data-behavior*` ban, behavior-client-purity, framework-only imports
-- **llm-styling (P8)**: vocab-generator (6.6.0/6.7.0), escape-hatch (6.8.0),
-  canonical-names + object-variants (7.0.0-unreleased, incl. codemod + fixture
-  suite) are all DONE — next is shipping the 7.0.0 breaking release, then the
-  deferred P2s unblock (demos leak-site autofix, codemod over ttl/rideshare/mngmt
-  when those repos bump). tl-sink stays decision-gated until 7.0.0 soaks.
-  Scope + decision record: [llm-styling/](llm-styling/)
-- Publish note: nothing since 6.4.0 is on npm (registry still pre-v6) and
-  `main..v6.6.0` holds the whole train — plugin 2.0.0 must NOT publish before
-  fluent-html 6.7.0 (peer dep)
+- fluent-html 8.1.1: plugin 4.2.0, extractor main and the template build on it, and K1 holds 8.2.0's RFC-B-03 until its dev throw ships
+- Plugin 4.2.0 and extractor main (RFC-D-01 text), independent of 8.1.1; guidelines G1 and the 4b CLAUDE.md commit are gated on both
+- Guidelines G1 and the 4b commit land inside the projects-template 3.8.0 window; the template re-vendors after the last hunk
+- fluent-html 8.2.0, then plugin 4.3.0 (lib-first: it imports `IfNotEmpty` and reads the `size` row), then G2 and 7b, then projects-template 3.9.0
+- fluent-html 9.0.0 and G3, gated on the decisions below
+- llm-styling leftovers: the demos leak-site autofix and the canonical codemod over ttl/rideshare/mngmt, gated on those repos' bumps
 
 ## Blocked on a Decision
 
-- Template CI: set PRIVATE_REPOS_TOKEN (114/114 runs red at install); every template-side
-  check from v8.2.0 runs locally only until then
-- CI budget for W4 multi-engine rows: WebKit+Firefox per-PR, or Chromium per-PR +
-  nightly full sweep (lean: nightly). Harness ready: `ACCEPT_ENGINES=all`.
-- ADR-12 size estimate vs measured: gate now 6KB/2.75KB (see decisions.md entry
-  2026-07-21) — bless as amendment or fund further golf
+- 9.0.0 preconditions: RFC-C-02's guess top-up to 20 leak-free runs per condition (K11, also decides `ForEachElse`), open call 1 (`nonce?: never` tombstone), open call 2 (the chunking bag) and open call 5 (`typesVersions` for 4 or 10 subpaths): the user
+- Process docs and memory: the ALGORITHM §5.10 rewording (open call 3), the guardrail 5 rewording (open call 4) and the RFC-C-04 user-memory edits: the user
+- Behaviors asset size: the L-260 call (the ADR-12 amendment in decisions.md) before any runtime byte after RFC-A-01, which leaves the asset at 6140 of 6144 B min
+- Template CI: set PRIVATE_REPOS_TOKEN (114/114 runs red at install); every template-side check of the rollout runs locally only until then
+- CI budget for the multi-engine acceptance rows: WebKit+Firefox per-PR, or Chromium per-PR + nightly full sweep (lean: nightly). Harness ready: `ACCEPT_ENGINES=all`.
 - `.tl()` sink go/no-go — deferred until canonical-names + object-variants soak
   (uphill in [llm-styling/tl-sink/](llm-styling/tl-sink/todo.md))
 
 ## Just Shipped
 
-- 2026-07-31 — vocab-generator complete (llm-styling P8, first sub-scope): 6.6.0
-  pinned validity oracle + coverage watch; 6.7.0 values/doc-enriched rows + types
-  emitter (`gen:vocab`, 54 generated unions, seams split, CI --check); eslint-plugin
-  2.0.0 derives fix tables from class-vocab at rule-load (hand table deleted)
-
-- 2026-07-21 — behavior v4 W1–W4+W7 implemented (6.4.0): data-behavior-* emission,
-  5.95KB runtime asset, framework-only registry + buildBehaviorRuntime, 68-row
-  Playwright matrix green on Chromium under real strict CSP (htmx 4.0.0-beta5),
-  README/guidelines rewritten; `.hxOn` + 5 verbs deleted, drawer/onEscape/
-  onClickOutside/resetOnSuccess added (roadmap #52/#53 closed)
-
-- 2026-07-20 — behavior v4 design locked: 14-agent research → 3 competing designs →
-  adversarial attack → synthesis; 12 ADRs + framework-only-extension and glue-in-template
-  amendments. See [project/research/behavior-v4/](../research/behavior-v4/)
-- 2026-07-20 — orthogonal-libs study (Alpine/hyperscript/Datastar): stay out, extend
-  `.behavior()` instead
+- 2026-07-20 to 2026-07-31: behavior v4 designed (12 ADRs) and implemented as 6.4.0 (5.95KB runtime
+  asset, Playwright matrix under strict CSP); the orthogonal-libs study (stay out, extend `.behavior()`);
+  vocab-generator complete (6.6.0, 6.7.0, eslint-plugin 2.0.0). Detail in git and
+  [research/behavior-v4](../research/behavior-v4/).

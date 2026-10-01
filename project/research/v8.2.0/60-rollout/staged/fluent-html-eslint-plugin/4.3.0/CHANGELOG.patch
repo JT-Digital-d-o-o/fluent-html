@@ -1,0 +1,22 @@
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -2,6 +2,19 @@
+ 
+ All notable changes to `eslint-plugin-fluent-html` are documented here.
+ 
++## [4.3.0] - Rules for fluent-html 8.2.0: prefer-if-not-empty and prefer-size
++
++Publishes after fluent-html 8.2.0. The fix of `prefer-if-not-empty` imports `IfNotEmpty` and `prefer-size` reads the `size` class-vocab row, both new in 8.2.0; on an older fluent-html both rules report nothing. The new rules make this a minor. An app that lints with `--max-warnings=0` sees the new reports as failures until it runs fluent-html's `codemod:size-fold`, then `eslint --fix`, then applies the `arrayValue` suggestions by hand.
++
++### ✨ Added
++
++- **`prefer-if-not-empty`** (recommended, type-aware; a no-op without type information or on a fluent-html without `IfNotEmpty`). It autofixes a list guard written as a length test (`xs.length > 0`, `!!xs.length`, `(xs ?? []).length > 0`, …) or a coerce-bind (`xs.length > 0 ? xs : null`) inside `IfThen`/`IfThenElse` to `IfNotEmpty`/`IfNotEmptyElse`, binding the list: `IfThenElse(props.orders.length > 0, () => …, () => …)` becomes `IfNotEmptyElse(props.orders, (orders) => …, () => …)`, and a now-dead `?? []` on the bound list is dropped. It rewrites `ForEachElse(xs, f, e)` to `IfNotEmptyElse(xs, (rows) => ForEach(rows, f), e)`. An array passed straight to `IfThen` gets a suggestion, not a fix, because the output changes for `[]`. String receivers, type-parameter receivers and `IfThen(xs.length === 0, …)` alone are skipped. Over 16 lint units (the 15 canonical apps and the template): 352 reports, 238 files fixed, 0 left, 0 new tsc diagnostics; 277 executed sites render byte-identical, 0 mismatches; 14 `arrayValue` suggestions in 4 units.
++- **`prefer-size`** (recommended, warn; inert on a fluent-html without `.size()`). It flags an equal `.w(x).h(x)` / `.h(x).w(x)` pair (the same string literal, or the same unit and number) or a `{ w: x, h: x }` variant object, and skips `"screen"`. It autofixes only a chain rooted at a fluent-html element factory with no earlier sizing, `.apply`, `.when*` or class call (282 of 420 fleet pairs). Elsewhere it offers a suggestion that names the hazard: Tailwind orders `size-*` before `w-*`/`h-*`, so a preset's `w-4 h-6` beats a folded `.size("10")` and takes a 40×40 element to 16×24. For the one-time fold of existing pairs, fluent-html 8.2.0 ships `codemod:size-fold`, which checks each receiver (423 pairs, render-identical across 1,217 element contexts); run it before `eslint --fix`. Derived from the new vocab row: `no-tailwind-in-raw-class` autofixes `size-4` to `.size("4")` and `hover:size-6` to `.hover({ size: "6" })` and withholds the off-union `size-4.5` (its `.size("4.5")` fails TS2345), and `prefer-unit-overload` rewrites `.size("[18px]")` to `.size("px", 18)`. The fix contract is re-swept against fluent-html 8.2.0 (the devDependency moves to its commit), and `vocab.generated.ts` goes from 159 to 160 methods.
++
++### 🔧 Changed
++
++- **`no-fluent-equivalent-in-setstyle` suggests `.size()` for an equal width and height.** `setStyle("width:44px;height:44px")` got two messages, `.w("px", 44)` and `.h("px", 44)`, which led straight into a `prefer-size` warning; with fluent-html 8.2.0 installed it now gets one `.size("px", 44)` suggestion.
++
+ ## [4.2.0] - Fixes that compile: a swept fix contract, per-shape dynamic-arg messages, no autofix into a branded href
+ 
+ Three rules stop writing or printing fixes that fail tsc. `no-tailwind-in-raw-class` takes its autofixes from a generated contract swept against the resolved fluent-html and Tailwind; `no-dynamic-typed-styling-arg` and `no-dynamic-class-argument` stop prescribing `staticManifest` and print a rewrite for the argument's shape; `prefer-set-method` stops autofixing a raw href into fluent-html 8's branded `setHref`. The new messageIds make this a minor. Nothing here needs a fluent-html newer than 8.0.0: the producers `preferBrandedSetter` names exist since 8.0.0.

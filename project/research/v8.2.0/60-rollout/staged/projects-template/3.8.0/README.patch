@@ -1,0 +1,174 @@
+--- a/README.md
++++ b/README.md
+@@ -169,7 +169,6 @@
+ └── web/                 # Static site template (deprecated)
+ 
+ packages/
+-├── ui/                  # @jtdigital/ui — shared fluent-html components
+ └── config-typescript/   # Shared tsconfig
+ 
+ scripts/                 # cPanel and GitHub automation scripts
+--- a/templates/web/CLAUDE.md
++++ b/templates/web/CLAUDE.md
+@@ -1,9 +1,9 @@
+ # Project Guidelines
+ 
+-This project uses **Fastify v5 + TypeScript + fluent-html + HTMX + Tailwind CSS** for server-side rendered apps.
++This project uses **Fastify v5 + TypeScript + fluent-html + Tailwind CSS** for server-side rendered apps.
+ 
+ > Detailed references:
+-> - [fluent-html.md](fluent-html.md) — Element creation, control flow, HTMX, OOB swaps, rendering
++> - [fluent-html.md](fluent-html.md): element creation, control flow, rendering
+ > - [fluent-html-FLUENT-APIs.md](fluent-html-FLUENT-APIs.md) — Fluent Tailwind styling methods (complete reference)
+ > - [fastify.md](fastify.md) — Route controllers, schemas, auth, plugins, error handling
+ > - [typescript.md](typescript.md) — Type patterns: unions, narrowing, generics, branded types, mapped types
+@@ -70,82 +70,14 @@
+ user.name ? Span(user.name) : Span("Anonymous")
+ ```
+ 
+-### DO: Use defineIds for type-safe HTMX targets
+-```typescript
+-export const ids = defineIds(["user-list", "user-count"] as const);
+-
+-Div().setId(ids.userList)
+-Button("Load").setHtmx(hx("/api", { target: ids.userList }))
+-OOB(ids.userCount, Span("42"))
+-```
+-
+-### DON'T: Hardcode HTMX target strings
+-```typescript
+-// WRONG — typos cause silent runtime failures
+-hx("/api", { target: "#userList" })
+-```
+-
+ ---
+ 
+-## HTMX
+-
+-### DO: Use outerHTML swap with show:window:top for full page layout swaps
+-This is the default pattern for most navigation — replace the entire content area and scroll to top:
+-```typescript
+-// Navigation link that swaps the main content area
+-A("Settings")
+-  .setHref("/settings")
+-  .setHtmx(hx("/settings", {
+-    target: ids.mainContent,
+-    swap: "outerHTML show:window:top"
+-  }))
+-
+-// Form submission that replaces the page
+-Form([
+-  Input().setName("email").setType("email").setRequired(true),
+-  Button("Save").setType("submit")
+-])
+-  .setHtmx(hx("/users/create", {
+-    method: "post",
+-    target: ids.mainContent,
+-    swap: "outerHTML show:window:top"
+-  }))
+-```
++## Forms and links
+ 
+-### DO: Use OOB swaps to update multiple page sections in one response
+-```typescript
+-// Controller returns main content + OOB updates for other parts of the page
+-render(withOOB(
+-  // Main response — replaces the target
+-  UserList(users).setId(ids.mainContent),
+-
+-  // OOB: update the navbar badge and page title in the same response
+-  OOB(ids.userCount, Span(`${users.length} users`)),
+-  OOB(ids.pageTitle, H1("Users")),
+-))
+-```
+-
+-### DO: Use hxResponse for server-driven navigation and events
+-```typescript
+-// After creating a user, redirect via HTMX and show a toast
+-const { html, headers } = hxResponse(Empty())
+-  .redirect("/users")
+-  .trigger("showToast", { message: "User created!" })
+-  .build();
+-
+-reply.headers(headers);
+-reply.renderView(html);
+-```
+-
+-### DON'T: Use innerHTML when replacing a named target
+-```typescript
+-// WRONG — innerHTML replaces children, losing the target element's id
+-// Subsequent swaps to the same target will fail because the id is gone
+-hx("/users", { target: ids.userList, swap: "innerHTML" })
+-
+-// CORRECT — outerHTML replaces the element itself (re-renders the id)
+-hx("/users", { target: ids.userList, swap: "outerHTML show:window:top" })
+-```
++No htmx runtime is served here: hx-* attributes are inert and `template/no-htmx-without-runtime`
++fails lint on them. Forms post and links navigate natively; a failed submit is a full-page 400:
++- `Form(...).setAction(contactRoutes.submit.resolve()).setMethod("post")`
++- `A(post.title).setHref(blogRoutes.post.resolve({ slug: post.slug }))`
+ 
+ ---
+ 
+@@ -204,11 +136,7 @@
+     Button("Create").setType("submit")
+       .w("full").padding("3").background("blue-500").textColor("white").rounded("lg"),
+   ])
+-    .setHtmx(hx("/users/create", {
+-      method: "post",
+-      target: ids.mainContent,
+-      swap: "outerHTML show:window:top"
+-    }));
++    .setAction(userRoutes.create.resolve()).setMethod("post");
+ }
+ 
+ // Controller re-renders the form with errors on validation failure
+--- a/templates/web/README.md
++++ b/templates/web/README.md
+@@ -131,12 +131,14 @@
+ 
+ ## Form Handling
+ 
+-Forms are built with fluent-html's type-safe form elements and submitted via HTMX.
++Forms are built with fluent-html's type-safe form elements and submitted natively. This template
++serves no htmx runtime, so a form carries its own `action` and `method`.
+ 
+ ### Building a Form
+ 
+ ```typescript
+-import { Form, Input, Textarea, Button, Label, Div, hx } from "fluent-html";
++import { Form, Input, Textarea, Button, Label, Div } from "fluent-html";
++import { contactRoutes } from "../shared/routes.js";
+ 
+ Form([
+   Div([
+@@ -162,10 +164,8 @@
+     .w("full").padding("y", "3")
+     .textColor("white").background("blue-600").rounded("lg"),
+ ])
+-  .setHtmx(hx("/api/contact", {
+-    method: "post",
+-    swap: "outerHTML",
+-  }));
++  .setAction(contactRoutes.submit.resolve())
++  .setMethod("post");
+ ```
+ 
+ **Validation:** Use HTML5 attributes through fluent-html methods:
+@@ -182,8 +182,14 @@
+   const body = request.body as { name?: string; email?: string; message?: string };
+ 
+   if (!body.name || !body.email || !body.message) {
+-    // Re-render the form with an inline error (SSR pattern — no JSON responses)
+-    return reply.renderView(ContactForm({ error: "All fields are required." }));
++    // A native POST replaces the document, so the 400 is the whole contact page, not a bare form
++    return reply.status(400).renderView(
++      Layout({
++        seo: { ...pages["/contact"].seo, noIndex: true },
++        config: siteConfig,
++        children: ContactPage(siteConfig, { message: "All fields are required." }),
++      }),
++    );
+   }
+ 
+   // Process the submission (log, send email, etc.)

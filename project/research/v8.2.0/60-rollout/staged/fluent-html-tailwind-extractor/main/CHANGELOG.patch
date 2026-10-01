@@ -1,0 +1,24 @@
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -7,8 +7,20 @@
+ 
+ ### 💥 Breaking — object-variant scanning replaces `.on()`/`.at()` lambda scanning
+ 
+-Pairs with fluent-html 7.0.0's object variants: the scanner now extracts tier-1 variant calls (`.hover({ bg: "blue-600" })` → `hover:bg-blue-600`, `.xl2({…})` → `2xl:…`) and the generic `.variant("data-[state=open]", {…})`, with nested tier-1 keys stacking prefixes (`.md({ hover: { shadow: "lg" } })` → `md:hover:shadow-lg`). Key→emit mapping derives from `fluent-html/class-vocab`'s `variantKeySpecs` (the same derivation the lib and generated `StyleProps` use — no local table). Object value forms: string/number literals, `true` flags (`truncate: true`), readonly tuples (`border: ["top", "red-500"]`), skipped `false`/`undefined`. Non-literal values on real style keys, object spreads, and non-literal `.variant()` names are reported **unresolved** (cover them with `staticManifest`). Same-named non-fluent calls are ignored via the receiver guard plus a single-object-argument shape guard (`el.focus()`, `stream.first(cb)`); unrecognized object keys are skipped silently — TypeScript already rejects them in real fluent code. `.on()`/`.at()` lambda sources are no longer scanned; requires fluent-html ≥7.0.0.
++Pairs with fluent-html 7.0.0's object variants: the scanner now extracts tier-1 variant calls (`.hover({ bg: "blue-600" })` → `hover:bg-blue-600`, `.xl2({…})` → `2xl:…`) and the generic `.variant("data-[state=open]", {…})`, with nested tier-1 keys stacking prefixes (`.md({ hover: { shadow: "lg" } })` → `md:hover:shadow-lg`). Key→emit mapping derives from `fluent-html/class-vocab`'s `variantKeySpecs` (the same derivation the lib and generated `StyleProps` use; no local table). Object value forms: string/number literals, `true` flags (`truncate: true`), readonly tuples (`border: ["top", "red-500"]`), skipped `false`/`undefined`. Non-literal values on real style keys, object spreads, and non-literal `.variant()` names are reported **unresolved**, and the build error names the fix: branch the variant call with one literal per branch (`.when(cond, t => t.hover({ bg: "…" }))`). Same-named non-fluent calls are ignored via the receiver guard plus a single-object-argument shape guard (`el.focus()`, `stream.first(cb)`); unrecognized object keys are skipped silently, since TypeScript already rejects them in real fluent code. `.on()`/`.at()` lambda sources are no longer scanned; requires fluent-html ≥7.0.0.
+ 
++### 🔧 Changed
++
++- **The unresolved-call error names a fix that clears it.** It said "A dropped class is invisible to Tailwind v4 (renders unstyled). Inline the literal, or add the token to staticManifest (defineTheme())." `staticManifest` never clears the throw: 11 of 11 calls still throw with it, and `defineTheme({ staticManifest })` is TS2353. The error now reads:
++
++  ```
++  fluent-safelist: N fluent call(s) pass a non-literal argument; the scanner reads literals only, so the css build fails on these calls.
++  Pass a literal, or branch with one literal per branch: .when(cond, t => t.bg("…")), .whenElse(cond, t => …, t => …), .whenMatch(value, { key: t => t.bg("…") }). An amount computed at runtime goes in .addStyle(). Inside a variant object, branch the variant call: .when(cond, t => t.hover({ bg: "…" })). eslint rule fluent-html/no-dynamic-typed-styling-arg names the fix for each call outside a variant object.
++    ✗ unresolved .bg(MatchValue(tone, { ok: "success", err: "danger" })) in src/app/probe/typed.probe.ts
++  ```
++
++  The "renders unstyled" clause is gone: the template's `{ theme }` option force-lists 376 classes, so a token class held in a variable is present. It points at the eslint rule only for calls outside a variant object: inside one, `.hover({ bg: strong ? "primary-700" : undefined })` passes tsc and lint and only this scanner throws, so the message prints the variant fix itself. The `staticManifest` JSDoc now says what the option is for: classes that no fluent call emits (a behavior option, a client script), always listed; it does not clear an unresolved call. The option itself is unchanged.
++
+ ### 📝 Docs & tests
+ 
+ - Test fixtures, README, and example updated to fluent-html 7.0.0's canonical method names (`.bg()`, `.p()`, `.text()`, …). No extraction-logic changes — the scanner derives from `fluent-html/class-vocab` at run time, so the rename was picked up automatically; only fixtures and prose named the old methods. `UnresolvedArg.method` naturally reports the canonical name now (e.g. `bg`, not `background`).

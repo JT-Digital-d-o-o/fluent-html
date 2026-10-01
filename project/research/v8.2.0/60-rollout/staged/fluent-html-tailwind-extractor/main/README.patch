@@ -1,0 +1,20 @@
+--- a/README.md
++++ b/README.md
+@@ -63,7 +63,7 @@
+ //  ✗ fluent-safelist: unresolved .bg(color) in landing.components.ts
+ ```
+ 
+-Fixes: inline the literal, or list the tokens in `staticManifest` (e.g. `defineTheme()`'s manifest covers all theme tokens by construction).
++Fixes: pass a literal, or branch with one literal per branch (`.whenElse(hovered, t => t.bg("leaf"), t => t.bg("moss"))`, `.when(...)`, `.whenMatch(...)`); an amount computed at runtime goes in `.addStyle()`; inside a variant object, branch the variant call (`.when(cond, t => t.hover({ bg: "…" }))`). `staticManifest` does not clear an unresolved call. The eslint rule `fluent-html/no-dynamic-typed-styling-arg` names the fix for each call outside a variant object.
+ 
+ ## API
+ 
+@@ -79,7 +79,7 @@
+ ```typescript
+ type ExtractorOptions = {
+   onUnresolved?: "warn" | "error" | "silent";   // default "error"
+-  staticManifest?: readonly string[];           // always-emitted classes (defineTheme tokens)
++  staticManifest?: readonly string[];           // classes no fluent call emits (a behavior option, a client script); does not clear an unresolved call
+   theme?: ThemeSpec;                             // defineTheme() spec → @theme block + token manifest
+ };
+ ```

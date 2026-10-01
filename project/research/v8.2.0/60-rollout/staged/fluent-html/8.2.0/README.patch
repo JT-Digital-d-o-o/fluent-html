@@ -1,0 +1,119 @@
+--- a/README.md
++++ b/README.md
+@@ -88,7 +88,7 @@
+ | 33 | `.tracking(value)` | 1124 | 37 | Letter spacing |
+ | 34 | `.sm(styles)` | 1031 | 68 | `sm:` styles — same object form as `.md` |
+ | 35 | `.setPlaceholder(text)` | 996 | 41 | Input placeholder |
+-| 36 | `route.resolve(params?, query?)` | 983 | 132 | Resolved URL as a branded `ResolvedRoute` — the only sanctioned query-string path |
++| 36 | `route.resolve([params,] query?)` | 983 | 132 | Resolved URL as a branded `ResolvedRoute`: the only sanctioned query-string path |
+ | 37 | `.grid()` | 935 | 49 | Grid container |
+ | 38 | `.leading(value)` | 889 | 39 | Line height |
+ | 39 | `.block()` | 875 | 50 | `display: block` — one method per display value, not `.display("block")` |
+@@ -196,6 +196,7 @@
+ ```typescript
+ IfThen(user.avatar, (avatar) => Img().setSrc(avatar))            // callback gets the non-null value
+ IfThenElse(user.name, (name) => Span(name), () => Span("Anon"))
++IfNotEmptyElse(orders, (os) => OrderTable(os), () => P("No orders yet"))  // null, undefined and [] skip the branch
+ ```
+ 
+ No `!!x`, no `x != null`, no `!` in the callback — the value-passing form narrows for you.
+@@ -215,6 +216,10 @@
+ The family maps 1:1 onto the view primitives: `IfThen → when`, `IfThenElse → whenElse`,
+ `Match → whenMatch`.
+ 
++An override after a preset (`.apply(card).p("4")`) emits both classes, and stylesheet order
++picks the winner. `setClassMerge(theme)`, called once at boot (8.2.0, opt-in), makes the later
++class of a family win at serialize time; `getClass()` still returns every write.
++
+ ### 8. Variants — typed style objects, not class strings
+ 
+ ```typescript
+--- a/REFERENCE.md
++++ b/REFERENCE.md
+@@ -382,8 +382,8 @@
+ // With scroll modifier
+ Div().setHtmx(hx("/api", { swap: "outerMorph scroll:top" }))
+ 
+-// With show modifier (scroll into view)
+-Div().setHtmx(hx("/api", { swap: "outerMorph show:window:top" }))
++// With show modifier (show the top of the page; htmx 4 ignores show:window:top)
++Div().setHtmx(hx("/api", { swap: "outerMorph show:top showTarget:body" }))
+ 
+ // With transition
+ Div().setHtmx(hx("/api", { swap: "outerHTML transition:true" }))
+@@ -1077,6 +1077,7 @@
+ .w("full")                       // w-full
+ .w("1/2")                        // w-1/2
+ .h("screen")                     // h-screen
++.size("4")                       // size-4 (width + height)
+ .maxW("md")                      // max-w-md
+ ```
+ 
+@@ -1333,6 +1334,27 @@
+ `defineTheme` takes **design tokens only** (`colors` / `spacing` / `fontSize` / `radius` / `shadow`). Component "presets" (card/button style bundles) are user-land `.apply()` helpers, not `defineTheme`. The themeable unions are **closed** — a typo is a compile error, not an unstyled element at runtime.
+ 
+ > **Why the `declare module` block?** A runtime call can't add to a compile-time type, so the typed-token magic needs one module augmentation. It's written **once** and *derives* its keys from `tokens` via `ThemeKeys<typeof tokens, "…">` — add tokens freely, never touch it again. Skip the block and tokens still work at runtime (CSS/safelist), you just lose autocomplete + typo-checking.
++
++### Class merge: `setClassMerge(theme)` (8.2.0, opt-in)
++
++Fluent methods append classes, so an override after a preset emits both and stylesheet order picks the winner. `setClassMerge(theme)`, called once at boot, turns on a serialize-time merge: within one element's `class`, a later class of the same family replaces the earlier one.
++
++```ts
++import { setClassMerge, type Tag } from "fluent-html";   // also on "fluent-html/render"
++import { theme } from "./theme";
++
++setClassMerge(theme);                       // process-wide, like setDevChecks
++const card = (t: Tag) => t.p("6").rounded("lg");
++Div().apply(card).p("4")                    // class="rounded-lg p-4" (card's p-6 dropped)
++Div().px("8").p("6")                        // both stay: px and p are different prefixes
++setClassMerge(false);                       // off again (the default)
++```
++
++- A family is the class's selector shape plus its exact CSS property set (Tailwind 4.3.3), per variant chain: `p-6 p-4` merges; `border-b border-line` and `text-lg text-primary` stay.
++- A strict-subset class (`text-[13px]`, a custom font-size token) is replaced by a later full class but never replaces one.
++- Never merged: `hidden`, cross-prefix pairs, important classes and unknown words (`cssClass("h-captcha").h("12")` keeps both).
++- The theme is the registry (`text-danger` is a color, `text-display` a size), so `setClassMerge(true)` is a type error.
++- Only emitted bytes change: `getClass()` returns every write. A class a client behavior flips (`toggleClass`, clipboard `feedback.class`) loses its earlier same-family class as a fallback.
+ 
+ ---
+ 
+@@ -1611,6 +1633,19 @@
+ ```
+ 
+ Exported unions for app-side prop typing: `AutofillField` / `AddressField` / `AddressPurpose` (autocomplete DX) and `FormEnctype` (closed, typo-rejecting).
++
++#### Reading a built control's id: `getId()`
++
++A wrapper handed a built control (a field shell such as the template's `FormGroup`) reads its id with `getId()`: the id `Form<T>` stamped, `idPrefix` included, or `undefined` when none is set. `setFor()` drops the attribute on `undefined`, so branch on it:
++
++```typescript
++const Field = (text: string, input: Tag) =>
++  IfThenElse(input.getId(),
++    (id) => Div(Label(text).setFor(id), input),   // <label for="signup-email"> beside the control
++    () => Label(text, input));                    // no id: nest the control in its label
++```
++
++In a view that holds `f`, label a bound control with `f.label(name)` instead.
+ 
+ ### Table Elements
+ 
+@@ -1835,6 +1870,19 @@
+ }
+ ```
+ 
++### IfNotEmpty / IfNotEmptyElse
++
++The list-shaped `IfThen`: `null`, `undefined` and `[]` all skip the branch, and the branch gets the list itself.
++
++```typescript
++import { IfNotEmpty, IfNotEmptyElse, ForEach } from 'fluent-html';
++
++IfNotEmpty(props.tags, (tags) => Ul(ForEach(tags, (t) => Li(t))))
++IfNotEmptyElse(orders, (os) => OrderTable(os), () => P("No orders yet"))
++```
++
++`IfThen(xs, …)` runs its branch for `[]` (an empty array is not null), so the container renders with no items, and a restated `xs.length > 0` guard loses the binding. A non-array argument names the fix: a boolean, string, number or `Set` goes to `IfThen`.
++
+ ### Match
+ 
+ `Match` maps a value to a view using an object of cases. TypeScript enforces exhaustiveness — if you miss a case, you get a compile error.

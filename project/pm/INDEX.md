@@ -12,6 +12,7 @@ v6: a greenfield, v4-native, instruction-set rewrite of the contract for new pro
 | P4 | [core-primitives](core-primitives/) | `Form<T>` binding, native dialog behaviors, full SVG coverage, `.htmxIndicator()` |
 | P7 | [behaviors-v4](behaviors-v4/) | behavior system v4 — data-attribute emission, versioned runtime, 10-verb vocabulary, acceptance harness (design: [research/behavior-v4](../research/behavior-v4/)) |
 | P8 | [llm-styling](llm-styling/) | styling surface for LLM authors — vocab generator + validity oracle, escape-hatch closure, canonical names, object variants, optional `.tl()` sink |
+| P9 | [review-v8.2](review-v8.2/) | v8.2.0 review rollout: fluent-html 8.1.1, 8.2.0 and 9.0.0, the extractor's D-01 text, guideline waves G1 to G3, in lockstep order (contracts: [research/v8.2.0](../research/v8.2.0/40-synthesis/v8-spec.md)) |
 
 ## Downstream (separate packages — not this repo's scope)
 

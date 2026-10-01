@@ -1,0 +1,70 @@
+--- a/README.md
++++ b/README.md
+@@ -164,10 +164,10 @@
+ ### 3. Typed forms — `Form<T>`
+ 
+ ```typescript
+-Form<CreateUserReq>(                     // T = the controller's request type — import it
+-  f => f.input("email").setType("email"),    // "emial" would be a compile error
+-  f => f.input("password").setType("password"),
+-)
++Form<CreateUserReq>((f) => [             // T = the controller's request type: import it
++  f.input("email", "email"),             // "emial" would be a compile error
++  f.input("password", "password"),
++])
+ ```
+ 
+ ### 4. The `Match` family — dispatch on a discriminant
+--- a/REFERENCE.md
++++ b/REFERENCE.md
+@@ -949,7 +949,7 @@
+ | `show-popover` / `hide-popover` / `toggle-popover` | popover |
+ | `--name` | author command (fires a `CommandEvent`) |
+ 
+-**Dialogs** — `setClosedby("any")` gives native light-dismiss (click-outside + Esc); a submit button with `formmethod="dialog"` closes the dialog with its value:
++**Dialogs**: `setClosedby("any")` light-dismisses (click-outside + Esc) on Chromium and Firefox. Safari 27 has no `closedby` and ignores a backdrop click, so put the content and its styling in an inner panel whose `onClickOutside` clicks a `setCommand("close")` button (padding on the `Dialog` itself counts as outside). A submit button with `formmethod="dialog"` closes the dialog with its value:
+ 
+ ```typescript
+ Dialog(
+@@ -1340,10 +1340,10 @@
+ 
+ Fluent HTML **automatically escapes** all text content and attribute values, so
+ attacker-controlled data can never break out of a text node or a quoted attribute.
+-On top of that, URL-valued attributes set through the typed setters
+-(`setHref`/`setSrc`/`setAction`/…) are **scheme-sanitized** — a `javascript:` or
+-hostile `data:` URL is neutralized before it reaches the output. No configuration
+-needed.
++On top of that, URL values set through the typed setters (`setHref`/`setSrc`/`setAction`/…)
++and every URL handed to htmx (the request endpoint, push/replace URLs, the `hxResponse()` URL
++headers) are **scheme-sanitized**: a `javascript:`, `js:` or hostile `data:` URL is
++neutralized before it reaches the output. No configuration needed.
+ 
+ Two deliberate bypasses remain your responsibility: `Raw(...)` emits HTML verbatim,
+ and the untyped `addAttribute(...)` escape hatch is not scheme-sanitized (see
+@@ -1385,12 +1385,13 @@
+ // user.website = "https://example.com"         →  <a href="https://example.com">Profile</a>
+ ```
+ 
+-- **Blocked** (rewritten to `about:blank`): `javascript:`, `vbscript:`, and scriptable
+-  `data:` URLs (`data:text/html`, `data:image/svg+xml`) — including obfuscated forms
+-  (`JaVaScript:`, `java&Tab;script:`, leading control characters).
++- **Blocked** (rewritten to `about:blank`): `javascript:`, `vbscript:`, `js:` (htmx 4 runs it
++  as JavaScript), scriptable `data:` URLs (`data:text/html`, `data:image/svg+xml`), and every
++  `data:` URL at an htmx sink (htmx swaps the fetched body in as HTML whatever its media type),
++  including obfuscated forms (`JaVaScript:`, `java&Tab;script:`, leading control characters).
+ - **Allowed** (byte-identical): relative URLs, fragments (`#id`), query refs,
+   protocol-relative `//host`, `http(s)`, `mailto:`, `tel:`, and non-scriptable
+-  `data:` media (`data:image/png`, `data:audio/*`, `data:video/*`, `data:font/*`).
++  `data:` media in the typed setters (`data:image/png`, `data:audio/*`, `data:video/*`, `data:font/*`).
+ 
+ The sanitizer is exported as `sanitizeUrl(url)` if you need it directly. The one
+ opt-out is the untyped `addAttribute("href", value)` bag, which is emitted verbatim
+@@ -1399,7 +1400,7 @@
+ 
+ ### Raw Content for Scripts & Styles
+ 
+-Script and Style elements are intentionally **not escaped** (they contain code, not user content):
++Script and Style bodies are not HTML-escaped (they contain code). A closing `</script`/`</style` is neutralized, and a JSON-typed script (`application/json`, `text/json`, any `+json` subtype, `importmap`, `speculationrules`) gets every `<` written as `\u003c`, which parses to the same value:
+ 
+ ```typescript
+ // Script content preserved for valid JavaScript

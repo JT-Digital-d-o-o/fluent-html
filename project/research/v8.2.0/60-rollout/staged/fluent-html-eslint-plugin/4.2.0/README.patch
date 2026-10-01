@@ -1,0 +1,56 @@
+--- a/README.md
++++ b/README.md
+@@ -61,8 +61,8 @@
+ // Before
+ Div().setClass("bg-red-500 my-custom-class p-4")
+ 
+-// After --fix
+-Div().bg("red-500").p("4").setClass("my-custom-class")
++// After --fix: a kept setClass() goes first, so it no longer wipes the fluent classes
++Div().setClass("my-custom-class").bg("red-500").p("4")
+ ```
+ 
+ ## Installation
+@@ -121,11 +121,11 @@
+ 
+ | Rule | Recommended | What it does |
+ |------|:-----------:|--------------|
+-| `no-tailwind-in-raw-class` 🔧 | error | **(v3)** Tailwind utilities in `.addClass()`/`.setClass()`/`.setClasses()` literals — prefix-anchored against the derived vocab tables + the generated Tailwind root list; autofixes to the fluent chain incl. variant style objects for variant tokens (`hover:bg-blue-600` → `.hover({ bg: "blue-600" })`, nested heads as nested keys) |
+-| `no-dynamic-class-argument` | error | **(v3)** Non-literal arg to `.addClass()`/`.setClass()`/`.cssClass()` — invisible to the safelist extractor; routes to `.when()`/`Match` literal branches or `staticManifest` |
++| `no-tailwind-in-raw-class` 🔧 | error | **(v3)** Tailwind utilities in `.addClass()`/`.setClass()`/`.setClasses()` literals, prefix-anchored against the derived vocab tables + the generated Tailwind root list. **(v4.2)** Autofixes only to chains a generated fix contract proved (each type-checks and renders its class against the resolved fluent-html and Tailwind), incl. variant style objects (`hover:bg-blue-600` → `.hover({ bg: "blue-600" })`) and an exact `.cssProp()` for a utility with no method (`place-items-center` → `.cssProp("place-items", "center")`); a token whose fix would fail tsc is reported without one |
++| `no-dynamic-class-argument` | error | **(v3)** Non-literal arg to `.addClass()`/`.setClass()`/`.cssClass()`: a class string held in code, which no lint rule can check. **(v4.2)** The message prints the fix for the argument's shape: a styler applied with `.apply()`, `.whenElse()` for a ternary, `.whenMatch()` for a lookup or an assembled class name, a literal hook class in `.cssClass()` |
+ | `no-tailwind-in-cssclass` 🔧 | error | **(v3)** Tailwind-shaped token inside `.cssClass()` (the non-Tailwind intent marker) — keeps the sanctioned hatch clean |
+ | `require-satisfies-variant-object` | error | **(v4)** Extracted variant style objects (passed by name or spread into `.hover({…})`/`.variant()`) must pin their declaration with `satisfies VariantStyleObject` — excess-property key spell-checking doesn't reach through a plain variable |
+-| `no-dynamic-typed-styling-arg` | error | **(v4.1)** Non-literal argument into any of the 159 *typed* styling methods (`.bg(color)`, `.w("px", width)`, ternaries included) — the safelist extractor fails the css build on it; inline the literal or add the token to `staticManifest` |
++| `no-dynamic-typed-styling-arg` | error | **(v4.1)** Non-literal argument into any of the 159 *typed* styling methods (`.bg(color)`, `.w("px", width)`, ternaries included): the safelist extractor fails the css build on it. **(v4.2)** The message prints a rewrite for the argument's shape: `.whenElse()` for a ternary, `.whenMatch()` for a `MatchValue` or a keyed map (only the keys the key's type admits), `.addStyle()` for a runtime unit amount |
+ | `match-subset-default` | error | **(v4.1)** Type-aware: `Match`/`whenMatch` over a finite literal union or enum carrying a default that hides a strict subset — missing members reported by name (numeric enums by member name); a default over full coverage is unreachable. No-ops without type-aware parser services |
+ | `prefer-match` 💡 | warn | **(v4.1)** 2+ sibling `IfThen` calls (or chained `.when` links) dispatching on one discriminant — suggests merging into `Match(x, "prop", {…})` / `.whenMatch(x, {…})` |
+ | `no-known-modifiers-in-setclass` 🔧 | — | **Deprecated** — superseded by `no-tailwind-in-raw-class`; no longer in the recommended preset |
+@@ -140,7 +140,7 @@
+ | `prefer-foreach` 🔧 | warn | `.map()` as element children → `ForEach` (`Div(...xs.map(Row))` / `Div(xs.map(Row))` → `Div(ForEach(xs, Row))`) |
+ | `no-conditional-in-setclass` | warn | Ternaries/conditionals embedded in a class string |
+ | `no-innerhtml-swap` 🔧 | error | `innerHTML`/`outerHTML` swaps — prefer `outerMorph` |
+-| `prefer-set-method` 🔧 | warn | `addAttribute("type", …)` → `.setType(…)`; flags `aria-*`/`data-*`/`style`/`role`/`title`/`tabindex` |
++| `prefer-set-method` 🔧 | warn | `addAttribute("type", …)` → `.setType(…)`; flags `aria-*`/`data-*`/`style`/`role`/`title`/`tabindex`. **(v4.2)** An `href` on `A()` or an unknown receiver is reported without autofix unless the value already satisfies the route brand (an `https` literal, a `#…` template, a `.resolve()`, `assetUrl()` or `externalUrl()` call) |
+ | `prefer-toggle` 🔧 | warn | **(v6)** boolean `addAttribute("disabled", …)` → `.toggle("disabled")` |
+ | `no-raw-ids` | warn | Hardcoded id strings — use `defineIds`/`createId` |
+ | `no-ternary-in-view-builder` | warn | Ternaries in view builders — prefer `IfThenElse`/`Match` |
+@@ -161,13 +161,13 @@
+ 'grid-cols-1 sm:grid-cols-2' in .addClass() bypasses the typed surface.
+ Replace with: .gridCols("1").sm({ gridCols: "2" }). [autofix]
+ 
+-.addClass(colors) is invisible to the safelist extractor — styles can silently
+-disappear in production. Use .when(...) / Match(...) with literal classes per
+-branch, or defineTheme's staticManifest for token-driven values.
++.addClass(colors) passes a class string held in code, which no lint rule can check.
++Make the shared style a styler (a function that applies typed methods to the tag)
++and apply it: .apply(styler); branch the part that varies with .when()/.whenElse().
+ ```
+ 
+-- **`no-tailwind-in-raw-class`** — flags a token when the derived fix table maps it, when it carries a known variant head (`hover:`, `sm:`, `[&>li]:`, …), or when it is Tailwind-shaped **and** its root is in the generated Tailwind root list (from the lib's pinned Tailwind design system). Matching is prefix-anchored, never a bare shape regex — `sidebar-backdrop`, `entry-row`, `hamburger-line` are never flagged. When every flagged token is mappable the whole call autofixes to the fluent chain, folding variant tokens into variant style objects (tier-1 methods or `.variant()`).
+-- **`no-dynamic-class-argument`** — non-literal args to `addClass`/`setClass`/`cssClass` (variables, ternaries, interpolated templates) are errors: the extractor records literals only, so computed classes can vanish from the production safelist with zero build signal.
++- **`no-tailwind-in-raw-class`**: flags a token when the derived fix table maps it, when it carries a known variant head (`hover:`, `sm:`, `[&>li]:`, …), or when it is Tailwind-shaped **and** its root is in the generated Tailwind root list (from the lib's pinned Tailwind design system). Matching is prefix-anchored, never a bare shape regex: `sidebar-backdrop`, `entry-row`, `hamburger-line` are never flagged. Each token with an accepted chain autofixes, folding variant tokens into variant style objects (tier-1 methods or `.variant()`); the rest stay in the raw call and are still reported, and a kept `setClass()` goes first (`setClass("p-4 js-hook")` → `.setClass("js-hook").p("4")`). Accepted chains come from `src/fix-contract.generated.ts`, swept by `npm run gen:vocab` against the resolved fluent-html and Tailwind: each one type-checks and renders its class. A utility with no fluent method autofixes to an exact `.cssProp()`; a fix that would fail tsc is withheld and the report names the failing call. A generated entry applies only while the installed fluent-html still derives the call it was swept from.
++- **`no-dynamic-class-argument`**: non-literal args to `addClass`/`setClass`/`cssClass` (variables, ternaries, lookups, interpolated templates) are errors, because no lint rule can check a class string held in code. The report prints the fix for the shape: a class constant becomes a styler applied with `.apply(name)` (the name comes from a class-suffixed identifier, `LABEL_CLASSES` → `.apply(label)`, else `.apply(styler)`), a ternary `.whenElse(...)`, a lookup `.apply(MAP[key])` or `.whenMatch(...)`, an assembled class name one literal per case, and a computed `.cssClass()` hook a literal `.cssClass("js-…")`.
+ - **`no-tailwind-in-cssclass`** — `.cssClass()` (fluent-html ≥6.8.0) marks legitimately non-Tailwind classes; a Tailwind utility inside it is mis-filed and autofixes back to the typed surface.
+ 
+ ## Rule set: control flow & exhaustiveness (v4.1)

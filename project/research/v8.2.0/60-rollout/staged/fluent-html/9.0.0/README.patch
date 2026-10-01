@@ -1,0 +1,39 @@
+--- a/REFERENCE.md
++++ b/REFERENCE.md
+@@ -25,7 +25,7 @@
+ 
+ - **No JSX, no templates** — pure TypeScript functions with full type checking, refactoring, and IDE support
+ - **Autocomplete everything** — every HTML attribute, Tailwind value, HTMX option, and swap strategy suggested as you type
+-- **Type-safe by design** — routes, IDs, and HTMX targets are compile-time validated; typos become build errors, not runtime bugs
++- **Type-safe by design**: routes and `ids.x` targets are compile-time checked, and any other selector must be an HTML tag, an htmx keyword or a punctuated CSS selector; typos become build errors, not runtime bugs
+ - **Zero dependencies, SSR-ready** — ~15KB minified, renders to strings on the server, no virtual DOM overhead
+ 
+ ---
+@@ -235,7 +235,7 @@
+ // Iteration
+ Ul(ForEach(items, (item, i) => Li(`${i + 1}. ${item.name}`)))
+ Div(ForEach(5, i => Star()))  // Repeat 5 times
+-Ul(ForEachElse(items, item => Li(item.name), () => Li("Nothing here")))  // empty fallback
++Ul(IfNotEmptyElse(items, (rows) => ForEach(rows, (item) => Li(item.name)), () => Li("Nothing here")))  // empty fallback
+ Ul(ForEachKeyed(items, item => item.id, item => Li(item.name)))  // stamps id=<key> so HTMX morph matches by key on reorder
+ Nav(Intersperse(crumbs, c => A(c.label), () => Span("/")))  // separator between, never after the last
+ 
+@@ -1938,7 +1938,7 @@
+ `ForEach` is a unified iteration helper with three overloads:
+ 
+ ```typescript
+-import { ForEach, Repeat } from 'fluent-html';
++import { ForEach } from 'fluent-html';
+ 
+ const items = ["Apple", "Banana", "Cherry"];
+ 
+@@ -1956,9 +1956,6 @@
+ Div(ForEach(1, 6, i =>
+   Button(`Page ${i}`).px("3").py("1")
+ ))
+-
+-// Repeat n times
+-Div(Repeat(5, () => Span("⭐")))
+ ```
+ 
+ > **Note:** The legacy `ForEach1`, `ForEach2`, `ForEach3` aliases have been removed. Use `ForEach` with the appropriate overload.
