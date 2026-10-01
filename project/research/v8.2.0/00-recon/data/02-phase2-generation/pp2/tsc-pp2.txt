@@ -1,0 +1,7 @@
+team/routes.ts(19,59): error TS2345: Argument of type 'string | Buffer<ArrayBufferLike>' is not assignable to parameter of type 'string | Record<string, string> | string[][] | URLSearchParams | undefined'.
+  Type 'Buffer<ArrayBufferLike>' is not assignable to type 'string | Record<string, string> | string[][] | URLSearchParams | undefined'.
+    Type 'Buffer<ArrayBufferLike>' is not assignable to type 'Record<string, string>'.
+      Index signature for type 'string' is missing in type 'Buffer<ArrayBufferLike>'.
+team/views.ts(11,3): error TS2724: '"fluent-html"' has no exported member named 'Html'. Did you mean 'HTML'?
+team/views.ts(129,10): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.
+team/views.ts(227,17): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.

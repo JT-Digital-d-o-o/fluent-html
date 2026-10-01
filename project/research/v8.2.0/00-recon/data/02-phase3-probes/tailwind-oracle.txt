@@ -1,0 +1,11 @@
+# compiled from the probe scaffold (tailwindcss 4.3.3, template styles.css); byte offset of each rule, -1 = no rule emitted
+.bg-gray-100{ 15076
+.justify-centre{ -1
+.col-span-2{ 7180
+.p-4{ 35392
+.p-6{ 35468
+.p-8{ 35506
+.bg-surface{ 15997
+.bg-danger\/10{ 14897
+.bg-success\/10{ 15815
+.cursor-pointer{ 9045

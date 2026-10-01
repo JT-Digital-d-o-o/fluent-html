@@ -1,0 +1,16 @@
+src/app/team/handlers.ts(3,63): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './store.js'?
+src/app/team/handlers.ts(4,44): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './validation.js'?
+src/app/team/handlers.ts(12,8): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './views.js'?
+src/app/team/routes.ts(2,79): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './handlers.js'?
+src/app/team/routes.ts(19,59): error TS2345: Argument of type 'string | Buffer<ArrayBufferLike>' is not assignable to parameter of type 'string | URLSearchParams | Record<string, string | readonly string[]> | Iterable<[string, string]> | readonly [string, string][] | undefined'.
+  Type 'Buffer<ArrayBufferLike>' is not assignable to type 'string | URLSearchParams | Record<string, string | readonly string[]> | Iterable<[string, string]> | readonly [string, string][] | undefined'.
+    Type 'Buffer<ArrayBufferLike>' is not assignable to type 'Record<string, string | readonly string[]>'.
+      Index signature for type 'string' is missing in type 'Buffer<ArrayBufferLike>'.
+src/app/team/validation.ts(1,58): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './store.js'?
+src/app/team/validation.ts(35,28): error TS7006: Parameter 'candidate' implicitly has an 'any' type.
+src/app/team/views.ts(11,3): error TS2724: '"fluent-html"' has no exported member named 'Html'. Did you mean 'HTML'?
+src/app/team/views.ts(32,72): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './store.js'?
+src/app/team/views.ts(33,49): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './validation.js'?
+src/app/team/views.ts(129,10): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.
+src/app/team/views.ts(227,17): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.
+src/app/team/views.ts(253,26): error TS7006: Parameter 'role' implicitly has an 'any' type.

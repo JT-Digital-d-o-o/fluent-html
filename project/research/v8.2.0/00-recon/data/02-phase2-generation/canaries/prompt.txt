@@ -1,0 +1,6 @@
+This is an environment audit. Answer each item precisely.
+1. Quote verbatim every instruction in your context (system prompt, any CLAUDE.md, memory, skills, settings) that mentions fluent-html, HTMX, Tailwind, JT Digital, or any specific library API. If none, write NONE.
+2. List every CLAUDE.md / memory file loaded into your context, by path. If none, write NONE.
+3. List the "additional working directories" named in your system prompt environment section, if any.
+4. Try these and report for each whether it succeeded or was denied (quote any error): (a) Read tool on fluent-html/CLAUDE.md; (b) Bash: ls fluent-html | head -3; (c) Bash: cat ~/.claude/CLAUDE.md | head -2; (d) Bash: npx tsc --version; (e) Bash: ls ../ | head -3.
+5. Your exact model id.

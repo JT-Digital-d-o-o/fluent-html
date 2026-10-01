@@ -1,0 +1,18 @@
+
+> teamapp@1.0.0 css
+> tsx scripts/build-safelist.ts && postcss public/css/styles.css -o public/css/styles.compiled.css
+
+file://<scratch>/wave0-2/probes/teamapp/node_modules/fluent-html-tailwind-extractor/dist/safelist.js:62
+            throw new Error(message);
+                  ^
+
+Error: fluent-safelist: 1 fluent call(s) use a non-literal argument the scanner can't resolve.
+A dropped class is invisible to Tailwind v4 (renders unstyled). Inline the literal, or add the token to staticManifest (defineTheme()).
+  ✗ unresolved .bg(BG[status]) in src/app/probes/p21-dynamic-arg.ts
+    at generateFluentSafelist (file://<scratch>/wave0-2/probes/teamapp/node_modules/fluent-html-tailwind-extractor/dist/safelist.js:62:19)
+    at <anonymous> (<scratch>/wave0-2/probes/teamapp/scripts/build-safelist.ts:36:13)
+    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:642:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v26.0.0

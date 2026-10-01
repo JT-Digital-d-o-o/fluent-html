@@ -1,0 +1,3 @@
+team/layout.ts(1,22): error TS2724: '"fluent-html"' has no exported member named 'Html'. Did you mean 'HTML'?
+team/views.ts(112,12): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.
+team/views.ts(247,17): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.

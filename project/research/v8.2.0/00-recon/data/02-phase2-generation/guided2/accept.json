@@ -1,0 +1,132 @@
+{
+ "run": "guided2",
+ "passed": 25,
+ "total": 25,
+ "results": [
+  {
+   "id": "harness-signed-in",
+   "ok": true,
+   "detail": "after register, /account -> /account"
+  },
+  {
+   "id": "nav-link",
+   "ok": true,
+   "detail": "<a class=\"cursor-pointer\" href=\"/team\" hx-get=\"/team\" hx-target=\"#main-content\" hx-swap=\"outerMorph show:top\" hx-push-url=\"true\" hx-indicator=\"#global-loading\" data-htmx-powered=\"true\">Team</a>"
+  },
+  {
+   "id": "page-200",
+   "ok": true,
+   "detail": "200"
+  },
+  {
+   "id": "anon-blocked",
+   "ok": true,
+   "detail": "anon landed on /auth/login (200)"
+  },
+  {
+   "id": "seed-3",
+   "ok": true,
+   "detail": "emails listed: 3 ada@example.com,grace@example.com,alan@example.com"
+  },
+  {
+   "id": "status-shown",
+   "ok": true,
+   "detail": "active/invited text"
+  },
+  {
+   "id": "search-input",
+   "ok": true,
+   "detail": "<input id=\"member-search-q\" class=\"w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden\" type=\"search\" name=\"q\" placeholder=\"Search by name or email\" value=\"\" maxlength=\"100\" autocomplete=\""
+  },
+  {
+   "id": "search-filters",
+   "ok": true,
+   "detail": "typed \"ada\" -> 1 emails (ada@example.com)"
+  },
+  {
+   "id": "search-no-reload",
+   "ok": true,
+   "detail": "window marker survived"
+  },
+  {
+   "id": "no-results-names-query",
+   "ok": true,
+   "detail": "No members match “zzqx”. Try a different name or email."
+  },
+  {
+   "id": "search-cleared-restores",
+   "ok": true,
+   "detail": "after clearing: 3"
+  },
+  {
+   "id": "invite-form",
+   "ok": true,
+   "detail": "found"
+  },
+  {
+   "id": "invite-role-field",
+   "ok": true,
+   "detail": "SELECT"
+  },
+  {
+   "id": "native-validation-blocks",
+   "ok": true,
+   "detail": "form.checkValidity()=false"
+  },
+  {
+   "id": "invalid-shows-errors",
+   "ok": true,
+   "detail": "Name Name is required. Email Enter a valid email address. Role Member Admin Owner Send invite"
+  },
+  {
+   "id": "invalid-keeps-input",
+   "ok": true,
+   "detail": "email value after 422: \"not-an-email\""
+  },
+  {
+   "id": "invalid-no-reload",
+   "ok": true,
+   "detail": "marker"
+  },
+  {
+   "id": "duplicate-rejected",
+   "ok": true,
+   "detail": "Name Email This email is already on the team. Role Member Admin Owner Send invite"
+  },
+  {
+   "id": "valid-appears-in-list",
+   "ok": true,
+   "detail": "new email listed: true"
+  },
+  {
+   "id": "valid-form-resets",
+   "ok": true,
+   "detail": "[\"\",\"\"]"
+  },
+  {
+   "id": "valid-no-reload",
+   "ok": true,
+   "detail": "marker"
+  },
+  {
+   "id": "new-member-invited",
+   "ok": true,
+   "detail": "Probe Person probe.person.guided2@example.com Admin Invited"
+  },
+  {
+   "id": "persisted-after-reload",
+   "ok": true,
+   "detail": "after full GET /team"
+  },
+  {
+   "id": "no-console-errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "id": "no-unexpected-4xx-5xx",
+   "ok": true,
+   "detail": "422 POST /team/members | 422 POST /team/members"
+  }
+ ]
+}

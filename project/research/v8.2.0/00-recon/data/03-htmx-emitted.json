@@ -1,0 +1,6887 @@
+{
+  "generated": "2026-09-30 by wave0 recon agent 3",
+  "method": {
+    "static": "TypeScript AST walk of src/**/*.ts (typescript 5.9.3), scoped to the htmx-owning regions; 68 files scanned",
+    "dynamic": "163 render probes against dist/ (8.1.0) incl. template swap verbs bundled against the same dist",
+    "bundle": "regex over unminified dist/htmx.js of each build (the served .min.js is terser output of the same file; version strings checked)",
+    "runtime": "Chromium 149 (playwright-core 1.61.1) executing the emitted markup/headers against each served .min.js; 15 scenarios (S0–S15)"
+  },
+  "bundles": {
+    "beta6": "node_modules/htmx.org/dist/htmx.js (lib pin 4.0.0-beta6; served min = dist/htmx.min.js)",
+    "ga": "projects-template node_modules/.pnpm/htmx.org@4.0.0/.../dist/htmx.js (= public/js/htmx.min.js source, sha256 e484d917…)"
+  },
+  "summary": {
+    "names": 145,
+    "byCategory": {
+      "attribute": 27,
+      "element": 1,
+      "element-target": 2,
+      "swap-style": 15,
+      "swap-modifier": 15,
+      "trigger": 12,
+      "sync-value": 8,
+      "status-config-key": 6,
+      "status-config-value": 2,
+      "hx-config-key": 3,
+      "attribute-value": 3,
+      "modifier": 1,
+      "selector-keyword": 9,
+      "response-header": 10,
+      "hx-location-key": 9,
+      "meta": 1,
+      "config-key": 13,
+      "class": 1,
+      "event-listened": 2,
+      "event-detail-read": 4,
+      "behavior-contract": 1
+    },
+    "mismatches_beta6": [
+      "Partial target = extended selector (closest …)",
+      "scroll:window:top",
+      "scroll:window:bottom",
+      "show:window:top",
+      "show:window:bottom",
+      "focus-scroll:true",
+      "focus-scroll:false",
+      "sse:message",
+      "ws:message",
+      "target containing a space (closest …, find …)",
+      "swap with a modifier (outerHTML show:top) — the modifier",
+      "credentials (boolean)",
+      "mode",
+      "hx-preserve=\"false\"",
+      "hx-boost=\"true\" via typed API (self or container)",
+      "hx-swap-oob via typed API carries hx-get",
+      ":inherited (any attribute)",
+      "handler",
+      "inlineStyleNonce",
+      "detail.xhr.status",
+      "detail.elt / detail.ctx.elt",
+      "detail.ctx.pushUrl / detail.pushUrl",
+      "drawer closeOn:nav via pushUrl navigation (non-containing swap)"
+    ],
+    "mismatches_ga": [
+      "scroll:window:top",
+      "scroll:window:bottom",
+      "show:window:top",
+      "show:window:bottom",
+      "focus-scroll:true",
+      "focus-scroll:false",
+      "sse:message",
+      "ws:message",
+      "target containing a space (closest …, find …)",
+      "swap with a modifier (outerHTML show:top) — the modifier",
+      "credentials (boolean)",
+      "mode",
+      "hx-preserve=\"false\"",
+      "hx-boost=\"true\" via typed API (self or container)",
+      "hx-swap-oob via typed API carries hx-get",
+      ":inherited (any attribute)",
+      "handler",
+      "inlineStyleNonce",
+      "detail.xhr.status",
+      "detail.elt / detail.ctx.elt",
+      "detail.ctx.pushUrl / detail.pushUrl",
+      "drawer closeOn:nav via pushUrl navigation (non-containing swap)"
+    ],
+    "processed_beta6": 102,
+    "processed_ga": 103,
+    "static_only": 20
+  },
+  "table": [
+    {
+      "category": "attribute",
+      "name": "hx-get",
+      "src": [
+        "src/render/serialize.ts:140 ('hx-' + htmx.method)",
+        "src/htmx.ts:68 (HxHttpMethod)"
+      ],
+      "beta6": {
+        "bundleLines": [
+          165,
+          348
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          152,
+          333
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-post",
+      "src": [
+        "src/render/serialize.ts:140 ('hx-' + htmx.method)",
+        "src/htmx.ts:68 (HxHttpMethod)"
+      ],
+      "beta6": {
+        "bundleLines": [
+          165,
+          349
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          152,
+          333
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-put",
+      "src": [
+        "src/render/serialize.ts:140 ('hx-' + htmx.method)",
+        "src/htmx.ts:68 (HxHttpMethod)"
+      ],
+      "beta6": {
+        "bundleLines": [
+          165,
+          350
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          152,
+          333
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-patch",
+      "src": [
+        "src/render/serialize.ts:140 ('hx-' + htmx.method)",
+        "src/htmx.ts:68 (HxHttpMethod)"
+      ],
+      "beta6": {
+        "bundleLines": [
+          165,
+          351
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          152,
+          333
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-delete",
+      "src": [
+        "src/render/serialize.ts:140 ('hx-' + htmx.method)",
+        "src/htmx.ts:68 (HxHttpMethod)"
+      ],
+      "beta6": {
+        "bundleLines": [
+          165,
+          352
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          152,
+          333
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-target",
+      "src": [
+        "src/patterns.ts:96",
+        "src/render/serialize.ts:142"
+      ],
+      "beta6": {
+        "bundleLines": [
+          427,
+          491,
+          1175
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          391,
+          454,
+          1147
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-swap",
+      "src": [
+        "src/patterns.ts:97",
+        "src/render/serialize.ts:143"
+      ],
+      "beta6": {
+        "bundleLines": [
+          428,
+          1178
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          392,
+          1150
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-swap-oob",
+      "src": [
+        "src/render/serialize.ts:145"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1140,
+          1141
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1112,
+          1113
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-select",
+      "src": [
+        "src/render/serialize.ts:146"
+      ],
+      "beta6": {
+        "bundleLines": [
+          425
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          389
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-trigger",
+      "src": [
+        "src/render/serialize.ts:147"
+      ],
+      "beta6": {
+        "bundleLines": [
+          755
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          725
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-push-url",
+      "src": [
+        "src/render/serialize.ts:149"
+      ],
+      "beta6": {
+        "bundleLines": [
+          429
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          393
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-replace-url",
+      "src": [
+        "src/render/serialize.ts:150"
+      ],
+      "beta6": {
+        "bundleLines": [
+          430
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          394
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-vals",
+      "src": [
+        "src/render/serialize.ts:151"
+      ],
+      "beta6": {
+        "bundleLines": [
+          524
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          487
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-headers",
+      "src": [
+        "src/render/serialize.ts:152"
+      ],
+      "beta6": {
+        "bundleLines": [
+          482
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          445
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-include",
+      "src": [
+        "src/render/serialize.ts:153"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1817
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1804
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-encoding",
+      "src": [
+        "src/render/serialize.ts:154"
+      ],
+      "beta6": {
+        "bundleLines": [
+          572
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          535
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-validate",
+      "src": [
+        "src/render/serialize.ts:155"
+      ],
+      "beta6": {
+        "bundleLines": [
+          434
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          398
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-confirm",
+      "src": [
+        "src/render/serialize.ts:156"
+      ],
+      "beta6": {
+        "bundleLines": [
+          432
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          396
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-indicator",
+      "src": [
+        "src/render/serialize.ts:157"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1754,
+          1760
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1741,
+          1747
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-disable",
+      "src": [
+        "src/render/serialize.ts:158"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1781,
+          1784
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1768,
+          1771
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-sync",
+      "src": [
+        "src/render/serialize.ts:159"
+      ],
+      "beta6": {
+        "bundleLines": [
+          709,
+          716,
+          722
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          679,
+          686,
+          692
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-preserve",
+      "src": [
+        "src/render/serialize.ts:160"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1046
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1018
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-boost",
+      "src": [
+        "src/render/serialize.ts:161"
+      ],
+      "beta6": {
+        "bundleLines": [
+          976
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          948
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-config",
+      "src": [
+        "src/render/serialize.ts:162"
+      ],
+      "beta6": {
+        "bundleLines": [
+          456
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          419
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-ignore",
+      "src": [
+        "src/render/serialize.ts:169"
+      ],
+      "beta6": {
+        "bundleLines": [
+          255
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          239
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx-status:<code>",
+      "src": [
+        "src/render/serialize.ts:182"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2266
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          2261
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "attribute",
+      "name": "hx (bare marker on <template>)",
+      "src": [
+        "src/patterns.ts:101"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1171
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1143
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "element",
+      "name": "template[type=partial] (Partial)",
+      "src": [
+        "src/patterns.ts:94-101"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1174
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1146
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "element-target",
+      "name": "Partial target = CSS class selector",
+      "src": [
+        "src/patterns.ts:92-93"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1117,
+          1179
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1089,
+          1151
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "element-target",
+      "name": "Partial target = extended selector (closest …)",
+      "src": [
+        "src/patterns.ts:78 (HxTarget overload admits `closest ${string}`)",
+        "src/htmx.ts:140"
+      ],
+      "note": "beta6 resolves partial targets with document.querySelectorAll (htmx.js:1179); 4.0.0 with findAllExt (htmx.js:1151)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1151
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "swap-style",
+      "name": "innerHTML",
+      "src": [
+        "src/htmx.ts:80"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1379,
+          1392
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1379,
+          1392
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "outerHTML",
+      "src": [
+        "src/htmx.ts:81"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1353,
+          1379,
+          1402
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1353,
+          1379,
+          1402
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "textContent",
+      "src": [
+        "src/htmx.ts:82"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1397
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1397
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "beforebegin",
+      "src": [
+        "src/htmx.ts:83"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1422
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1422
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "afterbegin",
+      "src": [
+        "src/htmx.ts:84"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1426
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1426
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "beforeend",
+      "src": [
+        "src/htmx.ts:85"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1428
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1428
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "afterend",
+      "src": [
+        "src/htmx.ts:86"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1430
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1430
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "before",
+      "src": [
+        "src/htmx.ts:87"
+      ],
+      "beta6": {
+        "bundleLines": [
+          287
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          271
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "after",
+      "src": [
+        "src/htmx.ts:88"
+      ],
+      "beta6": {
+        "bundleLines": [
+          288
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          272
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "prepend",
+      "src": [
+        "src/htmx.ts:89"
+      ],
+      "beta6": {
+        "bundleLines": [
+          289
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          273
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "append",
+      "src": [
+        "src/htmx.ts:90"
+      ],
+      "beta6": {
+        "bundleLines": [
+          290
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          274
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "innerMorph",
+      "src": [
+        "src/htmx.ts:91"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1416
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1416
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "outerMorph",
+      "src": [
+        "src/htmx.ts:92"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1419
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1419
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "delete",
+      "src": [
+        "src/htmx.ts:93"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1315,
+          1366
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1314,
+          1366
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-style",
+      "name": "none",
+      "src": [
+        "src/htmx.ts:94"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1350
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1349
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:top",
+      "src": [
+        "src/htmx.ts:97"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1220
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1193
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:bottom",
+      "src": [
+        "src/htmx.ts:97"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1222
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1195
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:window:top",
+      "src": [
+        "src/htmx.ts:97"
+      ],
+      "note": "parsed as {scroll:'window:top'}; handler only matches 'top'|'bottom'",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:window:bottom",
+      "src": [
+        "src/htmx.ts:97"
+      ],
+      "note": "parsed as {scroll:'window:bottom'}; no branch",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:top",
+      "src": [
+        "src/htmx.ts:98"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1227,
+          1229
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1200,
+          1202
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:bottom",
+      "src": [
+        "src/htmx.ts:98"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1227
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1200
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:window:top",
+      "src": [
+        "src/htmx.ts:98"
+      ],
+      "note": "parsed as {show:'window:top'}; no branch (template swap-verbs.ts:268 documents the same trap)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:window:bottom",
+      "src": [
+        "src/htmx.ts:98"
+      ],
+      "note": "parsed as {show:'window:bottom'}; no branch",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:none",
+      "src": [
+        "src/htmx.ts:98"
+      ],
+      "note": "no branch reads 'none'; the no-op equals the intent",
+      "beta6": {
+        "bundleLines": [
+          1227,
+          1229
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1200,
+          1202
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "swap:<time>",
+      "src": [],
+      "beta6": {
+        "bundleLines": [
+          1362,
+          1363
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1362,
+          1363
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "settle:<time>",
+      "src": [],
+      "note": "spec-level only (settle delay applies only when id-matched settle tasks exist)",
+      "beta6": {
+        "bundleLines": [
+          1377
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1377
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "focus-scroll:true",
+      "src": [
+        "src/htmx.ts:100"
+      ],
+      "note": "HCON key is 'focus-scroll'; htmx reads swapSpec.focusScroll (htmx 4 docs: focusScroll:true)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "swap-modifier",
+      "name": "focus-scroll:false",
+      "src": [
+        "src/htmx.ts:100"
+      ],
+      "note": "never read; outcome equals config.defaultFocusScroll=false by coincidence",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "swap-modifier",
+      "name": "transition:true",
+      "src": [
+        "src/htmx.ts:101"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1283
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1277
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "swap-modifier",
+      "name": "ignoreTitle:true",
+      "src": [
+        "src/htmx.ts:102"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1303
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1301
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "every <interval>",
+      "src": [],
+      "beta6": {
+        "bundleLines": [
+          858
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          828
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "load",
+      "src": [
+        "src/htmx.ts:177"
+      ],
+      "beta6": {
+        "bundleLines": [
+          867
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          837
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "revealed",
+      "src": [
+        "src/htmx.ts:178"
+      ],
+      "beta6": {
+        "bundleLines": [
+          839,
+          843
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          809,
+          813
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "intersect",
+      "src": [
+        "src/htmx.ts:179"
+      ],
+      "beta6": {
+        "bundleLines": [
+          839
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          809
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "once",
+      "src": [
+        "src/htmx.ts:185"
+      ],
+      "beta6": {
+        "bundleLines": [
+          782
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          752
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "changed",
+      "src": [
+        "src/htmx.ts:185",
+        "src/htmx.ts:195"
+      ],
+      "beta6": {
+        "bundleLines": [
+          819
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          789
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "consume",
+      "src": [
+        "src/htmx.ts:185"
+      ],
+      "beta6": {
+        "bundleLines": [
+          781
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          751
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "delay:<time>",
+      "src": [
+        "src/htmx.ts:191",
+        "src/htmx.ts:195"
+      ],
+      "beta6": {
+        "bundleLines": [
+          790,
+          793
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          760,
+          763
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "throttle:<time>",
+      "src": [
+        "src/htmx.ts:192"
+      ],
+      "note": "spec-level",
+      "beta6": {
+        "bundleLines": [
+          795,
+          797,
+          798,
+          800
+        ],
+        "bundleHitCount": 11,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          765,
+          767,
+          768,
+          770
+        ],
+        "bundleHitCount": 11,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "trigger",
+      "name": "sse:message",
+      "src": [
+        "src/htmx.ts:219"
+      ],
+      "note": "htmx 2 extension grammar; 4.x hx-sse dispatches htmx:before/after:sse:message + the raw SSE event name",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 3,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "trigger",
+      "name": "ws:message",
+      "src": [
+        "src/htmx.ts:220"
+      ],
+      "note": "htmx 2 extension grammar; 4.x hx-ws dispatches htmx:before/after:ws:message",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 2,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "trigger",
+      "name": "23 DOM event names (click … touchmove)",
+      "src": [
+        "src/htmx.ts:150-173"
+      ],
+      "note": "passed straight to addEventListener",
+      "beta6": {
+        "bundleLines": [
+          878,
+          984
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          848,
+          956
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "drop",
+      "src": [
+        "src/htmx.ts:232"
+      ],
+      "beta6": {
+        "bundleLines": [
+          712,
+          721
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          682,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "abort",
+      "src": [
+        "src/htmx.ts:233"
+      ],
+      "beta6": {
+        "bundleLines": [
+          712,
+          721
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          682,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "replace",
+      "src": [
+        "src/htmx.ts:234"
+      ],
+      "beta6": {
+        "bundleLines": [
+          712,
+          721
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          682,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "queue",
+      "src": [
+        "src/htmx.ts:235",
+        "src/htmx.ts:236",
+        "src/htmx.ts:237",
+        "src/htmx.ts:238"
+      ],
+      "beta6": {
+        "bundleLines": [
+          712,
+          721
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          682,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "queue first",
+      "src": [
+        "src/htmx.ts:236"
+      ],
+      "beta6": {
+        "bundleLines": [
+          712,
+          721
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          682,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "queue last",
+      "src": [
+        "src/htmx.ts:237"
+      ],
+      "beta6": {
+        "bundleLines": [
+          712,
+          721
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          682,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "queue all",
+      "src": [
+        "src/htmx.ts:238"
+      ],
+      "beta6": {
+        "bundleLines": [
+          712,
+          721
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          682,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "sync-value",
+      "name": "<selector>:<strategy>",
+      "src": [],
+      "beta6": {
+        "bundleLines": [
+          719
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          689
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "status-config-key",
+      "name": "swap",
+      "src": [
+        "src/render/serialize.ts:189-198"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2268
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          2263
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "status-config-key",
+      "name": "target",
+      "src": [
+        "src/render/serialize.ts:189-198"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2268
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          2263
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "status-config-key",
+      "name": "select",
+      "src": [
+        "src/render/serialize.ts:189-198"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2268
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          2263
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "status-config-key",
+      "name": "push",
+      "src": [
+        "src/render/serialize.ts:189-198"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2268
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          2263
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "status-config-key",
+      "name": "replace",
+      "src": [
+        "src/render/serialize.ts:189-198"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2268
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          2263
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "status-config-key",
+      "name": "transition",
+      "src": [
+        "src/render/serialize.ts:189-198"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2268
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          2263
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "status-config-value",
+      "name": "target containing a space (closest …, find …)",
+      "src": [
+        "src/render/serialize.ts:192 ('target:' + cfg.target, unquoted)",
+        "src/htmx.ts:251 (HxStatusConfig.target: HxTarget)"
+      ],
+      "note": "HCON splits on whitespace → {target:'closest', form:true}; swap lands nowhere, console.warn only",
+      "beta6": {
+        "bundleLines": [
+          2268
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          2263
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "status-config-value",
+      "name": "swap with a modifier (outerHTML show:top) — the modifier",
+      "src": [
+        "src/render/serialize.ts:191"
+      ],
+      "note": "HCON splits → {swap:'outerHTML', show:'top'}; ctx.show is never read, so the modifier is dropped (swap itself lands)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "hx-config-key",
+      "name": "timeout",
+      "src": [
+        "src/htmx.ts:243"
+      ],
+      "beta6": {
+        "bundleLines": [
+          700,
+          701
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          670,
+          671
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-config-key",
+      "name": "credentials (boolean)",
+      "src": [
+        "src/htmx.ts:244 (credentials?: boolean)"
+      ],
+      "note": "value reaches fetch RequestInit.credentials; a boolean is not a RequestCredentials enum → TypeError, request never sent",
+      "beta6": {
+        "bundleLines": [
+          440
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          404
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "hx-config-key",
+      "name": "mode",
+      "src": [
+        "src/htmx.ts:245"
+      ],
+      "note": "overwritten after merge: 'mode is security-sensitive, never allow per-element override'",
+      "beta6": {
+        "bundleLines": [
+          459
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          422
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "attribute-value",
+      "name": "hx-preserve=\"false\"",
+      "src": [
+        "src/render/serialize.ts:160",
+        "src/htmx.ts:309 (preserve?: boolean)"
+      ],
+      "note": "presence selector [hx-preserve]; the string \"false\" still preserves",
+      "beta6": {
+        "bundleLines": [
+          1046
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1018
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "attribute-value",
+      "name": "hx-boost=\"true\" via typed API (self or container)",
+      "src": [
+        "src/htmx.ts:272-276 (endpoint+method required)",
+        "src/render/serialize.ts:140,161"
+      ],
+      "note": "the required co-emitted hx-<verb> initializes the element first (#shouldInitialize false → never boosted); on a container, 4.x has no implicit inheritance and fluent emits no :inherited",
+      "beta6": {
+        "bundleLines": [
+          977
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          949
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "attribute-value",
+      "name": "hx-swap-oob via typed API carries hx-get",
+      "src": [
+        "src/render/serialize.ts:140,145"
+      ],
+      "note": "OOB swap lands, but the swapped-in element keeps hx-get and is re-processed as an active trigger (data-htmx-powered)",
+      "beta6": {
+        "bundleLines": [
+          1140
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1112
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "modifier",
+      "name": ":inherited (any attribute)",
+      "src": [
+        "0 hits for ':inherited' in src/**"
+      ],
+      "note": "not emittable through setHtmx/hx/routes; template writes addAttribute('hx-headers:inherited', …) (projects-template/templates/full-stack/src/core/behaviors/runtime.ts:124)",
+      "beta6": {
+        "bundleLines": [
+          303
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [
+          287
+        ],
+        "bundleHitCount": 1,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "selector-keyword",
+      "name": "this",
+      "src": [
+        "src/htmx.ts:136"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1923
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1915
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "body",
+      "src": [
+        "src/htmx.ts:137"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1919
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1911
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "window",
+      "src": [
+        "src/htmx.ts:97",
+        "src/htmx.ts:97",
+        "src/htmx.ts:98",
+        "src/htmx.ts:98",
+        "src/htmx.ts:138"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1917
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1909
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "document",
+      "src": [
+        "src/htmx.ts:139"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1915
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1907
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "next",
+      "src": [
+        "src/htmx.ts:141",
+        "src/htmx.ts:142",
+        "src/htmx.ts:488",
+        "src/htmx.ts:488"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1907
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1899
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "previous",
+      "src": [
+        "src/htmx.ts:143",
+        "src/htmx.ts:144",
+        "src/htmx.ts:499",
+        "src/htmx.ts:499"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1911
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1903
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "closest",
+      "src": [
+        "src/htmx.ts:140",
+        "src/htmx.ts:466"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1901
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1893
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "find",
+      "src": [
+        "src/htmx.ts:145",
+        "src/htmx.ts:477"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1903
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1895
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "selector-keyword",
+      "name": "findAll (template .submit disable)",
+      "src": [
+        "projects-template/templates/full-stack/src/core/htmx/swap-verbs.ts:222"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1905
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1897
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Trigger",
+      "src": [
+        "src/patterns.ts:357"
+      ],
+      "beta6": {
+        "bundleLines": [
+          647
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          620
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Trigger (JSON, \\uXXXX-escaped)",
+      "src": [],
+      "beta6": {
+        "bundleLines": [
+          890
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          860
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Push-Url",
+      "src": [
+        "src/patterns.ts:242"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1671
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1657
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Replace-Url",
+      "src": [
+        "src/patterns.ts:252"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1671
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1657
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Redirect",
+      "src": [
+        "src/patterns.ts:265"
+      ],
+      "beta6": {
+        "bundleLines": [
+          682,
+          683
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          651,
+          652
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Refresh",
+      "src": [
+        "src/patterns.ts:273"
+      ],
+      "beta6": {
+        "bundleLines": [
+          678
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          647
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Retarget",
+      "src": [
+        "src/patterns.ts:283"
+      ],
+      "beta6": {
+        "bundleLines": [
+          633
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          603
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Reswap",
+      "src": [
+        "src/patterns.ts:293"
+      ],
+      "beta6": {
+        "bundleLines": [
+          634
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          604
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Reselect",
+      "src": [
+        "src/patterns.ts:303"
+      ],
+      "beta6": {
+        "bundleLines": [
+          635
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          605
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Location",
+      "src": [
+        "src/patterns.ts:325",
+        "src/patterns.ts:327"
+      ],
+      "beta6": {
+        "bundleLines": [
+          686,
+          687
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          655,
+          656
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "path",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          690,
+          691
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          658,
+          660,
+          661
+        ],
+        "bundleHitCount": 3,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "target",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1592,
+          1593,
+          1602,
+          1603
+        ],
+        "bundleHitCount": 4,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1593,
+          1594,
+          1603,
+          1604
+        ],
+        "bundleHitCount": 4,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "swap",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1602
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1603
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "select",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1602
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1603
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "source",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1582,
+          1583,
+          1586,
+          1602
+        ],
+        "bundleHitCount": 4,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1583,
+          1584,
+          1587,
+          1603
+        ],
+        "bundleHitCount": 4,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "event",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1601,
+          1602
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          1602,
+          1603
+        ],
+        "bundleHitCount": 2,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "values",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          529,
+          530,
+          532
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          492,
+          493,
+          495
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "headers",
+      "src": [
+        "src/patterns.ts:157-165"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1602,
+          1605
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1603,
+          1606
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "hx-location-key",
+      "name": "handler",
+      "src": [
+        "src/patterns.ts:163"
+      ],
+      "note": "assigned onto ctx by Object.assign; no reader in 4.x (htmx 2 key)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "meta",
+      "name": "meta[name=htmx-config]",
+      "src": [
+        "src/patterns.ts:145"
+      ],
+      "beta6": {
+        "bundleLines": [
+          223
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          207
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "extensions",
+      "src": [
+        "src/patterns.ts:128"
+      ],
+      "beta6": {
+        "bundleLines": [
+          227
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          211
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "transitions",
+      "src": [
+        "src/patterns.ts:129"
+      ],
+      "beta6": {
+        "bundleLines": [
+          431
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          395
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "defaultSwap",
+      "src": [
+        "src/patterns.ts:130"
+      ],
+      "beta6": {
+        "bundleLines": [
+          428,
+          1159,
+          1178,
+          1312
+        ],
+        "bundleHitCount": 4,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          392,
+          1131,
+          1150,
+          1310
+        ],
+        "bundleHitCount": 4,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "defaultTimeout",
+      "src": [
+        "src/patterns.ts:131"
+      ],
+      "beta6": {
+        "bundleLines": [
+          702
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          672
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "implicitInheritance",
+      "src": [
+        "src/patterns.ts:132"
+      ],
+      "beta6": {
+        "bundleLines": [
+          309,
+          327
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          293,
+          311
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "noSwap",
+      "src": [
+        "src/patterns.ts:133"
+      ],
+      "beta6": {
+        "bundleLines": [
+          2259
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          2254
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "prefix",
+      "src": [
+        "src/patterns.ts:134"
+      ],
+      "beta6": {
+        "bundleLines": [
+          254,
+          259,
+          264,
+          274
+        ],
+        "bundleHitCount": 4,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          238,
+          243,
+          248,
+          258
+        ],
+        "bundleHitCount": 4,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "metaCharacter",
+      "src": [
+        "src/patterns.ts:135"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1722,
+          2345,
+          2346
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1709,
+          2341,
+          2342
+        ],
+        "bundleHitCount": 3,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "inlineScriptNonce",
+      "src": [
+        "src/patterns.ts:136"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1246,
+          1247
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1219,
+          1220
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "inlineStyleNonce",
+      "src": [
+        "src/patterns.ts:137"
+      ],
+      "note": "merged onto htmx.config, never read by core (0 `config.inlineStyleNonce` reads)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "config-key",
+      "name": "mode",
+      "src": [
+        "src/patterns.ts:138"
+      ],
+      "beta6": {
+        "bundleLines": [
+          442,
+          459
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          406,
+          422
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "history",
+      "src": [
+        "src/patterns.ts:139"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1615,
+          1630,
+          1637,
+          1650
+        ],
+        "bundleHitCount": 4,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1232,
+          1616,
+          1623,
+          1636
+        ],
+        "bundleHitCount": 5,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "config-key",
+      "name": "logAll",
+      "src": [
+        "src/patterns.ts:140"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1492,
+          1499
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1493,
+          1500
+        ],
+        "bundleHitCount": 2,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "class",
+      "name": "htmx-indicator",
+      "src": [
+        "src/core/htmx-methods.ts:42",
+        "src/class-vocab/vocab.ts:356"
+      ],
+      "beta6": {
+        "bundleLines": [
+          210
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          193
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "event-listened",
+      "name": "htmx:after:swap",
+      "src": [
+        "src/behaviors/events.ts:65"
+      ],
+      "beta6": {
+        "bundleLines": [
+          1302
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          1300
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "event-listened",
+      "name": "htmx:after:request",
+      "src": [
+        "src/behaviors/events.ts:66"
+      ],
+      "beta6": {
+        "bundleLines": [
+          621
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "ga": {
+        "bundleLines": [
+          591
+        ],
+        "bundleHitCount": 1,
+        "runtime": "static-only"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "event-detail-read",
+      "name": "detail.ctx.response.status",
+      "src": [
+        "src/behaviors/client/runtime.ts:70"
+      ],
+      "beta6": {
+        "bundleLines": [
+          615
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "ga": {
+        "bundleLines": [
+          585
+        ],
+        "bundleHitCount": 1,
+        "runtime": "processed"
+      },
+      "mismatch": false
+    },
+    {
+      "category": "event-detail-read",
+      "name": "detail.xhr.status",
+      "src": [
+        "src/behaviors/client/runtime.ts:70"
+      ],
+      "note": "htmx 2 shape; fallback only",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "event-detail-read",
+      "name": "detail.elt / detail.ctx.elt",
+      "src": [
+        "src/behaviors/client/runtime.ts:442"
+      ],
+      "note": "4.x detail = {ctx}; element is ctx.sourceElement; runtime falls back to composedPath (runtime.ts:443)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "event-detail-read",
+      "name": "detail.ctx.pushUrl / detail.pushUrl",
+      "src": [
+        "src/behaviors/client/runtime.ts:459"
+      ],
+      "note": "4.x key is ctx.push (htmx.js beta6:429); the drawer close-on-pushUrl-nav gate never fires (S13 drawer probe)",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    },
+    {
+      "category": "behavior-contract",
+      "name": "drawer closeOn:nav via pushUrl navigation (non-containing swap)",
+      "src": [
+        "src/behaviors/client/runtime.ts:452-461",
+        "src/behaviors/fixtures.ts:46"
+      ],
+      "note": "drawer stays open + body stays scroll-locked after a pushUrl nav",
+      "beta6": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "ga": {
+        "bundleLines": [],
+        "bundleHitCount": 0,
+        "runtime": "NOT processed"
+      },
+      "mismatch": true
+    }
+  ],
+  "staticInventory": {
+    "literals": [
+      {
+        "text": "htmx:after:swap",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/behaviors/events.ts:65"
+      },
+      {
+        "text": "htmx:after:request",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/behaviors/events.ts:66"
+      },
+      {
+        "text": "htmxIndicator",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/class-vocab/vocab.ts:356"
+      },
+      {
+        "text": "htmx-indicator",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/class-vocab/vocab.ts:356"
+      },
+      {
+        "text": "htmx loading-indicator marker class.",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/class-vocab/vocab.ts:356"
+      },
+      {
+        "text": "./tag.js",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:15"
+      },
+      {
+        "text": "method",
+        "kind": "type-string",
+        "decl": "Tag",
+        "at": "src/core/htmx-methods.ts:19"
+      },
+      {
+        "text": "method",
+        "kind": "type-string",
+        "decl": "Tag",
+        "at": "src/core/htmx-methods.ts:20"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:37"
+      },
+      {
+        "text": "setHtmx",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:38"
+      },
+      {
+        "text": "htmx-indicator",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:42"
+      },
+      {
+        "text": "method",
+        "kind": "type-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:44"
+      },
+      {
+        "text": "get",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:45"
+      },
+      {
+        "text": "hxGet",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:45"
+      },
+      {
+        "text": "method",
+        "kind": "type-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:48"
+      },
+      {
+        "text": "post",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:49"
+      },
+      {
+        "text": "hxPost",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/core/htmx-methods.ts:49"
+      },
+      {
+        "text": "get",
+        "kind": "type-string",
+        "decl": "HxHttpMethod",
+        "at": "src/htmx.ts:68"
+      },
+      {
+        "text": "post",
+        "kind": "type-string",
+        "decl": "HxHttpMethod",
+        "at": "src/htmx.ts:68"
+      },
+      {
+        "text": "put",
+        "kind": "type-string",
+        "decl": "HxHttpMethod",
+        "at": "src/htmx.ts:68"
+      },
+      {
+        "text": "patch",
+        "kind": "type-string",
+        "decl": "HxHttpMethod",
+        "at": "src/htmx.ts:68"
+      },
+      {
+        "text": "delete",
+        "kind": "type-string",
+        "decl": "HxHttpMethod",
+        "at": "src/htmx.ts:68"
+      },
+      {
+        "text": "multipart/form-data",
+        "kind": "type-string",
+        "decl": "HxEncoding",
+        "at": "src/htmx.ts:71"
+      },
+      {
+        "text": "100ms",
+        "kind": "type-string",
+        "decl": "DelayValue",
+        "at": "src/htmx.ts:76"
+      },
+      {
+        "text": "200ms",
+        "kind": "type-string",
+        "decl": "DelayValue",
+        "at": "src/htmx.ts:76"
+      },
+      {
+        "text": "300ms",
+        "kind": "type-string",
+        "decl": "DelayValue",
+        "at": "src/htmx.ts:76"
+      },
+      {
+        "text": "500ms",
+        "kind": "type-string",
+        "decl": "DelayValue",
+        "at": "src/htmx.ts:76"
+      },
+      {
+        "text": "1s",
+        "kind": "type-string",
+        "decl": "DelayValue",
+        "at": "src/htmx.ts:76"
+      },
+      {
+        "text": "ms",
+        "kind": "type-template-part",
+        "decl": "DelayValue",
+        "at": "src/htmx.ts:76"
+      },
+      {
+        "text": "s",
+        "kind": "type-template-part",
+        "decl": "DelayValue",
+        "at": "src/htmx.ts:76"
+      },
+      {
+        "text": "innerHTML",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:80"
+      },
+      {
+        "text": "outerHTML",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:81"
+      },
+      {
+        "text": "textContent",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:82"
+      },
+      {
+        "text": "beforebegin",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:83"
+      },
+      {
+        "text": "afterbegin",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:84"
+      },
+      {
+        "text": "beforeend",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:85"
+      },
+      {
+        "text": "afterend",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:86"
+      },
+      {
+        "text": "before",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:87"
+      },
+      {
+        "text": "after",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:88"
+      },
+      {
+        "text": "prepend",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:89"
+      },
+      {
+        "text": "append",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:90"
+      },
+      {
+        "text": "innerMorph",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:91"
+      },
+      {
+        "text": "outerMorph",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:92"
+      },
+      {
+        "text": "delete",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:93"
+      },
+      {
+        "text": "none",
+        "kind": "type-string",
+        "decl": "HxSwapStyle",
+        "at": "src/htmx.ts:94"
+      },
+      {
+        "text": "scroll:top",
+        "kind": "type-string",
+        "decl": "SwapScrollValue",
+        "at": "src/htmx.ts:97"
+      },
+      {
+        "text": "scroll:bottom",
+        "kind": "type-string",
+        "decl": "SwapScrollValue",
+        "at": "src/htmx.ts:97"
+      },
+      {
+        "text": "scroll:window:top",
+        "kind": "type-string",
+        "decl": "SwapScrollValue",
+        "at": "src/htmx.ts:97"
+      },
+      {
+        "text": "scroll:window:bottom",
+        "kind": "type-string",
+        "decl": "SwapScrollValue",
+        "at": "src/htmx.ts:97"
+      },
+      {
+        "text": "show:top",
+        "kind": "type-string",
+        "decl": "SwapShowValue",
+        "at": "src/htmx.ts:98"
+      },
+      {
+        "text": "show:bottom",
+        "kind": "type-string",
+        "decl": "SwapShowValue",
+        "at": "src/htmx.ts:98"
+      },
+      {
+        "text": "show:window:top",
+        "kind": "type-string",
+        "decl": "SwapShowValue",
+        "at": "src/htmx.ts:98"
+      },
+      {
+        "text": "show:window:bottom",
+        "kind": "type-string",
+        "decl": "SwapShowValue",
+        "at": "src/htmx.ts:98"
+      },
+      {
+        "text": "show:none",
+        "kind": "type-string",
+        "decl": "SwapShowValue",
+        "at": "src/htmx.ts:98"
+      },
+      {
+        "text": "swap:",
+        "kind": "type-template-part",
+        "decl": "SwapTimingValue",
+        "at": "src/htmx.ts:99"
+      },
+      {
+        "text": "settle:",
+        "kind": "type-template-part",
+        "decl": "SwapTimingValue",
+        "at": "src/htmx.ts:99"
+      },
+      {
+        "text": "focus-scroll:true",
+        "kind": "type-string",
+        "decl": "SwapFocusScroll",
+        "at": "src/htmx.ts:100"
+      },
+      {
+        "text": "focus-scroll:false",
+        "kind": "type-string",
+        "decl": "SwapFocusScroll",
+        "at": "src/htmx.ts:100"
+      },
+      {
+        "text": "transition:true",
+        "kind": "type-string",
+        "decl": "SwapTransition",
+        "at": "src/htmx.ts:101"
+      },
+      {
+        "text": "ignoreTitle:true",
+        "kind": "type-string",
+        "decl": "SwapIgnoreTitle",
+        "at": "src/htmx.ts:102"
+      },
+      {
+        "text": " ",
+        "kind": "type-template-part",
+        "decl": "SwapWithModifier",
+        "at": "src/htmx.ts:113"
+      },
+      {
+        "text": " ",
+        "kind": "type-template-part",
+        "decl": "SwapWithTwoModifiers",
+        "at": "src/htmx.ts:116"
+      },
+      {
+        "text": " ",
+        "kind": "type-template-part",
+        "decl": "SwapWithTwoModifiers",
+        "at": "src/htmx.ts:116"
+      },
+      {
+        "text": "this",
+        "kind": "type-string",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:136"
+      },
+      {
+        "text": "body",
+        "kind": "type-string",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:137"
+      },
+      {
+        "text": "window",
+        "kind": "type-string",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:138"
+      },
+      {
+        "text": "document",
+        "kind": "type-string",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:139"
+      },
+      {
+        "text": "closest ",
+        "kind": "type-template-part",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:140"
+      },
+      {
+        "text": "next",
+        "kind": "type-string",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:141"
+      },
+      {
+        "text": "next ",
+        "kind": "type-template-part",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:142"
+      },
+      {
+        "text": "previous",
+        "kind": "type-string",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:143"
+      },
+      {
+        "text": "previous ",
+        "kind": "type-template-part",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:144"
+      },
+      {
+        "text": "find ",
+        "kind": "type-template-part",
+        "decl": "ExtendedCSSSelector",
+        "at": "src/htmx.ts:145"
+      },
+      {
+        "text": "click",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:151"
+      },
+      {
+        "text": "dblclick",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:152"
+      },
+      {
+        "text": "mouseenter",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:153"
+      },
+      {
+        "text": "mouseleave",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:154"
+      },
+      {
+        "text": "mouseover",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:155"
+      },
+      {
+        "text": "mouseout",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:156"
+      },
+      {
+        "text": "mousedown",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:157"
+      },
+      {
+        "text": "mouseup",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:158"
+      },
+      {
+        "text": "keydown",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:159"
+      },
+      {
+        "text": "keyup",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:160"
+      },
+      {
+        "text": "keypress",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:161"
+      },
+      {
+        "text": "change",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:162"
+      },
+      {
+        "text": "input",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:163"
+      },
+      {
+        "text": "submit",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:164"
+      },
+      {
+        "text": "focus",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:165"
+      },
+      {
+        "text": "blur",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:166"
+      },
+      {
+        "text": "focusin",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:167"
+      },
+      {
+        "text": "focusout",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:168"
+      },
+      {
+        "text": "scroll",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:169"
+      },
+      {
+        "text": "resize",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:170"
+      },
+      {
+        "text": "touchstart",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:171"
+      },
+      {
+        "text": "touchend",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:172"
+      },
+      {
+        "text": "touchmove",
+        "kind": "type-string",
+        "decl": "DOMEvent",
+        "at": "src/htmx.ts:173"
+      },
+      {
+        "text": "load",
+        "kind": "type-string",
+        "decl": "HtmxEvent",
+        "at": "src/htmx.ts:177"
+      },
+      {
+        "text": "revealed",
+        "kind": "type-string",
+        "decl": "HtmxEvent",
+        "at": "src/htmx.ts:178"
+      },
+      {
+        "text": "intersect",
+        "kind": "type-string",
+        "decl": "HtmxEvent",
+        "at": "src/htmx.ts:179"
+      },
+      {
+        "text": "once",
+        "kind": "type-string",
+        "decl": "TriggerModifier",
+        "at": "src/htmx.ts:185"
+      },
+      {
+        "text": "changed",
+        "kind": "type-string",
+        "decl": "TriggerModifier",
+        "at": "src/htmx.ts:185"
+      },
+      {
+        "text": "consume",
+        "kind": "type-string",
+        "decl": "TriggerModifier",
+        "at": "src/htmx.ts:185"
+      },
+      {
+        "text": " ",
+        "kind": "type-template-part",
+        "decl": "ModifiedTrigger",
+        "at": "src/htmx.ts:188"
+      },
+      {
+        "text": " delay:",
+        "kind": "type-template-part",
+        "decl": "DelayedTrigger",
+        "at": "src/htmx.ts:191"
+      },
+      {
+        "text": " throttle:",
+        "kind": "type-template-part",
+        "decl": "ThrottledTrigger",
+        "at": "src/htmx.ts:192"
+      },
+      {
+        "text": " changed delay:",
+        "kind": "type-template-part",
+        "decl": "ChangedDelayTrigger",
+        "at": "src/htmx.ts:195"
+      },
+      {
+        "text": "every 1s",
+        "kind": "type-string",
+        "decl": "PollingTrigger",
+        "at": "src/htmx.ts:204"
+      },
+      {
+        "text": "every 2s",
+        "kind": "type-string",
+        "decl": "PollingTrigger",
+        "at": "src/htmx.ts:204"
+      },
+      {
+        "text": "every 5s",
+        "kind": "type-string",
+        "decl": "PollingTrigger",
+        "at": "src/htmx.ts:204"
+      },
+      {
+        "text": "every 10s",
+        "kind": "type-string",
+        "decl": "PollingTrigger",
+        "at": "src/htmx.ts:204"
+      },
+      {
+        "text": "sse:message",
+        "kind": "type-string",
+        "decl": "HxTrigger",
+        "at": "src/htmx.ts:219"
+      },
+      {
+        "text": "ws:message",
+        "kind": "type-string",
+        "decl": "HxTrigger",
+        "at": "src/htmx.ts:220"
+      },
+      {
+        "text": "drop",
+        "kind": "type-string",
+        "decl": "HxSync",
+        "at": "src/htmx.ts:232"
+      },
+      {
+        "text": "abort",
+        "kind": "type-string",
+        "decl": "HxSync",
+        "at": "src/htmx.ts:233"
+      },
+      {
+        "text": "replace",
+        "kind": "type-string",
+        "decl": "HxSync",
+        "at": "src/htmx.ts:234"
+      },
+      {
+        "text": "queue",
+        "kind": "type-string",
+        "decl": "HxSync",
+        "at": "src/htmx.ts:235"
+      },
+      {
+        "text": "queue first",
+        "kind": "type-string",
+        "decl": "HxSync",
+        "at": "src/htmx.ts:236"
+      },
+      {
+        "text": "queue last",
+        "kind": "type-string",
+        "decl": "HxSync",
+        "at": "src/htmx.ts:237"
+      },
+      {
+        "text": "queue all",
+        "kind": "type-string",
+        "decl": "HxSync",
+        "at": "src/htmx.ts:238"
+      },
+      {
+        "text": "cors",
+        "kind": "type-string",
+        "decl": "HxConfig",
+        "at": "src/htmx.ts:245"
+      },
+      {
+        "text": "same-origin",
+        "kind": "type-string",
+        "decl": "HxConfig",
+        "at": "src/htmx.ts:245"
+      },
+      {
+        "text": "no-cors",
+        "kind": "type-string",
+        "decl": "HxConfig",
+        "at": "src/htmx.ts:245"
+      },
+      {
+        "text": "0",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "1",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "2",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "3",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "4",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "5",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "6",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "7",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "8",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "9",
+        "kind": "type-string",
+        "decl": "StatusDigit",
+        "at": "src/htmx.ts:258"
+      },
+      {
+        "text": "xx",
+        "kind": "type-template-part",
+        "decl": "HxStatusKey",
+        "at": "src/htmx.ts:266"
+      },
+      {
+        "text": "=",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/htmx.ts:344"
+      },
+      {
+        "text": "?",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/htmx.ts:347"
+      },
+      {
+        "text": "&",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/htmx.ts:347"
+      },
+      {
+        "text": "?",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/htmx.ts:347"
+      },
+      {
+        "text": "&",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/htmx.ts:348"
+      },
+      {
+        "text": "endpoint",
+        "kind": "type-string",
+        "decl": "HxOptions",
+        "at": "src/htmx.ts:356"
+      },
+      {
+        "text": "method",
+        "kind": "type-string",
+        "decl": "HxOptions",
+        "at": "src/htmx.ts:356"
+      },
+      {
+        "text": "target",
+        "kind": "type-string",
+        "decl": "HxOptions",
+        "at": "src/htmx.ts:356"
+      },
+      {
+        "text": "select",
+        "kind": "type-string",
+        "decl": "HxOptions",
+        "at": "src/htmx.ts:356"
+      },
+      {
+        "text": "indicator",
+        "kind": "type-string",
+        "decl": "HxOptions",
+        "at": "src/htmx.ts:356"
+      },
+      {
+        "text": "disable",
+        "kind": "type-string",
+        "decl": "HxOptions",
+        "at": "src/htmx.ts:356"
+      },
+      {
+        "text": "include",
+        "kind": "type-string",
+        "decl": "HxOptions",
+        "at": "src/htmx.ts:356"
+      },
+      {
+        "text": "get",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/htmx.ts:426"
+      },
+      {
+        "text": "#",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/htmx.ts:444"
+      },
+      {
+        "text": ".",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/htmx.ts:455"
+      },
+      {
+        "text": "closest ",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/htmx.ts:466"
+      },
+      {
+        "text": "find ",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/htmx.ts:477"
+      },
+      {
+        "text": "next ",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/htmx.ts:488"
+      },
+      {
+        "text": "next",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/htmx.ts:488"
+      },
+      {
+        "text": "previous ",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/htmx.ts:499"
+      },
+      {
+        "text": "previous",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/htmx.ts:499"
+      },
+      {
+        "text": "outerMorph",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:85"
+      },
+      {
+        "text": "#",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/patterns.ts:93"
+      },
+      {
+        "text": "template",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:94"
+      },
+      {
+        "text": "type",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:95"
+      },
+      {
+        "text": "partial",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:95"
+      },
+      {
+        "text": "hx-target",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:96"
+      },
+      {
+        "text": "hx-swap",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:97"
+      },
+      {
+        "text": "hx",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:101"
+      },
+      {
+        "text": "meta",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:144"
+      },
+      {
+        "text": "name",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:145"
+      },
+      {
+        "text": "htmx-config",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:145"
+      },
+      {
+        "text": "content",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:146"
+      },
+      {
+        "text": ", ",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:227"
+      },
+      {
+        "text": "HX-Push-Url",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:242"
+      },
+      {
+        "text": "HX-Replace-Url",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:252"
+      },
+      {
+        "text": "HX-Redirect",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:265"
+      },
+      {
+        "text": "HX-Refresh",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:273"
+      },
+      {
+        "text": "true",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:273"
+      },
+      {
+        "text": "HX-Retarget",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:283"
+      },
+      {
+        "text": "HX-Reswap",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:293"
+      },
+      {
+        "text": "HX-Reselect",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:303"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:324"
+      },
+      {
+        "text": "HX-Location",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:325"
+      },
+      {
+        "text": "HX-Location",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:327"
+      },
+      {
+        "text": "HX-Trigger",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/patterns.ts:357"
+      },
+      {
+        "text": "id",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:136"
+      },
+      {
+        "text": "class",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:136"
+      },
+      {
+        "text": "style",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:136"
+      },
+      {
+        "text": "hx-",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:140"
+      },
+      {
+        "text": "=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:140"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:140"
+      },
+      {
+        "text": " hx-target=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:142"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:142"
+      },
+      {
+        "text": " hx-swap=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:143"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:143"
+      },
+      {
+        "text": " hx-swap-oob=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:145"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:145"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:145"
+      },
+      {
+        "text": " hx-select=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:146"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:146"
+      },
+      {
+        "text": " hx-trigger=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:147"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:147"
+      },
+      {
+        "text": " hx-push-url=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:149"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:149"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:149"
+      },
+      {
+        "text": " hx-replace-url=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:150"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:150"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:150"
+      },
+      {
+        "text": " hx-vals=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:151"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:151"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:151"
+      },
+      {
+        "text": " hx-headers=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:152"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:152"
+      },
+      {
+        "text": " hx-include=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:153"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:153"
+      },
+      {
+        "text": " hx-encoding=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:154"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:154"
+      },
+      {
+        "text": " hx-validate=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:155"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:155"
+      },
+      {
+        "text": " hx-confirm=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:156"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:156"
+      },
+      {
+        "text": " hx-indicator=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:157"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:157"
+      },
+      {
+        "text": " hx-disable=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:158"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:158"
+      },
+      {
+        "text": " hx-sync=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:159"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:159"
+      },
+      {
+        "text": " hx-preserve=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:160"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:160"
+      },
+      {
+        "text": " hx-boost=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:161"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:161"
+      },
+      {
+        "text": " hx-config=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:162"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:162"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:162"
+      },
+      {
+        "text": " hx-ignore",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:169"
+      },
+      {
+        "text": "Invalid hx-status key: \"",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/render/serialize.ts:178"
+      },
+      {
+        "text": "\" — expected a 100-599 code or an Nxx wildcard (e.g. 404 or \"5xx\").",
+        "kind": "value-template-part",
+        "decl": null,
+        "at": "src/render/serialize.ts:178"
+      },
+      {
+        "text": "string",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:181"
+      },
+      {
+        "text": " hx-status:",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:182"
+      },
+      {
+        "text": "=\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:182"
+      },
+      {
+        "text": "\"",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:182"
+      },
+      {
+        "text": "swap:",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:191"
+      },
+      {
+        "text": "target:",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:192"
+      },
+      {
+        "text": "select:",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:193"
+      },
+      {
+        "text": "push:",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:194"
+      },
+      {
+        "text": "replace:",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:195"
+      },
+      {
+        "text": "transition:",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:196"
+      },
+      {
+        "text": " ",
+        "kind": "value-string",
+        "decl": null,
+        "at": "src/render/serialize.ts:197"
+      }
+    ],
+    "optionBagKeys": [
+      {
+        "decl": "HxConfig",
+        "key": "timeout",
+        "at": "src/htmx.ts:243"
+      },
+      {
+        "decl": "HxConfig",
+        "key": "credentials",
+        "at": "src/htmx.ts:244"
+      },
+      {
+        "decl": "HxConfig",
+        "key": "mode",
+        "at": "src/htmx.ts:245"
+      },
+      {
+        "decl": "HxStatusConfig",
+        "key": "swap",
+        "at": "src/htmx.ts:250"
+      },
+      {
+        "decl": "HxStatusConfig",
+        "key": "target",
+        "at": "src/htmx.ts:251"
+      },
+      {
+        "decl": "HxStatusConfig",
+        "key": "select",
+        "at": "src/htmx.ts:252"
+      },
+      {
+        "decl": "HxStatusConfig",
+        "key": "push",
+        "at": "src/htmx.ts:253"
+      },
+      {
+        "decl": "HxStatusConfig",
+        "key": "replace",
+        "at": "src/htmx.ts:254"
+      },
+      {
+        "decl": "HxStatusConfig",
+        "key": "transition",
+        "at": "src/htmx.ts:255"
+      },
+      {
+        "decl": "HTMX",
+        "key": "endpoint",
+        "at": "src/htmx.ts:275"
+      },
+      {
+        "decl": "HTMX",
+        "key": "method",
+        "at": "src/htmx.ts:276"
+      },
+      {
+        "decl": "HTMX",
+        "key": "target",
+        "at": "src/htmx.ts:279"
+      },
+      {
+        "decl": "HTMX",
+        "key": "swap",
+        "at": "src/htmx.ts:280"
+      },
+      {
+        "decl": "HTMX",
+        "key": "swapOob",
+        "at": "src/htmx.ts:281"
+      },
+      {
+        "decl": "HTMX",
+        "key": "select",
+        "at": "src/htmx.ts:282"
+      },
+      {
+        "decl": "HTMX",
+        "key": "trigger",
+        "at": "src/htmx.ts:285"
+      },
+      {
+        "decl": "HTMX",
+        "key": "pushUrl",
+        "at": "src/htmx.ts:288"
+      },
+      {
+        "decl": "HTMX",
+        "key": "replaceUrl",
+        "at": "src/htmx.ts:289"
+      },
+      {
+        "decl": "HTMX",
+        "key": "vals",
+        "at": "src/htmx.ts:292"
+      },
+      {
+        "decl": "HTMX",
+        "key": "headers",
+        "at": "src/htmx.ts:293"
+      },
+      {
+        "decl": "HTMX",
+        "key": "include",
+        "at": "src/htmx.ts:294"
+      },
+      {
+        "decl": "HTMX",
+        "key": "encoding",
+        "at": "src/htmx.ts:295"
+      },
+      {
+        "decl": "HTMX",
+        "key": "validate",
+        "at": "src/htmx.ts:298"
+      },
+      {
+        "decl": "HTMX",
+        "key": "confirm",
+        "at": "src/htmx.ts:299"
+      },
+      {
+        "decl": "HTMX",
+        "key": "indicator",
+        "at": "src/htmx.ts:302"
+      },
+      {
+        "decl": "HTMX",
+        "key": "disable",
+        "at": "src/htmx.ts:303"
+      },
+      {
+        "decl": "HTMX",
+        "key": "sync",
+        "at": "src/htmx.ts:306"
+      },
+      {
+        "decl": "HTMX",
+        "key": "preserve",
+        "at": "src/htmx.ts:309"
+      },
+      {
+        "decl": "HTMX",
+        "key": "boost",
+        "at": "src/htmx.ts:312"
+      },
+      {
+        "decl": "HTMX",
+        "key": "ignore",
+        "at": "src/htmx.ts:315"
+      },
+      {
+        "decl": "HTMX",
+        "key": "config",
+        "at": "src/htmx.ts:318"
+      },
+      {
+        "decl": "HTMX",
+        "key": "status",
+        "at": "src/htmx.ts:321"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "extensions",
+        "at": "src/patterns.ts:128"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "transitions",
+        "at": "src/patterns.ts:129"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "defaultSwap",
+        "at": "src/patterns.ts:130"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "defaultTimeout",
+        "at": "src/patterns.ts:131"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "implicitInheritance",
+        "at": "src/patterns.ts:132"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "noSwap",
+        "at": "src/patterns.ts:133"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "prefix",
+        "at": "src/patterns.ts:134"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "metaCharacter",
+        "at": "src/patterns.ts:135"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "inlineScriptNonce",
+        "at": "src/patterns.ts:136"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "inlineStyleNonce",
+        "at": "src/patterns.ts:137"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "mode",
+        "at": "src/patterns.ts:138"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "history",
+        "at": "src/patterns.ts:139"
+      },
+      {
+        "decl": "HtmxGlobalConfig",
+        "key": "logAll",
+        "at": "src/patterns.ts:140"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "path",
+        "at": "src/patterns.ts:157"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "target",
+        "at": "src/patterns.ts:158"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "swap",
+        "at": "src/patterns.ts:159"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "select",
+        "at": "src/patterns.ts:160"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "source",
+        "at": "src/patterns.ts:161"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "event",
+        "at": "src/patterns.ts:162"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "handler",
+        "at": "src/patterns.ts:163"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "values",
+        "at": "src/patterns.ts:164"
+      },
+      {
+        "decl": "HxLocationConfig",
+        "key": "headers",
+        "at": "src/patterns.ts:165"
+      }
+    ],
+    "detailReads": [
+      {
+        "chain": "detail.ctx.response.status",
+        "at": "src/behaviors/client/runtime.ts:70"
+      },
+      {
+        "chain": "detail.xhr.status",
+        "at": "src/behaviors/client/runtime.ts:70"
+      },
+      {
+        "chain": "detail.elt",
+        "at": "src/behaviors/client/runtime.ts:442"
+      },
+      {
+        "chain": "detail.ctx.elt",
+        "at": "src/behaviors/client/runtime.ts:442"
+      },
+      {
+        "chain": "detail.ctx.pushUrl",
+        "at": "src/behaviors/client/runtime.ts:459"
+      },
+      {
+        "chain": "detail.pushUrl",
+        "at": "src/behaviors/client/runtime.ts:459"
+      }
+    ]
+  },
+  "dynamicInventory": [
+    {
+      "category": "attribute",
+      "name": "hx",
+      "apis": [
+        "Partial(Id)",
+        "Partial(Id, outerHTML)",
+        "Partial(bare-id)",
+        "Partial(#sel)",
+        "Partial(.class)",
+        "Partial(closest tr)"
+      ],
+      "sample": "(bare)"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-boost",
+      "apis": [
+        "boost:true",
+        "boost:false"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-config",
+      "apis": [
+        "config:object",
+        "config:string"
+      ],
+      "sample": "{\"timeout\":5000,\"credentials\":true,\"mode\":\"cors\"}"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-confirm",
+      "apis": [
+        "confirm"
+      ],
+      "sample": "Sure?"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-delete",
+      "apis": [
+        "setHtmx(hx(u,{method:\"delete\"}))",
+        "route:delete+param"
+      ],
+      "sample": "/probe"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-disable",
+      "apis": [
+        "disable",
+        "tpl:.nav(button, invalid)",
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)",
+        "tpl:.fragment",
+        "tpl:.fire",
+        "tpl:LoaderButton"
+      ],
+      "sample": "this"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-encoding",
+      "apis": [
+        "encoding",
+        "tpl:.submit(form, encoding)"
+      ],
+      "sample": "multipart/form-data"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-get",
+      "apis": [
+        "setHtmx(hx(u,{method:\"get\"}))",
+        "hxGet",
+        "target:#x",
+        "target:Id",
+        "target:closest tr",
+        "target:find .c",
+        "target:next",
+        "target:next div",
+        "target:previous",
+        "target:previous div",
+        "target:this",
+        "target:body",
+        "target:window",
+        "target:document",
+        "target:.items",
+        "swap:innerHTML",
+        "swap:outerHTML",
+        "swap:textContent",
+        "swap:beforebegin",
+        "swap:afterbegin",
+        "swap:beforeend",
+        "swap:afterend",
+        "swap:before",
+        "swap:after",
+        "swap:prepend",
+        "swap:append",
+        "swap:innerMorph",
+        "swap:outerMorph",
+        "swap:delete",
+        "swap:none",
+        "swap:outerHTML scroll:top",
+        "swap:outerHTML scroll:bottom",
+        "swap:outerHTML scroll:window:top",
+        "swap:outerHTML scroll:window:bottom",
+        "swap:outerHTML show:top",
+        "swap:outerHTML show:bottom",
+        "swap:outerHTML show:window:top",
+        "swap:outerHTML show:window:bottom",
+        "swap:outerHTML show:none",
+        "swap:outerHTML swap:500ms",
+        "swap:outerHTML swap:1.5s",
+        "swap:outerHTML settle:250ms",
+        "swap:outerHTML focus-scroll:true",
+        "swap:outerHTML focus-scroll:false",
+        "swap:outerHTML transition:true",
+        "swap:outerHTML ignoreTitle:true",
+        "swap:two-modifiers",
+        "swapOob:true",
+        "swapOob:false",
+        "swapOob:innerHTML",
+        "swapOob:beforeend:#list",
+        "select",
+        "trigger:click",
+        "trigger:dblclick",
+        "trigger:mouseenter",
+        "trigger:mouseleave",
+        "trigger:mouseover",
+        "trigger:mouseout",
+        "trigger:mousedown",
+        "trigger:mouseup",
+        "trigger:keydown",
+        "trigger:keyup",
+        "trigger:keypress",
+        "trigger:change",
+        "trigger:input",
+        "trigger:submit",
+        "trigger:focus",
+        "trigger:blur",
+        "trigger:focusin",
+        "trigger:focusout",
+        "trigger:scroll",
+        "trigger:resize",
+        "trigger:touchstart",
+        "trigger:touchend",
+        "trigger:touchmove",
+        "trigger:load",
+        "trigger:revealed",
+        "trigger:intersect",
+        "trigger:click once",
+        "trigger:input changed",
+        "trigger:click consume",
+        "trigger:keyup delay:300ms",
+        "trigger:scroll throttle:500ms",
+        "trigger:keyup changed delay:300ms",
+        "trigger:every 1s",
+        "trigger:every 2s",
+        "trigger:every 5s",
+        "trigger:every 10s",
+        "trigger:sse:message",
+        "trigger:ws:message",
+        "pushUrl:true",
+        "pushUrl:false",
+        "pushUrl:/pushed",
+        "replaceUrl:true",
+        "replaceUrl:false",
+        "replaceUrl:/replaced",
+        "vals:object",
+        "vals:string",
+        "headers",
+        "include",
+        "encoding",
+        "validate:true",
+        "validate:false",
+        "confirm",
+        "indicator",
+        "disable",
+        "sync:drop",
+        "sync:abort",
+        "sync:replace",
+        "sync:queue",
+        "sync:queue first",
+        "sync:queue last",
+        "sync:queue all",
+        "sync:closest form:abort",
+        "preserve:true",
+        "preserve:false",
+        "boost:true",
+        "boost:false",
+        "ignore:true",
+        "ignore:false",
+        "config:object",
+        "config:string",
+        "status:string",
+        "status:object",
+        "status:object-closest",
+        "status:wildcard",
+        "query",
+        "route:get",
+        "route:render-stance",
+        "tpl:.nav(a)",
+        "tpl:.tab",
+        "tpl:.fragment",
+        "tpl:.poll",
+        "tpl:.poll(500ms)",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange"
+      ],
+      "sample": "/probe"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-headers",
+      "apis": [
+        "headers"
+      ],
+      "sample": "{\"X-A\":\"1\"}"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-ignore",
+      "apis": [
+        "ignore:true"
+      ],
+      "sample": "(bare)"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-include",
+      "apis": [
+        "include",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange"
+      ],
+      "sample": "closest form"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-indicator",
+      "apis": [
+        "indicator",
+        "tpl:.nav(a)",
+        "tpl:.nav(button, invalid)",
+        "tpl:.tab",
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)",
+        "tpl:.fragment",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange",
+        "tpl:LoaderButton"
+      ],
+      "sample": "#probe-target"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-patch",
+      "apis": [
+        "setHtmx(hx(u,{method:\"patch\"}))",
+        "route:patch"
+      ],
+      "sample": "/probe"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-post",
+      "apis": [
+        "setHtmx(hx(u,{method:\"post\"}))",
+        "hxPost",
+        "route:post",
+        "tpl:.nav(button, invalid)",
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)",
+        "tpl:.fire",
+        "tpl:LoaderButton"
+      ],
+      "sample": "/probe"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-preserve",
+      "apis": [
+        "preserve:true",
+        "preserve:false"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-push-url",
+      "apis": [
+        "pushUrl:true",
+        "pushUrl:false",
+        "pushUrl:/pushed",
+        "tpl:.nav(a)",
+        "tpl:.nav(button, invalid)",
+        "tpl:.tab"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-put",
+      "apis": [
+        "setHtmx(hx(u,{method:\"put\"}))",
+        "route:put"
+      ],
+      "sample": "/probe"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-replace-url",
+      "apis": [
+        "replaceUrl:true",
+        "replaceUrl:false",
+        "replaceUrl:/replaced"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-select",
+      "apis": [
+        "select"
+      ],
+      "sample": "#probe-target"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-status:<code>",
+      "apis": [
+        "status:string",
+        "status:object",
+        "status:object-closest",
+        "status:wildcard",
+        "tpl:.nav(button, invalid)",
+        "tpl:.submit(form, invalid)"
+      ],
+      "sample": "swap:outerMorph target:#form"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-swap",
+      "apis": [
+        "swap:innerHTML",
+        "swap:outerHTML",
+        "swap:textContent",
+        "swap:beforebegin",
+        "swap:afterbegin",
+        "swap:beforeend",
+        "swap:afterend",
+        "swap:before",
+        "swap:after",
+        "swap:prepend",
+        "swap:append",
+        "swap:innerMorph",
+        "swap:outerMorph",
+        "swap:delete",
+        "swap:none",
+        "swap:outerHTML scroll:top",
+        "swap:outerHTML scroll:bottom",
+        "swap:outerHTML scroll:window:top",
+        "swap:outerHTML scroll:window:bottom",
+        "swap:outerHTML show:top",
+        "swap:outerHTML show:bottom",
+        "swap:outerHTML show:window:top",
+        "swap:outerHTML show:window:bottom",
+        "swap:outerHTML show:none",
+        "swap:outerHTML swap:500ms",
+        "swap:outerHTML swap:1.5s",
+        "swap:outerHTML settle:250ms",
+        "swap:outerHTML focus-scroll:true",
+        "swap:outerHTML focus-scroll:false",
+        "swap:outerHTML transition:true",
+        "swap:outerHTML ignoreTitle:true",
+        "swap:two-modifiers",
+        "Partial(Id)",
+        "Partial(Id, outerHTML)",
+        "Partial(bare-id)",
+        "Partial(#sel)",
+        "Partial(.class)",
+        "Partial(closest tr)",
+        "tpl:.nav(a)",
+        "tpl:.nav(button, invalid)",
+        "tpl:.tab",
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)",
+        "tpl:.fragment",
+        "tpl:.poll",
+        "tpl:.poll(500ms)",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange",
+        "tpl:.fire",
+        "tpl:LoaderButton"
+      ],
+      "sample": "innerHTML"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-swap-oob",
+      "apis": [
+        "swapOob:true",
+        "swapOob:innerHTML",
+        "swapOob:beforeend:#list"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-sync",
+      "apis": [
+        "sync:drop",
+        "sync:abort",
+        "sync:replace",
+        "sync:queue",
+        "sync:queue first",
+        "sync:queue last",
+        "sync:queue all",
+        "sync:closest form:abort",
+        "tpl:.search(page)",
+        "tpl:.search(target)"
+      ],
+      "sample": "drop"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-target",
+      "apis": [
+        "target:#x",
+        "target:Id",
+        "target:closest tr",
+        "target:find .c",
+        "target:next",
+        "target:next div",
+        "target:previous",
+        "target:previous div",
+        "target:this",
+        "target:body",
+        "target:window",
+        "target:document",
+        "target:.items",
+        "route:render-stance",
+        "Partial(Id)",
+        "Partial(Id, outerHTML)",
+        "Partial(bare-id)",
+        "Partial(#sel)",
+        "Partial(.class)",
+        "Partial(closest tr)",
+        "tpl:.nav(a)",
+        "tpl:.nav(button, invalid)",
+        "tpl:.tab",
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)",
+        "tpl:.fragment",
+        "tpl:.poll",
+        "tpl:.poll(500ms)",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange",
+        "tpl:LoaderButton"
+      ],
+      "sample": "#x"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-trigger",
+      "apis": [
+        "trigger:click",
+        "trigger:dblclick",
+        "trigger:mouseenter",
+        "trigger:mouseleave",
+        "trigger:mouseover",
+        "trigger:mouseout",
+        "trigger:mousedown",
+        "trigger:mouseup",
+        "trigger:keydown",
+        "trigger:keyup",
+        "trigger:keypress",
+        "trigger:change",
+        "trigger:input",
+        "trigger:submit",
+        "trigger:focus",
+        "trigger:blur",
+        "trigger:focusin",
+        "trigger:focusout",
+        "trigger:scroll",
+        "trigger:resize",
+        "trigger:touchstart",
+        "trigger:touchend",
+        "trigger:touchmove",
+        "trigger:load",
+        "trigger:revealed",
+        "trigger:intersect",
+        "trigger:click once",
+        "trigger:input changed",
+        "trigger:click consume",
+        "trigger:keyup delay:300ms",
+        "trigger:scroll throttle:500ms",
+        "trigger:keyup changed delay:300ms",
+        "trigger:every 1s",
+        "trigger:every 2s",
+        "trigger:every 5s",
+        "trigger:every 10s",
+        "trigger:sse:message",
+        "trigger:ws:message",
+        "tpl:.poll",
+        "tpl:.poll(500ms)",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange"
+      ],
+      "sample": "click"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-validate",
+      "apis": [
+        "validate:true",
+        "validate:false"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "attribute",
+      "name": "hx-vals",
+      "apis": [
+        "vals:object",
+        "vals:string"
+      ],
+      "sample": "{\"a\":1,\"b\":\"x\"}"
+    },
+    {
+      "category": "class",
+      "name": "htmx-indicator",
+      "apis": [
+        "htmxIndicator"
+      ]
+    },
+    {
+      "category": "config-key",
+      "name": "defaultSwap",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "\"outerMorph\""
+    },
+    {
+      "category": "config-key",
+      "name": "defaultTimeout",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "1000"
+    },
+    {
+      "category": "config-key",
+      "name": "extensions",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "\"sse, preload\""
+    },
+    {
+      "category": "config-key",
+      "name": "history",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "false"
+    },
+    {
+      "category": "config-key",
+      "name": "implicitInheritance",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "config-key",
+      "name": "inlineScriptNonce",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "\"n\""
+    },
+    {
+      "category": "config-key",
+      "name": "inlineStyleNonce",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "\"n\""
+    },
+    {
+      "category": "config-key",
+      "name": "logAll",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "false"
+    },
+    {
+      "category": "config-key",
+      "name": "metaCharacter",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "\"-\""
+    },
+    {
+      "category": "config-key",
+      "name": "mode",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "\"cors\""
+    },
+    {
+      "category": "config-key",
+      "name": "noSwap",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "[204,\"3xx\"]"
+    },
+    {
+      "category": "config-key",
+      "name": "prefix",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "\"data-hx-\""
+    },
+    {
+      "category": "config-key",
+      "name": "transitions",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "element",
+      "name": "template[hx][type=partial]",
+      "apis": [
+        "Partial(Id)",
+        "Partial(Id, outerHTML)",
+        "Partial(bare-id)",
+        "Partial(#sel)",
+        "Partial(.class)",
+        "Partial(closest tr)"
+      ],
+      "sample": "<template type=\"partial\" hx-target=\"#probe-target\" hx-swap=\"outerMorph\" hx>"
+    },
+    {
+      "category": "event-detail-read",
+      "name": "ctx.elt",
+      "apis": [
+        "src/behaviors/client/runtime.ts"
+      ]
+    },
+    {
+      "category": "event-detail-read",
+      "name": "ctx.pushUrl",
+      "apis": [
+        "src/behaviors/client/runtime.ts"
+      ]
+    },
+    {
+      "category": "event-detail-read",
+      "name": "ctx.response.status",
+      "apis": [
+        "src/behaviors/client/runtime.ts"
+      ]
+    },
+    {
+      "category": "event-detail-read",
+      "name": "elt",
+      "apis": [
+        "src/behaviors/client/runtime.ts"
+      ]
+    },
+    {
+      "category": "event-detail-read",
+      "name": "pushUrl",
+      "apis": [
+        "src/behaviors/client/runtime.ts"
+      ]
+    },
+    {
+      "category": "event-detail-read",
+      "name": "xhr.status",
+      "apis": [
+        "src/behaviors/client/runtime.ts"
+      ]
+    },
+    {
+      "category": "event-listened",
+      "name": "htmx:after:request",
+      "apis": [
+        "dist/fluent-behaviors.8.1.0.js"
+      ]
+    },
+    {
+      "category": "event-listened",
+      "name": "htmx:after:swap",
+      "apis": [
+        "dist/fluent-behaviors.8.1.0.js"
+      ]
+    },
+    {
+      "category": "hx-config-key",
+      "name": "credentials",
+      "apis": [
+        "config:object"
+      ],
+      "sample": "{\"timeout\":5000,\"credentials\":true,\"mode\":\"cors\"}"
+    },
+    {
+      "category": "hx-config-key",
+      "name": "mode",
+      "apis": [
+        "config:object"
+      ],
+      "sample": "{\"timeout\":5000,\"credentials\":true,\"mode\":\"cors\"}"
+    },
+    {
+      "category": "hx-config-key",
+      "name": "timeout",
+      "apis": [
+        "config:object",
+        "config:string"
+      ],
+      "sample": "{\"timeout\":5000,\"credentials\":true,\"mode\":\"cors\"}"
+    },
+    {
+      "category": "hx-location-key",
+      "name": "event",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "handler",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "headers",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "path",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "select",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "source",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "swap",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "target",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-location-key",
+      "name": "values",
+      "apis": [
+        "hxResponse(all methods)"
+      ]
+    },
+    {
+      "category": "hx-trigger-header-shape",
+      "name": "comma-list",
+      "apis": [
+        "hxResponse(bare triggers + string location)"
+      ],
+      "sample": "a, b"
+    },
+    {
+      "category": "hx-trigger-header-shape",
+      "name": "json-object",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "{\"a\":{},\"b\":{\"x\":\"\\u0161\"}}"
+    },
+    {
+      "category": "meta",
+      "name": "meta[name=htmx-config]",
+      "apis": [
+        "HtmxConfig(all keys)"
+      ]
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Location",
+      "apis": [
+        "hxResponse(all methods)",
+        "hxResponse(bare triggers + string location)"
+      ],
+      "sample": "{\"path\":\"/l\",\"target\":\"#t\",\"swap\":\"innerHTML\",\"select\":\"#s\",\"source\":\"#src\",\"eve"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Push-Url",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "/p"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Redirect",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "/d"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Refresh",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "true"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Replace-Url",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "/r"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Reselect",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "#s"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Reswap",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "outerMorph"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Retarget",
+      "apis": [
+        "hxResponse(all methods)"
+      ],
+      "sample": "#t"
+    },
+    {
+      "category": "response-header",
+      "name": "HX-Trigger",
+      "apis": [
+        "hxResponse(all methods)",
+        "hxResponse(bare triggers + string location)"
+      ],
+      "sample": "{\"a\":{},\"b\":{\"x\":\"\\u0161\"}}"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "(css)",
+      "apis": [
+        "target:#x",
+        "target:Id",
+        "target:.items",
+        "select",
+        "indicator",
+        "route:render-stance",
+        "Partial(Id)",
+        "Partial(Id, outerHTML)",
+        "Partial(bare-id)",
+        "Partial(#sel)",
+        "Partial(.class)",
+        "tpl:.nav(a)",
+        "tpl:.nav(button, invalid)",
+        "tpl:.tab",
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)",
+        "tpl:.fragment",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange",
+        "tpl:LoaderButton"
+      ],
+      "sample": "hx-target=#x"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "body",
+      "apis": [
+        "target:body"
+      ],
+      "sample": "hx-target=body"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "closest",
+      "apis": [
+        "target:closest tr",
+        "include",
+        "Partial(closest tr)",
+        "tpl:.onChange"
+      ],
+      "sample": "hx-target=closest tr"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "document",
+      "apis": [
+        "target:document"
+      ],
+      "sample": "hx-target=document"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "find",
+      "apis": [
+        "target:find .c"
+      ],
+      "sample": "hx-target=find .c"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "findAll",
+      "apis": [
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)"
+      ],
+      "sample": "hx-disable=findAll button"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "next",
+      "apis": [
+        "target:next",
+        "target:next div"
+      ],
+      "sample": "hx-target=next"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "previous",
+      "apis": [
+        "target:previous",
+        "target:previous div"
+      ],
+      "sample": "hx-target=previous"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "this",
+      "apis": [
+        "target:this",
+        "disable",
+        "tpl:.nav(button, invalid)",
+        "tpl:.fragment",
+        "tpl:.poll",
+        "tpl:.poll(500ms)",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.fire",
+        "tpl:LoaderButton"
+      ],
+      "sample": "hx-target=this"
+    },
+    {
+      "category": "selector-keyword",
+      "name": "window",
+      "apis": [
+        "target:window"
+      ],
+      "sample": "hx-target=window"
+    },
+    {
+      "category": "status-config-key",
+      "name": "form",
+      "apis": [
+        "status:object-closest"
+      ],
+      "sample": "swap:outerHTML show:top target:closest form"
+    },
+    {
+      "category": "status-config-key",
+      "name": "push",
+      "apis": [
+        "status:object",
+        "tpl:.nav(button, invalid)",
+        "tpl:.submit(form, invalid)"
+      ],
+      "sample": "swap:outerMorph target:#form select:#f push:false replace:false transition:true"
+    },
+    {
+      "category": "status-config-key",
+      "name": "replace",
+      "apis": [
+        "status:object"
+      ],
+      "sample": "swap:outerMorph target:#form select:#f push:false replace:false transition:true"
+    },
+    {
+      "category": "status-config-key",
+      "name": "select",
+      "apis": [
+        "status:object"
+      ],
+      "sample": "swap:outerMorph target:#form select:#f push:false replace:false transition:true"
+    },
+    {
+      "category": "status-config-key",
+      "name": "show",
+      "apis": [
+        "status:object-closest"
+      ],
+      "sample": "swap:outerHTML show:top target:closest form"
+    },
+    {
+      "category": "status-config-key",
+      "name": "swap",
+      "apis": [
+        "status:string",
+        "status:object",
+        "status:object-closest",
+        "status:wildcard",
+        "tpl:.nav(button, invalid)",
+        "tpl:.submit(form, invalid)"
+      ],
+      "sample": "swap:outerMorph target:#form"
+    },
+    {
+      "category": "status-config-key",
+      "name": "target",
+      "apis": [
+        "status:string",
+        "status:object",
+        "status:object-closest",
+        "tpl:.nav(button, invalid)",
+        "tpl:.submit(form, invalid)"
+      ],
+      "sample": "swap:outerMorph target:#form"
+    },
+    {
+      "category": "status-config-key",
+      "name": "transition",
+      "apis": [
+        "status:object"
+      ],
+      "sample": "swap:outerMorph target:#form select:#f push:false replace:false transition:true"
+    },
+    {
+      "category": "status-key",
+      "name": "422",
+      "apis": [
+        "status:string",
+        "status:object",
+        "status:object-closest",
+        "tpl:.nav(button, invalid)",
+        "tpl:.submit(form, invalid)"
+      ]
+    },
+    {
+      "category": "status-key",
+      "name": "5xx",
+      "apis": [
+        "status:wildcard"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "beforeend:#list",
+      "apis": [
+        "swapOob:beforeend:#list"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "focus-scroll:false",
+      "apis": [
+        "swap:outerHTML focus-scroll:false"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "focus-scroll:true",
+      "apis": [
+        "swap:outerHTML focus-scroll:true"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "ignoreTitle:true",
+      "apis": [
+        "swap:outerHTML ignoreTitle:true"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:bottom",
+      "apis": [
+        "swap:outerHTML scroll:bottom"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:top",
+      "apis": [
+        "swap:outerHTML scroll:top"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:window:bottom",
+      "apis": [
+        "swap:outerHTML scroll:window:bottom"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "scroll:window:top",
+      "apis": [
+        "swap:outerHTML scroll:window:top"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "settle:250ms",
+      "apis": [
+        "swap:outerHTML settle:250ms"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:bottom",
+      "apis": [
+        "swap:outerHTML show:bottom"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:none",
+      "apis": [
+        "swap:outerHTML show:none"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:top",
+      "apis": [
+        "swap:outerHTML show:top",
+        "swap:two-modifiers",
+        "tpl:.nav(a)",
+        "tpl:.nav(button, invalid)"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:window:bottom",
+      "apis": [
+        "swap:outerHTML show:window:bottom"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "show:window:top",
+      "apis": [
+        "swap:outerHTML show:window:top"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "swap:1.5s",
+      "apis": [
+        "swap:outerHTML swap:1.5s"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "swap:500ms",
+      "apis": [
+        "swap:outerHTML swap:500ms",
+        "swap:two-modifiers"
+      ]
+    },
+    {
+      "category": "swap-modifier",
+      "name": "transition:true",
+      "apis": [
+        "swap:outerHTML transition:true"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "after",
+      "apis": [
+        "swap:after"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "afterbegin",
+      "apis": [
+        "swap:afterbegin"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "afterend",
+      "apis": [
+        "swap:afterend"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "append",
+      "apis": [
+        "swap:append"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "before",
+      "apis": [
+        "swap:before"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "beforebegin",
+      "apis": [
+        "swap:beforebegin"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "beforeend",
+      "apis": [
+        "swap:beforeend"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "delete",
+      "apis": [
+        "swap:delete"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "innerHTML",
+      "apis": [
+        "swap:innerHTML",
+        "swapOob:innerHTML"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "innerMorph",
+      "apis": [
+        "swap:innerMorph"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "none",
+      "apis": [
+        "swap:none",
+        "tpl:.fire"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "outerHTML",
+      "apis": [
+        "swap:outerHTML",
+        "swap:outerHTML scroll:top",
+        "swap:outerHTML scroll:bottom",
+        "swap:outerHTML scroll:window:top",
+        "swap:outerHTML scroll:window:bottom",
+        "swap:outerHTML show:top",
+        "swap:outerHTML show:bottom",
+        "swap:outerHTML show:window:top",
+        "swap:outerHTML show:window:bottom",
+        "swap:outerHTML show:none",
+        "swap:outerHTML swap:500ms",
+        "swap:outerHTML swap:1.5s",
+        "swap:outerHTML settle:250ms",
+        "swap:outerHTML focus-scroll:true",
+        "swap:outerHTML focus-scroll:false",
+        "swap:outerHTML transition:true",
+        "swap:outerHTML ignoreTitle:true",
+        "Partial(Id, outerHTML)",
+        "tpl:.poll",
+        "tpl:.poll(500ms)"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "outerMorph",
+      "apis": [
+        "swap:outerMorph",
+        "swap:two-modifiers",
+        "Partial(Id)",
+        "Partial(bare-id)",
+        "Partial(#sel)",
+        "Partial(.class)",
+        "Partial(closest tr)",
+        "tpl:.nav(a)",
+        "tpl:.nav(button, invalid)",
+        "tpl:.tab",
+        "tpl:.submit(form, invalid)",
+        "tpl:.submit(form, encoding)",
+        "tpl:.fragment",
+        "tpl:.search(page)",
+        "tpl:.search(target)",
+        "tpl:.onChange",
+        "tpl:LoaderButton"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "prepend",
+      "apis": [
+        "swap:prepend"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "textContent",
+      "apis": [
+        "swap:textContent"
+      ]
+    },
+    {
+      "category": "swap-style",
+      "name": "true",
+      "apis": [
+        "swapOob:true"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "abort",
+      "apis": [
+        "sync:abort"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "closest form:abort",
+      "apis": [
+        "sync:closest form:abort"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "drop",
+      "apis": [
+        "sync:drop"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "queue",
+      "apis": [
+        "sync:queue"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "queue all",
+      "apis": [
+        "sync:queue all"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "queue first",
+      "apis": [
+        "sync:queue first"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "queue last",
+      "apis": [
+        "sync:queue last"
+      ]
+    },
+    {
+      "category": "sync-value",
+      "name": "replace",
+      "apis": [
+        "sync:replace",
+        "tpl:.search(page)",
+        "tpl:.search(target)"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "blur",
+      "apis": [
+        "trigger:blur"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "change",
+      "apis": [
+        "trigger:change",
+        "tpl:.onChange"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "click",
+      "apis": [
+        "trigger:click",
+        "trigger:click once",
+        "trigger:click consume"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "dblclick",
+      "apis": [
+        "trigger:dblclick"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "every",
+      "apis": [
+        "trigger:every 1s",
+        "trigger:every 2s",
+        "trigger:every 5s",
+        "trigger:every 10s",
+        "tpl:.poll",
+        "tpl:.poll(500ms)"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "focus",
+      "apis": [
+        "trigger:focus"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "focusin",
+      "apis": [
+        "trigger:focusin"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "focusout",
+      "apis": [
+        "trigger:focusout"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "input",
+      "apis": [
+        "trigger:input",
+        "trigger:input changed",
+        "tpl:.search(page)",
+        "tpl:.search(target)"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "intersect",
+      "apis": [
+        "trigger:intersect"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "keydown",
+      "apis": [
+        "trigger:keydown"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "keypress",
+      "apis": [
+        "trigger:keypress"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "keyup",
+      "apis": [
+        "trigger:keyup",
+        "trigger:keyup delay:300ms",
+        "trigger:keyup changed delay:300ms"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "load",
+      "apis": [
+        "trigger:load"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "mousedown",
+      "apis": [
+        "trigger:mousedown"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "mouseenter",
+      "apis": [
+        "trigger:mouseenter"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "mouseleave",
+      "apis": [
+        "trigger:mouseleave"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "mouseout",
+      "apis": [
+        "trigger:mouseout"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "mouseover",
+      "apis": [
+        "trigger:mouseover"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "mouseup",
+      "apis": [
+        "trigger:mouseup"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "resize",
+      "apis": [
+        "trigger:resize"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "revealed",
+      "apis": [
+        "trigger:revealed"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "scroll",
+      "apis": [
+        "trigger:scroll",
+        "trigger:scroll throttle:500ms"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "sse:message",
+      "apis": [
+        "trigger:sse:message"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "submit",
+      "apis": [
+        "trigger:submit"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "touchend",
+      "apis": [
+        "trigger:touchend"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "touchmove",
+      "apis": [
+        "trigger:touchmove"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "touchstart",
+      "apis": [
+        "trigger:touchstart"
+      ]
+    },
+    {
+      "category": "trigger-event",
+      "name": "ws:message",
+      "apis": [
+        "trigger:ws:message"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "10s",
+      "apis": [
+        "trigger:every 10s"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "1s",
+      "apis": [
+        "trigger:every 1s"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "2s",
+      "apis": [
+        "trigger:every 2s",
+        "tpl:.poll"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "500ms",
+      "apis": [
+        "tpl:.poll(500ms)"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "5s",
+      "apis": [
+        "trigger:every 5s"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "changed",
+      "apis": [
+        "trigger:input changed",
+        "trigger:keyup changed delay:300ms",
+        "tpl:.search(page)",
+        "tpl:.search(target)"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "consume",
+      "apis": [
+        "trigger:click consume"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "delay:<time>",
+      "apis": [
+        "trigger:keyup delay:300ms",
+        "trigger:keyup changed delay:300ms",
+        "tpl:.search(page)",
+        "tpl:.search(target)"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "once",
+      "apis": [
+        "trigger:click once"
+      ]
+    },
+    {
+      "category": "trigger-modifier",
+      "name": "throttle:<time>",
+      "apis": [
+        "trigger:scroll throttle:500ms"
+      ]
+    }
+  ]
+}

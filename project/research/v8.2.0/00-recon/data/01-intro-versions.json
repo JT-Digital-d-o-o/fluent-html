@@ -1,0 +1,1600 @@
+{
+ "method": "first release commit (5.7.0..8.1.0) whose src/ defines the name or a pre-7 alias (codemod RENAMES); tier-1 variants via .on/.at string; 5.7.0 means <=5.7.0 (corpus floor)",
+ "names": {
+  "text": {
+   "intro": "5.7.0",
+   "aliases": [
+    "textColor",
+    "textSize",
+    "textAlign",
+    "textWrap"
+   ]
+  },
+  "p": {
+   "intro": "5.7.0",
+   "aliases": [
+    "padding"
+   ]
+  },
+  "m": {
+   "intro": "5.7.0",
+   "aliases": [
+    "margin"
+   ]
+  },
+  "flex": {
+   "intro": "5.7.0",
+   "aliases": [
+    "flexDirection",
+    "flexWrap",
+    "flexShorthand"
+   ]
+  },
+  "font": {
+   "intro": "5.7.0",
+   "aliases": [
+    "fontWeight",
+    "fontFamily",
+    "bold"
+   ]
+  },
+  "border": {
+   "intro": "5.7.0",
+   "aliases": [
+    "borderColor",
+    "borderStyle"
+   ]
+  },
+  "bg": {
+   "intro": "5.7.0",
+   "aliases": [
+    "background"
+   ]
+  },
+  "rounded": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "gap": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "items": {
+   "intro": "5.7.0",
+   "aliases": [
+    "alignItems"
+   ]
+  },
+  "apply": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "IfThen": {
+   "intro": null,
+   "aliases": []
+  },
+  "setClass": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "addClass": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "w": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "cursor": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "addAttribute": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "hover": {
+   "intro": "5.8.0 (as .on/.at(\"hover\"))",
+   "aliases": []
+  },
+  "ForEach": {
+   "intro": null,
+   "aliases": []
+  },
+  "justify": {
+   "intro": "5.7.0",
+   "aliases": [
+    "justifyContent"
+   ]
+  },
+  "h": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "transition": {
+   "intro": "5.8.0",
+   "aliases": [
+    "transitionBehavior"
+   ]
+  },
+  "setType": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "maxW": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setHtmx": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setId": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "resolve": {
+   "intro": null,
+   "aliases": []
+  },
+  "sm": {
+   "intro": "5.8.0 (as .on/.at(\"sm\"))",
+   "aliases": []
+  },
+  "setHref": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "toggle": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "when": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setName": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "gridCols": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "IfThenElse": {
+   "intro": null,
+   "aliases": []
+  },
+  "lg": {
+   "intro": "5.8.0 (as .on/.at(\"lg\"))",
+   "aliases": []
+  },
+  "tracking": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "md": {
+   "intro": "5.8.0 (as .on/.at(\"md\"))",
+   "aliases": []
+  },
+  "shadow": {
+   "intro": "5.7.0",
+   "aliases": [
+    "shadowColor"
+   ]
+  },
+  "block": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "leading": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setValue": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "defineRoutes": {
+   "intro": null,
+   "aliases": []
+  },
+  "setPlaceholder": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "grid": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "shrink": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "uppercase": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "overflow": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setContent": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setFill": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "behavior": {
+   "intro": "5.10.0",
+   "aliases": []
+  },
+  "hidden": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setStyles": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setRel": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "hx": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setSrc": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setAria": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "defineIds": {
+   "intro": null,
+   "aliases": []
+  },
+  "fill": {
+   "intro": "6.2.0",
+   "aliases": [
+    "fillColor"
+   ]
+  },
+  "setX": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setY": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "relative": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "minW": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "inlineBlock": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "mt": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "whenElse": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setStrokeWidth": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "animate": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "assetUrl": {
+   "intro": null,
+   "aliases": []
+  },
+  "underline": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "ring": {
+   "intro": "5.8.0",
+   "aliases": [
+    "ringColor"
+   ]
+  },
+  "absolute": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "inlineFlex": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "minH": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setProperty": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "opacity": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "spaceY": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setStroke": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setWidth": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setViewBox": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "z": {
+   "intro": "5.7.0",
+   "aliases": [
+    "zIndex"
+   ]
+  },
+  "setTextAnchor": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "focus": {
+   "intro": "5.8.0 (as .on/.at(\"focus\"))",
+   "aliases": []
+  },
+  "setAlt": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "Match": {
+   "intro": null,
+   "aliases": []
+  },
+  "whitespace": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "top": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "whenMatch": {
+   "intro": "6.5.0",
+   "aliases": []
+  },
+  "setStyle": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setCx": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setCy": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "variant": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "setFontSize": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setDominantBaseline": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setD": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setHeight": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setR": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "select": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "left": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "tabularNums": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "truncate": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "MatchValue": {
+   "intro": null,
+   "aliases": []
+  },
+  "py": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "right": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "outline": {
+   "intro": "5.8.0",
+   "aliases": [
+    "outlineHidden"
+   ]
+  },
+  "setFor": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setDataAttrs": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setRx": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "px": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "setStrokeLinecap": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setTarget": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "group": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "duration": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setRows": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "from": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "to": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setTitle": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setCharset": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setMinlength": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "Partial": {
+   "intro": null,
+   "aliases": []
+  },
+  "inset": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "cssClass": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "object": {
+   "intro": "5.7.0",
+   "aliases": [
+    "objectFit"
+   ]
+  },
+  "noUnderline": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "externalUrl": {
+   "intro": null,
+   "aliases": []
+  },
+  "setMaxlength": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "fixed": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "groupHover": {
+   "intro": "5.8.0 (as .on/.at(\"group-hover\"))",
+   "aliases": []
+  },
+  "setRole": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "list": {
+   "intro": "5.10.0",
+   "aliases": [
+    "listStyleType",
+    "listStylePosition"
+   ]
+  },
+  "setStrokeLinejoin": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "pointerEvents": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "hxResponse": {
+   "intro": null,
+   "aliases": []
+  },
+  "setX1": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setX2": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setY1": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setY2": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "stroke": {
+   "intro": "6.2.0",
+   "aliases": [
+    "strokeColor",
+    "strokeWidth"
+   ]
+  },
+  "setMin": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "bottom": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setStrokeDasharray": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "cssProp": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "scale": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setAutocomplete": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "neg": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "sticky": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setPoints": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "aspect": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setLang": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "rotate": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "italic": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setClasses": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setStep": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setEnctype": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setLoading": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setXmlns": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "ForEachKeyed": {
+   "intro": null,
+   "aliases": []
+  },
+  "colSpan": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "hxGet": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setMax": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "lineClamp": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setMethod": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setAction": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "xl": {
+   "intro": "5.8.0 (as .on/.at(\"xl\"))",
+   "aliases": []
+  },
+  "srOnly": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "translate": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "disabled": {
+   "intro": "5.8.0 (as .on/.at(\"disabled\"))",
+   "aliases": []
+  },
+  "underlineOffset": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "divideY": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setPreload": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setAccept": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setOpacity": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setTabindex": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "maxH": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "backdropBlur": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "bgLinear": {
+   "intro": "5.11.0",
+   "aliases": [
+    "gradientLinear",
+    "gradientTo"
+   ]
+  },
+  "resize": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setIntegrity": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "getClass": {
+   "intro": "8.0.0",
+   "aliases": []
+  },
+  "pt": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "self": {
+   "intro": "5.8.0",
+   "aliases": [
+    "alignSelf"
+   ]
+  },
+  "setCrossOrigin": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setRy": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "hxPost": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setCommand": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "setCommandfor": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "via": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "mb": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "htmxIndicator": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "defineTheme": {
+   "intro": null,
+   "aliases": []
+  },
+  "grow": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "pb": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "decoration": {
+   "intro": "6.2.0",
+   "aliases": [
+    "decorationColor",
+    "decorationStyle",
+    "decorationThickness"
+   ]
+  },
+  "focusVisible": {
+   "intro": "5.8.0 (as .on/.at(\"focus-visible\"))",
+   "aliases": []
+  },
+  "setAs": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "divide": {
+   "intro": "7.0.1",
+   "aliases": []
+  },
+  "accent": {
+   "intro": "6.2.0",
+   "aliases": [
+    "accentColor"
+   ]
+  },
+  "peer": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "inline": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setStrokeDashoffset": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "antialiased": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "last": {
+   "intro": "5.8.0 (as .on/.at(\"last\"))",
+   "aliases": []
+  },
+  "anchorName": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "blur": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setDecoding": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "active": {
+   "intro": "5.8.0 (as .on/.at(\"active\"))",
+   "aliases": []
+  },
+  "capitalize": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "getEnctype": {
+   "intro": "8.0.0",
+   "aliases": []
+  },
+  "gradient": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setClosedby": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "first": {
+   "intro": "5.8.0 (as .on/.at(\"first\"))",
+   "aliases": []
+  },
+  "breakAll": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "positionArea": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "Intersperse": {
+   "intro": null,
+   "aliases": []
+  },
+  "lineThrough": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setPoster": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "order": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "pl": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "setDownload": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setFetchPriority": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "setPopovertarget": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "ease": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "focusWithin": {
+   "intro": "5.8.0 (as .on/.at(\"focus-within\"))",
+   "aliases": []
+  },
+  "peerChecked": {
+   "intro": "5.8.0 (as .on/.at(\"peer-checked\"))",
+   "aliases": []
+  },
+  "setFontFamily": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "viewTransitionName": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setTransform": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "insetX": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "positionAnchor": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "pr": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "overlay": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setPopover": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "setScope": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "insetY": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "mx": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "setColspan": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setSizes": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "before": {
+   "intro": "5.8.0 (as .on/.at(\"before\"))",
+   "aliases": []
+  },
+  "contents": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setFontWeight": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "ml": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "setAllow": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setSrcset": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "tableCell": {
+   "intro": "7.0.1",
+   "aliases": []
+  },
+  "wrap": {
+   "intro": "6.8.0",
+   "aliases": []
+  },
+  "xl2": {
+   "intro": "5.8.0 (as .on/.at(\"2xl\"))",
+   "aliases": []
+  },
+  "appearance": {
+   "intro": "6.8.0",
+   "aliases": []
+  },
+  "content": {
+   "intro": "6.8.0",
+   "aliases": []
+  },
+  "gridRows": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "my": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "setInputmode": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "mr": {
+   "intro": "7.0.0",
+   "aliases": []
+  },
+  "setPattern": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setPopovertargetaction": {
+   "intro": "6.1.0",
+   "aliases": []
+  },
+  "addChild": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "breakInside": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "columns": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "isolate": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setHreflang": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setList": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "bgRadial": {
+   "intro": "6.0.0",
+   "aliases": [
+    "gradientRadial"
+   ]
+  },
+  "boxDecoration": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "divideX": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "lowercase": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "multipart": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setImagesizes": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setImagesrcset": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setOffset": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setReferrerPolicy": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setStopColor": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setStrokeOpacity": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "tableRow": {
+   "intro": "7.0.1",
+   "aliases": []
+  },
+  "addStyle": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "colStart": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "delay": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "dropShadow": {
+   "intro": "6.2.0",
+   "aliases": [
+    "dropShadowColor"
+   ]
+  },
+  "mixBlend": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "overscroll": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "Repeat": {
+   "intro": null,
+   "aliases": []
+  },
+  "rowSpan": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setClipRule": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setFormmethod": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setHttpEquiv": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setLetterSpacing": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setSandbox": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setSrcdoc": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "willChange": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "addHeaders": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "after": {
+   "intro": "5.8.0 (as .on/.at(\"after\"))",
+   "aliases": []
+  },
+  "autoCols": {
+   "intro": "5.11.0",
+   "aliases": [
+    "gridAutoCols"
+   ]
+  },
+  "autoRows": {
+   "intro": "5.11.0",
+   "aliases": [
+    "gridAutoRows"
+   ]
+  },
+  "bgBlend": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "bgConic": {
+   "intro": "6.0.0",
+   "aliases": [
+    "gradientConic"
+   ]
+  },
+  "brightness": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "caret": {
+   "intro": "6.2.0",
+   "aliases": [
+    "caretColor"
+   ]
+  },
+  "checked": {
+   "intro": "5.8.0 (as .on/.at(\"checked\"))",
+   "aliases": []
+  },
+  "colEnd": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "containerQuery": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "contrast": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "dark": {
+   "intro": "5.8.0 (as .on/.at(\"dark\"))",
+   "aliases": []
+  },
+  "even": {
+   "intro": "5.8.0 (as .on/.at(\"even\"))",
+   "aliases": []
+  },
+  "grayscale": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "gridFlow": {
+   "intro": "5.11.0",
+   "aliases": [
+    "gridAutoFlow"
+   ]
+  },
+  "hueRotate": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "inlineGrid": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "insetE": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "insetRing": {
+   "intro": "6.2.0",
+   "aliases": [
+    "insetRingColor"
+   ]
+  },
+  "insetS": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "insetShadow": {
+   "intro": "6.2.0",
+   "aliases": [
+    "insetShadowColor"
+   ]
+  },
+  "invert": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "invisible": {
+   "intro": "7.0.1",
+   "aliases": []
+  },
+  "odd": {
+   "intro": "5.8.0 (as .on/.at(\"odd\"))",
+   "aliases": []
+  },
+  "perspective": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "rowEnd": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "rowStart": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "saturate": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "scroll": {
+   "intro": "6.2.0",
+   "aliases": [
+    "scrollBehavior"
+   ]
+  },
+  "scrollP": {
+   "intro": "6.2.0",
+   "aliases": [
+    "scrollPadding"
+   ]
+  },
+  "sepia": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setAbbr": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setAutocapitalize": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setCapture": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setCite": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setClipPathUnits": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setCols": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setContenteditable": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setCoords": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setData": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setDatetime": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setDir": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "setDirname": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setDx": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setDy": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setEdgeMode": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setEnterkeyhint": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setFillRule": {
+   "intro": "5.9.1",
+   "aliases": []
+  },
+  "setFilter": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setFilterUnits": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setFontStyle": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setForm": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setFormaction": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setFormenctype": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setFormtarget": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setFx": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setFy": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setGradientTransform": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setGradientUnits": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setHeaders": {
+   "intro": "6.2.0",
+   "aliases": []
+  },
+  "setHidden": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setHigh": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setIn": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setKind": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setLabel": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setLow": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setMaskContentUnits": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setMaskUnits": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setMedia": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setMicrodata": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setNonce": {
+   "intro": "5.9.0",
+   "aliases": []
+  },
+  "setOptimum": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setPrimitiveUnits": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setResult": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setRowspan": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setShape": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setSize": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setSpan": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setSpellcheck": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setSpreadMethod": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setSrclang": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "setStdDeviation": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setStopOpacity": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "setTextDecoration": {
+   "intro": "5.11.0",
+   "aliases": []
+  },
+  "setTranslate": {
+   "intro": "6.1.1",
+   "aliases": []
+  },
+  "setWrap": {
+   "intro": "5.7.0",
+   "aliases": []
+  },
+  "spaceX": {
+   "intro": "5.8.0",
+   "aliases": []
+  },
+  "static": {
+   "intro": "6.0.0",
+   "aliases": []
+  },
+  "table": {
+   "intro": "7.0.1",
+   "aliases": []
+  },
+  "textShadow": {
+   "intro": "6.2.0",
+   "aliases": [
+    "textShadowColor"
+   ]
+  },
+  "transform": {
+   "intro": "6.2.0",
+   "aliases": [
+    "transformStyle"
+   ]
+  }
+ }
+}

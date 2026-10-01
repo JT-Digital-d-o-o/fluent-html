@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="en" data-fluent-behaviors="8.1.0:f87f375a" hx-headers:inherited="{&quot;X-Fluent-Behaviors&quot;:&quot;8.1.0:f87f375a&quot;}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team | JT teamapp</title>
+<meta property="og:title" content="Team">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JT teamapp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Team">
+<meta property="og:image" content="http://localhost:3302/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="JT teamapp">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="http://localhost:3302/team">
+<meta property="og:url" content="http://localhost:3302/team">
+<link rel="icon" href="/favicon.svg?fingerprint=84d7c645" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?fingerprint=fa518995">
+<link rel="manifest" href="/site.webmanifest?fingerprint=0ac28f10">
+
+<link rel="stylesheet" href="/css/styles.compiled.css?fingerprint=7c847e85">
+<link rel="preload" href="/fonts/playfair-display-500-700-latin.woff2?fingerprint=daeff530" type="font/woff2" as="font" crossorigin="anonymous">
+<link rel="preload" href="/fonts/playfair-display-500-700-latin-ext.woff2?fingerprint=99a7c18e" type="font/woff2" as="font" crossorigin="anonymous">
+<style nonce="">
+  .htmx-indicator { opacity: 0; transition: opacity 200ms ease-in; }
+  .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }
+  button:disabled, input[type="submit"]:disabled { opacity: 0.6; }
+</style>
+<script src="/js/htmx.min.js?fingerprint=54ac91b6" defer="" nonce=""></script>
+<meta name="htmx-config" content="{&quot;defaultSwap&quot;:&quot;outerMorph&quot;}">
+<script src="/js/fluent-behaviors.8.1.0.f87f375a.d099423edecd.js" defer="" nonce=""></script></head>
+<body><div id="global-loading" class="htmx-indicator fixed top-0 left-0 right-0 z-50"><div class="w-full h-1 bg-primary animate-pulse"></div></div>
+<div id="main-content" class="min-h-screen flex flex-col bg-bg"><nav><a class="cursor-pointer" href="/" hx-get="/" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true"><span>JT</span>
+<span> teamapp</span></a>
+<a class="cursor-pointer" href="/" hx-get="/" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Home</a>
+<div><a class="cursor-pointer" href="/team" hx-get="/team" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Team</a>
+<a class="cursor-pointer" href="/account" hx-get="/account" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Account</a>
+<form hx-post="/auth/logout" hx-target="#main-content" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" data-htmx-powered="true"><button class="cursor-pointer" type="submit">Logout</button></form></div></nav>
+<main class="flex-1"><div><h1>Team</h1>
+<p>Everyone on your team, including the people you have invited.</p>
+<div id="member-directory"><form hx-get="/team/members" hx-target="#member-directory" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" data-htmx-powered="true"><label>Search members
+<input id="member-search-q" type="search" name="q" placeholder="Search by name or email" value="" autocomplete="off" hx-get="/team/members" hx-target="#member-directory" hx-swap="outerMorph" hx-trigger="input changed delay:300ms" hx-include="this" hx-indicator="#global-loading" hx-sync="replace" data-htmx-powered="true"></label></form>
+<table><thead><tr><th>Name</th>
+<th>Email</th>
+<th>Role</th>
+<th>Status</th></tr></thead>
+<tbody><tr><td>Ada Lovelace</td>
+<td>ada@example.com</td>
+<td>Owner</td>
+<td><span class="inline-block px-2 py-0.5 rounded-control text-xs font-medium bg-success/10 text-success">Active</span></td></tr>
+<tr><td>Grace Hopper</td>
+<td>grace@example.com</td>
+<td>Admin</td>
+<td><span class="inline-block px-2 py-0.5 rounded-control text-xs font-medium bg-success/10 text-success">Active</span></td></tr>
+<tr><td>Alan Turing</td>
+<td>alan@example.com</td>
+<td>Member</td>
+<td><span class="inline-block px-2 py-0.5 rounded-control text-xs font-medium bg-warning/10 text-warning">Invited</span></td></tr>
+<tr><td>Probe Person</td>
+<td>probe.person.blind2@example.com</td>
+<td>Admin</td>
+<td><span class="inline-block px-2 py-0.5 rounded-control text-xs font-medium bg-warning/10 text-warning">Invited</span></td></tr></tbody></table></div>
+<div id="invite-form"><h2>Invite member</h2>
+
+<form data-behavior="resetOnSuccess" hx-post="/team/invite" hx-target="#main-content" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" hx-status:422="swap:outerMorph target:#invite-form push:false" data-htmx-powered="true"><div><label>Name
+<input id="invite-name" type="text" name="name" required=""></label>
+</div>
+<div><label>Email
+<input id="invite-email" type="email" name="email" required=""></label>
+</div>
+<div><label>Role
+<select id="invite-role" name="role"><option value="owner">Owner</option>
+<option value="admin">Admin</option>
+<option value="member" selected="">Member</option></select></label></div>
+<button type="submit">Invite member</button></form></div></div></main>
+<footer><p>JT teamapp</p>
+<div class="flex flex-wrap items-center gap-x-3 gap-y-2"><span class="font-brand font-medium uppercase text-sm tracking-wide text-text-faint">Developed by</span>
+<a class="flex items-center gap-2 font-brand font-bold text-xl tracking-tight text-text rounded-control transition-colors cursor-pointer hover:text-primary" href="https://jtdigital.si" target="_blank" rel="noopener"><span class="h-2.5 w-2.5 shrink-0 rounded-full bg-primary [box-shadow:0_0_12px_color-mix(in_oklab,_var(--color-primary)_26%,_transparent)]"></span>
+<span>JT Digital</span></a></div>
+<div><a class="cursor-pointer" href="/privacy" hx-get="/privacy" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Privacy</a>
+<a class="cursor-pointer" href="/terms" hx-get="/terms" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Terms</a>
+<a class="cursor-pointer" href="/cookies" hx-get="/cookies" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Cookies</a></div></footer></div></body></html>

@@ -1,0 +1,13 @@
+<div id="invite-form"><h2>Invite member</h2>
+
+<form data-behavior="resetOnSuccess" hx-post="/team/invite" hx-target="#main-content" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" hx-status:422="swap:outerMorph target:#invite-form push:false" data-htmx-powered="true"><div><label>Name
+<input id="invite-name" type="text" name="name" required="" value="" aria-invalid="true" aria-describedby="invite-name-error"></label>
+<span id="invite-name-error">Enter a name.</span></div>
+<div><label>Email
+<input id="invite-email" type="email" name="email" required="" value="not-an-email" aria-invalid="true" aria-describedby="invite-email-error"></label>
+<span id="invite-email-error">Enter a valid email address, like name@example.com.</span></div>
+<div><label>Role
+<select id="invite-role" name="role"><option value="owner">Owner</option>
+<option value="admin">Admin</option>
+<option value="member" selected="">Member</option></select></label></div>
+<button type="submit">Invite member</button></form></div>

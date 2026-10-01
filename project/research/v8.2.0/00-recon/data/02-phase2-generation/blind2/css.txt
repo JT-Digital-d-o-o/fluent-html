@@ -1,0 +1,4 @@
+
+> teamapp@1.0.0 css
+> tsx scripts/build-safelist.ts && postcss public/css/styles.css -o public/css/styles.compiled.css
+

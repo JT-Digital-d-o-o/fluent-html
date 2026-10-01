@@ -1,0 +1,1108 @@
+diff --git a/project/pm/roadmap.md b/project/pm/roadmap.md
+index 98091f8..716ef6b 100644
+--- a/project/pm/roadmap.md
++++ b/project/pm/roadmap.md
+@@ -16,9 +16,11 @@
+ 
+ ## Current Focus
+ <!-- One or two sentences: what this cycle/week is about and why. -->
++The Team page ([team/](team/prd.md)): signed-in users see the team, search it and invite members, backed by an in-memory store.
+ 
+ ## Next Up
+ <!-- - <thing> — why it's next / what it unblocks -->
++- Verify the Team page (lint, typecheck, unit + integration tests): its tasks sit at `[r]` until then.
+ 
+ ## Launch Essentials
+ <!-- Every project ships these before going live. Check off as they land;
+@@ -35,3 +37,4 @@
+ 
+ ## Just Shipped
+ <!-- One line per recent session; collapse older ones to a range. Git holds the detail. -->
++- 30. 09. 26: Team page code (`/team`, live search, invite form, nav link), unverified.
+diff --git a/project/pm/team/decisions.md b/project/pm/team/decisions.md
+new file mode 100644
+index 0000000..90a3bb7
+--- /dev/null
++++ b/project/pm/team/decisions.md
+@@ -0,0 +1,15 @@
++# Team Decisions
++
++## Search swaps the members panel; an invite answers the page
++**Date:** 30. 09. 26
++**Context:** The search box must filter without a reload, and a successful invite must show the new member and reset the form, also without a reload.
++**Decision:** The search box lives inside the members panel (`teamIds.membersPanel`), and `GET /team/members` answers that panel as a fragment. `POST /team` answers the whole page on success (`.submit` morphs `#main-content`) and the invite form region alone on a 422 (`{ invalid: teamIds.inviteForm }`). The invite form carries `.behavior("resetOnSuccess")`.
++**Reasoning:** htmx 4's morph copies an input's live value only when its `value` attribute changes, so a success morph alone leaves typed text in place. `resetOnSuccess` clears the invite form. The search box renders its query as a `value` attribute on every panel render, so the success page (empty query) clears it and the box never disagrees with the unfiltered list that now shows the new member.
++**Consequences:** A successful invite clears any active search. The search input is re-rendered by its own swap; the morph keeps focus and the caret because the node keeps its id.
++
++## Invite validation is server-only
++**Date:** 30. 09. 26
++**Context:** Native `required`/`type=email` checks would pre-empt the server's messages for two of the three rules, leaving the duplicate-email rule as the only inline message.
++**Decision:** The invite form sets `novalidate` (htmx 4 honours `form.noValidate`), and the service validates every rule, answering a 422 with per-field messages.
++**Reasoning:** One validation voice, rendered next to the fields the way the spec asks.
++**Consequences:** Controls keep `required` for assistive tech; the browser never blocks the submit.
+diff --git a/project/pm/team/prd.md b/project/pm/team/prd.md
+new file mode 100644
+index 0000000..a2c39d2
+--- /dev/null
++++ b/project/pm/team/prd.md
+@@ -0,0 +1,21 @@
++# Team page
++
++## Problem
++Signed-in users have no place to see who is on their team or to add someone to it.
++
++## Appetite
++Small batch: one feature module, no schema changes.
++
++## Solution
++- `/team`, guarded: the team's members (name, email, role, status badge).
++- A search box above the list narrows it by name or email as the user types (HTMX fragment swap, no reload).
++- An "Invite member" form (name, email, role) adds an invited member. Server-side validation: name required, email valid and not already on the team; errors render next to their fields with the typed values kept.
++- Empty team: an empty state prompting an invite. Search with no hits: says so and names the query.
++- Main navigation links to it.
++
++## Rabbit Holes
++- Keeping the search box and the list consistent after an invite (see [decisions.md](decisions.md)).
++
++## No-Gos
++- No database: members live in an in-memory store inside the feature, seeded with three members, reset on restart.
++- No invitation emails, no accept flow, no editing or removing members, no per-team permissions.
+diff --git a/project/pm/team/todo.md b/project/pm/team/todo.md
+new file mode 100644
+index 0000000..522b45d
+--- /dev/null
++++ b/project/pm/team/todo.md
+@@ -0,0 +1,15 @@
++# Team
++
++<!-- Built in a session that could not run tsc, eslint or vitest: everything below is [r]
++     until `npm run lint`, `npx tsc --noEmit`, `npm run test` and `npm run test:integration` pass. -->
++
++### As a signed-in user I want to see my team and invite people so that everyone who should be on it is
++- [r] [P1] Add an in-memory member store seeded with three members
++- [r] [P1] Serve `/team` (guarded) listing name, email, role and a coloured status badge
++- [r] [P1] Filter the list by name or email as the user types, without a reload
++- [r] [P1] Add the "Invite member" form with server-side validation and inline errors
++- [r] [P1] On a successful invite, show the new member and reset the form, without a reload
++- [r] [P2] Show the empty-team and no-search-results states
++- [r] [P2] Link the page from the main navigation
++- [r] [P1] Write tests
++- [r] [P1] Check for bugs
+diff --git a/src/app/team/team.controller.ts b/src/app/team/team.controller.ts
+new file mode 100644
+index 0000000..f52407e
+--- /dev/null
++++ b/src/app/team/team.controller.ts
+@@ -0,0 +1,61 @@
++import type { FastifyReply, FastifyRequest } from "fastify";
++import { defineController, fragment, guarded, page } from "../../core/render/define-controller.js";
++import { isHtmxRequest } from "../../core/htmx/htmx-request.js";
++import type { AuthUser } from "../../core/server/types.js";
++import { requireAuth } from "../auth/shared/guards.js";
++import { teamRoutes } from "./team.routes.js";
++import { inviteMemberSchema, memberSearchSchema } from "./team.schema.js";
++import { inviteMember, listMembers } from "./team.service.js";
++import { teamStore } from "./team.store.js";
++import { TeamPage } from "./views/team.page.view.js";
++import { MembersPanel } from "./views/team.members.view.js";
++import { InviteForm, type InviteState } from "./views/team.invite.view.js";
++
++// A rejected invite answers with the invite card alone: the submit carries
++// `{ invalid: teamIds.inviteForm }`, so htmx routes the 422 there and the list stays put.
++// A no-JS post has no swap target and gets the whole page. `renderView` because neither
++// claim is true of both branches (the template's sign-in is the same case).
++function renderInviteRejected(
++  request: FastifyRequest,
++  reply: FastifyReply,
++  user: AuthUser,
++  invite: InviteState,
++): FastifyReply {
++  reply.code(422).renderView(
++    isHtmxRequest(request)
++      ? InviteForm({ state: invite })
++      : TeamPage({ user, listing: listMembers(teamStore), invite }),
++  );
++  return reply;
++}
++
++export default defineController(teamRoutes, {
++  page: page(
++    ({ user, query }) => TeamPage({ user, listing: listMembers(teamStore, query.q), invite: { kind: "blank" } }),
++    { guards: [requireAuth], schema: memberSearchSchema },
++  ),
++
++  members: fragment(
++    ({ query }) => MembersPanel({ listing: listMembers(teamStore, query.q) }),
++    { guards: [requireAuth], schema: memberSearchSchema },
++  ),
++
++  invite: guarded(
++    { guards: [requireAuth], schema: inviteMemberSchema },
++    (request, reply) => {
++      const result = inviteMember(teamStore, request.body);
++      if (!result.ok) {
++        return renderInviteRejected(request, reply, request.user, {
++          kind: "rejected",
++          values: request.body,
++          errors: result.error,
++        });
++      }
++      return reply.renderPage(TeamPage({
++        user: request.user,
++        listing: listMembers(teamStore),
++        invite: { kind: "added", member: result.value },
++      }));
++    },
++  ),
++});
+diff --git a/src/app/team/team.routes.ts b/src/app/team/team.routes.ts
+new file mode 100644
+index 0000000..7d164a5
+--- /dev/null
++++ b/src/app/team/team.routes.ts
+@@ -0,0 +1,13 @@
++import { defineRoutes, defineIds } from "fluent-html";
++
++// `inviteName` is the invite form's name control (the form binds with idPrefix "invite"),
++// the target the empty state focuses.
++export const teamIds = defineIds(["members-panel", "invite-form", "invite-name"] as const);
++
++export const teamRoutes = defineRoutes("/team", {
++  page:    { path: "/" },
++  // The 200 answer is the page (the list now holds the new member); the 422 is the invite
++  // form region alone, routed there by `.submit(…, { invalid: teamIds.inviteForm })`.
++  invite:  { method: "post", path: "/" },
++  members: { path: "/members", render: teamIds.membersPanel },
++} as const);
+diff --git a/src/app/team/team.schema.ts b/src/app/team/team.schema.ts
+new file mode 100644
+index 0000000..e1bd04a
+--- /dev/null
++++ b/src/app/team/team.schema.ts
+@@ -0,0 +1,26 @@
++import { Type, type Static } from "@sinclair/typebox";
++
++export const MEMBER_NAME_MAX = 100;
++export const MEMBER_EMAIL_MAX = 254;
++export const MEMBER_QUERY_MAX = 100;
++
++export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
++
++const MemberRole = Type.Union([Type.Literal("owner"), Type.Literal("admin"), Type.Literal("member")]);
++export type MemberRole = Static<typeof MemberRole>;
++
++// Name and email carry no content rules here: an Ajv failure answers a generic 400, and the
++// spec wants per-field messages, so the service checks them and answers a 422 instead.
++const InviteMemberBody = Type.Object({
++  name: Type.String({ maxLength: MEMBER_NAME_MAX }),
++  email: Type.String({ maxLength: MEMBER_EMAIL_MAX }),
++  role: MemberRole,
++}, { additionalProperties: false });
++export type InviteMemberReq = Static<typeof InviteMemberBody>;
++export const inviteMemberSchema = { body: InviteMemberBody };
++
++const MemberSearchQuery = Type.Object({
++  q: Type.Optional(Type.String({ maxLength: MEMBER_QUERY_MAX })),
++});
++export type MemberSearchReq = Static<typeof MemberSearchQuery>;
++export const memberSearchSchema = { querystring: MemberSearchQuery };
+diff --git a/src/app/team/team.service.ts b/src/app/team/team.service.ts
+new file mode 100644
+index 0000000..c9dd0b9
+--- /dev/null
++++ b/src/app/team/team.service.ts
+@@ -0,0 +1,56 @@
++import type { ErrorBag } from "fluent-html";
++import { normalizeEmail } from "../../shared/formatters.js";
++import { fail, ok, type Result } from "../../shared/result.js";
++import { EMAIL_PATTERN, type InviteMemberReq } from "./team.schema.js";
++import type { TeamMember, TeamStore } from "./team.store.js";
++
++export type Roster =
++  | { readonly kind: "empty" }
++  | { readonly kind: "noMatches"; readonly query: string }
++  | { readonly kind: "list"; readonly members: readonly TeamMember[] };
++
++export type TeamListing = {
++  /** The query as typed, echoed back into the search box. */
++  readonly query: string;
++  readonly total: number;
++  readonly roster: Roster;
++};
++
++export type InviteErrors = ErrorBag<InviteMemberReq>;
++
++function matches(member: TeamMember, needle: string): boolean {
++  return member.name.toLowerCase().includes(needle) || member.email.toLowerCase().includes(needle);
++}
++
++function rosterOf(total: number, hits: readonly TeamMember[], query: string): Roster {
++  if (total === 0) return { kind: "empty" };
++  if (hits.length === 0) return { kind: "noMatches", query };
++  return { kind: "list", members: hits };
++}
++
++/** The team, narrowed to members whose name or email contains `query` (case-insensitive). */
++export function listMembers(store: TeamStore, query = ""): TeamListing {
++  const members = store.list();
++  const trimmed = query.trim();
++  const needle = trimmed.toLowerCase();
++  const hits = members.filter((member) => matches(member, needle));
++  return { query, total: members.length, roster: rosterOf(members.length, hits, trimmed) };
++}
++
++function emailError(store: TeamStore, email: string): string | undefined {
++  if (!EMAIL_PATTERN.test(email)) return "Enter a valid email address, like name@example.com.";
++  if (store.hasEmail(email)) return "Someone with this email is already on the team.";
++  return undefined;
++}
++
++/** Validate an invite and, when it holds, add the person as an invited member. */
++export function inviteMember(store: TeamStore, body: InviteMemberReq): Result<TeamMember, InviteErrors> {
++  const name = body.name.trim();
++  const email = normalizeEmail(body.email);
++  const errors: InviteErrors = {};
++  if (name === "") errors.name = "Enter a name.";
++  const emailProblem = emailError(store, email);
++  if (emailProblem !== undefined) errors.email = emailProblem;
++  if (Object.keys(errors).length > 0) return fail(errors);
++  return ok(store.add({ name, email, role: body.role, status: "invited" }));
++}
+diff --git a/src/app/team/team.store.ts b/src/app/team/team.store.ts
+new file mode 100644
+index 0000000..a7ff7ae
+--- /dev/null
++++ b/src/app/team/team.store.ts
+@@ -0,0 +1,49 @@
++import type { MemberRole } from "./team.schema.js";
++
++export type MemberId = string & { readonly __brand: "MemberId" };
++export type MemberStatus = "active" | "invited";
++
++export type TeamMember = {
++  readonly id: MemberId;
++  readonly name: string;
++  readonly email: string;
++  readonly role: MemberRole;
++  readonly status: MemberStatus;
++};
++
++export type NewMember = Omit<TeamMember, "id">;
++
++/** Emails are compared as given: callers pass them normalized (see team.service.ts). */
++export type TeamStore = {
++  list(): readonly TeamMember[];
++  hasEmail(email: string): boolean;
++  add(member: NewMember): TeamMember;
++};
++
++export const SEED_MEMBERS: readonly NewMember[] = [
++  { name: "Maja Novak", email: "maja.novak@example.com", role: "owner", status: "active" },
++  { name: "Luka Kovač", email: "luka.kovac@example.com", role: "admin", status: "active" },
++  { name: "Ana Horvat", email: "ana.horvat@example.com", role: "member", status: "invited" },
++];
++
++export function createTeamStore(seed: readonly NewMember[] = []): TeamStore {
++  const members: TeamMember[] = [];
++  let nextId = 1;
++
++  function add(member: NewMember): TeamMember {
++    const created: TeamMember = { ...member, id: `member-${nextId++}` as MemberId };
++    members.push(created);
++    return created;
++  }
++
++  for (const member of seed) add(member);
++
++  return {
++    list: () => [...members],
++    hasEmail: (email) => members.some((m) => m.email === email),
++    add,
++  };
++}
++
++/** The app's team. Process memory: every restart is back to the seed. */
++export const teamStore = createTeamStore(SEED_MEMBERS);
+diff --git a/src/app/team/views/team.components.ts b/src/app/team/views/team.components.ts
+new file mode 100644
+index 0000000..2f53b11
+--- /dev/null
++++ b/src/app/team/views/team.components.ts
+@@ -0,0 +1,39 @@
++import { Span, Tr } from "fluent-html";
++import { TdCell } from "../../../shared/ui/index.js";
++import type { MemberRole } from "../team.schema.js";
++import type { MemberStatus, TeamMember } from "../team.store.js";
++
++export const ROLE_LABELS = {
++  owner: "Owner",
++  admin: "Admin",
++  member: "Member",
++} as const satisfies Record<MemberRole, string>;
++
++const STATUS_LABELS = {
++  active: "Active",
++  invited: "Invited",
++} as const satisfies Record<MemberStatus, string>;
++
++export function StatusBadge({ status }: { status: MemberStatus }) {
++  return Span(STATUS_LABELS[status])
++    .whenMatch(status, {
++      active: (t) => t.bg("success/10").text("success"),
++      invited: (t) => t.bg("warning/10").text("warning"),
++    })
++    .inlineFlex()
++    .items("center")
++    .p("x", "2")
++    .p("y", "0.5")
++    .rounded("control")
++    .text("xs")
++    .font("medium");
++}
++
++export function MemberRow({ member }: { member: TeamMember }) {
++  return Tr(
++    TdCell({ content: Span(member.name).font("medium").text("text") }),
++    TdCell({ content: member.email }),
++    TdCell({ content: ROLE_LABELS[member.role] }),
++    TdCell({ content: StatusBadge({ status: member.status }) }),
++  );
++}
+diff --git a/src/app/team/views/team.invite.view.ts b/src/app/team/views/team.invite.view.ts
+new file mode 100644
+index 0000000..1400bae
+--- /dev/null
++++ b/src/app/team/views/team.invite.view.ts
+@@ -0,0 +1,115 @@
++import { Div, H2, P, Form, Match, Empty, type FormBinding, type FormState, type Tag } from "fluent-html";
++import { Alert, PrimaryButton, cardChrome, cardTitle, inputStyle, selectStyle } from "../../../shared/ui/index.js";
++import { teamIds, teamRoutes } from "../team.routes.js";
++import { MEMBER_EMAIL_MAX, MEMBER_NAME_MAX, type InviteMemberReq, type MemberRole } from "../team.schema.js";
++import type { InviteErrors } from "../team.service.js";
++import type { TeamMember } from "../team.store.js";
++import { ROLE_LABELS } from "./team.components.js";
++
++export type InviteState =
++  | { readonly kind: "blank" }
++  | { readonly kind: "rejected"; readonly values: InviteMemberReq; readonly errors: InviteErrors }
++  | { readonly kind: "added"; readonly member: TeamMember };
++
++// The binding ids each control `${prefix}-${name}`, so the name control is `teamIds.inviteName`.
++const INVITE_ID_PREFIX = "invite";
++
++const ROLE_OPTIONS = [
++  { value: "member", label: ROLE_LABELS.member },
++  { value: "admin", label: ROLE_LABELS.admin },
++  { value: "owner", label: ROLE_LABELS.owner },
++] as const satisfies readonly { value: MemberRole; label: string }[];
++
++type InviteFormProps = { state: InviteState };
++
++/** The invite card, and on its own the 422 answer `{ invalid: teamIds.inviteForm }` swaps in. */
++export function InviteForm({ state }: InviteFormProps) {
++  return Div(
++    InviteHeading(),
++    AddedNotice({ state }),
++    Match(state, "kind", {
++      rejected: (s) => InviteFields({ values: s.values, errors: s.errors }),
++    }, () => InviteFields({})),
++  )
++    .apply(cardChrome)
++    .p("6")
++    .flex()
++    .flex("col")
++    .gap("4")
++    .setId(teamIds.inviteForm);
++}
++
++function InviteHeading() {
++  return Div(
++    H2("Invite member").apply(cardTitle),
++    P("New members are listed as invited.").text("sm").text("text-dim").m("t", "1"),
++  );
++}
++
++function AddedNotice({ state }: InviteFormProps) {
++  return Match(state, "kind", {
++    added: (s) => Alert({
++      message: `${s.member.name} was added as an invited ${ROLE_LABELS[s.member.role].toLowerCase()}.`,
++      type: "success",
++    }).setRole("status"),
++  }, () => Empty());
++}
++
++type InviteFieldsProps = Pick<FormState<InviteMemberReq>, "values" | "errors">;
++
++function InviteFields({ values, errors }: InviteFieldsProps) {
++  return Form<InviteMemberReq>({ values, errors, idPrefix: INVITE_ID_PREFIX }, (f) => [
++    Div(
++      Field({
++        f,
++        name: "name",
++        label: "Name",
++        control: f.input("name", "text")
++          .setMaxlength(MEMBER_NAME_MAX)
++          .setAutocomplete("off")
++          .toggle("required")
++          .apply(inputStyle),
++      }),
++      Field({
++        f,
++        name: "email",
++        label: "Email",
++        control: f.input("email", "email")
++          .setMaxlength(MEMBER_EMAIL_MAX)
++          .setAutocomplete("off")
++          .toggle("required")
++          .apply(inputStyle),
++      }),
++      Field({ f, name: "role", label: "Role", control: f.select("role", ROLE_OPTIONS).apply(selectStyle) }),
++    )
++      .grid()
++      .gap("4")
++      .md({ gridCols: "3" }),
++    Div(PrimaryButton({ label: "Invite member" }).setType("submit")).flex().justify("end"),
++  ])
++    // The server is the one validation voice: native checks would pre-empt its inline messages.
++    .toggle("novalidate")
++    .behavior("resetOnSuccess")
++    .submit(teamRoutes.invite(), { invalid: teamIds.inviteForm })
++    .flex()
++    .flex("col")
++    .gap("4");
++}
++
++type FieldProps = {
++  f: FormBinding<InviteMemberReq>;
++  name: keyof InviteMemberReq;
++  label: string;
++  control: Tag;
++};
++
++function Field({ f, name, label, control }: FieldProps) {
++  return Div(
++    f.label(name, label).text("sm").font("medium").text("text"),
++    control,
++    Div(f.error(name)).text("sm").text("danger"),
++  )
++    .flex()
++    .flex("col")
++    .gap("1");
++}
+diff --git a/src/app/team/views/team.members.view.ts b/src/app/team/views/team.members.view.ts
+new file mode 100644
+index 0000000..20dbdc5
+--- /dev/null
++++ b/src/app/team/views/team.members.view.ts
+@@ -0,0 +1,109 @@
++import {
++  Div,
++  H2,
++  P,
++  Button,
++  Form,
++  Table,
++  Thead,
++  Tbody,
++  Tr,
++  Match,
++  ForEachKeyed,
++} from "fluent-html";
++import { EmptyState, ThCell, cardChrome, cardTitle, inputStyle, primaryCta } from "../../../shared/ui/index.js";
++import { count } from "../../../shared/formatters.js";
++import { teamIds, teamRoutes } from "../team.routes.js";
++import { MEMBER_QUERY_MAX, type MemberSearchReq } from "../team.schema.js";
++import type { Roster, TeamListing } from "../team.service.js";
++import type { TeamMember } from "../team.store.js";
++import { MemberRow } from "./team.components.js";
++
++type MembersPanelProps = { listing: TeamListing };
++
++/** The members card (search box, count, roster), and on its own the answer to a search. */
++export function MembersPanel({ listing }: MembersPanelProps) {
++  return Div(
++    MembersHeading({ total: listing.total }),
++    MemberSearch({ query: listing.query }),
++    MemberRoster({ roster: listing.roster }),
++  )
++    .apply(cardChrome)
++    .p("6")
++    .flex()
++    .flex("col")
++    .gap("4")
++    .setId(teamIds.membersPanel);
++}
++
++function MembersHeading({ total }: { total: number }) {
++  return Div(
++    H2("Members").apply(cardTitle),
++    P(count(total, { one: "member", other: "members" })).text("sm").text("text-dim"),
++  )
++    .flex()
++    .items("baseline")
++    .justify("between")
++    .gap("4");
++}
++
++// The query is always rendered as a `value` attribute, an empty one included: htmx's morph
++// copies an input's live value only when that attribute changes, which is how the page a
++// successful invite answers with clears a box the user had typed into.
++function MemberSearch({ query }: { query: string }) {
++  return Form<MemberSearchReq>({ values: { q: query }, idPrefix: "member-search" }, (f) => [
++    f.label("q", "Search members").srOnly(),
++    f.input("q", "search")
++      .setPlaceholder("Search by name or email")
++      .setMaxlength(MEMBER_QUERY_MAX)
++      .setAutocomplete("off")
++      .apply(inputStyle)
++      .search(teamIds.membersPanel, teamRoutes.members()),
++  ])
++    .setRole("search")
++    // Enter submits the form; answer it with the same swap rather than a full page load.
++    .fragment(teamIds.membersPanel, teamRoutes.members());
++}
++
++function MemberRoster({ roster }: { roster: Roster }) {
++  return Match(roster, "kind", {
++    empty: () => EmptyTeam(),
++    noMatches: (r) => NoMatches({ query: r.query }),
++    list: (r) => MemberTable({ members: r.members }),
++  });
++}
++
++function EmptyTeam() {
++  return EmptyState({
++    message: "Your team has no members yet. Invite someone to join it.",
++    actionView: Button("Invite a member")
++      .setType("button")
++      .behavior("focus", { target: teamIds.inviteName })
++      .apply(primaryCta)
++      .p("x", "5")
++      .p("y", "2")
++      .cursor("pointer"),
++  });
++}
++
++function NoMatches({ query }: { query: string }) {
++  return EmptyState({ message: `No members match “${query}”. Try another name or email.` });
++}
++
++function MemberTable({ members }: { members: readonly TeamMember[] }) {
++  return Div(
++    Table(
++      Thead(
++        Tr(
++          ThCell({ text: "Name" }),
++          ThCell({ text: "Email" }),
++          ThCell({ text: "Role" }),
++          ThCell({ text: "Status" }),
++        ).border("b").border("line"),
++      ),
++      Tbody(ForEachKeyed(members, (m) => m.id, (m) => MemberRow({ member: m })))
++        .divideY()
++        .divide("line"),
++    ).w("full"),
++  ).overflow("x", "auto");
++}
+diff --git a/src/app/team/views/team.page.view.ts b/src/app/team/views/team.page.view.ts
+new file mode 100644
+index 0000000..2d55c47
+--- /dev/null
++++ b/src/app/team/views/team.page.view.ts
+@@ -0,0 +1,35 @@
++import { Div, H1, P } from "fluent-html";
++import { Layout } from "../../../core/layout/layout.view.js";
++import type { AuthUser } from "../../../core/server/types.js";
++import type { TeamListing } from "../team.service.js";
++import { InviteForm, type InviteState } from "./team.invite.view.js";
++import { MembersPanel } from "./team.members.view.js";
++
++type TeamPageProps = {
++  user: AuthUser;
++  listing: TeamListing;
++  invite: InviteState;
++};
++
++export function TeamPage({ user, listing, invite }: TeamPageProps) {
++  return Layout({
++    title: "Team",
++    user,
++    width: "4xl",
++    children: Div(
++      TeamHeader(),
++      InviteForm({ state: invite }),
++      MembersPanel({ listing }),
++    )
++      .flex()
++      .flex("col")
++      .gap("8"),
++  });
++}
++
++function TeamHeader() {
++  return Div(
++    H1("Team").text("2xl").font("bold").text("text"),
++    P("See who is on the team and invite new members.").text("text-dim").m("t", "1"),
++  );
++}
+diff --git a/src/core/layout/layout.view.ts b/src/core/layout/layout.view.ts
+index fe6bebc..bd49c9e 100644
+--- a/src/core/layout/layout.view.ts
++++ b/src/core/layout/layout.view.ts
+@@ -44,6 +44,7 @@ import { APP_LOCALE } from "../config/locale.js";
+ import { signInRoutes } from "../../app/auth/auth.routes.js";
+ import type { AuthUser } from "../../core/server/types.js";
+ import { accountRoutes } from "../../app/account/account.routes.js";
++import { teamRoutes } from "../../app/team/team.routes.js";
+ 
+ /** Max content width for the standard centered page container (see `Layout`). */
+ export type ContentWidth = "lg" | "2xl" | "4xl" | "7xl";
+@@ -258,6 +259,8 @@ export function Navigation(
+ 
+ function AuthedNavLinks() {
+   return Div(
++    A("Team")
++      .nav(teamRoutes.page()),
+     A("Account")
+       .nav(accountRoutes.page()),
+     Form(
+diff --git a/src/core/server/server.ts b/src/core/server/server.ts
+index 6222f41..b04cc14 100644
+--- a/src/core/server/server.ts
++++ b/src/core/server/server.ts
+@@ -196,6 +196,7 @@ function registerControllers(server: FastifyInstance) {
+ 
+   server.register(import("../../app/auth/auth.controller.js"));
+   server.register(import("../../app/account/account.controller.js"));
++  server.register(import("../../app/team/team.controller.js"));
+ 
+   server.register(import("../../app/seo/seo.controller.js"));
+   server.register(import("../../app/legal/legal.controller.js"));
+diff --git a/src/shared/ui/form.ts b/src/shared/ui/form.ts
+index 4fdd975..df24e56 100644
+--- a/src/shared/ui/form.ts
++++ b/src/shared/ui/form.ts
+@@ -4,6 +4,7 @@ import {
+   Input,
+   InputTag,
+   TextareaTag,
++  SelectTag,
+   Label,
+   Tag,
+ } from "fluent-html";
+@@ -41,7 +42,7 @@ export function FormGroup({ label, input, name, required = false, htmlFor, spaci
+   });
+ }
+ 
+-// Shared field look for inputs and textareas (byte-identical styling).
++// Shared field look for inputs, textareas and selects (byte-identical styling).
+ const fieldStyle: Styler = (t) => t
+   .w("full")
+   .p("x", "4")
+@@ -59,6 +60,8 @@ export function StyledInput(): InputTag {
+ 
+ export const textareaStyle = (t: TextareaTag): TextareaTag => fieldStyle(t);
+ 
++export const selectStyle = (t: SelectTag): SelectTag => fieldStyle(t);
++
+ export type NoticeTone = "danger" | "success" | "warning" | "info" | "neutral";
+ 
+ /**
+diff --git a/src/shared/ui/index.ts b/src/shared/ui/index.ts
+index 0ed55c7..42de90f 100644
+--- a/src/shared/ui/index.ts
++++ b/src/shared/ui/index.ts
+@@ -1,5 +1,5 @@
+ // Barrel re-exports — individual components live in focused files
+-export { FormGroup, StyledInput, inputStyle, textareaStyle, Alert, noticeBox } from "./form.js";
++export { FormGroup, StyledInput, inputStyle, textareaStyle, selectStyle, Alert, noticeBox } from "./form.js";
+ export type { NoticeTone } from "./form.js";
+ export { Card, DashboardSection, CenteredPage, cardChrome, cardTitle } from "./layout.js";
+ export { StatCard, EmptyState, ThCell, TdCell, Pagination, alignText, TREND_ARROWS, trendColor, thCell, tdCell } from "./data.js";
+diff --git a/tests/integration/team.test.ts b/tests/integration/team.test.ts
+new file mode 100644
+index 0000000..0e04698
+--- /dev/null
++++ b/tests/integration/team.test.ts
+@@ -0,0 +1,104 @@
++import { describe, it, expect, beforeAll, afterAll } from "vitest";
++import { buildServer } from "../../src/core/server/server.js";
++import { prisma, sessionCookie } from "../setup.js";
++import { hashPassword } from "../../src/app/auth/shared/password.js";
++
++const PASSWORD = "testpassword123";
++const EMAIL = "team-test@example.com";
++const HTMX = { "hx-request": "true" };
++
++// Field rules are unit-tested in tests/unit/team.service.test.ts; this file covers the HTTP
++// half: the guard, what each route answers with, and where a rejected invite lands.
++describe("Team", () => {
++  let server: Awaited<ReturnType<typeof buildServer>>;
++  let cookie: string;
++
++  beforeAll(async () => {
++    server = await buildServer();
++    await server.ready();
++    await prisma.user.deleteMany({ where: { email: EMAIL } });
++    await prisma.user.create({
++      data: { email: EMAIL, name: "Team Test", password: await hashPassword(PASSWORD) },
++    });
++    const res = await server.inject({
++      method: "POST",
++      url: "/auth/signin",
++      payload: { email: EMAIL, password: PASSWORD },
++    });
++    cookie = sessionCookie(res);
++  });
++
++  afterAll(async () => {
++    await prisma.user.deleteMany({ where: { email: EMAIL } });
++    await server.close();
++  });
++
++  it("should send a signed-out visitor to sign in", async () => {
++    const page = await server.inject({ method: "GET", url: "/team" });
++    const search = await server.inject({ method: "GET", url: "/team/members?q=ana" });
++    const invite = await server.inject({
++      method: "POST",
++      url: "/team",
++      payload: { name: "Zoe", email: "zoe@example.com", role: "member" },
++    });
++    expect([page.statusCode, search.statusCode, invite.statusCode]).toEqual([302, 302, 302]);
++  });
++
++  it("should render the team page with the seeded members", async () => {
++    const res = await server.inject({ method: "GET", url: "/team", headers: { cookie } });
++    expect(res.statusCode).toBe(200);
++    expect(res.body).toContain("maja.novak@example.com");
++    expect(res.body).toContain("ana.horvat@example.com");
++  });
++
++  it("should answer a search with the members panel alone", async () => {
++    const res = await server.inject({
++      method: "GET",
++      url: "/team/members?q=luka",
++      headers: { cookie, ...HTMX },
++    });
++    expect(res.statusCode).toBe(200);
++    expect(res.body).toMatch(/^<div id="members-panel"/);
++    expect(res.body).toContain("luka.kovac@example.com");
++    expect(res.body).not.toContain("maja.novak@example.com");
++  });
++
++  it("should answer a rejected htmx invite with a 422 and the invite card alone", async () => {
++    const res = await server.inject({
++      method: "POST",
++      url: "/team",
++      headers: { cookie, ...HTMX },
++      payload: { name: "Maja again", email: "maja.novak@example.com", role: "member" },
++    });
++    expect(res.statusCode).toBe(422);
++    expect(res.body).toMatch(/^<div id="invite-form"/);
++    expect(res.body).toContain("Someone with this email is already on the team.");
++    expect(res.body).toContain('value="Maja again"');
++    expect(res.body).not.toContain('id="main-content"');
++  });
++
++  it("should answer a rejected no-JS invite with the whole page", async () => {
++    const res = await server.inject({
++      method: "POST",
++      url: "/team",
++      headers: { cookie },
++      payload: { name: "", email: "zoe@example.com", role: "member" },
++    });
++    expect(res.statusCode).toBe(422);
++    expect(res.body).toContain("<!DOCTYPE html>");
++    expect(res.body).toContain("Enter a name.");
++  });
++
++  it("should add a valid invite and answer the page listing the new member", async () => {
++    const res = await server.inject({
++      method: "POST",
++      url: "/team",
++      headers: { cookie, ...HTMX },
++      payload: { name: "Zoe Ward", email: "zoe.ward@example.com", role: "admin" },
++    });
++    expect(res.statusCode).toBe(200);
++    expect(res.body).toContain('id="main-content"');
++    expect(res.body).toContain("zoe.ward@example.com");
++    expect(res.body).toContain("Zoe Ward was added as an invited admin.");
++  });
++});
+diff --git a/tests/unit/render-stance.test.ts b/tests/unit/render-stance.test.ts
+index 9814fa0..346b018 100644
+--- a/tests/unit/render-stance.test.ts
++++ b/tests/unit/render-stance.test.ts
+@@ -28,6 +28,7 @@ import {
+   passwordRoutes,
+ } from "../../src/app/auth/auth.routes.js";
+ import { accountRoutes } from "../../src/app/account/account.routes.js";
++import { teamRoutes, teamIds } from "../../src/app/team/team.routes.js";
+ 
+ const REGISTRIES: Record<string, AnyRouteRegistry> = {
+   homeRoutes,
+@@ -38,6 +39,7 @@ const REGISTRIES: Record<string, AnyRouteRegistry> = {
+   registrationRoutes,
+   passwordRoutes,
+   accountRoutes,
++  teamRoutes,
+ };
+ 
+ /**
+@@ -55,6 +57,7 @@ const MACHINE: Record<string, string> = {
+  * the same routes file the route lives in, so a stance pointing at a foreign id fails here.
+  */
+ const FRAGMENTS: Record<string, Id<string>> = {
++  "teamRoutes.members": teamIds.membersPanel,
+ };
+ 
+ type Entry = { key: string; route: AnyRouteCallable };
+diff --git a/tests/unit/team.service.test.ts b/tests/unit/team.service.test.ts
+new file mode 100644
+index 0000000..ee4ce82
+--- /dev/null
++++ b/tests/unit/team.service.test.ts
+@@ -0,0 +1,78 @@
++import { describe, it, expect } from "vitest";
++import { createTeamStore, SEED_MEMBERS } from "../../src/app/team/team.store.js";
++import { inviteMember, listMembers, type TeamListing } from "../../src/app/team/team.service.js";
++
++const seeded = () => createTeamStore(SEED_MEMBERS);
++
++function listedNames(listing: TeamListing): string[] {
++  if (listing.roster.kind !== "list") return [];
++  return listing.roster.members.map((member) => member.name);
++}
++
++describe("listMembers", () => {
++  it("should list every member when there is no query", () => {
++    const listing = listMembers(seeded());
++    expect(listing.total).toBe(3);
++    expect(listedNames(listing)).toEqual(["Maja Novak", "Luka Kovač", "Ana Horvat"]);
++  });
++
++  it("should match a name case-insensitively, ignoring surrounding spaces", () => {
++    expect(listedNames(listMembers(seeded(), "  LUKA "))).toEqual(["Luka Kovač"]);
++  });
++
++  it("should match part of an email", () => {
++    expect(listedNames(listMembers(seeded(), "horvat@"))).toEqual(["Ana Horvat"]);
++  });
++
++  it("should report no matches with the trimmed query, echoing the query as typed", () => {
++    const listing = listMembers(seeded(), " zoe ");
++    expect(listing.roster).toEqual({ kind: "noMatches", query: "zoe" });
++    expect(listing.query).toBe(" zoe ");
++    expect(listing.total).toBe(3);
++  });
++
++  it("should report an empty team whatever the query", () => {
++    expect(listMembers(createTeamStore()).roster).toEqual({ kind: "empty" });
++    expect(listMembers(createTeamStore(), "ana").roster).toEqual({ kind: "empty" });
++  });
++});
++
++describe("inviteMember", () => {
++  it("should add a valid invite as an invited member with a normalized email", () => {
++    const store = seeded();
++    const result = inviteMember(store, { name: "  Zoe Ward ", email: " Zoe.Ward@Example.com ", role: "admin" });
++
++    expect(result.ok).toBe(true);
++    expect(result.ok && result.value).toMatchObject({
++      name: "Zoe Ward",
++      email: "zoe.ward@example.com",
++      role: "admin",
++      status: "invited",
++    });
++    expect(listedNames(listMembers(store))).toContain("Zoe Ward");
++  });
++
++  it("should require a name", () => {
++    const result = inviteMember(seeded(), { name: "   ", email: "zoe@example.com", role: "member" });
++    expect(result).toEqual({ ok: false, error: { name: "Enter a name." } });
++  });
++
++  it("should reject an invalid email", () => {
++    const result = inviteMember(seeded(), { name: "Zoe", email: "zoe@example", role: "member" });
++    expect(result.ok).toBe(false);
++    expect(!result.ok && result.error.email).toBe("Enter a valid email address, like name@example.com.");
++  });
++
++  it("should reject an email already on the team, whatever its case", () => {
++    const result = inviteMember(seeded(), { name: "Maja", email: "MAJA.NOVAK@example.com", role: "member" });
++    expect(!result.ok && result.error.email).toBe("Someone with this email is already on the team.");
++  });
++
++  it("should report every failing field at once and add nobody", () => {
++    const store = seeded();
++    const result = inviteMember(store, { name: "", email: "not-an-email", role: "member" });
++
++    expect(!result.ok && Object.keys(result.error).sort()).toEqual(["email", "name"]);
++    expect(listMembers(store).total).toBe(3);
++  });
++});
+diff --git a/tests/view/layout.test.ts b/tests/view/layout.test.ts
+index e6e7ff8..308b761 100644
+--- a/tests/view/layout.test.ts
++++ b/tests/view/layout.test.ts
+@@ -169,6 +169,11 @@ describe("Navigation", () => {
+     expect(html).toContain("Logout");
+   });
+ 
++  it("should link the Team page only when authenticated", () => {
++    expect(render(Navigation({ user: testUser }))).toContain('hx-get="/team"');
++    expect(render(Navigation({ user: null }))).not.toContain('hx-get="/team"');
++  });
++
+   it("should not render Login when authenticated", () => {
+     const html = render(Navigation({ user: testUser }));
+     expect(html).not.toContain(">Login<");
+diff --git a/tests/view/team.view.test.ts b/tests/view/team.view.test.ts
+new file mode 100644
+index 0000000..5b9b390
+--- /dev/null
++++ b/tests/view/team.view.test.ts
+@@ -0,0 +1,143 @@
++import { describe, it, expect } from "vitest";
++import { render } from "fluent-html";
++import type { AuthUser } from "../../src/core/server/types.js";
++import { TeamPage } from "../../src/app/team/views/team.page.view.js";
++import { MembersPanel } from "../../src/app/team/views/team.members.view.js";
++import { InviteForm } from "../../src/app/team/views/team.invite.view.js";
++import { StatusBadge } from "../../src/app/team/views/team.components.js";
++import { createTeamStore, SEED_MEMBERS } from "../../src/app/team/team.store.js";
++import { listMembers } from "../../src/app/team/team.service.js";
++import { expectPageShell } from "./page-shell.js";
++
++const user: AuthUser = {
++  id: "user-1",
++  email: "owner@example.com",
++  name: "Team Owner",
++  role: "USER",
++  username: null,
++  bio: null,
++  createdAt: new Date(),
++  updatedAt: new Date(),
++};
++
++const seeded = () => createTeamStore(SEED_MEMBERS);
++
++describe("TeamPage", () => {
++  it("renders through Layout with a single h1", () => {
++    const html = render(TeamPage({ user, listing: listMembers(seeded()), invite: { kind: "blank" } }));
++    expectPageShell(html, "Team");
++  });
++
++  it("lists each member's name, email, role and status", () => {
++    const html = render(TeamPage({ user, listing: listMembers(seeded()), invite: { kind: "blank" } }));
++    expect(html).toContain("Maja Novak");
++    expect(html).toContain("luka.kovac@example.com");
++    expect(html).toContain("Owner");
++    expect(html).toContain("Admin");
++    expect(html).toContain("Active");
++    expect(html).toContain("Invited");
++  });
++});
++
++describe("StatusBadge", () => {
++  it("colours an active member with the success tone", () => {
++    const html = render(StatusBadge({ status: "active" }));
++    expect(html).toContain("Active");
++    expect(html).toContain("bg-success/10");
++  });
++
++  it("colours an invited member with the warning tone", () => {
++    const html = render(StatusBadge({ status: "invited" }));
++    expect(html).toContain("Invited");
++    expect(html).toContain("bg-warning/10");
++  });
++});
++
++describe("MembersPanel", () => {
++  it("is rooted at the panel id the search swaps", () => {
++    expect(render(MembersPanel({ listing: listMembers(seeded()) }))).toMatch(/^<div id="members-panel"/);
++  });
++
++  it("wires the search box to swap the panel as the user types", () => {
++    const html = render(MembersPanel({ listing: listMembers(seeded(), "ana") }));
++    expect(html).toContain('hx-get="/team/members"');
++    expect(html).toContain('hx-target="#members-panel"');
++    expect(html).toContain("input changed delay:300ms");
++    expect(html).toContain('name="q"');
++    expect(html).toContain('value="ana"');
++  });
++
++  // The page a successful invite answers with must clear a box the user typed into, and a
++  // morph only copies a changed `value` attribute into the live value.
++  it("renders an empty query as an explicit empty value", () => {
++    expect(render(MembersPanel({ listing: listMembers(seeded()) }))).toContain('value=""');
++  });
++
++  it("keys each row by member id", () => {
++    expect(render(MembersPanel({ listing: listMembers(seeded()) }))).toContain('id="member-1"');
++  });
++
++  it("names the query when a search matches nothing", () => {
++    const html = render(MembersPanel({ listing: listMembers(seeded(), "zoe") }));
++    expect(html).toContain("No members match “zoe”");
++    expect(html).not.toContain("<table");
++  });
++
++  it("escapes the query it names", () => {
++    const html = render(MembersPanel({ listing: listMembers(seeded(), "<b>x</b>") }));
++    expect(html).not.toContain("<b>x</b>");
++    expect(html).toContain("&lt;b&gt;x&lt;/b&gt;");
++  });
++
++  it("prompts an invite when the team has no members", () => {
++    const html = render(MembersPanel({ listing: listMembers(createTeamStore()) }));
++    expect(html).toContain("Your team has no members yet");
++    expect(html).toContain('data-behavior-focus-target="invite-name"');
++    expect(html).not.toContain("<table");
++  });
++});
++
++describe("InviteForm", () => {
++  it("posts to /team and routes a rejected invite back into the card", () => {
++    const html = render(InviteForm({ state: { kind: "blank" } }));
++    expect(html).toMatch(/^<div id="invite-form"/);
++    expect(html).toContain('hx-post="/team"');
++    expect(html).toContain("target:#invite-form");
++    expect(html).toContain('data-behavior="resetOnSuccess"');
++    expect(html).toContain("novalidate");
++  });
++
++  it("gives the name control the id the empty state focuses", () => {
++    expect(render(InviteForm({ state: { kind: "blank" } }))).toContain('id="invite-name"');
++  });
++
++  it("shows each error next to its field and keeps what the user typed", () => {
++    const html = render(InviteForm({
++      state: {
++        kind: "rejected",
++        values: { name: "Zoe Ward", email: "zoe@", role: "admin" },
++        errors: { email: "Enter a valid email address, like name@example.com." },
++      },
++    }));
++    expect(html).toContain('value="Zoe Ward"');
++    expect(html).toContain('value="zoe@"');
++    expect(html).toMatch(/<option(?=[^>]*value="admin")(?=[^>]*selected)[^>]*>/);
++    expect(html).toContain('id="invite-email-error"');
++    expect(html).toContain('aria-invalid="true"');
++    expect(html).toContain("Enter a valid email address, like name@example.com.");
++    expect(html).not.toContain('id="invite-name-error"');
++  });
++
++  it("confirms who was just added and renders the fields empty", () => {
++    const member = createTeamStore().add({
++      name: "Zoe Ward",
++      email: "zoe@example.com",
++      role: "admin",
++      status: "invited",
++    });
++    const html = render(InviteForm({ state: { kind: "added", member } }));
++    expect(html).toContain("Zoe Ward was added as an invited admin.");
++    expect(html).toContain('role="status"');
++    expect(html).not.toContain('value="Zoe Ward"');
++  });
++});

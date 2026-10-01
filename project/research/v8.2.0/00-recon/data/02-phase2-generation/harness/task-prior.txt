@@ -1,0 +1,10 @@
+Build a Team page for a server-rendered web app. Use fluent-html with Fastify, HTMX and Tailwind.
+
+- Route: /team, for signed-in users only (assume an existing `requireAuth` Fastify preHandler).
+- It lists the team's members: name, email, role (owner, admin or member) and status (active or invited), with a coloured badge for the status.
+- A search box above the list filters members by name or email as the user types, without a full page reload.
+- An "Invite member" form (name, email, role) adds an invited member. Validate it: name is required, email must be valid and not already on the team. On error, show the messages next to the fields and keep what the user typed. On success, the new member appears in the list and the form resets, without a full page reload.
+- States: when the team has no members, show an empty state that prompts the user to invite someone; when a search matches nothing, say so and name the query.
+- Keep members in an in-memory store inside the feature (no database); seed it with three members.
+
+Write every file the feature needs (routes, handlers, views) into the current directory. When you are done, reply with the list of files you created.

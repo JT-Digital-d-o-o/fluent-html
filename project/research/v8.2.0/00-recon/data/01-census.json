@@ -1,0 +1,3223 @@
+{
+  "repos": [
+    {
+      "root": "business-helper/business/hiring/matej-naloga",
+      "name": "business-helper/business/hiring/matej-naloga",
+      "version": "6.3.0",
+      "packages": 1,
+      "files": 51,
+      "sites": 462,
+      "era": "pre-7"
+    },
+    {
+      "root": "buzzin",
+      "name": "buzzin",
+      "version": "5.7.0",
+      "packages": 1,
+      "files": 164,
+      "sites": 2728,
+      "era": "pre-7"
+    },
+    {
+      "root": "cms",
+      "name": "cms",
+      "version": "6.1.0",
+      "packages": 1,
+      "files": 104,
+      "sites": 2455,
+      "era": "pre-7"
+    },
+    {
+      "root": "competify",
+      "name": "competify",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 334,
+      "sites": 6001,
+      "era": "canonical"
+    },
+    {
+      "root": "competition",
+      "name": "competition",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 323,
+      "sites": 2146,
+      "era": "canonical"
+    },
+    {
+      "root": "corina/storysell",
+      "name": "corina/storysell",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 218,
+      "sites": 4766,
+      "era": "pre-7"
+    },
+    {
+      "root": "everyframe",
+      "name": "everyframe",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 309,
+      "sites": 6285,
+      "era": "canonical"
+    },
+    {
+      "root": "everyframe-composer",
+      "name": "everyframe-composer",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 555,
+      "sites": 15855,
+      "era": "canonical"
+    },
+    {
+      "root": "filmplast-landing-page",
+      "name": "filmplast-landing-page",
+      "version": "5.7.0",
+      "packages": 1,
+      "files": 42,
+      "sites": 1459,
+      "era": "pre-7"
+    },
+    {
+      "root": "filmplast-v2",
+      "name": "filmplast-v2",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 62,
+      "sites": 1922,
+      "era": "pre-7"
+    },
+    {
+      "root": "fivb-prototype",
+      "name": "fivb-prototype",
+      "version": "5.9.1",
+      "packages": 1,
+      "files": 66,
+      "sites": 4290,
+      "era": "pre-7"
+    },
+    {
+      "root": "fl-um",
+      "name": "fl-um",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 226,
+      "sites": 1720,
+      "era": "canonical"
+    },
+    {
+      "root": "fluent-html-home-page",
+      "name": "fluent-html-home-page",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 185,
+      "sites": 2263,
+      "era": "canonical"
+    },
+    {
+      "root": "glimm",
+      "name": "glimm",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 189,
+      "sites": 2880,
+      "era": "pre-7"
+    },
+    {
+      "root": "gzs/inovacije",
+      "name": "gzs/inovacije",
+      "version": "5.7.1",
+      "packages": 1,
+      "files": 230,
+      "sites": 5337,
+      "era": "pre-7"
+    },
+    {
+      "root": "gzs/stem-50",
+      "name": "gzs/stem-50",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 388,
+      "sites": 4646,
+      "era": "canonical"
+    },
+    {
+      "root": "home-page",
+      "name": "home-page",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 344,
+      "sites": 5934,
+      "era": "canonical"
+    },
+    {
+      "root": "home-page-define-feature",
+      "name": "home-page-define-feature",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 243,
+      "sites": 3546,
+      "era": "pre-7"
+    },
+    {
+      "root": "idea-hub",
+      "name": "idea-hub",
+      "version": null,
+      "packages": 1,
+      "files": 31,
+      "sites": 600,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-chess",
+      "name": "jt-chess",
+      "version": "5.7.0",
+      "packages": 1,
+      "files": 87,
+      "sites": 2903,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-cut",
+      "name": "jt-cut",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 244,
+      "sites": 12144,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-draw",
+      "name": "jt-draw",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 191,
+      "sites": 5072,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-draw2",
+      "name": "jt-draw2",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 122,
+      "sites": 1810,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-i18n",
+      "name": "jt-i18n",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 135,
+      "sites": 1832,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-present",
+      "name": "jt-present",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 250,
+      "sites": 2200,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-vault",
+      "name": "jt-vault",
+      "version": "5.9.1",
+      "packages": 1,
+      "files": 203,
+      "sites": 5823,
+      "era": "pre-7"
+    },
+    {
+      "root": "jt-vault-cloud",
+      "name": "jt-vault-cloud",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 189,
+      "sites": 3385,
+      "era": "pre-7"
+    },
+    {
+      "root": "jtdigital-blog",
+      "name": "jtdigital-blog",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 161,
+      "sites": 1785,
+      "era": "pre-7"
+    },
+    {
+      "root": "jtdigital-landing-page",
+      "name": "jtdigital-landing-page",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 105,
+      "sites": 2654,
+      "era": "pre-7"
+    },
+    {
+      "root": "mngmt",
+      "name": "mngmt",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 152,
+      "sites": 4438,
+      "era": "pre-7"
+    },
+    {
+      "root": "na-cent",
+      "name": "na-cent",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 404,
+      "sites": 5178,
+      "era": "canonical"
+    },
+    {
+      "root": "orca",
+      "name": "orca",
+      "version": "5.7.0",
+      "packages": 1,
+      "files": 29,
+      "sites": 312,
+      "era": "pre-7"
+    },
+    {
+      "root": "planet-positive-sport",
+      "name": "planet-positive-sport",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 700,
+      "sites": 18114,
+      "era": "pre-7"
+    },
+    {
+      "root": "pm-gui",
+      "name": "pm-gui",
+      "version": "6.1.1",
+      "packages": 1,
+      "files": 115,
+      "sites": 2105,
+      "era": "pre-7"
+    },
+    {
+      "root": "pokemon",
+      "name": "pokemon",
+      "version": "5.7.1",
+      "packages": 1,
+      "files": 49,
+      "sites": 481,
+      "era": "pre-7"
+    },
+    {
+      "root": "popri",
+      "name": "popri",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 283,
+      "sites": 4516,
+      "era": "canonical"
+    },
+    {
+      "root": "pregled-nepremicnin-dashboard",
+      "name": "pregled-nepremicnin-dashboard",
+      "version": "5.7.1",
+      "packages": 1,
+      "files": 85,
+      "sites": 1731,
+      "era": "pre-7"
+    },
+    {
+      "root": "projects-template",
+      "name": "projects-template",
+      "version": "8.1.0",
+      "packages": 4,
+      "files": 2080,
+      "sites": 23950,
+      "era": "canonical"
+    },
+    {
+      "root": "projects-template/.claude/worktrees/agent-a09be89c224b59a06",
+      "name": "projects-template/.claude/worktrees/agent-a09be89c224b59a06",
+      "version": "5.11.0",
+      "packages": 4,
+      "files": 305,
+      "sites": 4105,
+      "era": "pre-7"
+    },
+    {
+      "root": "projects-template/.claude/worktrees/agent-a0c1359f91e158924",
+      "name": "projects-template/.claude/worktrees/agent-a0c1359f91e158924",
+      "version": "8.1.0",
+      "packages": 5,
+      "files": 298,
+      "sites": 4140,
+      "era": "canonical"
+    },
+    {
+      "root": "projects-template/.claude/worktrees/agent-a4f731df7f653111d",
+      "name": "projects-template/.claude/worktrees/agent-a4f731df7f653111d",
+      "version": "5.11.0",
+      "packages": 4,
+      "files": 291,
+      "sites": 4249,
+      "era": "pre-7"
+    },
+    {
+      "root": "projects-template/.claude/worktrees/agent-a716fc737cfff8069",
+      "name": "projects-template/.claude/worktrees/agent-a716fc737cfff8069",
+      "version": "8.1.0",
+      "packages": 4,
+      "files": 425,
+      "sites": 3179,
+      "era": "canonical"
+    },
+    {
+      "root": "projects-template/.claude/worktrees/agent-abb0578c6f24f0518",
+      "name": "projects-template/.claude/worktrees/agent-abb0578c6f24f0518",
+      "version": "8.1.0",
+      "packages": 5,
+      "files": 292,
+      "sites": 4432,
+      "era": "canonical"
+    },
+    {
+      "root": "redaction-renderbox",
+      "name": "redaction-renderbox",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 149,
+      "sites": 1841,
+      "era": "pre-7"
+    },
+    {
+      "root": "renderbox",
+      "name": "renderbox",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 217,
+      "sites": 32327,
+      "era": "pre-7"
+    },
+    {
+      "root": "rideshare",
+      "name": "rideshare",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 202,
+      "sites": 5402,
+      "era": "pre-7"
+    },
+    {
+      "root": "sportoawards",
+      "name": "sportoawards",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 285,
+      "sites": 4137,
+      "era": "canonical"
+    },
+    {
+      "root": "stojnica",
+      "name": "stojnica",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 154,
+      "sites": 2081,
+      "era": "canonical"
+    },
+    {
+      "root": "storysell-ai",
+      "name": "storysell-ai",
+      "version": "5.11.0",
+      "packages": 1,
+      "files": 304,
+      "sites": 8586,
+      "era": "pre-7"
+    },
+    {
+      "root": "storysell-system",
+      "name": "storysell-system",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 341,
+      "sites": 7519,
+      "era": "pre-7"
+    },
+    {
+      "root": "storysell-system-define-feature-exp",
+      "name": "storysell-system-define-feature-exp",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 289,
+      "sites": 5396,
+      "era": "pre-7"
+    },
+    {
+      "root": "studio",
+      "name": "studio",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 292,
+      "sites": 2416,
+      "era": "canonical"
+    },
+    {
+      "root": "tela",
+      "name": "tela",
+      "version": "5.7.0",
+      "packages": 1,
+      "files": 152,
+      "sites": 3750,
+      "era": "pre-7"
+    },
+    {
+      "root": "test/kjkljkl",
+      "name": "test/kjkljkl",
+      "version": null,
+      "packages": 1,
+      "files": 117,
+      "sites": 922,
+      "era": "pre-7"
+    },
+    {
+      "root": "tetstesttes",
+      "name": "tetstesttes",
+      "version": "6.3.0",
+      "packages": 1,
+      "files": 129,
+      "sites": 865,
+      "era": "pre-7"
+    },
+    {
+      "root": "time-to-live",
+      "name": "time-to-live",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 124,
+      "sites": 1180,
+      "era": "pre-7"
+    },
+    {
+      "root": "ttl",
+      "name": "ttl",
+      "version": "5.10.0",
+      "packages": 1,
+      "files": 100,
+      "sites": 2758,
+      "era": "pre-7"
+    },
+    {
+      "root": "vabilo30",
+      "name": "vabilo30",
+      "version": "5.7.1",
+      "packages": 1,
+      "files": 62,
+      "sites": 941,
+      "era": "pre-7"
+    },
+    {
+      "root": "varnoska",
+      "name": "varnoska",
+      "version": "6.3.0",
+      "packages": 1,
+      "files": 305,
+      "sites": 4937,
+      "era": "pre-7"
+    },
+    {
+      "root": "website-sales-funnel-automation-system",
+      "name": "website-sales-funnel-automation-system",
+      "version": "8.1.0",
+      "packages": 1,
+      "files": 734,
+      "sites": 9219,
+      "era": "canonical"
+    },
+    {
+      "root": "workshop-alenka",
+      "name": "workshop-alenka",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 228,
+      "sites": 2099,
+      "era": "pre-7"
+    },
+    {
+      "root": "workshop-sasa",
+      "name": "workshop-sasa",
+      "version": "6.5.0",
+      "packages": 1,
+      "files": 222,
+      "sites": 2092,
+      "era": "pre-7"
+    },
+    {
+      "root": "workshop-toni",
+      "name": "workshop-toni",
+      "version": "7.0.0",
+      "packages": 1,
+      "files": 366,
+      "sites": 5393,
+      "era": "canonical"
+    }
+  ],
+  "files": 16031,
+  "total": 299694,
+  "methodTotal": 283640,
+  "eraTotal": 113491,
+  "ranked": [
+    {
+      "name": "text",
+      "count": 49925,
+      "canonicalEra": 18416,
+      "aliased": 35571,
+      "kind": "tag"
+    },
+    {
+      "name": "p",
+      "count": 20184,
+      "canonicalEra": 6930,
+      "aliased": 15413,
+      "kind": "tag"
+    },
+    {
+      "name": "m",
+      "count": 16358,
+      "canonicalEra": 5605,
+      "aliased": 12356,
+      "kind": "tag"
+    },
+    {
+      "name": "flex",
+      "count": 14238,
+      "canonicalEra": 5360,
+      "aliased": 2252,
+      "kind": "tag"
+    },
+    {
+      "name": "font",
+      "count": 13547,
+      "canonicalEra": 4812,
+      "aliased": 9829,
+      "kind": "tag"
+    },
+    {
+      "name": "border",
+      "count": 13266,
+      "canonicalEra": 5137,
+      "aliased": 4837,
+      "kind": "tag"
+    },
+    {
+      "name": "bg",
+      "count": 11682,
+      "canonicalEra": 4268,
+      "aliased": 8434,
+      "kind": "tag"
+    },
+    {
+      "name": "rounded",
+      "count": 8901,
+      "canonicalEra": 2983,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "gap",
+      "count": 8288,
+      "canonicalEra": 3287,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "items",
+      "count": 6786,
+      "canonicalEra": 2272,
+      "aliased": 4863,
+      "kind": "tag"
+    },
+    {
+      "name": "apply",
+      "count": 6397,
+      "canonicalEra": 4346,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "IfThen",
+      "count": 6241,
+      "canonicalEra": 2646,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "setClass",
+      "count": 6081,
+      "canonicalEra": 130,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "addClass",
+      "count": 5623,
+      "canonicalEra": 624,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "w",
+      "count": 5334,
+      "canonicalEra": 2175,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "cursor",
+      "count": 4574,
+      "canonicalEra": 1898,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "addAttribute",
+      "count": 4224,
+      "canonicalEra": 183,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "hover",
+      "count": 3764,
+      "canonicalEra": 1393,
+      "aliased": 2787,
+      "kind": "tag"
+    },
+    {
+      "name": "ForEach",
+      "count": 3763,
+      "canonicalEra": 1748,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "justify",
+      "count": 3400,
+      "canonicalEra": 1076,
+      "aliased": 2554,
+      "kind": "tag"
+    },
+    {
+      "name": "h",
+      "count": 3284,
+      "canonicalEra": 1252,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "transition",
+      "count": 3125,
+      "canonicalEra": 1150,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setType",
+      "count": 3095,
+      "canonicalEra": 970,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "maxW",
+      "count": 3076,
+      "canonicalEra": 1174,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setHtmx",
+      "count": 2794,
+      "canonicalEra": 706,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setId",
+      "count": 2224,
+      "canonicalEra": 806,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "resolve",
+      "count": 2193,
+      "canonicalEra": 1349,
+      "aliased": 0,
+      "kind": "member"
+    },
+    {
+      "name": "sm",
+      "count": 2032,
+      "canonicalEra": 959,
+      "aliased": 1426,
+      "kind": "tag"
+    },
+    {
+      "name": "setHref",
+      "count": 2023,
+      "canonicalEra": 700,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "toggle",
+      "count": 1952,
+      "canonicalEra": 941,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "when",
+      "count": 1768,
+      "canonicalEra": 517,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setName",
+      "count": 1747,
+      "canonicalEra": 380,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "gridCols",
+      "count": 1691,
+      "canonicalEra": 374,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "IfThenElse",
+      "count": 1680,
+      "canonicalEra": 824,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "lg",
+      "count": 1644,
+      "canonicalEra": 877,
+      "aliased": 998,
+      "kind": "tag"
+    },
+    {
+      "name": "tracking",
+      "count": 1639,
+      "canonicalEra": 690,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "md",
+      "count": 1595,
+      "canonicalEra": 435,
+      "aliased": 1236,
+      "kind": "tag"
+    },
+    {
+      "name": "shadow",
+      "count": 1534,
+      "canonicalEra": 369,
+      "aliased": 98,
+      "kind": "tag"
+    },
+    {
+      "name": "block",
+      "count": 1522,
+      "canonicalEra": 682,
+      "aliased": 803,
+      "kind": "tag"
+    },
+    {
+      "name": "leading",
+      "count": 1518,
+      "canonicalEra": 803,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setValue",
+      "count": 1451,
+      "canonicalEra": 315,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "defineRoutes",
+      "count": 1419,
+      "canonicalEra": 866,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "setPlaceholder",
+      "count": 1409,
+      "canonicalEra": 458,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "grid",
+      "count": 1398,
+      "canonicalEra": 601,
+      "aliased": 96,
+      "kind": "tag"
+    },
+    {
+      "name": "shrink",
+      "count": 1204,
+      "canonicalEra": 496,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "uppercase",
+      "count": 1195,
+      "canonicalEra": 438,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "overflow",
+      "count": 1169,
+      "canonicalEra": 505,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setContent",
+      "count": 942,
+      "canonicalEra": 485,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFill",
+      "count": 938,
+      "canonicalEra": 371,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "behavior",
+      "count": 808,
+      "canonicalEra": 473,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "hidden",
+      "count": 772,
+      "canonicalEra": 323,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setStyles",
+      "count": 694,
+      "canonicalEra": 231,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setRel",
+      "count": 685,
+      "canonicalEra": 275,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "hx",
+      "count": 667,
+      "canonicalEra": 51,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "setSrc",
+      "count": 645,
+      "canonicalEra": 247,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setAria",
+      "count": 637,
+      "canonicalEra": 487,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "defineIds",
+      "count": 629,
+      "canonicalEra": 345,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "fill",
+      "count": 615,
+      "canonicalEra": 482,
+      "aliased": 14,
+      "kind": "tag"
+    },
+    {
+      "name": "setX",
+      "count": 591,
+      "canonicalEra": 322,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setY",
+      "count": 589,
+      "canonicalEra": 322,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "relative",
+      "count": 583,
+      "canonicalEra": 209,
+      "aliased": 282,
+      "kind": "tag"
+    },
+    {
+      "name": "minW",
+      "count": 562,
+      "canonicalEra": 328,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "inlineBlock",
+      "count": 559,
+      "canonicalEra": 224,
+      "aliased": 264,
+      "kind": "tag"
+    },
+    {
+      "name": "mt",
+      "count": 528,
+      "canonicalEra": 528,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "whenElse",
+      "count": 510,
+      "canonicalEra": 418,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setStrokeWidth",
+      "count": 492,
+      "canonicalEra": 245,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "animate",
+      "count": 490,
+      "canonicalEra": 247,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "assetUrl",
+      "count": 485,
+      "canonicalEra": 383,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "underline",
+      "count": 478,
+      "canonicalEra": 149,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "ring",
+      "count": 467,
+      "canonicalEra": 148,
+      "aliased": 175,
+      "kind": "tag"
+    },
+    {
+      "name": "absolute",
+      "count": 464,
+      "canonicalEra": 165,
+      "aliased": 241,
+      "kind": "tag"
+    },
+    {
+      "name": "inlineFlex",
+      "count": 462,
+      "canonicalEra": 201,
+      "aliased": 195,
+      "kind": "tag"
+    },
+    {
+      "name": "minH",
+      "count": 453,
+      "canonicalEra": 229,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setProperty",
+      "count": 444,
+      "canonicalEra": 274,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "opacity",
+      "count": 439,
+      "canonicalEra": 172,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "spaceY",
+      "count": 431,
+      "canonicalEra": 108,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setStroke",
+      "count": 425,
+      "canonicalEra": 172,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setWidth",
+      "count": 394,
+      "canonicalEra": 205,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setViewBox",
+      "count": 378,
+      "canonicalEra": 170,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "z",
+      "count": 370,
+      "canonicalEra": 106,
+      "aliased": 275,
+      "kind": "tag"
+    },
+    {
+      "name": "setTextAnchor",
+      "count": 365,
+      "canonicalEra": 177,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "focus",
+      "count": 359,
+      "canonicalEra": 154,
+      "aliased": 240,
+      "kind": "tag"
+    },
+    {
+      "name": "setAlt",
+      "count": 355,
+      "canonicalEra": 131,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "Match",
+      "count": 353,
+      "canonicalEra": 215,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "whitespace",
+      "count": 345,
+      "canonicalEra": 192,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "top",
+      "count": 342,
+      "canonicalEra": 149,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "whenMatch",
+      "count": 340,
+      "canonicalEra": 260,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setStyle",
+      "count": 329,
+      "canonicalEra": 103,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setCx",
+      "count": 305,
+      "canonicalEra": 153,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setCy",
+      "count": 305,
+      "canonicalEra": 153,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "variant",
+      "count": 301,
+      "canonicalEra": 298,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setFontSize",
+      "count": 287,
+      "canonicalEra": 106,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setDominantBaseline",
+      "count": 281,
+      "canonicalEra": 160,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setD",
+      "count": 264,
+      "canonicalEra": 152,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setHeight",
+      "count": 263,
+      "canonicalEra": 151,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setR",
+      "count": 263,
+      "canonicalEra": 141,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "select",
+      "count": 258,
+      "canonicalEra": 160,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "left",
+      "count": 256,
+      "canonicalEra": 100,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "tabularNums",
+      "count": 245,
+      "canonicalEra": 197,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "truncate",
+      "count": 231,
+      "canonicalEra": 114,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "MatchValue",
+      "count": 225,
+      "canonicalEra": 171,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "py",
+      "count": 224,
+      "canonicalEra": 224,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "right",
+      "count": 219,
+      "canonicalEra": 71,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "outline",
+      "count": 217,
+      "canonicalEra": 18,
+      "aliased": 27,
+      "kind": "tag"
+    },
+    {
+      "name": "setFor",
+      "count": 214,
+      "canonicalEra": 99,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setDataAttrs",
+      "count": 213,
+      "canonicalEra": 186,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setRx",
+      "count": 206,
+      "canonicalEra": 105,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "px",
+      "count": 205,
+      "canonicalEra": 205,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setStrokeLinecap",
+      "count": 203,
+      "canonicalEra": 94,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setTarget",
+      "count": 199,
+      "canonicalEra": 84,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "group",
+      "count": 198,
+      "canonicalEra": 131,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "duration",
+      "count": 195,
+      "canonicalEra": 101,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setRows",
+      "count": 194,
+      "canonicalEra": 71,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "from",
+      "count": 189,
+      "canonicalEra": 81,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "to",
+      "count": 189,
+      "canonicalEra": 81,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setTitle",
+      "count": 188,
+      "canonicalEra": 139,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setCharset",
+      "count": 182,
+      "canonicalEra": 66,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setMinlength",
+      "count": 175,
+      "canonicalEra": 89,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "Partial",
+      "count": 174,
+      "canonicalEra": 144,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "inset",
+      "count": 168,
+      "canonicalEra": 62,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "cssClass",
+      "count": 164,
+      "canonicalEra": 132,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "object",
+      "count": 164,
+      "canonicalEra": 84,
+      "aliased": 110,
+      "kind": "tag"
+    },
+    {
+      "name": "noUnderline",
+      "count": 163,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "externalUrl",
+      "count": 159,
+      "canonicalEra": 157,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "setMaxlength",
+      "count": 153,
+      "canonicalEra": 89,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "fixed",
+      "count": 145,
+      "canonicalEra": 42,
+      "aliased": 86,
+      "kind": "tag"
+    },
+    {
+      "name": "groupHover",
+      "count": 143,
+      "canonicalEra": 95,
+      "aliased": 76,
+      "kind": "tag"
+    },
+    {
+      "name": "setRole",
+      "count": 138,
+      "canonicalEra": 95,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "list",
+      "count": 133,
+      "canonicalEra": 24,
+      "aliased": 104,
+      "kind": "tag"
+    },
+    {
+      "name": "setStrokeLinejoin",
+      "count": 133,
+      "canonicalEra": 53,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "pointerEvents",
+      "count": 130,
+      "canonicalEra": 76,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "hxResponse",
+      "count": 126,
+      "canonicalEra": 74,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "setX1",
+      "count": 126,
+      "canonicalEra": 76,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setX2",
+      "count": 126,
+      "canonicalEra": 76,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setY1",
+      "count": 126,
+      "canonicalEra": 76,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setY2",
+      "count": 126,
+      "canonicalEra": 76,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "stroke",
+      "count": 124,
+      "canonicalEra": 102,
+      "aliased": 13,
+      "kind": "tag"
+    },
+    {
+      "name": "setMin",
+      "count": 123,
+      "canonicalEra": 49,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "bottom",
+      "count": 118,
+      "canonicalEra": 35,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setStrokeDasharray",
+      "count": 116,
+      "canonicalEra": 64,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "cssProp",
+      "count": 111,
+      "canonicalEra": 110,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "scale",
+      "count": 111,
+      "canonicalEra": 42,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setAutocomplete",
+      "count": 103,
+      "canonicalEra": 92,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "neg",
+      "count": 102,
+      "canonicalEra": 73,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "sticky",
+      "count": 101,
+      "canonicalEra": 54,
+      "aliased": 47,
+      "kind": "tag"
+    },
+    {
+      "name": "setPoints",
+      "count": 99,
+      "canonicalEra": 62,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "aspect",
+      "count": 96,
+      "canonicalEra": 54,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setLang",
+      "count": 96,
+      "canonicalEra": 39,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "rotate",
+      "count": 91,
+      "canonicalEra": 77,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "italic",
+      "count": 90,
+      "canonicalEra": 37,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setClasses",
+      "count": 89,
+      "canonicalEra": 9,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setStep",
+      "count": 87,
+      "canonicalEra": 38,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setEnctype",
+      "count": 82,
+      "canonicalEra": 57,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setLoading",
+      "count": 80,
+      "canonicalEra": 44,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setXmlns",
+      "count": 80,
+      "canonicalEra": 55,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "ForEachKeyed",
+      "count": 79,
+      "canonicalEra": 70,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "colSpan",
+      "count": 77,
+      "canonicalEra": 25,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "hxGet",
+      "count": 77,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setMax",
+      "count": 77,
+      "canonicalEra": 29,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "lineClamp",
+      "count": 76,
+      "canonicalEra": 51,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setMethod",
+      "count": 73,
+      "canonicalEra": 16,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setAction",
+      "count": 72,
+      "canonicalEra": 15,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "xl",
+      "count": 71,
+      "canonicalEra": 60,
+      "aliased": 17,
+      "kind": "tag"
+    },
+    {
+      "name": "srOnly",
+      "count": 70,
+      "canonicalEra": 46,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "translate",
+      "count": 64,
+      "canonicalEra": 16,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "disabled",
+      "count": 63,
+      "canonicalEra": 40,
+      "aliased": 22,
+      "kind": "tag"
+    },
+    {
+      "name": "underlineOffset",
+      "count": 60,
+      "canonicalEra": 52,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "divideY",
+      "count": 58,
+      "canonicalEra": 35,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setPreload",
+      "count": 53,
+      "canonicalEra": 38,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setAccept",
+      "count": 52,
+      "canonicalEra": 18,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setOpacity",
+      "count": 52,
+      "canonicalEra": 45,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setTabindex",
+      "count": 52,
+      "canonicalEra": 34,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "maxH",
+      "count": 50,
+      "canonicalEra": 29,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "backdropBlur",
+      "count": 48,
+      "canonicalEra": 10,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "bgLinear",
+      "count": 48,
+      "canonicalEra": 37,
+      "aliased": 11,
+      "kind": "tag"
+    },
+    {
+      "name": "resize",
+      "count": 47,
+      "canonicalEra": 22,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setIntegrity",
+      "count": 46,
+      "canonicalEra": 6,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "getClass",
+      "count": 45,
+      "canonicalEra": 43,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "pt",
+      "count": 44,
+      "canonicalEra": 44,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "self",
+      "count": 44,
+      "canonicalEra": 25,
+      "aliased": 18,
+      "kind": "tag"
+    },
+    {
+      "name": "setCrossOrigin",
+      "count": 44,
+      "canonicalEra": 25,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setRy",
+      "count": 43,
+      "canonicalEra": 13,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "hxPost",
+      "count": 42,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setCommand",
+      "count": 42,
+      "canonicalEra": 41,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setCommandfor",
+      "count": 42,
+      "canonicalEra": 41,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "via",
+      "count": 42,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "mb",
+      "count": 41,
+      "canonicalEra": 41,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "htmxIndicator",
+      "count": 40,
+      "canonicalEra": 23,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "defineTheme",
+      "count": 37,
+      "canonicalEra": 21,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "grow",
+      "count": 35,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "pb",
+      "count": 33,
+      "canonicalEra": 33,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "decoration",
+      "count": 32,
+      "canonicalEra": 32,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "focusVisible",
+      "count": 32,
+      "canonicalEra": 22,
+      "aliased": 10,
+      "kind": "tag"
+    },
+    {
+      "name": "setAs",
+      "count": 32,
+      "canonicalEra": 22,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "divide",
+      "count": 31,
+      "canonicalEra": 31,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "accent",
+      "count": 30,
+      "canonicalEra": 18,
+      "aliased": 12,
+      "kind": "tag"
+    },
+    {
+      "name": "peer",
+      "count": 30,
+      "canonicalEra": 18,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "inline",
+      "count": 29,
+      "canonicalEra": 5,
+      "aliased": 18,
+      "kind": "tag"
+    },
+    {
+      "name": "setStrokeDashoffset",
+      "count": 28,
+      "canonicalEra": 17,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "antialiased",
+      "count": 27,
+      "canonicalEra": 10,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "last",
+      "count": 26,
+      "canonicalEra": 9,
+      "aliased": 23,
+      "kind": "tag"
+    },
+    {
+      "name": "anchorName",
+      "count": 25,
+      "canonicalEra": 10,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "blur",
+      "count": 25,
+      "canonicalEra": 15,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setDecoding",
+      "count": 25,
+      "canonicalEra": 15,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "active",
+      "count": 23,
+      "canonicalEra": 1,
+      "aliased": 22,
+      "kind": "tag"
+    },
+    {
+      "name": "capitalize",
+      "count": 23,
+      "canonicalEra": 18,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "getEnctype",
+      "count": 23,
+      "canonicalEra": 22,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "gradient",
+      "count": 22,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setClosedby",
+      "count": 21,
+      "canonicalEra": 20,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "first",
+      "count": 19,
+      "canonicalEra": 18,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "breakAll",
+      "count": 18,
+      "canonicalEra": 13,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "positionArea",
+      "count": 18,
+      "canonicalEra": 4,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "Intersperse",
+      "count": 16,
+      "canonicalEra": 13,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "lineThrough",
+      "count": 16,
+      "canonicalEra": 7,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setPoster",
+      "count": 16,
+      "canonicalEra": 12,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "order",
+      "count": 15,
+      "canonicalEra": 7,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "pl",
+      "count": 15,
+      "canonicalEra": 15,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setDownload",
+      "count": 15,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFetchPriority",
+      "count": 15,
+      "canonicalEra": 8,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setPopovertarget",
+      "count": 15,
+      "canonicalEra": 9,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "ease",
+      "count": 14,
+      "canonicalEra": 9,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "focusWithin",
+      "count": 14,
+      "canonicalEra": 11,
+      "aliased": 3,
+      "kind": "tag"
+    },
+    {
+      "name": "peerChecked",
+      "count": 14,
+      "canonicalEra": 13,
+      "aliased": 1,
+      "kind": "tag"
+    },
+    {
+      "name": "setFontFamily",
+      "count": 14,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "viewTransitionName",
+      "count": 14,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setTransform",
+      "count": 13,
+      "canonicalEra": 6,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "insetX",
+      "count": 12,
+      "canonicalEra": 12,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "positionAnchor",
+      "count": 12,
+      "canonicalEra": 4,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "pr",
+      "count": 12,
+      "canonicalEra": 12,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "overlay",
+      "count": 10,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setPopover",
+      "count": 10,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setScope",
+      "count": 10,
+      "canonicalEra": 10,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "insetY",
+      "count": 8,
+      "canonicalEra": 8,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "mx",
+      "count": 8,
+      "canonicalEra": 8,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setColspan",
+      "count": 8,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSizes",
+      "count": 8,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "before",
+      "count": 7,
+      "canonicalEra": 7,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "contents",
+      "count": 7,
+      "canonicalEra": 5,
+      "aliased": 2,
+      "kind": "tag"
+    },
+    {
+      "name": "setFontWeight",
+      "count": 7,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "ml",
+      "count": 6,
+      "canonicalEra": 6,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setAllow",
+      "count": 6,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSrcset",
+      "count": 6,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "tableCell",
+      "count": 6,
+      "canonicalEra": 0,
+      "aliased": 6,
+      "kind": "tag"
+    },
+    {
+      "name": "wrap",
+      "count": 6,
+      "canonicalEra": 6,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "xl2",
+      "count": 6,
+      "canonicalEra": 6,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "appearance",
+      "count": 5,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "content",
+      "count": 5,
+      "canonicalEra": 4,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "gridRows",
+      "count": 5,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "my",
+      "count": 5,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setInputmode",
+      "count": 5,
+      "canonicalEra": 5,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "mr",
+      "count": 4,
+      "canonicalEra": 4,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setPattern",
+      "count": 4,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setPopovertargetaction",
+      "count": 4,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "addChild",
+      "count": 3,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "breakInside",
+      "count": 3,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "columns",
+      "count": 3,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "isolate",
+      "count": 3,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setHreflang",
+      "count": 3,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setList",
+      "count": 3,
+      "canonicalEra": 3,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "bgRadial",
+      "count": 2,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "boxDecoration",
+      "count": 2,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "divideX",
+      "count": 2,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "lowercase",
+      "count": 2,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "multipart",
+      "count": 2,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setImagesizes",
+      "count": 2,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setImagesrcset",
+      "count": 2,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setOffset",
+      "count": 2,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setReferrerPolicy",
+      "count": 2,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setStopColor",
+      "count": 2,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setStrokeOpacity",
+      "count": 2,
+      "canonicalEra": 2,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "tableRow",
+      "count": 2,
+      "canonicalEra": 0,
+      "aliased": 2,
+      "kind": "tag"
+    },
+    {
+      "name": "addStyle",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "colStart",
+      "count": 1,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "delay",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "dropShadow",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "mixBlend",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "overscroll",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "Repeat",
+      "count": 1,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "standalone"
+    },
+    {
+      "name": "rowSpan",
+      "count": 1,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setClipRule",
+      "count": 1,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFormmethod",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setHttpEquiv",
+      "count": 1,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setLetterSpacing",
+      "count": 1,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSandbox",
+      "count": 1,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSrcdoc",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "willChange",
+      "count": 1,
+      "canonicalEra": 1,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "addHeaders",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "after",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "autoCols",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "autoRows",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "bgBlend",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "bgConic",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "brightness",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "caret",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "checked",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "colEnd",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "containerQuery",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "contrast",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "dark",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "even",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "grayscale",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "gridFlow",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "hueRotate",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "inlineGrid",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "insetE",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "insetRing",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "insetS",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "insetShadow",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "invert",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "invisible",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "odd",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "perspective",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "rowEnd",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "rowStart",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "saturate",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "scroll",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "scrollP",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "sepia",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setAbbr",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setAutocapitalize",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setCapture",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setCite",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setClipPathUnits",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setCols",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setContenteditable",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setCoords",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setData",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setDatetime",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setDir",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setDirname",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setDx",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setDy",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setEdgeMode",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setEnterkeyhint",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setFillRule",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFilter",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFilterUnits",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFontStyle",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setForm",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setFormaction",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFormenctype",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFormtarget",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFx",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setFy",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setGradientTransform",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setGradientUnits",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setHeaders",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setHidden",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setHigh",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setIn",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setKind",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setLabel",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setLow",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setMaskContentUnits",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setMaskUnits",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setMedia",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setMicrodata",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setNonce",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setOptimum",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setPrimitiveUnits",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setResult",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setRowspan",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setShape",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSize",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSpan",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSpellcheck",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setSpreadMethod",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setSrclang",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setStdDeviation",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setStopOpacity",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setTextDecoration",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "setTranslate",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "setWrap",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "setter"
+    },
+    {
+      "name": "spaceX",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "static",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "table",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "textShadow",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    },
+    {
+      "name": "transform",
+      "count": 0,
+      "canonicalEra": 0,
+      "aliased": 0,
+      "kind": "tag"
+    }
+  ]
+}

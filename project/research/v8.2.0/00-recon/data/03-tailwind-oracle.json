@@ -1,0 +1,445 @@
+{
+  "tailwindVersion": "4.3.3",
+  "pinned": "4.3.3",
+  "vocabRows": 159,
+  "rowsByEmitKind": {
+    "spacing": 6,
+    "sizing": 33,
+    "prefix": 53,
+    "static": 30,
+    "optional": 19,
+    "custom": 17,
+    "value": 1
+  },
+  "rowsByValuesKind": {
+    "theme": 28,
+    "group": 15,
+    "none": 40,
+    "typeRef": 43,
+    "literals": 33
+  },
+  "mergedRows": [
+    {
+      "method": "text",
+      "groups": {
+        "size": "theme(--text)",
+        "color": "theme(--color)",
+        "align": "literals(4)",
+        "wrap": "literals(4)"
+      }
+    },
+    {
+      "method": "font",
+      "groups": {
+        "weight": "literals(9)",
+        "family": "theme(--font)"
+      }
+    },
+    {
+      "method": "flex",
+      "groups": {
+        "shorthand": "literals(4)",
+        "direction": "literals(4)",
+        "wrap": "literals(3)"
+      }
+    },
+    {
+      "method": "border",
+      "groups": {
+        "width": "typeRef",
+        "style": "literals(6)",
+        "color": "theme(--color)"
+      }
+    },
+    {
+      "method": "shadow",
+      "groups": {
+        "size": "theme(--shadow)",
+        "color": "theme(--color)"
+      }
+    },
+    {
+      "method": "transition",
+      "groups": {
+        "property": "literals(6)",
+        "behavior": "literals(2)"
+      }
+    },
+    {
+      "method": "ring",
+      "groups": {
+        "width": "typeRef",
+        "color": "theme(--color)"
+      }
+    },
+    {
+      "method": "list",
+      "groups": {
+        "type": "literals(3)",
+        "position": "literals(2)"
+      }
+    },
+    {
+      "method": "bgLinear",
+      "groups": {
+        "direction": "literals(8)",
+        "angle": "typeRef"
+      }
+    },
+    {
+      "method": "stroke",
+      "groups": {
+        "color": "theme(--color)",
+        "width": "typeRef"
+      }
+    },
+    {
+      "method": "decoration",
+      "groups": {
+        "color": "theme(--color)",
+        "style": "literals(5)",
+        "thickness": "typeRef"
+      }
+    },
+    {
+      "method": "textShadow",
+      "groups": {
+        "size": "theme(--text-shadow)",
+        "color": "theme(--color)"
+      }
+    },
+    {
+      "method": "dropShadow",
+      "groups": {
+        "size": "theme(--drop-shadow)",
+        "color": "theme(--color)"
+      }
+    },
+    {
+      "method": "insetShadow",
+      "groups": {
+        "size": "theme(--inset-shadow)",
+        "color": "theme(--color)"
+      }
+    },
+    {
+      "method": "insetRing",
+      "groups": {
+        "width": "typeRef",
+        "color": "theme(--color)"
+      }
+    }
+  ],
+  "oracle": {
+    "classesChecked": 564,
+    "distinctClasses": 489,
+    "pass": 564,
+    "fail": 0,
+    "passRate": 100,
+    "failures": []
+  },
+  "oracleRowsWithOracleArgs": 142,
+  "themeValuedRows": 39,
+  "coverage": {
+    "utilityRoots": 1205,
+    "uncoveredRoots": 352,
+    "sampleUncovered": [
+      "align",
+      "align-baseline",
+      "align-bottom",
+      "align-middle",
+      "align-sub",
+      "align-super",
+      "align-text-bottom",
+      "align-text-top",
+      "align-top",
+      "backdrop-brightness",
+      "backdrop-contrast",
+      "backdrop-filter"
+    ]
+  },
+  "familyProbe": [
+    {
+      "call": ".text(\"lg\")",
+      "cls": "text-lg",
+      "want": "font-size",
+      "got": "font-size,line-height",
+      "ok": true
+    },
+    {
+      "call": ".text(\"red-500\")",
+      "cls": "text-red-500",
+      "want": "color",
+      "got": "color",
+      "ok": true
+    },
+    {
+      "call": ".text(\"center\")",
+      "cls": "text-center",
+      "want": "text-align",
+      "got": "text-align",
+      "ok": true
+    },
+    {
+      "call": ".text(\"balance\")",
+      "cls": "text-balance",
+      "want": "text-wrap",
+      "got": "text-wrap",
+      "ok": true
+    },
+    {
+      "call": ".border(\"2\")",
+      "cls": "border-2",
+      "want": "border-width",
+      "got": "border-style,border-width",
+      "ok": true
+    },
+    {
+      "call": ".border(\"red-500\")",
+      "cls": "border-red-500",
+      "want": "border-color",
+      "got": "border-color",
+      "ok": true
+    },
+    {
+      "call": ".border(\"dashed\")",
+      "cls": "border-dashed",
+      "want": "border-style",
+      "got": "border-style",
+      "ok": true
+    },
+    {
+      "call": ".ring(\"2\")",
+      "cls": "ring-2",
+      "want": "box-shadow",
+      "got": "box-shadow",
+      "ok": true
+    },
+    {
+      "call": ".ring(\"red-500\")",
+      "cls": "ring-red-500",
+      "want": "--tw-ring-color",
+      "got": "--tw-ring-color",
+      "ok": true
+    },
+    {
+      "call": ".shadow(\"md\")",
+      "cls": "shadow-md",
+      "want": "box-shadow",
+      "got": "box-shadow",
+      "ok": true
+    },
+    {
+      "call": ".shadow(\"red-500\")",
+      "cls": "shadow-red-500",
+      "want": "--tw-shadow-color",
+      "got": "--tw-shadow-color",
+      "ok": true
+    },
+    {
+      "call": ".outline(\"2\")",
+      "cls": "outline-2",
+      "want": "outline-width",
+      "got": "outline-style,outline-width",
+      "ok": true
+    },
+    {
+      "call": ".outline(\"red-500\")",
+      "cls": "outline-red-500",
+      "want": "outline-color",
+      "got": "outline-color",
+      "ok": true
+    },
+    {
+      "call": ".outline(\"dashed\")",
+      "cls": "outline-dashed",
+      "want": "outline-style",
+      "got": "outline-style",
+      "ok": true
+    },
+    {
+      "call": ".stroke(\"2\")",
+      "cls": "stroke-2",
+      "want": "stroke-width",
+      "got": "stroke-width",
+      "ok": true
+    },
+    {
+      "call": ".stroke(\"red-500\")",
+      "cls": "stroke-red-500",
+      "want": "stroke",
+      "got": "stroke",
+      "ok": true
+    },
+    {
+      "call": ".decoration(\"2\")",
+      "cls": "decoration-2",
+      "want": "text-decoration-thickness",
+      "got": "text-decoration-thickness",
+      "ok": true
+    },
+    {
+      "call": ".decoration(\"red-500\")",
+      "cls": "decoration-red-500",
+      "want": "text-decoration-color",
+      "got": "text-decoration-color",
+      "ok": true
+    },
+    {
+      "call": ".decoration(\"wavy\")",
+      "cls": "decoration-wavy",
+      "want": "text-decoration-style",
+      "got": "text-decoration-style",
+      "ok": true
+    },
+    {
+      "call": ".font(\"semibold\")",
+      "cls": "font-semibold",
+      "want": "font-weight",
+      "got": "font-weight",
+      "ok": true
+    },
+    {
+      "call": ".font(\"mono\")",
+      "cls": "font-mono",
+      "want": "font-family",
+      "got": "font-family",
+      "ok": true
+    },
+    {
+      "call": ".bg(\"red-500\")",
+      "cls": "bg-red-500",
+      "want": "background-color",
+      "got": "background-color",
+      "ok": true
+    },
+    {
+      "call": ".bg(\"cover\")",
+      "cls": "bg-cover",
+      "want": "background-size",
+      "got": "background-size",
+      "ok": true
+    },
+    {
+      "call": ".bg(\"fixed\")",
+      "cls": "bg-fixed",
+      "want": "background-attachment",
+      "got": "background-attachment",
+      "ok": true
+    },
+    {
+      "call": ".divide(\"red-500\")",
+      "cls": "divide-red-500",
+      "want": "border-color",
+      "got": "border-color",
+      "ok": true
+    },
+    {
+      "call": ".list(\"disc\")",
+      "cls": "list-disc",
+      "want": "list-style-type",
+      "got": "list-style-type",
+      "ok": true
+    },
+    {
+      "call": ".list(\"inside\")",
+      "cls": "list-inside",
+      "want": "list-style-position",
+      "got": "list-style-position",
+      "ok": true
+    },
+    {
+      "call": ".textShadow(\"md\")",
+      "cls": "text-shadow-md",
+      "want": "text-shadow",
+      "got": "text-shadow",
+      "ok": true
+    },
+    {
+      "call": ".textShadow(\"red-500\")",
+      "cls": "text-shadow-red-500",
+      "want": "--tw-text-shadow-color",
+      "got": "--tw-text-shadow-color",
+      "ok": true
+    }
+  ],
+  "collisions": [
+    {
+      "cls": "text-brand",
+      "css": ".text-brand { color: var(--color-brand); }"
+    },
+    {
+      "cls": "text-lg",
+      "css": ".text-lg { color: var(--color-lg); }"
+    },
+    {
+      "cls": "shadow-card",
+      "css": ".shadow-card { --tw-shadow: 0 0 2px var(--tw-shadow-color, #000); box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-"
+    },
+    {
+      "cls": "bg-card",
+      "css": ".bg-card { background-color: var(--color-card); }"
+    },
+    {
+      "cls": "border-card",
+      "css": ".border-card { border-color: var(--color-card); }"
+    },
+    {
+      "cls": "border-2",
+      "css": ".border-2 { border-color: var(--color-2); }"
+    },
+    {
+      "cls": "ring-2",
+      "css": ".ring-2 { --tw-ring-color: var(--color-2); }"
+    },
+    {
+      "cls": "outline-2",
+      "css": ".outline-2 { outline-color: var(--color-2); }"
+    }
+  ],
+  "customColorTokenHijack": {
+    "probe": "@theme { --color-{base,sm,md,lg,xl,2,4,none,inner} } then candidatesToCss",
+    "hijacked": "9/18",
+    "hijackedClasses": [
+      "text-base",
+      "text-sm",
+      "text-lg",
+      "text-xl",
+      "border-2",
+      "border-4",
+      "ring-2",
+      "outline-2",
+      "stroke-2"
+    ],
+    "defineThemeWarnings": 0,
+    "source": "tw-collide.mjs output"
+  },
+  "templateTailwindSkew": {
+    "templateInstalled": "4.3.1 (range ^4.0.0)",
+    "libPin": "4.3.3",
+    "oracleClassesAgainst431": "564/564 pass"
+  },
+  "extractorFixture": {
+    "extractor": "fluent-html-tailwind-extractor 3.0.0-unreleased dist",
+    "viewFixtureCallSites": 19,
+    "resolvedClasses": 6,
+    "ledgerRows": 11,
+    "silentDrops": [
+      "(tag as any)[\"bg\"](\"red-500\") — bracket call",
+      "bg(\\n \"accent\",\\n) — single-arg multi-line call with trailing comma (arity guard skips, no ledger row)"
+    ],
+    "nonViewFalsePositives": [
+      ".object({ email: z.string() })",
+      ".list(p)",
+      ".fill(value())",
+      ".transform((v) => v.trim())"
+    ],
+    "junkClasses": [
+      "fill-0 from new Array(3).fill(0)"
+    ],
+    "defaultPolicy": "error (safelist.ts:71) → generateFluentSafelist throws on 15 rows",
+    "templateSrcScan": "223 files, 240 classes, 0 ledger rows",
+    "trailingCommaSitesToday": "0 in template src (223 files), packages/ui (17), fluent-html-demos (20)",
+    "extractorTests": "56 tests, 55 pass, 1 fail (extract.test.ts:113 expects skew-x-6; skew pruned in lib 8.0.0)"
+  }
+}

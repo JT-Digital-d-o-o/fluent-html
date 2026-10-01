@@ -1,0 +1,420 @@
+{
+ "corpus": "dedup (no .claude), NON_TAG_RECEIVER guard applied",
+ "audit": {
+  "first": {
+   "total": 5,
+   "noArg": 1,
+   "objArg": 4,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "last": {
+   "total": 3,
+   "noArg": 0,
+   "objArg": 3,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "odd": {
+   "total": 0,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "even": {
+   "total": 0,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "before": {
+   "total": 5,
+   "noArg": 0,
+   "objArg": 5,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "after": {
+   "total": 0,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "active": {
+   "total": 1,
+   "noArg": 0,
+   "objArg": 1,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "checked": {
+   "total": 0,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "disabled": {
+   "total": 39,
+   "noArg": 0,
+   "objArg": 39,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "dark": {
+   "total": 0,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "resolve": {
+   "total": 1961,
+   "noArg": 714,
+   "objArg": 1107,
+   "strArg": 16,
+   "foreignRecv": 17,
+   "samplesForeign": [
+    "competify:src/app/auth/oauth/oauth.plugin.ts",
+    "competify:src/app/auth/oauth/oauth.plugin.ts"
+   ]
+  },
+  "scale": {
+   "total": 85,
+   "noArg": 3,
+   "objArg": 22,
+   "strArg": 53,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "translate": {
+   "total": 64,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 64,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "rotate": {
+   "total": 91,
+   "noArg": 6,
+   "objArg": 0,
+   "strArg": 57,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "stroke": {
+   "total": 111,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 111,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "fill": {
+   "total": 543,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 457,
+   "foreignRecv": 11,
+   "samplesForeign": [
+    "everyframe-composer:tests/unit/projects-derivation.test.ts",
+    "everyframe-composer:tests/unit/projects-derivation.test.ts"
+   ]
+  },
+  "to": {
+   "total": 117,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 115,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "from": {
+   "total": 117,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 115,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "group": {
+   "total": 166,
+   "noArg": 166,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "content": {
+   "total": 3,
+   "noArg": 3,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 3,
+   "samplesForeign": [
+    "corina/storysell:src/scraper/amazon.browser.ts",
+    "projects-template:tests/e2e/specs/htmx-smoke.spec.ts"
+   ]
+  },
+  "object": {
+   "total": 44,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 44,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "wrap": {
+   "total": 6,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 6,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "delay": {
+   "total": 1,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 1,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "transform": {
+   "total": 0,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "select": {
+   "total": 212,
+   "noArg": 4,
+   "objArg": 0,
+   "strArg": 194,
+   "foreignRecv": 4,
+   "samplesForeign": [
+    "business-helper/business/hiring/matej-naloga:src/core/layout/layout.scripts.ts",
+    "storysell-ai:src/shared/components/layout.scripts.ts"
+   ]
+  },
+  "list": {
+   "total": 25,
+   "noArg": 1,
+   "objArg": 1,
+   "strArg": 11,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "table": {
+   "total": 0,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "blur": {
+   "total": 25,
+   "noArg": 1,
+   "objArg": 0,
+   "strArg": 22,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "inset": {
+   "total": 168,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 168,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "order": {
+   "total": 15,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 15,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "columns": {
+   "total": 1,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 1,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "overlay": {
+   "total": 10,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "contents": {
+   "total": 5,
+   "noArg": 5,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "search": {
+   "total": 311,
+   "noArg": 2,
+   "objArg": 2,
+   "strArg": 2,
+   "foreignRecv": 82,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  },
+  "submit": {
+   "total": 1169,
+   "noArg": 154,
+   "objArg": 22,
+   "strArg": 0,
+   "foreignRecv": 132,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  },
+  "input": {
+   "total": 1114,
+   "noArg": 2,
+   "objArg": 0,
+   "strArg": 1084,
+   "foreignRecv": 2,
+   "samplesForeign": [
+    "everyframe-composer:src/app/studio/views/studio.name.view.ts",
+    "everyframe-composer:src/app/studio/views/studio.name.view.ts"
+   ]
+  },
+  "label": {
+   "total": 104,
+   "noArg": 1,
+   "objArg": 0,
+   "strArg": 87,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "error": {
+   "total": 1685,
+   "noArg": 0,
+   "objArg": 469,
+   "strArg": 89,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "build": {
+   "total": 92,
+   "noArg": 90,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "trigger": {
+   "total": 55,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 54,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "redirect": {
+   "total": 2149,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 654,
+   "foreignRecv": 0,
+   "samplesForeign": []
+  },
+  "nav": {
+   "total": 1948,
+   "noArg": 169,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 127,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  },
+  "fragment": {
+   "total": 629,
+   "noArg": 125,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 92,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  },
+  "poll": {
+   "total": 285,
+   "noArg": 32,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 86,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  },
+  "fire": {
+   "total": 148,
+   "noArg": 3,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 60,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  },
+  "onChange": {
+   "total": 225,
+   "noArg": 0,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 61,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  },
+  "tab": {
+   "total": 285,
+   "noArg": 18,
+   "objArg": 0,
+   "strArg": 0,
+   "foreignRecv": 34,
+   "samplesForeign": [
+    "competify:tests/unit/swap-verbs.test.ts",
+    "competify:tests/unit/swap-verbs.test.ts"
+   ]
+  }
+ }
+}

@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "allow": ["Bash(ls:*)","Bash(cat:*)","Bash(grep:*)","Bash(find:*)","Bash(head:*)","Bash(tail:*)","Bash(wc:*)","Bash(sed -n:*)","Bash(rg:*)","Bash(tree:*)","Bash(mkdir:*)","Read","Write","Edit"],
+    "deny": ["Read(/${ORG_ROOT}/**)","Read(/${HOME}/.claude/**)","Edit(/${ORG_ROOT}/**)","Bash(npx:*)","Bash(npm:*)","Bash(node:*)","Bash(pnpm:*)","Bash(tsc:*)","Bash(eslint:*)","Bash(git:*)","Bash(curl:*)","WebFetch","WebSearch","Task","Agent","Workflow"]
+  }
+}

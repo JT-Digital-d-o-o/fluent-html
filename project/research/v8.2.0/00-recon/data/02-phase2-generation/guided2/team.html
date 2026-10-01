@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en" data-fluent-behaviors="8.1.0:f87f375a" hx-headers:inherited="{&quot;X-Fluent-Behaviors&quot;:&quot;8.1.0:f87f375a&quot;}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team | JT teamapp</title>
+<meta property="og:title" content="Team">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JT teamapp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Team">
+<meta property="og:image" content="http://localhost:3303/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="JT teamapp">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="http://localhost:3303/team">
+<meta property="og:url" content="http://localhost:3303/team">
+<link rel="icon" href="/favicon.svg?fingerprint=84d7c645" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?fingerprint=fa518995">
+<link rel="manifest" href="/site.webmanifest?fingerprint=0ac28f10">
+
+<link rel="stylesheet" href="/css/styles.compiled.css?fingerprint=3374fab3">
+<link rel="preload" href="/fonts/playfair-display-500-700-latin.woff2?fingerprint=daeff530" type="font/woff2" as="font" crossorigin="anonymous">
+<link rel="preload" href="/fonts/playfair-display-500-700-latin-ext.woff2?fingerprint=99a7c18e" type="font/woff2" as="font" crossorigin="anonymous">
+<style nonce="">
+  .htmx-indicator { opacity: 0; transition: opacity 200ms ease-in; }
+  .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }
+  button:disabled, input[type="submit"]:disabled { opacity: 0.6; }
+</style>
+<script src="/js/htmx.min.js?fingerprint=54ac91b6" defer="" nonce=""></script>
+<meta name="htmx-config" content="{&quot;defaultSwap&quot;:&quot;outerMorph&quot;}">
+<script src="/js/fluent-behaviors.8.1.0.f87f375a.d099423edecd.js" defer="" nonce=""></script></head>
+<body><div id="global-loading" class="htmx-indicator fixed top-0 left-0 right-0 z-50"><div class="w-full h-1 bg-primary animate-pulse"></div></div>
+<div id="main-content" class="min-h-screen flex flex-col bg-bg"><nav><a class="cursor-pointer" href="/" hx-get="/" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true"><span>JT</span>
+<span> teamapp</span></a>
+<a class="cursor-pointer" href="/" hx-get="/" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Home</a>
+<div><a class="cursor-pointer" href="/team" hx-get="/team" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Team</a>
+<a class="cursor-pointer" href="/account" hx-get="/account" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Account</a>
+<form hx-post="/auth/logout" hx-target="#main-content" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" data-htmx-powered="true"><button class="cursor-pointer" type="submit">Logout</button></form></div></nav>
+<main class="flex-1"><div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8"><div><div class="mb-8"><h1 class="text-2xl font-bold text-text">Team</h1>
+<p class="text-sm text-text-dim mt-1">See who is on your team and invite new members.</p></div>
+<div class="grid gap-6 items-start lg:grid-cols-3"><div class="bg-surface rounded-card shadow-sm border border-line p-6 lg:col-span-2"><h2 class="text-lg font-semibold text-text">Members</h2>
+
+<div class="mt-4"><div id="member-list"><div><form class="mb-4" role="search" hx-get="/team/members" hx-target="#member-list" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" data-htmx-powered="true"><label class="sr-only" for="member-search-q">Search members</label>
+<input id="member-search-q" class="w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden" type="search" name="q" placeholder="Search by name or email" value="" maxlength="100" autocomplete="off" hx-get="/team/members" hx-target="#member-list" hx-swap="outerMorph" hx-trigger="input changed delay:300ms" hx-include="this" hx-indicator="#global-loading" hx-sync="replace" data-htmx-powered="true"></form>
+<div class="overflow-x-auto"><table class="w-full"><thead class="border-b border-line"><tr><th class="text-xs font-medium text-text-dim uppercase text-left p-3">Name</th>
+<th class="text-xs font-medium text-text-dim uppercase text-left p-3">Email</th>
+<th class="text-xs font-medium text-text-dim uppercase text-left p-3">Role</th>
+<th class="text-xs font-medium text-text-dim uppercase text-left p-3">Status</th></tr></thead>
+<tbody class="divide-y divide-line"><tr id="member-ab608aae-5adf-48df-869b-4a76c1a6c8d9"><td class="text-sm text-text-dim text-left p-3"><span class="font-medium text-text">Ada Lovelace</span></td>
+<td class="text-sm text-text-dim text-left p-3">ada@example.com</td>
+<td class="text-sm text-text-dim text-left p-3">Owner</td>
+<td class="text-sm text-text-dim text-left p-3"><span class="bg-success/10 text-success inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">Active</span></td></tr>
+<tr id="member-75d64eee-1149-4681-8420-28c3d9b6a421"><td class="text-sm text-text-dim text-left p-3"><span class="font-medium text-text">Grace Hopper</span></td>
+<td class="text-sm text-text-dim text-left p-3">grace@example.com</td>
+<td class="text-sm text-text-dim text-left p-3">Admin</td>
+<td class="text-sm text-text-dim text-left p-3"><span class="bg-success/10 text-success inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">Active</span></td></tr>
+<tr id="member-5eb179c0-0e41-4a0c-9cc6-dce4774ceab8"><td class="text-sm text-text-dim text-left p-3"><span class="font-medium text-text">Alan Turing</span></td>
+<td class="text-sm text-text-dim text-left p-3">alan@example.com</td>
+<td class="text-sm text-text-dim text-left p-3">Member</td>
+<td class="text-sm text-text-dim text-left p-3"><span class="bg-warning/10 text-warning inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">Invited</span></td></tr>
+<tr id="member-0b889eed-c25c-474b-916d-8311700bb3e2"><td class="text-sm text-text-dim text-left p-3"><span class="font-medium text-text">Probe Person</span></td>
+<td class="text-sm text-text-dim text-left p-3">probe.person.guided2@example.com</td>
+<td class="text-sm text-text-dim text-left p-3">Admin</td>
+<td class="text-sm text-text-dim text-left p-3"><span class="bg-warning/10 text-warning inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">Invited</span></td></tr></tbody></table></div></div></div></div></div>
+<div class="bg-surface rounded-card shadow-sm border border-line p-6"><h2 class="text-lg font-semibold text-text">Invite member</h2>
+<p class="text-sm text-text-dim mt-1">New members appear in the list as Invited.</p>
+<div class="mt-4"><div id="invite-form">
+<form class="flex flex-col gap-4" data-behavior="resetOnSuccess" hx-post="/team/members" hx-target="#main-content" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" hx-status:422="swap:outerMorph target:#invite-form push:false" novalidate="" data-htmx-powered="true"><div class="flex flex-col gap-1"><label class="text-sm font-medium text-text" for="invite-name">Name</label>
+<input id="invite-name" class="w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden" type="text" name="name" maxlength="80" autocomplete="off" required="">
+<div class="text-sm text-danger empty:hidden"></div></div>
+<div class="flex flex-col gap-1"><label class="text-sm font-medium text-text" for="invite-email">Email</label>
+<input id="invite-email" class="w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden" type="email" name="email" maxlength="254" autocomplete="off" required="">
+<div class="text-sm text-danger empty:hidden"></div></div>
+<div class="flex flex-col gap-1"><label class="text-sm font-medium text-text" for="invite-role">Role</label>
+<select id="invite-role" class="w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden" name="role"><option value="member" selected="">Member</option>
+<option value="admin">Admin</option>
+<option value="owner">Owner</option></select>
+<div class="text-sm text-danger empty:hidden"></div></div>
+<div><button class="bg-primary text-on-accent rounded-control font-medium transition-colors hover:bg-primary-700 px-6 py-3 cursor-pointer" type="submit">Send invite</button></div></form></div></div></div></div></div></div></main>
+<footer><p>JT teamapp</p>
+<div class="flex flex-wrap items-center gap-x-3 gap-y-2"><span class="font-brand font-medium uppercase text-sm tracking-wide text-text-faint">Developed by</span>
+<a class="flex items-center gap-2 font-brand font-bold text-xl tracking-tight text-text rounded-control transition-colors cursor-pointer hover:text-primary" href="https://jtdigital.si" target="_blank" rel="noopener"><span class="h-2.5 w-2.5 shrink-0 rounded-full bg-primary [box-shadow:0_0_12px_color-mix(in_oklab,_var(--color-primary)_26%,_transparent)]"></span>
+<span>JT Digital</span></a></div>
+<div><a class="cursor-pointer" href="/privacy" hx-get="/privacy" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Privacy</a>
+<a class="cursor-pointer" href="/terms" hx-get="/terms" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Terms</a>
+<a class="cursor-pointer" href="/cookies" hx-get="/cookies" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" data-htmx-powered="true">Cookies</a></div></footer></div></body></html>

@@ -1,0 +1,15 @@
+<div id="invite-form" class="bg-surface rounded-card shadow-sm border border-line p-6 flex flex-col gap-4"><div><h2 class="text-lg font-semibold text-text">Invite member</h2>
+<p class="text-sm text-text-dim mt-1">New members are listed as invited.</p></div>
+
+<form class="flex flex-col gap-4" data-behavior="resetOnSuccess" hx-post="/team" hx-target="#main-content" hx-swap="outerMorph" hx-indicator="#global-loading" hx-disable="findAll button" hx-status:422="swap:outerMorph target:#invite-form push:false" novalidate="" data-htmx-powered="true"><div class="grid gap-4 md:grid-cols-3"><div class="flex flex-col gap-1"><label class="text-sm font-medium text-text" for="invite-name">Name</label>
+<input id="invite-name" class="w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden" type="text" name="name" maxlength="100" autocomplete="off" required="" value="" aria-invalid="true" aria-describedby="invite-name-error">
+<div class="text-sm text-danger"><span id="invite-name-error">Enter a name.</span></div></div>
+<div class="flex flex-col gap-1"><label class="text-sm font-medium text-text" for="invite-email">Email</label>
+<input id="invite-email" class="w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden" type="email" name="email" maxlength="254" autocomplete="off" required="" value="not-an-email" aria-invalid="true" aria-describedby="invite-email-error">
+<div class="text-sm text-danger"><span id="invite-email-error">Enter a valid email address, like name@example.com.</span></div></div>
+<div class="flex flex-col gap-1"><label class="text-sm font-medium text-text" for="invite-role">Role</label>
+<select id="invite-role" class="w-full px-4 py-3 border-2 border-line rounded-control transition-colors focus:border-primary focus:outline-hidden" name="role"><option value="member" selected="">Member</option>
+<option value="admin">Admin</option>
+<option value="owner">Owner</option></select>
+<div class="text-sm text-danger"></div></div></div>
+<div class="flex justify-end"><button class="bg-primary text-on-accent rounded-control font-medium transition-colors hover:bg-primary-700 px-6 py-3 cursor-pointer" type="submit">Invite member</button></div></form></div>

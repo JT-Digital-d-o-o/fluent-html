@@ -1,0 +1,4192 @@
+{
+  "version": "8.1.0",
+  "tagPrototypeChain": [
+    {
+      "name": "Tag",
+      "ownNames": 229
+    }
+  ],
+  "tagCallables": [
+    "absolute",
+    "accent",
+    "active",
+    "addAttribute",
+    "addChild",
+    "addClass",
+    "addStyle",
+    "after",
+    "anchorName",
+    "animate",
+    "antialiased",
+    "appearance",
+    "apply",
+    "aspect",
+    "autoCols",
+    "autoRows",
+    "backdropBlur",
+    "before",
+    "behavior",
+    "bg",
+    "bgBlend",
+    "bgConic",
+    "bgLinear",
+    "bgRadial",
+    "block",
+    "blur",
+    "border",
+    "bottom",
+    "boxDecoration",
+    "breakAll",
+    "breakInside",
+    "brightness",
+    "capitalize",
+    "caret",
+    "checked",
+    "colEnd",
+    "colSpan",
+    "colStart",
+    "columns",
+    "containerQuery",
+    "content",
+    "contents",
+    "contrast",
+    "cssClass",
+    "cssProp",
+    "cursor",
+    "dark",
+    "decoration",
+    "delay",
+    "disabled",
+    "divide",
+    "divideX",
+    "divideY",
+    "dropShadow",
+    "duration",
+    "ease",
+    "even",
+    "fill",
+    "first",
+    "fixed",
+    "flex",
+    "focus",
+    "focusVisible",
+    "focusWithin",
+    "font",
+    "from",
+    "gap",
+    "getClass",
+    "gradient",
+    "grayscale",
+    "grid",
+    "gridCols",
+    "gridFlow",
+    "gridRows",
+    "group",
+    "groupHover",
+    "grow",
+    "h",
+    "hidden",
+    "hover",
+    "htmxIndicator",
+    "hueRotate",
+    "hxGet",
+    "hxPost",
+    "inline",
+    "inlineBlock",
+    "inlineFlex",
+    "inlineGrid",
+    "inset",
+    "insetE",
+    "insetRing",
+    "insetS",
+    "insetShadow",
+    "insetX",
+    "insetY",
+    "invert",
+    "invisible",
+    "isolate",
+    "italic",
+    "items",
+    "justify",
+    "last",
+    "leading",
+    "left",
+    "lg",
+    "lineClamp",
+    "lineThrough",
+    "list",
+    "lowercase",
+    "m",
+    "maxH",
+    "maxW",
+    "mb",
+    "md",
+    "minH",
+    "minW",
+    "mixBlend",
+    "ml",
+    "mr",
+    "mt",
+    "mx",
+    "my",
+    "neg",
+    "noUnderline",
+    "object",
+    "odd",
+    "opacity",
+    "order",
+    "outline",
+    "overflow",
+    "overlay",
+    "overscroll",
+    "p",
+    "pb",
+    "peer",
+    "peerChecked",
+    "perspective",
+    "pl",
+    "pointerEvents",
+    "positionAnchor",
+    "positionArea",
+    "pr",
+    "pt",
+    "px",
+    "py",
+    "relative",
+    "resize",
+    "right",
+    "ring",
+    "rotate",
+    "rounded",
+    "rowEnd",
+    "rowSpan",
+    "rowStart",
+    "saturate",
+    "scale",
+    "scroll",
+    "scrollP",
+    "select",
+    "self",
+    "sepia",
+    "setAria",
+    "setAutocapitalize",
+    "setClass",
+    "setClasses",
+    "setContenteditable",
+    "setDataAttrs",
+    "setDir",
+    "setEnterkeyhint",
+    "setForm",
+    "setHidden",
+    "setHtmx",
+    "setId",
+    "setLang",
+    "setMicrodata",
+    "setNonce",
+    "setPopover",
+    "setPopovertarget",
+    "setPopovertargetaction",
+    "setRole",
+    "setSpellcheck",
+    "setStyle",
+    "setStyles",
+    "setTabindex",
+    "setTitle",
+    "setTranslate",
+    "shadow",
+    "shrink",
+    "sm",
+    "spaceX",
+    "spaceY",
+    "srOnly",
+    "static",
+    "sticky",
+    "stroke",
+    "table",
+    "tableCell",
+    "tableRow",
+    "tabularNums",
+    "text",
+    "textShadow",
+    "to",
+    "toggle",
+    "top",
+    "tracking",
+    "transform",
+    "transition",
+    "translate",
+    "truncate",
+    "underline",
+    "underlineOffset",
+    "uppercase",
+    "variant",
+    "via",
+    "viewTransitionName",
+    "w",
+    "when",
+    "whenElse",
+    "whenMatch",
+    "whitespace",
+    "willChange",
+    "wrap",
+    "xl",
+    "xl2",
+    "z"
+  ],
+  "tagCallableCount": 225,
+  "tagPrivateMethods": [
+    "_setHx"
+  ],
+  "tagAccessors": [],
+  "tagSymbols": [],
+  "factories": 133,
+  "factoryErrors": [
+    {
+      "name": "Doctype",
+      "notTag": "object"
+    }
+  ],
+  "subclasses": [
+    {
+      "cls": "AnchorTag",
+      "chain": [
+        "AnchorTag"
+      ],
+      "setters": [
+        "setDownload",
+        "setHref",
+        "setHreflang",
+        "setReferrerPolicy",
+        "setRel",
+        "setTarget",
+        "setType"
+      ],
+      "factories": [
+        "A"
+      ]
+    },
+    {
+      "cls": "Tag",
+      "chain": [],
+      "setters": [],
+      "factories": [
+        "Abbr",
+        "Address",
+        "Article",
+        "Aside",
+        "B",
+        "Bdi",
+        "Bdo",
+        "Body",
+        "Br",
+        "Caption",
+        "Cite",
+        "Code",
+        "Datalist",
+        "Dd",
+        "Defs",
+        "Dfn",
+        "Div",
+        "Dl",
+        "Dt",
+        "Em",
+        "Figcaption",
+        "Figure",
+        "Footer",
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "Head",
+        "Header",
+        "Hgroup",
+        "Hr",
+        "I",
+        "Kbd",
+        "Legend",
+        "Li",
+        "Main",
+        "Mark",
+        "Menu",
+        "Nav",
+        "Noscript",
+        "Ol",
+        "P",
+        "Picture",
+        "Pre",
+        "Rp",
+        "Rt",
+        "Ruby",
+        "S",
+        "Samp",
+        "Search",
+        "Section",
+        "Small",
+        "Span",
+        "Strong",
+        "Sub",
+        "Summary",
+        "Sup",
+        "Table",
+        "Tbody",
+        "Template",
+        "Tfoot",
+        "Thead",
+        "Title",
+        "Tr",
+        "U",
+        "Ul",
+        "Var",
+        "Wbr"
+      ]
+    },
+    {
+      "cls": "AreaTag",
+      "chain": [
+        "AreaTag"
+      ],
+      "setters": [
+        "setAlt",
+        "setCoords",
+        "setDownload",
+        "setHref",
+        "setReferrerPolicy",
+        "setRel",
+        "setShape",
+        "setTarget"
+      ],
+      "factories": [
+        "Area"
+      ]
+    },
+    {
+      "cls": "AudioTag",
+      "chain": [
+        "AudioTag"
+      ],
+      "setters": [
+        "setCrossOrigin",
+        "setPreload",
+        "setSrc"
+      ],
+      "factories": [
+        "Audio"
+      ]
+    },
+    {
+      "cls": "BaseTag",
+      "chain": [
+        "BaseTag"
+      ],
+      "setters": [
+        "setHref",
+        "setTarget"
+      ],
+      "factories": [
+        "Base"
+      ]
+    },
+    {
+      "cls": "BlockquoteTag",
+      "chain": [
+        "BlockquoteTag"
+      ],
+      "setters": [
+        "setCite"
+      ],
+      "factories": [
+        "Blockquote"
+      ]
+    },
+    {
+      "cls": "ButtonTag",
+      "chain": [
+        "ButtonTag"
+      ],
+      "setters": [
+        "setCommand",
+        "setCommandfor",
+        "setFormaction",
+        "setFormenctype",
+        "setFormmethod",
+        "setFormtarget",
+        "setName",
+        "setType",
+        "setValue"
+      ],
+      "factories": [
+        "Button"
+      ]
+    },
+    {
+      "cls": "CanvasTag",
+      "chain": [
+        "CanvasTag"
+      ],
+      "setters": [
+        "setHeight",
+        "setWidth"
+      ],
+      "factories": [
+        "Canvas"
+      ]
+    },
+    {
+      "cls": "CircleTag",
+      "chain": [
+        "CircleTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setCx",
+        "setCy",
+        "setFill",
+        "setFilter",
+        "setOpacity",
+        "setR",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform"
+      ],
+      "factories": [
+        "Circle"
+      ]
+    },
+    {
+      "cls": "ClipPathTag",
+      "chain": [
+        "ClipPathTag"
+      ],
+      "setters": [
+        "setClipPathUnits"
+      ],
+      "factories": [
+        "ClipPath"
+      ]
+    },
+    {
+      "cls": "ColTag",
+      "chain": [
+        "ColTag"
+      ],
+      "setters": [
+        "setSpan"
+      ],
+      "factories": [
+        "Col"
+      ]
+    },
+    {
+      "cls": "ColgroupTag",
+      "chain": [
+        "ColgroupTag"
+      ],
+      "setters": [
+        "setSpan"
+      ],
+      "factories": [
+        "Colgroup"
+      ]
+    },
+    {
+      "cls": "DataTag",
+      "chain": [
+        "DataTag"
+      ],
+      "setters": [
+        "setValue"
+      ],
+      "factories": [
+        "Data"
+      ]
+    },
+    {
+      "cls": "DelTag",
+      "chain": [
+        "DelTag"
+      ],
+      "setters": [
+        "setCite",
+        "setDatetime"
+      ],
+      "factories": [
+        "Del"
+      ]
+    },
+    {
+      "cls": "DetailsTag",
+      "chain": [
+        "DetailsTag"
+      ],
+      "setters": [
+        "setName"
+      ],
+      "factories": [
+        "Details"
+      ]
+    },
+    {
+      "cls": "DialogTag",
+      "chain": [
+        "DialogTag"
+      ],
+      "setters": [
+        "setClosedby"
+      ],
+      "factories": [
+        "Dialog"
+      ]
+    },
+    {
+      "cls": "DocumentTag",
+      "chain": [
+        "DocumentTag",
+        "HtmlTag"
+      ],
+      "setters": [
+        "setDir",
+        "setLang"
+      ],
+      "factories": [
+        "Document"
+      ]
+    },
+    {
+      "cls": "EllipseTag",
+      "chain": [
+        "EllipseTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setCx",
+        "setCy",
+        "setFill",
+        "setFilter",
+        "setOpacity",
+        "setRx",
+        "setRy",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform"
+      ],
+      "factories": [
+        "Ellipse"
+      ]
+    },
+    {
+      "cls": "EmbedTag",
+      "chain": [
+        "EmbedTag"
+      ],
+      "setters": [
+        "setHeight",
+        "setSrc",
+        "setType",
+        "setWidth"
+      ],
+      "factories": [
+        "Embed"
+      ]
+    },
+    {
+      "cls": "FeGaussianBlurTag",
+      "chain": [
+        "FeGaussianBlurTag"
+      ],
+      "setters": [
+        "setEdgeMode",
+        "setIn",
+        "setResult",
+        "setStdDeviation"
+      ],
+      "factories": [
+        "FeGaussianBlur"
+      ]
+    },
+    {
+      "cls": "FieldsetTag",
+      "chain": [
+        "FieldsetTag"
+      ],
+      "setters": [
+        "setName"
+      ],
+      "factories": [
+        "Fieldset"
+      ]
+    },
+    {
+      "cls": "FilterTag",
+      "chain": [
+        "FilterTag"
+      ],
+      "setters": [
+        "setFilterUnits",
+        "setHeight",
+        "setPrimitiveUnits",
+        "setWidth",
+        "setX",
+        "setY"
+      ],
+      "factories": [
+        "Filter"
+      ]
+    },
+    {
+      "cls": "FormTag",
+      "chain": [
+        "FormTag"
+      ],
+      "setters": [
+        "getEnctype",
+        "multipart",
+        "setAction",
+        "setAutocomplete",
+        "setEnctype",
+        "setMethod",
+        "setTarget"
+      ],
+      "factories": [
+        "Form"
+      ]
+    },
+    {
+      "cls": "SvgShapeTag",
+      "chain": [
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setFill",
+        "setFilter",
+        "setOpacity",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform"
+      ],
+      "factories": [
+        "G"
+      ]
+    },
+    {
+      "cls": "HtmlTag",
+      "chain": [
+        "HtmlTag"
+      ],
+      "setters": [
+        "setDir",
+        "setLang"
+      ],
+      "factories": [
+        "HTML"
+      ]
+    },
+    {
+      "cls": "IframeTag",
+      "chain": [
+        "IframeTag"
+      ],
+      "setters": [
+        "setAllow",
+        "setFetchPriority",
+        "setHeight",
+        "setLoading",
+        "setName",
+        "setReferrerPolicy",
+        "setSandbox",
+        "setSrc",
+        "setSrcdoc",
+        "setWidth"
+      ],
+      "factories": [
+        "Iframe"
+      ]
+    },
+    {
+      "cls": "ImgTag",
+      "chain": [
+        "ImgTag"
+      ],
+      "setters": [
+        "setAlt",
+        "setCrossOrigin",
+        "setDecoding",
+        "setFetchPriority",
+        "setHeight",
+        "setLoading",
+        "setReferrerPolicy",
+        "setSizes",
+        "setSrc",
+        "setSrcset",
+        "setWidth"
+      ],
+      "factories": [
+        "Img"
+      ]
+    },
+    {
+      "cls": "InputTag",
+      "chain": [
+        "InputTag"
+      ],
+      "setters": [
+        "setAccept",
+        "setAutocomplete",
+        "setCapture",
+        "setDirname",
+        "setInputmode",
+        "setList",
+        "setMax",
+        "setMaxlength",
+        "setMin",
+        "setMinlength",
+        "setName",
+        "setPattern",
+        "setPlaceholder",
+        "setStep",
+        "setType",
+        "setValue"
+      ],
+      "factories": [
+        "Input"
+      ]
+    },
+    {
+      "cls": "InsTag",
+      "chain": [
+        "InsTag"
+      ],
+      "setters": [
+        "setCite",
+        "setDatetime"
+      ],
+      "factories": [
+        "Ins"
+      ]
+    },
+    {
+      "cls": "LabelTag",
+      "chain": [
+        "LabelTag"
+      ],
+      "setters": [
+        "setFor"
+      ],
+      "factories": [
+        "Label"
+      ]
+    },
+    {
+      "cls": "LineTag",
+      "chain": [
+        "LineTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setFill",
+        "setFilter",
+        "setOpacity",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform",
+        "setX1",
+        "setX2",
+        "setY1",
+        "setY2"
+      ],
+      "factories": [
+        "Line"
+      ]
+    },
+    {
+      "cls": "LinearGradientTag",
+      "chain": [
+        "LinearGradientTag"
+      ],
+      "setters": [
+        "setGradientTransform",
+        "setGradientUnits",
+        "setSpreadMethod",
+        "setX1",
+        "setX2",
+        "setY1",
+        "setY2"
+      ],
+      "factories": [
+        "LinearGradient"
+      ]
+    },
+    {
+      "cls": "LinkTag",
+      "chain": [
+        "LinkTag"
+      ],
+      "setters": [
+        "setAs",
+        "setCrossOrigin",
+        "setFetchPriority",
+        "setHref",
+        "setHreflang",
+        "setImagesizes",
+        "setImagesrcset",
+        "setIntegrity",
+        "setMedia",
+        "setReferrerPolicy",
+        "setRel",
+        "setSizes",
+        "setType"
+      ],
+      "factories": [
+        "Link"
+      ]
+    },
+    {
+      "cls": "MapTag",
+      "chain": [
+        "MapTag"
+      ],
+      "setters": [
+        "setName"
+      ],
+      "factories": [
+        "MapEl"
+      ]
+    },
+    {
+      "cls": "MaskTag",
+      "chain": [
+        "MaskTag"
+      ],
+      "setters": [
+        "setHeight",
+        "setMaskContentUnits",
+        "setMaskUnits",
+        "setWidth",
+        "setX",
+        "setY"
+      ],
+      "factories": [
+        "Mask"
+      ]
+    },
+    {
+      "cls": "MetaTag",
+      "chain": [
+        "MetaTag"
+      ],
+      "setters": [
+        "setCharset",
+        "setContent",
+        "setHttpEquiv",
+        "setMedia",
+        "setName",
+        "setProperty"
+      ],
+      "factories": [
+        "Meta"
+      ]
+    },
+    {
+      "cls": "MeterTag",
+      "chain": [
+        "MeterTag"
+      ],
+      "setters": [
+        "setHigh",
+        "setLow",
+        "setMax",
+        "setMin",
+        "setOptimum",
+        "setValue"
+      ],
+      "factories": [
+        "Meter"
+      ]
+    },
+    {
+      "cls": "ObjectTag",
+      "chain": [
+        "ObjectTag"
+      ],
+      "setters": [
+        "setData",
+        "setHeight",
+        "setName",
+        "setType",
+        "setWidth"
+      ],
+      "factories": [
+        "ObjectEl"
+      ]
+    },
+    {
+      "cls": "OptgroupTag",
+      "chain": [
+        "OptgroupTag"
+      ],
+      "setters": [
+        "setLabel"
+      ],
+      "factories": [
+        "Optgroup"
+      ]
+    },
+    {
+      "cls": "OptionTag",
+      "chain": [
+        "OptionTag"
+      ],
+      "setters": [
+        "setLabel",
+        "setValue"
+      ],
+      "factories": [
+        "Option"
+      ]
+    },
+    {
+      "cls": "OutputTag",
+      "chain": [
+        "OutputTag"
+      ],
+      "setters": [
+        "setFor",
+        "setName"
+      ],
+      "factories": [
+        "Output"
+      ]
+    },
+    {
+      "cls": "PathTag",
+      "chain": [
+        "PathTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setClipRule",
+        "setD",
+        "setFill",
+        "setFillRule",
+        "setFilter",
+        "setOpacity",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform"
+      ],
+      "factories": [
+        "Path"
+      ]
+    },
+    {
+      "cls": "PolygonTag",
+      "chain": [
+        "PolygonTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setFill",
+        "setFilter",
+        "setOpacity",
+        "setPoints",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform"
+      ],
+      "factories": [
+        "Polygon"
+      ]
+    },
+    {
+      "cls": "PolylineTag",
+      "chain": [
+        "PolylineTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setFill",
+        "setFilter",
+        "setOpacity",
+        "setPoints",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform"
+      ],
+      "factories": [
+        "Polyline"
+      ]
+    },
+    {
+      "cls": "ProgressTag",
+      "chain": [
+        "ProgressTag"
+      ],
+      "setters": [
+        "setMax",
+        "setValue"
+      ],
+      "factories": [
+        "Progress"
+      ]
+    },
+    {
+      "cls": "QTag",
+      "chain": [
+        "QTag"
+      ],
+      "setters": [
+        "setCite"
+      ],
+      "factories": [
+        "Q"
+      ]
+    },
+    {
+      "cls": "RadialGradientTag",
+      "chain": [
+        "RadialGradientTag"
+      ],
+      "setters": [
+        "setCx",
+        "setCy",
+        "setFx",
+        "setFy",
+        "setGradientTransform",
+        "setGradientUnits",
+        "setR",
+        "setSpreadMethod"
+      ],
+      "factories": [
+        "RadialGradient"
+      ]
+    },
+    {
+      "cls": "RectTag",
+      "chain": [
+        "RectTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setFill",
+        "setFilter",
+        "setHeight",
+        "setOpacity",
+        "setRx",
+        "setRy",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTransform",
+        "setWidth",
+        "setX",
+        "setY"
+      ],
+      "factories": [
+        "Rect"
+      ]
+    },
+    {
+      "cls": "ScriptTag",
+      "chain": [
+        "ScriptTag"
+      ],
+      "setters": [
+        "setCrossOrigin",
+        "setFetchPriority",
+        "setIntegrity",
+        "setReferrerPolicy",
+        "setSrc",
+        "setType"
+      ],
+      "factories": [
+        "Script"
+      ]
+    },
+    {
+      "cls": "SelectTag",
+      "chain": [
+        "SelectTag"
+      ],
+      "setters": [
+        "setAutocomplete",
+        "setName",
+        "setSize"
+      ],
+      "factories": [
+        "Select"
+      ]
+    },
+    {
+      "cls": "SlotTag",
+      "chain": [
+        "SlotTag"
+      ],
+      "setters": [
+        "setName"
+      ],
+      "factories": [
+        "Slot"
+      ]
+    },
+    {
+      "cls": "SourceTag",
+      "chain": [
+        "SourceTag"
+      ],
+      "setters": [
+        "setHeight",
+        "setMedia",
+        "setSizes",
+        "setSrc",
+        "setSrcset",
+        "setType",
+        "setWidth"
+      ],
+      "factories": [
+        "Source"
+      ]
+    },
+    {
+      "cls": "StopTag",
+      "chain": [
+        "StopTag"
+      ],
+      "setters": [
+        "setOffset",
+        "setStopColor",
+        "setStopOpacity"
+      ],
+      "factories": [
+        "Stop"
+      ]
+    },
+    {
+      "cls": "StyleTag",
+      "chain": [
+        "StyleTag"
+      ],
+      "setters": [
+        "setMedia",
+        "setType"
+      ],
+      "factories": [
+        "Style"
+      ]
+    },
+    {
+      "cls": "SvgTag",
+      "chain": [
+        "SvgTag"
+      ],
+      "setters": [
+        "setFill",
+        "setHeight",
+        "setStroke",
+        "setStrokeWidth",
+        "setViewBox",
+        "setWidth",
+        "setXmlns"
+      ],
+      "factories": [
+        "Svg"
+      ]
+    },
+    {
+      "cls": "TdTag",
+      "chain": [
+        "TdTag"
+      ],
+      "setters": [
+        "addHeaders",
+        "setColspan",
+        "setHeaders",
+        "setRowspan"
+      ],
+      "factories": [
+        "Td"
+      ]
+    },
+    {
+      "cls": "SvgTextTag",
+      "chain": [
+        "SvgTextTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setDominantBaseline",
+        "setDx",
+        "setDy",
+        "setFill",
+        "setFilter",
+        "setFontFamily",
+        "setFontSize",
+        "setFontStyle",
+        "setFontWeight",
+        "setLetterSpacing",
+        "setOpacity",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTextAnchor",
+        "setTextDecoration",
+        "setTransform",
+        "setX",
+        "setY"
+      ],
+      "factories": [
+        "Text"
+      ]
+    },
+    {
+      "cls": "TextareaTag",
+      "chain": [
+        "TextareaTag"
+      ],
+      "setters": [
+        "setAutocomplete",
+        "setCols",
+        "setDirname",
+        "setInputmode",
+        "setMaxlength",
+        "setMinlength",
+        "setName",
+        "setPlaceholder",
+        "setRows",
+        "setWrap"
+      ],
+      "factories": [
+        "Textarea"
+      ]
+    },
+    {
+      "cls": "ThTag",
+      "chain": [
+        "ThTag"
+      ],
+      "setters": [
+        "addHeaders",
+        "setAbbr",
+        "setColspan",
+        "setHeaders",
+        "setRowspan",
+        "setScope"
+      ],
+      "factories": [
+        "Th"
+      ]
+    },
+    {
+      "cls": "TimeTag",
+      "chain": [
+        "TimeTag"
+      ],
+      "setters": [
+        "setDatetime"
+      ],
+      "factories": [
+        "Time"
+      ]
+    },
+    {
+      "cls": "TrackTag",
+      "chain": [
+        "TrackTag"
+      ],
+      "setters": [
+        "setKind",
+        "setLabel",
+        "setSrc",
+        "setSrclang"
+      ],
+      "factories": [
+        "Track"
+      ]
+    },
+    {
+      "cls": "TspanTag",
+      "chain": [
+        "TspanTag",
+        "SvgShapeTag"
+      ],
+      "setters": [
+        "setDx",
+        "setDy",
+        "setFill",
+        "setFilter",
+        "setFontFamily",
+        "setFontSize",
+        "setFontStyle",
+        "setFontWeight",
+        "setLetterSpacing",
+        "setOpacity",
+        "setStroke",
+        "setStrokeDasharray",
+        "setStrokeDashoffset",
+        "setStrokeLinecap",
+        "setStrokeLinejoin",
+        "setStrokeOpacity",
+        "setStrokeWidth",
+        "setTextDecoration",
+        "setTransform",
+        "setX",
+        "setY"
+      ],
+      "factories": [
+        "Tspan"
+      ]
+    },
+    {
+      "cls": "UseTag",
+      "chain": [
+        "UseTag"
+      ],
+      "setters": [
+        "setHeight",
+        "setHref",
+        "setWidth",
+        "setX",
+        "setY"
+      ],
+      "factories": [
+        "Use"
+      ]
+    },
+    {
+      "cls": "VideoTag",
+      "chain": [
+        "VideoTag"
+      ],
+      "setters": [
+        "setCrossOrigin",
+        "setHeight",
+        "setPoster",
+        "setPreload",
+        "setSrc",
+        "setWidth"
+      ],
+      "factories": [
+        "Video"
+      ]
+    }
+  ],
+  "subclassCount": 64,
+  "orphanClasses": [],
+  "perClassSetterSum": 385,
+  "distinctSetterNames": 138,
+  "setterOnlyNames": [
+    "addHeaders",
+    "getEnctype",
+    "multipart",
+    "setAbbr",
+    "setAccept",
+    "setAction",
+    "setAllow",
+    "setAlt",
+    "setAs",
+    "setAutocomplete",
+    "setCapture",
+    "setCharset",
+    "setCite",
+    "setClipPathUnits",
+    "setClipRule",
+    "setClosedby",
+    "setCols",
+    "setColspan",
+    "setCommand",
+    "setCommandfor",
+    "setContent",
+    "setCoords",
+    "setCrossOrigin",
+    "setCx",
+    "setCy",
+    "setD",
+    "setData",
+    "setDatetime",
+    "setDecoding",
+    "setDirname",
+    "setDominantBaseline",
+    "setDownload",
+    "setDx",
+    "setDy",
+    "setEdgeMode",
+    "setEnctype",
+    "setFetchPriority",
+    "setFill",
+    "setFillRule",
+    "setFilter",
+    "setFilterUnits",
+    "setFontFamily",
+    "setFontSize",
+    "setFontStyle",
+    "setFontWeight",
+    "setFor",
+    "setFormaction",
+    "setFormenctype",
+    "setFormmethod",
+    "setFormtarget",
+    "setFx",
+    "setFy",
+    "setGradientTransform",
+    "setGradientUnits",
+    "setHeaders",
+    "setHeight",
+    "setHigh",
+    "setHref",
+    "setHreflang",
+    "setHttpEquiv",
+    "setImagesizes",
+    "setImagesrcset",
+    "setIn",
+    "setInputmode",
+    "setIntegrity",
+    "setKind",
+    "setLabel",
+    "setLetterSpacing",
+    "setList",
+    "setLoading",
+    "setLow",
+    "setMaskContentUnits",
+    "setMaskUnits",
+    "setMax",
+    "setMaxlength",
+    "setMedia",
+    "setMethod",
+    "setMin",
+    "setMinlength",
+    "setName",
+    "setOffset",
+    "setOpacity",
+    "setOptimum",
+    "setPattern",
+    "setPlaceholder",
+    "setPoints",
+    "setPoster",
+    "setPreload",
+    "setPrimitiveUnits",
+    "setProperty",
+    "setR",
+    "setReferrerPolicy",
+    "setRel",
+    "setResult",
+    "setRows",
+    "setRowspan",
+    "setRx",
+    "setRy",
+    "setSandbox",
+    "setScope",
+    "setShape",
+    "setSize",
+    "setSizes",
+    "setSpan",
+    "setSpreadMethod",
+    "setSrc",
+    "setSrcdoc",
+    "setSrclang",
+    "setSrcset",
+    "setStdDeviation",
+    "setStep",
+    "setStopColor",
+    "setStopOpacity",
+    "setStroke",
+    "setStrokeDasharray",
+    "setStrokeDashoffset",
+    "setStrokeLinecap",
+    "setStrokeLinejoin",
+    "setStrokeOpacity",
+    "setStrokeWidth",
+    "setTarget",
+    "setTextAnchor",
+    "setTextDecoration",
+    "setTransform",
+    "setType",
+    "setValue",
+    "setViewBox",
+    "setWidth",
+    "setWrap",
+    "setX",
+    "setX1",
+    "setX2",
+    "setXmlns",
+    "setY",
+    "setY1",
+    "setY2"
+  ],
+  "setterOnlyCount": 136,
+  "setterOverridesTag": [
+    "setDir",
+    "setLang"
+  ],
+  "setterPrivate": [],
+  "instanceOwnPublic": {
+    "el": 133,
+    "child": 133
+  },
+  "bareDivOwnKeys": [
+    "_variantPrefix",
+    "_e",
+    "_p",
+    "el",
+    "child"
+  ],
+  "bareDivPublic": [
+    "el",
+    "child"
+  ],
+  "entries": {
+    ".": {
+      "class": 48,
+      "elementFactory": 133,
+      "function": 44,
+      "object": 2,
+      "other": 0,
+      "names": {
+        "class": [
+          "AnchorTag",
+          "AreaTag",
+          "AudioTag",
+          "BaseTag",
+          "BlockquoteTag",
+          "ButtonTag",
+          "CanvasTag",
+          "ColTag",
+          "ColgroupTag",
+          "DataTag",
+          "DelTag",
+          "DetailsTag",
+          "DialogTag",
+          "DocumentTag",
+          "EmbedTag",
+          "FieldsetTag",
+          "FormTag",
+          "HtmlTag",
+          "HxResponse",
+          "IframeTag",
+          "ImgTag",
+          "InputTag",
+          "InsTag",
+          "LabelTag",
+          "LinkTag",
+          "MapTag",
+          "MetaTag",
+          "MeterTag",
+          "ObjectTag",
+          "OptgroupTag",
+          "OptionTag",
+          "OutputTag",
+          "ProgressTag",
+          "QTag",
+          "RawString",
+          "ScriptTag",
+          "SelectTag",
+          "SlotTag",
+          "SourceTag",
+          "StyleTag",
+          "SvgTag",
+          "Tag",
+          "TdTag",
+          "TextareaTag",
+          "ThTag",
+          "TimeTag",
+          "TrackTag",
+          "VideoTag"
+        ],
+        "elementFactory": [
+          "A",
+          "Abbr",
+          "Address",
+          "Area",
+          "Article",
+          "Aside",
+          "Audio",
+          "B",
+          "Base",
+          "Bdi",
+          "Bdo",
+          "Blockquote",
+          "Body",
+          "Br",
+          "Button",
+          "Canvas",
+          "Caption",
+          "Circle",
+          "Cite",
+          "ClipPath",
+          "Code",
+          "Col",
+          "Colgroup",
+          "Data",
+          "Datalist",
+          "Dd",
+          "Defs",
+          "Del",
+          "Details",
+          "Dfn",
+          "Dialog",
+          "Div",
+          "Dl",
+          "Document",
+          "Dt",
+          "Ellipse",
+          "Em",
+          "Embed",
+          "FeGaussianBlur",
+          "Fieldset",
+          "Figcaption",
+          "Figure",
+          "Filter",
+          "Footer",
+          "Form",
+          "G",
+          "H1",
+          "H2",
+          "H3",
+          "H4",
+          "H5",
+          "H6",
+          "HTML",
+          "Head",
+          "Header",
+          "Hgroup",
+          "Hr",
+          "I",
+          "Iframe",
+          "Img",
+          "Input",
+          "Ins",
+          "Kbd",
+          "Label",
+          "Legend",
+          "Li",
+          "Line",
+          "LinearGradient",
+          "Link",
+          "Main",
+          "MapEl",
+          "Mark",
+          "Mask",
+          "Menu",
+          "Meta",
+          "Meter",
+          "Nav",
+          "Noscript",
+          "ObjectEl",
+          "Ol",
+          "Optgroup",
+          "Option",
+          "Output",
+          "P",
+          "Path",
+          "Picture",
+          "Polygon",
+          "Polyline",
+          "Pre",
+          "Progress",
+          "Q",
+          "RadialGradient",
+          "Rect",
+          "Rp",
+          "Rt",
+          "Ruby",
+          "S",
+          "Samp",
+          "Script",
+          "Search",
+          "Section",
+          "Select",
+          "Slot",
+          "Small",
+          "Source",
+          "Span",
+          "Stop",
+          "Strong",
+          "Style",
+          "Sub",
+          "Summary",
+          "Sup",
+          "Svg",
+          "Table",
+          "Tbody",
+          "Td",
+          "Template",
+          "Text",
+          "Textarea",
+          "Tfoot",
+          "Th",
+          "Thead",
+          "Time",
+          "Title",
+          "Tr",
+          "Track",
+          "Tspan",
+          "U",
+          "Ul",
+          "Use",
+          "Var",
+          "Video",
+          "Wbr"
+        ],
+        "function": [
+          "Doctype",
+          "El",
+          "Empty",
+          "ForEach",
+          "ForEachElse",
+          "ForEachKeyed",
+          "HtmxConfig",
+          "IfThen",
+          "IfThenElse",
+          "Intersperse",
+          "Match",
+          "MatchValue",
+          "Partial",
+          "Raw",
+          "Repeat",
+          "assetUrl",
+          "closest",
+          "clss",
+          "createId",
+          "defineIds",
+          "defineRoutes",
+          "defineTheme",
+          "escapeAttr",
+          "escapeHtml",
+          "externalUrl",
+          "extractId",
+          "extractSelector",
+          "find",
+          "hx",
+          "hxResponse",
+          "id",
+          "isId",
+          "isRawString",
+          "isTag",
+          "next",
+          "previous",
+          "render",
+          "renderToIterable",
+          "renderToStream",
+          "renderToStreamWithNonce",
+          "renderWithNonce",
+          "resolveSelector",
+          "sanitizeUrl",
+          "setDevChecks"
+        ],
+        "object": [
+          "EVENT_TABLE",
+          "HTMX_EVENTS"
+        ],
+        "other": []
+      }
+    },
+    "./core": {
+      "class": 2,
+      "elementFactory": 0,
+      "function": 7,
+      "object": 0,
+      "other": 0,
+      "names": {
+        "class": [
+          "RawString",
+          "Tag"
+        ],
+        "elementFactory": [],
+        "function": [
+          "El",
+          "Empty",
+          "Raw",
+          "defineTheme",
+          "isRawString",
+          "isTag",
+          "setDevChecks"
+        ],
+        "object": [],
+        "other": []
+      }
+    },
+    "./elements": {
+      "class": 63,
+      "elementFactory": 133,
+      "function": 1,
+      "object": 0,
+      "other": 0,
+      "names": {
+        "class": [
+          "AnchorTag",
+          "AreaTag",
+          "AudioTag",
+          "BaseTag",
+          "BlockquoteTag",
+          "ButtonTag",
+          "CanvasTag",
+          "CircleTag",
+          "ClipPathTag",
+          "ColTag",
+          "ColgroupTag",
+          "DataTag",
+          "DelTag",
+          "DetailsTag",
+          "DialogTag",
+          "DocumentTag",
+          "EllipseTag",
+          "EmbedTag",
+          "FeGaussianBlurTag",
+          "FieldsetTag",
+          "FilterTag",
+          "FormTag",
+          "HtmlTag",
+          "IframeTag",
+          "ImgTag",
+          "InputTag",
+          "InsTag",
+          "LabelTag",
+          "LineTag",
+          "LinearGradientTag",
+          "LinkTag",
+          "MapTag",
+          "MaskTag",
+          "MetaTag",
+          "MeterTag",
+          "ObjectTag",
+          "OptgroupTag",
+          "OptionTag",
+          "OutputTag",
+          "PathTag",
+          "PolygonTag",
+          "PolylineTag",
+          "ProgressTag",
+          "QTag",
+          "RadialGradientTag",
+          "RectTag",
+          "ScriptTag",
+          "SelectTag",
+          "SlotTag",
+          "SourceTag",
+          "StopTag",
+          "StyleTag",
+          "SvgShapeTag",
+          "SvgTag",
+          "SvgTextTag",
+          "TdTag",
+          "TextareaTag",
+          "ThTag",
+          "TimeTag",
+          "TrackTag",
+          "TspanTag",
+          "UseTag",
+          "VideoTag"
+        ],
+        "elementFactory": [
+          "A",
+          "Abbr",
+          "Address",
+          "Area",
+          "Article",
+          "Aside",
+          "Audio",
+          "B",
+          "Base",
+          "Bdi",
+          "Bdo",
+          "Blockquote",
+          "Body",
+          "Br",
+          "Button",
+          "Canvas",
+          "Caption",
+          "Circle",
+          "Cite",
+          "ClipPath",
+          "Code",
+          "Col",
+          "Colgroup",
+          "Data",
+          "Datalist",
+          "Dd",
+          "Defs",
+          "Del",
+          "Details",
+          "Dfn",
+          "Dialog",
+          "Div",
+          "Dl",
+          "Document",
+          "Dt",
+          "Ellipse",
+          "Em",
+          "Embed",
+          "FeGaussianBlur",
+          "Fieldset",
+          "Figcaption",
+          "Figure",
+          "Filter",
+          "Footer",
+          "Form",
+          "G",
+          "H1",
+          "H2",
+          "H3",
+          "H4",
+          "H5",
+          "H6",
+          "HTML",
+          "Head",
+          "Header",
+          "Hgroup",
+          "Hr",
+          "I",
+          "Iframe",
+          "Img",
+          "Input",
+          "Ins",
+          "Kbd",
+          "Label",
+          "Legend",
+          "Li",
+          "Line",
+          "LinearGradient",
+          "Link",
+          "Main",
+          "MapEl",
+          "Mark",
+          "Mask",
+          "Menu",
+          "Meta",
+          "Meter",
+          "Nav",
+          "Noscript",
+          "ObjectEl",
+          "Ol",
+          "Optgroup",
+          "Option",
+          "Output",
+          "P",
+          "Path",
+          "Picture",
+          "Polygon",
+          "Polyline",
+          "Pre",
+          "Progress",
+          "Q",
+          "RadialGradient",
+          "Rect",
+          "Rp",
+          "Rt",
+          "Ruby",
+          "S",
+          "Samp",
+          "Script",
+          "Search",
+          "Section",
+          "Select",
+          "Slot",
+          "Small",
+          "Source",
+          "Span",
+          "Stop",
+          "Strong",
+          "Style",
+          "Sub",
+          "Summary",
+          "Sup",
+          "Svg",
+          "Table",
+          "Tbody",
+          "Td",
+          "Template",
+          "Text",
+          "Textarea",
+          "Tfoot",
+          "Th",
+          "Thead",
+          "Time",
+          "Title",
+          "Tr",
+          "Track",
+          "Tspan",
+          "U",
+          "Ul",
+          "Use",
+          "Var",
+          "Video",
+          "Wbr"
+        ],
+        "function": [
+          "Doctype"
+        ],
+        "object": [],
+        "other": []
+      }
+    },
+    "./control": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 9,
+      "object": 0,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "ForEach",
+          "ForEachElse",
+          "ForEachKeyed",
+          "IfThen",
+          "IfThenElse",
+          "Intersperse",
+          "Match",
+          "MatchValue",
+          "Repeat"
+        ],
+        "object": [],
+        "other": []
+      }
+    },
+    "./render": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 8,
+      "object": 1,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "escapeAttr",
+          "escapeHtml",
+          "render",
+          "renderToIterable",
+          "renderToStream",
+          "renderToStreamWithNonce",
+          "renderWithNonce",
+          "sanitizeUrl"
+        ],
+        "object": [
+          "htmlEscapes"
+        ],
+        "other": []
+      }
+    },
+    "./class-vocab": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 3,
+      "object": 6,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "defineUtility",
+          "emitClasses",
+          "prefixOf"
+        ],
+        "object": [
+          "DIRECT_VARIANTS",
+          "DIR_MAP",
+          "ROUNDED_CORNERS",
+          "UNITS",
+          "classVocab",
+          "variantKeySpecs"
+        ],
+        "other": []
+      }
+    },
+    "./ids": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 5,
+      "object": 0,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "createId",
+          "defineIds",
+          "extractId",
+          "extractSelector",
+          "isId"
+        ],
+        "object": [],
+        "other": []
+      }
+    },
+    "./routes": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 1,
+      "object": 0,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "defineRoutes"
+        ],
+        "object": [],
+        "other": []
+      }
+    },
+    "./htmx": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 11,
+      "object": 0,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "assetUrl",
+          "buildQueryString",
+          "closest",
+          "clss",
+          "externalUrl",
+          "find",
+          "hx",
+          "id",
+          "next",
+          "previous",
+          "resolveSelector"
+        ],
+        "object": [],
+        "other": []
+      }
+    },
+    "./behaviors": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 17,
+      "object": 8,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "allBehaviors",
+          "assertBehaviorRuntimeAsset",
+          "behaviorRuntimeFileName",
+          "behaviorRuntimeSource",
+          "behaviorRuntimeVersion",
+          "behaviorStamp",
+          "buildBehaviorRuntime",
+          "decodeOptions",
+          "extensionWireSpecs",
+          "getBehaviorSpec",
+          "kebab",
+          "optionAttr",
+          "readAssetStamp",
+          "registerBehavior",
+          "registryHash",
+          "sealBehaviorRegistry",
+          "verbPrefix"
+        ],
+        "object": [
+          "BUILTIN_FIXTURES",
+          "BUILTIN_NAMES",
+          "BUILTIN_SPECS",
+          "EVENT_NAMES",
+          "EVENT_TABLE",
+          "HTMX_EVENTS",
+          "LISTEN_SET",
+          "fixtureIds"
+        ],
+        "other": []
+      }
+    },
+    "./behavior-runtime": {
+      "class": 0,
+      "elementFactory": 0,
+      "function": 1,
+      "object": 1,
+      "other": 0,
+      "names": {
+        "class": [],
+        "elementFactory": [],
+        "function": [
+          "defineBehavior"
+        ],
+        "object": [
+          "handlers"
+        ],
+        "other": []
+      }
+    }
+  },
+  "routeCallableProps": [
+    "method",
+    "path",
+    "resolve"
+  ],
+  "routeCallableFns": [
+    "resolve"
+  ],
+  "registryProps": [
+    "a",
+    "b"
+  ],
+  "idProps": [
+    "id",
+    "selector",
+    "toString"
+  ],
+  "idFns": [
+    "toString"
+  ],
+  "distinctExportNames": 281,
+  "exportIndex": {
+    "A": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Abbr": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Address": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "AnchorTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Area": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "AreaTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Article": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Aside": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Audio": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "AudioTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "B": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Base": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "BaseTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Bdi": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Bdo": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Blockquote": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "BlockquoteTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Body": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Br": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Button": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ButtonTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Canvas": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "CanvasTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Caption": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Circle": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Cite": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ClipPath": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Code": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Col": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ColTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Colgroup": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ColgroupTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Data": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "DataTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Datalist": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Dd": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Defs": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Del": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "DelTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Details": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "DetailsTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Dfn": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Dialog": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "DialogTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Div": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Dl": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Doctype": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Document": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "DocumentTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Dt": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "EVENT_TABLE": {
+      "kind": "object",
+      "entries": [
+        ".",
+        "./behaviors"
+      ]
+    },
+    "El": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "Ellipse": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Em": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Embed": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "EmbedTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Empty": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "FeGaussianBlur": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Fieldset": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "FieldsetTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Figcaption": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Figure": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Filter": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Footer": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ForEach": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "ForEachElse": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "ForEachKeyed": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "Form": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "FormTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "G": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "H1": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "H2": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "H3": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "H4": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "H5": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "H6": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "HTML": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "HTMX_EVENTS": {
+      "kind": "object",
+      "entries": [
+        ".",
+        "./behaviors"
+      ]
+    },
+    "Head": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Header": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Hgroup": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Hr": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "HtmlTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "HtmxConfig": {
+      "kind": "function",
+      "entries": [
+        "."
+      ]
+    },
+    "HxResponse": {
+      "kind": "class",
+      "entries": [
+        "."
+      ]
+    },
+    "I": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "IfThen": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "IfThenElse": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "Iframe": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "IframeTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Img": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ImgTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Input": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "InputTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Ins": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "InsTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Intersperse": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "Kbd": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Label": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "LabelTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Legend": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Li": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Line": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "LinearGradient": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Link": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "LinkTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Main": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "MapEl": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "MapTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Mark": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Mask": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Match": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "MatchValue": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "Menu": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Meta": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "MetaTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Meter": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "MeterTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Nav": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Noscript": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ObjectEl": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ObjectTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Ol": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Optgroup": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "OptgroupTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Option": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "OptionTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Output": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "OutputTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "P": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Partial": {
+      "kind": "function",
+      "entries": [
+        "."
+      ]
+    },
+    "Path": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Picture": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Polygon": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Polyline": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Pre": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Progress": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ProgressTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Q": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "QTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "RadialGradient": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Raw": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "RawString": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "Rect": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Repeat": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./control"
+      ]
+    },
+    "Rp": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Rt": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Ruby": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "S": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Samp": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Script": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ScriptTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Search": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Section": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Select": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "SelectTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Slot": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "SlotTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Small": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Source": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "SourceTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Span": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Stop": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Strong": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Style": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "StyleTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Sub": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Summary": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Sup": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Svg": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "SvgTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Table": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Tag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "Tbody": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Td": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "TdTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Template": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Text": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Textarea": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "TextareaTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Tfoot": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Th": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "ThTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Thead": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Time": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "TimeTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Title": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Tr": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Track": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "TrackTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Tspan": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "U": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Ul": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Use": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Var": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Video": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "VideoTag": {
+      "kind": "class",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "Wbr": {
+      "kind": "elementFactory",
+      "entries": [
+        ".",
+        "./elements"
+      ]
+    },
+    "assetUrl": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "closest": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "clss": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "createId": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./ids"
+      ]
+    },
+    "defineIds": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./ids"
+      ]
+    },
+    "defineRoutes": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./routes"
+      ]
+    },
+    "defineTheme": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "escapeAttr": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "escapeHtml": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "externalUrl": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "extractId": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./ids"
+      ]
+    },
+    "extractSelector": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./ids"
+      ]
+    },
+    "find": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "hx": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "hxResponse": {
+      "kind": "function",
+      "entries": [
+        "."
+      ]
+    },
+    "id": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "isId": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./ids"
+      ]
+    },
+    "isRawString": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "isTag": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "next": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "previous": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "render": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "renderToIterable": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "renderToStream": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "renderToStreamWithNonce": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "renderWithNonce": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "resolveSelector": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./htmx"
+      ]
+    },
+    "sanitizeUrl": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./render"
+      ]
+    },
+    "setDevChecks": {
+      "kind": "function",
+      "entries": [
+        ".",
+        "./core"
+      ]
+    },
+    "CircleTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "ClipPathTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "EllipseTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "FeGaussianBlurTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "FilterTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "LineTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "LinearGradientTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "MaskTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "PathTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "PolygonTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "PolylineTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "RadialGradientTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "RectTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "StopTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "SvgShapeTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "SvgTextTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "TspanTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "UseTag": {
+      "kind": "class",
+      "entries": [
+        "./elements"
+      ]
+    },
+    "htmlEscapes": {
+      "kind": "object",
+      "entries": [
+        "./render"
+      ]
+    },
+    "DIRECT_VARIANTS": {
+      "kind": "object",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "DIR_MAP": {
+      "kind": "object",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "ROUNDED_CORNERS": {
+      "kind": "object",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "UNITS": {
+      "kind": "object",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "classVocab": {
+      "kind": "object",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "defineUtility": {
+      "kind": "function",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "emitClasses": {
+      "kind": "function",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "prefixOf": {
+      "kind": "function",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "variantKeySpecs": {
+      "kind": "object",
+      "entries": [
+        "./class-vocab"
+      ]
+    },
+    "buildQueryString": {
+      "kind": "function",
+      "entries": [
+        "./htmx"
+      ]
+    },
+    "BUILTIN_FIXTURES": {
+      "kind": "object",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "BUILTIN_NAMES": {
+      "kind": "object",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "BUILTIN_SPECS": {
+      "kind": "object",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "EVENT_NAMES": {
+      "kind": "object",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "LISTEN_SET": {
+      "kind": "object",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "allBehaviors": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "assertBehaviorRuntimeAsset": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "behaviorRuntimeFileName": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "behaviorRuntimeSource": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "behaviorRuntimeVersion": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "behaviorStamp": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "buildBehaviorRuntime": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "decodeOptions": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "extensionWireSpecs": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "fixtureIds": {
+      "kind": "object",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "getBehaviorSpec": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "kebab": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "optionAttr": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "readAssetStamp": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "registerBehavior": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "registryHash": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "sealBehaviorRegistry": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "verbPrefix": {
+      "kind": "function",
+      "entries": [
+        "./behaviors"
+      ]
+    },
+    "defineBehavior": {
+      "kind": "function",
+      "entries": [
+        "./behavior-runtime"
+      ]
+    },
+    "handlers": {
+      "kind": "object",
+      "entries": [
+        "./behavior-runtime"
+      ]
+    }
+  }
+}

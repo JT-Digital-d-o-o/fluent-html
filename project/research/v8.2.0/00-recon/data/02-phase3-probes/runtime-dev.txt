@@ -1,0 +1,32 @@
+p01-nav-raw.ts => OK: "<a class=\"cursor-pointer cursor-pointer\" role=\"button\" tabindex=\"0\" hx-undefined=\"undefined\" hx-target=\"#main-content\" hx-swap=\"outerMorph show:top\" hx-push-url=\"true\" hx-indicator=\"#global-loading\">Team</a>"
+p02-match-missing.ts => OK: ""
+p03-pruned-hxdelete.ts => THROWS: TypeError: Button(...).hxDelete is not a function
+p04-pruned-placeitems.ts => THROWS: TypeError: Div(...).grid(...).placeItems is not a function
+p05-palette-optout-on.ts => OK: "<div class=\"bg-gray-100\"></div>"
+p07-raw-setaction.ts => OK: "<form action=\"/team/invite\" method=\"post\"></form>"
+p08-raw-setformaction.ts => OK: "<button formaction=\"/team/invite\">Invite</button>"
+p09-raw-area-sethref.ts => OK: "<area href=\"/team\">"
+p10-raw-a-sethref.ts => OK: "<a href=\"/team\">Team</a>"
+p11-colspan.ts => THROWS: TypeError: Td(...).colspan is not a function
+p11b-colSpan-compiles.ts => OK: "<td class=\"col-span-2\">No members</td>"
+p12-src.ts => THROWS: TypeError: Img(...).src is not a function
+p13-href.ts => THROWS: TypeError: A(...).href is not a function
+p14-value.ts => THROWS: TypeError: Input(...).value is not a function
+p15-placeholder.ts => THROWS: TypeError: Input(...).placeholder is not a function
+p16-addattr-id.ts => OK: "<div id=\"team-list\"></div>"
+p17-addattr-class.ts => OK: "<div class=\"p-4 bg-surface\"></div>"
+p18-addattr-style.ts => OK: "<div style=\"color: red\"></div>"
+p19-typo-union.ts => OK: "<div class=\"flex justify-centre\"></div>"
+p21-dynamic-arg.ts => OK: "<span class=\"bg-warning\">invited</span>"
+p22-textcolor.ts => THROWS: TypeError: Span(...).textColor is not a function
+p23-on-hover.ts => THROWS: TypeError: Button(...).bg(...).on is not a function
+p24-array-children.ts => OK: "<div><h1>Team</h1>\n<p>Members of your team</p></div>"
+p25-map-children.ts => OK: "<ul><li>Ada</li>\n<li>Grace</li></ul>"
+p25b-map-array-child.ts => OK: "<ul><li>Ada</li>\n<li>Grace</li></ul>"
+p26-ifthen-bangbang.ts => OK: "<div><img src=\"/a.png\"></div>"
+p27-form-typo.ts => OK: "<form><label>Email\n<input id=\"emial\" type=\"email\" name=\"emial\"></label>\n<button type=\"submit\">Sign in</button></form>"
+p28-apply-override.ts => OK: "<div class=\"p-6 bg-surface rounded-card p-8\">Content</div>"
+p28b-apply-override-down.ts => OK: "<div class=\"p-8 bg-surface rounded-card p-4\">Content</div>"
+p28c-when-tint-override.ts => OK: "<div class=\"p-6 bg-surface rounded-card bg-danger/10\">Content</div>"
+p29-fragment-undeclared.ts => OK: "<input hx-get=\"/team\" hx-target=\"#team-list\" hx-swap=\"outerMorph\" hx-indicator=\"#global-loading\">"
+p20-controller-nonexhaustive.ts => boot: THROWS: Route "invite" entry must be an object with a POST handler.

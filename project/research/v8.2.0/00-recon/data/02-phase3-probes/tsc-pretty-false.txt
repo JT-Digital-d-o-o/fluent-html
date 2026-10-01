@@ -1,0 +1,27 @@
+src/app/probes/p01-nav-raw.ts(3,38): error TS2345: Argument of type 'string' is not assignable to parameter of type 'PageRoute'.
+  Type 'string' is not assignable to type 'HTMX'.
+src/app/probes/p02-match-missing.ts(3,32): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number, cases: Partial<{ [x: string]: Thunk<View>; [x: number]: Thunk<View>; }> & NoExtraCases<string, string | number>, defaultView: Thunk<...>): View', gave the following error.
+    Argument of type 'State' is not assignable to parameter of type 'string | number'.
+      Type '{ status: "loading"; }' is not assignable to type 'string | number'.
+  Overload 2 of 4, '(value: State, key: "status", cases: { error: (value: { status: "error"; message: string; }) => View; success: (value: { status: "success"; count: number; }) => View; loading: (value: { ...; }) => View; } & NoExtraCases<...>): View', gave the following error.
+    Argument of type '{ loading: () => Tag; error: (e: { status: "error"; message: string; }) => Tag; }' is not assignable to parameter of type '{ error: (value: { status: "error"; message: string; }) => View; success: (value: { status: "success"; count: number; }) => View; loading: (value: { status: "loading"; }) => View; } & NoExtraCases<...>'.
+      Property 'success' is missing in type '{ loading: () => Tag; error: (e: { status: "error"; message: string; }) => Tag; }' but required in type '{ error: (value: { status: "error"; message: string; }) => View; success: (value: { status: "success"; count: number; }) => View; loading: (value: { status: "loading"; }) => View; }'.
+src/app/probes/p03-pruned-hxdelete.ts(2,41): error TS2339: Property 'hxDelete' does not exist on type 'ButtonTag'.
+src/app/probes/p04-pruned-placeitems.ts(2,37): error TS2339: Property 'placeItems' does not exist on type 'Tag'.
+src/app/probes/p05-palette-optout-on.ts(2,33): error TS2345: Argument of type '"gray-100"' is not assignable to parameter of type 'TailwindColor'.
+src/app/probes/p10-raw-a-sethref.ts(2,42): error TS2345: Argument of type '"/team"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref | undefined'.
+src/app/probes/p11-colspan.ts(2,41): error TS2551: Property 'colspan' does not exist on type 'TdTag'. Did you mean 'colSpan'?
+src/app/probes/p12-src.ts(2,30): error TS2339: Property 'src' does not exist on type 'ImgTag'.
+src/app/probes/p13-href.ts(2,34): error TS2339: Property 'href' does not exist on type 'AnchorTag'.
+src/app/probes/p14-value.ts(2,32): error TS2339: Property 'value' does not exist on type 'InputTag'.
+src/app/probes/p15-placeholder.ts(2,32): error TS2551: Property 'placeholder' does not exist on type 'InputTag'. Did you mean 'setPlaceholder'?
+src/app/probes/p19-typo-union.ts(2,45): error TS2345: Argument of type '"centre"' is not assignable to parameter of type 'TailwindJustifyContent'.
+src/app/probes/p20-controller-nonexhaustive.ts(6,45): error TS2345: Argument of type '{ index: NoInfer<{ readonly guards: readonly [Guard<{ user: AuthUser; }>]; }> & Keyed<((options?: RouteHxOptionsFor<{ readonly method: "get"; readonly path: "/team"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) => RenderTagged<...>) &...' is not assignable to parameter of type '{ index: "Error: public GET needs a sitemap stance in its route def or a guard on its entry" | GuardedEntry<((options?: RouteHxOptionsFor<{ readonly method: "get"; readonly path: "/team"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) =...'.
+  Property 'invite' is missing in type '{ index: NoInfer<{ readonly guards: readonly [Guard<{ user: AuthUser; }>]; }> & Keyed<((options?: RouteHxOptionsFor<{ readonly method: "get"; readonly path: "/team"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) => RenderTagged<...>) &...' but required in type '{ index: "Error: public GET needs a sitemap stance in its route def or a guard on its entry" | GuardedEntry<((options?: RouteHxOptionsFor<{ readonly method: "get"; readonly path: "/team"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) =...'.
+src/app/probes/p22-textcolor.ts(2,40): error TS2339: Property 'textColor' does not exist on type 'Tag'.
+src/app/probes/p23-on-hover.ts(2,55): error TS2339: Property 'on' does not exist on type 'ButtonTag'.
+src/app/probes/p23-on-hover.ts(2,68): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/app/probes/p27-form-typo.ts(4,26): error TS2345: Argument of type '"emial"' is not assignable to parameter of type '"email" | "password"'.
+src/app/probes/p29-fragment-undeclared.ts(4,60): error TS2345: Argument of type 'RenderTagged<undefined>' is not assignable to parameter of type 'HTMX & { readonly render?: Id<"team-list"> | undefined; } & DeclaresNothing & { readonly render?: undefined; }'.
+  Property '["this route's def declares no `render` stance \u2014 a fragment verb needs `render: ids.\u2026` on it (silence means the route answers a page); an ad-hoc `hx()` url has no def, so it goes through `.setHtmx()`"]' is missing in type 'RenderTagged<undefined>' but required in type 'DeclaresNothing'.

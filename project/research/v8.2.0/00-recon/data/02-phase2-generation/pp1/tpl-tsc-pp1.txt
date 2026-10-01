@@ -1,0 +1,13 @@
+src/app/team/handlers.ts(3,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './layout.js'?
+src/app/team/handlers.ts(4,32): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './store.js'?
+src/app/team/handlers.ts(5,50): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './validation.js'?
+src/app/team/handlers.ts(6,66): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './views.js'?
+src/app/team/layout.ts(1,22): error TS2724: '"fluent-html"' has no exported member named 'Html'. Did you mean 'HTML'?
+src/app/team/routes.ts(2,54): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './handlers.js'?
+src/app/team/routes.ts(3,43): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './store.js'?
+src/app/team/validation.ts(1,66): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './store.js'?
+src/app/team/views.ts(25,66): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './store.js'?
+src/app/team/views.ts(26,68): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './validation.js'?
+src/app/team/views.ts(112,12): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.
+src/app/team/views.ts(247,17): error TS2345: Argument of type '"/team/members"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.
+src/app/team/views.ts(253,19): error TS7006: Parameter 'role' implicitly has an 'any' type.

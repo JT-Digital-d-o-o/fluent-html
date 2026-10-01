@@ -1,0 +1,2188 @@
+{
+  "lib:4.0.0-beta6": {
+    "S0_attribute_reads": {
+      "emitted": [
+        "hx",
+        "hx-boost",
+        "hx-config",
+        "hx-confirm",
+        "hx-disable",
+        "hx-encoding",
+        "hx-get",
+        "hx-headers",
+        "hx-ignore",
+        "hx-include",
+        "hx-indicator",
+        "hx-post",
+        "hx-preserve",
+        "hx-push-url",
+        "hx-replace-url",
+        "hx-select",
+        "hx-status:422",
+        "hx-swap",
+        "hx-swap-oob",
+        "hx-sync",
+        "hx-target",
+        "hx-trigger",
+        "hx-validate",
+        "hx-vals"
+      ],
+      "verdict": {
+        "hx": {
+          "read": true,
+          "via": [
+            "sel:template[hx]"
+          ]
+        },
+        "hx-boost": {
+          "read": true,
+          "via": [
+            "attr:hx-boost"
+          ]
+        },
+        "hx-config": {
+          "read": true,
+          "via": [
+            "attr:hx-config"
+          ]
+        },
+        "hx-confirm": {
+          "read": true,
+          "via": [
+            "attr:hx-confirm"
+          ]
+        },
+        "hx-disable": {
+          "read": true,
+          "via": [
+            "attr:hx-disable"
+          ]
+        },
+        "hx-encoding": {
+          "read": true,
+          "via": [
+            "attr:hx-encoding"
+          ]
+        },
+        "hx-get": {
+          "read": true,
+          "via": [
+            "attr:hx-get",
+            "sel:[hx-action],[hx-get],[hx-post],[hx-put],[hx-patch],[hx-delete],[data-hx-action],[data-hx-get],[data-hx-post],[data-hx-put],[data-hx-patch],[data-hx-delete]"
+          ]
+        },
+        "hx-headers": {
+          "read": true,
+          "via": [
+            "attr:hx-headers"
+          ]
+        },
+        "hx-ignore": {
+          "read": true,
+          "via": [
+            "sel:[hx-ignore]"
+          ]
+        },
+        "hx-include": {
+          "read": true,
+          "via": [
+            "attr:hx-include"
+          ]
+        },
+        "hx-indicator": {
+          "read": true,
+          "via": [
+            "attr:hx-indicator"
+          ]
+        },
+        "hx-post": {
+          "read": true,
+          "via": [
+            "attr:hx-post",
+            "sel:[hx-action],[hx-get],[hx-post],[hx-put],[hx-patch],[hx-delete],[data-hx-action],[data-hx-get],[data-hx-post],[data-hx-put],[data-hx-patch],[data-hx-delete]"
+          ]
+        },
+        "hx-preserve": {
+          "read": true,
+          "via": [
+            "sel:[hx-preserve],[data-hx-preserve]"
+          ]
+        },
+        "hx-push-url": {
+          "read": true,
+          "via": [
+            "attr:hx-push-url"
+          ]
+        },
+        "hx-replace-url": {
+          "read": true,
+          "via": [
+            "attr:hx-replace-url"
+          ]
+        },
+        "hx-select": {
+          "read": true,
+          "via": [
+            "attr:hx-select"
+          ]
+        },
+        "hx-status:422": {
+          "read": true,
+          "via": [
+            "attr:hx-status:422"
+          ]
+        },
+        "hx-swap": {
+          "read": true,
+          "via": [
+            "attr:hx-swap"
+          ]
+        },
+        "hx-swap-oob": {
+          "read": true,
+          "via": [
+            "attr:hx-swap-oob",
+            "sel:[hx-swap-oob],[data-hx-swap-oob]"
+          ]
+        },
+        "hx-sync": {
+          "read": true,
+          "via": [
+            "attr:hx-sync"
+          ]
+        },
+        "hx-target": {
+          "read": true,
+          "via": [
+            "attr:hx-target"
+          ]
+        },
+        "hx-trigger": {
+          "read": true,
+          "via": [
+            "attr:hx-trigger"
+          ]
+        },
+        "hx-validate": {
+          "read": true,
+          "via": [
+            "attr:hx-validate"
+          ]
+        },
+        "hx-vals": {
+          "read": true,
+          "via": [
+            "attr:hx-vals"
+          ]
+        }
+      },
+      "ignoredChildPowered": false,
+      "boostedPowered": true,
+      "dom": {
+        "out": "out",
+        "out422": "selected",
+        "oobt": "oob-new",
+        "pres": "keep-old",
+        "ind": "ind-new",
+        "url": "/replaced"
+      },
+      "requests": [
+        {
+          "m": "POST",
+          "p": "/all",
+          "ct": "multipart/form-data; boundary=----WebKitFormBoundary2GVzU2wOjDoZ8bSR",
+          "xa": "1"
+        }
+      ],
+      "errors": [],
+      "console": [
+        "error: Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)"
+      ]
+    },
+    "S1_scroll_show": {
+      "show:top": {
+        "winY": 3008,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "top"
+        },
+        "errors": []
+      },
+      "show:window:top": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "window:top"
+        },
+        "errors": []
+      },
+      "show:bottom": {
+        "winY": 2488,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "bottom"
+        },
+        "errors": []
+      },
+      "show:window:bottom": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "window:bottom"
+        },
+        "errors": []
+      },
+      "scroll:top": {
+        "winY": 1500,
+        "tgtTop": 0,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "top"
+        },
+        "errors": []
+      },
+      "scroll:window:top": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "window:top"
+        },
+        "errors": []
+      },
+      "scroll:bottom": {
+        "winY": 1500,
+        "tgtTop": 800,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "bottom"
+        },
+        "errors": []
+      },
+      "scroll:window:bottom": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "window:bottom"
+        },
+        "errors": []
+      },
+      "show:none": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "none"
+        },
+        "errors": []
+      },
+      "(none)": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML"
+        },
+        "errors": []
+      }
+    },
+    "S2_focus_scroll": {
+      "focus-scroll:true (fluent HxSwap)": {
+        "winY": 0,
+        "focused": "fi",
+        "spec": {
+          "style": "innerHTML",
+          "focus-scroll": true
+        }
+      },
+      "focusScroll:true (htmx4 docs)": {
+        "winY": 2659,
+        "focused": "fi",
+        "spec": {
+          "style": "innerHTML",
+          "focusScroll": true
+        }
+      },
+      "(none)": {
+        "winY": 0,
+        "focused": "fi",
+        "spec": {
+          "style": "innerHTML"
+        }
+      }
+    },
+    "S3_other_modifiers": {
+      "ignoreTitle:true": {
+        "title": "Probe",
+        "elapsedMs": 30,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML",
+          "ignoreTitle": true
+        },
+        "errors": []
+      },
+      "(none)": {
+        "title": "NewTitle",
+        "elapsedMs": 31,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML"
+        },
+        "errors": []
+      },
+      "transition:true": {
+        "title": "NewTitle",
+        "elapsedMs": 329,
+        "viewTransitionEvents": 1,
+        "spec": {
+          "style": "innerHTML",
+          "transition": true
+        },
+        "errors": []
+      },
+      "swap:500ms": {
+        "title": "NewTitle",
+        "elapsedMs": 535,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML",
+          "swap": "500ms"
+        },
+        "errors": []
+      },
+      "settle:250ms": {
+        "title": "NewTitle",
+        "elapsedMs": 29,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML",
+          "settle": "250ms"
+        },
+        "errors": []
+      }
+    },
+    "S4_swap_styles": {
+      "innerHTML": {
+        "dom": "<div id=\"t\"><b>new</b></div>",
+        "errors": [],
+        "specStyle": "innerHTML"
+      },
+      "outerHTML": {
+        "dom": "<b>new</b>",
+        "errors": [],
+        "specStyle": "outerHTML"
+      },
+      "textContent": {
+        "dom": "<div id=\"t\">new</div>",
+        "errors": [],
+        "specStyle": "textContent"
+      },
+      "beforebegin": {
+        "dom": "<b>new</b><div id=\"t\"><i>old</i></div>",
+        "errors": [],
+        "specStyle": "beforebegin"
+      },
+      "afterbegin": {
+        "dom": "<div id=\"t\"><b>new</b><i>old</i></div>",
+        "errors": [],
+        "specStyle": "afterbegin"
+      },
+      "beforeend": {
+        "dom": "<div id=\"t\"><i>old</i><b>new</b></div>",
+        "errors": [],
+        "specStyle": "beforeend"
+      },
+      "afterend": {
+        "dom": "<div id=\"t\"><i>old</i></div><b>new</b>",
+        "errors": [],
+        "specStyle": "afterend"
+      },
+      "before": {
+        "dom": "<b>new</b><div id=\"t\"><i>old</i></div>",
+        "errors": [],
+        "specStyle": "beforebegin"
+      },
+      "after": {
+        "dom": "<div id=\"t\"><i>old</i></div><b>new</b>",
+        "errors": [],
+        "specStyle": "afterend"
+      },
+      "prepend": {
+        "dom": "<div id=\"t\"><b>new</b><i>old</i></div>",
+        "errors": [],
+        "specStyle": "afterbegin"
+      },
+      "append": {
+        "dom": "<div id=\"t\"><i>old</i><b>new</b></div>",
+        "errors": [],
+        "specStyle": "beforeend"
+      },
+      "innerMorph": {
+        "dom": "<div id=\"t\"><b>new</b></div>",
+        "errors": [],
+        "specStyle": "innerMorph"
+      },
+      "outerMorph": {
+        "dom": "<b>new</b>",
+        "errors": [],
+        "specStyle": "outerMorph"
+      },
+      "delete": {
+        "dom": "",
+        "errors": [],
+        "specStyle": "delete"
+      },
+      "none": {
+        "dom": "<div id=\"t\"><i>old</i></div>",
+        "errors": [],
+        "specStyle": "none"
+      }
+    },
+    "S5_trigger_parse": {
+      "click": [
+        {
+          "name": "click"
+        }
+      ],
+      "dblclick": [
+        {
+          "name": "dblclick"
+        }
+      ],
+      "mouseenter": [
+        {
+          "name": "mouseenter"
+        }
+      ],
+      "mouseleave": [
+        {
+          "name": "mouseleave"
+        }
+      ],
+      "mouseover": [
+        {
+          "name": "mouseover"
+        }
+      ],
+      "mouseout": [
+        {
+          "name": "mouseout"
+        }
+      ],
+      "mousedown": [
+        {
+          "name": "mousedown"
+        }
+      ],
+      "mouseup": [
+        {
+          "name": "mouseup"
+        }
+      ],
+      "keydown": [
+        {
+          "name": "keydown"
+        }
+      ],
+      "keyup": [
+        {
+          "name": "keyup"
+        }
+      ],
+      "keypress": [
+        {
+          "name": "keypress"
+        }
+      ],
+      "change": [
+        {
+          "name": "change"
+        }
+      ],
+      "input": [
+        {
+          "name": "input"
+        }
+      ],
+      "submit": [
+        {
+          "name": "submit"
+        }
+      ],
+      "focus": [
+        {
+          "name": "focus"
+        }
+      ],
+      "blur": [
+        {
+          "name": "blur"
+        }
+      ],
+      "focusin": [
+        {
+          "name": "focusin"
+        }
+      ],
+      "focusout": [
+        {
+          "name": "focusout"
+        }
+      ],
+      "scroll": [
+        {
+          "name": "scroll"
+        }
+      ],
+      "resize": [
+        {
+          "name": "resize"
+        }
+      ],
+      "touchstart": [
+        {
+          "name": "touchstart"
+        }
+      ],
+      "touchend": [
+        {
+          "name": "touchend"
+        }
+      ],
+      "touchmove": [
+        {
+          "name": "touchmove"
+        }
+      ],
+      "load": [
+        {
+          "name": "load"
+        }
+      ],
+      "revealed": [
+        {
+          "name": "revealed"
+        }
+      ],
+      "intersect": [
+        {
+          "name": "intersect"
+        }
+      ],
+      "click once": [
+        {
+          "name": "click",
+          "once": true
+        }
+      ],
+      "input changed": [
+        {
+          "name": "input",
+          "changed": true
+        }
+      ],
+      "click consume": [
+        {
+          "name": "click",
+          "consume": true
+        }
+      ],
+      "keyup delay:300ms": [
+        {
+          "name": "keyup",
+          "delay": "300ms"
+        }
+      ],
+      "scroll throttle:500ms": [
+        {
+          "name": "scroll",
+          "throttle": "500ms"
+        }
+      ],
+      "keyup changed delay:300ms": [
+        {
+          "name": "keyup",
+          "changed": true,
+          "delay": "300ms"
+        }
+      ],
+      "every 1s": [
+        {
+          "name": "every",
+          "1s": true
+        }
+      ],
+      "every 2s": [
+        {
+          "name": "every",
+          "2s": true
+        }
+      ],
+      "every 5s": [
+        {
+          "name": "every",
+          "5s": true
+        }
+      ],
+      "every 10s": [
+        {
+          "name": "every",
+          "10s": true
+        }
+      ],
+      "sse:message": [
+        {
+          "name": "sse:message"
+        }
+      ],
+      "ws:message": [
+        {
+          "name": "ws:message"
+        }
+      ],
+      "every 500ms": [
+        {
+          "name": "every",
+          "500ms": true
+        }
+      ],
+      "input changed delay:300ms": [
+        {
+          "name": "input",
+          "changed": true,
+          "delay": "300ms"
+        }
+      ],
+      "input changed delay:250ms": [
+        {
+          "name": "input",
+          "changed": true,
+          "delay": "250ms"
+        }
+      ]
+    },
+    "S5_trigger_effect": {
+      "load": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "revealed": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "intersect": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "every 1s": {
+        "requests": 2,
+        "expectedAtLeast": 2,
+        "outerClicks": 0
+      },
+      "click once": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 2
+      },
+      "input changed": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "keyup delay:300ms": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "click consume": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "sse:message": {
+        "requests": 0,
+        "expectedAtLeast": 0,
+        "outerClicks": 0
+      },
+      "ws:message": {
+        "requests": 0,
+        "expectedAtLeast": 0,
+        "outerClicks": 0
+      }
+    },
+    "S6_sync": {
+      "replace": {
+        "requestsSent": 3,
+        "finally": 3,
+        "errors": [
+          "AbortError: signal is aborted without reason",
+          "AbortError: signal is aborted without reason"
+        ]
+      },
+      "drop": {
+        "requestsSent": 1,
+        "finally": 1,
+        "errors": []
+      },
+      "queue all": {
+        "requestsSent": 3,
+        "finally": 3,
+        "errors": []
+      },
+      "abort": {
+        "requestsSent": 1,
+        "finally": 1,
+        "errors": []
+      },
+      "closest form:abort": {
+        "requestsSent": 1,
+        "finally": 1,
+        "errors": []
+      }
+    },
+    "S7_status": {
+      "template .submit {invalid} shape": {
+        "attr": "swap:outerMorph target:#form push:false",
+        "hconParse": {
+          "swap": "outerMorph",
+          "target": "#form",
+          "push": false
+        },
+        "main": "main-old",
+        "form": "FORM-ERR",
+        "url": "/",
+        "errors": [],
+        "console": []
+      },
+      "target with a space: closest form": {
+        "attr": "swap:outerHTML target:closest form",
+        "hconParse": {
+          "swap": "outerHTML",
+          "target": "closest",
+          "form": true
+        },
+        "main": "main-old",
+        "form": "\ngo",
+        "url": "/inv",
+        "errors": [],
+        "console": [
+          "warning: htmx: 'closest' on hx-target did not match any element {elt: button#go.htmx-request, selector: closest, attr: hx-target}"
+        ]
+      },
+      "swap with a modifier: outerHTML show:top": {
+        "attr": "swap:outerHTML show:top target:#form",
+        "hconParse": {
+          "swap": "outerHTML",
+          "show": "top",
+          "target": "#form"
+        },
+        "main": "main-old",
+        "form": "FORM-ERR",
+        "url": "/inv",
+        "errors": [],
+        "console": []
+      }
+    },
+    "S8_hx_config": {
+      "timeout": {
+        "requestReachedServer": 1,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": "same-origin",
+          "timeout": 5000
+        },
+        "t": "new",
+        "errors": []
+      },
+      "credentials:true": {
+        "requestReachedServer": 0,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": true
+        },
+        "t": "old",
+        "errors": [
+          "TypeError: Failed to execute 'fetch' on 'Window': Failed to read the 'credentials' property from 'RequestInit': The provided value 'true' is not a valid enum value of type RequestCredentials."
+        ]
+      },
+      "credentials:false": {
+        "requestReachedServer": 0,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": false
+        },
+        "t": "old",
+        "errors": [
+          "TypeError: Failed to execute 'fetch' on 'Window': Failed to read the 'credentials' property from 'RequestInit': The provided value 'false' is not a valid enum value of type RequestCredentials."
+        ]
+      },
+      "mode:cors": {
+        "requestReachedServer": 1,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": "same-origin"
+        },
+        "t": "new",
+        "errors": []
+      }
+    },
+    "S9_preserve": {
+      "preserve:true": {
+        "emitted": "<div id=\"p\" hx-get=\"/x\" hx-preserve=\"true\">NEW-CONTENT</div>",
+        "after": "OLD-CONTENT"
+      },
+      "preserve:false": {
+        "emitted": "<div id=\"p\" hx-get=\"/x\" hx-preserve=\"false\">NEW-CONTENT</div>",
+        "after": "OLD-CONTENT"
+      }
+    },
+    "S10_partial": {
+      "Partial(Id) x2": {
+        "emitted": "<template type=\"partial\" hx-target=\"#pa\" hx-swap=\"outerMorph\" hx><div id=\"pa\">A-new</div></template>\n<template type=\"partial\" hx-target=\"#pb",
+        "after": [
+          "A-new",
+          "B-new"
+        ],
+        "errors": []
+      },
+      "Partial('.items')": {
+        "emitted": "<template type=\"partial\" hx-target=\".items\" hx-swap=\"innerHTML\" hx><span>I-new</span></template>",
+        "after": [
+          "I-new",
+          "I-new"
+        ],
+        "errors": []
+      },
+      "Partial('closest tr') from a source inside the row": {
+        "emitted": "<template type=\"partial\" hx-target=\"closest tr\" hx-swap=\"innerHTML\" hx><td>ROW-NEW</td></template>",
+        "after": [
+          "row-old\ngo"
+        ],
+        "errors": []
+      }
+    },
+    "S11_htmx_config": {
+      "extensions": "\"probe\"",
+      "transitions": "true",
+      "defaultSwap": "\"outerMorph\"",
+      "defaultTimeout": "1234",
+      "implicitInheritance": "true",
+      "noSwap": "[204]",
+      "prefix": "\"data-hx-\"",
+      "metaCharacter": "\":\"",
+      "inlineScriptNonce": "\"n1\"",
+      "inlineStyleNonce": "\"n2\"",
+      "mode": "\"same-origin\"",
+      "history": "false",
+      "logAll": "false"
+    },
+    "S12_headers": {
+      "HX-Trigger (comma list)": {
+        "headers": {
+          "HX-Trigger": "a, b"
+        },
+        "observed": [
+          "a",
+          "b"
+        ]
+      },
+      "HX-Trigger (json, non-latin1)": {
+        "headers": {
+          "HX-Trigger": "{\"a\":{},\"b\":{\"x\":\"\\u0161\"}}"
+        },
+        "observed": [
+          "š"
+        ]
+      },
+      "HX-Push-Url": {
+        "headers": {
+          "HX-Push-Url": "/p"
+        },
+        "observed": "/p"
+      },
+      "HX-Replace-Url": {
+        "headers": {
+          "HX-Replace-Url": "/r"
+        },
+        "observed": "/r histlen=2"
+      },
+      "HX-Retarget+Reswap+Reselect": {
+        "headers": {
+          "HX-Retarget": "#t2",
+          "HX-Reswap": "beforeend",
+          "HX-Reselect": "#s"
+        },
+        "observed": [
+          "t-old",
+          "t2-old<span id=\"s\">sel-new</span>"
+        ]
+      },
+      "HX-Redirect": {
+        "headers": {
+          "HX-Redirect": "/d"
+        },
+        "observed": "http://probe.test/d"
+      },
+      "HX-Refresh": {
+        "headers": {
+          "HX-Refresh": "true"
+        },
+        "observed": "page loads=2"
+      },
+      "HX-Location (string)": {
+        "headers": {
+          "HX-Location": "/l"
+        },
+        "observed": "GET /h, GET /l url=/l"
+      },
+      "HX-Location (object, every HxLocationConfig key)": {
+        "headers": {
+          "HX-Location": "{\"path\":\"/l\",\"target\":\"#t2\",\"swap\":\"innerHTML\",\"select\":\"#ls\",\"source\":\"#go\",\"event\":\"click\",\"handler\":\"h\",\"values\":{\"v\":1},\"headers\":{\"X-H\":\"1\"}}"
+        },
+        "observed": {
+          "lRequest": {
+            "path": "/l?v=1",
+            "xh": "1"
+          },
+          "t2": "<span id=\"ls\">LOC-SELECTED</span>"
+        }
+      }
+    },
+    "S14_misc": {
+      "hx-put": {
+        "method": "PUT"
+      },
+      "hx-patch": {
+        "method": "PATCH"
+      },
+      "hx-delete": {
+        "method": "DELETE"
+      },
+      "swapOob:true": {
+        "emitted": "<div id=\"oob\" hx-get=\"/x\" hx-swap-oob=\"true\"><span>oob-new</span></div>",
+        "list": "<i>l-old</i>",
+        "oob": "<div id=\"oob\" hx-get=\"/x\" data-htmx-powered=\"true\"><span>oob-new</span></div>"
+      },
+      "swapOob:innerHTML": {
+        "emitted": "<div id=\"oob\" hx-get=\"/x\" hx-swap-oob=\"innerHTML\"><span>oob-new</span></div>",
+        "list": "<i>l-old</i>",
+        "oob": "<div id=\"oob\"><span>oob-new</span></div>"
+      },
+      "swapOob:beforeend:#list": {
+        "emitted": "<div hx-get=\"/x\" hx-swap-oob=\"beforeend:#list\"><span>appended</span></div>",
+        "list": "<i>l-old</i><span>appended</span>",
+        "oob": "<div id=\"oob\"><i>o-old</i></div>"
+      },
+      "boost:true": {
+        "emitted": "<a id=\"b\" href=\"/bb\" hx-get=\"/bb\" hx-boost=\"true\">b</a>",
+        "boosted": null
+      },
+      "boost:false": {
+        "emitted": "<a id=\"b\" href=\"/bb\" hx-get=\"/bb\" hx-boost=\"false\">b</a>",
+        "boosted": null
+      },
+      "pushUrl:false": {
+        "url": "/"
+      },
+      "pushUrl:/pushed": {
+        "url": "/pushed"
+      }
+    },
+    "S15_inheritance": {
+      "boost on container -> descendant <a>": {
+        "emitted": "<div id=\"cont\" hx-get=\"/container\" hx-boost=\"true\"><a id=\"cl\" href=\"/child\">child link</a></div>",
+        "childBoosted": null
+      },
+      "target on container -> descendant request": {
+        "emitted": "<div id=\"dest\">dest-old</div><div id=\"cont\" hx-get=\"/container\" hx-target=\"#dest\" hx-trigger=\"never\"><button id=\"cb\" type=\"button\" hx-get=\"/c2\">child</button></div>",
+        "dest": "dest-old",
+        "child": "C2"
+      }
+    },
+    "S13_after_swap_detail": {
+      "detailKeys": [
+        "ctx"
+      ],
+      "ctxKeys": [
+        "sourceElement",
+        "sourceEvent",
+        "status",
+        "select",
+        "selectOOB",
+        "target",
+        "swap",
+        "push",
+        "replace",
+        "transition",
+        "confirm",
+        "request",
+        "queueStrategy",
+        "requestTimeout",
+        "fetch",
+        "response",
+        "hx",
+        "text",
+        "title"
+      ],
+      "ctxPush": "true",
+      "hasElt": false,
+      "hasCtxElt": false,
+      "hasPushUrl": false,
+      "hasCtxPushUrl": false,
+      "status": 200,
+      "targetIsElement": true,
+      "targetId": "go"
+    },
+    "S13_drawer_close_on_nav": {
+      "pushUrl nav swapping a region that does NOT contain the drawer": {
+        "openBefore": true,
+        "openAfter": true,
+        "bodyLocked": true,
+        "url": "/navpage",
+        "console": []
+      },
+      "nav swapping a region that CONTAINS the drawer (control)": {
+        "openBefore": true,
+        "openAfter": "(drawer removed)",
+        "bodyLocked": false,
+        "url": "/navpage",
+        "console": []
+      }
+    }
+  },
+  "template:4.0.0": {
+    "S0_attribute_reads": {
+      "emitted": [
+        "hx",
+        "hx-boost",
+        "hx-config",
+        "hx-confirm",
+        "hx-disable",
+        "hx-encoding",
+        "hx-get",
+        "hx-headers",
+        "hx-ignore",
+        "hx-include",
+        "hx-indicator",
+        "hx-post",
+        "hx-preserve",
+        "hx-push-url",
+        "hx-replace-url",
+        "hx-select",
+        "hx-status:422",
+        "hx-swap",
+        "hx-swap-oob",
+        "hx-sync",
+        "hx-target",
+        "hx-trigger",
+        "hx-validate",
+        "hx-vals"
+      ],
+      "verdict": {
+        "hx": {
+          "read": true,
+          "via": [
+            "sel:template[hx]"
+          ]
+        },
+        "hx-boost": {
+          "read": true,
+          "via": [
+            "attr:hx-boost"
+          ]
+        },
+        "hx-config": {
+          "read": true,
+          "via": [
+            "attr:hx-config"
+          ]
+        },
+        "hx-confirm": {
+          "read": true,
+          "via": [
+            "attr:hx-confirm"
+          ]
+        },
+        "hx-disable": {
+          "read": true,
+          "via": [
+            "attr:hx-disable"
+          ]
+        },
+        "hx-encoding": {
+          "read": true,
+          "via": [
+            "attr:hx-encoding"
+          ]
+        },
+        "hx-get": {
+          "read": true,
+          "via": [
+            "attr:hx-get",
+            "sel:[hx-action],[hx-get],[hx-post],[hx-put],[hx-patch],[hx-delete],[hx-query],[data-hx-action],[data-hx-get],[data-hx-post],[data-hx-put],[data-hx-patch],[data-hx-delete],[data-hx-query]"
+          ]
+        },
+        "hx-headers": {
+          "read": true,
+          "via": [
+            "attr:hx-headers"
+          ]
+        },
+        "hx-ignore": {
+          "read": true,
+          "via": [
+            "sel:[hx-ignore]"
+          ]
+        },
+        "hx-include": {
+          "read": true,
+          "via": [
+            "attr:hx-include"
+          ]
+        },
+        "hx-indicator": {
+          "read": true,
+          "via": [
+            "attr:hx-indicator"
+          ]
+        },
+        "hx-post": {
+          "read": true,
+          "via": [
+            "attr:hx-post",
+            "sel:[hx-action],[hx-get],[hx-post],[hx-put],[hx-patch],[hx-delete],[hx-query],[data-hx-action],[data-hx-get],[data-hx-post],[data-hx-put],[data-hx-patch],[data-hx-delete],[data-hx-query]"
+          ]
+        },
+        "hx-preserve": {
+          "read": true,
+          "via": [
+            "sel:[hx-preserve],[data-hx-preserve]"
+          ]
+        },
+        "hx-push-url": {
+          "read": true,
+          "via": [
+            "attr:hx-push-url"
+          ]
+        },
+        "hx-replace-url": {
+          "read": true,
+          "via": [
+            "attr:hx-replace-url"
+          ]
+        },
+        "hx-select": {
+          "read": true,
+          "via": [
+            "attr:hx-select"
+          ]
+        },
+        "hx-status:422": {
+          "read": true,
+          "via": [
+            "attr:hx-status:422"
+          ]
+        },
+        "hx-swap": {
+          "read": true,
+          "via": [
+            "attr:hx-swap"
+          ]
+        },
+        "hx-swap-oob": {
+          "read": true,
+          "via": [
+            "attr:hx-swap-oob",
+            "sel:[hx-swap-oob],[data-hx-swap-oob]"
+          ]
+        },
+        "hx-sync": {
+          "read": true,
+          "via": [
+            "attr:hx-sync"
+          ]
+        },
+        "hx-target": {
+          "read": true,
+          "via": [
+            "attr:hx-target"
+          ]
+        },
+        "hx-trigger": {
+          "read": true,
+          "via": [
+            "attr:hx-trigger"
+          ]
+        },
+        "hx-validate": {
+          "read": true,
+          "via": [
+            "attr:hx-validate"
+          ]
+        },
+        "hx-vals": {
+          "read": true,
+          "via": [
+            "attr:hx-vals"
+          ]
+        }
+      },
+      "ignoredChildPowered": false,
+      "boostedPowered": true,
+      "dom": {
+        "out": "out",
+        "out422": "selected",
+        "oobt": "oob-new",
+        "pres": "keep-old",
+        "ind": "ind-new",
+        "url": "/replaced"
+      },
+      "requests": [
+        {
+          "m": "POST",
+          "p": "/all",
+          "ct": "multipart/form-data; boundary=----WebKitFormBoundarytXOLzt7z3S2WNl6Y",
+          "xa": "1"
+        }
+      ],
+      "errors": [],
+      "console": [
+        "error: Failed to load resource: the server responded with a status of 422 (Unprocessable Entity)"
+      ]
+    },
+    "S1_scroll_show": {
+      "show:top": {
+        "winY": 3008,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "top"
+        },
+        "errors": []
+      },
+      "show:window:top": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "window:top"
+        },
+        "errors": []
+      },
+      "show:bottom": {
+        "winY": 2488,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "bottom"
+        },
+        "errors": []
+      },
+      "show:window:bottom": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "window:bottom"
+        },
+        "errors": []
+      },
+      "scroll:top": {
+        "winY": 1500,
+        "tgtTop": 0,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "top"
+        },
+        "errors": []
+      },
+      "scroll:window:top": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "window:top"
+        },
+        "errors": []
+      },
+      "scroll:bottom": {
+        "winY": 1500,
+        "tgtTop": 800,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "bottom"
+        },
+        "errors": []
+      },
+      "scroll:window:bottom": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "scroll": "window:bottom"
+        },
+        "errors": []
+      },
+      "show:none": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML",
+          "show": "none"
+        },
+        "errors": []
+      },
+      "(none)": {
+        "winY": 1500,
+        "tgtTop": 300,
+        "tgtOffset": 3008,
+        "maxWin": 5496,
+        "tgtMax": 800,
+        "spec": {
+          "style": "innerHTML"
+        },
+        "errors": []
+      }
+    },
+    "S2_focus_scroll": {
+      "focus-scroll:true (fluent HxSwap)": {
+        "winY": 0,
+        "focused": "fi",
+        "spec": {
+          "style": "innerHTML",
+          "focus-scroll": true
+        }
+      },
+      "focusScroll:true (htmx4 docs)": {
+        "winY": 2659,
+        "focused": "fi",
+        "spec": {
+          "style": "innerHTML",
+          "focusScroll": true
+        }
+      },
+      "(none)": {
+        "winY": 0,
+        "focused": "fi",
+        "spec": {
+          "style": "innerHTML"
+        }
+      }
+    },
+    "S3_other_modifiers": {
+      "ignoreTitle:true": {
+        "title": "Probe",
+        "elapsedMs": 31,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML",
+          "ignoreTitle": true
+        },
+        "errors": []
+      },
+      "(none)": {
+        "title": "NewTitle",
+        "elapsedMs": 29,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML"
+        },
+        "errors": []
+      },
+      "transition:true": {
+        "title": "NewTitle",
+        "elapsedMs": 340,
+        "viewTransitionEvents": 1,
+        "spec": {
+          "style": "innerHTML",
+          "transition": true
+        },
+        "errors": []
+      },
+      "swap:500ms": {
+        "title": "NewTitle",
+        "elapsedMs": 530,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML",
+          "swap": "500ms"
+        },
+        "errors": []
+      },
+      "settle:250ms": {
+        "title": "NewTitle",
+        "elapsedMs": 31,
+        "viewTransitionEvents": 0,
+        "spec": {
+          "style": "innerHTML",
+          "settle": "250ms"
+        },
+        "errors": []
+      }
+    },
+    "S4_swap_styles": {
+      "innerHTML": {
+        "dom": "<div id=\"t\"><b>new</b></div>",
+        "errors": [],
+        "specStyle": "innerHTML"
+      },
+      "outerHTML": {
+        "dom": "<b>new</b>",
+        "errors": [],
+        "specStyle": "outerHTML"
+      },
+      "textContent": {
+        "dom": "<div id=\"t\">new</div>",
+        "errors": [],
+        "specStyle": "textContent"
+      },
+      "beforebegin": {
+        "dom": "<b>new</b><div id=\"t\"><i>old</i></div>",
+        "errors": [],
+        "specStyle": "beforebegin"
+      },
+      "afterbegin": {
+        "dom": "<div id=\"t\"><b>new</b><i>old</i></div>",
+        "errors": [],
+        "specStyle": "afterbegin"
+      },
+      "beforeend": {
+        "dom": "<div id=\"t\"><i>old</i><b>new</b></div>",
+        "errors": [],
+        "specStyle": "beforeend"
+      },
+      "afterend": {
+        "dom": "<div id=\"t\"><i>old</i></div><b>new</b>",
+        "errors": [],
+        "specStyle": "afterend"
+      },
+      "before": {
+        "dom": "<b>new</b><div id=\"t\"><i>old</i></div>",
+        "errors": [],
+        "specStyle": "beforebegin"
+      },
+      "after": {
+        "dom": "<div id=\"t\"><i>old</i></div><b>new</b>",
+        "errors": [],
+        "specStyle": "afterend"
+      },
+      "prepend": {
+        "dom": "<div id=\"t\"><b>new</b><i>old</i></div>",
+        "errors": [],
+        "specStyle": "afterbegin"
+      },
+      "append": {
+        "dom": "<div id=\"t\"><i>old</i><b>new</b></div>",
+        "errors": [],
+        "specStyle": "beforeend"
+      },
+      "innerMorph": {
+        "dom": "<div id=\"t\"><b>new</b></div>",
+        "errors": [],
+        "specStyle": "innerMorph"
+      },
+      "outerMorph": {
+        "dom": "<b>new</b>",
+        "errors": [],
+        "specStyle": "outerMorph"
+      },
+      "delete": {
+        "dom": "",
+        "errors": [],
+        "specStyle": "delete"
+      },
+      "none": {
+        "dom": "<div id=\"t\"><i>old</i></div>",
+        "errors": [],
+        "specStyle": "none"
+      }
+    },
+    "S5_trigger_parse": {
+      "click": [
+        {
+          "name": "click"
+        }
+      ],
+      "dblclick": [
+        {
+          "name": "dblclick"
+        }
+      ],
+      "mouseenter": [
+        {
+          "name": "mouseenter"
+        }
+      ],
+      "mouseleave": [
+        {
+          "name": "mouseleave"
+        }
+      ],
+      "mouseover": [
+        {
+          "name": "mouseover"
+        }
+      ],
+      "mouseout": [
+        {
+          "name": "mouseout"
+        }
+      ],
+      "mousedown": [
+        {
+          "name": "mousedown"
+        }
+      ],
+      "mouseup": [
+        {
+          "name": "mouseup"
+        }
+      ],
+      "keydown": [
+        {
+          "name": "keydown"
+        }
+      ],
+      "keyup": [
+        {
+          "name": "keyup"
+        }
+      ],
+      "keypress": [
+        {
+          "name": "keypress"
+        }
+      ],
+      "change": [
+        {
+          "name": "change"
+        }
+      ],
+      "input": [
+        {
+          "name": "input"
+        }
+      ],
+      "submit": [
+        {
+          "name": "submit"
+        }
+      ],
+      "focus": [
+        {
+          "name": "focus"
+        }
+      ],
+      "blur": [
+        {
+          "name": "blur"
+        }
+      ],
+      "focusin": [
+        {
+          "name": "focusin"
+        }
+      ],
+      "focusout": [
+        {
+          "name": "focusout"
+        }
+      ],
+      "scroll": [
+        {
+          "name": "scroll"
+        }
+      ],
+      "resize": [
+        {
+          "name": "resize"
+        }
+      ],
+      "touchstart": [
+        {
+          "name": "touchstart"
+        }
+      ],
+      "touchend": [
+        {
+          "name": "touchend"
+        }
+      ],
+      "touchmove": [
+        {
+          "name": "touchmove"
+        }
+      ],
+      "load": [
+        {
+          "name": "load"
+        }
+      ],
+      "revealed": [
+        {
+          "name": "revealed"
+        }
+      ],
+      "intersect": [
+        {
+          "name": "intersect"
+        }
+      ],
+      "click once": [
+        {
+          "name": "click",
+          "once": true
+        }
+      ],
+      "input changed": [
+        {
+          "name": "input",
+          "changed": true
+        }
+      ],
+      "click consume": [
+        {
+          "name": "click",
+          "consume": true
+        }
+      ],
+      "keyup delay:300ms": [
+        {
+          "name": "keyup",
+          "delay": "300ms"
+        }
+      ],
+      "scroll throttle:500ms": [
+        {
+          "name": "scroll",
+          "throttle": "500ms"
+        }
+      ],
+      "keyup changed delay:300ms": [
+        {
+          "name": "keyup",
+          "changed": true,
+          "delay": "300ms"
+        }
+      ],
+      "every 1s": [
+        {
+          "name": "every",
+          "1s": true
+        }
+      ],
+      "every 2s": [
+        {
+          "name": "every",
+          "2s": true
+        }
+      ],
+      "every 5s": [
+        {
+          "name": "every",
+          "5s": true
+        }
+      ],
+      "every 10s": [
+        {
+          "name": "every",
+          "10s": true
+        }
+      ],
+      "sse:message": [
+        {
+          "name": "sse:message"
+        }
+      ],
+      "ws:message": [
+        {
+          "name": "ws:message"
+        }
+      ],
+      "every 500ms": [
+        {
+          "name": "every",
+          "500ms": true
+        }
+      ],
+      "input changed delay:300ms": [
+        {
+          "name": "input",
+          "changed": true,
+          "delay": "300ms"
+        }
+      ],
+      "input changed delay:250ms": [
+        {
+          "name": "input",
+          "changed": true,
+          "delay": "250ms"
+        }
+      ]
+    },
+    "S5_trigger_effect": {
+      "load": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "revealed": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "intersect": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "every 1s": {
+        "requests": 2,
+        "expectedAtLeast": 2,
+        "outerClicks": 0
+      },
+      "click once": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 2
+      },
+      "input changed": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "keyup delay:300ms": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "click consume": {
+        "requests": 1,
+        "expectedAtLeast": 1,
+        "outerClicks": 0
+      },
+      "sse:message": {
+        "requests": 0,
+        "expectedAtLeast": 0,
+        "outerClicks": 0
+      },
+      "ws:message": {
+        "requests": 0,
+        "expectedAtLeast": 0,
+        "outerClicks": 0
+      }
+    },
+    "S6_sync": {
+      "replace": {
+        "requestsSent": 3,
+        "finally": 3,
+        "errors": [
+          "AbortError: signal is aborted without reason",
+          "AbortError: signal is aborted without reason"
+        ]
+      },
+      "drop": {
+        "requestsSent": 1,
+        "finally": 1,
+        "errors": []
+      },
+      "queue all": {
+        "requestsSent": 3,
+        "finally": 3,
+        "errors": []
+      },
+      "abort": {
+        "requestsSent": 1,
+        "finally": 1,
+        "errors": []
+      },
+      "closest form:abort": {
+        "requestsSent": 1,
+        "finally": 1,
+        "errors": []
+      }
+    },
+    "S7_status": {
+      "template .submit {invalid} shape": {
+        "attr": "swap:outerMorph target:#form push:false",
+        "hconParse": {
+          "swap": "outerMorph",
+          "target": "#form",
+          "push": false
+        },
+        "main": "main-old",
+        "form": "FORM-ERR",
+        "url": "/",
+        "errors": [],
+        "console": []
+      },
+      "target with a space: closest form": {
+        "attr": "swap:outerHTML target:closest form",
+        "hconParse": {
+          "swap": "outerHTML",
+          "target": "closest",
+          "form": true
+        },
+        "main": "main-old",
+        "form": "\ngo",
+        "url": "/inv",
+        "errors": [],
+        "console": [
+          "warning: htmx: 'closest' on hx-target did not match any element {elt: button#go.htmx-request, selector: closest, attr: hx-target}"
+        ]
+      },
+      "swap with a modifier: outerHTML show:top": {
+        "attr": "swap:outerHTML show:top target:#form",
+        "hconParse": {
+          "swap": "outerHTML",
+          "show": "top",
+          "target": "#form"
+        },
+        "main": "main-old",
+        "form": "FORM-ERR",
+        "url": "/inv",
+        "errors": [],
+        "console": []
+      }
+    },
+    "S8_hx_config": {
+      "timeout": {
+        "requestReachedServer": 1,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": "same-origin",
+          "timeout": 5000
+        },
+        "t": "new",
+        "errors": []
+      },
+      "credentials:true": {
+        "requestReachedServer": 0,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": true
+        },
+        "t": "old",
+        "errors": [
+          "TypeError: Failed to execute 'fetch' on 'Window': Failed to read the 'credentials' property from 'RequestInit': The provided value 'true' is not a valid enum value of type RequestCredentials."
+        ]
+      },
+      "credentials:false": {
+        "requestReachedServer": 0,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": false
+        },
+        "t": "old",
+        "errors": [
+          "TypeError: Failed to execute 'fetch' on 'Window': Failed to read the 'credentials' property from 'RequestInit': The provided value 'false' is not a valid enum value of type RequestCredentials."
+        ]
+      },
+      "mode:cors": {
+        "requestReachedServer": 1,
+        "ctxRequest": {
+          "mode": "same-origin",
+          "credentials": "same-origin"
+        },
+        "t": "new",
+        "errors": []
+      }
+    },
+    "S9_preserve": {
+      "preserve:true": {
+        "emitted": "<div id=\"p\" hx-get=\"/x\" hx-preserve=\"true\">NEW-CONTENT</div>",
+        "after": "OLD-CONTENT"
+      },
+      "preserve:false": {
+        "emitted": "<div id=\"p\" hx-get=\"/x\" hx-preserve=\"false\">NEW-CONTENT</div>",
+        "after": "OLD-CONTENT"
+      }
+    },
+    "S10_partial": {
+      "Partial(Id) x2": {
+        "emitted": "<template type=\"partial\" hx-target=\"#pa\" hx-swap=\"outerMorph\" hx><div id=\"pa\">A-new</div></template>\n<template type=\"partial\" hx-target=\"#pb",
+        "after": [
+          "A-new",
+          "B-new"
+        ],
+        "errors": []
+      },
+      "Partial('.items')": {
+        "emitted": "<template type=\"partial\" hx-target=\".items\" hx-swap=\"innerHTML\" hx><span>I-new</span></template>",
+        "after": [
+          "I-new",
+          "I-new"
+        ],
+        "errors": []
+      },
+      "Partial('closest tr') from a source inside the row": {
+        "emitted": "<template type=\"partial\" hx-target=\"closest tr\" hx-swap=\"innerHTML\" hx><td>ROW-NEW</td></template>",
+        "after": [
+          "ROW-NEW"
+        ],
+        "errors": []
+      }
+    },
+    "S11_htmx_config": {
+      "extensions": "\"probe\"",
+      "transitions": "true",
+      "defaultSwap": "\"outerMorph\"",
+      "defaultTimeout": "1234",
+      "implicitInheritance": "true",
+      "noSwap": "[204]",
+      "prefix": "\"data-hx-\"",
+      "metaCharacter": "\":\"",
+      "inlineScriptNonce": "\"n1\"",
+      "inlineStyleNonce": "\"n2\"",
+      "mode": "\"same-origin\"",
+      "history": "false",
+      "logAll": "false"
+    },
+    "S12_headers": {
+      "HX-Trigger (comma list)": {
+        "headers": {
+          "HX-Trigger": "a, b"
+        },
+        "observed": [
+          "a",
+          "b"
+        ]
+      },
+      "HX-Trigger (json, non-latin1)": {
+        "headers": {
+          "HX-Trigger": "{\"a\":{},\"b\":{\"x\":\"\\u0161\"}}"
+        },
+        "observed": [
+          "š"
+        ]
+      },
+      "HX-Push-Url": {
+        "headers": {
+          "HX-Push-Url": "/p"
+        },
+        "observed": "/p"
+      },
+      "HX-Replace-Url": {
+        "headers": {
+          "HX-Replace-Url": "/r"
+        },
+        "observed": "/r histlen=2"
+      },
+      "HX-Retarget+Reswap+Reselect": {
+        "headers": {
+          "HX-Retarget": "#t2",
+          "HX-Reswap": "beforeend",
+          "HX-Reselect": "#s"
+        },
+        "observed": [
+          "t-old",
+          "t2-old<span id=\"s\">sel-new</span>"
+        ]
+      },
+      "HX-Redirect": {
+        "headers": {
+          "HX-Redirect": "/d"
+        },
+        "observed": "http://probe.test/d"
+      },
+      "HX-Refresh": {
+        "headers": {
+          "HX-Refresh": "true"
+        },
+        "observed": "page loads=2"
+      },
+      "HX-Location (string)": {
+        "headers": {
+          "HX-Location": "/l"
+        },
+        "observed": "GET /h, GET /l url=/l"
+      },
+      "HX-Location (object, every HxLocationConfig key)": {
+        "headers": {
+          "HX-Location": "{\"path\":\"/l\",\"target\":\"#t2\",\"swap\":\"innerHTML\",\"select\":\"#ls\",\"source\":\"#go\",\"event\":\"click\",\"handler\":\"h\",\"values\":{\"v\":1},\"headers\":{\"X-H\":\"1\"}}"
+        },
+        "observed": {
+          "lRequest": {
+            "path": "/l?v=1",
+            "xh": "1"
+          },
+          "t2": "<span id=\"ls\">LOC-SELECTED</span>"
+        }
+      }
+    },
+    "S14_misc": {
+      "hx-put": {
+        "method": "PUT"
+      },
+      "hx-patch": {
+        "method": "PATCH"
+      },
+      "hx-delete": {
+        "method": "DELETE"
+      },
+      "swapOob:true": {
+        "emitted": "<div id=\"oob\" hx-get=\"/x\" hx-swap-oob=\"true\"><span>oob-new</span></div>",
+        "list": "<i>l-old</i>",
+        "oob": "<div id=\"oob\" hx-get=\"/x\" data-htmx-powered=\"true\"><span>oob-new</span></div>"
+      },
+      "swapOob:innerHTML": {
+        "emitted": "<div id=\"oob\" hx-get=\"/x\" hx-swap-oob=\"innerHTML\"><span>oob-new</span></div>",
+        "list": "<i>l-old</i>",
+        "oob": "<div id=\"oob\"><span>oob-new</span></div>"
+      },
+      "swapOob:beforeend:#list": {
+        "emitted": "<div hx-get=\"/x\" hx-swap-oob=\"beforeend:#list\"><span>appended</span></div>",
+        "list": "<i>l-old</i><span>appended</span>",
+        "oob": "<div id=\"oob\"><i>o-old</i></div>"
+      },
+      "boost:true": {
+        "emitted": "<a id=\"b\" href=\"/bb\" hx-get=\"/bb\" hx-boost=\"true\">b</a>",
+        "boosted": null
+      },
+      "boost:false": {
+        "emitted": "<a id=\"b\" href=\"/bb\" hx-get=\"/bb\" hx-boost=\"false\">b</a>",
+        "boosted": null
+      },
+      "pushUrl:false": {
+        "url": "/"
+      },
+      "pushUrl:/pushed": {
+        "url": "/pushed"
+      }
+    },
+    "S15_inheritance": {
+      "boost on container -> descendant <a>": {
+        "emitted": "<div id=\"cont\" hx-get=\"/container\" hx-boost=\"true\"><a id=\"cl\" href=\"/child\">child link</a></div>",
+        "childBoosted": null
+      },
+      "target on container -> descendant request": {
+        "emitted": "<div id=\"dest\">dest-old</div><div id=\"cont\" hx-get=\"/container\" hx-target=\"#dest\" hx-trigger=\"never\"><button id=\"cb\" type=\"button\" hx-get=\"/c2\">child</button></div>",
+        "dest": "dest-old",
+        "child": "C2"
+      }
+    },
+    "S13_after_swap_detail": {
+      "detailKeys": [
+        "ctx"
+      ],
+      "ctxKeys": [
+        "sourceElement",
+        "sourceEvent",
+        "status",
+        "select",
+        "selectOOB",
+        "target",
+        "swap",
+        "push",
+        "replace",
+        "transition",
+        "confirm",
+        "request",
+        "requestTimeout",
+        "fetch",
+        "response",
+        "hx",
+        "text",
+        "title"
+      ],
+      "ctxPush": "true",
+      "hasElt": false,
+      "hasCtxElt": false,
+      "hasPushUrl": false,
+      "hasCtxPushUrl": false,
+      "status": 200,
+      "targetIsElement": true,
+      "targetId": "go"
+    },
+    "S13_drawer_close_on_nav": {
+      "pushUrl nav swapping a region that does NOT contain the drawer": {
+        "openBefore": true,
+        "openAfter": true,
+        "bodyLocked": true,
+        "url": "/navpage",
+        "console": []
+      },
+      "nav swapping a region that CONTAINS the drawer (control)": {
+        "openBefore": true,
+        "openAfter": "(drawer removed)",
+        "bodyLocked": false,
+        "url": "/navpage",
+        "console": []
+      }
+    }
+  },
+  "_meta": {
+    "generated": "2026-09-30",
+    "browser": "Chromium 149 via playwright-core 1.61.1",
+    "bundles": {
+      "lib:4.0.0-beta6": "fluent-html/node_modules/htmx.org/dist/htmx.min.js",
+      "template:4.0.0": "projects-template/templates/full-stack/public/js/htmx.min.js (sha256 e484d917…)"
+    },
+    "scenarios": "S0 attribute-name read spy; S1 scroll/show; S2 focus-scroll; S3 ignoreTitle/transition/swap/settle; S4 swap styles; S5 triggers; S6 sync; S7 hx-status; S8 hx-config; S9 hx-preserve; S10 Partial; S11 HtmxConfig; S12 hxResponse headers; S13 behaviors detail+drawer; S14 verbs/swapOob/boost/pushUrl; S15 inheritance"
+  }
+}

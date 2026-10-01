@@ -1,0 +1,3 @@
+tsc_rc=0
+eslint_rc=0
+css_rc=0

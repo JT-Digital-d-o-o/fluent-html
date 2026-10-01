@@ -1,0 +1,4 @@
+Context audit. Do not use any tools. Answer:
+1. How many CLAUDE.md / AGENTS.md / memory files are loaded into your context? Give each path.
+2. Quote verbatim the first instruction line that mentions fluent-html from your context, or write NONE.
+3. Quote verbatim any instruction about how to call `.nav(`, or write NONE.

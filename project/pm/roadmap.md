@@ -5,6 +5,12 @@
 
 ## Current Focus
 
+v8.2.0 review run ([research/v8.2.0/](../research/v8.2.0/ALGORITHM.md)): Waves 0–4 done.
+24 curated RFCs + C-67 synthesized into 40-synthesis/ (spec, roadmap, lockstep publish order
+8.1.1 → plugin 4.2.0 → template 3.8.0 → 8.2.0 → plugin 4.3.0 → 9.0.0), including 5 Track E
+new APIs (getId, select dev check, typed option values, IfNotEmpty, .size). Rollout prep is
+specified in ALGORITHM-ROLLOUT.md. Next: rollout prep, implement 8.1.1, then Wave 5.
+
 Behavior v4 release train: the library side (W1–W4, W7) is implemented on the v6.3.0
 branch as **6.4.0** — publish it, then land the lockstep repos: template glue + fork
 deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
@@ -27,6 +33,8 @@ deletion (W5/W8, projects-template), eslint rules (W6), app migrations (W9).
 
 ## Blocked on a Decision
 
+- Template CI: set PRIVATE_REPOS_TOKEN (114/114 runs red at install); every template-side
+  check from v8.2.0 runs locally only until then
 - CI budget for W4 multi-engine rows: WebKit+Firefox per-PR, or Chromium per-PR +
   nightly full sweep (lean: nightly). Harness ready: `ACCEPT_ENGINES=all`.
 - ADR-12 size estimate vs measured: gate now 6KB/2.75KB (see decisions.md entry

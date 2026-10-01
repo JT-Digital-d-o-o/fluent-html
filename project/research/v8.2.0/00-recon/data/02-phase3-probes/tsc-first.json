@@ -1,0 +1,138 @@
+{
+ "p01-nav-raw.ts": {
+  "code": "TS2345",
+  "n_lines": 2,
+  "chars": 125,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Argument of type 'string' is not assignable to parameter of type 'PageRoute'.\nType 'string' is not assignable to type 'HTMX'."
+ },
+ "p02-match-missing.ts": {
+  "code": "TS2769",
+  "n_lines": 7,
+  "chars": 1354,
+  "chars_before_actionable": 1027,
+  "diags_in_file": 1,
+  "text": "No overload matches this call.\nOverload 1 of 4, '(value: string | number, cases: Partial<{ [x: string]: Thunk<View>; [x: number]: Thunk<View>; }> & NoExtraCases<string, string | number>, defaultView: Thunk<...>): View', gave the following error.\nArgument of type 'State' is not assignable to parameter of type 'string | number'.\nType '{ status: \"loading\"; }' is not assignable to type 'string | number'.\nOverload 2 of 4, '(value: State, key: \"status\", cases: { error: (value: { status: \"error\"; message: string; }) => View; success: (value: { status: \"success\"; count: number; }) => View; loading: (value: { ...; }) => View; } & NoExtraCases<...>): View', gave the following error.\nArgument of type '{ loading: () => Tag; error: (e: { status: \"error\"; message: string; }) => Tag; }' is not assignable to parameter of type '{ error: (value: { status: \"error\"; message: string; }) => View; success: (value: { status: \"success\"; count: number; }) => View; loading: (value: { status: \"loading\"; }) => View; } & NoExtraCases<...>'.\nProperty 'success' is missing in type '{ loading: () => Tag; error: (e: { status: \"error\"; message: string; }) => Tag; }' but required in type '{ error: (value: { status: \"error\"; message: string; }) => View; success: (value: { status: \"success\"; count: number; }) => View; loading: (value: { status: \"loading\"; }) => View; }'."
+ },
+ "p03-pruned-hxdelete.ts": {
+  "code": "TS2339",
+  "n_lines": 1,
+  "chars": 55,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'hxDelete' does not exist on type 'ButtonTag'."
+ },
+ "p04-pruned-placeitems.ts": {
+  "code": "TS2339",
+  "n_lines": 1,
+  "chars": 51,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'placeItems' does not exist on type 'Tag'."
+ },
+ "p05-palette-optout-on.ts": {
+  "code": "TS2345",
+  "n_lines": 1,
+  "chars": 85,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Argument of type '\"gray-100\"' is not assignable to parameter of type 'TailwindColor'."
+ },
+ "p10-raw-a-sethref.ts": {
+  "code": "TS2345",
+  "n_lines": 1,
+  "chars": 109,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Argument of type '\"/team\"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref | undefined'."
+ },
+ "p11-colspan.ts": {
+  "code": "TS2551",
+  "n_lines": 1,
+  "chars": 74,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'colspan' does not exist on type 'TdTag'. Did you mean 'colSpan'?"
+ },
+ "p12-src.ts": {
+  "code": "TS2339",
+  "n_lines": 1,
+  "chars": 47,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'src' does not exist on type 'ImgTag'."
+ },
+ "p13-href.ts": {
+  "code": "TS2339",
+  "n_lines": 1,
+  "chars": 51,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'href' does not exist on type 'AnchorTag'."
+ },
+ "p14-value.ts": {
+  "code": "TS2339",
+  "n_lines": 1,
+  "chars": 51,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'value' does not exist on type 'InputTag'."
+ },
+ "p15-placeholder.ts": {
+  "code": "TS2551",
+  "n_lines": 1,
+  "chars": 88,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'placeholder' does not exist on type 'InputTag'. Did you mean 'setPlaceholder'?"
+ },
+ "p19-typo-union.ts": {
+  "code": "TS2345",
+  "n_lines": 1,
+  "chars": 92,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Argument of type '\"centre\"' is not assignable to parameter of type 'TailwindJustifyContent'."
+ },
+ "p20-controller-nonexhaustive.ts": {
+  "code": "TS2345",
+  "n_lines": 2,
+  "chars": 1407,
+  "chars_before_actionable": 703,
+  "diags_in_file": 1,
+  "text": "Argument of type '{ index: NoInfer<{ readonly guards: readonly [Guard<{ user: AuthUser; }>]; }> & Keyed<((options?: RouteHxOptionsFor<{ readonly method: \"get\"; readonly path: \"/team\"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) => RenderTagged<...>) &...' is not assignable to parameter of type '{ index: \"Error: public GET needs a sitemap stance in its route def or a guard on its entry\" | GuardedEntry<((options?: RouteHxOptionsFor<{ readonly method: \"get\"; readonly path: \"/team\"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) =...'.\nProperty 'invite' is missing in type '{ index: NoInfer<{ readonly guards: readonly [Guard<{ user: AuthUser; }>]; }> & Keyed<((options?: RouteHxOptionsFor<{ readonly method: \"get\"; readonly path: \"/team\"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) => RenderTagged<...>) &...' but required in type '{ index: \"Error: public GET needs a sitemap stance in its route def or a guard on its entry\" | GuardedEntry<((options?: RouteHxOptionsFor<{ readonly method: \"get\"; readonly path: \"/team\"; readonly params: undefined; readonly query: undefined; readonly sitemap: undefined; readonly render: undefined; }> | undefined) =...'."
+ },
+ "p22-textcolor.ts": {
+  "code": "TS2339",
+  "n_lines": 1,
+  "chars": 50,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Property 'textColor' does not exist on type 'Tag'."
+ },
+ "p23-on-hover.ts": {
+  "code": "TS2339",
+  "n_lines": 1,
+  "chars": 49,
+  "chars_before_actionable": null,
+  "diags_in_file": 2,
+  "text": "Property 'on' does not exist on type 'ButtonTag'."
+ },
+ "p27-form-typo.ts": {
+  "code": "TS2345",
+  "n_lines": 1,
+  "chars": 89,
+  "chars_before_actionable": null,
+  "diags_in_file": 1,
+  "text": "Argument of type '\"emial\"' is not assignable to parameter of type '\"email\" | \"password\"'."
+ },
+ "p29-fragment-undeclared.ts": {
+  "code": "TS2345",
+  "n_lines": 2,
+  "chars": 503,
+  "chars_before_actionable": 225,
+  "diags_in_file": 1,
+  "text": "Argument of type 'RenderTagged<undefined>' is not assignable to parameter of type 'HTMX & { readonly render?: Id<\"team-list\"> | undefined; } & DeclaresNothing & { readonly render?: undefined; }'.\nProperty '[\"this route's def declares no `render` stance \\u2014 a fragment verb needs `render: ids.\\u2026` on it (silence means the route answers a page); an ad-hoc `hx()` url has no def, so it goes through `.setHtmx()`\"]' is missing in type 'RenderTagged<undefined>' but required in type 'DeclaresNothing'."
+ }
+}
