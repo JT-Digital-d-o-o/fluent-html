@@ -10,7 +10,7 @@ required_changes:
   - "Update the two first-party test files in the SAME change: test/overlay.ts (10 inline-style `.includes()` assertions) and test/composition.test.ts (2 exact `assert.strictEqual` HTML assertions). The RFC's 'Migration & compatibility' section currently omits them, so the claimed change does not even compile-green as written."
   - "Drop or correct the 'byte-equivalent in intent' framing — `<div class=\"relative\">` vs `<div style=\"position: relative\">` is not byte-equivalent; `center` goes from one `transform: translate(-50%,-50%)` to two classes `-translate-x-1/2 -translate-y-1/2`, which is a different computed-style mechanism (two matrix compositions) and can differ under conflicting/overriding transforms."
   - "Confirm `-translate-x-1/2` / `-translate-y-1/2` / `top-1/2` / `left-1/2` are present in the Track-C extractor and ESLint vocab — a grep of fluent-html-tailwind-extractor and fluent-html-eslint-plugin returned ZERO hits for these strings (RFC §11.7 hand-waves 'all standard core utilities' but provides no proof). If absent, Overlay emits classes the extractor cannot detect → no CSS generated → silent visual breakage, the exact Track-C failure mode the RFC claims to avoid."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-09-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-09-breaking-change.md
 ---
 
 # Verdict: RFC-A-09 — breaking-change lens

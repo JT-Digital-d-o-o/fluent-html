@@ -6,7 +6,7 @@
 
 ## Reproduction
 
-Probe: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/probe-prefix-params/probe.ts`
+Probe: `<scratch>/probe-prefix-params/probe.ts`
 
 Command: `npx tsc --strict --noEmit --target es2022 --module esnext --moduleResolution bundler --skipLibCheck probe.ts`
 

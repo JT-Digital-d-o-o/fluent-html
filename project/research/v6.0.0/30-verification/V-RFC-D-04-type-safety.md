@@ -10,7 +10,7 @@ required_changes:
   - "nonce?: string is a bare string and permits the empty string. The precedence rule ('render-time nonce fills tags that have none') will stamp nonce=\"\" — a silently broken CSP. The RFC argues the *WithNonce wrappers keep nonce required 'because a nonce is meaningless when empty', but `required` does not exclude \"\". Add a branded Nonce type (e.g. `type Nonce = string & { readonly __nonce: unique symbol }`) produced by a `nonce(s: string): Nonce` guard that rejects empty/whitespace, OR at minimum a runtime guard that no-ops on empty nonce so it can never emit nonce=\"\". A guardrail-§11.4 surface must not admit the exact value the RFC calls 'meaningless'."
   - "Fix the doubled/misleading diagnostic for the literal-typo case: with both overloads live, `render(a, { noce: 'x' })` reports the typo against BOTH overloads ('No overload matches this call' + two sub-errors), one of which talks about Tag | RawString | View[]. Confirm in the RFC that the DX of this error is acceptable, or constrain overload order so the opts overload's diagnostic wins."
   - "renderToStream(view, opts?: RenderOptions): with opts OPTIONAL and View including View[], a call meaning to pass opts is indistinguishable from a single array-view call. Confirm renderToStream has no analogous mis-route, and mirror whichever guard (brand / array-wrap rule) render adopts."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-04-type-safety.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-04-type-safety.md
 ---
 
 # Verdict: RFC-D-04 — type-safety lens

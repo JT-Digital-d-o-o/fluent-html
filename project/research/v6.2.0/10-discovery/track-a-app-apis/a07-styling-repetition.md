@@ -3,8 +3,8 @@
 Lens: Tailwind styling repetition across views in two real consumer apps (`planet-positive-sport`, v5; `pm-gui`, v6) — identical class chains, button/input variants, flex/spacing clusters — and what new fluent methods or composition primitives would collapse them.
 
 Apps mined:
-- `/Users/tony/jt-digital/planet-positive-sport` (fluent-html v5)
-- `/Users/tony/jt-digital/pm-gui` (fluent-html v6 template)
+- `planet-positive-sport` (fluent-html v5)
+- `pm-gui` (fluent-html v6 template)
 
 All counts below are `grep`/`perl` measured over `*/src/**/*.ts` in both apps (June 2026).
 

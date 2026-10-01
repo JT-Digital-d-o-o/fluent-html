@@ -14,7 +14,7 @@
    `emit` deliberately duplicates the `emitChunks` (line 332) work-stack (generator
    suspension measured 2–3x slower), so any change must indeed be mirrored in both.
 3. **Measured claim** — built the described optimization against `dist/`
-   (probe: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/probe-render-perf-5.mjs`):
+   (probe: `<scratch>/probe-render-perf-5.mjs`):
    parallel stacks (`vs[]` views + `cs[]` int ctx codes, `LITERAL=4` sentinel for
    pre-built strings) plus a `Map`-cached close-tag string. Output verified
    **byte-identical** to both bare `emit` and public `render()` on all three scenarios

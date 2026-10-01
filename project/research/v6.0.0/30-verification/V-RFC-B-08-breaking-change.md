@@ -10,7 +10,7 @@ required_changes:
   - "Fix the `RenderViewOptions.retarget/reselect: HxTarget` claim: current `HxTarget = StandardCSSSelector | ExtendedCSSSelector` where `StandardCSSSelector = string` and does NOT include `Id` (src/htmx.ts:69,82). The worked example `retarget: layoutIds.mainContent` (passing an `Id`) will not typecheck. Widen the option type to `HxTarget | Id` (resolveSelector already accepts `string | Id`, src/htmx.ts:273) or drop the 'pass the Id, not Id.selector' claim — as written the type and the example contradict."
   - "Fix the `Deferred` route param type. RFC types `route: { method: \"GET\"; resolve: (query?: QueryParams) => string }`, but a route with path segments has `resolve: (params, query?) => string` (src/routes.ts:132-134). The proposed signature silently EXCLUDES every parameterized GET deferred-fragment endpoint. Type `route` against the real `RouteCallable` shape (both HasParams arms) or document the no-path-params restriction."
   - "Downgrade the codemod from 'safe to auto-apply' to 'review required'. `hxResponse().reswap()` and the raw `reply.header(\"HX-Reswap\", X)` sites accept `string` (src/patterns.ts:289). The new `RenderViewOptions.reswap?: HxSwap` is stricter; a site where `X` is a runtime `string` variable rewrites to a non-compiling `renderView(v, { reswap: X })`. The codemod output is not guaranteed to typecheck."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-08-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-08-breaking-change.md
 ---
 
 # Verdict: RFC-B-08 — breaking-change lens

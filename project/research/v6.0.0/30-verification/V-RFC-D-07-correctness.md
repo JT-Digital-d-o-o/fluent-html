@@ -11,7 +11,7 @@ required_changes:
   - "Fix the `RawCtx` drop-in claim: render.ts:184/239 and stream.ts:120/180 pass `isRawContext` (currently `boolean`) THROUGH as `childCtx` for the non-script/style case. Converting `boolean | string` → `RawCtx` is not a pure rename — the `=== false`/`typeof === 'string'` branches and the `childCtx = ... : isRawContext` pass-through must be rewritten to the 4-member union. The RFC must show the new branch structure, not just the type alias, and confirm `true`→`'raw'` mapping preserves the current implicit passthrough (today `true` is never compared — it's the fall-through default)."
   - "Fix the setStyles concat edge cases: with the proposed `this.style + '; ' + s`, a prior `setStyle('position: relative;')` (trailing semicolon — a legal, common input) yields `'position: relative;; width: 100px'`. Either normalize/trim trailing `;` or document that callers must not pass trailing semicolons. Also confirm behavior when prior `style` is an empty string `''` (falsy) vs `undefined` — both must take the no-prefix branch (the `this.style ?` ternary handles `''` correctly, but state it)."
   - "Lower the confidence on F-D-113 'zero improvement' framing: the 'Full request' bench measures `benchFlatPage()` build cost, but `benchFlatPage` is itself the harness builder — verify it actually allocates per call (no memoized/cached tree) or the new 'flat-full' line measures nothing new. Cite the `benchFlatPage` body."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-07-correctness.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-07-correctness.md
 ---
 
 # Verdict: RFC-D-07 — correctness lens

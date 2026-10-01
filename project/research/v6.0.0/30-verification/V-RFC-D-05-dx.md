@@ -10,7 +10,7 @@ required_changes:
   - "Fix the §11.8 guideline-coverage claim. As written it asserts guidelines cover \"every api_surface symbol,\" but `escapeJs` and `validateAttributeKey` are listed as exports with NO teaching rule. Once they are internal (changes 1-2) the claim becomes true and the gap closes. Update the Guardrail-check §11.8 bullet to state these two are internal and intentionally untaught (auditable in-source, not app-facing)."
   - "Resolve Open question 1 inside the RFC, do not punt `tocCoalgebra` to \"a human.\" A Wave-3 dx verdict cannot leave an exported, always-broken symbol (`tocCoalgebra`, emits anchor-less invalid HTML) in an ambiguous state — that IS the dx decision. Recommend: remove it in v6 (no correct caller exists) and document `linkedTocCoalgebra` as the single TOC builder; add the one-line `breaking-changes.md` note. Fold the removal into `api_surface`/migration."
   - "Add the missing `## Status-code routing` example update to `htmx.md`. The RFC replaces only the section *intro* (line 124-126) but the code block immediately below it (lines 128-138) already shows `{ 422: {...}, \"5xx\": {...} }` — confirm in the edit that this example is now *type-checked* by `HxStatusKey` (it is, and validly), so the snippet needs no change beyond the intro. State this explicitly so the guidelines-merge agent does not re-baseline a correct example."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-05-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-05-dx.md
 ---
 
 # Verdict: RFC-D-05 — dx lens

@@ -10,7 +10,7 @@ required_changes:
   - "Resolve the `gradientRadial()`/`gradientConic()` 'no-op-warns on v3' footgun in the guideline. The Tag interface advertises both methods unconditionally, but under the default target (`v3`) they emit nothing and warn at runtime. An LLM author reading autocomplete cannot distinguish a v4-only method from a universal one. Mark them v4-only in the fluent-html.md table (state they no-op under v3). The current edit shows them only as check (lines 254/278) with no v3 caveat."
   - "Fix the imprecise remap claim that misleads the implementer-reader. Line 128 says 'rounded/blur/backdropBlur follow the identical `{ \"\":·, sm:·xs }` remap table' — but the v4 target strings differ per utility (rounded bare→`rounded-sm`, sm→`rounded-xs`; shadow bare→`shadow-sm`, sm→`shadow-xs`, verified vs current tailwind-methods.ts:442,451). Same SHAPE, different VALUES. State 'same shape, per-utility values' so a reader does not literally reuse the shadow table for rounded."
   - "Add a `.spaceX/Y` coherence note. The migration table (line 222) calls it 'behavior only' and the guideline tells authors to 'prefer .flex().gap()' — but `.spaceX/Y` remain in the public surface unchanged. The guideline must clarify the methods still exist and emit `space-*`; the advice is to migrate the LAYOUT, not that the method is deprecated. As written, an LLM may conclude `.spaceX` was removed."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-03-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-C-03-dx.md
 ---
 
 # Verdict: RFC-C-03 — dx lens

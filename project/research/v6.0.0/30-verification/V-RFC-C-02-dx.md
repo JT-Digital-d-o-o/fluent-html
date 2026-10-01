@@ -11,7 +11,7 @@ required_changes:
   - "Make the guideline edit teach the actual api_surface symbols. Neither guideline block names `defineTailwindTarget`, `TW_TARGET`, `CLASS_VOCAB`, `TW_TARGET_DEFAULT`, or the safelist function — they teach CLI flags and CSS syntax only. §11.8 requires every api_surface symbol to appear. Add a ✓/✗ line for `defineTailwindTarget(\"v4\")` (the one symbol an app author actually calls) and replace the bare CLI invocation with the public TS call `generateFluentSafelist(sources, { target: \"v4\" })` so the guideline matches the API, not a shell wrapper."
   - "Reconcile api_surface with the body: api_surface lists `TW_TARGET` and `emitSafelistCss()` but the body also exports `TW_TARGET_DEFAULT`, `ClassVocab`, `CLASS_VOCAB`, and `defineTailwindTarget()`. Either list all public exports in api_surface (so §11.8/Wave-4 dedup sees them) or mark the unlisted ones internal."
   - "Trim the surface an app author never touches. Of six api_surface symbols, an app author calls at most ONE (`defineTailwindTarget`, and only if they opt off the default). `CLASS_VOCAB`/`ClassVocab`/`TW_TARGET` are tooling-internal cross-package wiring. Mark them `@internal` / non-public so the discoverable app-facing surface is exactly `target?: \"v3\"|\"v4\"` on the option objects plus the optional `defineTailwindTarget` helper. State this split explicitly so the guideline doesn't have to teach internals."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-02-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-C-02-dx.md
 ---
 
 # Verdict: RFC-C-02 — dx lens

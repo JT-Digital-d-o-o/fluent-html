@@ -6,7 +6,7 @@
 
 ## Reproduction
 
-Probe package at scratchpad `probe/` installing `fluent-html` via `file:/Users/tony/jt-digital/fluent-html` (resolves the real `dist/src/index.d.ts` typings).
+Probe package at scratchpad `probe/` installing `fluent-html` via `file:fluent-html` (resolves the real `dist/src/index.d.ts` typings).
 
 ### 1. Typed setters do not exist (compile errors — exactly as claimed)
 

@@ -39,7 +39,7 @@ No. `src/core/tailwind-methods.ts:294-295` — `translate` has only the two `Tai
 
 ### 4. "Maybe the positive classes aren't valid in Tailwind v4"
 
-Verified against an actual Tailwind **4.3.2** install (`/Users/tony/jt-digital/test/test-alenka/node_modules/tailwindcss`) via the `compile()` API with a bogus-class control:
+Verified against an actual Tailwind **4.3.2** install (`test/test-alenka/node_modules/tailwindcss`) via the `compile()` API with a bogus-class control:
 
 | candidate | emitted CSS? |
 |---|---|

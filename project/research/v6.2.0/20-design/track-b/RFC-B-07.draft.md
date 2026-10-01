@@ -185,7 +185,7 @@ Script("init()").setNonce(reply.cspNonce)   // ✓ today — nonce="<value>"  (t
 ```
 
 > No real drag-and-drop call site exists in the apps/template — `grep -rni
-> draggable` across `/Users/tony/jt-digital/ttl/project` and the projects-template
+> draggable` across `ttl/project` and the projects-template
 > is empty, consistent with the attribute's rarity. The `before` forms above are
 > the forbidden workaround the discovery note cited, not extracted call sites.
 

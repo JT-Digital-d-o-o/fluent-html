@@ -12,7 +12,7 @@
 2. **Dry run:** `npm pack --dry-run` → 101 total files, **0** entries matching `\.map`, no `src/`.
    (Note: `npm pack` triggers `prepack` = `npm run build && npm test`, which succeeded — so the tarball reflects a fresh build, not a stale dist.)
 
-3. **Real pack + extract** (scratchpad, `npm pack --ignore-scripts /Users/tony/jt-digital/fluent-html`):
+3. **Real pack + extract** (scratchpad, `npm pack --ignore-scripts fluent-html`):
    - `tar tzf fluent-html-6.2.0.tgz`: **0** files matching `\.map$` or `^package/src/`.
    - Extracted `package/dist/src/index.js` ends with `//# sourceMappingURL=index.js.map`.
    - `package/dist/src/index.js.map`: **No such file or directory** in the extracted package.

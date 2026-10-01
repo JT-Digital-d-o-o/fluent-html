@@ -8,7 +8,7 @@ required_changes:
   - "F-A-900: replace the opener-backslash neutralization with a JS-safe technique. Backslash insertion is the wrong tool for script-data — verified below it produces invalid JS / changed semantics on benign input."
   - "F-A-900: fix the worked example and the `<!--<script` test, which assert the broken `<\\!--<\\script>` output."
   - "F-A-122: drop or correct the false 'inherits prototype-pollution defense for free' claim (RFC line 110) and the broken proto-pollution test — the `data-` prefix means PROTO_KEYS never matches `data-__proto__`, so it does NOT throw `/prototype pollution/`."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-006-correctness.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-006-correctness.md
 ---
 
 # Verdict: RFC-A-006 — correctness lens

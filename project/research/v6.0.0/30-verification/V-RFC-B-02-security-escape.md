@@ -10,7 +10,7 @@ required_changes:
   - "Escape the `Id` interpolation in `el()` for the new openOverlay/closeOverlay (and the widened toggle/toggleClass) renderers. Today `el()` does `getElementById('${resolveId(value)}')` with NO escaping; the brand is compile-time only and `createId(userInput)` is legal at runtime, so a single quote in an id breaks out of the JS string. Route ALL id interpolation in behavior renderers through `escapeJs()` (as `clipboard` already does), or — better — fix `el()` once."
   - "Harden and reuse one escaper. `escapeJs` (behavior-methods.ts:85) only handles `\\` and `'` — it does NOT neutralize `</script>`, line separators (\\u2028/\\u2029), or `<!--`. Specify which escaper guards which sink: `hx-on:*` attribute snippets must additionally be HTML-attribute-escaped on emission (confirm `escapeAttr` runs on the `hx-on:` value at render); nothing user-derived enters a `<script>` element body at all."
   - "Document `toast(message)` as an ESCAPED text sink in the RFC and the guideline edit. Because messages are user-derived (the worked example is literally a filename: 'File uploaded' generalizes to 'File <user>.png uploaded'), the guideline must state the message renders as text. A rich/HTML toast, if ever wanted, must be an explicit separately-named Raw-equivalent — never an overload of the plain string path."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-02-security-escape.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-02-security-escape.md
 ---
 
 # Verdict: RFC-B-02 — security/escape lens

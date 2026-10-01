@@ -6,16 +6,16 @@
 
 ## Reproduction
 
-Setup: symlinked the repo as an installed package (`node_modules/fluent-html -> /Users/tony/jt-digital/fluent-html`) in a scratch dir, then resolved against it with Node v26.0.0.
+Setup: symlinked the repo as an installed package (`node_modules/fluent-html -> fluent-html`) in a scratch dir, then resolved against it with Node v26.0.0.
 
-1. **Baseline (harness validity):** `require.resolve('fluent-html')` → `/Users/tony/jt-digital/fluent-html/dist/src/index.js`. Package resolution works; the harness is sound.
+1. **Baseline (harness validity):** `require.resolve('fluent-html')` → `fluent-html/dist/src/index.js`. Package resolution works; the harness is sound.
 2. **CJS:** `require('fluent-html/package.json')` → **`ERR_PACKAGE_PATH_NOT_EXPORTED`** — `Package subpath './package.json' is not defined by "exports"`.
 3. **ESM:** `import.meta.resolve('fluent-html/package.json')` → **`ERR_PACKAGE_PATH_NOT_EXPORTED`** as well.
 4. **Fix validation:** cloning `package.json` with `"./package.json": "./package.json"` added to `exports` makes the same `require` succeed (`version = 6.2.0`). The proposal is a working one-line fix. Note: npm always includes `package.json` in the published tarball regardless of the `files` allowlist, so the fix holds for the published package too.
 
 ## Evidence check
 
-`/Users/tony/jt-digital/fluent-html/package.json` lines 8–45: the `exports` map lists exactly nine subpaths (`.`, `./core`, `./elements`, `./control`, `./render`, `./class-vocab`, `./ids`, `./routes`, `./htmx`) and no `./package.json` entry. The anchor is accurate.
+`fluent-html/package.json` lines 8–45: the `exports` map lists exactly nine subpaths (`.`, `./core`, `./elements`, `./control`, `./render`, `./class-vocab`, `./ids`, `./routes`, `./htmx`) and no `./package.json` entry. The anchor is accurate.
 
 ## Caveat on impact
 

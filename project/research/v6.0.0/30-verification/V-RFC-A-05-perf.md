@@ -10,7 +10,7 @@ required_changes:
   - "Re-run the §11.2 guardrail check honestly: the current frontmatter asserts the sync hot path is untouched, which is false for both `scope()` and `current`. Replace with a measured statement (a Track-D micro-bench: 1k-node render with N=4 active contexts, before vs after) proving `current` read cost and `scope`/dispose cost did not regress."
   - "`renderWithScopes` must not require materializing a `ScopeBinding[]` array of `{_ctx,_value}` objects on every request when the simpler `scopeAll`/`using` path suffices. Either (a) accept varargs of bindings to avoid the intermediate array literal allocation, or (b) document that `bind()` objects are cheap and the array is the same one apps already build — but quantify it. As written it adds one array + one `{_ctx,_value}` object per context per request."
   - "Confirm `idempotent dispose` (the `disposed` boolean) is needed at all on the hot path. `using` never double-disposes; the flag exists only to protect the discouraged manual-dispose path. Gate it so LIFO `using` callers don't carry the extra closure state."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-05-perf.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-05-perf.md
 ---
 
 # Verdict: RFC-A-05 — perf lens

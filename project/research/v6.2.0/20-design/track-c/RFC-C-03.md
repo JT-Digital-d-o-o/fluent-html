@@ -78,8 +78,8 @@ of `src/core/tailwind-methods.ts`, `src/core/tailwind-types.ts`, `src/class-voca
 `40-synthesis/v6.2.0-roadmap.md:58`), #21 (`textShadow` + `textShadowColor`, `:70`), and #71
 (`hyphens`, batch row `:120`). **`alreadyShipped = false`** for all four methods.
 
-A grep of the apps + template (`/Users/tony/jt-digital/ttl`, `/Users/tony/jt-digital/rideshare`,
-`/Users/tony/jt-digital/projects-template`) found **no** existing `text-balance` / `text-pretty` /
+A grep of the apps + template (`ttl`, `rideshare`,
+`projects-template`) found **no** existing `text-balance` / `text-pretty` /
 `hyphens-*` / `text-shadow-*` usage — so this is **net-new capability**, not a refactor of live
 call sites. The before→after below is the intended idiom, not a cited live line.
 

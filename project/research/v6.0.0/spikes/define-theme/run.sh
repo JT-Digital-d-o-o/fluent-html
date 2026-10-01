@@ -3,7 +3,7 @@
 # Each usage.ts has the same 6 cases; the tsc errors reveal the accept/reject matrix.
 set -u
 DIR="$(cd "$(dirname "$0")" && pwd)"
-TSC="/Users/tony/jt-digital/fluent-html/node_modules/.bin/tsc"
+TSC="$(cd "$(dirname "$0")/../../../../.." && pwd)/node_modules/.bin/tsc"
 
 run_tsc () {
   echo "═══════════════════════════════════════════════════════════"

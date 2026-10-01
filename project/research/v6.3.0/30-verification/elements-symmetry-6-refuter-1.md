@@ -10,7 +10,7 @@ identical to `<a>`.
 
 ## Evidence
 
-All anchors verified against `/Users/tony/jt-digital/fluent-html/src/elements/links.ts`:
+All anchors verified against `fluent-html/src/elements/links.ts`:
 
 - **AnchorTag** field: `download?: string | boolean;` (line 17); setter
   `setDownload(download?: string | boolean)` (lines 42-45).

@@ -10,7 +10,7 @@ required_changes:
   - "Constrain or document the StructuredData input. `Record<string, unknown>` (and the proposed array widening) admits arbitrary nested attacker data with no type-level signal that values reach a script sink. Either (a) keep the type but make the HTML-safe encoding mandatory and tested, or (b) add a doc-comment marking it a markup-emitting sink. Do not widen to arrays until the encoding fix lands."
   - "Drop the `fluent-html.md` guideline line `Script(js).setType(\"application/ld+json\")  // ✓ JSON-LD (breakout-sanitized by render)`. It teaches the unsafe path: hand-rolled `Script(JSON.stringify(data))` is exactly what 6 apps do today (e.g. jtdigital-landing-page/src/shared/seo.ts:118) and it is the vulnerable form. The guideline must point to `StructuredData(data)` as the only sanctioned JSON-LD path and must NOT imply render-time sanitization makes raw `Script(JSON.stringify(...))` safe."
   - "Add a verification test: `render(StructuredData({ name: '<!--<script>alert(1)</script>' }))` must not contain a parseable `<script>` open inside the JSON-LD body, and `render(StructuredData({ x: '</script><img src=x onerror=alert(1)>' }))` must be inert. Include the U+2028/U+2029 cases."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-06-security-escape.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-06-security-escape.md
 ---
 
 # Verdict: RFC-A-06 — security/escape lens

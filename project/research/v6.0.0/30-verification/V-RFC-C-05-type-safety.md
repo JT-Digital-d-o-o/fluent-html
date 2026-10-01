@@ -11,7 +11,7 @@ required_changes:
   - "Make `emitClasses` exhaustive at compile time: switch on `EmitShape.kind` with an `assertNever(default)` so adding a 7th variant fails to compile until all THREE codegen builders (lib prefixOf, extractor buildMethodPatterns, eslint buildFixablePatterns) handle it. The RFC asserts this ('switches on kind exhaustively') but does not require the codegen builders to share the same exhaustive switch — three independent switches can each silently fall through for a new kind."
   - "`fixPrefix?: string | string[]` and `skip?: Array<\"extractor\"|\"eslint\">` are untyped magic: `fixPrefix` is a bare string (the exact bare-string-where-the-prefix-belongs anti-pattern §11.4 forbids — a typo'd fixPrefix compiles and produces a dead eslint match), and `skip` lists consumer names as strings with no link to the actual consumers. Derive `fixPrefix` from the emit prefix by default in the type (already half-promised in the comment) and make hand-overrides a checked subtype; type `skip` against a `Consumer` literal union that the codegen also keys off."
   - "`TARGET` is described as coming 'from build env, default v4' — i.e. a runtime string read, not a literal. `buildMethodPatterns(classVocab, TARGET)` must take `TARGET: TailwindTarget`, and the env read must be validated to that union at the one boundary (`assertTarget(process.env.X)`), or a typo'd env value (`\"v5\"`) flows in as a bare string and `emit[TARGET]` resolves `undefined` → empty class list → silent no-CSS, the headline failure mode."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-05-type-safety.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-C-05-type-safety.md
 ---
 
 # Verdict: RFC-C-05 — type-safety lens

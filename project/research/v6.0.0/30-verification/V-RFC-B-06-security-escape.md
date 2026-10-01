@@ -10,7 +10,7 @@ required_changes:
   - "State that `cell: (row) => View | string` escapes the string arm via escapeHtml and that the ONLY raw opt-out is an explicit Raw(...) returned from the View arm — make the Raw escape-hatch explicit in the Column docs (currently the RFC only asserts escape-by-default in prose with no mention that cell renderers can return Raw)."
   - "Add a guardrail note that the `header: string` label and `empty: View | string` follow the same escape-by-default path; confirm SortHeader builds its label via a normal escaped text child (not via setClass/attribute injection of the label)."
   - "Pin the `align` → class mapping to a closed lookup table rather than the `textAlign(align)` path, which is `addClass(`text-${align}`)` (tailwind-methods.ts:358) — raw interpolation into the class attribute. Safe today only because `ColumnAlign` is a literal union; one cast/widening makes the data-grid a class-attribute injection sink. The §11.3 self-check mislabels this as 'the normal escaping path' — it is not."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-06-security-escape.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-06-security-escape.md
 ---
 
 # Verdict: RFC-B-06 — security/escape lens

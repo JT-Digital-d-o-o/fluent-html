@@ -12,7 +12,7 @@ required_changes:
   - "Fix the v4 class name in Example 3. `bg-radial-at-center` is not a Tailwind v4 utility — v4 emits `bg-radial` (and `bg-radial-[<pos>]` for arbitrary position). Using a non-existent class in the canonical example undermines the vocabulary-correctness claim that is the RFC's whole purpose. Correct to `bg-radial`."
   - "Resolve the bare-utility match gap. `matchClass` uses `startsWith(pattern.pattern)`; a prefix entry `bg-radial-` MISSES the bare `bg-radial` (v4's actual default radial) and `bg-conic` likewise, re-introducing the silent-lapse the RFC exists to kill. Add exact-match entries for the bare forms, or define the prefix without the trailing hyphen and re-verify the slice."
   - "Pin the gradientTo round-trip against RFC-C-02. On v4 `setClass('bg-linear-to-r')` slices to `.gradientTo('to-r')`; the example asserts this re-emits `bg-linear-to-r`. Confirm in the api_surface overlap check that `.gradientTo('to-r')` on target 4 emits exactly `bg-linear-to-r` (not a v3 `bg-gradient-` or a malformed string), else the auto-fix produces a class the extractor cannot see (§11.7)."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-04-correctness.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-C-04-correctness.md
 ---
 
 # Verdict: RFC-C-04 — correctness lens

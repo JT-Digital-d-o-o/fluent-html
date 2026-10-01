@@ -8,7 +8,7 @@ required_changes:
   - "Add an explicit entry to 40-synthesis/breaking-changes.md (not just a 'one-line upgrade note') for the hover→pointer-only shift: it is a behavioral regression, runtime-only, type-invisible, lint-invisible, and NOT codemod-able. The entry must include the audit procedure (grep `.on(\"hover\"` across the app — there are 57 in ttl/src) and the remediation (pair with `.on(\"focus-visible\", …)` or switch to `.onPointerHover()` when pointer-only is intended)."
   - "Change the RFC's Migration section claim from '`breaking-changes.md`: no entry required (additive)' to acknowledge that this RFC's *type/method delta* is additive but the v4 hover semantic it documents is a breaking behavioral change carried by the v4 target flip (RFC-C-02). Cross-reference RFC-C-02's TW_TARGET default='v4' as the trigger, so the regression is honestly attributed and bundled into the single v4 migration rather than orphaned in a guideline."
   - "Resolve Open Question 1 before merge, not after: the `onPointerHover` helper emits `[@media(hover:hover)]:hover:` unconditionally, including under a v3 target. If the v3 extractor's variant scanner does not accept that arbitrary-media-variant syntax, an app that adopts `.onPointerHover()` before migrating to v4 gets a silently dropped class (no CSS, no error) — itself a hidden behavioral break. Either gate the emitted string on RFC-C-02's TW_TARGET, or state in the RFC that the helper is v4-only and type/doc it as such."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-06-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-C-06-breaking-change.md
 ---
 
 # Verdict: RFC-C-06 — breaking-change lens

@@ -93,7 +93,7 @@ on children; a sticky-header anchor offset writes `.setClass("scroll-mt-24")`; a
 auto-grow textarea (the marquee v4 SSR/HTMX form feature, serving the shipped
 `Form<T>` `f.textarea()` builder) writes `.setClass("field-sizing-content")`.
 
-A grep of the apps/template (`/Users/tony/jt-digital/ttl/project/pm/**`,
+A grep of the apps/template (`ttl/project/pm/**`,
 `rideshare/src`, `projects-template/src`) for any of these classes returns **no
 source `setClass` usage** — confirming the gap is real: callers cannot express
 line placement, multi-column, or scroll-snap today and simply do without (or

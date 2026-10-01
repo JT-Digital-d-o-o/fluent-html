@@ -9,7 +9,7 @@ required_changes:
   - "Correct the codemod rule (RFC lines 207-210): the rule 'IfThen(X.length>0, A)+IfThen(X.length===0, B) -> ForEachOr(X, A_body, B), safe when A is a whole-collection component' is WRONG for the whole-collection component case — passing a whole-collection component as renderItem renders it length-of-X times. Restrict the auto-rewrite to the case where A is literally `() => ForEach(X, fn)` (lift fn into ForEachOr's renderItem); flag whole-collection-component A for manual review (it is NOT a mechanical 1:1)."
   - "State ForEachOr's renderItem contract explicitly in the Proposed API / Semantics block: renderItem is invoked once per item (identical call count to ForEach). Add a one-line ✗ to the guideline edit: `ForEachOr(items, () => Table(items), …)  // ✗ renders Table once per item`."
   - "Confirm and document overload-resolution stability for the boolean-literal whenElse case (boolean overload listed second, matching `when` at tag.ts:198). This is correct as written but the breaking-surface note should assert it so a future reorder is caught."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-04-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-04-breaking-change.md
 ---
 
 # Verdict: RFC-A-04 — breaking-change lens

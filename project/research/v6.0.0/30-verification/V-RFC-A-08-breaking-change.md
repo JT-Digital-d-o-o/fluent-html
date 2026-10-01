@@ -10,7 +10,7 @@ required_changes:
   - "Resolve the htmx event-separator contradiction before locking: the two new behaviors emit kebab `htmx:after-swap`, but 100% of the cited real evidence (rideshare/src/settings/settings.view.ts:260,337) uses the COLON form `hx-on:htmx:after:swap`. If htmx-4 canonical is colon, the behaviors emit a dead handler (silent no-op = a behavioral regression vs the working addAttribute code they replace). Pin the separator with a citation to the htmx-4 source/changelog and add a render test asserting the exact emitted attribute name, since (string & {}) gives no compile-time protection here."
   - "Honestly mark the guideline edit as a (soft) breaking de-facto policy change: htmx.md rung 3 reclassifies `addAttribute(\"hx-on:…\")` from 'last resort, allowed' to '✗ do not use'. 127 existing call-sites across 12+ apps are now lint/guideline violations. State that this is not codemod-complete (the codemod is explicitly Wave-4 'nice-to-have, optional') so the rule flips to 'violated' before the fix exists — list it as an accepted, staged transition, not a silent additive."
   - "Add a render test for hxOn concatenation AND for the interaction between hxOn and behavior on the SAME event (both write hx-on:click) — confirm they concat rather than one clobbering the other, since they share the attribute-merge code path but are documented independently."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-08-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-08-breaking-change.md
 ---
 
 # Verdict: RFC-A-08 — breaking-change lens

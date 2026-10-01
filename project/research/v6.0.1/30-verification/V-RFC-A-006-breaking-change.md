@@ -7,7 +7,7 @@ killer_objection: null
 required_changes:
   - "CHANGELOG/JSDoc must state the F-A-900 backslash-neutralization is NOT semantics-preserving for script bodies that contain a bare `<script` substring inside a regex literal (`/<script/` → `/<\\script/` changes meaning, since `\\s` is the regex whitespace class). The RFC's 'no-op for the JS engine' claim (line 269) is false for that case. Scope the byte-identity guarantee in docs to bodies with NO `<!--`/`<script`/`</script` substrings (as already worded in the spec) and drop the over-broad 'no-op for the JS engine' justification."
   - "Add a regression test asserting that a benign script body containing `<script` as a substring outside a string (e.g. a regex literal) still terminates the element correctly, documenting the accepted output delta — so the behavior change for that input class is intentional and covered, not silent."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-006-breaking-change.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-006-breaking-change.md
 ---
 
 # Verdict: RFC-A-006 — breaking-change lens

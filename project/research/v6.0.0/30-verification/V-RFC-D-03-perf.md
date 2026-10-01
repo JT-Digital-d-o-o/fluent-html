@@ -10,7 +10,7 @@ required_changes:
   - "renderAlgebra.text() and the tag wrapper must NOT allocate a `new StringSink()` per node. Folding a 1000-node tree would allocate 1000 throwaway sinks. Route text escaping through a plain `escapeHtml(s)` call and emitOpenTag through a string-returning helper, not a per-node Sink."
   - "Add the bench gate as a hard CI check (not prose): render benches (benchFlatPage, benchLargeForEach, benchRealisticPage, benchHeavyEscaping, benchHtmxAttributes) must be within noise (±3%) of the pre-RFC baseline before merge. Record baseline numbers in the RFC."
   - "Keep the eager one-tick `read()` for renderToStream — do NOT honor backpressure synchronously in this RFC (confirmed in Open Questions). Honoring it would interleave async into the stream path; sync render must remain fully untouched."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-03-perf.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-03-perf.md
 ---
 
 # Verdict: RFC-D-03 — perf lens

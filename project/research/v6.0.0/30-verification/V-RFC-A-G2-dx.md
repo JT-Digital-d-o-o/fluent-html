@@ -10,7 +10,7 @@ required_changes:
   - "The guideline edit teaches a contradictory two-default within ONE code block: `fluent-html.md` keeps `.addAttribute(\"role\", \"dialog\")` inside the recommended Universal-methods chain (line 226) directly above a ✗ block that says 'never reach for addAttribute when a typed setter exists'. An LLM copying the first block will emit `addAttribute`. Move the `role` escape-hatch example OUT of the primary ✓ chain into a separate one-line 'escape hatch (no typed setter)' note, so the lead example contains zero `addAttribute` calls."
   - "Guideline must document the typo-safety reality after change 1. The `CLAUDE.md` index line and the `fluent-html.md` bullet currently imply safety ('keys autocomplete to known ARIA names'). If you adopt closed-union (a), say explicitly '✗ unknown aria key → compile error'. If you do not, REMOVE any implication of typo safety. The LLM reader must not be told a typo is caught when it is not."
   - "api_surface coverage gap: `AriaAttrs` is listed in `api_surface` but is an exported type the guideline never names. Add one line in `fluent-html.md` showing the type is importable/closed (e.g. the known-keys set), so the third api_surface symbol is taught, not just `setAria` and the rule."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-G2-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-G2-dx.md
 ---
 
 # Verdict: RFC-A-G2 — dx lens

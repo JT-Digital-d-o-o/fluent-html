@@ -8,7 +8,7 @@ required_changes:
   - "applyTo must not double-allocate the header bag: do not call build() (which spreads {...this._headers} into a throwaway copy) and then Object.entries() over that copy. Write headers directly from this._headers and call render(this._content) inline. One render, zero header-bag copies."
   - "Add an explicit perf assertion to the Guardrail check §11.2: applyTo and the typed-options path (confirm/vals/trigger/include via buildHtmx) are response-time / per-element-attribute paths only; state in the RFC that no method is added to Tag.render/stream/fold and that the per-Tag construction shape is unchanged. The current §11.2 line ('render path untouched') is an assertion without the structural proof the perf lens requires."
   - "vals object auto-serialization (vals: Record<string,unknown>) must be confirmed to run through the SAME buildHtmx JSON.stringify the app currently does by hand — not an additional eager serialization on every Tag that carries hx attributes. Confirm buildHtmx only serializes when vals is present (pay-as-you-go), matching guardrail §11 'fold extractAttrs pay-as-you-go'. If buildHtmx unconditionally touches a vals branch per element, that regresses the common (no-vals) case."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-G3-perf.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-G3-perf.md
 ---
 
 # Verdict: RFC-A-G3 — perf lens

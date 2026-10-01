@@ -9,7 +9,7 @@ required_changes:
   - "Make the buildHtmx status-key runtime regex a build/dev-only assertion, NOT an unconditional per-render hot-path check. Acceptable forms: (a) guard it behind `process.env.NODE_ENV !== 'production'` so production render pays nothing; or (b) drop the runtime throw entirely and rely on the HxStatusKey compile-time union (the type already rejects malformed keys — the runtime throw only defends untyped `as any` bypass callers, who have opted out of safety). The status loop is already gated by `if (htmx.status)` so only status-using elements are affected, but a per-key regex per-render is still unjustified cost for the typed common case."
   - "If the runtime guard is kept in any form, precompile the RegExp as a module-level const (it must not be a literal re-created per call) and add a micro-benchmark to bench/ proving status-routed renders show no measurable regression vs baseline; cite the number in §11.2. No benchmark = no claim."
   - "State explicitly in §11.2 that rebuildTag adds zero per-request allocation on the render path AND that the registerSchemaKeys/schemaKeysFor registry is populated once at module-load (not per rebuild) — confirm schemaKeysFor is an O(1) map lookup, not a per-call array build, so the fold path itself does not regress."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-05-perf.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-05-perf.md
 ---
 
 # Verdict: RFC-D-05 — perf lens

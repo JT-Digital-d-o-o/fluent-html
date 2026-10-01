@@ -20,7 +20,7 @@ p.gradientRadial = function (origin?: string, interpolation?: string) {
 
 ## Reproduction step 1 — library emits the composed class
 
-Ran against the built library at `/Users/tony/jt-digital/fluent-html/dist/src/index.js` (v6.2.0):
+Ran against the built library at `fluent-html/dist/src/index.js` (v6.2.0):
 
 ```js
 render(Div().gradientRadial('top-right', 'oklch'))

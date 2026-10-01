@@ -10,7 +10,7 @@ required_changes:
   - "Remove the false F-B-044 claim that SvgShapeTag gains setStrokeLinecap/setStrokeLinejoin/setStrokeDasharray/setTransform — these ALREADY exist on SvgShapeTag (src/elements/svg.ts:31-44, 56-60). api_surface and §2 must only claim the genuinely-new setters (setStrokeOpacity, setStrokeDashoffset on SvgShapeTag; the five on SvgTag)."
   - "stroke/fill in IconOptions are bare string (lines 78-81). Either accept as an intentional escape hatch and say so, or narrow stroke to 'currentColor' | TailwindColor. As written it contradicts the RFC's own §11.4 self-check."
   - "Mandate the IconRegistry augmentation member value be `true` (or `unknown`) consistently; note keyof {} = never is the safe default so cross-module augmentations don't merge-conflict on member types."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-05-type-safety.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-05-type-safety.md
 ---
 
 # Verdict: RFC-B-05 — type-safety lens

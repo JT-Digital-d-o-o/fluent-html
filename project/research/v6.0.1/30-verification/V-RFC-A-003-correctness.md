@@ -8,7 +8,7 @@ required_changes:
   - "Gate the reserved-key skip on the dedicated field actually being set. `RESERVED_BAG_KEYS.has(key) && <field> !== undefined` — not an unconditional `continue`. As written, the RFC drops a bag `id`/`class`/`style` even when NO setId/setClass/setStyle was ever called, regressing a single-valid-attribute input to zero attributes (breaks the byte-identical claim)."
   - "Update the worked examples + CHANGELOG to state the precise contract: the bag key is skipped ONLY when the dedicated setter is set; with no dedicated field, `addAttribute('id', x)` still emits `id=\"x\"`."
   - "Add parity/fuzz fixtures for: (a) `addAttribute('id','b')` with NO setId → must still emit `id=\"b\"`; (b) `setId(undefined).addAttribute('id','b')` → emits `id=\"b\"`; (c) the true-collision case `setId('a').addAttribute('id','b')` → emits only `id=\"a\"`. Run through both `emit` and `emitChunks`."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-003-correctness.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-003-correctness.md
 ---
 
 # Verdict: RFC-A-003 — correctness lens

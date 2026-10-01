@@ -11,7 +11,7 @@
 
 ## Reproduction
 
-Probe: `/private/tmp/claude-501/.../scratchpad/th2/probe.ts`, compiled with the repo's own `tsc` under `"strict": true` against `dist/src/index.d.ts` (dist is newer than `src/core/tag.ts`, so it reflects current source).
+Probe: `<scratch>/th2/probe.ts`, compiled with the repo's own `tsc` under `"strict": true` against `dist/src/index.d.ts` (dist is newer than `src/core/tag.ts`, so it reflects current source).
 
 **Type level — all four compile clean (`tsc` exit 0) under `--strict`:**
 

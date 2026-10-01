@@ -8,7 +8,7 @@ required_changes:
   - "Validate the derived `aria-${kebabKey}` key inside setAria with the SAME guard addAttribute uses (validateAttributeKey: VALID_ATTR_KEY regex + PROTO_KEYS + EVENT_HANDLER_RE). Currently setAria writes this.attributes[`aria-${kebabKey}`] with no validation; addAttribute validates, setAria must too. This closes the key-injection sink regardless of how the type narrows."
   - "Amend the §11.3 guardrail-check bullet to explicitly cover the setAria KEY path, not only setRole/setTitle/setTabindex. The current text ('keys are fixed literals — no addAttribute key-injection surface') is true for the three bare setters but FALSE for setAria, whose key is derived from a `(string & {})` object key. Replace with: 'setRole/setTitle/setTabindex use fixed literal keys; setAria runs validateAttributeKey on the derived aria-* key to match addAttribute, then escapes values via the existing escapeAttr path.'"
   - "Drop the `(string & {})` escape hatch from `AriaAttributeName` OR document that the escape hatch is for unknown aria-* names only and is still runtime-key-validated. The (string&{}) idiom is benign for VALUE unions (TailwindColor, BooleanAttribute) because those flow to escaped value positions; for a KEY position it re-opens the exact injection surface the typed setter is meant to retire. Prefer: keep the literal union closed for autocomplete, and let truly novel aria names go through addAttribute (which validates) rather than a key escape hatch that bypasses validation."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-02-security-escape.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-02-security-escape.md
 ---
 
 # Verdict: RFC-A-02 — security/escape lens

@@ -9,7 +9,7 @@ required_changes:
   - "Add a `breaking-changes.md` entry (or an 'adoption note' explicitly flagged as a potential compile/test break) covering: (a) the `Context<T>` member additions, and (b) the `createRequiredContext` error-message text change — any app asserting on the old message string (`expect(err.message).toContain('Wrap the call in')`) breaks at test time. Grep apps/tests for error-message assertions before shipping."
   - "Resolve, do not ship as 'proposed', the `update()` semantics on `createContext` when only the default frame is present (stack length 1), and define `current` after `renderWithScopes` returns. An undecided mutation contract is itself a future breaking change — pin it before merge."
   - "Bundle the template migration (`projects-template/templates/full-stack/src/core/i18n/i18n.plugin.ts` + the 5 production apps) into the SAME migration note as the symbol additions. The old `onRequest`/`onResponse` pattern still compiles but is now declared a concurrency hazard — bundle the discouraged-pattern guidance with the additive surface so adopters migrate once."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-05-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-05-breaking-change.md
 ---
 
 # Verdict: RFC-A-05 — breaking-change lens

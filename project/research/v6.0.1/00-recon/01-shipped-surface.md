@@ -1,7 +1,7 @@
 # Wave-0 Recon — Shipped Surface & Correctness Baseline (v6.0.0 → v6.0.1)
 
 Subject under review: the **shipped core package** `fluent-html@6.0.0` at
-`/Users/tony/jt-digital/fluent-html`. P5 (`@fluent-html/fastify`) and P6
+`fluent-html`. P5 (`@fluent-html/fastify`) and P6
 (`@jtdigital/ui`) are out of scope. This is a baseline inventory only — the
 finders go deep later.
 
@@ -143,7 +143,7 @@ the tooling packages (extractor + eslint-plugin), so that omission is by design.
    `[fluent-html.md](fluent-html.md)`, `htmx.md`, `views.md`, `fastify.md`,
    `typescript.md`, `performance.md` as **repo-relative** paths, but none of these
    files exist at the package root. They actually live in
-   `/Users/tony/jt-digital/guidelines/web-development/`. Every topic-ref link in
+   `guidelines/web-development/`. Every topic-ref link in
    the shipped `CLAUDE.md` is broken from the package itself.
 2. **CHANGELOG ordering is broken and self-contradictory.** Version headers are
    out of order: `[5.11.0]` (L5), `[5.10.0]`, `[5.9.1]`, `[5.9.0]` all sit

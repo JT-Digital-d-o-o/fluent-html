@@ -168,4 +168,4 @@ The compile-time brand does prevent *assigning* a plain object where `Id` is exp
 
 ---
 
-*Probes: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/probe/probe{1,2,4,5,6}.ts`, `probe{2,3,4,6}run.mjs` — compiled with TS `--strict` against the package's published `.d.ts`, executed against `dist/`.*
+*Probes: `<scratch>/probe/probe{1,2,4,5,6}.ts`, `probe{2,3,4,6}run.mjs` — compiled with TS `--strict` against the package's published `.d.ts`, executed against `dist/`.*

@@ -35,5 +35,5 @@ So the situation is marginally worse than the finding's title suggests: it is no
 
 ## Probes
 
-- Runtime: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/midsplat-probe.mjs`
-- Types: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/midsplat-type-probe.ts`
+- Runtime: `<scratch>/midsplat-probe.mjs`
+- Types: `<scratch>/midsplat-type-probe.ts`

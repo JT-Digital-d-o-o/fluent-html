@@ -9,7 +9,7 @@ required_changes:
   - "Park f.array() to a separate RFC blocked on the framework layer (P5 @fluent-html/fastify) where the body-parse convention (name[i].field) is round-trippable and owned, not invented in a zero-dep core that has no parser."
   - "Resolve the nested error-bag shape BEFORE array ships: ErrorBag<T> is publicly exported as Partial<Record<keyof T & string, string>> (flat string map). f.array reading errors[name]?.[i].sku requires errors.items to be ErrorBag<Item>[], which the flat ErrorBag<T> cannot express. Either ErrorBag<T> becomes recursive (a public-shape change — verify additive or park to major) or array carries a separate error API. This 'open question' is load-bearing, not deferrable."
   - "Confirm the multi-select bound-value contract (array | Set) as a single resolved shape, not an open question, before the widened select ships."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-C-009-instruction-set.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-C-009-instruction-set.md
 ---
 
 # Verdict: RFC-C-009 — instruction-set lens

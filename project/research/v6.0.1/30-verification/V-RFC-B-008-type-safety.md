@@ -8,7 +8,7 @@ required_changes:
   - "Re-export the new types from src/index.ts so they are actually public. The RFC lists FetchPriority, LinkElementRel, LinkAs, LinkType, ScriptType, MetaName, Charset in api_surface and tells README to add them to the exported-types table, but its file-edit plan never touches src/index.ts (the `export type { ... } from './elements/html-types.js'` block). Existing precedent: CrossOrigin/InputMode/HttpEquiv live in html-types.ts but are NOT re-exported, so a type added there is private by default. A user writing a wrapper signature (`function preloadFont(): LinkTag` or a helper typed `(p: FetchPriority) => ...`) cannot name these types unless they are in index.ts. Add all seven `export type` entries."
   - "FetchPriority must be added to src/index.ts as well (it is a closed enum users will most want to reference by name when building their own user-land head combinators — the RFC even argues those combinators belong in user-land, which makes the exported type a hard requirement, not a nicety)."
   - "State explicitly in the RFC that the new `fetchpriority` schema key is appended to each `defineSchemaKeys(...)` array as the bare lowercase string `'fetchpriority'` (matching the `crossorigin` precedent — field name === attribute name, no [field, attr] tuple needed). The RFC says this prose-wise but should pin it so the implementer does not reach for a tuple."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-B-008-type-safety.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-B-008-type-safety.md
 ---
 
 # Verdict: RFC-B-008 — type-safety lens

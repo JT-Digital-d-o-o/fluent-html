@@ -14,7 +14,7 @@ I looked for any check, guard, or semantic that would make this a non-issue. Non
 
 The in-code comment at lines 238-240 even documents awareness of the adjacent hazard (splat values containing `*` false-positiving a scan) but only for `assertNoUnresolvedParams`; the reverse hazard — a `:param` value containing `*` re-triggering the splat branch — is unhandled.
 
-## Runtime reproduction (against `/Users/tony/jt-digital/fluent-html/src/routes.ts`, tsx)
+## Runtime reproduction (against `fluent-html/src/routes.ts`, tsx)
 
 ```
 const r = defineRoutes({ search: { method: "get", path: "/search/:term" } } as const);

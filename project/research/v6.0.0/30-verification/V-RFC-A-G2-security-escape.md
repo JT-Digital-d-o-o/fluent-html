@@ -10,7 +10,7 @@ required_changes:
   - "Fix the RFC's §11.3 guardrail claim. It currently asserts 'typed setters route through the same escaping as addAttribute; no new raw sink' — true for VALUES, false for KEYS. The Guardrail check section and the security narrative must state that setAria/setDataAttrs were key-unvalidated and that this RFC closes that gap as a precondition of recommending them."
   - "Add an explicit XSS/dynamic-key warning to both guideline edits (CLAUDE.md index rule and fluent-html.md block). When the key object is built from non-literal/user/i18n/config data, the dev must know keys are attribute names and must not be attacker-controlled. The current guideline shows only literal-key examples and would teach LLMs to spread untrusted objects into setDataAttrs(userConfig)."
   - "Restrict or document setDataAttrs key acceptance for prototype-pollution keys. setDataAttrs({ __proto__: x }) currently no-ops silently (Object.create(null) target) instead of throwing like addAttribute('__proto__') does — inconsistent and confusing; route it through the same PROTO_KEYS guard for a consistent thrown error."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-G2-security-escape.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-G2-security-escape.md
 ---
 
 # Verdict: RFC-A-G2 — security/escape lens

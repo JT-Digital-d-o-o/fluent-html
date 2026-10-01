@@ -10,7 +10,7 @@ required_changes:
   - "Fixer data-*/aria- guard: only auto-fix a call when toKebab(toCamel(suffix)) === suffix AND toCamel(suffix) is a valid bare JS identifier (/^[A-Za-z_$][A-Za-z0-9_$]*$/). Otherwise emit a warning with NO fix (leave addAttribute in place). Round-trip examples that MUST be left alone: data-user-ID, data-a-1-b, data-123-x, data-x-2y, data-a--b. Add these as fixer test fixtures."
   - "Fixer style guard: do NOT auto-fix addAttribute('style', s) -> setStyle(s) when the same receiver chain already contains a setStyle/setStyles/any style-writing fluent call; flag-only in that case. Reason: today both render (double style attr, browser uses first); after rewrite setStyle overwrites (last wins) — different rendered output, not behavior-preserving (verified render.ts:205)."
   - "Migration honesty (ALGORITHM §8 no-silent-caps): mark the style auto-fix as behavior-changing in breaking-changes.md; state the fixer is partial-by-design (flag-only for non-round-trippable keys and ambiguous-style cases), NOT a complete codemod. The residual hand-migration set must be acknowledged, not implied to be zero."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-G2-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-G2-breaking-change.md
 ---
 
 # Verdict: RFC-A-G2 — breaking-change lens

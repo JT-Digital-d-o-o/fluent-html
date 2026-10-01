@@ -9,7 +9,7 @@ required_changes:
   - "Fix the self-contradiction: the proposed rebuildTag body uses `(tag as any)[sk] = attrs[sk]` (line 71) and `(X as any)._sk` writes, yet line 168 / §11.4 claim 'No new any'. Either (a) give schemaKeysFor/registerSchemaKeys a typed write helper that contains the cast in ONE audited spot and restate the claim as 'no new any at call sites; one internal cast in the schema-key registry', or (b) drop the 'no new any' claim. As written it is false."
   - "Constrain the union to valid HTTP status space. `${1|2|3|4|5}${Digit}${Digit}` admits 599, 100, 199, 511-599 etc. and EXCLUDES nothing 1xx wants — but more importantly it admits non-existent codes (e.g. 555) while rejecting real edge usage. State explicitly whether the union is meant as 'syntactically code-shaped' (then say so) or 'valid HTTP codes' (then it is wrong and oversells). Resolve Open Question 2 before merge; an unresolved union width is a type-surface decision, not an implementation detail."
   - "rebuildTag's `attrs: Partial<TagAttrs>` parameter is bare-typed: the custom-attribute path (`tag.attributes[key]=String(v)`) accepts any string key at the type level and relies entirely on the RUNTIME validateAttributeKey throw. That is acceptable (it mirrors addAttribute) but the RFC must NOT list this under 'type-safety' wins — validateAttributeKey is a runtime guard, not a type. The escape-by-default lens owns it; the type-safety story should stop implying the fold layer is now type-safe against bad keys when it is runtime-safe."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-05-type-safety.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-05-type-safety.md
 ---
 
 # Verdict: RFC-D-05 — type-safety lens

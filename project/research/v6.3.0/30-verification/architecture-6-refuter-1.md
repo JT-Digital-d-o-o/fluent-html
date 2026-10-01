@@ -6,7 +6,7 @@
 
 ## What I verified
 
-1. **Exports map** — `/Users/tony/jt-digital/fluent-html/package.json:8-45` enumerates exactly nine subpaths (`.`, `./core`, `./elements`, `./control`, `./render`, `./class-vocab`, `./ids`, `./routes`, `./htmx`). There is no `./package.json` entry and no wildcard (`./*`) that could match it. Node's exports encapsulation therefore applies.
+1. **Exports map** — `fluent-html/package.json:8-45` enumerates exactly nine subpaths (`.`, `./core`, `./elements`, `./control`, `./render`, `./class-vocab`, `./ids`, `./routes`, `./htmx`). There is no `./package.json` entry and no wildcard (`./*`) that could match it. Node's exports encapsulation therefore applies.
 
 2. **Empirical repro** — I built a minimal `node_modules/fluent-html/` containing the repo's actual `package.json` and tested every resolution path from a consumer script:
    - `require('fluent-html/package.json')` → **ERR_PACKAGE_PATH_NOT_EXPORTED**

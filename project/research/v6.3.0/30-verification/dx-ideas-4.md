@@ -25,7 +25,7 @@ callables — `defineIds(["user-row-*"])` → `ids.userRow(42): Id`.
 ## Real-world corroboration
 
 The exact predicted workaround exists in a downstream app
-(`/Users/tony/jt-digital/ttl/src/time-entry/views/time-entry.view.ts:429`):
+(`ttl/src/time-entry/views/time-entry.view.ts:429`):
 
 ```typescript
 const entryRowId = (entryId: string) => `entry-row-${entryId}`;

@@ -20,7 +20,7 @@ p.on = function (state: string, fn: (tag: Tag) => Tag) {
 
 ### 2. Does Tailwind v4 actually accept `only-child:`? — No (empirically tested)
 
-Compiled candidates against **Tailwind v4.3.1** (`/Users/tony/jt-digital/pm-gui/node_modules/tailwindcss`, `compile().build([...])`):
+Compiled candidates against **Tailwind v4.3.1** (`pm-gui/node_modules/tailwindcss`, `compile().build([...])`):
 
 | Candidate | Result |
 |---|---|

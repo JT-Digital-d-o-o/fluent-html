@@ -6,7 +6,7 @@
 
 ## Reproduction
 
-Probe: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/probe-core-tag-3.mjs`
+Probe: `<scratch>/probe-core-tag-3.mjs`
 
 | # | Input | Output | Verdict |
 |---|-------|--------|---------|

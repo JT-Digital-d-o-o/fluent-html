@@ -10,7 +10,7 @@ required_changes:
   - "Add an old-render-vs-new-render byte-identity fuzz, not only the stream-vs-render fuzz cited (`F-D-006`). The de-recursion rewrites the array `'\\n'`-separator logic (`render.ts:246-250`, `stream.ts:188`) and the script/style `RawCtx` transition; stream-vs-render parity proves the two NEW paths agree with each other, not that they agree with the v5 output. Lock the v5 byte-for-byte snapshot against the v6 work-stack across the full pattern corpus before merge."
   - "Pin the cached-string production path: `render(node.view)` for a `Frozen` whose `view` is an array must use the identical `'\\n'`-join the inline array path uses, so freezing vs not-freezing an array is byte-identical. Add this to the parity fuzz (freeze every subtree, assert output unchanged)."
   - "Document that `Frozen` defeats `applyNonce` AND `foldView`-based traversals (the same opacity affects both). The RFC only warns about `renderWithNonce`; extend the ✗ guideline to: 'a frozen subtree is invisible to renderWithNonce AND to any foldView/paraView analysis (text extraction, element counts, security audits) unless they implement the `frozen` algebra arm.'"
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-01-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-01-breaking-change.md
 ---
 
 # Verdict: RFC-D-01 — breaking-change lens

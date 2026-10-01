@@ -5,7 +5,7 @@
 
 ## Reproduction
 
-Probe: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/match-probe/probe.ts`, compiled with the repo's own `node_modules/.bin/tsc` under `--strict` (`module nodenext`), importing `Match`/`Span`/`render` from `dist/src`.
+Probe: `<scratch>/match-probe/probe.ts`, compiled with the repo's own `node_modules/.bin/tsc` under `--strict` (`module nodenext`), importing `Match`/`Span`/`render` from `dist/src`.
 
 Four cases:
 

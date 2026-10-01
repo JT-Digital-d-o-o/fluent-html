@@ -10,7 +10,7 @@ required_changes:
   - "Specify that the default Icon() path — no IconOptions, currentColor, default size — emits its fixed root attributes (viewBox, fill, stroke, stroke-width, stroke-linecap, stroke-linejoin) via a single attribute-map initialization, not 6 sequential setter calls that each re-check `attributes === EMPTY_ATTRS`. Pre-build the default attribute object once per icon and clone-or-share it."
   - "Prove the registry lookup is O(1) and the BuiltinIconName path data is tree-shakeable: an app importing Icon for 3 icons must not pull the full ~24-icon path-data table into the bundle and must not pay module-init cost for unused icons. State the bundling strategy (lazy per-name vs eager table) in the RFC."
   - "Forbid any async in the Icon/registry path explicitly in the API contract (no dynamic import of icon sets, no Promise-returning registerIcon). The thenable SvgTag return must not introduce a microtask on the default render path."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-05-perf.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-05-perf.md
 ---
 
 # Verdict: RFC-B-05 — perf lens

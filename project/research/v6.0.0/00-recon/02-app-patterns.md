@@ -1,6 +1,6 @@
 # fluent-html — Real-World App Usage Patterns (v6 Recon)
 
-> Recon doc for the v6 planning team. Goal: discover **how real apps use fluent-html today** so we design new APIs that remove *measured* friction, not imagined friction. Every claim is backed by a `file:line` citation from a sibling repo under `/Users/tony/jt-digital/`. Library source state surveyed: `fluent-html` v5.11.0 (pinned commit `a5fd069` in most consumers).
+> Recon doc for the v6 planning team. Goal: discover **how real apps use fluent-html today** so we design new APIs that remove *measured* friction, not imagined friction. Every claim is backed by a `file:line` citation from a sibling repo under ``. Library source state surveyed: `fluent-html` v5.11.0 (pinned commit `a5fd069` in most consumers).
 >
 > Companion docs: `01-architecture.md` (library internals), `03-tailwind4.md`, `04-performance.md`.
 
@@ -8,7 +8,7 @@
 
 ## 1. Projects surveyed
 
-All paths relative to `/Users/tony/jt-digital/`. "uses fluent-html?" = depends on the GitHub package and imports from it.
+All paths relative to ``. "uses fluent-html?" = depends on the GitHub package and imports from it.
 
 | Project | uses fh? | Last commit | Size / maturity | Notable features |
 |---|---|---|---|---|

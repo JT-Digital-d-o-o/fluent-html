@@ -7,7 +7,7 @@ killer_objection: null
 required_changes:
   - "buildStatusConfig: the new `const [style, ...mods] = cfg.swap.split(' ')` reasons about value-space from the type, but the rebinding is only sound because `HxSwap` is a CLOSED union. The JSDoc at src/htmx.ts:64 falsely claims `HxSwap` 'also accepts any valid swap string for patterns not covered' — there is NO `| string` / `& {}` escape in the type (src/htmx.ts:66). Either (a) delete that misleading JSDoc line so the closedness the serializer depends on is documented as intentional, or (b) if open-ended swaps are truly desired, the split-and-rebind is unsound for an unconstrained tail and must guard. Pick (a) and pin the closedness."
   - "Add a type-level regression guard: a `// @ts-expect-error` test (or expectTypeOf) asserting that a bare `swap: 'garbage modifier'` is rejected by `HxStatusConfig.swap`, so a future widening of `HxSwap` to `string` cannot silently make the serializer's `split(' ')` rebind emit malformed `swap:<garbage>` tokens without a failing type test."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-007-type-safety.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-007-type-safety.md
 ---
 
 # Verdict: RFC-A-007 — type-safety lens

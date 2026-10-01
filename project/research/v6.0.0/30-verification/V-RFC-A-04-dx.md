@@ -10,7 +10,7 @@ required_changes:
   - "Drop the count/range ForEachOr overloads (lines 63-75, 121-130) for v6.0. The RFC's own Open Questions admits zero app evidence; ALGORITHM §13 names 'idea inflation / is this worth the surface area' as the dx failure mode. `ForEachOr(5, …)` / `ForEachOr(low, high, …)` with an empty fallback have no cited site across 9 apps, and add a third typeof branch + two overloads for no demonstrated DX win. Ship iterable-only, or show one real call-site. An RFC entering the spec must not carry a live keep/cut question."
   - "Fix the §11.6 consistency prose. The RFC asserts whenElse 'mirrors IfThenElse↔IfThen … exactly'. It does not: IfThenElse (src/control/conditionals.ts:23-24) orders boolean-first, nullable-second; whenElse (correctly, to match when at tag.ts:197-198) orders nullable-first, boolean-second. The chosen order is right for a Tag method; the prose must claim parity with `when` (the real sibling), not with IfThenElse, or an overload-order audit reads one as wrong."
   - "Guideline ✓/✗ shape parity: in the CLAUDE.md 'List with empty state' block the ✓ uses per-item `(i) => Row(i)` while the ✗ pairs `IfThen(items.length > 0, () => Table({ items }))` (whole-table). The ✓ and ✗ must use the SAME rendering shape so an LLM reader can see exactly what changed — make both per-item or both whole-collection. If count/range overloads are cut, also confirm no count/range empty-predicate teaching is implied."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-04-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-04-dx.md
 ---
 
 # Verdict: RFC-A-04 — dx lens

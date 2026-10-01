@@ -9,7 +9,7 @@ required_changes:
   - "F-A-163: pin the scan to PLAIN string-literal `addClass`/`setClass` bodies only (exclude template literals with `${}`), and state this explicitly. Every dynamic emitter uses `addClass(\\`bg-${x}\\`)`; the static (literal) emitters are all already in classVocab. Without the 'plain literal only' constraint the guard is ambiguous and could false-positive on the `=== undefined` bare-literal branches (`addClass(\"flex\")`, `addClass(\"@container\")`) — these are in vocab, so they must be matched-and-passed, not skipped."
   - "F-A-163 Open Question: resolve the glob scope. Confirm no other `src/core/*.ts` file emits a non-vocab literal class outside the 6-name structural allowlist; current scan of src/core/ shows only tailwind-methods.ts + htmx-methods.ts, so `src/core/*-methods.ts` glob is safe — adopt it and lock it in the RFC rather than leaving it open."
   - "Add the missing ABSENCE assertions to extract.test.ts for F-A-160 (assert `bg-red-500` and `hover:bg-red-500` are NOT emitted for the nested example) and a positive/negative pair for F-A-161 — the RFC notes the current test only asserts presence; the fix is unverifiable without the negative assertions it itself flags."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-004-correctness.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-004-correctness.md
 ---
 
 # Verdict: RFC-A-004 — correctness lens

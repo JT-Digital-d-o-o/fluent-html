@@ -10,7 +10,7 @@ required_changes:
   - "Provide the escape hatch for unknown aria keys via `addAttribute(\"aria-foo\", v)` (the lib's existing named escape), NOT via `(string & {})` in key position. `(string & {})` as a KEY cannot give autocomplete AND typo-catching simultaneously — the RFC line-220 claim that it keeps 'both' is false in key position (true only in value position, where BooleanAttribute/LinkRel use it). Document this explicitly so reviewers don't reinstate the hatch."
   - "Add a note that the union keys are deliberately lowercase single-token (`labelledby`, `describedby`, `activedescendant`) so the runtime camelCase→kebab regex at tag.ts:303 is a no-op for them. A future contributor adding a camelCase form (`labelledBy`) would emit the broken `aria-labelled-by`. Either freeze the union to lowercase or assert it at the type level."
   - "Commit `setTabindex(index: number)` in the RFC body (it is currently parked in 'Open questions'). `number` is acceptable per §11.4, but state it, and note it admits `NaN`/floats (`setTabindex(1.5)` → `tabindex=\"1.5\"`). Either accept-and-document or floor/validate."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-02-type-safety.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-02-type-safety.md
 ---
 
 # Verdict: RFC-A-02 — type-safety lens

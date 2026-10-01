@@ -22,7 +22,7 @@ Match(row, 0, { a: () => "A", b: () => "B" })
 
 selects the exhaustive DU overload and compiles with **zero errors** under
 `tsc --strict --noEmit` (verified with the repo's own `node_modules/.bin/tsc`, repro at
-`/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/repro-cf5.ts`).
+`<scratch>/repro-cf5.ts`).
 
 ### 2. Runtime — it crashes exactly as described
 

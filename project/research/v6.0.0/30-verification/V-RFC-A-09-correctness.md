@@ -9,7 +9,7 @@ required_changes:
   - "Correct the Migration & compatibility section: the rendered output is NOT 'byte-equivalent in intent' and the change is observable (style attribute -> class attribute). Anything snapshotting or asserting Overlay HTML downstream breaks. State this explicitly; if any app relies on the inline-style form (e.g. a CSP that forbids the Tailwind stylesheet but allows inline style, or an email/PDF context without the Tailwind build), it regresses. Drop or qualify the unconditional 'nothing breaks'."
   - "Add `import type { Tag } from \"../core/tag.js\"` to the Overlay file (the RFC body imports from `\"../core/tag.ts\"` in one place — use the `.js` ESM specifier consistent with the rest of the codebase)."
   - "The Track-C vocabulary claim ('no new vocabulary; all standard core utilities') is unverified for the extractor: `-translate-x-1/2` / `-translate-y-1/2` / `left-1/2` / `top-1/2` are emitted via `.neg()`/`.left()`/`.top()` -> `addClass`. Confirm the extractor and eslint class vocabulary actually recognize fractional translate/inset utilities before shipping, not merely defer to 'Wave-4 confirm' while asserting the answer."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-09-correctness.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-09-correctness.md
 ---
 
 # Verdict: RFC-A-09 — correctness lens

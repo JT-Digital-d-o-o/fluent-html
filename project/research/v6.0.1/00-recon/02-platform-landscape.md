@@ -1,7 +1,7 @@
 # v6.0.1 Recon — HTML-Platform Landscape & Parked Backlog
 
 Wave-0 recon for the v6.1.0 review. Subject under review: shipped **v6.0.0 core**
-(`/Users/tony/jt-digital/fluent-html/src/**`). P5 (`@fluent-html/fastify`) and P6
+(`fluent-html/src/**`). P5 (`@fluent-html/fastify`) and P6
 (`@jtdigital/ui`) are out of scope — this maps the **core HTML builder** against the
 modern web platform and harvests parked seeds.
 

@@ -9,7 +9,7 @@ required_changes:
   - "Add a byte-equality regression test proving the single-bare-trigger and single-word-swap paths are byte-identical to v6.0.0 (HX-Trigger === \"itemSaved\"; hx-status:5xx=\"swap:none\"). The lane's whole defense rests on these being unchanged; assert it explicitly rather than relying on the existing tests happening to cover it."
   - "Resolve the RFC's own Open Question BEFORE merge: confirm the htmx disable-processing attribute name is the bare `hx-disable` for the targeted htmx major, and pin it in a test (`render(...{ ignore: true })` includes ` hx-disable` with no `=`). If the bare boolean is NOT `hx-disable` in the shipped htmx version, the fix re-introduces inert output and the RFC must not ship."
   - "Add an explicit test asserting `ignore: true` emits ` hx-disable` (bare, no value) AND that it does not produce `hx-disable=` — to prevent visual/parse collision with the existing valued `disable` field (`hx-disable=\"#sel\"`, serialize.ts:157, pinned at routes.ts:331 / ids.ts:173). Keep the `disable` field output byte-identical (it is parked-major); the verdict's no-break guarantee depends on that file's output not moving."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-007-breaking-change.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-007-breaking-change.md
 ---
 
 # Verdict: RFC-A-007 — breaking-change lens

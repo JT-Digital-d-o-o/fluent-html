@@ -9,7 +9,7 @@ required_changes:
   - "Acknowledge createTransformAlgebra / addClassToMatching / unfoldView as PUBLIC, documented, tested APIs (test/fold.ts, src/index.ts exports) — not 'library-internal'. The `_sk`-restoration output change to these APIs must be in breaking-changes.md, not dismissed as 're-baseline internal snapshots'. App code that folded over trees containing <a>/<img>/<input> and depended on the current (lossy) output gets changed HTML."
   - "Scope the el() escaping change correctly: the proposed `escapeJs` in `el()` (line 77) alters output for FIVE renderers (toggle/toggleClass/remove/focus/scrollTo), not just toggleClass. Either narrow the change to the interpolated string args only (class/value) and leave el()'s id-interpolation, or document all five as changed. The migration note naming only toggleClass under-states the surface."
   - "rebuildTag depends on a NEW element-name→_sk registry, but _sk today lives only on ~30 subclass PROTOTYPES (AnchorTag, InputTag, …), keyed by class, never by element name. registerSchemaKeys/schemaKeysFor must be populated for every element that currently has _sk, or rebuildTag silently restores nothing for un-registered elements — re-introducing F-D-071/F-D-111 for any element whose registry entry is missed. Make the registry the single source the subclass prototypes also read from, and add a test asserting schemaKeysFor() is non-empty for every element with a prototype _sk."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-05-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-05-breaking-change.md
 ---
 
 # Verdict: RFC-D-05 — breaking-change lens

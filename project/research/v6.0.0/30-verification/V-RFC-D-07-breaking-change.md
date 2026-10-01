@@ -9,7 +9,7 @@ required_changes:
   - "Reclassify the frontmatter `breaking` field. `setStyles()` accumulate is a runtime BEHAVIOR change to a PUBLIC method (different bytes out for `setStyle().setStyles()` chains and double `setStyles()`). Mark it `breaking: behavior` (not `additive`) and add it to `breaking-changes.md` proper, not merely a 'non-breaking behavior fixes' footnote. A behavior change to public output that a codemod cannot detect (it depends on call-site intent) is the textbook case §11.5 governs."
   - "Provide the promised codemod scope honestly. The `attrs.X as string` → `attrs.get('X')` rewrite is only safe under option (b) above (method form) AND only at sites where `attrs` originates from a real factory, never from a `{ ...attrs }` spread. State that the codemod is best-effort/lint-flag, not a complete mechanical migration."
   - "If `setStyles` stays silent (per Open Question), add a dev-mode `console.warn` on overwrite of a non-empty `style` for one minor, OR ship `replaceStyles` first and flip `setStyles` semantics in the major. Bundle the flip into the single v6 migration entry; do not let a public-output behavior change land in a minor."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-D-07-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-D-07-breaking-change.md
 ---
 
 # Verdict: RFC-D-07 — breaking-change lens

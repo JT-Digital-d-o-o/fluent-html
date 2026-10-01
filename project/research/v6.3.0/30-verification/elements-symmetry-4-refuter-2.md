@@ -35,4 +35,4 @@
 
 **Confirmed.** The reproduction succeeds exactly as described: `rel="noopener noreferrer"` compiles only through `(string & {})`, `"noopener norefferer"` compiles and renders, and the library demonstrably ships two better patterns (`setSandbox` variadic, `setHeaders`/`addHeaders`) for the same attribute shape. The proposed variadic `setRel(...rels: LinkRel[])` is backward compatible for all single-token callers; existing space-joined string callers also keep compiling (each string still inhabits `LinkRel` via the tail).
 
-Probe files: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/rel-probe/{probe.ts,negative.ts}`.
+Probe files: `<scratch>/rel-probe/{probe.ts,negative.ts}`.

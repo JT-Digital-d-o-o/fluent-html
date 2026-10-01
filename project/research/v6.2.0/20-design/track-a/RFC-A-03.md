@@ -52,7 +52,7 @@ function buildQueryString(query: QueryParams): string {
 
 **The plain `hx(endpoint, options)` form has no query handling at all.** `HxOptions` (`src/htmx.ts:262-270`) omits `query` entirely, and the `hx()` body (`src/htmx.ts:302-317`) destructures `method/target/select/indicator/disable/include` and spreads the rest — there is nowhere for a query bag to go. So the moment an endpoint is an **ad-hoc string** rather than a `defineRoutes` callable — a `searchUrl` passed in as a component prop, a third-party URL — the caller drops back to hand-rolling the query string by hand.
 
-Real escape-hatch site, `/Users/tony/jt-digital/rideshare/src/shared/components/autocomplete.view.ts:69`:
+Real escape-hatch site, `rideshare/src/shared/components/autocomplete.view.ts:69`:
 
 ```ts
 const searchUrlWithParams = `${searchUrl}${searchUrl.includes("?") ? "&" : "?"}_target=${encodeURIComponent(resultsId)}`;

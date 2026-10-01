@@ -6,7 +6,7 @@
 
 ## Reproduction
 
-Probe (`node`, ESM) against `/Users/tony/jt-digital/fluent-html/dist/src/index.js`:
+Probe (`node`, ESM) against `fluent-html/dist/src/index.js`:
 
 ```
 Input.setFormaction typeof: undefined

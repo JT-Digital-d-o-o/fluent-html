@@ -9,7 +9,7 @@ required_changes:
   - "Add a guideline rule (fluent-html.md i18n section + index) that HTML-bearing messages are NOT supported via `Raw(t(...))` by default. Either (a) forbid markup in messages and document the ✗ `Raw(t(key))` anti-pattern, or (b) provide an explicit, separately-named API (e.g. `tRich(key, slots)` that renders message segments as escaped text with typed component slots) so authors never concatenate user params into a Raw HTML string. Pick one and write the ✓/✗ snippet."
   - "Specify that `render({ nonce })` routes the nonce through the existing escaped `applyNonce`/`setNonce` attribute path (escapeAttr), identical to `renderWithNonce`, and is never concatenated raw into the script/style tag. The RFC adds `nonce` to `RenderOptions` (line 52) with zero implementation note; state the escaped path explicitly so a future implementer cannot string-concat it."
   - "Constrain the negotiated `locale` to `availableLocales` before it is scoped into `LocaleCtx`/`<html lang>`. `resolveLocale`/`resolveUserLocale` consume attacker-controlled `Accept-Language` and `user.preferredLocale`; even though `lang` is escapeAttr'd (no direct XSS), an un-validated locale becomes an unbounded formatter-cache key (memory-exhaustion / cache-pollution DoS). Document that `i18nPlugin` intersects every resolved locale against `availableLocales` and falls back to `fallbackLocale` on miss."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-09-security-escape.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-09-security-escape.md
 ---
 
 # Verdict: RFC-B-09 — security/escape lens

@@ -7,7 +7,7 @@ killer_objection: null
 required_changes:
   - "Fix the false 'inherits prototype-pollution defenses for free' claim and its broken test: setDataAttrs prefixes `data-` BEFORE calling validateAttributeKey, so the computed key `data-__proto__` is NOT in PROTO_KEYS, passes VALID_ATTR_KEY, and is not an on*-handler — it does NOT throw `/prototype pollution/`. The RFC test `it(\"rejects a prototype-pollution data-* key\")` asserting `assert.throws(..., /prototype pollution/)` will FAIL in CI. Remove or rewrite that test (a `data-__proto__` key is harmless inert markup; assert it either passes through as `data-__proto__=\"v\"` or, if a stronger posture is wanted, validate the RAW key before prefixing — but that is a design change, not the shipped fix)."
   - "Correct the RFC's prose at line 110 ('so setDataAttrs inherits prototype-pollution ... defenses for free, identical to setAria'): the PROTO_KEYS branch is in fact dead for BOTH prefixed setters (setAria computes `aria-<key>`, setDataAttrs computes `data-<key>`; neither bare-key path can equal `__proto__`). The claim of equivalence to setAria is true, but the implied prototype-pollution coverage is not — say so explicitly so the JSDoc/CHANGELOG do not over-promise."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-006-type-safety.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-A-006-type-safety.md
 ---
 
 # Verdict: RFC-A-006 — type-safety lens

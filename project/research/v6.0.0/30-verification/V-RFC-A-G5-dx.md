@@ -13,7 +13,7 @@ required_changes:
   - "Correct the Problem-statement misrepresentation of the CURRENT guideline. RFC lines 29 & 252 claim CLAUDE.md frames `.setName()` as 'still works / equally valid' with 'no ✗ signal.' The actual guidelines/web-development/CLAUDE.md:91 ALREADY says `**never untyped .setName() when a schema exists**`. The index rule is already fixed; only the topic-ref is soft (fluent-html.md:86, 'Untyped .setName() still works...'). Scope the formFor edit to the topic ref + the inline `.setName()` annotations; drop the near-duplicate CLAUDE.md rewrite or reframe it as the single new clause ('T = the controller's request type')."
   - "Keep teaching `using _ = ctx.scope(v)` in the fluent-html.md `## Scoped Context` rewrite (RFC lines 287-312). The rewrite drops `scope()`/`using` entirely for `scopeReply`/`provide` — a teaching regression: a reader can no longer learn how to scope a context OUTSIDE the Fastify decorator (e.g. renderbox's per-page literal-union accent, example C, which is `using _ = pageAccentCtx.scope('indigo')`). Show both: `scope()`+`using` for component/page-local, decorator-level for per-request."
   - "Fix stale line-number anchors so the patch applies cleanly: CLAUDE.md scoped-context block is 145-148 (not 145-147); fluent-html.md `.setName()` examples are lines 21-24 (not 22/25/26); the soft formFor closing line is 86 (not 87); the Scoped-Context section is 146-167 (not 150-166). Substance of every edit is correct and in house style — only the offsets are stale."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-G5-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-G5-dx.md
 ---
 
 # Verdict: RFC-A-G5 — dx lens

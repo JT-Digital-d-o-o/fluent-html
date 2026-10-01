@@ -11,7 +11,7 @@ required_changes:
   - "Make the flagship taught example self-contained. fluent-html.md (line 321) and CLAUDE.md (line 290) render `cell: e => Badge(e.category)`, but `Badge` is NOT in this RFC's `api_surface` (it is a separate RFC's symbol). The most-copied snippet will not compile if that RFC slips. Replace `Badge(e.category)` with an in-RFC construct (`Span(e.category)` or a string cell), OR add the Badge RFC to `depends_on` and state the coupling."
   - "Retire the competing idiom in the teaching. `web-development/README.md:1679` ships a generic `DataTable<T>(columns)` component; the new 'Data tables' guideline section never mentions or supersedes it, leaving the LLM reader two non-composable table idioms. Add an explicit ✗ ('never hand-roll a generic `DataTable<T>` — use `Table.of`') to the CLAUDE.md index edit."
   - "Teach `TableState<T>` as a held/typed symbol. §11.8 requires every `api_surface` symbol be taught; no edit shows `TableState<T>` as an annotated variable type or as a sub-component's `state` prop type — only the `tableState()` factory is shown. Add one line (e.g. `const state: TableState<EventFilters> = tableState(...)`) so the type, not just the factory, is taught."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-06-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-06-dx.md
 ---
 
 # Verdict: RFC-B-06 — dx lens

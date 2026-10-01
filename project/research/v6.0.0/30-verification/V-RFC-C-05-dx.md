@@ -12,7 +12,7 @@ required_changes:
   - "Cut or rename defineUtility(). It is in api_surface but appears once, does nothing but identity-return a UtilityDef, and is never used in any worked example. Either show a concrete row that needs it (a real kind:'custom' that can't sit in the const array) or remove it from api_surface. Dead author-facing helpers are a discoverability tax."
   - "Guideline edit: the fluent-html.md snippet teaches a NEW gradient API (gradientTo('to-r').from(...).to(...)) that is not introduced or specified by THIS RFC and whose v4 form ('bg-linear-to-r') is contested across Track C. Strip the rename example down to the single load-bearing rule (addClass bypasses the vocab → invisible to extractor + ESLint) and drop the v3/v4 name from the teaching, since which name is active is decided by the v3/v4 strategy RFC, not C-05. Teaching a name C-05 doesn't own is a future guideline-drift bug."
   - "Guideline coverage of api_surface: §11.8 requires the teaching to mirror the surface. classVocab/TailwindTarget/EmitShape/defineUtility are maintainer-only and the RFC routes them to a package README — acceptable, but the RFC must NAME that README as a concrete deliverable (path + that it documents every kind and the reverse spec), otherwise the maintainer surface ships untaught, which is the exact orphaned-API failure §11.8 guards against for the audience that actually uses this package (maintainers)."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-05-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-C-05-dx.md
 ---
 
 # Verdict: RFC-C-05 — dx lens

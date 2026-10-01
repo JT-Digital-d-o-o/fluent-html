@@ -1,6 +1,6 @@
 # a11 — View Transitions in pm-gui: type-safe naming + shared-element pairing gaps
 
-Track A (app-driven API discovery) · scoping **v6.2.0** · source app **/Users/tony/jt-digital/pm-gui**
+Track A (app-driven API discovery) · scoping **v6.2.0** · source app **pm-gui**
 
 pm-gui is a real, view-transition-heavy SSR app (Fastify + fluent-html + HTMX). It uses
 the View Transitions API for two things at once on every navigation: a **page slide**

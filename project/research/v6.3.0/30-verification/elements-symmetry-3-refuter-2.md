@@ -7,7 +7,7 @@
 ## Reproduction
 
 ```js
-const { Input, render } = require('/Users/tony/jt-digital/fluent-html/dist/src/index.js');
+const { Input, render } = require('fluent-html/dist/src/index.js');
 
 render(Input().toggle('required').toggle('required', false));
 // → <input required>          ← later toggle(false) did NOT remove it

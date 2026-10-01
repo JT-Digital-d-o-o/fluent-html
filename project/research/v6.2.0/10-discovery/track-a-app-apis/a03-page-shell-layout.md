@@ -2,7 +2,7 @@
 
 Lens scope: page shell & layout composition — repeated wrappers, container/section scaffolds, responsive grids, `.apply()` mixin candidates, design-token style functions.
 
-Mined apps: `/Users/tony/jt-digital/pm-gui` (v6 template) and `/Users/tony/jt-digital/planet-positive-sport` (v5).
+Mined apps: `pm-gui` (v6 template) and `planet-positive-sport` (v5).
 
 ---
 

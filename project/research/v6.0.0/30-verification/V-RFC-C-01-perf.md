@@ -8,7 +8,7 @@ required_changes:
   - "State explicitly that generateFluentSafelist/fluentHtmlPlugin run filesystem reads only at build time and dev-server rebuild, and that fluentHtmlExtractor stays synchronous & allocation-bounded per-file — pin §11.2 N/A with the reason 'no symbol in this RFC is reachable from the lib's render path' rather than asserting it bare."
   - "Bound the dev-server rebuild cost: the plugin's file-change re-scan must be incremental (re-scan only the changed file + merge into a cached candidate set), not a full glob re-read of all content on every keystroke. Add this as a non-functional requirement so the Vite dev path does not regress HMR latency on large apps (rideshare ~456 call-sites, ttl structurally identical)."
   - "Forbid any coupling of staticManifest to a render-time class-dump. Alternative #1 is already rejected for touching the hot path; make that prohibition normative in the API contract — generateFluentSafelist/fluentHtmlPlugin MUST NOT import or invoke lib render code, and staticManifest MUST be a statically-evaluable array (defineTheme output), never the result of executing a render pass."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-C-01-perf.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-C-01-perf.md
 ---
 
 # Verdict: RFC-C-01 — perf lens

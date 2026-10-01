@@ -43,4 +43,4 @@ if (isId(fromJson)) {
 
 **Verdict: refuted = false.** Both proposed remedies in the finding (real `Symbol` marker tested in `isId`, or softening the comment) are viable; the comment fix is the minimal truth-restoring change, while a module-private symbol would make the runtime guard match the documented promise (at the cost of `isId` no longer accepting structurally-valid Ids that crossed a realm/duplicate-package boundary).
 
-Probes: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/probe-runtime.mjs`, `…/probe-types2.ts`.
+Probes: `<scratch>/probe-runtime.mjs`, `…/probe-types2.ts`.

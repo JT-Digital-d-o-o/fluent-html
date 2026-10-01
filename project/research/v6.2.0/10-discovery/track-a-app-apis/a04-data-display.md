@@ -9,8 +9,8 @@ Lens scope: tables, lists, cards, pagination, sorting headers, empty/loading/err
 ### Problem / evidence
 The single most-repeated *structural* pattern in both apps is "map a runtime enum (status / role / scope / tone / align) to a set of fluent styles." Because `.background(variable)` / `.textColor(variable)` defeat the Tailwind extractor, every consumer reinvents a workaround:
 
-- **pm-gui ships its own helper**: `/Users/tony/jt-digital/pm-gui/src/shared/stylers.ts` — a 27-line `stylers<K>(map)` factory whose entire docstring is "Prefer this over `.addClass(record[var])`: the fluent methods are typed AND statically visible to the Tailwind extractor." It's consumed in `/Users/tony/jt-digital/pm-gui/src/shared/ui/data.ts` (`ALIGN_FNS`, `alignText`) and the StatCard trend `Match(direction, {...})`.
-- **planet-positive-sport (v5) takes the *broken* path**: `/Users/tony/jt-digital/planet-positive-sport/src/admin/emission-factors/views/emission-factors.components.ts:48` builds chips via `.background(props.palette.bg).textColor(props.palette.text)` where `palette.bg` is a runtime string like `"blue-100"` — extractor-invisible, requiring a safelist. The `CALC_PALETTE`/`SCOPE_PALETTE`/`KIND_PALETTE` records (lines 12-39) are exactly the `stylers` use-case, done the way that breaks tooling.
+- **pm-gui ships its own helper**: `pm-gui/src/shared/stylers.ts` — a 27-line `stylers<K>(map)` factory whose entire docstring is "Prefer this over `.addClass(record[var])`: the fluent methods are typed AND statically visible to the Tailwind extractor." It's consumed in `pm-gui/src/shared/ui/data.ts` (`ALIGN_FNS`, `alignText`) and the StatCard trend `Match(direction, {...})`.
+- **planet-positive-sport (v5) takes the *broken* path**: `planet-positive-sport/src/admin/emission-factors/views/emission-factors.components.ts:48` builds chips via `.background(props.palette.bg).textColor(props.palette.text)` where `palette.bg` is a runtime string like `"blue-100"` — extractor-invisible, requiring a safelist. The `CALC_PALETTE`/`SCOPE_PALETTE`/`KIND_PALETTE` records (lines 12-39) are exactly the `stylers` use-case, done the way that breaks tooling.
 - The same `Record<status, {bg,text}>` → `Span(...).background(bg).textColor(text)` shape recurs in `organizations.view.ts:76` (`ApprovalBadge`), `:97` (`RoleBadge`), `:156` (`StatusBadge`), `organizations.detail.view.ts:69/91`, and `category-report.view.ts:342/352`.
 
 This is library-shaped: it's a generic pattern, it interacts with the extractor (a library concern), and pm-gui's homegrown `stylers` is verbatim reusable.
@@ -85,8 +85,8 @@ No `Badge`/`Pill`/`Chip` export. The 6.1.x `.overlay()` example uses a `Badge("3
 
 ### Problem / evidence
 The *same* `ThCell`/`TdCell` helpers exist, near-verbatim, in two unrelated codebases:
-- pm-gui: `/Users/tony/jt-digital/pm-gui/src/shared/ui/data.ts:100-120` plus `alignText`/`ALIGN_FNS` (lines 86-98).
-- pps: `/Users/tony/jt-digital/planet-positive-sport/src/shared/components/display/containers.ts:7-25` — same `ThCell({text,align})` / `TdCell({content,align})` signature, same padding/text-size/color.
+- pm-gui: `pm-gui/src/shared/ui/data.ts:100-120` plus `alignText`/`ALIGN_FNS` (lines 86-98).
+- pps: `planet-positive-sport/src/shared/components/display/containers.ts:7-25` — same `ThCell({text,align})` / `TdCell({content,align})` signature, same padding/text-size/color.
 - A third copy of the `<th>` styling is inlined as `thStyle()` in `emission-factors.list.view.ts:291-296`.
 
 The `alignText` indirection only exists because `.textAlign(align)` with a runtime `align` breaks the extractor — i.e. it's a symptom of finding #1. If `stylers` ships, the cell helpers collapse to a few lines, but the recurrence still argues for a tiny `Table` ergonomics layer.
@@ -122,7 +122,7 @@ No. `.textAlign(align)` exists but with a runtime arg it's extractor-blind; no c
 
 ### Problem / evidence
 `EmptyState` is hand-rolled at least **5 times**:
-- pm-gui shared: `/Users/tony/jt-digital/pm-gui/src/shared/ui/data.ts:70-82` (`EmptyState({message, actionView})`).
+- pm-gui shared: `pm-gui/src/shared/ui/data.ts:70-82` (`EmptyState({message, actionView})`).
 - pm-gui per-page duplicates that ignore the shared one: `inbox.view.ts:58`, `archive.view.ts:49-55`, `decisions.view.ts:40` — each a `Div(icon, P(title), P(subtitle)).flex().flexDirection("col").alignItems("center")…padding("y", …)`.
 - pps: `total-card.view.ts:206`, `per-contributor.view.ts:607`, `questionnaire.view.ts:527` (`FilterEmptyState`).
 
@@ -160,7 +160,7 @@ No core export. pm-gui's own `EmptyState` is app-land and lacks `icon`/`message`
 ## 5. `Pagination` primitive
 
 ### Problem / evidence
-pm-gui hand-rolls pagination in `/Users/tony/jt-digital/pm-gui/src/shared/ui/data.ts:130-145`: prev/next links + "Page X of Y", guarded by `IfThen(totalPages > 1)` and `IfThen(page>1)/(page<totalPages)`. pps has `page=`/`pageSize` plumbing in `analytics/views/event-log.view.ts` and the admin dashboard recent/attention views. The prev/next/page-count + edge-guard logic is identical boilerplate everywhere paging appears.
+pm-gui hand-rolls pagination in `pm-gui/src/shared/ui/data.ts:130-145`: prev/next links + "Page X of Y", guarded by `IfThen(totalPages > 1)` and `IfThen(page>1)/(page<totalPages)`. pps has `page=`/`pageSize` plumbing in `analytics/views/event-log.view.ts` and the admin dashboard recent/attention views. The prev/next/page-count + edge-guard logic is identical boilerplate everywhere paging appears.
 
 ### Proposed API
 ```ts
@@ -186,7 +186,7 @@ No. Nothing pagination-related in the barrel or `patterns.ts`.
 ## 6. (Lower) Dynamic-percent sizing for progress bars — `w("%", expr)` / inline-style escape
 
 ### Problem / evidence
-Progress bars drop to raw inline style because the unit overloads take literals, not runtime values: `/Users/tony/jt-digital/pm-gui/src/app/archive/archive.view.ts:39` and `overview.view.ts:196` both do `Div().h("full").rounded("full").background(...).setStyle(\`width:${pct}%\`)`. The surrounding track-bar shape (`w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden`) is also duplicated.
+Progress bars drop to raw inline style because the unit overloads take literals, not runtime values: `pm-gui/src/app/archive/archive.view.ts:39` and `overview.view.ts:196` both do `Div().h("full").rounded("full").background(...).setStyle(\`width:${pct}%\`)`. The surrounding track-bar shape (`w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden`) is also duplicated.
 
 ### Proposed API
 Minimal: document/confirm `.addStyle({ width: \`${pct}%\` })` (6.1.x `addStyle` already exists) as the blessed path, OR a tiny `.sizePct("w", n)` emitter for runtime percents. Not a `ProgressBar` component (too opinionated), just remove the raw-string `setStyle`.

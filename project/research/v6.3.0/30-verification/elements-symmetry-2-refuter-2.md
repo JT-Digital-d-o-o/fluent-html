@@ -4,7 +4,7 @@
 
 ## Method
 
-Adversarial refute-by-reproduction. Wrote a probe (`probe.ts`) importing the public factories (`Img`, `Video`, `Canvas`, `Source`, `Svg`, `Iframe`, `Embed`, `ObjectEl`) via a `paths` alias to `/Users/tony/jt-digital/fluent-html/src/index.ts`, compiled with `tsc --strict --noEmit` (moduleResolution `bundler`, matching the repo tsconfig).
+Adversarial refute-by-reproduction. Wrote a probe (`probe.ts`) importing the public factories (`Img`, `Video`, `Canvas`, `Source`, `Svg`, `Iframe`, `Embed`, `ObjectEl`) via a `paths` alias to `fluent-html/src/index.ts`, compiled with `tsc --strict --noEmit` (moduleResolution `bundler`, matching the repo tsconfig).
 
 ## Reproduction results
 

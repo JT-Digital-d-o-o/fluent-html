@@ -10,7 +10,7 @@ required_changes:
   - "Implement `whenElse` with an explicit branch on `typeof condition === 'boolean'` plus `condition != null` (mirroring `IfThenElse`'s body at conditionals.ts:30-36), NOT the single-line `condition ? thenFn(this, condition as NonNullable<T>) : elseFn(this)`. The `as NonNullable<T>` cast in the proposed body launders the falsy-value bug past the type system."
   - "Correct the RFC's Type-safety story bullet 1 and Guardrail §11.6 wording: it currently claims `whenElse` 'mirrors IfThenElse↔IfThen exactly' and copies `when`'s ordering — but `IfThenElse` and `when` have DIFFERENT (incompatible) overload order and runtime null-handling. The RFC must pick `IfThenElse`'s semantics (the correct sibling) and say so, or explicitly own that it is propagating `when`'s looser truthiness behavior."
   - "Add an Open Question / note: the headline nullable example `Span().whenElse(user.avatar, (t, src) => ..., t => ...)` is unsafe when `user.avatar` is the common `\"\"` empty-string sentinel — with the current proposed body, `\"\"` routes to `elseFn` despite `src: string` being typed as available. After the runtime fix this is resolved; the example must not ship against the truthiness body."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-04-type-safety.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-04-type-safety.md
 ---
 
 # Verdict: RFC-A-04 — type-safety lens

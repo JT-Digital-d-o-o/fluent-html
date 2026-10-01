@@ -4,7 +4,7 @@
 
 ## Repro method
 
-- Runtime probe: `node` script importing `Div`/`render` from `/Users/tony/jt-digital/fluent-html/dist/src/index.js` (scratchpad `repro-status.mjs`).
+- Runtime probe: `node` script importing `Div`/`render` from `fluent-html/dist/src/index.js` (scratchpad `repro-status.mjs`).
 - Type probe: `tsc --noEmit --strict` against `dist/src/htmx.d.ts` (scratchpad `probe-types.ts`).
 - Docs check: web search + fetch of `four.htmx.org/reference/attributes/hx-status`.
 

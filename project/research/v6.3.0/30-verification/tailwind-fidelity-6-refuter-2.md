@@ -16,7 +16,7 @@
 
 ### 2. Compile probe against dist (repo's own tsc, exit 0)
 
-Probe at `scratchpad/outline-probe/probe.ts`, resolved via `paths` to `/Users/tony/jt-digital/fluent-html/dist/src/index.d.ts`. All five gaps hold — each line compiles **only** under `@ts-expect-error` (a stale suppression would itself be an error, so this is a positive confirmation):
+Probe at `scratchpad/outline-probe/probe.ts`, resolved via `paths` to `fluent-html/dist/src/index.d.ts`. All five gaps hold — each line compiles **only** under `@ts-expect-error` (a stale suppression would itself be an error, so this is a positive confirmation):
 
 ```typescript
 // @ts-expect-error — no width arm

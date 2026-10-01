@@ -9,7 +9,7 @@ required_changes:
   - "Fix the F-A-103 `Match` snippet in fluent-html.md (RFC lines 213-216): it matches against a 3-variant union (`idle | error | success`) but lists only `success` + `error` with NO default — that fails the exhaustive overload to compile. Add `idle: () => Empty()` (matching the RFC's own worked example at lines 118-121) or a `() => Empty()` default. A non-compiling ✓ snippet in the LLM-facing guideline is the worst adoption failure."
   - "Make the F-A-103 snippet's callback-arg usage consistent: `success: () => Ok()` drops `(s)` while `error: (s) => …` keeps it, which reads as 'narrowing is optional per branch.' Use the arg uniformly."
   - "In CLAUDE.md Edit 2 the appended `Match(x, \"status\", { PENDING: (s) => …, DONE: (s) => … })` has no default and 2 keys — note it is the exhaustive form (union = exactly those variants) so the LLM doesn't read the missing default as a partial-match bug."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-A-G1-dx.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-A-G1-dx.md
 ---
 
 # Verdict: RFC-A-G1 — dx lens

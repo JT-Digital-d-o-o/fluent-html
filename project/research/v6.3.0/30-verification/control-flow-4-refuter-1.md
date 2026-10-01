@@ -47,5 +47,5 @@ The proposed fix works as advertised. Verified with a standalone overload pair u
 The finding's classification (issue, medium) is fair: this is a type-contract/documentation gap, not a runtime crash. The blast radius is real though — unvalidated strings (DB columns, route params) are precisely the values that will be plain `string`, and the failure mode (blank SSR output) gives no signal. One caveat for the fixer: the conditional-type-in-value-position pattern can degrade inference for *generic wrappers* that forward an unresolved `T` into `Match`; direct call sites (the overwhelming majority) are unaffected.
 
 ## Repro artifacts
-- `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/cf4/repro.ts` (compile + runtime repro)
-- `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/cf4/fixcheck.ts` (fix-pattern validation)
+- `<scratch>/cf4/repro.ts` (compile + runtime repro)
+- `<scratch>/cf4/fixcheck.ts` (fix-pattern validation)

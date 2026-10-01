@@ -4,7 +4,7 @@
 
 ## Method
 
-Refute-by-reproduction. Wrote a minimal probe (`probe-swap.ts` in scratchpad) importing `HxSwap` and `HxTarget` directly from `/Users/tony/jt-digital/fluent-html/src/htmx.ts`, checked with:
+Refute-by-reproduction. Wrote a minimal probe (`probe-swap.ts` in scratchpad) importing `HxSwap` and `HxTarget` directly from `fluent-html/src/htmx.ts`, checked with:
 
 ```
 npx tsc --noEmit --strict --allowImportingTsExtensions --skipLibCheck \

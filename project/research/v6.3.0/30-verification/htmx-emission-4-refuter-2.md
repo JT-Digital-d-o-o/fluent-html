@@ -11,7 +11,7 @@ Built the library (`npm run build` → `dist/src/`), then ran a probe that pipes
 exactly the integration pattern the class JSDoc at `src/patterns.ts:126-138` instructs
 users to follow.
 
-Probe: `/private/tmp/claude-501/-Users-tony-jt-digital-fluent-html/f2f45330-dea1-49ee-a197-fd7d0ee2bfc5/scratchpad/repro-htmx-emission-4.mjs`
+Probe: `<scratch>/repro-htmx-emission-4.mjs`
 
 Output (Node v26.0.0):
 

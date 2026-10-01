@@ -8,7 +8,7 @@ required_changes:
   - "ScriptType: drop or open-tail 'application/json' / 'application/ld+json' as canonical entries — a <script type=\"application/json\"> is a data block, not an executable module, and listing it next to 'module'/'importmap' in the same autocomplete set mis-teaches the priority/module grammar the RFC sells. Keep them legal via the open tail; remove from the canonical literal list (cosmetic, but the RFC asked the question itself in Open questions — resolve it to 'open-tail only')."
   - "Add an explicit note (RFC body + JSDoc on the retyped MetaTag.setName) that IframeTag.setName / ObjectTag.setName / MapTag.setName are DELIBERATELY left as bare string — they carry the browsing-context/form 'name' grammar, NOT the named-meta MetaName grammar. Without this a future maintainer 'completing the pattern' would mis-retype them. The RFC's api_surface is silent on this; make the non-change intentional and documented."
   - "Normalize the Charset canonical example to lowercase 'utf-8' in the README update AND keep the existing test/elements.test.ts:516 `Meta().setCharset(\"UTF-8\")` working (it does, via the open tail) — but call out in the CHANGELOG/guidelines that the canonical autocomplete is lowercase to avoid a split-brain between README ('UTF-8') and the union ('utf-8')."
-file: /Users/tony/jt-digital/fluent-html/product/research/v6.0.1/30-verification/V-RFC-B-008-correctness.md
+file: fluent-html/product/research/v6.0.1/30-verification/V-RFC-B-008-correctness.md
 ---
 
 # Verdict: RFC-B-008 — correctness lens

@@ -35,4 +35,4 @@ The RFC stamps `breaking: additive` and asserts "Additive — nothing breaks …
 
 §11.5 backward-compat: **conditionally pass.** No removals or renames of public symbols (verified against `src/index.ts` and all four apps). The `breaking: additive` frontmatter is defensible but under-specified: it omits (a) the `_sk` coupling that makes the new setters functional and (b) the SvgShapeTag mixin extraction touching shipped inheritance. Both must be spelled out before Wave-4 `breaking-changes.md` can correctly classify this RFC as a true no-migration addition. §11.7 class-string contract: confirm-and-state that the new raw SVG attrs are not Tailwind utilities and need no extractor/eslint entry — the RFC argues this only for Icon sizing.
 
-file: /Users/tony/jt-digital/fluent-html/product/research/v6/30-verification/V-RFC-B-05-breaking-change.md
+file: fluent-html/product/research/v6/30-verification/V-RFC-B-05-breaking-change.md

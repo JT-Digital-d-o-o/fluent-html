@@ -10,7 +10,7 @@ Tailwind v4 ships as first-class dynamic utilities (`p-13`, `w-17`, `border-3`, 
 
 ## Reproduction A — fluent-html types reject the values (tsc probe)
 
-Probe (`scratchpad/probe/probe.ts`) against `/Users/tony/jt-digital/fluent-html/src/index.js`,
+Probe (`scratchpad/probe/probe.ts`) against `fluent-html/src/index.js`,
 `tsc --noEmit --strict`:
 
 | Call | Result |
