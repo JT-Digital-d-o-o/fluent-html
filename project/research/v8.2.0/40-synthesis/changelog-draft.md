@@ -1,5 +1,7 @@
 # Changelog draft
 
+> Superseded: ship the staged entries under [`../60-rollout/staged/`](../60-rollout/staged/), which replace this draft wherever the two differ.
+
 Ready-to-paste entries per repo, generated from the curated set. Title-only headers, no dates (fluent-html convention). The trailing RFC id is for traceability; drop it when pasting.
 
 # fluent-html

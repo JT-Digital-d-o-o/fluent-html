@@ -82,7 +82,7 @@ A new `grammar` job in `.github/workflows/test.yml` (Node 22) builds the lib and
 
 - **Completeness by rule.** Tokens are enumerated from `htmx.d.ts`, `patterns.d.ts` and `core/htmx-methods.d.ts`: a declaration with no row, and not on the reviewed `NOT_GRAMMAR` list, fails `coverage.test.mjs`, and a row fails when a token it claims never appears in the bytes it served.
 - **A ratchet that names its mark.** A known defect runs as an expected failure and turns red the day it stops reproducing, naming the row, the bundle and the `known` mark to delete.
-- **Measured on the 8.1.0 surface:** 342/342 runs (171 rows on 2 bundles, 23 known), 0 flaky in 1,026 runs under CPU contention. This release's fixes delete the `hx-status` known mark (23 to 22 known rows) and add the security, status and behaviors bundle-check rows.
+- **Measured on the 8.1.0 surface:** every row passes on both bundles, 23 of them as known defects (22 on both bundles, one on beta6 only), and none is flaky under CPU contention. This release's fixes delete the `hx-status` known mark (23 to 22 known rows) and add the security, status and behaviors bundle-check rows.
 - The behaviors acceptance matrix (69 rows), which no workflow ran, joins the same job.
 - No emitted byte and no public type changes. The `HtmxConfig` JSDoc example drops `extensions: "sse, preload"`: extension attributes are outside the typed grammar.
 

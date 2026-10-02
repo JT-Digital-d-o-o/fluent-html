@@ -35,21 +35,24 @@ section 2 and its Track E addendum (K1 to K15). One user story per release step 
 | Step | Ships | Gate |
 |---|---|---|
 | 1 | fluent-html 8.1.1: A-03, A-05 + A-08, A-06, B-01 lib half + A-05 dev checks, A-07 + C-04 comment, A-01 with the version bump, C-67 docs | K8, K9; lib CI green with the `grammar` job; official bench re-run |
-| 3 | fluent-html-tailwind-extractor `main` (3.0.0 untagged): D-01 text | independent (K6) |
-| 4 | guidelines G1: A-03, A-05, A-07, B-01, C-01, C-04, C-67, D-01, D-02 | per line: 8.1.1, its tag for A-07, plugin 4.2.0 and extractor main, template 3.8.0 (K5, K7) |
+| 3 | fluent-html-tailwind-extractor `main` (3.0.0 stays unreleased): D-01 text | independent (K6) |
+| 4 | guidelines G1: A-03, A-05, A-07, B-01, C-01, C-04, C-67, D-01, D-02 | per line: 8.1.1, its `v8.1.1` release branch for A-07, plugin 4.2.0 and extractor main, template 3.8.0 (K5, K7) |
 | 4b | fluent-html `CLAUDE.md` and `README.md` commit | the gates of each G1 twin |
 | 6 | fluent-html 8.2.0: B-02, B-03 lib half, A-04, A-09, E-01, one `forms.ts` pass (E-04, E-02, E-01's read swap), E-07, E-08 | K1, K12, K13; both test lists; bench re-run |
-| 7 | guidelines G2: B-03, A-09, E-07, E-08 | the 8.2.0 tag and the plugin 4.3.0 publish (K7 amended) |
+| 7 | guidelines G2: B-03, A-09, E-07, E-08 | the 8.2.0 release and the plugin 4.3.0 release (K7 amended) |
 | 7b | fluent-html `CLAUDE.md` commit: E-07, E-08 | the gates of G2 |
 | 9 | fluent-html 9.0.0: B-04, C-02, C-03, the E-04 and E-07 tails; one migration section | K10, K11; `test/prune-gate.test.ts` green |
-| 10 | guidelines G3: C-02 | the 9.0.0 tag |
+| 10 | guidelines G3: C-02 | the 9.0.0 release |
 
 The docs never run ahead of the code: each release's CHANGELOG entry and README hunks are staged under
 `fluent-html/project/research/v8.2.0/60-rollout/staged/<repo>/<release>/` and applied by the story
 that ships that release. Guideline and `CLAUDE.md` hunks apply by quoted text from
 [guidelines-update.md](../../research/v8.2.0/40-synthesis/guidelines-update.md); codemods follow
-[codemods.md](../../research/v8.2.0/40-synthesis/codemods.md); changelog wording comes from
-[changelog-draft.md](../../research/v8.2.0/40-synthesis/changelog-draft.md). The class-merge
+[codemods.md](../../research/v8.2.0/40-synthesis/codemods.md); changelog wording comes from the
+staged entries, which supersede
+[changelog-draft.md](../../research/v8.2.0/40-synthesis/changelog-draft.md). A release of
+fluent-html or the plugin is a `version` bump on main plus a pushed `vX.Y.Z` branch at that
+commit, with no git tag, GitHub Release or npm publish (user decision 2026-10-02). The class-merge
 supersession is recorded in [decisions.md](../decisions.md).
 
 ## Rabbit Holes
@@ -60,7 +63,7 @@ supersession is recorded in [decisions.md](../decisions.md).
 - **Behaviors asset headroom.** RFC-A-01 leaves the asset at 6140 of 6144 B min; C-67 adds 0 runtime bytes. Any further runtime byte waits on the L-260 call.
 - **Generated files.** Whichever of RFC-A-09 and RFC-E-08 lands second re-runs `gen:vocab` (K12); generated tables are never hand-edited.
 - **Test lists.** `fluent-html/package.json:65-66` names every test file in `test` and `test:coverage`; a new test file missing from either never runs in CI.
-- **Re-measures.** RFC-E-01's folded JSDoc, RFC-E-04's `forms.d.ts` size and authoring probe, RFC-E-08's brand diagnostics (lockstep blocker 11) are measured again at implementation, not assumed.
+- **Re-measures.** RFC-E-01's folded JSDoc, RFC-E-04's `forms.d.ts` size and authoring probe, RFC-E-08's brand diagnostics (lockstep blocker 11) are measured again at implementation, not assumed, in the units a fresh checkout can take (bytes, line counts, printed diagnostics); token counts and agent authoring runs stay research measures.
 
 ## No-Gos
 

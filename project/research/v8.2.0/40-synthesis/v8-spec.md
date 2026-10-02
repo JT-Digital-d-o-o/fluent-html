@@ -707,6 +707,7 @@ Without the `Error: ` prefix the messages are 110 and 170 chars, the fix at char
   - the 5 non-string shapes byte-identical to 8.1.0 (V-RFC-A-05-breaking-change #2)
 - `REFERENCE.md:1342-1345` names the htmx URL sinks beside the typed setters; the Blocked list at `:1384-1386` gains `js:` and "every `data:` URL at an htmx sink" (V-RFC-A-05-agent-fitness #3). No guideline line is added.
 - Security rows for RFC-A-03's oracle: D1-D5, D2, D7, H2, plus E1, C1, R1, L4.
+  - Row ids by source, because the two verdicts number their D rows differently: D1-D5 are V-RFC-A-05-runtime-contract's (required change 2: `data:image/png`, `data:image/gif;base64`, `data:audio/mpeg`, `data:font/woff2`, `data:video/mp4`, each carrying `<img onerror>`, at the endpoint and at `location()`). D2, D7 and H2 are V-RFC-A-05-security-escape's (required change 5): D7 is `.location("data:image/png,<img onerror>")` and H2 the status push `/ok text:'<script>…'`; that verdict defines D2 only inside its D1-D6 row, which read in order makes D2 the endpoint `data:image/png` carrying `<script>`. E1, C1, R1 and L4 are RFC-A-05.md's own table (`hx(externalUrl("javascript:…"))`, `{ confirm: "js:…" }`, `.redirect("javascript:…")`, `.location("x path:js:…")`); the verdicts reuse some of these ids for other cases (security-escape's E1, C1 and R1 are inert leading-space spellings, runtime-contract's L4 is a pre-serialized JSON string). Name each oracle row by its sink and payload so the ids never collide.
 - Re-run the official bench (`node dist/bench/render.js`) on the final build before merge (V-RFC-A-05-runtime-contract #5).
 
 ### Measured outcome (restated, V-RFC-A-05-security-escape #4)
@@ -722,7 +723,7 @@ Without the `Error: ` prefix the messages are 110 and 170 chars, the fix at char
 - **Which sinks block every `data:`.** runtime-contract #1 names the endpoint and both `location()` arms; security #1 adds push/replace (bag and status) and `redirect`. Chosen: security's set, one policy for every htmx URL sink. The extra sinks cost 0 fleet sites (0 `data:` literals at htmx sinks), and `data:image/png,<script>` reached `HX-Redirect` through the template hook under the RFC as written.
 - **How the strict mode is built.** runtime-contract #1 sketches `sanitizeUrl` followed by a `data:` check; security #1 mandates folding it into the one scan. Chosen: the single scan (two-pass 0.700 vs folded 1.020).
 - **Which plain-path whitelist.** The agent-fitness regex; the breaking-change lens accepted it so implementers apply one diff (its broader `^(\/|https?:\/\/)[\x21-\x2b\x2d-\x7e]*$` also measured 0/600,000).
-- **Status push/replace vs RFC-A-08's quoting.** URL fields are percent-encoded (security #3 replaces "sanitize, then quote"), after unwrapping a whole HCON token, because RFC-A-08's verdict keeps whole tokens at their 8.1.0 meaning. Probe `scratchpad/wave4/S1/prequoted-url.mjs`: a pre-quoted `"/ok"` reads `/ok` on 8.1.0 and under the reconciled contract on both bundles, but `%22/ok%22` under encode-only; a pre-quoted `"js:alert(1)"` becomes `about:blank` instead of passing as `%22js:…%22`. Probe `status-contract-b.mjs`: 20,000/20,000 configs round-trip on beta6 and 4.0.0 HCON, 0 key mismatches.
+- **Status push/replace vs RFC-A-08's quoting.** URL fields are percent-encoded (security #3 replaces "sanitize, then quote"), after unwrapping a whole HCON token, because RFC-A-08's verdict keeps whole tokens at their 8.1.0 meaning. Probe [`prequoted-url.mjs`](../70-artifacts/probes/wave4/S1/prequoted-url.mjs): a pre-quoted `"/ok"` reads `/ok` on 8.1.0 and under the reconciled contract on both bundles, but `%22/ok%22` under encode-only; a pre-quoted `"js:alert(1)"` becomes `about:blank` instead of passing as `%22js:…%22`. Probe `status-contract-b.mjs`: 20,000/20,000 configs round-trip on beta6 and 4.0.0 HCON, 0 key mismatches.
 - **String() coercion** also covers the `location(config)` path: the same rule at the sixth new call site (the lens measured the other 5).
 
 ### Not adopted
@@ -738,7 +739,7 @@ None.
 
 ---
 
-## RFC-A-06: JSON-typed script bodies carry no '<': the serializer writes every '<' as < for importmap, speculationrules and every JSON MIME type
+## RFC-A-06: JSON-typed script bodies carry no '<': the serializer writes every '<' as \u003c for importmap, speculationrules and every JSON MIME type
 
 **Lane:** 8.1.x · **Enforcement:** runtime (serializer) · **Guideline Δ:** 0
 
@@ -770,7 +771,7 @@ function scriptCtx(tag: Tag): 'script' | 'json' {
 }
 ```
 
-Traversal, in both loops (`emitChunks` at `:344`, `emit` at `:430`): `childCtx` becomes `el === 'script' ? scriptCtx(v) : el === 'style' ? 'style' : c`. The RawString arm (`:329`, `:409`) becomes `c === 'escape' || c === 'raw' ? v.html : sanitizeRawContent(v.html, c)`. The parked comment at `:205` is replaced by two lines: a JSON body has the byte-safe transform JS lacks, because `<` can only sit inside a JSON string, where `<` parses to the same value.
+Traversal, in both loops (`emitChunks` at `:344`, `emit` at `:430`): `childCtx` becomes `el === 'script' ? scriptCtx(v) : el === 'style' ? 'style' : c`. The RawString arm (`:329`, `:409`) becomes `c === 'escape' || c === 'raw' ? v.html : sanitizeRawContent(v.html, c)`. The parked comment at `:205` is replaced by two lines: a JSON body has the byte-safe transform JS lacks, because `<` can only sit inside a JSON string, where `\u003c` parses to the same value.
 
 The type matcher is widened to the WHATWG JSON MIME definition so code and prose agree (V-RFC-A-06-combined #4; see Reconciled).
 
@@ -778,7 +779,7 @@ The type matcher is widened to the WHATWG JSON MIME definition so code and prose
 
 | Body | Output |
 |---|---|
-| JSON-typed (`importmap`, `speculationrules`, `application/json`, `text/json`, any `*/*+json`; set by `setType`, else the attribute bag) | every `<` in a string or `Raw` child becomes `<`; nothing else changes; no separate closer rule is needed because no `<` survives. A `Tag` child (reachable only through `El("script", Tag)`, 0 fleet sites) still emits its own markup, as on 8.1.0. |
+| JSON-typed (`importmap`, `speculationrules`, `application/json`, `text/json`, any `*/*+json`; set by `setType`, else the attribute bag) | every `<` in a string or `Raw` child becomes `\u003c`; nothing else changes; no separate closer rule is needed because no `<` survives. A `Tag` child (reachable only through `El("script", Tag)`, 0 fleet sites) still emits its own markup, as on 8.1.0. |
 | JS-typed (no type, `module`, `text/javascript`, `application/javascript`) | closer-only, byte-identical |
 | non-JSON data block (`text/x-template`, `application/jsonp`) | closer-only, byte-identical |
 | `Style` | closer-only, byte-identical |
@@ -799,7 +800,7 @@ Pins 1-4 and 7 fail on the 8.1.0 serializer; 5 and 6 guard the JS and stream pat
 
 ### Docs
 
-`REFERENCE.md:1402` (net 0): "Script and Style elements are intentionally **not escaped** (they contain code, not user content):" becomes "Script and Style bodies are not HTML-escaped (they contain code). A closing `</script`/`</style` is neutralized, and a JSON-typed script (`application/json`, `text/json`, any `+json` subtype, `importmap`, `speculationrules`) gets every `<` written as `<`, which parses to the same value:". CHANGELOG 8.1.1 Security entry.
+`REFERENCE.md:1402` (net 0): "Script and Style elements are intentionally **not escaped** (they contain code, not user content):" becomes "Script and Style bodies are not HTML-escaped (they contain code). A closing `</script`/`</style` is neutralized, and a JSON-typed script (`application/json`, `text/json`, any `+json` subtype, `importmap`, `speculationrules`) gets every `<` written as `\u003c`, which parses to the same value:". CHANGELOG 8.1.1 Security entry.
 
 ### Measured
 
@@ -807,7 +808,7 @@ Pins 1-4 and 7 fail on the 8.1.0 serializer; 5 and 6 guard the JS and stream pat
 - parse5 7.3.0 oracle fuzz (30,000 trees): JSON-typed n=18,752, parse-identical 15,001 to 18,752, `<` left 0; JS-typed 0/11,248 byte diffs. RFC fuzz (100,000 trees): 61,333/61,333 parse-identical, 0/38,667 non-JSON renders differ.
 - Lib list 2165/2165 patched; the base build fails exactly the 4 RFC pins named above. Template scaffold 403/403 both ways; with the helper dropped, 402/403 on 8.1.0 (the `seo-meta` guard fails) and 403/403 patched; na-cent 1045/1045.
 - Agent and fleet helpers stay byte-identical (5 agent shapes 5,000/5,000; fleet helper 10,000/10,000).
-- Type matcher (probe `<scratch>/wave4/S2/jsonre.mjs`): widened regex matches 0/19 JavaScript MIME types, 13/13 JSON spellings, 3/3 `model`/`image`/`font` `+json` types and 0 of `text/x-template`, `application/jsonp`, `application/json-seq`, `text/plain`, `application/x-json5`, `text/html`; the RFC regex missed the 3 non-application/text `+json` types.
+- Type matcher (probe [`jsonre.mjs`](../70-artifacts/probes/wave4/S2/jsonre.mjs)): widened regex matches 0/19 JavaScript MIME types, 13/13 JSON spellings, 3/3 `model`/`image`/`font` `+json` types and 0 of `text/x-template`, `application/jsonp`, `application/json-seq`, `text/plain`, `application/x-json5`, `text/html`; the RFC regex missed the 3 non-application/text `+json` types.
 
 ### Guardrail 2 (V-RFC-A-06-combined #5)
 
@@ -1043,14 +1044,14 @@ CHANGELOG 8.1.1 Fixed entry (below).
 ### Measured
 
 - Status rows × 4 bundles (a7, b4, b6, ga): 8.1.0 28/60, the change 60/60.
-- Round trip, property restated so a whole token is expected back unwrapped (V-RFC-A-08-combined #5): 8.1.0 5,738/20,000; RFC as written 19,845; whole-token passthrough 20,000. The reconciled serializer above (RFC-A-05's URL step and the empty gate included): 20,000/20,000 on the beta6 and 4.0.0 HCON sources, 0 key mismatches, forms 5,703 bare / 9,871 quoted / 4,426 JSON (`scratchpad/wave4/S1/status-contract-b.mjs`). 0 attribute breakouts.
+- Round trip, property restated so a whole token is expected back unwrapped (V-RFC-A-08-combined #5): 8.1.0 5,738/20,000; RFC as written 19,845; whole-token passthrough 20,000. The reconciled serializer above (RFC-A-05's URL step and the empty gate included): 20,000/20,000 on the beta6 and 4.0.0 HCON sources, 0 key mismatches, forms 5,703 bare / 9,871 quoted / 4,426 JSON ([`status-contract-b.mjs`](../70-artifacts/probes/wave4/S1/status-contract-b.mjs)). 0 attribute breakouts.
 - Fleet: 221/226 entries byte-identical; the 5 that change are planet-positive-sport `swap: "outerMorph scroll:top"` (`src/loc/events/events.view.ts:401,545,657`, `src/loc/events/views/report-content.view.ts:76`, `src/admin/events/events.view.ts:357`), each a fix. Fleet test pins 14/14 bare; the template's 3 pinned bags byte-identical.
 - Pure prior: the RFC's runs 2/6 → 6/6 intended; the verdict's 6 fresh runs 0/6 → 6/6, including 3/3 comma selects written by agents avoiding spaces on purpose.
 - Cost: bare shape 0.937 of 8.1.0 on a page of 100 status bags (about 36 ns per bag); `bench/render.ts` holds 0 status bags.
 
 ### Reconciled
 
-- **Open question 2, empty `push`/`replace`: gate, not alignment.** The 8.1.x lane allows byte changes only to fix what never worked. A lone `push: ""` emits `push:` on 8.1.0, which both HCONs parse to `{}`, so the element's `hx-push-url` applies (`/r`, 4/4); the alignment would flip that to `/` (4/4). The gate emits `""`, which both HCONs also parse to `{}`, so the lone case keeps its 8.1.0 effect, while `push: "", replace: "/r"` emits `replace:/r` where 8.1.0's `push: replace:/r` parsed as `{push:"replace:/r"}` (a swallowed pair that never worked). Probe `scratchpad/wave4/S1/status-contract.mjs`. 0 fleet sites either way.
+- **Open question 2, empty `push`/`replace`: gate, not alignment.** The 8.1.x lane allows byte changes only to fix what never worked. A lone `push: ""` emits `push:` on 8.1.0, which both HCONs parse to `{}`, so the element's `hx-push-url` applies (`/r`, 4/4); the alignment would flip that to `/` (4/4). The gate emits `""`, which both HCONs also parse to `{}`, so the lone case keeps its 8.1.0 effect, while `push: "", replace: "/r"` emits `replace:/r` where 8.1.0's `push: replace:/r` parsed as `{push:"replace:/r"}` (a swallowed pair that never worked). Probe [`status-contract.mjs`](../70-artifacts/probes/wave4/S1/status-contract.mjs). 0 fleet sites either way.
 - **URL fields: percent-encode, not quote** (V-RFC-A-05-security-escape #3 replaces "sanitize, then quote"). It keeps every URL field bare, so a URL never forces the JSON form, and a status push of `/ok?tab=a b` pushes `/ok?tab=a%20b` on both bundles (12/12). A whole token is unwrapped first, so a pre-quoted `"/ok"` keeps its 8.1.0 reading (see RFC-A-05 Reconciled).
 
 ### Not adopted
@@ -1195,7 +1196,7 @@ The case-insensitive method test keeps the attribute-name closure: `"get x"` is 
 
 ### Reconciled
 
-1. **Guard condition.** V-RFC-B-01-breaking-change #1 asks `htmx != null`; V-RFC-B-01-runtime-contract #1 and V-RFC-B-01-type-safety #3 ask `if (htmx)`, mirroring `serialize.ts:262` (`if (thx)`). Chosen: `if (htmx)`. Probe `<scratch>/wave4/S2/gate-probe.mjs` on the real 8.1.0 dist: `setHtmx(false)` and `setHtmx(0)` render `<a>x</a>` (a working clear); `!= null` throws on both, truthiness passes both, and both guards pass `null`.
+1. **Guard condition.** V-RFC-B-01-breaking-change #1 asks `htmx != null`; V-RFC-B-01-runtime-contract #1 and V-RFC-B-01-type-safety #3 ask `if (htmx)`, mirroring `serialize.ts:262` (`if (thx)`). Chosen: `if (htmx)`. Probe [`gate-probe.mjs`](../70-artifacts/probes/wave4/S2/gate-probe.mjs) on the real 8.1.0 dist: `setHtmx(false)` and `setHtmx(0)` render `<a>x</a>` (a working clear); `!= null` throws on both, truthiness passes both, and both guards pass `null`.
 2. **Endpoint test.** V-RFC-B-01-breaking-change #2 asks `endpoint != null`; V-RFC-B-01-runtime-contract #3 asks `typeof endpoint === "string" || endpoint instanceof String`. Chosen: `endpoint != null && typeof endpoint !== "function"`. Same probe: the runtime-contract test throws on a URL-object endpoint, which renders `hx-get="https://example.com/team"` and sends GET in both bundles (V-RFC-B-01-breaking-change), a lane violation; the breaking-change test passes a function endpoint (uncalled `hxGet(routes.x)`), which renders the callable's source into `hx-get` and never worked. The chosen test passes all 7 working shapes (valid, GET, POST, URL, String, null, false) and throws on all 5 never-worked shapes (string spread, uncalled-callable spread, function endpoint, `"get x"`, OOB-only cast).
 3. **Method set.** V-RFC-B-01-type-safety #5 asks `Record<HxHttpMethod, true>` plus `Object.hasOwn`. The lib compiles with `lib: ["ES2020"]` (`tsconfig.json:5-7`), where `Object.hasOwn` is TS2550 (probe `wave4/S2/hasown.ts`). Chosen: `Object.prototype.hasOwnProperty.call` over the `Record`; a widened `HxHttpMethod` still fails as TS2741 in the same probe, which is the drift guard the lens asked for.
 4. **Hint wording.** V-RFC-B-01-type-safety #1 states the page stance as render "page" or nothing; V-RFC-B-01-agent-fitness #1 gives measured per-family sentences (rfc3). Chosen: the measured sentences, which state the same stance without spelling `render: "page"`, which `guidelines/web-development/CLAUDE.md:262` calls a second way to say silence. `.poll` drops ", y the target" as V-RFC-B-01-agent-fitness #1 requires.
@@ -1590,7 +1591,7 @@ export function setClassMerge(theme: ThemeSpec | false): void;
 ### Semantics (serialize time, one element's `class`)
 1. **Tokenize** on `/[\t\n\f\r ]/`, as HTML does; output is joined with single spaces (V-RFC-A-09-correctness #3). Measured defect closed: `setClass("p-4\tbg-surface").p("6")` emitted `p-6` and lost `bg-surface`.
 2. **Classify.** Key = variant chain (`md:hover:`, `data-[state=open]:`, bracket-aware) + family id. A family is the oracle rule's selector shape plus its **exact** CSS property set (Tailwind 4.3.3); no nested property-set fold (V-RFC-A-09-correctness #1, V-RFC-A-09-runtime-contract #1).
-3. **Sub-families and cover.** A class whose property set is a strict subset of its root's full family gets its own sub-family id (`text-[len]` / `text-[num]` and custom fontSize tokens = font-size; `scale-[…]` = scale). A generated `COVERS` table maps full family → covered sub-family. A kept full-family class also marks its covered sub-family as seen, in both passes; a sub-family class never removes a full-family class (V-RFC-A-09-runtime-contract #1, #3). Results (probe `scratchpad/wave4/S3/a09-direction.mjs`): `text-[13px] text-sm` → `text-sm`; `text-sm text-[13px]`, `text-xs text-[11px]`, `text-lg text-display` emitted as written; `scale-[3] scale-4` → `scale-4`; `scale-4 scale-[3]` as written.
+3. **Sub-families and cover.** A class whose property set is a strict subset of its root's full family gets its own sub-family id (`text-[len]` / `text-[num]` and custom fontSize tokens = font-size; `scale-[…]` = scale). A generated `COVERS` table maps full family → covered sub-family. A kept full-family class also marks its covered sub-family as seen, in both passes; a sub-family class never removes a full-family class (V-RFC-A-09-runtime-contract #1, #3). Results (probe [`a09-direction.mjs`](../70-artifacts/probes/wave4/S3/a09-direction.mjs)): `text-[13px] text-sm` → `text-sm`; `text-sm text-[13px]`, `text-xs text-[11px]`, `text-lg text-display` emitted as written; `scale-[3] scale-4` → `scale-4`; `scale-4 scale-[3]` as written.
 4. **Last write wins** per family; survivors keep their written order. Exact duplicates collapse only for classified tokens (`js-a js-a` stays) (V-RFC-A-09-correctness #4).
 5. **Words.** On a single-family root a word value classifies only when it is digit-first or a fraction, a `(--var)`, a registered theme token, or in a generated per-root oracle word allowlist (V-RFC-A-09-correctness #2). `cssClass("h-captcha").h("12")` and `.rounded("card").cssClass("rounded-foo")` keep both classes (as written, 92 of 131 roots classified any word).
 6. **Never merged:** `hidden` (carved out of the display family), cross-prefix pairs (`px-6 py-3 p-2` stays; stylesheet-resolved per L-036), important classes (`!p-4`, `p-4!`), unregistered tokens, a token registered in two namespaces that share a prefix.
@@ -1640,7 +1641,7 @@ Each app adds the line in a commit that carries its re-render delta audit from i
 Default-on is a guardrail-11 breaking change with measured visible deltas in live repos (competify 4 including the line-height loss the family fix removes, fl-um 1, everyframe-composer 22). Codemod: insert `setClassMerge(false)` at boot, or run the per-repo audit; dry run on the template plus one live repo; re-census `toggleClass` / `feedback.class` sites first (today 0) (V-RFC-A-09-breaking-change #5, V-RFC-A-09-runtime-contract #6). Lib churn of the flip: 1/2159 tests (`dev-checks.test.ts`).
 
 ### Reconciled
-1. **Family fix.** V-RFC-A-09-correctness #1 (delete the `peer` fold so nested sets become separate families) vs V-RFC-A-09-runtime-contract #1-#3 (sub-families + `COVERS` + asymmetric cover). Chosen: asymmetric cover, keeping correctness #1's test expectation and pair gate. Probe `scratchpad/wave4/S3/a09-direction.mjs` (both verdict prototypes, 4.3.3 oracle): both keep `text-xs text-[11px]` and `text-sm text-[13px]`; on `text-[13px] text-sm` the oracle orders `text-[13px]`@1 after `text-sm`@0, so 8.1.0 and the correctness variant (both classes kept) render the earlier 13px and lose the later write, while asymmetric cover emits `text-sm`; on `text-lg text-display` (a font-size-only custom token) the correctness variant emits `text-display` and drops `text-lg`'s line-height, asymmetric cover keeps both. Both variants measure 0 lossy pairs and 108/108 dead pairs.
+1. **Family fix.** V-RFC-A-09-correctness #1 (delete the `peer` fold so nested sets become separate families) vs V-RFC-A-09-runtime-contract #1-#3 (sub-families + `COVERS` + asymmetric cover). Chosen: asymmetric cover, keeping correctness #1's test expectation and pair gate. Probe [`a09-direction.mjs`](../70-artifacts/probes/wave4/S3/a09-direction.mjs) (both verdict prototypes, 4.3.3 oracle): both keep `text-xs text-[11px]` and `text-sm text-[13px]`; on `text-[13px] text-sm` the oracle orders `text-[13px]`@1 after `text-sm`@0, so 8.1.0 and the correctness variant (both classes kept) render the earlier 13px and lose the later write, while asymmetric cover emits `text-sm`; on `text-lg text-display` (a font-size-only custom token) the correctness variant emits `text-display` and drops `text-lg`'s line-height, asymmetric cover keeps both. Both variants measure 0 lossy pairs and 108/108 dead pairs.
 2. **views.md line count.** V-RFC-A-09-correctness #7 says -6; V-RFC-A-09-agent-fitness #3 measured -5 (9 out, 4 in) and V-RFC-A-09-breaking-change #1 defers to that count. Chosen -5, the line count of the final tested text.
 3. **views.md wording.** V-RFC-A-09-breaking-change #1 gives an example ending "If `buildServer` and `tests/setup.swap-verbs.ts` lack it, add it there" and says to reuse the agent-fitness tested text. Chosen: the tested text (OFFC 3/3 and ONC 2/2 rendered 5/5). The "add it there" clause is not adopted: breaking-change #3 requires every app opt-in to carry a property-aware delta audit, which an agent following a guideline mid-task would skip. The 8.2.0 floor is carried by the lockstep order instead.
 4. **Raw-sink content.** V-RFC-A-09-runtime-contract #7 offers "supersede :89, or exempt cssClass content". Chosen: supersede with the narrowing V-RFC-A-09-correctness #6 states; exempting `cssClass` would need separate class storage, since `cssClass` writes `_class` through `addClass`.
@@ -2087,7 +2088,7 @@ It throws when every row holds (HTML's selectedness-setting and placeholder-labe
 | no option `selected` | an explicit selection is a choice |
 | the first enabled option (itself and its `optgroup`) has a non-empty value (`value`, else collapsed text) | Chromium and Firefox preselect it, and `required` never fires |
 
-Messages, verbatim from the Wave 4 build (`<scratch>/wave4/E/e02s`):
+Messages, verbatim from the Wave 4 build (a Wave 4 prototype build of fluent-html, not preserved):
 
 - `<select name="thesisType" required> has no empty-value placeholder and nothing selected, so the browser preselects "MASTERS": required never fires and an untouched submit posts "MASTERS". Lead the options with { value: "", label: "Choose…" } (f.select) or Option("Choose…").setValue("") (Select). If "MASTERS" is the intended default, bind it (Form values: { thesisType: "MASTERS" }) or mark its option selected.`
 - `<select name="s" required> has a disabled placeholder that is not selected, so Chromium and Firefox skip it and preselect "c1": required never fires and an untouched submit posts "c1". Mark the placeholder selected (Option("Choose…").setValue("").toggle("disabled").toggle("selected")), or drop its disabled. If "c1" is the intended default, bind it (Form values: { s: "c1" }) or mark its option selected.`
@@ -2113,7 +2114,7 @@ Executed on the Wave 4 build: 8 of 34 rows throw (the 6 R shapes, `values: {}`, 
 
 - **A green view suite does not clear the upgrade:** the check fires only on a rendered page. Static search: an `f.select(...)` or `Select(...)` carrying `.toggle("required")`, binding nothing, whose first option value is not `""`.
 - **The 8 canonical required `f.select` sites** (`census-sites.json`): 2 throw on every render, both gzs/stem-50: `src/app/admin/faculties/views/faculties.form.view.ts:78` (`universityId`, 10 view tests) and `src/app/thesis/views/thesis.new.view.ts:47` (`thesisType`, `values: {}`, served at GET `/thesis/new`, rendered only by `tests/integration/thesis-create-verified.test.ts:78`). 1 binds a deliberate default (sportoawards `sign-up.form.view.ts:49`) and renders; 5 are `""`-led or bound and render.
-- **Executed on the Wave 4 build, gzs/stem-50 at HEAD** (`<scratch>/wave4/E/ws50`): view suite 555/566, the 10 faculties tests plus an added `ThesisNewPage` render, each failing with the message above. The scoped check throws on a subset of the cases the RFC prototype threw on (guard 1 removed, guard 2 narrowed), so the RFC's other suites keep their 0 flags without a re-run (popri's 1 failure predates both; the template full-stack suite flagged 0).
+- **Executed on the Wave 4 build, gzs/stem-50 at HEAD** (a Wave 4 copy of gzs/stem-50 on the prototype, not preserved): view suite 555/566, the 10 faculties tests plus an added `ThesisNewPage` render, each failing with the message above. The scoped check throws on a subset of the cases the RFC prototype threw on (guard 1 removed, guard 2 narrowed), so the RFC's other suites keep their 0 flags without a re-run (popri's 1 failure predates both; the template full-stack suite flagged 0).
 - 2/2 withheld-context upgrade agents fixed the select the tests flagged, reported green and left `/thesis/new` throwing (V-RFC-E-02-agent-fitness), which is why the CHANGELOG names the search.
 
 ### Measured
@@ -2218,7 +2219,7 @@ The RFC's "0 select sites through generic helpers" is wrong: competition `src/ap
 
 ### Measured
 
-- **Incident on the array-only signature** (Wave 4, `<scratch>/wave4/E/e04a`, TypeScript 6.0.3, competify at `e7448d0^`): 1 error, `src/app/organise/views/organise.ideas.view.ts(108,7): error TS2322: Type '{ value: "DRAFT" | "SUBMITTED" | "SCREENED" | "RETURNED"; label: string; }' is not assignable to type 'SelectOption<"" | "DRAFT" | "SUBMITTED">'.`, last line `Type '"SCREENED"' is not assignable to type '"" | "DRAFT" | "SUBMITTED"'.`: identical to the union signature (V-RFC-E-04-guardrails #1).
+- **Incident on the array-only signature** (Wave 4, a Wave 4 prototype build, not preserved, TypeScript 6.0.3, competify at `e7448d0^`): 1 error, `src/app/organise/views/organise.ideas.view.ts(108,7): error TS2322: Type '{ value: "DRAFT" | "SUBMITTED" | "SCREENED" | "RETURNED"; label: string; }' is not assignable to type 'SelectOption<"" | "DRAFT" | "SUBMITTED">'.`, last line `Type '"SCREENED"' is not assignable to type '"" | "DRAFT" | "SUBMITTED"'.`: identical to the union signature (V-RFC-E-04-guardrails #1).
 - **Fleet break on the array-only signature** (Wave 4 `tscdiff-a.sh`, each repo's own tsc, 8.1.0 vs array-only, new errors only): 0 new errors in all 16 units (15 canonical repos and `templates/full-stack` at HEAD); pre-existing errors workshop-toni 3, template 154, every other repo 0.
 - **RFC, array arm (unchanged by the cut):** positives 0 errors on 5.9.3, 6.0.3 and `--exactOptionalPropertyTypes`; lib 2159/2159; select bench within noise (array path 38 vs base 41-45 us/form, 412 options); type cost on website-sales-funnel +0.19% instantiations; synthetic 300 array selects +57 instantiations and +0.3 ms per call.
 - **Coverage at HEAD** (V-RFC-E-04-agent-fitness `coverage.cjs`): 73 `f.select` sites in 11 canonical repos plus the template; 46 bind a closed field; the check reaches 32 (inline arrays 17/17, hoisted identifiers 12/21, helper calls 3/8); 14 stay open: website-sales-funnel `deals:549`, `:555`, `contacts:512`, `segments:309`, `pipeline.jobs:66`, `:67`; na-cent `event-log:71`, `users:104`, `:188`, `account:101`; gzs/stem-50 `thesis.new:47`, `thesis.sections:157`, `:368`; fl-um `redaction.settings:171`. `as const` closes such a list in 2 tokens (website-sales-funnel `contacts.view.ts:502`, then a stale `UNSUBSCRIBED` is rejected).
@@ -2417,7 +2418,7 @@ The 423 hand-written pairs are folded by a receiver-checked codemod, not by the 
 
 `codemod:size-fold` over `templates/web` (17 sites, including the `AVATAR_BOX` map at `src/shared/components.ts:64-70`) and `templates/full-stack` (7), then `prefer-size` on through the recommended config; both templates lint with `eslint . --max-warnings=0` (`templates/web/package.json:26`, `templates/full-stack/package.json:33`), so `warn` blocks.
 
-### Diagnostics (Wave 4, `<scratch>/wave4/E/e08r`, TypeScript 5.9.3 and 6.0.3)
+### Diagnostics (Wave 4, a Wave 4 prototype build, not preserved, TypeScript 5.9.3 and 6.0.3)
 
 | Guess | 8.1.0 | 8.2.0 |
 |---|---|---|
