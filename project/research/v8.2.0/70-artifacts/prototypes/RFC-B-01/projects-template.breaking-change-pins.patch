@@ -1,0 +1,50 @@
+diff --git a/tests/define-controller-compile.test.ts b/tests/define-controller-compile.test.ts
+index 49eb915..7b4a48c 100644
+--- a/tests/define-controller-compile.test.ts
++++ b/tests/define-controller-compile.test.ts
+@@ -30,6 +30,29 @@ const bareConfig: SetupConfig = {
+ };
+ 
+ const PROBES: Record<string, string> = {
++  "probe-nav-raw-path.ts": `
++import { A } from "fluent-html";
++import "../core/htmx/swap-verbs.js";
++
++export const link = A("Team").nav("/team");
++`,
++  "probe-fragment-raw-path.ts": `
++import { defineIds, Span } from "fluent-html";
++import "../core/htmx/swap-verbs.js";
++
++const probeIds = defineIds(["probe41-panel"] as const);
++export const panel = Span("x").fragment(probeIds.probe41Panel, "/probe41/panel");
++`,
++  "probe-nav-uncalled-route.ts": `
++import { defineRoutes, A } from "fluent-html";
++import "../core/htmx/swap-verbs.js";
++
++const probeRoutes = defineRoutes("/probe42", {
++  page: { path: "/page", sitemap: "exclude" },
++} as const);
++
++export const link = A("Page").nav(probeRoutes.page);
++`,
+   "probe-missing-key.ts": `
+ import { defineRoutes } from "fluent-html";
+ import { defineController } from "../core/render/define-controller.js";
+@@ -1082,3 +1105,15 @@ describe("guarded() carries the guard chain into the handler's request", () => {
+     );
+   });
+ });
++
++describe("RFC-B-01 raw-route pins", () => {
++  it("a URL string handed to .nav names the route callable on line 1", () => {
++    expect(errorsOf("probe-nav-raw-path.ts")).toMatch(/^src\/compile-probes\/probe-nav-raw-path\.ts\(\d+,\d+\): error TS2345: .*"\.nav takes a route callable result such as routes\.x\(\) from defineRoutes/);
++  });
++  it("a fragment verb's URL string names it too", () => {
++    expect(errorsOf("probe-fragment-raw-path.ts")).toMatch(/^src\/compile-probes\/probe-fragment-raw-path\.ts\(\d+,\d+\): error TS2345: .*\.fragment takes a route callable result/);
++  });
++  it("an uncalled route callable names the same fix", () => {
++    expect(errorsOf("probe-nav-uncalled-route.ts")).toMatch(/^src\/compile-probes\/probe-nav-uncalled-route\.ts\(\d+,\d+\): error TS2345: .*an uncalled route/);
++  });
++});

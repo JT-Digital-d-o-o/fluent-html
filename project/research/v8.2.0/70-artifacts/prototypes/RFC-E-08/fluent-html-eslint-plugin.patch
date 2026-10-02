@@ -1,0 +1,119 @@
+diff --git a/src/index.ts b/src/index.ts
+index 079bd8b..05e11eb 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -8,6 +8,7 @@ import noSetclassAfterFluentModifier = require("./rules/no-setclass-after-fluent
+ import noSetclassInWhenApplyCallback = require("./rules/no-setclass-in-when-apply-callback");
+ import preferVariadicChildren = require("./rules/prefer-variadic-children");
+ import preferForeach = require("./rules/prefer-foreach");
++import preferSize = require("./rules/prefer-size");
+ import noConditionalInSetclass = require("./rules/no-conditional-in-setclass");
+ import noInnerHtmlSwap = require("./rules/no-innerhtml-swap");
+ import preferSetMethod = require("./rules/prefer-set-method");
+@@ -43,6 +44,7 @@ const plugin = {
+     "no-setclass-in-when-apply-callback": noSetclassInWhenApplyCallback,
+     "prefer-variadic-children": preferVariadicChildren,
+     "prefer-foreach": preferForeach,
++    "prefer-size": preferSize,
+     "no-conditional-in-setclass": noConditionalInSetclass,
+     "no-innerhtml-swap": noInnerHtmlSwap,
+     "prefer-set-method": preferSetMethod,
+@@ -85,6 +87,7 @@ const plugin = {
+         "fluent-html/no-setclass-in-when-apply-callback": "error",
+         "fluent-html/prefer-variadic-children": "warn",
+         "fluent-html/prefer-foreach": "warn",
++        "fluent-html/prefer-size": "warn",
+         "fluent-html/no-conditional-in-setclass": "warn",
+         "fluent-html/no-innerhtml-swap": "error",
+         "fluent-html/prefer-set-method": "warn",
+diff --git a/src/rules/prefer-size.ts b/src/rules/prefer-size.ts
+new file mode 100644
+index 0000000..28b2db8
+--- /dev/null
++++ b/src/rules/prefer-size.ts
+@@ -0,0 +1,85 @@
++import { Rule } from "eslint";
++
++// The fix target must exist in the installed fluent-html: the rule is inert before the size row ships.
++// Variant-taking methods come from the same vocab (tier-1 direct variants plus .variant(name, {...})).
++let vocab: { hasSize: boolean; variantMethods: Set<string> } | null = null;
++function loadVocab() {
++  if (vocab) return vocab;
++  try {
++    // eslint-disable-next-line @typescript-eslint/no-var-requires
++    const m = require("fluent-html/class-vocab");
++    vocab = { hasSize: m.classVocab.some((d: { method: string }) => d.method === "size"), variantMethods: new Set(["variant", ...Object.keys(m.DIRECT_VARIANTS)]) };
++  } catch { vocab = { hasSize: false, variantMethods: new Set() }; }
++  return vocab;
++}
++// size-screen is not a Tailwind class; an equal screen pair stays .w("screen").h("screen").
++const NO_SIZE = new Set(["screen"]);
++
++function methodName(n: any): string | null {
++  return n && n.type === "CallExpression" && n.callee.type === "MemberExpression" && !n.callee.computed && n.callee.property.type === "Identifier" ? n.callee.property.name : null;
++}
++function literalKey(args: any[]): string | null {
++  if (args.length === 1 && args[0].type === "Literal" && typeof args[0].value === "string") return NO_SIZE.has(args[0].value) ? null : `v:${args[0].value}`;
++  if (args.length === 2 && args[0].type === "Literal" && typeof args[0].value === "string" && args[1].type === "Literal" && typeof args[1].value === "number") return `u:${args[0].value}:${args[1].value}`;
++  return null;
++}
++function inVariantObject(obj: any): boolean {
++  let child = obj; let p = obj.parent;
++  while (p) {
++    if (p.type === "CallExpression") return p.arguments.includes(child) && loadVocab().variantMethods.has(methodName(p) ?? "");
++    if (p.type === "Property" && p.value === child && p.parent?.type === "ObjectExpression") { child = p.parent; p = child.parent; continue; }
++    return false;
++  }
++  return false;
++}
++
++const rule: Rule.RuleModule = {
++  meta: {
++    type: "suggestion",
++    docs: { description: "Prefer .size(x) over an equal .w(x).h(x) pair (Tailwind size-*)", category: "Best Practices", recommended: true },
++    fixable: "code",
++    messages: {
++      chain: 'Equal width and height: replace .{{first}}({{args}}).{{second}}({{args}}) with .size({{args}}). [autofix]',
++      object: 'Equal width and height in a variant object: replace w: {{value}}, h: {{value}} with size: {{value}}. [autofix]',
++    },
++    schema: [],
++  },
++  create(context) {
++    if (!loadVocab().hasSize) return {};
++    const src = context.sourceCode ?? context.getSourceCode();
++    return {
++      CallExpression(node: any) {
++        const outer = methodName(node);
++        if (outer !== "w" && outer !== "h") return;
++        const inner = node.callee.object;
++        const want = outer === "h" ? "w" : "h";
++        if (methodName(inner) !== want) return;
++        const a = literalKey(inner.arguments), b = literalKey(node.arguments);
++        if (!a || a !== b) return;
++        const args = inner.arguments.map((x: any) => src.getText(x)).join(", ");
++        context.report({
++          node: inner.callee.property, messageId: "chain", data: { first: want, second: outer, args },
++          fix: (f) => f.replaceTextRange([inner.callee.property.range[0], node.range[1]], `size(${args})`),
++        });
++      },
++      ObjectExpression(node: any) {
++        const props = node.properties.filter((p: any) => p.type === "Property" && !p.computed && p.key.type === "Identifier");
++        const pw = props.find((p: any) => p.key.name === "w"), ph = props.find((p: any) => p.key.name === "h");
++        if (!pw || !ph || pw.value.type !== "Literal" || ph.value.type !== "Literal" || typeof pw.value.value !== "string" || pw.value.value !== ph.value.value || NO_SIZE.has(pw.value.value)) return;
++        if (!inVariantObject(node)) return;
++        const value = src.getText(pw.value);
++        context.report({
++          node: pw, messageId: "object", data: { value },
++          fix: (f) => {
++            const all = node.properties; const i = all.indexOf(ph);
++            const start = i > 0 ? all[i - 1].range[1] : ph.range[0];
++            const end = i > 0 ? ph.range[1] : all[i + 1] ? all[i + 1].range[0] : ph.range[1];
++            return [f.replaceText(pw, `size: ${value}`), f.removeRange([start, end])];
++          },
++        });
++      },
++    };
++  },
++};
++
++export = rule;

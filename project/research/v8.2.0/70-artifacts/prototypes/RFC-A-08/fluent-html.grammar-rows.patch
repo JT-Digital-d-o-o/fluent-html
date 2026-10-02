@@ -1,0 +1,120 @@
+diff --git a/test/grammar/rows.mjs b/test/grammar/rows.mjs
+index 8901173..7345927 100644
+--- a/test/grammar/rows.mjs
++++ b/test/grammar/rows.mjs
+@@ -462,8 +462,114 @@ row("status/transition", ["HxStatusConfig.transition"], async (o) => {
+ row("status/spaced target", ["HxStatusConfig.target"], async (o) => {
+   const p = await o({ body: statusPage({ 422: { target: "closest form", swap: "outerHTML", push: false } }), routes: err422 });
+   await p.page.click("#go"); await p.settle();
++  expect(await p.text("#main")).toBe("main-old");
+   expect((await p.text("#form")) ?? "").toContain("FORM-ERR");
+-}, { known: { "*": F.status } });
++});
++const scrollBox = (status) => `<div id="box" style="height:200px;overflow:auto"><div style="height:2000px">old</div></div>` + render(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", target: "#box", swap: "innerHTML scroll:top", status })));
++const boxNew = '<div style="height:2000px">NEW</div>';
++row("status/swap modifier (control: main swap, 200)", ["SwapWithModifier:`${HxSwapStyle} ${SwapModifier}`"], async (o) => {
++  const p = await o({ body: scrollBox(undefined), routes: { "/r": { status: 200, body: boxNew } } });
++  await p.page.evaluate(() => { document.getElementById("box").scrollTop = 900; });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#box"), await p.page.evaluate(() => document.getElementById("box").scrollTop)]).toEqual(["NEW", 0]);
++});
++row("status/swap modifier", ["HxStatusConfig.swap"], async (o) => {
++  const p = await o({ body: scrollBox({ 422: { target: "#box", swap: "innerHTML scroll:top" } }), routes: { "/r": { status: 422, body: boxNew } } });
++  await p.page.evaluate(() => { document.getElementById("box").scrollTop = 900; });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#box"), await p.page.evaluate(() => document.getElementById("box").scrollTop)]).toEqual(["NEW", 0]);
++});
++row("status/swap modifier, outerMorph (planet-positive-sport shape)", ["HxStatusConfig.swap"], async (o) => {
++  const box = (t) => `<div id="box" style="height:200px;overflow:auto"><div style="height:2000px">${t}</div></div>`;
++  const p = await o({ body: box("old") + render(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", target: "#box", swap: "outerMorph scroll:top", status: { 422: { target: "#box", swap: "outerMorph scroll:top" } } }))), routes: { "/r": { status: 422, body: box("NEW") } } });
++  await p.page.evaluate(() => { document.getElementById("box").scrollTop = 900; });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#box"), await p.page.evaluate(() => document.getElementById("box").scrollTop)]).toEqual(["NEW", 0]);
++});
++row("status/swap timing modifier (collides with the swap key)", ["HxStatusConfig.swap", "SwapTimingValue:`swap:${DelayValue}`"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "innerHTML swap:100ms", push: false } }), routes: { "/r": { status: 422, body: '<div class="errors">FORM-ERR</div>' } } });
++  await p.page.click("#go"); await p.settle(); await p.page.waitForTimeout(250);
++  expect(await p.$("#form", (e) => e.innerHTML)).toBe('<div class="errors">FORM-ERR</div>');
++  expect(await p.text("#main")).toBe("main-old");
++});
++row("status/spaced select", ["HxStatusConfig.select"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "innerHTML", select: "form .errors", push: false } }), routes: { "/r": { status: 422, body: '<form id="form"><div class="errors">FORM-ERR</div></form>' } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.$("#form", (e) => e.innerHTML)).toBe('<div class="errors">FORM-ERR</div>');
++});
++row("status/comma select", ["HxStatusConfig.select"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "innerHTML", select: ".errors,.hint", push: false } }), routes: { "/r": { status: 422, body: '<div class="errors">E</div><div class="hint">H</div>' } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#form")).toBe("EH");
++});
++row("status/JSON form (a value holding a double quote)", ["HxStatusConfig.target"], async (o) => {
++  const body = `<div id="main">main-old</div><form id="form" data-k="a b">` + render(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", target: "#main", swap: "outerMorph", pushUrl: true, status: { 422: { target: `closest [data-k="a b"]`, swap: "outerHTML", push: false } } }))) + `</form>`;
++  const p = await o({ body, routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#main")).toBe("main-old");
++  expect((await p.text("#form")) ?? "").toContain("FORM-ERR");
++  expect(await p.page.evaluate(() => location.pathname)).toBe("/");
++});
++row("status/a value cannot inject a key", ["HxStatusConfig.replace"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "outerHTML", push: false, replace: "/q?x=1 target:#main swap:innerHTML" } }), routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#main")).toBe("main-old");
++  expect((await p.text("#form")) ?? "").toContain("FORM-ERR");
++});
++// ── adversary rows (V-RFC-A-08-combined) ─────────────────────────────────────
++row("adv/next target (typed helper next())", ["HxStatusConfig.target"], async (o) => {
++  const body = `<div id="main">main-old</div>` + render(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", target: "#main", swap: "outerMorph", status: { 422: { target: next(".errors"), swap: "innerHTML", push: false } } }))) + `<div class="errors">old</div>`;
++  const p = await o({ body, routes: { "/r": { status: 422, body: "NEXT-ERR" } } });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#main"), await p.text(".errors")]).toEqual(["main-old", "NEXT-ERR"]);
++});
++row("adv/JSON form keeps push string false", ["HxStatusConfig.push"], async (o) => {
++  const body = `<div id="main">main-old</div><form id="form" data-k="a b">` + render(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", target: "#main", swap: "outerMorph", pushUrl: true, status: { 422: { target: `closest [data-k="a b"]`, swap: "outerHTML", push: "false" } } }))) + `</form>`;
++  const p = await o({ body, routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#main"), (await p.text("#form")) ?? "", await p.page.evaluate(() => location.pathname)]).toEqual(["main-old", "FORM-ERR", "/"]);
++});
++row("adv/bare value holding a quote beside a quoted value", ["HxStatusConfig.select"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "closest form", swap: "outerHTML", select: '[data-x="1"]', push: false } }), routes: { "/r": { status: 422, body: '<div><form id="form" data-x="1"><div class="errors">SEL-ERR</div></form><p>junk</p></div>' } } });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#main"), (await p.text("#form")) ?? ""]).toEqual(["main-old", "SEL-ERR"]);
++});
++row("adv/transition modifier inside the status swap (worked by accident on 8.1.0)", ["HxStatusConfig.swap"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "outerHTML transition:true", push: false } }), routes: err422, scripts: `<script>window.__vt=0;const o=document.startViewTransition?.bind(document);if(o)document.startViewTransition=(c)=>{window.__vt++;return o(c)}</script>` });
++  await p.page.click("#go"); await p.settle(); await p.page.waitForTimeout(150);
++  expect([await p.text("#main"), (await p.text("#form")) ?? "", await p.page.evaluate(() => window.__vt)]).toEqual(["main-old", "FORM-ERR", 1]);
++});
++row("adv/pre-quoted double target inside the object (8.1.0 emits it verbatim)", ["HxStatusConfig.target"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: '"closest form"', swap: "outerHTML", push: false } }), routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#main"), (await p.text("#form")) ?? ""]).toEqual(["main-old", "FORM-ERR"]);
++});
++row("adv/pre-quoted single target inside the object", ["HxStatusConfig.target"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "'closest form'", swap: "outerHTML", push: false } }), routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#main"), (await p.text("#form")) ?? ""]).toEqual(["main-old", "FORM-ERR"]);
++});
++row("adv/pre-quoted select inside the object", ["HxStatusConfig.select"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "innerHTML", select: '"form .errors"', push: false } }), routes: { "/r": { status: 422, body: '<form id="form"><div class="errors">FORM-ERR</div></form>' } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.$("#form", (e) => e.innerHTML)).toBe('<div class="errors">FORM-ERR</div>');
++});
++row("adv/empty push string beside an element pushUrl", ["HxStatusConfig.push"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "outerHTML", push: "" } }), routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => location.pathname)).toBe("/r");
++});
++row("adv/wildcard 4xx with a spaced target", ["HxStatusConfig.target"], async (o) => {
++  const p = await o({ body: statusPage({ "4xx": { target: "closest form", swap: "outerHTML", push: false } }), routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#main"), (await p.text("#form")) ?? ""]).toEqual(["main-old", "FORM-ERR"]);
++});
++row("adv/swap modifier with a colon-bearing selector", ["HxStatusConfig.swap"], async (o) => {
++  const p = await o({ body: scrollBox({ 422: { target: "#box", swap: "innerHTML scroll:#box:top" } }), routes: { "/r": { status: 422, body: boxNew } } });
++  await p.page.evaluate(() => { document.getElementById("box").scrollTop = 900; });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#box"), await p.page.evaluate(() => document.getElementById("box").scrollTop)]).toEqual(["NEW", 0]);
++});
+ 
+ // ── Partial ──────────────────────────────────────────────────────────────────
+ row("partial/Id x2", ["Partial()#0:Id<N>,View,HxSwap"], async (o) => {

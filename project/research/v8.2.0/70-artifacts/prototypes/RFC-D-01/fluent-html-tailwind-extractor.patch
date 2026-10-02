@@ -1,0 +1,59 @@
+diff --git a/src/extract.ts b/src/extract.ts
+index 307634b..ea7e78f 100644
+--- a/src/extract.ts
++++ b/src/extract.ts
+@@ -206,7 +206,7 @@ function parseVariantValue(valueText: string): ParsedValue {
+  * are neither style keys nor tier-1 names are skipped silently — TypeScript
+  * already rejects them in real fluent code, so a match here is a same-named
+  * non-fluent call. Spreads and non-literal values on real style keys are
+- * reported unresolved (covered by `staticManifest`).
++ * reported unresolved (the default `onUnresolved: "error"` fails the build).
+  */
+ function extractVariantObjectBody(
+   body: string,
+@@ -251,7 +251,7 @@ const TIER1_CALL_RE = new RegExp(`\\.(${Object.keys(DIRECT_VARIANTS).join("|")})
+  * Extract variant-prefixed classes from object-variant calls — the tier-1
+  * methods and the generic `.variant(name, {…})` — including nested tier-1 keys
+  * (`.md({ hover: { shadow: "lg" } })` → `md:hover:shadow-lg`). Resolved
+- * literals only; dynamic values are reported unresolved (→ `staticManifest`).
++ * literals only; dynamic values are reported unresolved.
+  */
+ function extractVariantClasses(
+   content: string,
+diff --git a/src/safelist.ts b/src/safelist.ts
+index f2849c5..75b2b71 100644
+--- a/src/safelist.ts
++++ b/src/safelist.ts
+@@ -5,8 +5,8 @@
+  *
+  * This is the **existential** v4 piece: without it, every fluent-styled element
+  * renders unstyled with no build error. `onUnresolved` (default `"error"`) turns
+- * the v5 silent dynamic-arg miss into a build failure; `staticManifest` (from
+- * `defineTheme()`) covers tokens used behind variables.
++ * the v5 silent dynamic-arg miss into a build failure; `staticManifest` lists
++ * classes that no fluent call emits (a behavior option, a client script).
+  *
+  * @module
+  */
+@@ -27,8 +27,8 @@ export type ExtractorOptions = {
+    */
+   readonly onUnresolved?: UnresolvedPolicy;
+   /**
+-   * Classes known statically from the theme — always emitted, so tokens used
+-   * behind variables are still covered.
++   * Classes that no fluent call emits (a behavior option, a client script),
++   * always listed. It does not clear an unresolved call.
+    */
+   readonly staticManifest?: readonly string[];
+   /**
+@@ -55,8 +55,8 @@ function sanitize(tokens: Iterable<string>): { safe: string[]; rejected: string[
+ function formatUnresolved(unresolved: readonly UnresolvedCall[]): string {
+   const lines = unresolved.map((u) => `  ✗ unresolved .${u.method}(${u.argText})${u.file ? ` in ${u.file}` : ""}`);
+   return [
+-    `fluent-safelist: ${unresolved.length} fluent call(s) use a non-literal argument the scanner can't resolve.`,
+-    `A dropped class is invisible to Tailwind v4 (renders unstyled). Inline the literal, or add the token to staticManifest (defineTheme()).`,
++    `fluent-safelist: ${unresolved.length} fluent call(s) pass a non-literal argument; the scanner reads literals only, and a class it cannot read is missing from the CSS (Tailwind v4 renders it unstyled).`,
++    `Pass a literal, or branch with one literal per branch: .when(cond, t => t.bg("…")), .whenElse(cond, t => …, t => …), .whenMatch(value, { key: t => t.bg("…") }). An amount computed at runtime goes in .setStyle(). eslint rule fluent-html/no-dynamic-typed-styling-arg names the fix for each call.`,
+     ...lines,
+   ].join("\n");
+ }

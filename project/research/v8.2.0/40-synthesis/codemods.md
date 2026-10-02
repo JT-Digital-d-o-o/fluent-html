@@ -21,7 +21,7 @@ Additive by measurement: the array-only signature adds 0 new tsc errors in 16 un
 
 ## 9.0.0 tail: `codemod:form-values-9`
 
-`fluent-html/scripts/codemod/form-values-9.ts`, run as `npm run codemod:form-values-9 -- <tsconfig> [--dry]` (prototype `<scratch>/track-e/RFC-E-04/codemod9.py`). It keys on the 9.0.0 diagnostics, so it runs after installing 9.0.0.
+`fluent-html/scripts/codemod/form-values-9.ts`, run as `npm run codemod:form-values-9 -- <tsconfig> [--dry]` (prototype [`codemod9.py`](../70-artifacts/probes/track-e/RFC-E-04/codemod9.py)). It keys on the 9.0.0 diagnostics, so it runs after installing 9.0.0.
 
 ### Map
 

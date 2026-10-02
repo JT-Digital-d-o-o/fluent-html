@@ -1,0 +1,319 @@
+diff --git a/src/core/dev-checks.ts b/src/core/dev-checks.ts
+index e3e91c3..a2c780e 100644
+--- a/src/core/dev-checks.ts
++++ b/src/core/dev-checks.ts
+@@ -1,3 +1,5 @@
++import { htmxScriptPrefix } from "../render/escape.js";
++
+ /**
+  * Development-mode structural guards for the mutable builder.
+  *
+@@ -119,3 +121,30 @@ export function countParents(children: readonly unknown[]): void {
+     }
+   }
+ }
++
++const HTMX_SCRIPT_FIX = {
++  confirm: "Pass the message text.",
++  vals: "Pass an object (vals: { key: value }), or widen include to send a field's live value.",
++} as const;
++
++/**
++ * Throw when an htmx bag carries a `confirm` or string `vals` that htmx 4 would run as
++ * JavaScript. Production rendering neutralizes the same values instead (serialize.ts).
++ *
++ * @internal
++ */
++export function assertNoHtmxScript(
++  tag: { el: string },
++  htmx: { confirm?: unknown; vals?: unknown },
++  method: string,
++): void {
++  for (const key of ["confirm", "vals"] as const) {
++    const value = htmx[key];
++    const prefix = typeof value === "string" ? htmxScriptPrefix(value) : null;
++    if (prefix === null) continue;
++    throw new Error(
++      `<${tag.el}>.${method}() got hx-${key} starting with "${prefix}", which htmx 4 runs as ` +
++        `JavaScript, and fluent-html emits no inline JS. ${HTMX_SCRIPT_FIX[key]}`,
++    );
++  }
++}
+diff --git a/src/core/tag.ts b/src/core/tag.ts
+index 2b01bad..6772728 100644
+--- a/src/core/tag.ts
++++ b/src/core/tag.ts
+@@ -1,5 +1,5 @@
+ import { setDiscriminant } from "./proto.js";
+-import { devChecks, assertMutable, countParents } from "./dev-checks.js";
++import { devChecks, assertMutable, assertNoHtmxScript, countParents } from "./dev-checks.js";
+ import type { ResolvedSchemaKey } from "./proto.js";
+ import type { HTMX } from "../htmx.js";
+ import type { Id, Rooted } from "../ids.js";
+@@ -636,7 +636,10 @@ export class Tag {
+    * outside the class body and so cannot write the private field directly.
+    */
+   _setHx(htmx: HTMX | undefined, method: string): this {
+-    if (devChecks) assertMutable(this, method);
++    if (devChecks) {
++      assertMutable(this, method);
++      if (htmx !== undefined) assertNoHtmxScript(this, htmx, method);
++    }
+     this._htmx = htmx;
+     return this;
+   }
+diff --git a/src/patterns.ts b/src/patterns.ts
+index ccf50d6..11493d8 100644
+--- a/src/patterns.ts
++++ b/src/patterns.ts
+@@ -12,6 +12,7 @@ import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
+ import type { Id, Rooted } from "./ids.js";
+ import { isId } from "./ids.js";
+ import { render } from "./render/render.js";
++import { sanitizeUrl } from "./render/escape.js";
+ 
+ // HTTP header values must be Latin-1 — Node's setHeader throws ERR_INVALID_CHAR on
+ // any character above U+00FF (routine in non-English detail payloads: š, č, emoji,
+@@ -239,7 +240,7 @@ export class HxResponse {
+    * hxResponse(content).pushUrl("/items/123")
+    */
+   pushUrl(url: string): this {
+-    this._headers["HX-Push-Url"] = url;
++    this._headers["HX-Push-Url"] = sanitizeUrl(url);
+     return this;
+   }
+ 
+@@ -249,7 +250,7 @@ export class HxResponse {
+    * @param url - URL to replace with (use "false" to prevent)
+    */
+   replaceUrl(url: string): this {
+-    this._headers["HX-Replace-Url"] = url;
++    this._headers["HX-Replace-Url"] = sanitizeUrl(url);
+     return this;
+   }
+ 
+@@ -262,7 +263,7 @@ export class HxResponse {
+    * hxResponse(Empty()).redirect("/login")
+    */
+   redirect(url: string): this {
+-    this._headers["HX-Redirect"] = url;
++    this._headers["HX-Redirect"] = sanitizeUrl(url);
+     return this;
+   }
+ 
+@@ -321,10 +322,13 @@ export class HxResponse {
+    * })
+    */
+   location(config: string | HxLocationConfig): this {
++    // Always the object form: htmx reads a bare string with whitespace, a comma or a `path:`
++    // key as HCON config (beta6 htmx.js:688, 4.0.0 htmx.js:657), so a string is a path only here.
+     if (typeof config === 'string') {
+-      this._headers["HX-Location"] = config;
++      this._headers["HX-Location"] = toHeaderSafeJson({ path: sanitizeUrl(config) });
+     } else {
+-      this._headers["HX-Location"] = toHeaderSafeJson(config);
++      const path = sanitizeUrl(config.path);
++      this._headers["HX-Location"] = toHeaderSafeJson(path === config.path ? config : { ...config, path });
+     }
+     return this;
+   }
+diff --git a/src/render/escape.ts b/src/render/escape.ts
+index 0099102..0c4427f 100644
+--- a/src/render/escape.ts
++++ b/src/render/escape.ts
+@@ -60,9 +60,10 @@ const SAFE_DATA_URL_RE =
+ /**
+  * Neutralize a URL that would execute script or load an attacker-authored
+  * document when placed in a navigable/loadable attribute (`href`, `src`,
+- * `action`, `formaction`, `data`, `poster`, `cite`). `javascript:` and
+- * `vbscript:` are always blocked; `data:` is blocked except for non-scriptable
+- * media types. Relative URLs, fragments, query refs, protocol-relative
++ * `action`, `formaction`, `data`, `poster`, `cite`) or handed to htmx (the
++ * request endpoint, push/replace URLs, the `HxResponse` URL headers).
++ * `javascript:`, `vbscript:` and htmx 4's `js:` are always blocked; `data:` is
++ * blocked except for non-scriptable media types. Relative URLs, fragments, query refs, protocol-relative
+  * `//host`, and ordinary `http(s)`/`mailto`/`tel` values pass through unchanged.
+  *
+  * Returns the original string when safe, or `"about:blank"` when blocked.
+@@ -76,17 +77,35 @@ export function sanitizeUrl(url: string): string {
+   // preceded by '/', '?' or '#' is a path/query/fragment colon, not a scheme.
+   const colon = url.indexOf(":");
+   if (colon === -1) return url;
++  let clean = true;
+   for (let i = 0; i < colon; i++) {
+     const c = url.charCodeAt(i);
+     if (c === 47 || c === 63 || c === 35) return url; // '/', '?', '#'
++    if (clean && !((c >= 97 && c <= 122) || (c >= 65 && c <= 90) || (c >= 48 && c <= 57) || c === 43 || c === 45 || c === 46)) clean = false;
++  }
++  // A scheme with no noise in it (`https`, `mailto`): compare it directly, no full-string copy.
++  if (clean) {
++    const scheme = url.slice(0, colon).toLowerCase();
++    if (scheme === "javascript" || scheme === "vbscript" || scheme === "js") return BLOCKED_URL;
++    if (scheme !== "data") return url;
+   }
+   // Possible scheme — normalize the way a browser would, then inspect it.
+   const probe = url.replace(URL_SCHEME_NOISE_RE, "").toLowerCase();
+-  if (probe.startsWith("javascript:") || probe.startsWith("vbscript:")) return BLOCKED_URL;
++  if (probe.startsWith("javascript:") || probe.startsWith("vbscript:") || probe.startsWith("js:")) return BLOCKED_URL;
+   if (probe.startsWith("data:") && !SAFE_DATA_URL_RE.test(probe)) return BLOCKED_URL;
+   return url;
+ }
+ 
++/**
++ * The prefix htmx 4 reads as "run this as JavaScript" in `hx-confirm` and `hx-vals`
++ * (case-sensitive, untrimmed: htmx.js #extractJavascriptContent), or `null`.
++ * @internal
++ */
++export function htmxScriptPrefix(value: string): "js:" | "javascript:" | null {
++  if (value.charCodeAt(0) !== 106) return null; // 'j'
++  return value.startsWith("js:") ? "js:" : value.startsWith("javascript:") ? "javascript:" : null;
++}
++
+ /**
+  * Escape a string for embedding inside a SINGLE-QUOTED JavaScript string literal
+  * — e.g. the JS the behavior system writes into `hx-on:*` attributes. Escapes the
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 5bc32a6..65f8c77 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -5,7 +5,7 @@ import type { Tag } from "../core/tag.js";
+ import type { View } from "../core/types.js";
+ import { isTag, isRawString } from "../core/guards.js";
+ import { devChecks, nextRenderEpoch } from "../core/dev-checks.js";
+-import { escapeHtml, escapeAttr, sanitizeUrl } from "./escape.js";
++import { escapeHtml, escapeAttr, sanitizeUrl, htmxScriptPrefix } from "./escape.js";
+ 
+ // URL-valued attributes emitted by the typed setters. Their values are run
+ // through sanitizeUrl (scheme filtering) before attribute-escaping, so a
+@@ -137,7 +137,7 @@ const RESERVED_BAG_KEYS = new Set<string>(['id', 'class', 'style']);
+ 
+ /** Serialize an HTMX config to its attribute string. @internal */
+ export function buildHtmx(htmx: HTMX): string {
+-  let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
++  let result = 'hx-' + htmx.method + '="' + escapeAttr(sanitizeUrl(htmx.endpoint)) + '"';
+ 
+   if (htmx.target !== undefined) result += ' hx-target="' + escapeAttr(htmx.target) + '"';
+   if (htmx.swap !== undefined) result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
+@@ -146,14 +146,14 @@ export function buildHtmx(htmx: HTMX): string {
+   if (htmx.select !== undefined) result += ' hx-select="' + escapeAttr(htmx.select) + '"';
+   if (htmx.trigger !== undefined) result += ' hx-trigger="' + escapeAttr(htmx.trigger) + '"';
+   // push-url / replace-url: the literal `false` is meaningful htmx grammar, so it is kept.
+-  if (htmx.pushUrl !== undefined) result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl) + '"';
+-  if (htmx.replaceUrl !== undefined) result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl) + '"';
+-  if (htmx.vals !== undefined) result += ' hx-vals="' + escapeAttr(typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)) + '"';
++  if (htmx.pushUrl !== undefined) result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(sanitizeUrl(htmx.pushUrl)) : htmx.pushUrl) + '"';
++  if (htmx.replaceUrl !== undefined) result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(sanitizeUrl(htmx.replaceUrl)) : htmx.replaceUrl) + '"';
++  if (htmx.vals !== undefined) result += ' hx-vals="' + (typeof htmx.vals === 'string' ? htmxText(htmx.vals) : escapeAttr(JSON.stringify(htmx.vals))) + '"';
+   if (htmx.headers !== undefined) result += ' hx-headers="' + escapeAttr(JSON.stringify(htmx.headers)) + '"';
+   if (htmx.include !== undefined) result += ' hx-include="' + escapeAttr(htmx.include) + '"';
+   if (htmx.encoding !== undefined) result += ' hx-encoding="' + escapeAttr(htmx.encoding) + '"';
+   if (htmx.validate !== undefined) result += ' hx-validate="' + htmx.validate + '"';
+-  if (htmx.confirm !== undefined) result += ' hx-confirm="' + escapeAttr(htmx.confirm) + '"';
++  if (htmx.confirm !== undefined) result += ' hx-confirm="' + htmxText(htmx.confirm) + '"';
+   if (htmx.indicator !== undefined) result += ' hx-indicator="' + escapeAttr(htmx.indicator) + '"';
+   if (htmx.disable !== undefined) result += ' hx-disable="' + escapeAttr(htmx.disable) + '"';
+   if (htmx.sync !== undefined) result += ' hx-sync="' + escapeAttr(htmx.sync) + '"';
+@@ -186,13 +186,20 @@ export function buildHtmx(htmx: HTMX): string {
+   return result;
+ }
+ 
++// A leading U+200B makes htmx 4 read a confirm/vals value that starts with `js:` or
++// `javascript:` as text; the confirm dialog shows the same characters. It is written as a
++// character reference so no page charset can garble it. Dev mode throws first (_setHx).
++function htmxText(value: string): string {
++  return htmxScriptPrefix(value) === null ? escapeAttr(value) : '&#8203;' + escapeAttr(value);
++}
++
+ function buildStatusConfig(cfg: HxStatusConfig): string {
+   const parts: string[] = [];
+   if (cfg.swap) parts.push('swap:' + cfg.swap);
+   if (cfg.target) parts.push('target:' + cfg.target);
+   if (cfg.select) parts.push('select:' + cfg.select);
+-  if (cfg.push !== undefined) parts.push('push:' + cfg.push);
+-  if (cfg.replace !== undefined) parts.push('replace:' + cfg.replace);
++  if (cfg.push !== undefined) parts.push('push:' + (typeof cfg.push === 'string' ? sanitizeUrl(cfg.push) : cfg.push));
++  if (cfg.replace !== undefined) parts.push('replace:' + (typeof cfg.replace === 'string' ? sanitizeUrl(cfg.replace) : cfg.replace));
+   if (cfg.transition !== undefined) parts.push('transition:' + cfg.transition);
+   return parts.join(' ');
+ }
+diff --git a/test/htmx-js-sinks.test.ts b/test/htmx-js-sinks.test.ts
+new file mode 100644
+index 0000000..b2491fb
+--- /dev/null
++++ b/test/htmx-js-sinks.test.ts
+@@ -0,0 +1,62 @@
++import { describe, it, afterEach } from "node:test";
++import assert from "node:assert/strict";
++
++import { render, Button, A, hxResponse, Empty, sanitizeUrl, setDevChecks, defineRoutes } from "../src/index.js";
++import { hx, assetUrl, externalUrl } from "../src/htmx.js";
++
++const itemRoutes = defineRoutes("/items", {
++  remove: { method: "delete", path: "/:id", params: { id: "number" } },
++} as const);
++
++afterEach(() => setDevChecks(true));
++
++describe("htmx-evaluated sinks (C-18)", () => {
++  it("sanitizeUrl blocks htmx's js: scheme like javascript:", () => {
++    assert.equal(sanitizeUrl("js:alert(1)"), "about:blank");
++    assert.equal(sanitizeUrl(" JS:alert(1)"), "about:blank");
++    assert.equal(sanitizeUrl("jsx:alert(1)"), "jsx:alert(1)");
++    assert.equal(render(A("x").setHref(externalUrl("js:alert(1)"))), `<a href="about:blank">x</a>`);
++  });
++
++  it("the request endpoint is scheme-sanitized", () => {
++    assert.equal(render(Button().setHtmx(hx(externalUrl("javascript:alert(1)")))), `<button hx-get="about:blank"></button>`);
++    assert.equal(render(Button().setHtmx(hx(assetUrl("js:alert(1)"), { method: "post" }))), `<button hx-post="about:blank"></button>`);
++    assert.equal(render(Button().setHtmx(hx(assetUrl("data:text/html,<p>x</p>")))), `<button hx-get="about:blank"></button>`);
++    assert.equal(render(Button().setHtmx(hx(assetUrl("/items?a=b:c")))), `<button hx-get="/items?a=b:c"></button>`);
++  });
++
++  it("push/replace URL strings are scheme-sanitized; booleans pass", () => {
++    const b = Button().setHtmx(hx(assetUrl("/x"), { pushUrl: "javascript:x", replaceUrl: "/ok", status: { 422: { push: "js:x" } } }));
++    assert.equal(render(b), `<button hx-get="/x" hx-push-url="about:blank" hx-replace-url="/ok" hx-status:422="push:about:blank"></button>`);
++    assert.ok(render(Button().setHtmx(hx(assetUrl("/x"), { pushUrl: true }))).includes(`hx-push-url="true"`));
++  });
++
++  it("dev mode throws on a js:/javascript: confirm or string vals, naming the fix", () => {
++    assert.throws(() => Button().setHtmx(itemRoutes.remove({ id: 1 }, { confirm: "js:ok()" })),
++      { message: `<button>.setHtmx() got hx-confirm starting with "js:", which htmx 4 runs as JavaScript, and fluent-html emits no inline JS. Pass the message text.` });
++    assert.throws(() => Button().setHtmx(hx(assetUrl("/x"), { method: "post", vals: "javascript:{a: 1}" })), /hx-vals starting with "javascript:".*Pass an object/);
++    assert.doesNotThrow(() => Button().setHtmx(hx(assetUrl("/x"), { confirm: "Delete it?", vals: JSON.stringify({ a: 1 }) })));
++    assert.doesNotThrow(() => Button().setHtmx(hx(assetUrl("/x"), { confirm: "JS: delete?" })));
++  });
++
++  it("production rendering makes the same values text with a leading U+200B reference", () => {
++    setDevChecks(false);
++    assert.equal(render(Button().setHtmx(hx(assetUrl("/x"), { confirm: "js:ok()" }))), `<button hx-get="/x" hx-confirm="&#8203;js:ok()"></button>`);
++    assert.equal(render(Button().setHtmx(hx(assetUrl("/x"), { method: "post", vals: "js:{a: 1}" }))), `<button hx-post="/x" hx-vals="&#8203;js:{a: 1}"></button>`);
++    assert.equal(render(Button().setHtmx(hx(assetUrl("/x"), { confirm: "Delete it?" }))), `<button hx-get="/x" hx-confirm="Delete it?"></button>`);
++  });
++
++  it("HxResponse URL headers are scheme-sanitized", () => {
++    const h = hxResponse(Empty()).redirect("javascript:alert(1)").pushUrl("js:x").replaceUrl("vbscript:x").getHeaders();
++    assert.deepEqual(h, { "HX-Redirect": "about:blank", "HX-Push-Url": "about:blank", "HX-Replace-Url": "about:blank" });
++    assert.deepEqual(hxResponse(Empty()).redirect("/login").pushUrl("false").getHeaders(), { "HX-Redirect": "/login", "HX-Push-Url": "false" });
++  });
++
++  it("HX-Location is always the object form, so a string is only ever a path", () => {
++    assert.equal(hxResponse(Empty()).location("/dashboard").getHeaders()["HX-Location"], `{"path":"/dashboard"}`);
++    assert.equal(hxResponse(Empty()).location("js:alert(1)").getHeaders()["HX-Location"], `{"path":"about:blank"}`);
++    assert.equal(hxResponse(Empty()).location("x path:js:alert(1)").getHeaders()["HX-Location"], `{"path":"x path:js:alert(1)"}`);
++    assert.equal(hxResponse(Empty()).location({ path: "js:alert(1)", target: "#main" }).getHeaders()["HX-Location"], `{"path":"about:blank","target":"#main"}`);
++    assert.equal(hxResponse(Empty()).location({ path: "/d", target: "#main" }).getHeaders()["HX-Location"], `{"path":"/d","target":"#main"}`);
++  });
++});
+diff --git a/test/patterns.ts b/test/patterns.ts
+index eb03e31..51cfaa8 100644
+--- a/test/patterns.ts
++++ b/test/patterns.ts
+@@ -140,7 +140,7 @@ describe("HTMX Patterns", () => {
+ 
+   it("hxResponse.location sets HX-Location header", () => {
+     const response = hxResponse(Div("")).location("/dashboard").build();
+-    assert.strictEqual(response.headers["HX-Location"], "/dashboard");
++    assert.strictEqual(response.headers["HX-Location"], `{"path":"/dashboard"}`);
+   });
+ 
+   it("hxResponse.location handles config object", () => {

@@ -1,0 +1,54 @@
+diff --git a/src/patterns.ts b/src/patterns.ts
+index 11493d8..9db3806 100644
+--- a/src/patterns.ts
++++ b/src/patterns.ts
+@@ -14,6 +14,8 @@ import { isId } from "./ids.js";
+ import { render } from "./render/render.js";
+ import { sanitizeUrl } from "./render/escape.js";
+ 
++const PLAIN_LOCATION_PATH = /^\/(?!\/)[!#$%&()*+\-./0-9;=?@A-Z[\]^_`a-z|~]*$/;
++
+ // HTTP header values must be Latin-1 — Node's setHeader throws ERR_INVALID_CHAR on
+ // any character above U+00FF (routine in non-English detail payloads: š, č, emoji,
+ // typographic quotes). Library-built header JSON (HX-Trigger / HX-Location) escapes
+@@ -322,10 +324,11 @@ export class HxResponse {
+    * })
+    */
+   location(config: string | HxLocationConfig): this {
+-    // Always the object form: htmx reads a bare string with whitespace, a comma or a `path:`
+-    // key as HCON config (beta6 htmx.js:688, 4.0.0 htmx.js:657), so a string is a path only here.
++    // A plain root-relative ASCII path keeps htmx's documented bare form; anything else (whitespace,
++    // a comma, a colon, quotes, braces, non-ASCII) is the object form, which both bundles read as JSON.
+     if (typeof config === 'string') {
+-      this._headers["HX-Location"] = toHeaderSafeJson({ path: sanitizeUrl(config) });
++      const path = sanitizeUrl(config);
++      this._headers["HX-Location"] = PLAIN_LOCATION_PATH.test(path) ? path : toHeaderSafeJson({ path });
+     } else {
+       const path = sanitizeUrl(config.path);
+       this._headers["HX-Location"] = toHeaderSafeJson(path === config.path ? config : { ...config, path });
+diff --git a/test/htmx-js-sinks.test.ts b/test/htmx-js-sinks.test.ts
+index b2491fb..84e42e8 100644
+--- a/test/htmx-js-sinks.test.ts
++++ b/test/htmx-js-sinks.test.ts
+@@ -53,7 +53,7 @@ describe("htmx-evaluated sinks (C-18)", () => {
+   });
+ 
+   it("HX-Location is always the object form, so a string is only ever a path", () => {
+-    assert.equal(hxResponse(Empty()).location("/dashboard").getHeaders()["HX-Location"], `{"path":"/dashboard"}`);
++    assert.equal(hxResponse(Empty()).location("/dashboard").getHeaders()["HX-Location"], "/dashboard");
+     assert.equal(hxResponse(Empty()).location("js:alert(1)").getHeaders()["HX-Location"], `{"path":"about:blank"}`);
+     assert.equal(hxResponse(Empty()).location("x path:js:alert(1)").getHeaders()["HX-Location"], `{"path":"x path:js:alert(1)"}`);
+     assert.equal(hxResponse(Empty()).location({ path: "js:alert(1)", target: "#main" }).getHeaders()["HX-Location"], `{"path":"about:blank","target":"#main"}`);
+diff --git a/test/patterns.ts b/test/patterns.ts
+index 51cfaa8..eb03e31 100644
+--- a/test/patterns.ts
++++ b/test/patterns.ts
+@@ -140,7 +140,7 @@ describe("HTMX Patterns", () => {
+ 
+   it("hxResponse.location sets HX-Location header", () => {
+     const response = hxResponse(Div("")).location("/dashboard").build();
+-    assert.strictEqual(response.headers["HX-Location"], `{"path":"/dashboard"}`);
++    assert.strictEqual(response.headers["HX-Location"], "/dashboard");
+   });
+ 
+   it("hxResponse.location handles config object", () => {

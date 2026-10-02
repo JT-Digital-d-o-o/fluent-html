@@ -1,0 +1,88 @@
+diff --git a/templates/full-stack/src/core/htmx/swap-verbs.ts b/templates/full-stack/src/core/htmx/swap-verbs.ts
+index 8c8e278..da8c368 100644
+--- a/templates/full-stack/src/core/htmx/swap-verbs.ts
++++ b/templates/full-stack/src/core/htmx/swap-verbs.ts
+@@ -101,6 +101,14 @@ type NeedsStance<S> = unknown extends S
+     ? unknown
+     : DeclaresNothing;
+ 
++
++type NotARoute<V extends string> =
++  `.${V} takes a page route callable result such as routes.x() from defineRoutes (no render: ids.y on its def), not a URL string, .resolve(), an uncalled route or a fragment route`;
++type NotAFragmentRoute<V extends string> =
++  `.${V} takes a fragment route callable result such as routes.x() from defineRoutes (render: ids.y on its def, y the target), not a URL string, .resolve() or an uncalled route`;
++type NotARequest<V extends string> =
++  `.${V} takes a route callable result such as routes.x() from defineRoutes, not a URL string, .resolve() or an uncalled route`;
++
+ declare module "fluent-html" {
+   interface FluentCustomMethods {
+     /**
+@@ -108,7 +116,7 @@ declare module "fluent-html" {
+      * On a non-GET route the pushed url is the request endpoint, so that path must also
+      * answer GET (or the handler must send its own `HX-Redirect`/`HX-Push-Url`).
+      */
+-    nav(route: PageRoute, options?: SwapOptions): this;
++    nav(route: PageRoute | (HTMX & { readonly [K in NotARoute<"nav">]: never }), options?: SwapOptions): this;
+     /**
+      * Sub-view switch — morph `#main-content` and push history, but hold the scroll position.
+      *
+@@ -117,9 +125,9 @@ declare module "fluent-html" {
+      * the control out from under the cursor on every click; `.submit` holds the scroll but
+      * pushes no history, so the sub-view could be neither shared nor reached with Back.
+      */
+-    tab(route: PageRoute): this;
++    tab(route: PageRoute | (HTMX & { readonly [K in NotARoute<"tab">]: never })): this;
+     /** In-place full-layout re-render — morph `#main-content`, no scroll reset, no history. */
+-    submit(route: PageRoute, options?: SwapOptions): this;
++    submit(route: PageRoute | (HTMX & { readonly [K in NotARoute<"submit">]: never }), options?: SwapOptions): this;
+     /**
+      * Fragment swap — morph just `target`, no scroll/history (default swap `outerMorph`).
+      *
+@@ -129,7 +137,7 @@ declare module "fluent-html" {
+      */
+     fragment<N extends string, S>(
+       target: Id<N>,
+-      route: FragmentRoute<NoInfer<N>> & NeedsStance<S> & RenderTagged<S>,
++      route: FragmentRoute<NoInfer<N>> & NeedsStance<S> & RenderTagged<S> | (HTMX & { readonly [K in NotAFragmentRoute<"fragment">]: never }),
+       swap?: OuterSwap,
+     ): this;
+     /**
+@@ -140,7 +148,7 @@ declare module "fluent-html" {
+      * No target argument to match against, so unlike `.fragment` this only says "a fragment,
+      * any fragment" — `FragmentRoute<string>` accepts every declared id.
+      */
+-    poll<S>(route: FragmentRoute<string> & NeedsStance<S> & RenderTagged<S>, every?: PollInterval): this;
++    poll<S>(route: FragmentRoute<string> & NeedsStance<S> & RenderTagged<S> | (HTMX & { readonly [K in NotAFragmentRoute<"poll">]: never }), every?: PollInterval): this;
+     /**
+      * Debounced live filter — the newest query wins; morphs `#main-content` (or `target`).
+      *
+@@ -148,17 +156,17 @@ declare module "fluent-html" {
+      * verb whose destination it borrows: untargeted it lands in `#main-content` like `.submit`
+      * and takes a page; targeted it lands in that id like `.fragment` and takes that fragment.
+      */
+-    search(route: PageRoute, delay?: SearchDelay): this;
++    search(route: PageRoute | (HTMX & { readonly [K in NotARoute<"search">]: never }), delay?: SearchDelay): this;
+     search<N extends string, S>(
+       target: Id<N>,
+-      route: FragmentRoute<NoInfer<N>> & NeedsStance<S> & RenderTagged<S>,
++      route: FragmentRoute<NoInfer<N>> & NeedsStance<S> & RenderTagged<S> | (HTMX & { readonly [K in NotAFragmentRoute<"search">]: never }),
+       delay?: SearchDelay,
+     ): this;
+     /**
+      * Re-render on the `change` gesture — morph `#main-content`, sends the whole enclosing form.
+      * Same destination as `.submit`, so the same stance: a page.
+      */
+-    onChange(route: PageRoute): this;
++    onChange(route: PageRoute | (HTMX & { readonly [K in NotARoute<"onChange">]: never })): this;
+     /**
+      * Fire-and-forget — run the action, swap nothing (the button still goes disabled in flight).
+      *
+@@ -166,7 +174,7 @@ declare module "fluent-html" {
+      * emits `swap: "none"`, so the answer never reaches the DOM. A `render: "none"` route —
+      * a webhook-ish action answering headers only — is exactly what it is for.
+      */
+-    fire(route: HTMX): this;
++    fire(route: HTMX | (HTMX & { readonly [K in NotARequest<"fire">]: never })): this;
+   }
+ }
+ 

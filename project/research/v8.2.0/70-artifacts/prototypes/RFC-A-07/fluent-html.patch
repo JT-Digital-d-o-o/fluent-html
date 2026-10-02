@@ -1,0 +1,161 @@
+diff --git a/src/core/dev-checks.ts b/src/core/dev-checks.ts
+index e3e91c3..b165cc8 100644
+--- a/src/core/dev-checks.ts
++++ b/src/core/dev-checks.ts
+@@ -119,3 +119,22 @@ export function countParents(children: readonly unknown[]): void {
+     }
+   }
+ }
++
++/**
++ * `Form()` dispatches on its arguments: `(build)`, `(state, build)` or plain children. Any other mix that
++ * contains a builder renders only the first builder (or nothing) and drops the rest. Dev-only.
++ *
++ * @internal
++ */
++export function assertFormArgs(args: readonly unknown[]): void {
++  if (!args.some((a) => typeof a === "function")) return;
++  if (args.length === 1) return;
++  const s = args[0];
++  const isState = s === undefined || s === null || (typeof s === "object" && !Array.isArray(s) && (s as { _t?: number })._t !== 1);
++  if (args.length === 2 && isState && typeof args[1] === "function") return;
++  const shape = args.map((a) => (typeof a === "function" ? "builder" : a === undefined || (typeof a === "object" && a !== null && !Array.isArray(a) && (a as { _t?: number })._t !== 1) ? "state" : "child")).join(", ");
++  throw new Error(
++    `Form(${shape}) drops arguments: it takes one builder that returns every control, ` +
++      `Form<T>((f) => [f.input("email"), f.input("password")]), or Form<T>(state, (f) => [ … ]) to prefill.`,
++  );
++}
+diff --git a/src/elements/forms.ts b/src/elements/forms.ts
+index 2ccc7ea..df4ff5e 100644
+--- a/src/elements/forms.ts
++++ b/src/elements/forms.ts
+@@ -1,5 +1,5 @@
+ import { defineSchemaKeys } from "../core/proto.js";
+-import { devChecks, assertMutable } from "../core/dev-checks.js";
++import { devChecks, assertMutable, assertFormArgs } from "../core/dev-checks.js";
+ import { Tag } from "../core/tag.js";
+ import { El, Empty } from "../core/utils.js";
+ import type { View } from "../core/types.js";
+@@ -445,8 +445,9 @@ export interface FormBinding<T> {
+   textarea(name: keyof T & string): TextareaTag;
+   select(name: keyof T & string, options: readonly SelectOption[]): SelectTag;
+   /**
+-   * A checkbox bound to a boolean field — `checked` reflects `Boolean(state.values[name])`.
+-   * Pass `value` for the submitted value (HTML defaults to `"on"` when omitted).
++   * A checkbox bound to `name`. Without `value`, a boolean field: `checked` is `Boolean(state.values[name])`.
++   * With `value`, one box of a group: `checked` when the field equals `value` or, as an array, includes it;
++   * once two boxes share `name`, each gets the radio-style id `${name}-${value}`.
+    */
+   checkbox(name: keyof T & string, value?: string): InputTag;
+   /** A radio in the `name` group — `checked` when `String(state.values[name])` equals `value`. */
+@@ -477,6 +478,7 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
+     if (errors[name] !== undefined) tag.setAria({ invalid: true, describedby: errorId(name) });
+     return tag;
+   };
++  const groups = new Map<string, { tag: { _id?: string }; value: string } | null>();
+   return {
+     input(name, type) {
+       // Cast past Input's narrowed overloads — the binding accepts any InputType.
+@@ -502,10 +504,18 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
+       return markInvalid(Select(...opts).setName(name).setId(controlId(name)), name);
+     },
+     checkbox(name, value) {
+-      const tag = Input("checkbox").setName(name).setId(controlId(name));
+-      if (value !== undefined) tag.setValue(value);
+-      // checked reflects a boolean field (terms-accepted, is-active, …)
+-      return markInvalid(tag.toggle("checked", Boolean(values[name])), name);
++      const v = values[name];
++      const tag = Input("checkbox").setName(name);
++      if (value === undefined) return markInvalid(tag.setId(controlId(name)).toggle("checked", Boolean(v)), name);
++      // The second valued box of a name makes it a group: every box takes the radio id, the first retroactively.
++      const first = groups.get(name);
++      if (first === undefined) groups.set(name, { tag: tag as unknown as { _id?: string }, value });
++      else if (first !== null) {
++        if (first.tag._id === controlId(name)) first.tag._id = `${controlId(name)}-${first.value}`;
++        groups.set(name, null);
++      }
++      const checked = Array.isArray(v) ? v.some((x) => String(x) === value) : typeof v === "string" ? v === value : Boolean(v);
++      return markInvalid(tag.setId(first === undefined ? controlId(name) : `${controlId(name)}-${value}`).setValue(value).toggle("checked", checked), name);
+     },
+     radio(name, value) {
+       // Each radio in the group gets a unique `${id}-${value}` id (one `id={name}` per option
+@@ -535,6 +545,7 @@ export function Form<T>(build: (f: FormBinding<T>) => View): FormTag;
+ /** Typed-binding form with `state` — values/errors auto-wire into the controls. */
+ export function Form<T>(state: FormState<T> | undefined, build: (f: FormBinding<T>) => View): FormTag;
+ export function Form(...args: unknown[]): FormTag {
++  if (devChecks) assertFormArgs(args);
+   // Form(build) — typed binding, no state
+   if (typeof args[0] === "function") {
+     const build = args[0] as (f: FormBinding<unknown>) => View;
+diff --git a/test/form-for.test.ts b/test/form-for.test.ts
+index ff0b08b..3a710ed 100644
+--- a/test/form-for.test.ts
++++ b/test/form-for.test.ts
+@@ -1,7 +1,7 @@
+ import { describe, it } from "node:test";
+ import assert from "node:assert/strict";
+ 
+-import { render, Form, Button } from "../src/index.js";
++import { render, Form, Button, ForEach, type FormBinding } from "../src/index.js";
+ 
+ type CreateUserReq = { email: string; name: string; bio: string; role: "admin" | "viewer" };
+ 
+@@ -181,3 +181,58 @@ describe("Form<T> aria-invalid wiring (F-C-143)", () => {
+     assert.strictEqual(html, `<form><input id="terms" type="checkbox" name="terms" aria-invalid="true" aria-describedby="terms-error"></form>`);
+   });
+ });
++
++type TagsReq = { tags: string[]; terms: boolean };
++const group = (f: FormBinding<TagsReq>) => ForEach(["a", "b", "c"], (o) => f.checkbox("tags", o));
++
++describe("Form<T> checkbox groups (C-16)", () => {
++  it("a group binds by membership and gives each box the radio-style id", () => {
++    const html = render(Form<TagsReq>({ values: { tags: ["a", "c"] } }, (f) => group(f)));
++    assert.strictEqual(html, `<form><input id="tags-a" type="checkbox" name="tags" value="a" checked>\n<input id="tags-b" type="checkbox" name="tags" value="b">\n<input id="tags-c" type="checkbox" name="tags" value="c" checked></form>`);
++  });
++
++  it("an empty array checks no box", () => {
++    assert.ok(!render(Form<TagsReq>({ values: { tags: [] } }, (f) => group(f))).includes("checked"));
++  });
++
++  it("a single urlencoded value (422 re-render) checks only its box", () => {
++    const html = render(Form<TagsReq>({ values: { tags: "b" as unknown as string[] } }, (f) => group(f)));
++    assert.strictEqual(html.match(/checked/g)?.length, 1);
++    assert.ok(html.includes(`value="b" checked`));
++  });
++
++  it("idPrefix namespaces group ids", () => {
++    assert.ok(render(Form<TagsReq>({ idPrefix: "edit" }, (f) => group(f))).includes(`id="edit-tags-a"`));
++  });
++
++  it("a caller's setId on the first box is kept", () => {
++    const html = render(Form<TagsReq>((f) => [f.checkbox("tags", "a").setId("mine"), f.checkbox("tags", "b")]));
++    assert.ok(html.includes(`id="mine"`) && html.includes(`id="tags-b"`));
++  });
++
++  it("a lone valued checkbox keeps id={name} and boolean binding", () => {
++    assert.strictEqual(render(Form<TagsReq>({ values: { terms: true } }, (f) => f.checkbox("terms", "yes"))), `<form><input id="terms" type="checkbox" name="terms" value="yes" checked></form>`);
++  });
++});
++
++describe("Form() argument shapes (C-16)", () => {
++  it("throws on two builders, naming the one-builder form", () => {
++    assert.throws(
++      () => (Form as (...a: unknown[]) => unknown)((f: FormBinding<CreateUserReq>) => f.input("email"), (f: FormBinding<CreateUserReq>) => f.input("name")),
++      /^Error: Form\(builder, builder\) drops arguments: it takes one builder that returns every control/,
++    );
++  });
++
++  it("throws on state + two builders and on builder + child", () => {
++    assert.throws(() => (Form as (...a: unknown[]) => unknown)({}, () => "a", () => "b"), /Form\(state, builder, builder\)/);
++    assert.throws(() => (Form as (...a: unknown[]) => unknown)(() => "a", Button("Go")), /Form\(builder, child\)/);
++  });
++
++  it("valid shapes do not throw", () => {
++    render(Form<TagsReq>((f) => f.checkbox("terms")));
++    render(Form<TagsReq>(undefined, (f) => f.checkbox("terms")));
++    render(Form<TagsReq>({}, (f) => f.checkbox("terms")));
++    render(Form(Button("Go"), Button("Stop")));
++    render(Form());
++  });
++});

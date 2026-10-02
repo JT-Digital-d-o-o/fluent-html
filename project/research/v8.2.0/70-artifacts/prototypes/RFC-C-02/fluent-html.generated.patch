@@ -1,0 +1,13 @@
+diff --git a/src/core/variant-object.gen.ts b/src/core/variant-object.gen.ts
+index 3388c48..712cd70 100644
+--- a/src/core/variant-object.gen.ts
++++ b/src/core/variant-object.gen.ts
+@@ -333,8 +333,6 @@ export interface StyleProps {
+   group?: true | string | undefined;
+   /** Peer marker — enables `peer-*` variants on siblings; optionally named. */
+   peer?: true | string | undefined;
+-  /** Container-query container; optionally named. */
+-  containerQuery?: true | string | undefined;
+   /** Blur filter (bare = default). */
+   blur?: true | TailwindBlur | undefined;
+   /** Backdrop blur filter (bare = default). */

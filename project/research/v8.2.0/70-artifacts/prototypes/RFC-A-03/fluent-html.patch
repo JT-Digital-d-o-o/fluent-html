@@ -1,0 +1,972 @@
+diff --git a/playwright.config.mjs b/playwright.config.mjs
+new file mode 100644
+index 0000000..6bee126
+--- /dev/null
++++ b/playwright.config.mjs
+@@ -0,0 +1,9 @@
++import { defineConfig } from "@playwright/test";
++const only = process.env.ORACLE_BUNDLES?.split(",") ?? ["htmx-4.0.0-beta6", "htmx-4.0.0"];
++export default defineConfig({
++  testDir: "./test/grammar",
++  testMatch: /grammar\.spec\.mjs/,
++  timeout: 15_000,
++  fullyParallel: true,
++  projects: only.map((bundle) => ({ name: bundle, use: { browserName: "chromium", bundle } })),
++});
+diff --git a/src/patterns.ts b/src/patterns.ts
+index ccf50d6..02dd124 100644
+--- a/src/patterns.ts
++++ b/src/patterns.ts
+@@ -117,7 +117,6 @@ export function Partial(
+  * @example
+  * Head(
+  *   HtmxConfig({
+- *     extensions: "sse, preload",
+  *     transitions: true,
+  *     defaultSwap: "outerMorph",
+  *   }),
+diff --git a/test/grammar/bundles.mjs b/test/grammar/bundles.mjs
+new file mode 100644
+index 0000000..693bd06
+--- /dev/null
++++ b/test/grammar/bundles.mjs
+@@ -0,0 +1,19 @@
++// The oracle's bundle matrix. In the lib: `htmx.org` (the pin) and an npm-alias devDependency for
++// the version projects-template serves. Here: the template's installed copy (byte-identical to its
++// public/js/htmx.min.js, sha256 e484d917...).
++import { readFileSync } from "node:fs";
++const LIB = "fluent-html/node_modules/htmx.org/dist";
++const TPL = "projects-template/node_modules/.pnpm/htmx.org@4.0.0/node_modules/htmx.org/dist";
++const A7 = "<scratch>/wave1/A1/bundles";
++export const BUNDLES = {
++  "htmx-4.0.0-beta6": { role: "lib pin", dist: LIB, min: `${LIB}/htmx.min.js` },
++  "htmx-4.0.0": { role: "template-served", dist: TPL, min: `${TPL}/htmx.min.js` },
++  "htmx-4.0.0-alpha7": { role: "bump drill only (3 live repos load it from CDN)", dist: `${A7}/alpha7/dist`, min: `${A7}/a7.min.js` },
++};
++const cache = new Map();
++export function bundleFile(name, rel) {
++  const b = BUNDLES[name];
++  const p = rel === "htmx" ? b.min : `${b.dist}/${rel}`;
++  if (!cache.has(p)) { try { cache.set(p, readFileSync(p, "utf8")); } catch { cache.set(p, ""); } }
++  return cache.get(p);
++}
+diff --git a/test/grammar/coverage.test.mjs b/test/grammar/coverage.test.mjs
+new file mode 100644
+index 0000000..5314f2a
+--- /dev/null
++++ b/test/grammar/coverage.test.mjs
+@@ -0,0 +1,21 @@
++// Completeness gate: every token of the typed htmx surface (read from the published d.ts) is
++// claimed by at least one executed oracle row, and no row claims a token that no longer exists.
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { typedSurface } from "./surface.mjs";
++import { rows } from "./rows.mjs";
++
++const DIST = process.env.ORACLE_DIST ?? new URL("../../dist-link/src", import.meta.url).pathname;
++
++test("every typed htmx token has an executed oracle row", async () => {
++  const surface = await typedSurface(DIST);
++  const claimed = new Set(rows.flatMap((r) => r.covers));
++  const uncovered = surface.filter((t) => !claimed.has(t));
++  assert.deepEqual(uncovered, [], `typed htmx grammar with no executed row in test/grammar/rows.mjs:\n  ${uncovered.join("\n  ")}\nAdd a row that renders it and asserts its effect in the pinned bundle (mark it known: { ... } if it is broken).`);
++});
++
++test("no row claims a token the typed surface no longer has", async () => {
++  const surface = new Set(await typedSurface(DIST));
++  const stale = [...new Set(rows.flatMap((r) => r.covers))].filter((t) => !surface.has(t) && !/^record:/.test(t));
++  assert.deepEqual(stale, [], `rows claim tokens that left the typed surface: ${stale.join(", ")}`);
++});
+diff --git a/test/grammar/grammar.spec.mjs b/test/grammar/grammar.spec.mjs
+new file mode 100644
+index 0000000..e0cae42
+--- /dev/null
++++ b/test/grammar/grammar.spec.mjs
+@@ -0,0 +1,13 @@
++import { test as base } from "@playwright/test";
++import { open } from "./harness.mjs";
++import { rows } from "./rows.mjs";
++
++const test = base.extend({ bundle: ["htmx-4.0.0-beta6", { option: true }] });
++
++for (const r of rows) {
++  test(`${r.id}`, async ({ page, bundle }) => {
++    const known = r.known?.[bundle] ?? r.known?.["*"];
++    test.fail(Boolean(known), known);
++    await r.run((opts) => open(page, bundle, opts), page, bundle);
++  });
++}
+diff --git a/test/grammar/harness.mjs b/test/grammar/harness.mjs
+new file mode 100644
+index 0000000..329004c
+--- /dev/null
++++ b/test/grammar/harness.mjs
+@@ -0,0 +1,48 @@
++// Page harness: one origin (http://oracle.test), the bundle under test served at /htmx.js, every
++// other path answered by the row's route table. Requests htmx makes are recorded.
++import { bundleFile } from "./bundles.mjs";
++import { readFileSync } from "node:fs";
++const FB = readFileSync(new URL("../../dist-link/fluent-behaviors.8.1.0.js", import.meta.url), "utf8");
++
++const SPY = `
++window.__finally = 0; window.__errors = []; window.__events = [];
++for (const n of ["htmx:finally:request", "htmx:error", "htmx:after:swap", "htmx:after:settle"])
++  document.addEventListener(n, (e) => { if (n === "htmx:finally:request") window.__finally++; if (n === "htmx:error") window.__errors.push(String(e.detail?.error?.message ?? e.detail?.error ?? n)); window.__events.push({ n, t: performance.now() }); }, true);
++document.addEventListener("htmx:after:process", (e) => { if (e.target === document.body) window.__ready = true; }, true);
++window.addEventListener("error", (e) => window.__errors.push("window.error: " + e.message));
++window.addEventListener("unhandledrejection", (e) => window.__errors.push("unhandledrejection: " + (e.reason?.message ?? e.reason)));
++`;
++
++export async function open(page, bundle, { head = "", body, routes = {}, ext = [], scripts = "", csp, clock = false }) {
++  const reqs = [];
++  let loads = 0;
++  await page.route("http://oracle.test/**", async (route) => {
++    const req = route.request();
++    const url = new URL(req.url());
++    if (url.pathname === "/htmx.js") return route.fulfill({ contentType: "text/javascript", body: bundleFile(bundle, "htmx") });
++    if (url.pathname === "/spy.js") return route.fulfill({ contentType: "text/javascript", body: SPY });
++    if (url.pathname === "/fb.js") return route.fulfill({ contentType: "text/javascript", body: FB });
++    if (url.pathname.startsWith("/ext/")) return route.fulfill({ contentType: "text/javascript", body: bundleFile(bundle, url.pathname.slice(1)) });
++    if (url.pathname === "/" && req.method() === "GET" && !req.headers()["hx-request"]) {
++      loads++;
++      const html = `<!doctype html><html><head><meta charset="utf-8"><title>Oracle</title>${head}<script src="/spy.js"></script><script src="/htmx.js"></script>${ext.map((e) => `<script src="/ext/${e}.js"></script>`).join("")}${scripts}</head><body>${body}</body></html>`;
++      return route.fulfill({ contentType: "text/html; charset=utf-8", headers: csp ? { "content-security-policy": csp } : {}, body: html });
++    }
++    reqs.push({ method: req.method(), path: url.pathname + url.search, headers: req.headers(), post: req.postData() });
++    const h = routes[url.pathname];
++    const r = !h ? { body: `<p>unrouted ${url.pathname}</p>` } : typeof h === "function" ? await h(req, reqs.length) : h;
++    if (r.delay) await new Promise((res) => setTimeout(res, r.delay));
++    return route.fulfill({ status: r.status ?? 200, headers: { "content-type": r.contentType ?? "text/html; charset=utf-8", ...(r.headers ?? {}) }, body: r.body ?? "" }).catch(() => {});
++  });
++  if (clock) await page.clock.install();
++  await page.goto("http://oracle.test/");
++  try { await page.waitForFunction(() => window.__ready === true, null, { timeout: 3000 }); } catch { await page.waitForTimeout(200); }
++  const settle = async (n = 1, timeout = 3000) => {
++    try { await page.waitForFunction((k) => window.__finally >= k, n, { timeout }); } catch { /* the row asserts the outcome */ }
++    await page.waitForTimeout(60);
++  };
++  const $ = (sel, fn = (e) => e?.outerHTML ?? null) => page.evaluate(([s, f]) => (0, eval)(f)(document.querySelector(s)), [sel, fn.toString()]);
++  const text = (sel) => page.evaluate((s) => document.querySelector(s)?.textContent ?? null, sel);
++  const errors = () => page.evaluate(() => window.__errors);
++  return { page, reqs, loads: () => loads, settle, $, text, errors, hx: () => reqs.filter((r) => r.headers["hx-request"]) };
++}
+diff --git a/test/grammar/ratchet.spec.mjs b/test/grammar/ratchet.spec.mjs
+new file mode 100644
+index 0000000..de3ac40
+--- /dev/null
++++ b/test/grammar/ratchet.spec.mjs
+@@ -0,0 +1,12 @@
++// Drill: the F-A-104 fix lands (credentials becomes a RequestCredentials string) while the row
++// still carries its known mark. Simulated by emitting the fixed bytes under the same mark.
++import { test as base, expect } from "@playwright/test";
++import { open } from "./harness.mjs";
++import * as L from "../../dist-link/src/index.js";
++const test = base.extend({ bundle: ["htmx-4.0.0-beta6", { option: true }] });
++test("bag/config.credentials", async ({ page, bundle }) => {
++  test.fail(true, "F-A-104 credentials boolean throws in fetch");
++  const p = await open(page, bundle, { body: `<div id="t">old</div>` + L.render(L.Button("go").setId("go").setType("button").setHtmx(L.hx(L.assetUrl("/r"), { target: "#t", config: { credentials: "include" } }))), routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#t")).toBe("new");
++});
+diff --git a/test/grammar/rows.mjs b/test/grammar/rows.mjs
+new file mode 100644
+index 0000000..8901173
+--- /dev/null
++++ b/test/grammar/rows.mjs
+@@ -0,0 +1,713 @@
++// Oracle rows: each renders a typed fluent-html emission from dist/, runs it against a real htmx
++// bundle, and asserts the effect the type advertises. `covers` ties the row to typed-surface tokens
++// (surface.mjs). `known` marks a measured defect per bundle ("*" = all): the row runs as
++// test.fail, so it stays green while broken and turns red the day it starts working (the fixing
++// RFC must delete the mark). `level`: effect (observable outcome) | read (executed config read).
++import { expect } from "@playwright/test";
++import * as L from "../../dist-link/src/index.js";
++import { HTMX_EVENTS, fixtureIds } from "../../dist-link/src/behaviors/index.js";
++import * as OLD from "../../olddist/dist/src/index.js";
++
++const { render, Div, Button, A, Form, Input, Span, P, Section, Table, Tbody, Tr, Td, Select, Option, hx, assetUrl,
++  defineIds, Partial, hxResponse, HtmxConfig, Empty, id, clss, closest, find, next, previous } = L;
++const u = (p) => assetUrl(p);
++const go = (opts, label = "go") => render(Button(label).setId("go").setType("button").setHtmx(hx(u("/r"), opts)));
++const rows = [];
++const row = (id, covers, run, extra = {}) => rows.push({ id, covers, run, level: "effect", ...extra });
++const F = {
++  mod: "F-A-105 swap modifier unread", sel: "F-A-109 selector/trigger literal never fires", cred: "F-A-104 credentials boolean throws in fetch",
++  mode: "F-A-104/L-148 hx-config mode overwritten", status: "F-A-103 unquoted hx-status value", bag: "F-A-110 element-state key rides the request bag",
++  hdr: "F-A-108 non-Latin-1 header value throws", drawer: "F-A-107 htmx-2 event detail", partial: "F-D-101 beta6 resolves partial targets document-wide",
++  cfg: "F-D-103 config/location key has 0 readers",
++};
++
++// ── methods, endpoint, the four Tag emitters ─────────────────────────────────
++for (const m of ["get", "post", "put", "patch", "delete"]) {
++  row(`method/${m}`, [`HxHttpMethod:${m}`, "HTMX.method", "HTMX.endpoint", "hx()#0:ResolvedRoute | ExternalHref,HxOptions", "Tag#setHtmx"], async (o) => {
++    const p = await o({ body: `<div id="t">old</div>` + go({ method: m, target: "#t" }), routes: { "/r": { body: "new" } } });
++    await p.page.click("#go"); await p.settle();
++    expect(p.hx().map((r) => r.method)).toEqual([m.toUpperCase()]);
++    expect(await p.text("#t")).toBe("new");
++  });
++}
++for (const [verb, m] of [["hxGet", "GET"], ["hxPost", "POST"]]) {
++  row(`tag/${verb}`, [`Tag#${verb}`], async (o) => {
++    const p = await o({ body: `<div id="t">old</div>` + render(Button("go").setId("go").setType("button")[verb](u("/r"), { target: "#t" })), routes: { "/r": { body: "new" } } });
++    await p.page.click("#go"); await p.settle();
++    expect(p.hx().map((r) => r.method)).toEqual([m]);
++    expect(await p.text("#t")).toBe("new");
++  });
++}
++
++// ── targets and selector keywords ────────────────────────────────────────────
++const targetLayout = (opts) => `<section id="sec"><div id="prev">prev</div>${go(opts)}<div id="nxt"><span class="inner">nxt</span></div></section><div id="t" class="c">t</div>`;
++const targetCases = [
++  ["id()", "HTMX.target", { target: id("t") }, "#t", ["id()#0:string"]],
++  ["clss()", "HTMX.target", { target: clss("c") }, "#t", ["clss()#0:string"]],
++  ["this", "ExtendedCSSSelector:this", { target: "this" }, "#go"],
++  ["closest", "ExtendedCSSSelector:`closest ${string}`", { target: closest("section") }, "#sec", ["closest()#0:string"]],
++  ["next", "ExtendedCSSSelector:`next`", { target: "next" }, "#nxt"],
++  ["next <sel>", "ExtendedCSSSelector:`next ${string}`", { target: next("div") }, "#nxt", ["next()#0:string"]],
++  ["previous", "ExtendedCSSSelector:`previous`", { target: "previous" }, "#prev"],
++  ["previous <sel>", "ExtendedCSSSelector:`previous ${string}`", { target: previous("div") }, "#prev", ["previous()#0:string"]],
++];
++for (const [label, tok, opts, where, more = []] of targetCases) {
++  row(`target/${label}`, [tok, ...more], async (o) => {
++    const p = await o({ body: targetLayout({ ...opts, swap: "innerHTML" }), routes: { "/r": { body: "<b>LANDED</b>" } } });
++    await p.page.click("#go"); await p.settle();
++    expect(await p.page.evaluate((w) => document.querySelector(w)?.innerHTML.replace(/ class=""/g, ""), where)).toBe("<b>LANDED</b>");
++  });
++}
++row("target/find <sel>", ["ExtendedCSSSelector:`find ${string}`", "find()#0:string"], async (o) => {
++  const p = await o({ body: render(Div(Span("inner").cssClass("inner"), Span("other")).setId("go").setHtmx(hx(u("/r"), { target: find(".inner"), swap: "innerHTML" }))), routes: { "/r": { body: "<b>LANDED</b>" } } });
++  await p.page.click("#go .inner"); await p.settle();
++  expect(await p.page.evaluate(() => document.querySelector("#go .inner").innerHTML.replace(/ class=""/g, ""))).toBe("<b>LANDED</b>");
++});
++row("target/body", ["ExtendedCSSSelector:body"], async (o) => {
++  const p = await o({ body: go({ target: "body", swap: "beforeend" }), routes: { "/r": { body: "<b id='landed'>LANDED</b>" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => document.body.lastElementChild?.id)).toBe("landed");
++});
++for (const kw of ["window", "document"]) {
++  row(`target/${kw}`, [`ExtendedCSSSelector:${kw}`], async (o) => {
++    const p = await o({ body: go({ target: kw, swap: "innerHTML" }), routes: { "/r": { body: "<b id='landed'>LANDED</b>" } } });
++    await p.page.click("#go"); await p.settle();
++    expect(p.hx().length, "the request leaves").toBe(1);
++    expect(await p.errors()).toEqual([]);
++  }, { known: { "*": F.sel } });
++}
++
++// ── swap styles ──────────────────────────────────────────────────────────────
++const shape = () => { const w = document.getElementById("w"); return [...w.querySelectorAll("*")].map((e) => e.id || e.tagName.toLowerCase()).join(","); };
++const swapCases = {
++  innerHTML: "t,n", outerHTML: "n", textContent: "t", beforebegin: "n,t,i", before: "n,t,i", afterbegin: "t,n,i", prepend: "t,n,i",
++  beforeend: "t,i,n", append: "t,i,n", afterend: "t,i,n@after", after: "t,i,n@after", innerMorph: "t,n", outerMorph: "n", delete: "", none: "t,i",
++};
++for (const [style, expected] of Object.entries(swapCases)) {
++  row(`swap/${style}`, [`HxSwapStyle:${style}`, "HTMX.swap"], async (o) => {
++    const p = await o({ body: `<div id="w"><div id="t"><i></i></div></div>` + go({ target: "#t", swap: style }), routes: { "/r": { body: `<b id="n">new</b>` } } });
++    await p.page.click("#go"); await p.settle();
++    const got = await p.page.evaluate(shape);
++    if (style === "textContent") {
++      expect(got).toBe("t");
++      expect(await p.text("#t")).toBe("new");
++    } else if (expected.endsWith("@after")) {
++      expect(await p.page.evaluate(() => document.getElementById("t").nextElementSibling?.id)).toBe("n");
++    } else expect(got).toBe(expected);
++    expect(p.hx().length).toBe(1);
++  });
++}
++
++// ── swap modifiers ───────────────────────────────────────────────────────────
++const tall = (inner) => `<div style="height:2500px">top</div>${inner}<div style="height:2500px">bottom</div>`;
++const fixedGo = (opts) => render(Button("go").setId("go").setType("button").addAttribute("style", "position:fixed;top:0;left:0").setHtmx(hx(u("/r"), opts)));
++for (const [mod, want] of [["scroll:top", "top"], ["scroll:bottom", "bottom"]]) {
++  row(`modifier/${mod}`, [`SwapScrollValue:${mod}`, "SwapWithModifier:`${HxSwapStyle} ${SwapModifier}`"], async (o) => {
++    const p = await o({ body: `<div id="t" style="height:100px;overflow:auto"><div style="height:1000px">old</div></div>` + go({ target: "#t", swap: `innerHTML ${mod}` }), routes: { "/r": { body: `<div style="height:1000px">new</div>` } } });
++    await p.page.evaluate(() => { document.getElementById("t").scrollTop = 400; });
++    await p.page.click("#go"); await p.settle();
++    const st = await p.page.evaluate(() => document.getElementById("t").scrollTop);
++    expect(want === "top" ? st : 900 - st).toBe(0);
++  });
++}
++for (const [mod, want] of [["scroll:window:top", 0], ["scroll:window:bottom", "max"], ["show:window:top", 0], ["show:window:bottom", "max"]]) {
++  row(`modifier/${mod}`, [`${mod.startsWith("scroll") ? "SwapScrollValue" : "SwapShowValue"}:${mod}`], async (o) => {
++    const p = await o({ body: tall(`<div id="t" style="height:300px">old</div>`) + fixedGo({ target: "#t", swap: `innerHTML ${mod}` }), routes: { "/r": { body: "new" } } });
++    await p.page.evaluate(() => window.scrollTo(0, 1200));
++    await p.page.click("#go"); await p.settle();
++    const [y, max] = await p.page.evaluate(() => [Math.round(window.scrollY), document.documentElement.scrollHeight - innerHeight]);
++    expect(y).toBe(want === "max" ? max : 0);
++  }, { known: { "*": F.mod } });
++}
++for (const [mod, edge] of [["show:top", "top"], ["show:bottom", "bottom"]]) {
++  row(`modifier/${mod}`, [`SwapShowValue:${mod}`], async (o) => {
++    const p = await o({ body: tall(`<div id="t" style="height:300px">old</div>`) + fixedGo({ target: "#t", swap: `innerHTML ${mod}` }), routes: { "/r": { body: "new" } } });
++    await p.page.click("#go"); await p.settle();
++    const r = await p.page.evaluate(() => { const b = document.getElementById("t").getBoundingClientRect(); return { top: Math.round(b.top), bottom: Math.round(b.bottom - innerHeight) }; });
++    expect(r[edge]).toBe(0);
++  });
++}
++row("modifier/show:none", ["SwapShowValue:show:none"], async (o) => {
++  // Differential: a pushUrl nav defaults to no scroll in htmx 4 too, so show:none is checked against show:top on the same page.
++  const p = await o({ body: tall(`<div id="t" style="height:300px">old</div>`) + fixedGo({ target: "#t", swap: "innerHTML show:none" }), routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => Math.round(window.scrollY))).toBe(0);
++  expect(await p.text("#t")).toBe("new");
++}, { level: "smoke" });
++for (const [mod, cfg, wantScroll] of [["focus-scroll:true", {}, true], ["focus-scroll:false", { defaultFocusScroll: true }, false]]) {
++  row(`modifier/${mod}`, [`SwapFocusScroll:${mod}`], async (o) => {
++    const p = await o({ head: `<meta name="htmx-config" content='${JSON.stringify(cfg)}'>`, body: `<div style="height:3000px"></div><div id="wrap">${render(Input().setId("fi").setHtmx(hx(u("/r"), { target: "#wrap", swap: `innerHTML ${mod}`, trigger: "go" })))}</div><div style="height:3000px"></div>`, routes: { "/r": { body: '<input id="fi">' } } });
++    await p.page.evaluate(() => { const i = document.getElementById("fi"); i.focus({ preventScroll: true }); window.scrollTo(0, 0); i.dispatchEvent(new Event("go")); });
++    await p.settle();
++    expect((await p.page.evaluate(() => window.scrollY)) > 0).toBe(wantScroll);
++  }, { known: { "*": F.mod } });
++}
++row("modifier/transition:true", ["SwapTransition:transition:true"], async (o) => {
++  const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", swap: "innerHTML transition:true" }), routes: { "/r": { body: "new" } }, scripts: `<script>window.__vt=0;const o=document.startViewTransition?.bind(document);if(o)document.startViewTransition=(c)=>{window.__vt++;return o(c)}</script>` });
++  await p.page.click("#go"); await p.settle(); await p.page.waitForTimeout(150);
++  expect(await p.page.evaluate(() => window.__vt)).toBe(1);
++  expect(await p.text("#t")).toBe("new");
++});
++row("modifier/ignoreTitle:true", ["SwapIgnoreTitle:ignoreTitle:true"], async (o) => {
++  const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", swap: "innerHTML ignoreTitle:true" }), routes: { "/r": { body: "<title>NEW TITLE</title><p>new</p>" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.title()).toBe("Oracle");
++  expect(await p.text("#t")).toBe("new");
++});
++// swap:<delay> exercises every DelayValue member; settle:<delay> the settle family.
++for (const [delay, ms] of [["100ms", 100], ["200ms", 200], ["300ms", 300], ["500ms", 500], ["1s", 1000], ["250ms", 250], ["0.4s", 400]]) {
++  const tok = delay === "250ms" ? "DelayValue:`${number}ms`" : delay === "0.4s" ? "DelayValue:`${number}s`" : `DelayValue:${delay}`;
++  row(`modifier/swap:${delay}`, [tok, "SwapTimingValue:`swap:${DelayValue}`"], async (o) => {
++    const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", swap: `innerHTML swap:${delay}` }), routes: { "/r": { body: "new" } } });
++    await p.page.click("#go");
++    await expect.poll(() => p.reqs.length).toBe(1);
++    await p.page.waitForTimeout(Math.max(0, ms / 2 - 40));
++    expect(await p.text("#t"), "still old before the delay").toBe("old");
++    await p.page.waitForTimeout(ms / 2 + 300);
++    expect(await p.text("#t")).toBe("new");
++  });
++}
++row("modifier/settle:500ms", ["SwapTimingValue:`settle:${DelayValue}`"], async (o) => {
++  const p = await o({ body: `<div id="t"><p id="x" class="old">x</p></div>` + go({ target: "#t", swap: "innerHTML settle:500ms" }), routes: { "/r": { body: `<p id="x" class="new">y</p>` } } });
++  await p.page.click("#go");
++  await p.page.waitForFunction(() => document.getElementById("x")?.textContent === "y");
++  expect(await p.$("#x", (e) => e.classList.contains("old")), "old attributes held during settle").toBe(true);
++  await p.page.waitForTimeout(700);
++  expect(await p.$("#x", (e) => e.classList.contains("new"))).toBe(true);
++});
++row("modifier/two-modifiers", ["SwapWithTwoModifiers:`${HxSwapStyle} ${SwapScrollValue | SwapShowValue} ${SwapTimingValue | SwapTransition}`"], async (o) => {
++  const p = await o({ body: tall(`<div id="t" style="height:300px">old</div>`) + fixedGo({ target: "#t", swap: "innerHTML show:top swap:300ms" }), routes: { "/r": { body: "new" } } });
++  await p.page.click("#go");
++  await p.page.waitForTimeout(120);
++  expect(await p.text("#t")).toBe("old");
++  await p.settle(); await p.page.waitForTimeout(400);
++  expect(await p.text("#t")).toBe("new");
++  expect(await p.page.evaluate(() => Math.round(document.getElementById("t").getBoundingClientRect().top))).toBe(0);
++});
++
++// ── triggers ─────────────────────────────────────────────────────────────────
++const fire = {
++  click: (pg) => pg.click("#el"), dblclick: (pg) => pg.dblclick("#el"), mouseenter: (pg) => pg.hover("#el"), mouseover: (pg) => pg.hover("#el"),
++  mouseleave: async (pg) => { await pg.hover("#el"); await pg.mouse.move(700, 500); }, mouseout: async (pg) => { await pg.hover("#el"); await pg.mouse.move(700, 500); },
++  mousedown: async (pg) => { await pg.hover("#el"); await pg.mouse.down(); }, mouseup: async (pg) => { await pg.hover("#el"); await pg.mouse.down(); await pg.mouse.up(); },
++  keydown: (pg) => pg.press("#el", "a"), keyup: (pg) => pg.press("#el", "a"), keypress: (pg) => pg.press("#el", "a"),
++  change: async (pg) => { await pg.fill("#el", "x"); await pg.press("#el", "Tab"); }, input: (pg) => pg.type("#el", "x"),
++  focus: (pg) => pg.focus("#el"), blur: async (pg) => { await pg.focus("#el"); await pg.press("#el", "Tab"); },
++  focusin: (pg) => pg.focus("#el input"), focusout: async (pg) => { await pg.focus("#el input"); await pg.press("#el input", "Tab"); },
++  touchstart: (pg) => pg.dispatchEvent("#el", "touchstart"), touchend: (pg) => pg.dispatchEvent("#el", "touchend"), touchmove: (pg) => pg.dispatchEvent("#el", "touchmove"),
++  scroll: (pg) => pg.evaluate(() => { document.getElementById("el").scrollTop = 200; }),
++  resize: async (pg) => { await pg.setViewportSize({ width: 900, height: 600 }); await pg.waitForTimeout(100); await pg.setViewportSize({ width: 700, height: 500 }); },
++};
++const carrier = (ev, opts) => {
++  const o = { swap: "none", ...opts };
++  if (["keydown", "keyup", "keypress", "change", "input", "focus", "blur"].includes(ev)) return render(Input().setId("el").setName("q").setHtmx(hx(u("/r"), o))) + `<input id="other">`;
++  if (ev === "focusin" || ev === "focusout") return render(Div(Input().setName("q")).setId("el").setHtmx(hx(u("/r"), o))) + `<input id="other">`;
++  if (ev === "scroll") return render(Div(Div().addAttribute("style", "height:2000px")).setId("el").addAttribute("style", "height:100px;overflow:auto").setHtmx(hx(u("/r"), o)));
++  return render(Div("el").setId("el").addAttribute("style", "width:200px;height:50px").setHtmx(hx(u("/r"), o)));
++};
++for (const ev of Object.keys(fire)) {
++  row(`trigger/${ev}`, [`DOMEvent:${ev}`, "HTMX.trigger"], async (o) => {
++    const p = await o({ body: carrier(ev, { trigger: ev }), routes: { "/r": { body: "" } } });
++    await fire[ev](p.page); await p.page.waitForTimeout(250);
++    expect(p.hx().length).toBeGreaterThanOrEqual(1);
++  }, ev === "resize" ? { known: { "*": F.sel } } : {});
++}
++row("trigger/submit", ["DOMEvent:submit"], async (o) => {
++  const p = await o({ body: render(Form(Input().setName("q").setValue("v"), Button("send").setId("s").setType("submit")).setHtmx(hx(u("/r"), { method: "post", trigger: "submit", swap: "none" }))), routes: { "/r": { body: "" } } });
++  await p.page.click("#s"); await p.settle();
++  expect(p.hx().map((r) => r.method + " " + r.post)).toEqual(["POST q=v"]);
++  expect(p.loads()).toBe(1);
++});
++row("trigger/load", ["HtmxEvent:load"], async (o) => {
++  const p = await o({ body: render(Div().setHtmx(hx(u("/r"), { trigger: "load", swap: "none" }))), routes: { "/r": { body: "" } } });
++  await p.settle();
++  expect(p.hx().length).toBe(1);
++});
++for (const ev of ["revealed", "intersect"]) {
++  row(`trigger/${ev}`, [`HtmxEvent:${ev}`], async (o) => {
++    const p = await o({ body: `<div style="height:3000px"></div>` + render(Div("x").setId("el").setHtmx(hx(u("/r"), { trigger: ev, swap: "none" }))), routes: { "/r": { body: "" } } });
++    await p.page.waitForTimeout(200);
++    expect(p.hx().length, "not before it is visible").toBe(0);
++    await p.page.evaluate(() => document.getElementById("el").scrollIntoView());
++    await p.page.waitForTimeout(300);
++    expect(p.hx().length).toBe(1);
++  });
++}
++row("trigger/once", ["TriggerModifier:once", "ModifiedTrigger:`${BasicTrigger} ${TriggerModifier}`"], async (o) => {
++  const p = await o({ body: carrier("click", { trigger: "click once" }), routes: { "/r": { body: "" } } });
++  await p.page.click("#el"); await p.settle(); await p.page.click("#el"); await p.page.waitForTimeout(250);
++  expect(p.hx().length).toBe(1);
++});
++row("trigger/changed", ["TriggerModifier:changed"], async (o) => {
++  const p = await o({ body: carrier("keyup", { trigger: "keyup changed" }), routes: { "/r": { body: "" } } });
++  await p.page.type("#el", "a"); await p.settle(); await p.page.press("#el", "ArrowLeft"); await p.page.waitForTimeout(250);
++  expect(p.hx().length).toBe(1);
++});
++row("trigger/consume", ["TriggerModifier:consume"], async (o) => {
++  const inner = render(Button("in").setId("in").setType("button").setHtmx(hx(u("/inner"), { trigger: "click consume", swap: "none" })));
++  const p = await o({ body: `<div hx-get="/outer" hx-trigger="click" hx-swap="none">${inner}</div>`, routes: { "/inner": { body: "" }, "/outer": { body: "" } } });
++  await p.page.click("#in"); await p.page.waitForTimeout(300);
++  expect(p.hx().map((r) => r.path)).toEqual(["/inner"]);
++});
++row("trigger/delay", ["DelayedTrigger:`${BasicTrigger} delay:${DelayValue}`"], async (o) => {
++  const p = await o({ body: carrier("keyup", { trigger: "keyup delay:300ms" }), routes: { "/r": { body: "" } } });
++  await p.page.type("#el", "abc", { delay: 30 }); await p.page.waitForTimeout(150);
++  expect(p.hx().length, "nothing inside the delay").toBe(0);
++  await p.page.waitForTimeout(400);
++  expect(p.hx().length).toBe(1);
++});
++row("trigger/throttle", ["ThrottledTrigger:`${BasicTrigger} throttle:${DelayValue}`"], async (o) => {
++  const p = await o({ body: carrier("click", { trigger: "click throttle:500ms" }), routes: { "/r": { body: "" } } });
++  for (let i = 0; i < 4; i++) await p.page.click("#el");
++  await p.page.waitForTimeout(150);
++  expect(p.hx().length).toBe(1);
++});
++row("trigger/changed-delay", ["ChangedDelayTrigger:`${BasicTrigger} changed delay:${DelayValue}`"], async (o) => {
++  const p = await o({ body: carrier("keyup", { trigger: "keyup changed delay:200ms" }), routes: { "/r": { body: "" } } });
++  await p.page.type("#el", "ab", { delay: 20 }); await p.page.waitForTimeout(450);
++  await p.page.press("#el", "ArrowLeft"); await p.page.waitForTimeout(450);
++  expect(p.hx().length).toBe(1);
++});
++for (const [every, s] of [["every 1s", 1], ["every 2s", 2], ["every 5s", 5], ["every 10s", 10]]) {
++  row(`trigger/${every}`, [`PollingTrigger:${every}`], async (o) => {
++    const p = await o({ clock: true, body: render(Div("p").setId("pl").setHtmx(hx(u("/r"), { trigger: every, target: "this", swap: "none" }))), routes: { "/r": { body: "" } } });
++    await p.page.clock.runFor(s * 1000 - 100); await p.page.waitForTimeout(50);
++    expect(p.hx().length, "not before the interval").toBe(0);
++    await p.page.clock.runFor(s * 2000); await p.page.waitForTimeout(150);
++    expect(p.hx().length).toBeGreaterThanOrEqual(2);
++  });
++}
++row("trigger/sse:message", ["HxTrigger:sse:message"], async (o) => {
++  const listener = render(Div("l").setId("l").setHtmx(hx(u("/on"), { trigger: "sse:message from:#conn", swap: "none" })));
++  const p = await o({ ext: ["hx-sse"], body: `<div id="conn" hx-sse:connect="/stream" hx-swap="none">${listener}</div>`, routes: { "/stream": { contentType: "text/event-stream", body: "event: message\ndata: one\n\n" }, "/on": { body: "" } } });
++  await p.page.waitForTimeout(800);
++  expect(p.reqs.filter((r) => r.path === "/on").length).toBeGreaterThanOrEqual(1);
++}, { known: { "*": F.sel } });
++row("trigger/ws:message", ["HxTrigger:ws:message"], async (o, page) => {
++  await page.routeWebSocket("ws://oracle.test/ws", (ws) => { ws.onMessage(() => {}); setTimeout(() => ws.send("<div id='wsx'>m</div>"), 200); });
++  const listener = render(Div("l").setId("l").setHtmx(hx(u("/on"), { trigger: "ws:message from:#conn", swap: "none" })));
++  const p = await o({ ext: ["hx-ws"], body: `<div id="conn" hx-ws:connect="ws://oracle.test/ws"></div>${listener}`, routes: { "/on": { body: "" } } });
++  await p.page.waitForTimeout(800);
++  expect(p.reqs.filter((r) => r.path === "/on").length).toBeGreaterThanOrEqual(1);
++}, { known: { "*": F.sel } });
++
++// ── hx-sync ──────────────────────────────────────────────────────────────────
++// 4 triggers 30 ms apart against a 150 ms endpoint; the expectation is the strategy's documented count.
++const syncCases = { drop: [1, "r1"], abort: [1, "r1"], replace: [null, "last"], queue: [2, null], "queue first": [2, "r2"], "queue last": [2, "last"], "queue all": [4, "r4"] };
++for (const [sync, [count, lands]] of Object.entries(syncCases)) {
++  row(`sync/${sync}`, [`HxSync:${sync}`, "HTMX.sync"], async (o) => {
++    let n = 0;
++    const p = await o({ body: `<div id="t">-</div>` + render(Input().setId("el").setName("q").setHtmx(hx(u("/r"), { trigger: "go", sync, target: "#t", swap: "innerHTML" }))), routes: { "/r": () => ({ delay: 150, body: `r${++n}` }) } });
++    await p.page.evaluate(async () => { const e = document.getElementById("el"); for (let i = 0; i < 4; i++) { e.value = "v" + i; e.dispatchEvent(new Event("go")); await new Promise((r) => setTimeout(r, 30)); } });
++    await p.page.waitForTimeout(1100);
++    const t = await p.text("#t");
++    if (count !== null) expect(p.hx().length).toBe(count);
++    if (lands === "last") expect(p.hx().at(-1)?.path).toContain("q=v3");
++    else if (lands) expect(t).toBe(lands);
++  }, { level: "effect" });
++}
++
++// ── request bag ──────────────────────────────────────────────────────────────
++for (const [label, v, want] of [["true", true, "/r"], ["string", "/pushed", "/pushed"], ["false", false, "/"]]) {
++  row(`bag/pushUrl:${label}`, ["HTMX.pushUrl"], async (o) => {
++    const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", pushUrl: v }), routes: { "/r": { body: "new" } } });
++    const h0 = await p.page.evaluate(() => history.length);
++    await p.page.click("#go"); await p.settle();
++    expect(await p.page.evaluate(() => location.pathname)).toBe(want);
++    expect(await p.page.evaluate(() => history.length)).toBe(v === false ? h0 : h0 + 1);
++  });
++}
++row("bag/replaceUrl", ["HTMX.replaceUrl"], async (o) => {
++  const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", replaceUrl: "/replaced" }), routes: { "/r": { body: "new" } } });
++  const h0 = await p.page.evaluate(() => history.length);
++  await p.page.click("#go"); await p.settle();
++  expect([await p.page.evaluate(() => location.pathname), await p.page.evaluate(() => history.length)]).toEqual(["/replaced", h0]);
++});
++row("bag/vals", ["HTMX.vals"], async (o) => {
++  const p = await o({ body: go({ method: "post", vals: { a: 1, b: "x y" }, swap: "none" }), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(p.hx()[0]?.post).toBe("a=1&b=x+y");
++});
++row("bag/headers", ["HTMX.headers"], async (o) => {
++  const p = await o({ body: go({ headers: { "X-Who": "Toni" }, swap: "none" }), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(p.hx()[0]?.headers["x-who"]).toBe("Toni");
++});
++row("bag/headers non-Latin-1", ["HTMX.headers"], async (o) => {
++  const p = await o({ body: go({ headers: { "X-Who": "Tonič" }, swap: "none" }), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(p.hx().length, "the request leaves").toBe(1);
++}, { known: { "*": F.hdr } });
++row("bag/include", ["HTMX.include"], async (o) => {
++  const ids = defineIds(["other"]);
++  const p = await o({ body: `<input id="other" name="o" value="inc">` + go({ include: ids.other, swap: "none" }), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(p.hx()[0]?.path).toBe("/r?o=inc");
++});
++row("bag/encoding", ["HTMX.encoding", "HxEncoding:multipart/form-data"], async (o) => {
++  const p = await o({ body: render(Form(Input().setName("q").setValue("v"), Button("s").setId("go").setType("submit")).setHtmx(hx(u("/r"), { method: "post", encoding: "multipart/form-data", swap: "none" }))), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(p.hx()[0]?.headers["content-type"]).toMatch(/^multipart\/form-data; boundary=/);
++});
++row("bag/validate", ["HTMX.validate"], async (o) => {
++  const p = await o({ body: render(Form(Input().setName("q").toggle("required"), Button("s").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", validate: true, include: "closest form", swap: "none" })))), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(250);
++  expect(p.hx().length, "invalid form blocks the request").toBe(0);
++}, { level: "effect" });
++for (const accept of [true, false]) {
++  row(`bag/confirm:${accept ? "accept" : "dismiss"}`, ["HTMX.confirm"], async (o) => {
++    const p = await o({ body: go({ confirm: "Sure?", swap: "none" }), routes: { "/r": { body: "" } } });
++    const seen = [];
++    p.page.on("dialog", (d) => { seen.push(d.message()); accept ? d.accept() : d.dismiss(); });
++    await p.page.click("#go"); await p.page.waitForTimeout(300);
++    expect([seen, p.hx().length]).toEqual([["Sure?"], accept ? 1 : 0]);
++  });
++}
++row("bag/indicator+htmxIndicator", ["HTMX.indicator", "Tag#htmxIndicator"], async (o) => {
++  const ids = defineIds(["spin"]);
++  const p = await o({ body: render(Span("…").setId("spin").htmxIndicator()) + go({ indicator: ids.spin, swap: "none" }), routes: { "/r": { delay: 500, body: "" } } });
++  const op = () => p.page.evaluate(() => getComputedStyle(document.getElementById("spin")).opacity);
++  expect(await op()).toBe("0");
++  await p.page.click("#go"); await p.page.waitForTimeout(350);
++  expect(await op()).toBe("1");
++});
++row("bag/disable", ["HTMX.disable"], async (o) => {
++  const ids = defineIds(["d"]);
++  const p = await o({ body: `<button id="d">d</button>` + go({ disable: ids.d, swap: "none" }), routes: { "/r": { delay: 400, body: "" } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(150);
++  expect(await p.$("#d", (e) => e.disabled)).toBe(true);
++  await p.settle(); expect(await p.$("#d", (e) => e.disabled)).toBe(false);
++});
++row("bag/select", ["HTMX.select"], async (o) => {
++  const ids = defineIds(["s"]);
++  const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", select: ids.s, swap: "innerHTML" }), routes: { "/r": { body: `<p>junk</p><span id="s">picked</span>` } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.$("#t", (e) => e.innerHTML.replace(/ class=""/g, ""))).toBe(`<span id="s">picked</span>`);
++});
++row("bag/ignore", ["HTMX.ignore"], async (o) => {
++  const inner = render(Button("in").setId("in").setType("button").setHtmx(hx(u("/inner"), { swap: "none" })));
++  const p = await o({ body: render(Div().setHtmx(hx(u("/never"), { ignore: true, trigger: "never" }))).replace("></div>", `>${inner}</div>`), routes: { "/inner": { body: "" } } });
++  await p.page.click("#in"); await p.page.waitForTimeout(250);
++  expect(p.hx().length, "descendants of hx-ignore are not processed").toBe(0);
++});
++row("bag/preserve:true", ["HTMX.preserve"], async (o) => {
++  const mk = (t) => render(Div(t).setId("p").setHtmx(hx(u("/unused"), { preserve: true, trigger: "never" })));
++  const p = await o({ body: `<div id="w">${mk("OLD")}</div>` + go({ target: "#w", swap: "innerHTML" }), routes: { "/r": { body: mk("NEW") } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#p")).toBe("OLD");
++});
++row("bag/preserve:false", ["HTMX.preserve"], async (o) => {
++  const mk = (t) => render(Div(t).setId("p").setHtmx(hx(u("/unused"), { preserve: false, trigger: "never" })));
++  const p = await o({ body: `<div id="w">${mk("OLD")}</div>` + go({ target: "#w", swap: "innerHTML" }), routes: { "/r": { body: mk("NEW") } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#p")).toBe("NEW");
++}, { known: { "*": F.bag } });
++row("bag/boost", ["HTMX.boost"], async (o) => {
++  const p = await o({ body: render(A("b").setId("b").setHref(u("/page2")).setHtmx(hx(u("/page2"), { boost: true }))), routes: { "/page2": { body: "<p id='p2'>page2</p>" } } });
++  await p.page.click("#b"); await p.page.waitForTimeout(350);
++  expect(await p.page.evaluate(() => location.pathname)).toBe("/page2");
++  expect(await p.page.evaluate(() => document.getElementById("b") === null)).toBe(true);
++}, { known: { "*": F.bag } });
++row("bag/swapOob", ["HTMX.swapOob"], async (o) => {
++  const resp = render(Div(Span("oob-new")).setId("oob").setHtmx(hx(u("/invented"), { swapOob: true })));
++  const p = await o({ body: `<div id="oob">old</div>` + go({ swap: "none" }), routes: { "/r": { body: resp }, "/invented": { body: "INVENTED" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#oob")).toBe("oob-new");
++  expect(await p.$("#oob", (e) => e.hasAttribute("hx-get")), "OOB content arrives inert").toBe(false);
++}, { known: { "*": F.bag } });
++row("bag/config.timeout", ["HTMX.config", "HxConfig.timeout"], async (o) => {
++  const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", config: { timeout: 200 } }), routes: { "/r": { delay: 900, body: "late" } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(1200);
++  expect(await p.text("#t")).toBe("old");
++});
++row("bag/config.credentials", ["HxConfig.credentials"], async (o) => {
++  const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", config: { credentials: true } }), routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#t")).toBe("new");
++}, { known: { "*": F.cred } });
++row("bag/config.mode", ["HxConfig.mode"], async (o) => {
++  const p = await o({ body: go({ config: { mode: "no-cors" }, swap: "none" }), scripts: `<script>window.__modes=[];const f=window.fetch;window.fetch=(u,i)=>{window.__modes.push(i?.mode);return f(u,i)}</script>`, routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => window.__modes)).toEqual(["no-cors"]);
++}, { known: { "*": F.mode }, level: "read" });
++
++// ── hx-status ────────────────────────────────────────────────────────────────
++const statusPage = (status) => render(Div("main-old").setId("main"), Form(Div("").cssClass("errors"), Input().setName("x"), Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", target: "#main", swap: "outerMorph", pushUrl: true, status }))).setId("form"));
++const err422 = { "/r": { status: 422, body: '<form id="form"><div class="errors">FORM-ERR</div></form>' } };
++const statusCases = [
++  ["object target+swap+push", { 422: { target: "#form", swap: "outerHTML", push: false } }, ["HTMX.status", "HxStatusConfig.target", "HxStatusConfig.swap", "HxStatusConfig.push", "HxStatusKey:`${1 | 2 | 3 | 4 | 5}${StatusDigit}${StatusDigit}`"]],
++  ["string form", { 422: "swap:outerHTML target:#form push:false" }, ["HTMX.status"]],
++  ["Nxx wildcard", { "4xx": { target: "#form", swap: "outerHTML", push: false } }, ["HxStatusKey:`${1 | 2 | 3 | 4 | 5}xx`"]],
++  ["select", { 422: { target: "#form", swap: "innerHTML", select: ".errors", push: false } }, ["HxStatusConfig.select"]],
++];
++for (const [label, status, covers] of statusCases) {
++  row(`status/${label}`, covers, async (o) => {
++    const p = await o({ body: statusPage(status), routes: err422 });
++    await p.page.click("#go"); await p.settle();
++    expect(await p.text("#main")).toBe("main-old");
++    expect((await p.text("#form")) ?? "").toContain("FORM-ERR");
++    expect(await p.page.evaluate(() => location.pathname)).toBe("/");
++  });
++}
++row("status/replace", ["HxStatusConfig.replace"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "outerHTML", push: false, replace: "/replaced" } }), routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => location.pathname)).toBe("/replaced");
++});
++row("status/transition", ["HxStatusConfig.transition"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "#form", swap: "outerHTML", push: false, transition: true } }), routes: err422, scripts: `<script>window.__vt=0;const o=document.startViewTransition?.bind(document);if(o)document.startViewTransition=(c)=>{window.__vt++;return o(c)}</script>` });
++  await p.page.click("#go"); await p.settle(); await p.page.waitForTimeout(150);
++  expect(await p.page.evaluate(() => window.__vt)).toBe(1);
++});
++row("status/spaced target", ["HxStatusConfig.target"], async (o) => {
++  const p = await o({ body: statusPage({ 422: { target: "closest form", swap: "outerHTML", push: false } }), routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect((await p.text("#form")) ?? "").toContain("FORM-ERR");
++}, { known: { "*": F.status } });
++
++// ── Partial ──────────────────────────────────────────────────────────────────
++row("partial/Id x2", ["Partial()#0:Id<N>,View,HxSwap"], async (o) => {
++  const ids = defineIds(["pa", "pb"]);
++  const resp = render(Partial(ids.pa, Div("A-new").setId("pa")), Partial(ids.pb, Div("B-new").setId("pb")));
++  const p = await o({ body: `<div id="pa">A</div><div id="pb">B</div><div id="t">t</div>` + go({ target: "#t", swap: "innerHTML" }), routes: { "/r": { body: resp } } });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#pa"), await p.text("#pb")]).toEqual(["A-new", "B-new"]);
++});
++row("partial/selector", ["Partial()#1:HxTarget,View,HxSwap"], async (o) => {
++  const resp = render(Partial(".items", Div("I-new").cssClass("items"), "outerHTML"));
++  const p = await o({ body: `<div class="items">I</div><div id="t">t</div>` + go({ target: "#t", swap: "innerHTML" }), routes: { "/r": { body: resp } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text(".items")).toBe("I-new");
++});
++row("partial/closest tr", ["Partial()#1:HxTarget,View,HxSwap"], async (o) => {
++  const resp = render(Partial("closest tr", Tr(Td("ROW-NEW")), "outerHTML"));
++  const p = await o({ body: render(Table(Tbody(Tr(Td("ROW-OLD"), Td(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { swap: "none" }))))))), routes: { "/r": { body: resp } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("tr")).toBe("ROW-NEW");
++}, { known: { "htmx-4.0.0-beta6": F.partial } });
++
++// ── HtmxConfig (meta) ────────────────────────────────────────────────────────
++const meta = (cfg) => render(HtmxConfig(cfg));
++row("config/defaultSwap", ["HtmxConfig()#0:HtmxGlobalConfig", "HtmxGlobalConfig.defaultSwap"], async (o) => {
++  const p = await o({ head: meta({ defaultSwap: "outerHTML" }), body: `<div id="w"><div id="t">old</div></div>` + render(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { target: "#t" }))), routes: { "/r": { body: `<p id="n">new</p>` } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.$("#w", (e) => e.innerHTML.replace(/ class=""/g, ""))).toBe(`<p id="n">new</p>`);
++});
++row("config/defaultTimeout", ["HtmxGlobalConfig.defaultTimeout"], async (o) => {
++  const p = await o({ head: meta({ defaultTimeout: 200 }), body: `<div id="t">old</div>` + go({ target: "#t" }), routes: { "/r": { delay: 900, body: "late" } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(1200);
++  expect(await p.text("#t")).toBe("old");
++});
++row("config/implicitInheritance", ["HtmxGlobalConfig.implicitInheritance"], async (o) => {
++  const p = await o({ head: meta({ implicitInheritance: true }), body: `<div id="t">old</div><div hx-target="#t">${render(Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { swap: "innerHTML" })))}</div>`, routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#t")).toBe("new");
++});
++row("config/noSwap", ["HtmxGlobalConfig.noSwap"], async (o) => {
++  const p = await o({ head: meta({ noSwap: [418] }), body: `<div id="t">old</div>` + go({ target: "#t" }), routes: { "/r": { status: 418, body: "teapot" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#t")).toBe("old");
++});
++row("config/transitions", ["HtmxGlobalConfig.transitions"], async (o) => {
++  const p = await o({ head: meta({ transitions: true }), body: `<div id="t">old</div>` + go({ target: "#t" }), routes: { "/r": { body: "new" } }, scripts: `<script>window.__vt=0;const o=document.startViewTransition?.bind(document);if(o)document.startViewTransition=(c)=>{window.__vt++;return o(c)}</script>` });
++  await p.page.click("#go"); await p.settle(); await p.page.waitForTimeout(150);
++  expect(await p.page.evaluate(() => window.__vt)).toBe(1);
++});
++row("config/prefix", ["HtmxGlobalConfig.prefix"], async (o) => {
++  const p = await o({ head: meta({ prefix: "data-hx-" }), body: `<div id="t">old</div><button id="go" data-hx-get="/r" data-hx-target="#t">go</button>`, routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#t")).toBe("new");
++});
++row("config/metaCharacter", ["HtmxGlobalConfig.metaCharacter"], async (o) => {
++  const p = await o({ head: meta({ metaCharacter: "_" }), body: `<div id="t">old</div><div hx-target_inherited="#t"><button id="go" hx-get="/r">go</button></div>`, routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#t")).toBe("new");
++});
++row("config/history", ["HtmxGlobalConfig.history"], async (o) => {
++  const p = await o({ head: meta({ history: false }), body: `<div id="t">old</div>` + go({ target: "#t", pushUrl: true }), routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => location.pathname), "history:false suppresses the push").toBe("/");
++});
++row("config/logAll", ["HtmxGlobalConfig.logAll"], async (o, page) => {
++  const logs = []; page.on("console", (m) => logs.push(m.text()));
++  const p = await o({ head: meta({ logAll: true }), body: go({ swap: "none" }), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(logs.some((l) => /htmx:/.test(l))).toBe(true);
++});
++row("config/extensions allowlist", ["HtmxGlobalConfig.extensions"], async (o) => {
++  const p = await o({ head: meta({ extensions: "sse" }), ext: ["hx-preload"], body: `<div id="t">old</div><button id="go" hx-get="/r" hx-target="#t" hx-preload="mousedown">go</button>`, routes: { "/r": { body: "new" } } });
++  await p.page.hover("#go"); await p.page.mouse.down(); await p.page.waitForTimeout(250);
++  expect(p.reqs.filter((r) => r.path === "/r").length, "preload is outside the allowlist, so mousedown prefetches nothing").toBe(0);
++});
++row("config/inlineScriptNonce", ["HtmxGlobalConfig.inlineScriptNonce"], async (o) => {
++  const p = await o({ csp: "script-src 'nonce-n1' 'self'", head: meta({ inlineScriptNonce: "n1" }).replace("<meta", '<meta nonce="n1"'), body: `<div id="t">old</div>` + go({ target: "#t" }), routes: { "/r": { body: "<script>window.__ran=1</script><p>new</p>" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => window.__ran)).toBe(1);
++}, { level: "effect" });
++row("config/inlineStyleNonce", ["HtmxGlobalConfig.inlineStyleNonce"], async (o) => {
++  const p = await o({ head: meta({ inlineStyleNonce: "n2" }), body: "<p>x</p>" });
++  expect(await p.page.evaluate(() => document.querySelector("style[nonce]")?.nonce ?? null), "htmx's injected style carries the nonce").toBe("n2");
++}, { known: { "*": F.cfg } });
++row("config/mode", ["HtmxGlobalConfig.mode"], async (o) => {
++  const p = await o({ head: meta({ mode: "no-cors" }), body: go({ swap: "none" }), scripts: `<script>window.__modes=[];const f=window.fetch;window.fetch=(u,i)=>{window.__modes.push(i?.mode);return f(u,i)}</script>`, routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => window.__modes)).toEqual(["no-cors"]);
++}, { level: "read" });
++
++// ── hxResponse() headers and HX-Location ─────────────────────────────────────
++const hdr = (b) => b.getHeaders();
++const respPage = `<div id="t">t-old</div><div id="t2">t2-old</div>` + go({ target: "#t" });
++row("response/trigger", ["hxResponse()#0:View", "HxResponse#trigger"], async (o) => {
++  const p = await o({ body: respPage, scripts: `<script>window.__got=[];document.addEventListener("saved",(e)=>window.__got.push(e.detail?.x ?? "bare"))</script>`, routes: { "/r": { headers: hdr(hxResponse(Div("ok")).trigger("saved", { x: "š" })), body: "ok" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => window.__got)).toEqual(["š"]);
++});
++row("response/pushUrl", ["HxResponse#pushUrl"], async (o) => {
++  const p = await o({ body: respPage, routes: { "/r": { headers: hdr(hxResponse(Div("ok")).pushUrl("/p")), body: "ok" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => location.pathname)).toBe("/p");
++});
++row("response/replaceUrl", ["HxResponse#replaceUrl"], async (o) => {
++  const p = await o({ body: respPage, routes: { "/r": { headers: hdr(hxResponse(Div("ok")).replaceUrl("/rp")), body: "ok" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => location.pathname)).toBe("/rp");
++});
++row("response/redirect", ["HxResponse#redirect"], async (o) => {
++  const p = await o({ body: respPage, routes: { "/r": { headers: hdr(hxResponse(Empty()).redirect("/d")), body: "" }, "/d": { body: "<p>redirected</p>" } } });
++  await p.page.click("#go"); await p.page.waitForURL("**/d");
++  expect(new URL(p.page.url()).pathname).toBe("/d");
++});
++row("response/refresh", ["HxResponse#refresh"], async (o) => {
++  const p = await o({ body: respPage, routes: { "/r": { headers: hdr(hxResponse(Empty()).refresh()), body: "" } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(400);
++  expect(p.loads()).toBe(2);
++});
++row("response/retarget+reswap+reselect", ["HxResponse#retarget", "HxResponse#reswap", "HxResponse#reselect"], async (o) => {
++  const p = await o({ body: respPage, routes: { "/r": { headers: hdr(hxResponse(Empty()).retarget("#t2").reswap("beforeend").reselect("#s")), body: `<span id="s">sel</span><span>junk</span>` } } });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.$("#t", (e) => e.innerHTML.replace(/ class=""/g, "")), await p.$("#t2", (e) => e.innerHTML.replace(/ class=""/g, ""))]).toEqual(["t-old", `t2-old<span id="s">sel</span>`]);
++});
++row("response/reswap with modifier", ["HxResponse#reswap"], async (o) => {
++  const p = await o({ body: tall(`<div id="t" style="height:300px">old</div>`) + fixedGo({ target: "#t", swap: "innerHTML" }), routes: { "/r": { headers: hdr(hxResponse(Empty()).reswap("innerHTML show:window:top")), body: "new" } } });
++  await p.page.evaluate(() => window.scrollTo(0, 1200));
++  await p.page.click("#go"); await p.settle();
++  expect(await p.page.evaluate(() => Math.round(window.scrollY))).toBe(0);
++}, { known: { "*": F.mod } });
++row("response/location string", ["HxResponse#location", "HxLocationConfig.path"], async (o) => {
++  const p = await o({ body: respPage, routes: { "/r": { headers: hdr(hxResponse(Empty()).location("/l")), body: "" }, "/l": { body: "<p>loc</p>" } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(400);
++  expect(p.reqs.map((r) => r.path)).toContain("/l");
++  expect(await p.page.evaluate(() => location.pathname)).toBe("/l");
++});
++row("response/location object", ["HxLocationConfig.target", "HxLocationConfig.swap", "HxLocationConfig.select", "HxLocationConfig.values", "HxLocationConfig.headers", "HxLocationConfig.source", "HxLocationConfig.event"], async (o) => {
++  const loc = { path: "/l", target: "#t2", swap: "beforeend", select: "#ls", source: "#go", event: "click", values: { v: 1 }, headers: { "X-H": "1" } };
++  const p = await o({ body: respPage, routes: { "/r": { headers: hdr(hxResponse(Empty()).location(loc)), body: "" }, "/l": { body: `<span id="ls">LOC</span><span>junk</span>` } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(400);
++  const l = p.reqs.find((r) => r.path.startsWith("/l"));
++  expect([l?.path, l?.headers["x-h"], await p.$("#t2", (e) => e.innerHTML.replace(/ class=""/g, ""))]).toEqual(["/l?v=1", "1", `t2-old<span id="ls">LOC</span>`]);
++}, { level: "effect" });
++row("response/location handler", ["HxLocationConfig.handler"], async (o) => {
++  const p = await o({ body: respPage, scripts: `<script>window.h=()=>{window.__h=1}</script>`, routes: { "/r": { headers: hdr(hxResponse(Empty()).location({ path: "/l", handler: "h" })), body: "" }, "/l": { body: "x" } } });
++  await p.page.click("#go"); await p.page.waitForTimeout(400);
++  expect(await p.page.evaluate(() => window.__h)).toBe(1);
++}, { known: { "*": F.cfg } });
++
++// ── behaviors runtime lifecycle (htmx events the runtime listens to) ─────────
++row("behaviors/drawer closeOn nav", [`behaviors:${HTMX_EVENTS.afterSwap}`], async (o) => {
++  const fx = fixtureIds;
++  const body = render(Div(Div(A("nav").setId("in").setHref(u("/navpage")).setHtmx(hx(u("/navpage"), { target: "#main-content", swap: "outerMorph", pushUrl: true }))).setId(fx.drawerPanel.id), Div().setId(fx.drawerBackdrop.id), Button("open").setId("carrier").setType("button").behavior("drawer", { target: fx.drawerPanel, backdrop: fx.drawerBackdrop, bodyClass: "overflow-hidden" })), Div("main-old").setId("main-content"));
++  const p = await o({ body, scripts: `<script src="/fb.js" defer></script>`, routes: { "/navpage": { body: "<div id='main-content'>new page</div>" } } });
++  await p.page.waitForTimeout(150); await p.page.click("#carrier");
++  await p.page.evaluate(() => document.getElementById("in").click()); await p.settle(); await p.page.waitForTimeout(100);
++  expect(await p.page.evaluate((i) => document.getElementById(i).classList.contains("is-open"), fx.drawerPanel.id)).toBe(false);
++}, { known: { "*": F.drawer }, behaviors: true });
++row("behaviors/resetOnSuccess", [`behaviors:${HTMX_EVENTS.afterRequest}`], async (o) => {
++  const body = render(Form(Input().setId("fi").setName("v"), Button("s").setId("go").setType("submit")).setId("f").setHtmx(hx(u("/r"), { method: "post", swap: "none" })).behavior("resetOnSuccess", {}));
++  const p = await o({ body, scripts: `<script src="/fb.js" defer></script>`, routes: { "/r": { body: "" } } });
++  await p.page.waitForTimeout(150); await p.page.fill("#fi", "typed"); await p.page.click("#go"); await p.settle(); await p.page.waitForTimeout(100);
++  expect(await p.$("#fi", (e) => e.value)).toBe("");
++}, { behaviors: true });
++
++// ── record rows: pin the corrected history (F-A-102, F-D-106, CLAUDE.md:275) ─
++row("record/legacy <hx-partial> bytes swap", ["record:hx-partial"], async (o) => {
++  const ids = OLD.defineIds(["pa", "pb"]);
++  const resp = OLD.render(OLD.Partial(ids.pa, OLD.Div("A-new").setId("pa")), OLD.Partial(ids.pb, OLD.Div("B-new").setId("pb")));
++  expect(resp).toContain("<hx-partial");
++  const p = await o({ body: `<div id="pa">A</div><div id="pb">B</div><div id="t">t</div>` + go({ target: "#t", swap: "innerHTML" }), routes: { "/r": { body: resp } } });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#pa"), await p.text("#pb")]).toEqual(["A-new", "B-new"]);
++});
++row("record/bare hx-preload prefetches under the extension", ["record:hx-preload"], async (o) => {
++  const p = await o({ ext: ["hx-preload"], body: `<div id="t">old</div><button id="go" hx-get="/r" hx-target="#t" hx-preload>go</button>`, routes: { "/r": { body: "new" } } });
++  await p.page.hover("#go"); await p.page.mouse.down(); await p.page.waitForTimeout(250);
++  const r = () => p.reqs.filter((x) => x.path === "/r").length;
++  expect(r(), "mousedown prefetches").toBe(1);
++  await p.page.mouse.up(); await p.settle();
++  expect([r(), await p.text("#t")]).toEqual([1, "new"]);
++});
++row("record/form enctype fallback without hx-encoding", ["record:enctype-fallback"], async (o) => {
++  const p = await o({ body: render(Form(Input().setName("q").setValue("v"), Button("s").setId("go").setType("submit")).setEnctype("multipart/form-data").setHtmx(hx(u("/r"), { method: "post", swap: "none" }))), routes: { "/r": { body: "" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(p.hx()[0]?.headers["content-type"]).toMatch(/^multipart\/form-data; boundary=/);
++});
++
++
++// ── controls: the working spelling of each known row, so a known row fails on the defect and
++// not on the harness. Untyped escape hatches by design; they cover no typed token.
++row("control/resize from:window", [], async (o) => {
++  const p = await o({ body: render(Div("w").setId("el").setHtmx(hx(u("/r"), { swap: "none" }))).replace("<div", '<div hx-trigger="resize from:window"').replace(/ hx-trigger="[^"]*"(?= hx-get)/, ""), routes: { "/r": { body: "" } } });
++  await fire.resize(p.page); await p.page.waitForTimeout(250);
++  expect(p.hx().length).toBeGreaterThanOrEqual(1);
++});
++row("control/sse message", [], async (o) => {
++  const listener = render(Div("l").setId("l").setHtmx(hx(u("/on"), { trigger: "message from:#conn", swap: "none" })));
++  const p = await o({ ext: ["hx-sse"], body: `<div id="conn" hx-sse:connect="/stream" hx-swap="none">${listener}</div>`, routes: { "/stream": { contentType: "text/event-stream", body: "event: message\ndata: one\n\n" }, "/on": { body: "" } } });
++  await p.page.waitForTimeout(800);
++  expect(p.reqs.filter((r) => r.path === "/on").length).toBeGreaterThanOrEqual(1);
++});
++row("control/ws incoming", [], async (o, page, bundle) => {
++  await page.routeWebSocket("ws://oracle.test/ws", (ws) => { ws.onMessage(() => {}); setTimeout(() => ws.send("<div id='wsx'>m</div>"), 200); });
++  // the extension renamed its event between beta6 and 4.0.0
++  const ev = bundle === "htmx-4.0.0-beta6" ? "htmx:after:ws:message" : "htmx:ws:after:message:incoming";
++  const listener = render(Div("l").setId("l").setHtmx(hx(u("/on"), { trigger: `${ev} from:#conn`, swap: "none" })));
++  const p = await o({ ext: ["hx-ws"], body: `<div id="conn" hx-ws:connect="ws://oracle.test/ws"></div>${listener}`, routes: { "/on": { body: "" } } });
++  await p.page.waitForTimeout(800);
++  expect(p.reqs.filter((r) => r.path === "/on").length).toBeGreaterThanOrEqual(1);
++});
++row("control/focusScroll:true", [], async (o) => {
++  const p = await o({ body: `<div style="height:3000px"></div><div id="wrap"><input id="fi" hx-get="/r" hx-target="#wrap" hx-swap="innerHTML focusScroll:true" hx-trigger="go"></div><div style="height:3000px"></div>`, routes: { "/r": { body: '<input id="fi">' } } });
++  await p.page.evaluate(() => { const i = document.getElementById("fi"); i.focus({ preventScroll: true }); window.scrollTo(0, 0); i.dispatchEvent(new Event("go")); });
++  await p.settle();
++  expect(await p.page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
++});
++row("control/credentials include", [], async (o) => {
++  const p = await o({ body: `<div id="t">old</div>` + go({ target: "#t", config: { credentials: "include" } }), routes: { "/r": { body: "new" } } });
++  await p.page.click("#go"); await p.settle();
++  expect(await p.text("#t")).toBe("new");
++});
++row("control/hx-boost container", [], async (o) => {
++  const p = await o({ body: `<div hx-boost="true"><a id="b" href="/page2">b</a></div>`, routes: { "/page2": { body: "<p id='p2'>page2</p>" } } });
++  await p.page.click("#b"); await p.page.waitForTimeout(350);
++  expect([p.loads(), p.reqs.filter((r) => r.path === "/page2").length, await p.page.evaluate(() => location.pathname)]).toEqual([1, 1, "/page2"]);
++});
++row("control/raw hx-swap-oob", [], async (o) => {
++  const p = await o({ body: `<div id="oob">old</div>` + go({ swap: "none" }), routes: { "/r": { body: `<div id="oob" hx-swap-oob="true"><span>oob-new</span></div>` } } });
++  await p.page.click("#go"); await p.settle();
++  expect([await p.text("#oob"), await p.$("#oob", (e) => e.hasAttribute("hx-get"))]).toEqual(["oob-new", false]);
++});
++row("control/quoted hx-status target", [], async (o) => {
++  const body = render(Div("main-old").setId("main"), Form(Div("").cssClass("errors"), Input().setName("x"), Button("go").setId("go").setType("button").setHtmx(hx(u("/r"), { method: "post", target: "#main", swap: "outerMorph", pushUrl: true })).addAttribute("hx-status:422", `swap:outerHTML target:"closest form" push:false`)).setId("form"));
++  const p = await o({ body, routes: err422 });
++  await p.page.click("#go"); await p.settle();
++  expect((await p.text("#form")) ?? "").toContain("FORM-ERR");
++});
++row("control/drawer closes on a swap containing it", [], async (o) => {
++  const fx = fixtureIds;
++  const body = render(Div(Div(A("nav").setId("in").setHref(u("/navpage")).setHtmx(hx(u("/navpage"), { target: "#shell", swap: "outerHTML", pushUrl: true }))).setId(fx.drawerPanel.id), Div().setId(fx.drawerBackdrop.id), Button("open").setId("carrier").setType("button").behavior("drawer", { target: fx.drawerPanel, backdrop: fx.drawerBackdrop, bodyClass: "overflow-hidden" })).setId("shell"));
++  const p = await o({ body, scripts: `<script src="/fb.js" defer></script>`, routes: { "/navpage": { body: "<div id='shell'>new shell</div>" } } });
++  await p.page.waitForTimeout(150); await p.page.click("#carrier");
++  await p.page.evaluate(() => document.getElementById("in").click()); await p.settle(); await p.page.waitForTimeout(100);
++  expect(await p.page.evaluate(() => document.body.classList.contains("overflow-hidden"))).toBe(false);
++});
++
++export { rows };
+diff --git a/test/grammar/surface.mjs b/test/grammar/surface.mjs
+new file mode 100644
+index 0000000..c124d9a
+--- /dev/null
++++ b/test/grammar/surface.mjs
+@@ -0,0 +1,77 @@
++// Enumerate the typed htmx grammar from the published declarations (dist/*.d.ts), syntactically:
++// every literal member of the listed unions, every template-literal member as written, every key
++// of the listed bag types, every public method of HxResponse. A token is "<Decl>:<member>".
++import ts from "typescript";
++import { readFileSync } from "node:fs";
++
++const UNIONS = {
++  "htmx.d.ts": ["HxHttpMethod", "HxEncoding", "DelayValue", "HxSwapStyle", "SwapScrollValue", "SwapShowValue",
++    "SwapTimingValue", "SwapFocusScroll", "SwapTransition", "SwapIgnoreTitle", "SwapWithModifier", "SwapWithTwoModifiers",
++    "ExtendedCSSSelector", "DOMEvent", "HtmxEvent", "TriggerModifier", "ModifiedTrigger", "DelayedTrigger",
++    "ThrottledTrigger", "ChangedDelayTrigger", "PollingTrigger", "HxTrigger", "HxSync", "HxStatusKey"],
++};
++const BAGS = { "htmx.d.ts": ["HTMX", "HxConfig", "HxStatusConfig"], "patterns.d.ts": ["HtmxGlobalConfig", "HxLocationConfig"] };
++const CLASSES = { "patterns.d.ts": { HxResponse: ["constructor", "build", "getHeaders"] } };
++const FUNCS = { "patterns.d.ts": ["Partial", "HtmxConfig", "hxResponse"], "htmx.d.ts": ["hx", "id", "clss", "closest", "find", "next", "previous"] };
++
++export async function typedSurface(distSrc) {
++  const tokens = [];
++  const src = (f) => ts.createSourceFile(f, readFileSync(`${distSrc}/${f}`, "utf8"), ts.ScriptTarget.Latest, true);
++  const decls = (sf) => new Map(sf.statements.filter((s) => s.name).map((s) => [s.name.text, s]));
++  const memberText = (n, sf) => {
++    if (ts.isLiteralTypeNode(n) && ts.isStringLiteral(n.literal)) return n.literal.text;
++    return n.getText(sf); // template literal / type reference / (string & {}) as written
++  };
++  for (const [file, names] of Object.entries(UNIONS)) {
++    const sf = src(file), d = decls(sf);
++    for (const name of names) {
++      const decl = d.get(name);
++      if (!decl) throw new Error(`surface: ${name} not declared in ${file}`);
++      const t = decl.type;
++      const members = ts.isUnionTypeNode(t) ? t.types : [t];
++      for (const m of members) {
++        const text = memberText(m, sf);
++        if (text === "(string & {})") continue; // deliberately open tail, not grammar
++        if (ts.isTypeReferenceNode(m)) continue; // composed from another enumerated union
++        tokens.push(`${name}:${text}`);
++      }
++    }
++  }
++  for (const [file, names] of Object.entries(BAGS)) {
++    const sf = src(file), d = decls(sf);
++    for (const name of names) {
++      const decl = d.get(name);
++      const lit = ts.isTypeAliasDeclaration(decl) ? decl.type : decl;
++      for (const m of lit.members) if (m.name) tokens.push(`${name}.${m.name.getText(sf)}`);
++    }
++  }
++  for (const [file, classes] of Object.entries(CLASSES)) {
++    const sf = src(file), d = decls(sf);
++    for (const [name, skip] of Object.entries(classes)) {
++      for (const m of d.get(name).members) {
++        if (!m.name || !ts.isMethodDeclaration(m)) continue;
++        if (m.modifiers?.some((x) => x.kind === ts.SyntaxKind.PrivateKeyword)) continue;
++        const n = m.name.getText(sf);
++        if (!skip.includes(n) && !tokens.includes(`${name}#${n}`)) tokens.push(`${name}#${n}`);
++      }
++    }
++  }
++  for (const [file, names] of Object.entries(FUNCS)) {
++    const sf = src(file);
++    for (const name of names) {
++      const overloads = sf.statements.filter((s) => ts.isFunctionDeclaration(s) && s.name?.text === name);
++      if (!overloads.length) throw new Error(`surface: function ${name} not declared in ${file}`);
++      overloads.forEach((o, i) => tokens.push(`${name}()#${i}:${o.parameters.map((p) => p.type?.getText(sf) ?? "?").join(",")}`));
++    }
++  }
++  tokens.push("Tag#setHtmx", "Tag#hxGet", "Tag#hxPost", "Tag#htmxIndicator");
++  const { HTMX_EVENTS } = await import(`${distSrc}/behaviors/events.js`);
++  for (const ev of Object.values(HTMX_EVENTS)) tokens.push(`behaviors:${ev}`);
++  return tokens;
++}
++
++if (import.meta.url === `file://${process.argv[1]}`) {
++  const t = await typedSurface(process.argv[2] ?? "fluent-html/dist/src");
++  console.log(t.length + " tokens");
++  console.log(t.join("\n"));
++}

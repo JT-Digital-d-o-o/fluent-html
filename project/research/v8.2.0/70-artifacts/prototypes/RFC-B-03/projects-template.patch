@@ -1,0 +1,20 @@
+diff --git a/templates/full-stack/src/core/layout/assets.ts b/templates/full-stack/src/core/layout/assets.ts
+index c2c6024..924a7de 100644
+--- a/templates/full-stack/src/core/layout/assets.ts
++++ b/templates/full-stack/src/core/layout/assets.ts
+@@ -1,3 +1,4 @@
++import { assetUrl as staticAsset, type ResolvedRoute } from "fluent-html";
+ /**
+  * Static-asset cache-busting. The compiled CSS is rebuilt on every deploy, and
+  * LiteSpeed/browsers cache `/css/styles.compiled.css` aggressively by URL — so a
+@@ -37,8 +38,8 @@ function assetVersion(publicPath: string): string {
+  * Pass the public-root-relative path (the leading `/` is optional). The `fingerprint` key is
+  * the signal `@fastify/static`'s onSend hook keys on to upgrade a hit to an immutable cache.
+  */
+-export function assetUrl(url: string): string {
++export function assetUrl(url: string): ResolvedRoute {
+   const publicPath = url.replace(/^\//, "");
+   const version = assetVersion(publicPath);
+-  return version ? `${url}?fingerprint=${version}` : url;
++  return staticAsset(version ? `${url}?fingerprint=${version}` : url);
+ }

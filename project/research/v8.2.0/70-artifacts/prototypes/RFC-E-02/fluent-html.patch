@@ -1,0 +1,174 @@
+diff --git a/src/core/dev-checks.ts b/src/core/dev-checks.ts
+index e3e91c3..1a061f2 100644
+--- a/src/core/dev-checks.ts
++++ b/src/core/dev-checks.ts
+@@ -119,3 +119,101 @@ export function countParents(children: readonly unknown[]): void {
+     }
+   }
+ }
++
++/** @internal The storage the select checks read past the access modifiers. */
++type SelectNode = {
++  el: string;
++  child: unknown;
++  toggles?: string[];
++  attributes: Readonly<Record<string, string>>;
++  _name?: string;
++  _size?: number;
++  _value?: string;
++};
++
++const q = (s: string): string => JSON.stringify(s);
++
++/**
++ * A bound field value that no option carries, on a select that leads with a real
++ * option. With nothing selected, a single select shows and submits its first
++ * option, so an untouched save replaces the stored value. Called by
++ * `FormBinding.select`; dev-only.
++ *
++ * @internal
++ */
++export function assertBoundOption(name: string, bound: string, options: readonly { value: string }[]): void {
++  const first = options[0]!.value;
++  throw new Error(
++    `f.select(${q(name)}): the bound value ${q(bound)} is not one of its ${options.length} option values, ` +
++      `so the select shows ${q(first)} instead and an untouched submit posts ${q(first)}. ` +
++      `Add { value: ${q(bound)}, label: … } to the options, or bind "" with a leading { value: "", label: "Choose…" } ` +
++      `so the user has to pick. Deliberate? setDevChecks(false).`,
++  );
++}
++
++const hasBool = (n: SelectNode, attr: string): boolean =>
++  (n.toggles !== undefined && n.toggles.includes(attr)) || n.attributes[attr] !== undefined;
++
++/**
++ * The value an option submits: its `value` attribute, else its text. `undefined`
++ * when the text is not plain strings (a nested tag or `Raw`), so the check skips.
++ */
++function optionValue(o: SelectNode): string | undefined {
++  if (o._value !== undefined) return o._value;
++  if (o.attributes["value"] !== undefined) return o.attributes["value"];
++  const parts: string[] = [];
++  const walk = (c: unknown): boolean => {
++    if (typeof c === "string") return parts.push(c), true;
++    if (Array.isArray(c)) return c.every(walk);
++    return c === null || c === undefined;
++  };
++  if (!walk(o.child)) return undefined;
++  return parts.join("").replace(/[\t\n\f\r ]+/g, " ").trim();
++}
++
++/**
++ * A `<select required>` the browser fills in by itself. With no option selected,
++ * a single select of display size 1 preselects its first enabled option, and
++ * `required` fires only while that option is the empty-value placeholder. Any
++ * other value is posted on an untouched submit. Called by the serializer for
++ * every `<select>`; dev-only.
++ *
++ * @internal
++ */
++export function assertSelectSubmits(sel: SelectNode): void {
++  if (!hasBool(sel, "required") || hasBool(sel, "multiple") || hasBool(sel, "disabled")) return;
++  const name = sel._name ?? sel.attributes["name"];
++  if (name === undefined || name === "") return;
++  const size = sel._size ?? (sel.attributes["size"] !== undefined ? parseInt(sel.attributes["size"], 10) : undefined);
++  if (size !== undefined && size > 1) return;
++  // The select's list of options, in tree order: option children, and option children of optgroups.
++  const list: { o: SelectNode; off: boolean }[] = [];
++  const collect = (c: unknown, groupOff: boolean, depth: number): boolean => {
++    if (c === null || c === undefined || typeof c === "string") return true;
++    if (Array.isArray(c)) return c.every((x) => collect(x, groupOff, depth));
++    if (typeof c !== "object" || (c as { _t?: number })._t !== 1) return false;
++    const n = c as SelectNode;
++    if (n.el === "option") list.push({ o: n, off: groupOff || hasBool(n, "disabled") });
++    else if (n.el === "optgroup" && depth === 0) return collect(n.child, hasBool(n, "disabled"), 1);
++    return true;
++  };
++  if (!collect(sel.child, false, 0)) return;
++  if (list.some(({ o }) => hasBool(o, "selected"))) return;
++  const pre = list.find(({ off }) => !off);
++  if (pre === undefined) return;
++  const value = optionValue(pre.o);
++  if (value === undefined || value === "") return;
++  const head = list[0]!;
++  const disabledPlaceholder = head !== pre && optionValue(head.o) === "";
++  throw new Error(
++    `<select name=${q(name)} required> ` +
++      (disabledPlaceholder
++        ? `has a disabled placeholder that is not selected, so Chromium and Firefox skip it and preselect ${q(value)}: ` +
++          `required never fires and an untouched submit posts ${q(value)}. Mark the placeholder selected ` +
++          `(Option("Choose…").setValue("").toggle("disabled").toggle("selected")), or drop its disabled. `
++        : `has no empty-value placeholder and nothing selected, so the browser preselects ${q(value)}: ` +
++          `required never fires and an untouched submit posts ${q(value)}. Lead the options with ` +
++          `{ value: "", label: "Choose…" } (f.select) or Option("Choose…").setValue("") (Select). `) +
++      `Deliberate? setDevChecks(false).`,
++  );
++}
+diff --git a/src/elements/forms.ts b/src/elements/forms.ts
+index 2ccc7ea..81199f1 100644
+--- a/src/elements/forms.ts
++++ b/src/elements/forms.ts
+@@ -1,5 +1,5 @@
+ import { defineSchemaKeys } from "../core/proto.js";
+-import { devChecks, assertMutable } from "../core/dev-checks.js";
++import { devChecks, assertMutable, assertBoundOption } from "../core/dev-checks.js";
+ import { Tag } from "../core/tag.js";
+ import { El, Empty } from "../core/utils.js";
+ import type { View } from "../core/types.js";
+@@ -494,11 +494,18 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
+     },
+     select(name, options) {
+       const selected = values[name];
++      let matched = false;
+       const opts = options.map((o) => {
+         const opt = Option(o.label).setValue(o.value);
+-        if (selected !== undefined && String(selected) === o.value) opt.toggle("selected");
++        if (selected !== undefined && String(selected) === o.value) {
++          opt.toggle("selected");
++          matched = true;
++        }
+         return opt;
+       });
++      if (devChecks && !matched && selected != null && String(selected) !== "" && options.length > 0 && options[0]!.value !== "" && !Array.isArray(selected)) {
++        assertBoundOption(name, String(selected), options);
++      }
+       return markInvalid(Select(...opts).setName(name).setId(controlId(name)), name);
+     },
+     checkbox(name, value) {
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 5bc32a6..0709c51 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -4,7 +4,7 @@ import { EMPTY_ATTRS } from "../core/tag.js";
+ import type { Tag } from "../core/tag.js";
+ import type { View } from "../core/types.js";
+ import { isTag, isRawString } from "../core/guards.js";
+-import { devChecks, nextRenderEpoch } from "../core/dev-checks.js";
++import { devChecks, nextRenderEpoch, assertSelectSubmits } from "../core/dev-checks.js";
+ import { escapeHtml, escapeAttr, sanitizeUrl } from "./escape.js";
+ 
+ // URL-valued attributes emitted by the typed setters. Their values are run
+@@ -329,7 +329,10 @@ export function* emitChunks(
+         buf += c === 'script' || c === 'style' ? sanitizeRawContent(v.html, c) : v.html;
+       } else if (isTag(v)) {
+         const el = v.el;
+-        if (epoch !== 0) v._e = epoch;
++        if (epoch !== 0) {
++          v._e = epoch;
++          if (el === 'select') assertSelectSubmits(v as never);
++        }
+         let open = '<' + el + buildAttrs(v);
+         // Render-time CSP nonce: stamp <script>/<style> that have no author nonce.
+         if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
+@@ -412,7 +415,10 @@ export function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): vo
+ 
+     if (isTag(v)) {
+       const el = v.el;
+-      if (epoch !== 0) v._e = epoch;
++      if (epoch !== 0) {
++        v._e = epoch;
++        if (el === 'select') assertSelectSubmits(v as never);
++      }
+       let open = '<' + el + buildAttrs(v);
+       if (nonce && (el === 'script' || el === 'style') && !authorHasNonce(v)) {
+         open += ' nonce="' + escapeAttr(nonce) + '"';

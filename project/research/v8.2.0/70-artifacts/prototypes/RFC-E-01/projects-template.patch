@@ -1,0 +1,85 @@
+diff --git a/templates/full-stack/src/shared/ui/form.ts b/templates/full-stack/src/shared/ui/form.ts
+index 4fdd975..60ff6a5 100644
+--- a/templates/full-stack/src/shared/ui/form.ts
++++ b/templates/full-stack/src/shared/ui/form.ts
+@@ -12,20 +12,14 @@ import { stylers, type Styler } from "../stylers.js";
+ type FormGroupProps = {
+   label: string;
+   input: Tag;
+-  /**
+-   * The control's field name, which becomes the `for`/`id` pair that associates label and
+-   * control. Stated rather than read back off `input`: fluent-html keeps a typed setter's
+-   * value private, so any reader is an internal that can be renamed out from under us.
+-   */
+-  name: string;
+   required?: boolean;
+   /** Overrides the `for`/`id` pair when one page carries the same field name twice. */
+   htmlFor?: string;
+   spacing?: "4" | "6";
+ };
+ 
+-export function FormGroup({ label, input, name, required = false, htmlFor, spacing = "4" }: FormGroupProps) {
+-  const fieldId = htmlFor ?? name;
++export function FormGroup({ label, input, required = false, htmlFor, spacing = "4" }: FormGroupProps) {
++  const fieldId = htmlFor ?? input.getId();
+   return Div(
+     Label(label + (required ? " *" : ""))
+       .setFor(fieldId)
+diff --git a/templates/full-stack/tests/view/components.test.ts b/templates/full-stack/tests/view/components.test.ts
+index 568e4ef..242f4cf 100644
+--- a/templates/full-stack/tests/view/components.test.ts
++++ b/templates/full-stack/tests/view/components.test.ts
+@@ -25,7 +25,7 @@ describe("FormGroup", () => {
+     const html = render(
+       FormGroup({
+         label: "Email",
+-        name: "email",
++        htmlFor: "email",
+         // eslint-disable-next-line fluent-html/prefer-form-for -- unit-testing FormGroup with a sample input, not authoring a form
+         input: Input().setType("email").setName("email"),
+       }),
+@@ -42,7 +42,7 @@ describe("FormGroup", () => {
+     const html = render(
+       FormGroup({
+         label: "Email",
+-        name: "email",
++        htmlFor: "email",
+         input: Input(),
+         required: true,
+       }),
+@@ -57,7 +57,7 @@ describe("FormGroup", () => {
+     const html = render(
+       FormGroup({
+         label: "Email",
+-        name: "email",
++        htmlFor: "email",
+         input: Input(),
+         required: false,
+       }),
+@@ -70,7 +70,7 @@ describe("FormGroup", () => {
+   });
+ 
+   it("should apply the default spacing", () => {
+-    const html = render(FormGroup({ label: "Email", name: "email", input: Input() }));
++    const html = render(FormGroup({ label: "Email", htmlFor: "email", input: Input() }));
+ 
+     expect(html).toContain("mb-4");
+     expect(html).not.toContain("mb-6");
+@@ -79,7 +79,7 @@ describe("FormGroup", () => {
+   });
+ 
+   it("should apply the wide spacing when asked", () => {
+-    const html = render(FormGroup({ label: "Email", name: "email", input: Input(), spacing: "6" }));
++    const html = render(FormGroup({ label: "Email", htmlFor: "email", input: Input(), spacing: "6" }));
+ 
+     expect(html).toContain("mb-6");
+     expect(html).toContain('for="email"');
+@@ -88,7 +88,7 @@ describe("FormGroup", () => {
+ 
+   it("should let htmlFor override the field name", () => {
+     const html = render(
+-      FormGroup({ label: "Email", name: "email", htmlFor: "billing-email", input: Input() }),
++      FormGroup({ label: "Email", htmlFor: "billing-email", input: Input() }),
+     );
+ 
+     expect(html).toContain('for="billing-email"');

@@ -1,0 +1,848 @@
+diff --git a/package.json b/package.json
+index 8f39967..c202c8c 100644
+--- a/package.json
++++ b/package.json
+@@ -13,10 +13,10 @@
+     "USAGE.md"
+   ],
+   "scripts": {
+-    "gen:vocab": "node scripts/gen-vocab.mjs",
++    "gen:vocab": "node scripts/gen-vocab.mjs && tsc && node scripts/gen-fix-contract.mjs && tsc",
+     "build": "tsc",
+     "prepare": "npm run build",
+-    "test": "node test/rule.test.js && node test/type-aware.test.js && node test/derivation.test.js && node test/vocab-drift.mjs",
++    "test": "node test/rule.test.js && node test/type-aware.test.js && node test/derivation.test.js && node test/vocab-drift.mjs && node scripts/gen-fix-contract.mjs --check && node test/fix-contract.mjs",
+     "prepublishOnly": "npm run build"
+   },
+   "repository": {
+diff --git a/scripts/gen-fix-contract.mjs b/scripts/gen-fix-contract.mjs
+new file mode 100644
+index 0000000..cd772d1
+--- /dev/null
++++ b/scripts/gen-fix-contract.mjs
+@@ -0,0 +1,232 @@
++// Fix contract (RFC-C-01): every fix no-tailwind-in-raw-class proposes must
++// type-check against the sibling fluent-html and render the class it replaces.
++// Sweeps the pinned Tailwind class space (getClassList + static roots + bare
++// functional roots + one probe per variant head) through the vocab derivation,
++// tsc-checks every proposed call in one program, renders it, and writes
++// src/fix-contract.generated.ts. Run after `tsc` (reads dist/tailwind-token.js);
++// `--check` exits 1 when the committed file differs from a fresh sweep.
++import { createRequire } from "node:module";
++import { fileURLToPath } from "node:url";
++import { dirname, join } from "node:path";
++import { mkdtempSync, writeFileSync, readFileSync } from "node:fs";
++import { tmpdir } from "node:os";
++
++const require = createRequire(import.meta.url);
++const here = dirname(fileURLToPath(import.meta.url));
++const libDir = join(here, "..", "..", "fluent-html");
++const out = join(here, "..", "src", "fix-contract.generated.ts");
++const check = process.argv.includes("--check");
++
++const { loadDesignSystem } = await import(`${libDir}/dist/scripts/gen-vocab/load-design-system.js`);
++const lib = await import(`${libDir}/dist/src/index.js`);
++const { classifyDerived, chainFor, callText } = require("../dist/tailwind-token.js");
++const ts = require("typescript");
++const { design, tailwindVersion } = await loadDesignSystem();
++
++const valid = (c) => design.candidatesToCss([c])[0] !== null;
++const listed = design.getClassList().map(([c]) => c);
++const listedSet = new Set(listed);
++const extra = [
++  ...design.utilities.keys("static"),
++  ...[...design.utilities.keys("functional")].filter((r) => !r.startsWith("-")),
++].filter((c) => !listedSet.has(c) && valid(c));
++const sweepClasses = [...listed, ...new Set(extra)];
++const heads = [];
++for (const v of design.getVariants()) {
++  if (v.values.length === 0) { if (!v.isArbitrary) heads.push(v.name); continue; }
++  for (const val of v.values) heads.push(v.hasDash ? `${v.name}-${val}` : `${v.name}${val}`);
++}
++const headList = [...new Set(heads)].filter((h) => valid(`${h}:p-4`));
++
++// ── probes ──────────────────────────────────────────────────────
++const lines = [];
++const probe = (code) => { lines.push(code); return lines.length; };
++const noGate = { deadPrefixes: new Set(), numericPrefixes: new Set(), bracketPrefixes: null };
++const mapped = (method, args, pattern) => ({ kind: "mapped", method, args, fix: callText(method, args), pattern });
++const plan = new Map();
++const addCandidate = (cands, cls) => {
++  const hover = chainFor(["hover"], cls);
++  cands.push({ cls, plainLine: probe(`Div()${cls.fix}`), hoverLine: hover === null ? null : probe(`Div()${hover}`) });
++};
++for (const c of sweepClasses) {
++  if (c.startsWith("-")) continue; // negatives: phase 2
++  const d = classifyDerived(c, noGate);
++  const cands = [];
++  if (d.kind === "mapped") {
++    addCandidate(cands, d);
++    const [v] = d.args;
++    if (d.args.length === 1 && typeof v === "string" && /^\d+$/.test(v)) addCandidate(cands, mapped(d.method, [Number(v)], d.pattern));
++  }
++  plan.set(c, { derived: d, cands });
++}
++// cssProp successors: one declaration with a keyword value (no var()/calc()/--tw-*)
++const successor = new Map();
++const propsOf = new Map();
++for (const c of sweepClasses) {
++  const css = design.candidatesToCss([c])[0];
++  if (css === null) continue;
++  const rule = css.split(/\n@/)[0];
++  const own = [...rule.matchAll(/^ {2}([a-z-]+): .+;$/gm)].map((m) => m[1]).filter((p) => !p.startsWith("--"));
++  const props = [...new Set(own.filter((p) => !(p.startsWith("-") && own.includes(p.replace(/^-[a-z]+-/, "")))))];
++  if (props.length > 0) propsOf.set(c, props.join(", "));
++  const m = /^\.[^\n{]+ \{\n {2}([a-z][a-z-]*): ([^\n]+);\n\}\n$/.exec(css);
++  // Dash-less classes (`visible`, `collapse`) stay out: TAILWIND_SHAPE never flags bare words.
++  if (c.includes("-") && !c.startsWith("-") && m && !/var\(|calc\(|--tw-/.test(m[2])) {
++    successor.set(c, { property: m[1], value: m[2], line: probe(`Div().cssProp(${JSON.stringify(m[1])}, ${JSON.stringify(m[2])})`) });
++  }
++}
++// bracket arms: does each catch-all's method type an arbitrary `[…]` value?
++const { getFixableTables } = require("../dist/derive-fixable.js");
++const bracketPlan = getFixableTables().patterns.filter((p) => !p.exactMatch).flatMap((p) => [
++  { pattern: p.pattern, line: probe(`Div()${callText(p.methodName, p.direction ? [p.direction, "[1px]"] : ["[1px]"])}`) },
++  { pattern: `${p.pattern}/[`, line: probe(`Div()${callText(p.methodName, p.direction ? [p.direction, "white/[0.5]"] : ["white/[0.5]"])}`) },
++]);
++// arbitrary-value heads: one probe per variant family (`max-[600px]`); an untyped family is stored as `max-[`
++const arbitraryHeads = [];
++for (const v of design.getVariants()) {
++  for (const sample of ["[600px]", "[.x]"]) {
++    const h = v.hasDash ? `${v.name}-${sample}` : `${v.name}${sample}`;
++    if (valid(`${h}:p-4`)) { arbitraryHeads.push({ head: h, family: h.slice(0, h.indexOf("[") + 1) }); break; }
++  }
++}
++const headPlan = [...headList.map((h) => ({ head: h, family: h })), ...arbitraryHeads].map(({ head, family }) => {
++  const chain = chainFor([head], classifyDerived("p-4", noGate));
++  return { head: family, line: chain === null ? null : probe(`Div()${chain}`) };
++});
++
++// ── tsc + render ────────────────────────────────────────────────
++function typecheck(codeLines) {
++  const dir = mkdtempSync(join(tmpdir(), "fix-contract-"));
++  const file = join(dir, "probes.mts");
++  writeFileSync(file, `import { Div } from "fluent-html";\n` + codeLines.map((l, i) => `export const p${i + 1} = ${l};`).join("\n") + "\n");
++  const program = ts.createProgram([file], {
++    target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
++    strict: true, noEmit: true, skipLibCheck: true, types: [],
++    paths: { "fluent-html": [join(libDir, "dist/src/index.d.ts")] },
++  });
++  const sf = program.getSourceFile(file);
++  const failed = new Set(ts.getPreEmitDiagnostics(program).filter((d) => d.file === sf).map((d) => sf.getLineAndCharacterOfPosition(d.start).line));
++  return (line) => line !== null && !failed.has(line);
++}
++const compiles = typecheck(lines);
++// Effective declarations of the utility rule: `@supports` progressive enhancements fold in
++// as overrides, so a legacy spelling and its v4 successor (bg-gradient-to-t → bg-linear-to-t) compare equal.
++const cssOf = (cls) => {
++  const r = design.candidatesToCss([cls])[0];
++  if (r === null) return null;
++  const decls = new Map();
++  for (const m of r.split(/\n@property/)[0].matchAll(/^\s+([a-z-]+|--[a-z0-9-]+): ([^;\n]+);$/gm)) decls.set(m[1], m[2]);
++  return JSON.stringify([...decls].sort());
++};
++const rendered = (fix) => { const m = /class="([^"]*)"/.exec(lib.render(new Function("Div", `return Div()${fix};`)(lib.Div))); return m ? m[1] : ""; };
++const sameAs = (cls, r) => r === cls || (cssOf(r) !== null && cssOf(r) === cssOf(cls));
++const passes = (c, k) => compiles(k.plainLine) && (k.hoverLine === null || compiles(k.hoverLine)) && sameAs(c, rendered(k.cls.fix));
++
++// ── phase 1 decisions ───────────────────────────────────────────
++const CSS_SUCCESSOR = {}, ROOT_PROPS = {};
++const withheld = [];
++const tally = new Map();
++const fixOf = new Map(); // positive class → its final mapped classification
++const bump = (p, k) => { const t = tally.get(p) ?? { ok: 0, fail: 0, numeric: 0 }; t[k]++; tally.set(p, t); };
++const rootKey = (c) => { const k = design.parseCandidate(c)[0]; return !k ? c : k.kind === "static" ? c.replace(/^-/, "") : k.root.replace(/^-/, ""); };
++const noFix = (c, derived) => {
++  const s = successor.get(c);
++  if (s && compiles(s.line) && sameAs(c, rendered(callText("cssProp", [s.property, s.value])))) { CSS_SUCCESSOR[c] = [s.property, s.value]; return; }
++  const props = propsOf.get(c);
++  const key = rootKey(c);
++  if (props) ROOT_PROPS[key] = [...new Set([...(ROOT_PROPS[key]?.split(", ") ?? []), ...props.split(", ")])].join(", ");
++  if (derived.kind === "mapped") withheld.push([c, derived.pattern && !derived.pattern.exactMatch ? derived.pattern.pattern : null, props ?? ""]);
++};
++for (const [c, { derived, cands }] of plan) {
++  const via = derived.kind === "mapped" && derived.pattern && !derived.pattern.exactMatch ? derived.pattern.pattern : null;
++  const ok = cands.findIndex((k) => passes(c, k));
++  if (ok === 0) { if (via) bump(via, "ok"); fixOf.set(c, cands[0].cls); continue; }
++  if (ok === 1) { bump(via, "ok"); bump(via, "numeric"); fixOf.set(c, cands[1].cls); continue; }
++  if (via) bump(via, "fail");
++  noFix(c, derived);
++}
++const NUMERIC_PREFIXES = [...tally].filter(([, t]) => t.numeric > 0).map(([p]) => p).sort();
++const DEAD_PREFIXES = [...tally].filter(([, t]) => t.ok === 0 && t.fail > 0).map(([p]) => p).sort();
++
++// ── phase 2: negatives (typed negative where proven, else .neg()) ─
++const negPlan = [];
++const negLines = [];
++const withheldDerived = new Map(withheld.map(([c]) => [c, plan.get(c)?.derived]));
++for (const c of sweepClasses.filter((x) => x.startsWith("-"))) {
++  const fixedPos = fixOf.get(c.slice(1));
++  const pos = fixedPos ?? withheldDerived.get(c.slice(1)) ?? null; // withheld positive: typed negative only
++  if (!pos) { negPlan.push({ c, pos: null }); continue; }
++  const last = pos.args[pos.args.length - 1];
++  const typedPrefix = pos.pattern && !pos.pattern.exactMatch && last !== undefined ? pos.pattern.pattern : null;
++  const typed = typedPrefix ? mapped(pos.method, [...pos.args.slice(0, -1), typeof last === "number" ? -last : `-${last}`], pos.pattern) : null;
++  negLines.push(typed ? `Div()${typed.fix}` : "Div()");
++  const t = negLines.length;
++  negLines.push(`Div()${callText("neg", [c.slice(1)])}`);
++  negPlan.push({ c, pos, typed, typedPrefix, typedLine: typed ? t : null, negLine: fixedPos ? t + 1 : null });
++}
++const negCompiles = typecheck(negLines);
++const negTally = new Map();
++let negTyped = 0, negHatch = 0;
++for (const n of negPlan) {
++  if (n.pos === null) { noFix(n.c, classifyDerived(n.c, noGate)); continue; }
++  const typedOk = Boolean(n.typed) && negCompiles(n.typedLine) && sameAs(n.c, rendered(n.typed.fix));
++  if (n.typedPrefix) { const t = negTally.get(n.typedPrefix) ?? { ok: 0, fail: 0 }; typedOk ? t.ok++ : t.fail++; negTally.set(n.typedPrefix, t); }
++  n.typedOk = typedOk;
++}
++const TYPED_NEGATIVE_PREFIXES = [...negTally].filter(([, t]) => t.ok > 0 && t.fail === 0).map(([p]) => p).sort();
++const typedNeg = new Set(TYPED_NEGATIVE_PREFIXES);
++for (const n of negPlan) {
++  if (n.pos === null) continue;
++  if (n.typedOk && typedNeg.has(n.typedPrefix)) negTyped++;
++  else if (n.negLine !== null && negCompiles(n.negLine) && sameAs(n.c, rendered(callText("neg", [n.c.slice(1)])))) negHatch++;
++  else noFix(n.c, { kind: "none" });
++}
++
++const dead = new Set(DEAD_PREFIXES);
++const WITHHELD = Object.fromEntries(withheld.filter(([, p]) => p === null || !dead.has(p)).map(([c, , props]) => [c, props]));
++const BRACKET_PREFIXES = bracketPlan.filter((b) => compiles(b.line)).map((b) => b.pattern).sort();
++const UNTYPED_HEADS = headPlan.filter((h) => h.line !== null && !compiles(h.line)).map((h) => h.head);
++const stats = {
++  classes: sweepClasses.length, heads: headList.length, positivesFixed: fixOf.size, negTyped, negHatch,
++  numericPrefixes: NUMERIC_PREFIXES.length, bracketPrefixes: BRACKET_PREFIXES.length, typedNegativePrefixes: TYPED_NEGATIVE_PREFIXES.length,
++  cssSuccessor: Object.keys(CSS_SUCCESSOR).length, withheld: Object.keys(WITHHELD).length,
++  deadPrefixes: DEAD_PREFIXES.length, rootProps: Object.keys(ROOT_PROPS).length, untypedHeads: UNTYPED_HEADS.length,
++};
++
++const content = `// AUTO-GENERATED by scripts/gen-fix-contract.mjs from fluent-html/class-vocab + tailwindcss ${tailwindVersion}.
++// Do NOT edit by hand — run \`npm run gen:vocab\`. Pinned by \`gen:vocab --check\` and test/fix-contract.mjs.
++/* eslint-disable */
++export type FluentArg = string | number;
++
++/** Catch-alls whose digit-only values the method types as numbers (\`bg-linear-30\` → .bgLinear(30)). */
++export const NUMERIC_PREFIXES: ReadonlySet<string> = new Set(${JSON.stringify(NUMERIC_PREFIXES)});
++
++/** Catch-alls whose method types an arbitrary \`[…]\` value (\`w-[180px]\` → .w("[180px]")), and \`<prefix>/[\` for an arbitrary opacity modifier; other bracket values get no fix. */
++export const BRACKET_PREFIXES: ReadonlySet<string> = new Set(${JSON.stringify(BRACKET_PREFIXES)});
++
++/** Catch-alls whose negatives take the typed negative value (\`-translate-y-1\` → .translate("y", "-1")); others use .neg(). */
++export const TYPED_NEGATIVE_PREFIXES: ReadonlySet<string> = new Set(${JSON.stringify(TYPED_NEGATIVE_PREFIXES)});
++
++/** No fluent method, one keyword-valued declaration → autofix to \`.cssProp(property, value)\`. */
++export const CSS_SUCCESSOR: Readonly<Record<string, readonly [string, string]>> = ${JSON.stringify(CSS_SUCCESSOR)};
++
++/** The derived call fails tsc (value outside the method's union) → report-only; value = the CSS properties it sets. */
++export const WITHHELD: Readonly<Record<string, string>> = ${JSON.stringify(WITHHELD)};
++
++/** Prefix catch-alls no swept class compiles through → never used. */
++export const DEAD_PREFIXES: ReadonlySet<string> = new Set(${JSON.stringify(DEAD_PREFIXES)});
++
++/** Utility root → the CSS properties it sets, for the .cssProp() redirect. */
++export const ROOT_PROPS: Readonly<Record<string, string>> = ${JSON.stringify(ROOT_PROPS)};
++
++/** Variant heads \`.variant()\` does not type → report-only (an entry ending in \`[\` matches its arbitrary family). */
++export const UNTYPED_HEADS: ReadonlySet<string> = new Set(${JSON.stringify(UNTYPED_HEADS)});
++`;
++console.log(`[gen-fix-contract] ${JSON.stringify(stats)} → ${(content.length / 1024).toFixed(0)} KiB`);
++console.log(`[gen-fix-contract] numeric: ${NUMERIC_PREFIXES.join(" ")} | dead: ${DEAD_PREFIXES.join(" ")} | typed negatives: ${TYPED_NEGATIVE_PREFIXES.join(" ")}`);
++if (check) {
++  if (readFileSync(out, "utf8") !== content) { console.error("[gen-fix-contract] src/fix-contract.generated.ts is stale — run `npm run gen:vocab`"); process.exit(1); }
++  console.log("[gen-fix-contract] ✓ committed fix contract matches the sweep");
++} else {
++  writeFileSync(out, content);
++}
+diff --git a/scripts/gen-vocab.mjs b/scripts/gen-vocab.mjs
+index 4dab766..ec02ece 100644
+--- a/scripts/gen-vocab.mjs
++++ b/scripts/gen-vocab.mjs
+@@ -35,6 +35,8 @@ const tailwindRoots = [...new Set(
+     .map((r) => r.replace(/^-/, "")),
+ )].sort();
+ 
++const functionalRoots = [...new Set([...design.utilities.keys("functional")].map((r) => r.replace(/^-/, "")))].sort();
++
+ const content = `// AUTO-GENERATED from fluent-html/class-vocab (C-05) by scripts/gen-vocab.mjs.
+ // Do NOT edit by hand — run \`npm run gen:vocab\`. Pinned by test/vocab-drift.mjs.
+ /* eslint-disable */
+@@ -60,6 +62,9 @@ export const FLUENT_MODIFIERS: ReadonlySet<string> = new Set([
+ 
+ /** Every Tailwind utility root (functional + static, negatives normalized) from the lib's pinned design system (tailwindcss oracle). */
+ export const TAILWIND_ROOTS: ReadonlySet<string> = new Set(${JSON.stringify(tailwindRoots)});
++
++/** The functional subset of TAILWIND_ROOTS (roots that take a value: \`rotate-x\`, \`scroll-mt\`), for the prefix root guard. */
++export const TAILWIND_FUNCTIONAL_ROOTS: ReadonlySet<string> = new Set(${JSON.stringify(functionalRoots)});
+ `;
+ 
+ writeFileSync(out, content);
+diff --git a/src/derive-fixable.ts b/src/derive-fixable.ts
+index 8c23e53..e59c5cc 100644
+--- a/src/derive-fixable.ts
++++ b/src/derive-fixable.ts
+@@ -123,6 +123,8 @@ type ClassVocabModule = {
+   emitClasses: (shape: UtilityDef["emit"], args?: readonly string[]) => string[];
+   variantKeySpecs: readonly VariantKeySpec[];
+   DIRECT_VARIANTS: Readonly<Record<string, string>>;
++  DIR_MAP: Readonly<Record<string, string>>;
++  ROUNDED_CORNERS: ReadonlySet<string>;
+ };
+ 
+ function loadClassVocab(): ClassVocabModule {
+@@ -197,6 +199,8 @@ function deriveExacts(vocab: ClassVocabModule): FixablePattern[] {
+     }
+   }
+   for (const p of RESIDUE_EXACTS) claim(p);
++  // rounded (custom row): a bare corner is the one-arg call (`rounded-t` → .rounded("t")).
++  for (const corner of vocab.ROUNDED_CORNERS) claim({ pattern: `rounded-${corner}`, methodName: "rounded", exactMatch: true, fixedValue: corner });
+   return [...out.values()];
+ }
+ 
+@@ -252,6 +256,9 @@ function derivePrefixes(vocab: ClassVocabModule): FixablePattern[] {
+     out.push(first.direction ? { pattern, methodName: first.methodName, direction: first.direction } : { pattern, methodName: first.methodName });
+   }
+   out.push(...RESIDUE_PREFIXES);
++  // border/rounded custom rows: side/corner + value is the two-arg call (`border-b-2` → .border("b", "2")).
++  for (const side of new Set(Object.values(vocab.DIR_MAP))) out.push({ pattern: `border-${side}-`, methodName: "border", direction: side });
++  for (const corner of vocab.ROUNDED_CORNERS) out.push({ pattern: `rounded-${corner}-`, methodName: "rounded", direction: corner });
+   return out;
+ }
+ 
+@@ -268,6 +275,13 @@ let cached: { patterns: FixablePattern[]; modifierMap: Record<string, string> }
+ export function getFixableTables(): { patterns: readonly FixablePattern[]; modifierMap: Readonly<Record<string, string>> } {
+   if (cached) return cached;
+   const vocab = loadClassVocab();
++  // A hand residue row must die with its vocab row: a pruned method never stays a fix target.
++  const methods = new Set(vocab.classVocab.map((d) => d.method));
++  for (const p of [...RESIDUE_EXACTS, ...RESIDUE_PREFIXES]) {
++    if (!methods.has(p.methodName)) {
++      throw new Error(`eslint-plugin-fluent-html: residue pattern "${p.pattern}" targets .${p.methodName}(), which fluent-html/class-vocab no longer has — delete the residue row`);
++    }
++  }
+   const patterns = sortPatterns(deriveExacts(vocab), derivePrefixes(vocab));
+ 
+   const modifierMap: Record<string, string> = {};
+diff --git a/src/rules/no-tailwind-in-raw-class.ts b/src/rules/no-tailwind-in-raw-class.ts
+index 1d2750c..048296a 100644
+--- a/src/rules/no-tailwind-in-raw-class.ts
++++ b/src/rules/no-tailwind-in-raw-class.ts
+@@ -1,5 +1,6 @@
+ import { Rule } from "eslint";
+-import { analyzeToken, isTailwindToken, TokenAnalysis } from "../tailwind-token";
++import { analyzeToken, isTailwindToken, TokenAnalysis, BaseClassification } from "../tailwind-token";
++import type { FluentArg } from "../fix-contract.generated";
+ import { getVariantTables } from "../derive-fixable";
+ 
+ // The CI-blocking guard on raw Tailwind strings (llm-styling/escape-hatch;
+@@ -24,8 +25,16 @@ const rule: Rule.RuleModule = {
+     messages: {
+       replaceWith:
+         "'{{className}}' in .{{callee}}() bypasses the typed surface. Replace with: {{fluentChain}}. [autofix]",
++      cssPropSuccessor:
++        "'{{className}}' in .{{callee}}() is a Tailwind utility with no fluent method. Replace with: {{fluentChain}}. [autofix]",
+       tailwindNoMethod:
+-        "'{{className}}' in .{{callee}}() is a Tailwind '{{root}}-*' utility with no fluent method. Use .cssProp() for arbitrary CSS, or file the vocab gap — raw strings are invisible to conflict detection.",
++        "'{{className}}' in .{{callee}}() is a Tailwind '{{root}}' utility with no fluent method. {{cssPropHint}}",
++      untypedValue:
++        "'{{className}}' in .{{callee}}() bypasses the typed surface, but {{call}} is outside .{{method}}()'s typed values (it fails tsc), so no autofix. Use a value .{{method}}() accepts, or {{cssPropHint}}",
++      variantHeadUntyped:
++        "'{{className}}' in .{{callee}}() uses the Tailwind variant '{{head}}', which .variant() does not accept. It has no typed spelling; no autofix.",
++      hostRejects:
++        "'{{className}}' in .{{callee}}() bypasses the typed surface, but {{fluentChain}} does not type-check in this project ({{reason}}), so no autofix. Use a value the method accepts here.",
+       variantNoMethod:
+         "'{{className}}' in .{{callee}}() bypasses the typed surface. Move it into a variant style object — {{variantForm}} — using the canonical style keys.",
+     },
+@@ -49,15 +58,79 @@ const rule: Rule.RuleModule = {
+     const options = context.options[0] as { ignoredClasses?: string[] } | undefined;
+     const ignoredClasses = new Set(options?.ignoredClasses ?? []);
+ 
+-    function report(node: any, calleeName: string, a: TokenAnalysis, fix?: (fixer: Rule.RuleFixer) => Rule.Fix): void {
+-      if (a.fluentChain !== null) {
++    // Type-aware guard (optional): with a TS program, a fix whose literal arguments the
++    // host's own signature rejects (palette opted out, undeclared theme token, older lib)
++    // is withheld. No program → the generated fix contract alone decides.
++    const services = (context.sourceCode as any).parserServices ?? (context as any).parserServices;
++    const checker = services?.program && services.esTreeNodeToTSNodeMap ? services.program.getTypeChecker() : null;
++    const hostCheck =
++      checker && typeof checker.isTypeAssignableTo === "function"
++        ? (receiver: any, method: string, args: readonly FluentArg[], leading = false): string | null => {
++            const tsNode = services.esTreeNodeToTSNodeMap.get(receiver);
++            if (!tsNode) return null;
++            const recv = checker.getTypeAtLocation(tsNode);
++            if (recv.flags & 1) return null; // any
++            const prop = checker.getPropertyOfType(recv, method);
++            if (!prop) return `.${method}() does not exist on ${checker.typeToString(recv)}`;
++            for (const sig of checker.getTypeOfSymbolAtLocation(prop, tsNode).getCallSignatures()) {
++              const params = sig.getParameters();
++              if (params.length < args.length || (!leading && ((sig as any).minArgumentCount ?? 0) > args.length)) continue;
++              const ok = args.every((a, i) => {
++                const pt = checker.getTypeOfSymbolAtLocation(params[i], tsNode);
++                const target = checker.getBaseConstraintOfType(pt) ?? pt;
++                const src = typeof a === "number" ? checker.getNumberLiteralType(a) : checker.getStringLiteralType(a);
++                return checker.isTypeAssignableTo(src, target);
++              });
++              if (ok) return null;
++            }
++            return `${args.map((a) => JSON.stringify(a)).join(", ")} is not assignable to .${method}()`;
++          }
++        : null;
++
++    function cssPropHint(properties: string | null, sentence: boolean): string {
++      const one = properties !== null && !properties.includes(",") ? properties : null;
++      const text = one !== null
++        ? `.cssProp("${one}", value).`
++        : properties !== null
++          ? `.cssProp(property, value) for the CSS it sets (${properties}).`
++          : ".cssProp(property, value).";
++      return sentence ? `Use ${text}` : text;
++    }
++
++    function hostRejection(receiver: any, a: TokenAnalysis): string | null {
++      if (hostCheck === null || a.fluentChain === null) return null;
++      const c: BaseClassification = a.classification;
++      const outer = a.heads[0];
++      if (outer !== undefined && getVariantTables().tier1ByPrefix[outer] === undefined) {
++        const head = hostCheck(receiver, "variant", [outer], true);
++        if (head !== null) return head;
++      }
++      if (c.kind === "mapped") return hostCheck(receiver, c.method, c.args);
++      if (c.kind === "css-successor") return hostCheck(receiver, "cssProp", [c.property, c.value]);
++      return null;
++    }
++
++    function report(node: any, calleeName: string, a: TokenAnalysis, fix?: (fixer: Rule.RuleFixer) => Rule.Fix, rejected?: string | null): void {
++      if (a.fluentChain !== null && rejected) {
++        context.report({
++          node,
++          messageId: "hostRejects",
++          data: { callee: calleeName, className: a.token, fluentChain: a.fluentChain, reason: rejected },
++        });
++      } else if (a.fluentChain !== null) {
+         context.report({
+           node,
+-          messageId: "replaceWith",
++          messageId: a.classification.kind === "css-successor" ? "cssPropSuccessor" : "replaceWith",
+           data: { callee: calleeName, className: a.token, fluentChain: a.fluentChain },
+           ...(fix ? { fix } : {}),
+         });
+-      } else if (a.heads.length > 0 && a.headsKnown) {
++      } else if (a.untypedHead !== null && a.classification.kind !== "not-tailwind") {
++        context.report({
++          node,
++          messageId: "variantHeadUntyped",
++          data: { callee: calleeName, className: a.token, head: a.untypedHead },
++        });
++      } else if (a.heads.length > 0 && a.headsKnown && a.classification.kind === "mapped") {
+         const head = a.heads[0];
+         const tier1 = getVariantTables().tier1ByPrefix[head];
+         context.report({
+@@ -69,11 +142,25 @@ const rule: Rule.RuleModule = {
+             variantForm: tier1 !== undefined ? `.${tier1}({ ... })` : `.variant("${head}", { ... })`,
+           },
+         });
++      } else if (a.classification.kind === "untyped-value") {
++        const { call, method, properties } = a.classification;
++        context.report({
++          node,
++          messageId: "untypedValue",
++          data: { callee: calleeName, className: a.token, call, method, cssPropHint: cssPropHint(properties, false) },
++        });
+       } else if (a.classification.kind === "tailwind-unmapped") {
++        const { root, properties } = a.classification;
+         context.report({
+           node,
+           messageId: "tailwindNoMethod",
+-          data: { callee: calleeName, className: a.token, root: a.classification.root },
++          data: { callee: calleeName, className: a.token, root, cssPropHint: cssPropHint(properties, true) },
++        });
++      } else if (a.heads.length > 0 && a.headsKnown) {
++        context.report({
++          node,
++          messageId: "variantNoMethod",
++          data: { callee: calleeName, className: a.token, variantForm: `.variant("${a.heads[0]}", { ... })` },
+         });
+       }
+     }
+@@ -101,12 +188,13 @@ const rule: Rule.RuleModule = {
+         if (node.arguments.length === 0) return;
+         const arg = node.arguments[0];
+ 
++        const receiver = node.callee.object;
+         // setClasses([...]) — analyze each literal element, no autofix
+         if (calleeName === "setClasses") {
+           if (arg.type !== "ArrayExpression") return;
+           for (const element of arg.elements) {
+             if (element && element.type === "Literal" && typeof element.value === "string") {
+-              for (const a of analyze(element.value).flagged) report(element, calleeName, a);
++              for (const a of analyze(element.value).flagged) report(element, calleeName, a, undefined, hostRejection(receiver, a));
+             }
+           }
+           return;
+@@ -116,19 +204,25 @@ const rule: Rule.RuleModule = {
+           const { flagged, remaining } = analyze(arg.value);
+           if (flagged.length === 0) return;
+ 
+-          // Whole-call autofix only when every flagged token has a fluent chain.
+-          const allMappable = flagged.every((a) => a.fluentChain !== null);
+-          const fix = allMappable
++          // Fix every token with a chain the host accepts; the rest stay in the raw call
++          // (still reported). A kept setClass() goes first so it cannot wipe the chain.
++          const rejections = flagged.map((a) => hostRejection(receiver, a));
++          const fixable = flagged.filter((a, i) => a.fluentChain !== null && rejections[i] === null);
++          const fixableSet = new Set(fixable);
++          const kept = (arg.value as string).split(/\s+/).filter(Boolean)
++            .filter((t) => !fixable.some((a) => a.token === t));
++          const fix = fixable.length > 0
+             ? (fixer: Rule.RuleFixer): Rule.Fix => {
+-                const chain = flagged.map((a) => a.fluentChain).join("");
+-                const keep = remaining.length > 0 ? `.${calleeName}("${remaining.join(" ")}")` : "";
++                const chain = fixable.map((a) => a.fluentChain).join("");
++                const keep = kept.length > 0 ? `.${calleeName}(${JSON.stringify(kept.join(" "))})` : "";
+                 const dotStart = node.callee.property.range[0] - 1;
+-                return fixer.replaceTextRange([dotStart, node.range[1]], chain + keep);
++                return fixer.replaceTextRange([dotStart, node.range[1]], calleeName === "setClass" ? keep + chain : chain + keep);
+               }
+             : undefined;
+ 
+-          // Attach the fix to the first report only — one applied fix rewrites the call.
+-          flagged.forEach((a, i) => report(arg, calleeName, a, i === 0 ? fix : undefined));
++          // Attach the fix to the first fixable report only — one applied fix rewrites the call.
++          const first = fixable[0];
++          flagged.forEach((a, i) => report(arg, calleeName, a, a === first && fixableSet.has(a) ? fix : undefined, rejections[i]));
+           return;
+         }
+ 
+@@ -136,7 +230,7 @@ const rule: Rule.RuleModule = {
+         if (arg.type === "TemplateLiteral") {
+           for (const quasi of arg.quasis) {
+             if (!quasi.value.cooked) continue;
+-            for (const a of analyze(quasi.value.cooked).flagged) report(arg, calleeName, a);
++            for (const a of analyze(quasi.value.cooked).flagged) report(arg, calleeName, a, undefined, hostRejection(receiver, a));
+           }
+         }
+       },
+diff --git a/src/tailwind-token.ts b/src/tailwind-token.ts
+index 97c64a6..74cca0d 100644
+--- a/src/tailwind-token.ts
++++ b/src/tailwind-token.ts
+@@ -6,7 +6,8 @@
+ // `sidebar-backdrop` / `entry-row` / `hamburger-line` are never flagged.
+ 
+ import { FixablePattern, getFixableTables, getVariantTables } from "./derive-fixable";
+-import { TAILWIND_ROOTS } from "./vocab.generated";
++import { TAILWIND_ROOTS, TAILWIND_FUNCTIONAL_ROOTS } from "./vocab.generated";
++import { NUMERIC_PREFIXES, BRACKET_PREFIXES, TYPED_NEGATIVE_PREFIXES, CSS_SUCCESSOR, WITHHELD, DEAD_PREFIXES, ROOT_PROPS, UNTYPED_HEADS, type FluentArg } from "./fix-contract.generated";
+ 
+ /** Split a class token on `:` outside brackets: variant heads + base utility. */
+ export function splitVariants(token: string): { heads: string[]; base: string } {
+@@ -60,7 +61,7 @@ export function isKnownVariantHead(head: string): boolean {
+ // Tailwind-shaped: root word plus at least one dashed value segment (plain or
+ // bracketed). Deliberately requires a dash — bare single words (`container`,
+ // `visible`) are too collision-prone with user CSS class names.
+-const TAILWIND_SHAPE = /^-?[a-z][a-z0-9]*(-(?:[a-z0-9./]+|\[[^\]]+\]))+$/;
++const TAILWIND_SHAPE = /^-?[a-z][a-z0-9]*(-(?:[a-z0-9./%]+|\[[^\]]+\]))+(\/\[[^\]]+\])?$/;
+ 
+ /** Longest TAILWIND_ROOTS entry the token is anchored on, or null. */
+ export function tailwindRootOf(token: string): string | null {
+@@ -76,94 +77,177 @@ export function tailwindRootOf(token: string): string | null {
+ }
+ 
+ export type BaseClassification =
+-  /** The derived fix table maps it — `fix` is the fluent replacement chain text. */
+-  | { kind: "mapped"; pattern: FixablePattern; fix: string }
+-  /** Tailwind-shaped with a real Tailwind root, but no fluent mapping. */
+-  | { kind: "tailwind-unmapped"; root: string }
++  /** The derived fluent call (swept: it type-checks and renders this class, unless WITHHELD). */
++  | { kind: "mapped"; method: string; args: readonly FluentArg[]; fix: string; pattern?: FixablePattern }
++  /** No fluent method; a static utility with one declaration, reproduced exactly by `.cssProp(property, value)`. */
++  | { kind: "css-successor"; property: string; value: string; fix: string }
++  /** The derived call exists but its value is outside the method's typed union (fix-contract sweep). */
++  | { kind: "untyped-value"; call: string; method: string; root: string; properties: string | null }
++  /** Tailwind utility with no fluent method. */
++  | { kind: "tailwind-unmapped"; root: string; properties: string | null }
+   /** Not recognizably Tailwind. */
+   | { kind: "not-tailwind" };
+ 
+-function methodCallText(pattern: FixablePattern, className: string): string {
++const lit = (a: FluentArg): string => (typeof a === "number" ? String(a) : JSON.stringify(a));
++export const callText = (method: string, args: readonly FluentArg[]): string => `.${method}(${args.map(lit).join(", ")})`;
++
++function patternArgs(pattern: FixablePattern, className: string, numericPrefixes: ReadonlySet<string>): FluentArg[] {
+   if (pattern.exactMatch) {
+-    if (pattern.direction && pattern.fixedValue) return `.${pattern.methodName}("${pattern.direction}", "${pattern.fixedValue}")`;
+-    if (pattern.fixedValue) return `.${pattern.methodName}("${pattern.fixedValue}")`;
+-    return `.${pattern.methodName}()`;
++    if (pattern.direction && pattern.fixedValue) return [pattern.direction, pattern.fixedValue];
++    return pattern.fixedValue ? [pattern.fixedValue] : [];
+   }
+-  const value = className.slice(pattern.pattern.length);
+-  if (pattern.direction) return `.${pattern.methodName}("${pattern.direction}", "${value}")`;
+-  return `.${pattern.methodName}("${value}")`;
++  const raw = className.slice(pattern.pattern.length);
++  const value: FluentArg = numericPrefixes.has(pattern.pattern) && /^\d+$/.test(raw) ? Number(raw) : raw;
++  return pattern.direction ? [pattern.direction, value] : [value];
+ }
+ 
+-/** Classify a variant-stripped base token against the derived tables + root list. */
+-export function classifyBase(base: string): BaseClassification {
++/** Longest functional Tailwind root the token is anchored on (`rotate-x-45` → `rotate-x`). */
++function functionalRootOf(token: string): string | null {
++  const segments = token.replace(/^-/, "").split("-");
++  let root: string | null = null;
++  let candidate = "";
++  for (const seg of segments) {
++    candidate = candidate === "" ? seg : `${candidate}-${seg}`;
++    if (TAILWIND_FUNCTIONAL_ROOTS.has(candidate)) root = candidate;
++  }
++  return root;
++}
++
++/**
++ * Pure vocab derivation (exacts, then root-guarded prefixes). The fix-contract
++ * generator sweeps this against tsc; lint goes through {@link classifyBase}.
++ */
++export function classifyDerived(
++  base: string,
++  opts: { rootGuard?: boolean; deadPrefixes?: ReadonlySet<string>; numericPrefixes?: ReadonlySet<string>; bracketPrefixes?: ReadonlySet<string> | null } = {},
++): BaseClassification {
++  const { rootGuard = true, deadPrefixes = DEAD_PREFIXES, numericPrefixes = NUMERIC_PREFIXES, bracketPrefixes = BRACKET_PREFIXES } = opts;
++  const fnRoot = functionalRootOf(base);
+   for (const pattern of getFixableTables().patterns) {
+-    if (pattern.exactMatch ? base === pattern.pattern : base.startsWith(pattern.pattern)) {
+-      return { kind: "mapped", pattern, fix: methodCallText(pattern, base) };
++    if (pattern.exactMatch ? base !== pattern.pattern : !base.startsWith(pattern.pattern)) continue;
++    if (!pattern.exactMatch) {
++      // An arbitrary `[…]` value only where the method types it; otherwise skip catch-alls
++      // whose every swept value fails tsc (e.g. `outline-`: widths/colors vs TailwindOutline).
++      const value = base.slice(pattern.pattern.length);
++      if (value.startsWith("[")) {
++        if (bracketPrefixes !== null && !bracketPrefixes.has(pattern.pattern)) continue;
++      } else if (value.includes("/[")) {
++        if (bracketPrefixes !== null && !bracketPrefixes.has(`${pattern.pattern}/[`)) continue;
++      } else if (deadPrefixes.has(pattern.pattern)) continue;
+     }
++    // A prefix catch-all never captures a longer utility root: `rotate-x-45` (root
++    // rotate-x) never falls into `.rotate()`, `scroll-mt-4` never into `.scroll()`.
++    const own = pattern.pattern.slice(0, -1);
++    if (rootGuard && !pattern.exactMatch && fnRoot !== null && fnRoot.startsWith(`${own}-`)) continue;
++    const args = patternArgs(pattern, base, numericPrefixes);
++    return { kind: "mapped", method: pattern.methodName, args, fix: callText(pattern.methodName, args), pattern };
+   }
+   if (TAILWIND_SHAPE.test(base)) {
+     const root = tailwindRootOf(base);
+-    if (root !== null) return { kind: "tailwind-unmapped", root };
++    if (root !== null) return { kind: "tailwind-unmapped", root, properties: ROOT_PROPS[root] ?? null };
+   }
+   return { kind: "not-tailwind" };
+ }
+ 
++/**
++ * `-X` where X has a fix: the typed negative where the sweep proved it (`-translate-y-1`
++ * → .translate("y", "-1")), else the `.neg()` hatch (`-mt-4` → .neg("mt-4")).
++ */
++export function classifyNegative(base: string, typedPrefixes: ReadonlySet<string> = TYPED_NEGATIVE_PREFIXES): BaseClassification | null {
++  const positive = base.slice(1);
++  const fixed = classifyBase(positive);
++  // A positive outside the union (`translate-y-1/2`) can still have a typed negative (`"-1/2"`).
++  const p = fixed.kind === "untyped-value" ? classifyDerived(positive) : fixed;
++  if (p.kind !== "mapped") return null;
++  const last = p.args[p.args.length - 1];
++  if (p.pattern && !p.pattern.exactMatch && typedPrefixes.has(p.pattern.pattern) && last !== undefined && !String(last).startsWith("[")) {
++    const args = [...p.args.slice(0, -1), typeof last === "number" ? -last : `-${last}`];
++    return { kind: "mapped", method: p.method, args, fix: callText(p.method, args), pattern: p.pattern };
++  }
++  if (fixed.kind !== "mapped") return null;
++  return { kind: "mapped", method: "neg", args: [positive], fix: callText("neg", [positive]) };
++}
++
++/** Classify a variant-stripped base token: the generated fix contract first, then the derivation. */
++export function classifyBase(base: string): BaseClassification {
++  const css = CSS_SUCCESSOR[base];
++  if (css !== undefined) {
++    const [property, value] = css;
++    return { kind: "css-successor", property, value, fix: callText("cssProp", [property, value]) };
++  }
++  if (base.startsWith("-")) {
++    const negative = classifyNegative(base);
++    if (negative !== null) return negative;
++  }
++  const d = classifyDerived(base);
++  const withheld = WITHHELD[base];
++  if (d.kind === "mapped" && withheld !== undefined) {
++    return { kind: "untyped-value", call: d.fix, method: d.method, root: tailwindRootOf(base) ?? base, properties: withheld || null };
++  }
++  return d;
++}
++
+ export type TokenAnalysis = {
+   token: string;
+   heads: string[];
+   base: string;
+   /** true when every variant head is a known Tailwind variant (or there are none). */
+   headsKnown: boolean;
++  /** First variant head `.variant()` does not type (fix-contract sweep), or null. */
++  untypedHead: string | null;
+   classification: BaseClassification;
+-  /**
+-   * Full fluent replacement for the token — a plain method call, or for a
+-   * variant-prefixed token the object form (`.hover({ bg: "blue-600" })`,
+-   * nested heads as nested keys, non-tier-1 outer head via `.variant()`).
+-   * Null when the base is not mapped, a head is unknown, or the head chain is
+-   * not object-expressible (a non-tier-1 head in nested position).
+-   */
++  /** Full fluent replacement for the token (plain call or variant object form), or null. */
+   fluentChain: string | null;
+ };
+ 
+ /**
+- * The variant-object entry for a mapped base (`bg: "blue-600"`, `px: "4"`,
+- * `truncate: true`), or null when the pattern has no flattened object key.
++ * The variant-object entry for a fixable base (`bg: "blue-600"`, `border: ["b", "2"]`,
++ * `truncate: true`, `cssProp: ["place-items", "center"]`), or null when the
++ * method has no flattened object key.
+  */
+-function objectEntryText(pattern: FixablePattern, className: string): string | null {
+-  const key = getVariantTables().keyFor(pattern.methodName, pattern.direction);
+-  if (key === undefined) return null;
+-  if (pattern.exactMatch) {
+-    return pattern.fixedValue !== undefined ? `${key}: "${pattern.fixedValue}"` : `${key}: true`;
++function objectEntryText(c: BaseClassification): string | null {
++  if (c.kind === "css-successor") return `cssProp: [${lit(c.property)}, ${lit(c.value)}]`;
++  if (c.kind !== "mapped") return null;
++  const p = c.pattern;
++  // Directional patterns flatten to their own key (`p|x` → `px: "4"`).
++  if (p?.direction !== undefined) {
++    const key = getVariantTables().keyFor(c.method, p.direction);
++    if (key !== undefined) return `${key}: ${lit(c.args[c.args.length - 1]!)}`;
+   }
+-  return `${key}: "${className.slice(pattern.pattern.length)}"`;
++  const key = getVariantTables().keyFor(c.method);
++  if (key === undefined) return null;
++  if (c.args.length === 0) return `${key}: true`;
++  if (c.args.length === 1) return `${key}: ${lit(c.args[0]!)}`;
++  return `${key}: [${c.args.map(lit).join(", ")}]`;
++}
++
++/**
++ * The fluent replacement for a fixable base under its variant heads: a plain
++ * call, or the object form (nested heads as nested tier-1 keys, a non-tier-1
++ * outer head via `.variant()`). Null when the base has no fix or the head chain
++ * is not object-expressible.
++ */
++export function chainFor(heads: readonly string[], classification: BaseClassification): string | null {
++  if (classification.kind !== "mapped" && classification.kind !== "css-successor") return null;
++  if (heads.length === 0) return classification.fix;
++  const { tier1ByPrefix } = getVariantTables();
++  const nested = heads.slice(1).map((h) => tier1ByPrefix[h]);
++  let entry = objectEntryText(classification);
++  if (entry === null || !nested.every((n): n is string => n !== undefined)) return null;
++  for (let i = nested.length - 1; i >= 0; i--) entry = `${nested[i]}: { ${entry} }`;
++  const outerTier1 = tier1ByPrefix[heads[0]!];
++  return outerTier1 !== undefined ? `.${outerTier1}({ ${entry} })` : `.variant("${heads[0]}", { ${entry} })`;
+ }
+ 
+ /** Analyze one whitespace-split class token (variants + base). */
+-export function analyzeToken(token: string): TokenAnalysis {
++export function analyzeToken(token: string, classify: (base: string) => BaseClassification = classifyBase): TokenAnalysis {
+   const { heads, base } = splitVariants(token);
+   const headsKnown = heads.every(isKnownVariantHead);
+-  const classification = classifyBase(base);
++  const classification = classify(base);
++  const untypedHead = heads.find((h) => UNTYPED_HEADS.has(h) || (h.includes("[") && UNTYPED_HEADS.has(h.slice(0, h.indexOf("[") + 1)))) ?? null;
+ 
+-  let fluentChain: string | null = null;
+-  if (classification.kind === "mapped" && headsKnown) {
+-    if (heads.length === 0) {
+-      fluentChain = classification.fix;
+-    } else {
+-      const { tier1ByPrefix } = getVariantTables();
+-      // Nested heads must be tier-1 names (only they exist as nested keys);
+-      // the outer head may fall back to the generic `.variant(name, {…})`.
+-      const nested = heads.slice(1).map((h) => tier1ByPrefix[h]);
+-      let entry = objectEntryText(classification.pattern, base);
+-      if (entry !== null && nested.every((n): n is string => n !== undefined)) {
+-        for (let i = nested.length - 1; i >= 0; i--) entry = `${nested[i]}: { ${entry} }`;
+-        const outerTier1 = tier1ByPrefix[heads[0]];
+-        fluentChain = outerTier1 !== undefined
+-          ? `.${outerTier1}({ ${entry} })`
+-          : `.variant("${heads[0]}", { ${entry} })`;
+-      }
+-    }
+-  }
+-  return { token, heads, base, headsKnown, classification, fluentChain };
++  const fluentChain = headsKnown && untypedHead === null ? chainFor(heads, classification) : null;
++  return { token, heads, base, headsKnown, untypedHead, classification, fluentChain };
+ }
+ 
+ /** True when the token is recognizably Tailwind (mapped, Tailwind-rooted, or known-variant-prefixed). */
+diff --git a/test/fix-contract.mjs b/test/fix-contract.mjs
+new file mode 100644
+index 0000000..8134fb9
+--- /dev/null
++++ b/test/fix-contract.mjs
+@@ -0,0 +1,52 @@
++// Fix contract (RFC-C-01): lint → fix → tsc → render over every class of the
++// pinned Tailwind class list + one probe per variant head. Fails on any autofix
++// that does not type-check against the sibling fluent-html or renders another
++// class. Skips cleanly when the lib isn't beside the plugin.
++import { createRequire } from "node:module";
++import { mkdtempSync, writeFileSync, existsSync } from "node:fs";
++import { tmpdir } from "node:os";
++import { join, dirname } from "node:path";
++import { fileURLToPath } from "node:url";
++const require = createRequire(import.meta.url);
++const here = dirname(fileURLToPath(import.meta.url));
++const libDir = join(here, "..", "..", "fluent-html");
++if (!existsSync(join(libDir, "dist/src/index.js"))) { console.log("[fix-contract] fluent-html not beside the plugin — skipping."); process.exit(0); }
++const { loadDesignSystem } = await import(`${libDir}/dist/scripts/gen-vocab/load-design-system.js`);
++const lib = await import(`${libDir}/dist/src/index.js`);
++const { design } = await loadDesignSystem();
++const heads = design.getVariants().flatMap((v) => v.values.length === 0 ? (v.isArbitrary ? [] : [v.name]) : v.values.map((x) => (v.hasDash ? `${v.name}-${x}` : `${v.name}${x}`)));
++const listed = design.getClassList().map(([c]) => c);
++const listedSet = new Set(listed);
++const extra = [...design.utilities.keys("static"), ...[...design.utilities.keys("functional")].filter((r) => !r.startsWith("-"))]
++  .filter((c) => !listedSet.has(c) && design.candidatesToCss([c])[0] !== null);
++const tokens = [...listed, ...new Set(extra), ...[...new Set(heads)].map((h) => `${h}:p-4`).filter((t) => design.candidatesToCss([t])[0] !== null)];
++const src = `import { Div } from "fluent-html";\n` + tokens.map((t, i) => `export const c${i} = Div().addClass(${JSON.stringify(t)});`).join("\n") + "\n";
++const { Linter } = require("eslint");
++const linter = new Linter({ configType: "flat" });
++const config = [{ files: ["**/*.mts"], plugins: { "fluent-html": require("../dist/index.js") }, rules: { "fluent-html/no-tailwind-in-raw-class": "error" } }];
++const fixed = linter.verifyAndFix(src, config, { filename: "probe.mts" }).output.split("\n");
++const ts = require("typescript");
++const file = join(mkdtempSync(join(tmpdir(), "fix-contract-")), "probe.mts");
++writeFileSync(file, fixed.join("\n"));
++const program = ts.createProgram([file], { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, strict: true, noEmit: true, skipLibCheck: true, types: [], paths: { "fluent-html": [join(libDir, "dist/src/index.d.ts")] } });
++const sf = program.getSourceFile(file);
++const bad = new Set(ts.getPreEmitDiagnostics(program).filter((d) => d.file === sf).map((d) => sf.getLineAndCharacterOfPosition(d.start).line));
++const failures = [];
++let fixes = 0;
++tokens.forEach((t, i) => {
++  const line = fixed[i + 1];
++  if (line.includes(".addClass(")) return; // not fixed (report-only or unflagged)
++  fixes++;
++  const chain = line.replace(/^export const c\d+ = Div\(\)/, "").replace(/;$/, "");
++  if (bad.has(i + 1)) { failures.push(`${t} → ${chain}: tsc error`); return; }
++  if (!t.includes(":")) {
++    const cls = /class="([^"]*)"/.exec(lib.render(new Function("Div", `return Div()${chain};`)(lib.Div)))?.[1] ?? "";
++    const css = (c) => { const r = design.candidatesToCss([c])[0]; if (r == null) return null; const d = new Map(); for (const m of r.split(/\n@property/)[0].matchAll(/^\s+([a-z-]+|--[a-z0-9-]+): ([^;\n]+);$/gm)) d.set(m[1], m[2]); return JSON.stringify([...d].sort()); };
++    if (cls !== t && css(cls) !== css(t)) failures.push(`${t} → ${chain}: renders "${cls}"`);
++  }
++});
++if (failures.length > 0) {
++  console.error(`[fix-contract] ✗ ${failures.length}/${fixes} autofixes break the contract:\n  ` + failures.slice(0, 20).join("\n  "));
++  process.exit(1);
++}
++console.log(`[fix-contract] ✓ ${fixes} autofixes over ${tokens.length} tokens type-check and render their class`);
+diff --git a/test/rule.test.js b/test/rule.test.js
+index b005bb1..114f88b 100644
+--- a/test/rule.test.js
++++ b/test/rule.test.js
+@@ -1514,7 +1514,7 @@ runSuite("no-tailwind-in-raw-class", noTailwindInRawClass, {
+     // Tailwind root with no fluent method → routes to .cssProp / vocab gap
+     {
+       code: `Div().addClass("basis-32")`,
+-      errors: [{ messageId: "tailwindNoMethod", data: { callee: "addClass", className: "basis-32", root: "basis" } }],
++      errors: [{ messageId: "tailwindNoMethod", data: { callee: "addClass", className: "basis-32", root: "basis", cssPropHint: 'Use .cssProp("flex-basis", value).' } }],
+     },
+     // mixed literal: mappable tokens rewritten, non-Tailwind kept in the call
+     {

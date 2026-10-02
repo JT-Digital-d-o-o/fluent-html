@@ -1,0 +1,165 @@
+diff --git a/src/core/tag.ts b/src/core/tag.ts
+index 2b01bad..a19e3ad 100644
+--- a/src/core/tag.ts
++++ b/src/core/tag.ts
+@@ -48,7 +48,10 @@ function validateAttributeKey(key: string): void {
+ //     interface FluentCustomMethods { nav(route: HTMX): this }
+ //   }
+ export interface FluentCustomMethods {}
+-export interface Tag extends FluentCustomMethods {}
++export interface Tag extends FluentCustomMethods {
++  /** @internal @deprecated Not a method: `.toggle("inert")` sets the `inert` attribute. */
++  inert(this: { readonly ["use .toggle('inert') for the HTML inert attribute: .invert() is a color filter and leaves the subtree interactive"]: never }, ...args: unknown[]): never;
++}
+ 
+ /**
+  * The core HTML element builder. All element factories (`Div`, `Button`, `Input`, etc.)
+diff --git a/src/elements/tables.ts b/src/elements/tables.ts
+index 10d42f8..b558abf 100644
+--- a/src/elements/tables.ts
++++ b/src/elements/tables.ts
+@@ -5,6 +5,7 @@ import { El } from "../core/utils.js";
+ import type { View } from "../core/types.js";
+ import { extractId } from "../ids.js";
+ import type { Id } from "../ids.js";
++import type { TailwindColSpan, TailwindRowSpan } from "../core/tailwind-types.gen.js";
+ 
+ /** `<th scope>` value. Use `scope` for simple/regular tables; for irregular or
+  *  spanning header layouts use `setHeaders` (cell-to-header id association). */
+@@ -34,6 +35,17 @@ export function Tr(...children: View[]): Tag {
+   return El("tr", ...children);
+ }
+ 
++export interface ThTag {
++  /** @internal @deprecated Not a method: `.setColspan(n)` sets the `colspan` attribute. */
++  colspan(this: { readonly ["use .setColspan(n) for the colspan attribute: .colSpan() is the grid class col-span-*, which a table cell ignores"]: never }, ...args: unknown[]): never;
++  /** @internal @deprecated Not a method: `.setRowspan(n)` sets the `rowspan` attribute. */
++  rowspan(this: { readonly ["use .setRowspan(n) for the rowspan attribute: .rowSpan() is the grid class row-span-*, which a table cell ignores"]: never }, ...args: unknown[]): never;
++  /** @internal @deprecated On a table cell: `.setColspan(n)`. A grid-item cell takes `col-span-*` through a `(t: Tag) => …` preset in `.apply()`. */
++  colSpan(this: { readonly ["use .setColspan(n) for the colspan attribute: .colSpan() is the grid class col-span-*, which a table cell ignores"]: never }, value: TailwindColSpan): this;
++  /** @internal @deprecated On a table cell: `.setRowspan(n)`. A grid-item cell takes `row-span-*` through a `(t: Tag) => …` preset in `.apply()`. */
++  rowSpan(this: { readonly ["use .setRowspan(n) for the rowspan attribute: .rowSpan() is the grid class row-span-*, which a table cell ignores"]: never }, value: TailwindRowSpan): this;
++}
++
+ export class ThTag extends Tag {
+   protected _colspan?: number;
+   protected _rowspan?: number;
+@@ -87,6 +99,17 @@ export function Th(...children: View[]): ThTag {
+   return new ThTag("th", ...children);
+ }
+ 
++export interface TdTag {
++  /** @internal @deprecated Not a method: `.setColspan(n)` sets the `colspan` attribute. */
++  colspan(this: { readonly ["use .setColspan(n) for the colspan attribute: .colSpan() is the grid class col-span-*, which a table cell ignores"]: never }, ...args: unknown[]): never;
++  /** @internal @deprecated Not a method: `.setRowspan(n)` sets the `rowspan` attribute. */
++  rowspan(this: { readonly ["use .setRowspan(n) for the rowspan attribute: .rowSpan() is the grid class row-span-*, which a table cell ignores"]: never }, ...args: unknown[]): never;
++  /** @internal @deprecated On a table cell: `.setColspan(n)`. A grid-item cell takes `col-span-*` through a `(t: Tag) => …` preset in `.apply()`. */
++  colSpan(this: { readonly ["use .setColspan(n) for the colspan attribute: .colSpan() is the grid class col-span-*, which a table cell ignores"]: never }, value: TailwindColSpan): this;
++  /** @internal @deprecated On a table cell: `.setRowspan(n)`. A grid-item cell takes `row-span-*` through a `(t: Tag) => …` preset in `.apply()`. */
++  rowSpan(this: { readonly ["use .setRowspan(n) for the rowspan attribute: .rowSpan() is the grid class row-span-*, which a table cell ignores"]: never }, value: TailwindRowSpan): this;
++}
++
+ export class TdTag extends Tag {
+   protected _colspan?: number;
+   protected _rowspan?: number;
+diff --git a/test/setter-errors.test.ts b/test/setter-errors.test.ts
+index e71fae6..e3a7170 100644
+--- a/test/setter-errors.test.ts
++++ b/test/setter-errors.test.ts
+@@ -101,3 +101,50 @@ describe("privatized storage fields — blind setter guesses fail as missing pro
+     probeFor("'action' does not exist on type 'FormTag'");
+   });
+ });
++
++describe("attribute guesses that used to self-heal into a styling method name the setter", () => {
++  let traps: Probe[] = [];
++  const THIS_CONTEXT = 2684;
++
++  before(() => {
++    const fixture = resolve(process.cwd(), "test/types/setter-probe/trap-probe.ts");
++    const program = ts.createProgram([fixture], {
++      target: ts.ScriptTarget.ES2020,
++      module: ts.ModuleKind.ES2020,
++      moduleResolution: ts.ModuleResolutionKind.Bundler,
++      strict: true,
++      noEmit: true,
++      skipLibCheck: true,
++    });
++    const source = program.getSourceFile(fixture);
++    assert.ok(source, "trap fixture must be part of the program");
++    traps = ts.getPreEmitDiagnostics(program, source).map((d) => ({
++      code: d.code,
++      message: ts.flattenDiagnosticMessageText(d.messageText, " "),
++      line: d.file && d.start !== undefined ? d.file.getLineAndCharacterOfPosition(d.start).line + 1 : -1,
++    }));
++  });
++
++  const expectations: readonly (readonly [number, string])[] = [
++    [7, "use .setColspan(n)"],
++    [8, "use .setRowspan(n)"],
++    [9, "use .toggle('inert')"],
++    [10, "use .toggle('inert')"],
++    [11, "use .setColspan(n)"],
++    [12, "use .setRowspan(n)"],
++  ];
++
++  it("every trap line fails once, as TS2684, with the fix in the first line of the message", () => {
++    assert.equal(traps.length, expectations.length, traps.map((p) => `${p.line} TS${p.code}: ${p.message}`).join("\n"));
++    for (const [line, fix] of expectations) {
++      const p = traps.find((t) => t.line === line);
++      assert.ok(p, `no diagnostic on line ${line}`);
++      assert.equal(p.code, THIS_CONTEXT, p.message);
++      assert.ok(p.message.indexOf(fix) >= 0 && p.message.indexOf(fix) < 120, `fix ${fix} not early in: ${p.message}`);
++    }
++  });
++
++  it("no trap line gets a spelling suggestion toward a styling method", () => {
++    for (const p of traps) assert.ok(!p.message.includes("Did you mean"), p.message);
++  });
++});
+diff --git a/test/types/setter-probe/trap-probe.ts b/test/types/setter-probe/trap-probe.ts
+new file mode 100644
+index 0000000..8bcbec5
+--- /dev/null
++++ b/test/types/setter-probe/trap-probe.ts
+@@ -0,0 +1,12 @@
++// Deliberately-wrong fixture for test/setter-errors.test.ts: attribute guesses whose
++// spelling suggestion used to land on a compiling styling method (colspan→colSpan,
++// rowspan→rowSpan, inert→invert). Each line must fail with the fix in the message.
++
++import { Td, Th, Div, Svg } from "../../../src/index.js";
++
++Td("Total").colspan(2);
++Th("Sum").rowspan(2);
++Div("backdrop").inert();
++Svg().inert(true);
++Td("Total").colSpan(2);
++Th("Sum").rowSpan("2");
+diff --git a/test/types/type-surface.test-d.ts b/test/types/type-surface.test-d.ts
+index ed54f68..3c2951e 100644
+--- a/test/types/type-surface.test-d.ts
++++ b/test/types/type-surface.test-d.ts
+@@ -664,3 +664,23 @@ renderFragmentGated(rootIds.mainContent, CountFragment());
+ const widenedRootId: Id = rootIds.mainContent;
+ // @ts-expect-error — a widened `Id` collapses N to `string`, which would accept any root
+ renderFragmentGated(widenedRootId, CountFragment());
++
++// ── Attribute guesses that used to heal into styling methods (RFC-A-04) ──────
++Td("Total").setColspan(2);
++Th("Sum").setRowspan(2);
++Div("backdrop").toggle("inert");
++Div("grid item").colSpan(2).rowSpan("2");
++const gridSpan2 = (t: Tag) => t.colSpan("2");
++Td("grid-item cell").apply(gridSpan2);
++expectType<Tag>(Td("cell"));
++expectType<Tag[]>([Td("a"), Th("b"), Div("c")]);
++// @ts-expect-error — the colspan attribute is .setColspan(n)
++Td("Total").colspan(2);
++// @ts-expect-error — the rowspan attribute is .setRowspan(n)
++Th("Sum").rowspan(2);
++// @ts-expect-error — the inert attribute is .toggle("inert")
++Div("backdrop").inert();
++// @ts-expect-error — col-span-* on a table cell is a no-op; .setColspan(n)
++Td("Total").colSpan(2);
++// @ts-expect-error — row-span-* on a table cell is a no-op; .setRowspan(n)
++Th("Sum").rowSpan(2);

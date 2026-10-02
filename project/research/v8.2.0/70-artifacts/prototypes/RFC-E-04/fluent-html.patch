@@ -1,0 +1,73 @@
+diff --git a/src/elements/forms.ts b/src/elements/forms.ts
+index 2ccc7ea..92e9472 100644
+--- a/src/elements/forms.ts
++++ b/src/elements/forms.ts
+@@ -433,7 +433,24 @@ export type ErrorBag<T> = Partial<Record<keyof T & string, string>>;
+ export type FormState<T> = { values?: Partial<T>; errors?: ErrorBag<T>; idPrefix?: string };
+ 
+ /** A `<select>` option descriptor — `Form<T>` builds the `<option>`s and marks the selected one. */
+-export type SelectOption = { value: string; label: string };
++export type SelectOption<V extends string = string> = { value: V; label: string };
++
++type Submitted<V> = V extends string ? V
++  : V extends number | bigint | boolean ? `${V}`
++  : V extends readonly (infer E)[] ? Submitted<E>
++  : string;
++
++/** The strings a control bound to `T[K]` can submit: the field's values as HTML spells them, plus `""` when `K` is optional. */
++type FieldValue<T, K extends keyof T> = [T[K]] extends [infer V]
++  ? Submitted<Exclude<V, undefined | null>> | (undefined extends V ? "" : {} extends Pick<T, K> ? "" : never)
++  : never;
++
++type Checked<V extends string, T, K extends keyof T> = string extends V ? V : FieldValue<T, K>;
++
++/** `{ value: label }` for every value the field takes; the `""` (blank) entry is optional and renders first. */
++type OptionLabels<L extends string | number, F extends string> = number extends L ? never : {
++  readonly [P in L | Exclude<F, "">]: `${P}` extends F ? string : `"${P}" is not a value of this field`;
++};
+ 
+ /**
+  * Typed control factories given to the `Form<T>` builder. Each field name is
+@@ -443,7 +460,10 @@ export type SelectOption = { value: string; label: string };
+ export interface FormBinding<T> {
+   input(name: keyof T & string, type?: InputType): InputTag;
+   textarea(name: keyof T & string): TextareaTag;
+-  select(name: keyof T & string, options: readonly SelectOption[]): SelectTag;
++  select<K extends keyof T & string, V extends string = string, L extends string | number = never>(
++    name: K,
++    options: readonly SelectOption<Checked<V, T, K>>[] | OptionLabels<L, FieldValue<T, K>>,
++  ): SelectTag;
+   /**
+    * A checkbox bound to a boolean field — `checked` reflects `Boolean(state.values[name])`.
+    * Pass `value` for the submitted value (HTML defaults to `"on"` when omitted).
+@@ -462,6 +482,17 @@ export interface FormBinding<T> {
+   error(name: keyof T & string): View;
+ }
+ 
++const isOptionList = (o: readonly SelectOption[] | Readonly<Record<string, string>>): o is readonly SelectOption[] => Array.isArray(o);
++
++// The blank option goes first: HTML's placeholder label option (what `required` refuses) is the first one.
++function labelsToOptions(labels: Readonly<Record<string, string>>): SelectOption[] {
++  const out: SelectOption[] = [];
++  const blank = labels[""];
++  if (blank !== undefined) out.push({ value: "", label: blank });
++  for (const value of Object.keys(labels)) if (value !== "") out.push({ value, label: labels[value]! });
++  return out;
++}
++
+ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
+   const values = (state?.values ?? {}) as Record<string, unknown>;
+   const errors = (state?.errors ?? {}) as Record<string, string | undefined>;
+@@ -492,9 +523,10 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
+       const tag = v !== undefined && v !== null ? Textarea(String(v)) : Textarea();
+       return markInvalid(tag.setName(name).setId(controlId(name)), name);
+     },
+-    select(name, options) {
++    select(name, options: readonly SelectOption[] | Readonly<Record<string, string>>) {
+       const selected = values[name];
+-      const opts = options.map((o) => {
++      const list = isOptionList(options) ? options : labelsToOptions(options);
++      const opts = list.map((o) => {
+         const opt = Option(o.label).setValue(o.value);
+         if (selected !== undefined && String(selected) === o.value) opt.toggle("selected");
+         return opt;

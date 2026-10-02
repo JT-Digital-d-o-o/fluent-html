@@ -1,0 +1,590 @@
+diff --git a/package.json b/package.json
+index 95cfe9e..21e16af 100644
+--- a/package.json
++++ b/package.json
+@@ -62,8 +62,8 @@
+   ],
+   "scripts": {
+     "build": "tsc && tsc -p src/behaviors/client/tsconfig.json && node scripts/build-behaviors.mjs",
+-    "test": "npm run build && tsc -p test/types/color-optout/tsconfig.json && node --test dist/test/dev-checks.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/form-for.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/define-theme.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js",
+-    "test:coverage": "npm run build && c8 --lines 95 --branches 90 node --test dist/test/dev-checks.test.js dist/test/form-for.test.js dist/test/define-theme.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js",
++    "test": "npm run build && tsc -p test/types/color-optout/tsconfig.json && node --test dist/test/dev-checks.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/form-for.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/define-theme.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js dist/test/class-merge.test.js",
++    "test:coverage": "npm run build && c8 --lines 95 --branches 90 node --test dist/test/dev-checks.test.js dist/test/form-for.test.js dist/test/define-theme.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js dist/test/class-merge.test.js",
+     "test:acceptance": "npm run build && playwright test -c test/acceptance/playwright.config.mjs",
+     "bench": "npm run build && node dist/bench/render.js",
+     "bench:mem": "npm run build && node --expose-gc dist/bench/render.js",
+diff --git a/scripts/gen-vocab/emit-class-families.ts b/scripts/gen-vocab/emit-class-families.ts
+new file mode 100644
+index 0000000..dd7529f
+--- /dev/null
++++ b/scripts/gen-vocab/emit-class-families.ts
+@@ -0,0 +1,201 @@
++/**
++ * Class-family emitter — renders `src/render/class-families.gen.ts`, the data the
++ * opt-in serialize-time class merge (`setClassMerge`) keys on.
++ *
++ * A family is the CSS property set Tailwind emits for a class (pinned oracle),
++ * so `p-6`/`p-8` share one and `p-6`/`px-8` do not. Every class the vocab can
++ * emit from a closed list lands in `EXACT`; open values (numbers, theme tokens,
++ * arbitrary values) resolve through `ROOTS` at render time.
++ *
++ * @module
++ */
++import { fileURLToPath } from "node:url";
++import * as path from "node:path";
++
++import { classVocab, emitClasses } from "../../src/class-vocab/index.js";
++import type { LeafValuesSpec } from "../../src/class-vocab/types.js";
++import { loadDesignSystem, PINNED_TAILWIND_VERSION } from "./load-design-system.js";
++
++function sourceDir(): string {
++  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../scripts/gen-vocab");
++}
++
++export function classFamiliesGeneratedPath(): string {
++  return path.resolve(sourceDir(), "../../src/render/class-families.gen.ts");
++}
++
++const DIRS = ["x", "y", "t", "r", "b", "l"];
++const BORDER_DIRS = ["x", "y", "t", "r", "b", "l", "s", "e"];
++const CORNERS = ["t", "r", "b", "l", "tl", "tr", "br", "bl", "s", "e", "ss", "se", "es", "ee"];
++// The hidden utility stays out of the display family (F-A-302 / C-35): hidden-first
++// markup toggled by a class-flipping client verb must keep both classes.
++const CARVE_OUT: Readonly<Record<string, string>> = { hidden: "display/hidden" };
++
++type Kind = "color" | "num" | `tok:${string}` | `a:${string}`;
++
++export async function renderClassFamiliesGen(): Promise<string> {
++  const { design } = await loadDesignSystem();
++  // Family id = the rule's selector shape (`&` for the element itself, `:where(& > :not(:last-child))`
++  // for divide/space, `&::placeholder`, …) plus the sorted property set it declares.
++  const sig = (cls: string): string | null => {
++    const css = design.candidatesToCss([cls])[0];
++    if (!css) return null;
++    const body = css.split("@property")[0]!;
++    const brace = body.indexOf("{");
++    const escaped = "." + cls.replace(/[^a-zA-Z0-9_-]/g, (c) => "\\" + c);
++    const shape = body.slice(0, brace).trim().split(escaped).join("&");
++    const props = new Set<string>();
++    for (const m of body.slice(brace).matchAll(/(?:^|[;{\s])(-{0,2}[a-z][a-z0-9-]*)\s*:/g)) props.add(m[1]!);
++    const set = [...props].sort().join(",");
++    return shape === "&" ? set : `${shape} ${set}`;
++  };
++  const keys = (ns: string): string[] => [...design.theme.keysInNamespaces([ns as `--${string}`])];
++
++  const exact = new Map<string, string>();
++  const roots = new Map<string, Map<Kind, string>>();
++  const bare = new Map<string, string>();
++  const conflicts: string[] = [];
++
++  const argSets = (method: string, kind: string, v: string | undefined): string[][] => {
++    const one = v === undefined ? [] : [v];
++    const out: string[][] = [one];
++    if (v === undefined) return out;
++    if (kind === "spacing") for (const d of DIRS) out.push([d, v]);
++    if (method === "border") for (const d of BORDER_DIRS) out.push([d, v]);
++    if (method === "rounded") for (const c of CORNERS) out.push([c, v]);
++    return out;
++  };
++  const seenRoots = new Set<string>();
++  const addExact = (cls: string, s: string): void => {
++    const p = design.parseCandidate(cls)[0] as { kind: string; root?: string } | undefined;
++    if (p?.kind === "functional" && p.root) seenRoots.add(p.root.startsWith("-") ? p.root.slice(1) : p.root);
++    const prev = exact.get(cls);
++    if (prev !== undefined && prev !== s) conflicts.push(`${cls}: ${prev} vs ${s}`);
++    exact.set(cls, s);
++  };
++  const addOpen = (cls: string, kind: Kind, s: string, expect?: string): void => {
++    const p = design.parseCandidate(cls)[0] as { kind: string; root?: string; value?: { value?: string } | null } | undefined;
++    if (!p || p.kind !== "functional" || !p.root) return;
++    if (expect !== undefined && p.value?.value !== expect) return; // emitter dropped the value: not a sample of this kind
++    const root = p.root.startsWith("-") ? p.root.slice(1) : p.root;
++    let m = roots.get(root);
++    if (!m) roots.set(root, (m = new Map()));
++    const prev = m.get(kind);
++    if (prev !== undefined && prev !== s) conflicts.push(`${root}/${kind}: ${prev} vs ${s}`);
++    m.set(kind, s);
++    if (p.value === null) bare.set(root, s);
++  };
++
++  for (const row of classVocab) {
++    const shape = row.emit;
++    if (shape.kind === "static") {
++      const s = sig(shape.class);
++      if (s) addExact(shape.class, s);
++      continue;
++    }
++    if (shape.kind === "value" || row.method === "cssProp") continue;
++    if (shape.kind === "optional") {
++      const [cls] = emitClasses(shape, []);
++      const s = cls ? sig(cls) : null;
++      if (cls && s) { addExact(cls, s); const p = design.parseCandidate(cls)[0] as { root?: string } | undefined; if (p?.root) bare.set(p.root, s); }
++    }
++    const palette0 = new Set(keys("--color"));
++    for (const sample of row.samples ?? []) for (const cls of emitClasses(shape, sample)) {
++      const s = sig(cls); if (!s) continue;
++      const p = design.parseCandidate(cls)[0] as { kind: string; value?: { value?: string } | null } | undefined;
++      if (!p) continue;
++      if (p.kind === "static") { addExact(cls, s); continue; }
++      const val = p.value?.value;
++      if (p.value === null) { addExact(cls, s); continue; }
++      if (val === undefined) continue;
++      if (/^-?[0-9]/.test(val)) addOpen(cls, "num", s, val);
++      else if (palette0.has(val)) addOpen(cls, "color", s, val);
++    }
++    const v = row.values;
++    const groups: [string, LeafValuesSpec][] = !v ? [] : v.kind === "group" ? Object.entries(v.groups) : [["default", v]];
++    if (groups.length === 0) {
++      for (const sample of row.samples ?? [["4"]]) for (const cls of emitClasses(shape, sample)) {
++        const s = sig(cls); if (!s) continue;
++        const p = design.parseCandidate(cls)[0] as { kind: string } | undefined;
++        if (p?.kind === "static") addExact(cls, s); else addOpen(cls, "num", s);
++      }
++      continue;
++    }
++    for (const [, spec] of groups) {
++      if (spec.kind === "literals") {
++        for (const lit of spec.list) for (const args of argSets(row.method, shape.kind, lit)) for (const cls of emitClasses(shape, args)) {
++          const s = sig(cls); if (s) addExact(cls, s);
++        }
++        continue;
++      }
++      if (spec.kind === "theme" && spec.ns === "--color") {
++        for (const args of argSets(row.method, shape.kind, "red-500")) for (const cls of emitClasses(shape, args)) {
++          const s = sig(cls); if (s) addOpen(cls, "color", s, "red-500");
++        }
++        continue;
++      }
++      if (spec.kind === "theme" && keys(spec.ns).length > 0) {
++        const ks = keys(spec.ns);
++        for (const k of ks) for (const args of argSets(row.method, shape.kind, k)) for (const cls of emitClasses(shape, args)) {
++          const s = sig(cls); if (!s) continue;
++          addExact(cls, s);
++          if (k === ks[0]) addOpen(cls, `tok:${spec.ns}`, s);
++        }
++        continue;
++      }
++      // typeRef: numeric arm (widths, thicknesses, angles, spacing scale)
++      for (const n of ["2", "4"]) for (const args of argSets(row.method, shape.kind, n)) for (const cls of emitClasses(shape, args)) {
++        const s = sig(cls); if (!s) continue;
++        const p = design.parseCandidate(cls)[0] as { kind: string } | undefined;
++        if (p?.kind === "static") addExact(cls, s); else addOpen(cls, "num", s, n);
++      }
++    }
++  }
++  for (const [cls, id] of Object.entries(CARVE_OUT)) exact.set(cls, id);
++  // Arbitrary values: the oracle decides which family each value type lands in (`font-[600]`
++  // is a weight, `text-[13px]` a size, `text-[#123456]` a color).
++  for (const root of new Set([...seenRoots, ...roots.keys()])) {
++    let m = roots.get(root);
++    for (const [cat, probe] of [["a:color", "[#123456]"], ["a:len", "[13px]"], ["a:num", "[3]"]] as const) {
++      const s = sig(`${root}-${probe}`);
++      if (!s) continue;
++      if (!m) roots.set(root, (m = new Map()));
++      // Same root, nested property set (`text-[13px]` font-size ⊂ `text-lg` font-size+line-height): one family.
++      const set = new Set(s.split(","));
++      const peer = [...m.entries()].filter(([k]) => !k.startsWith("a:")).map(([, f]) => f)
++        .find((f) => { const o = f.split(","); return o.every((x) => set.has(x)) || [...set].every((x) => o.includes(x)); });
++      m.set(cat as Kind, peer ?? s);
++    }
++  }
++  if (conflicts.length) throw new Error(`emit-class-families: one class/root, two families:\n  ${conflicts.join("\n  ")}`);
++
++  const palette = keys("--color");
++  const names = [...new Set([...exact.values(), ...[...roots.values()].flatMap((m) => [...m.values()]), ...bare.values()])].sort();
++  const id = (f: string): number => names.indexOf(f) + 1;
++  const lines: string[] = [
++    "// AUTO-GENERATED — do NOT edit by hand. Regenerate: `npm run gen:vocab` (CI checks `--check`).",
++    `// Source: class-vocab rows × tailwindcss@${PINNED_TAILWIND_VERSION} candidatesToCss (selector shape + property set) — see scripts/gen-vocab/emit-class-families.ts.`,
++    "",
++    "/** @internal Family names; a family id is its index + 1 (0 = unclassified, never merged). */",
++    `export const FAMILY_NAMES: readonly string[] = ${JSON.stringify(names, null, 1).replace(/\n\s*/g, " ")};`,
++    "",
++    "/** @internal Exact class → family id. */",
++    "export const EXACT: ReadonlyMap<string, number> = new Map([",
++    ...[...exact.entries()].sort(([a], [b]) => (a < b ? -1 : 1)).map(([c, f]) => `  [${JSON.stringify(c)}, ${id(f)}],`),
++    "]);",
++    "",
++    "/** @internal Open-valued root → family id per value kind (`color`, `num`, `tok:<ns>`, `a:<arbitrary type>`, `bare`). */",
++    "export const ROOTS: ReadonlyMap<string, Readonly<Record<string, number>>> = new Map<string, Readonly<Record<string, number>>>([",
++    ...[...roots.entries()].sort(([a], [b]) => (a < b ? -1 : 1)).map(([r, m]) => {
++      const o: Record<string, number> = Object.fromEntries([...m.entries()].sort().map(([k, f]) => [k, id(f)]));
++      const bf = bare.get(r); if (bf) o["bare"] = id(bf);
++      return `  [${JSON.stringify(r)}, ${JSON.stringify(o)}],`;
++    }),
++    "]);",
++    "",
++    "/** @internal Tailwind's default color keys (`red-500`, …) plus color keywords. */",
++    `export const PALETTE: ReadonlySet<string> = new Set(${JSON.stringify([...palette, "inherit", "current", "transparent"].sort())});`,
++    "",
++  ];
++  return lines.join("\n");
++}
+diff --git a/scripts/gen-vocab/gen-vocab.ts b/scripts/gen-vocab/gen-vocab.ts
+index 61d75c7..1dae17a 100644
+--- a/scripts/gen-vocab/gen-vocab.ts
++++ b/scripts/gen-vocab/gen-vocab.ts
+@@ -14,13 +14,16 @@ import { readFileSync, writeFileSync } from "node:fs";
+ import { generatedPath, renderTailwindTypesGen } from "./emit-types.js";
+ import { cssPropsGeneratedPath, renderCssPropsGen } from "./emit-css-props.js";
+ import { variantObjectGeneratedPath, renderVariantObjectGen } from "./emit-variant-object.js";
++import { classFamiliesGeneratedPath, renderClassFamiliesGen } from "./emit-class-families.js";
+ 
+ const check = process.argv.includes("--check");
+ 
++async function main(): Promise<void> {
+ const artifacts: readonly { readonly path: string; readonly next: string }[] = [
+   { path: generatedPath(), next: renderTailwindTypesGen() },
+   { path: cssPropsGeneratedPath(), next: renderCssPropsGen() },
+   { path: variantObjectGeneratedPath(), next: renderVariantObjectGen() },
++  { path: classFamiliesGeneratedPath(), next: await renderClassFamiliesGen() },
+ ];
+ 
+ let failed = false;
+@@ -51,3 +54,6 @@ for (const { path: outPath, next } of artifacts) {
+ }
+ 
+ if (failed) process.exit(1);
++}
++
++void main();
+diff --git a/src/index.ts b/src/index.ts
+index 5a399d1..3f63ec0 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -80,6 +80,7 @@ export type { TableCellScope } from './elements/index.js';
+ 
+ // Render
+ export { render, renderWithNonce } from './render/index.js';
++export { setClassMerge } from './render/index.js';
+ export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';
+ export type { RenderOptions, RenderStreamOptions } from './render/index.js';
+ 
+diff --git a/src/render/class-merge.ts b/src/render/class-merge.ts
+new file mode 100644
+index 0000000..abe5881
+--- /dev/null
++++ b/src/render/class-merge.ts
+@@ -0,0 +1,179 @@
++/**
++ * Opt-in serialize-time class merge (`setClassMerge`). Within one element's
++ * `class`, a later class replaces an earlier one of the same family: same
++ * variant chain, same selector shape and CSS property set in the pinned
++ * Tailwind oracle (`class-families.gen.ts`). A class it cannot classify
++ * (`cssClass` hooks, third-party names, unknown tokens) passes through.
++ *
++ * @module
++ */
++import { EXACT, ROOTS, PALETTE } from "./class-families.gen.js";
++import { escapeAttr } from "./escape.js";
++import type { ThemeSpec } from "../core/define-theme.js";
++
++/** @internal Live binding read by the serializer's class emit. */
++export let classMerge = false;
++
++const KIND_OF_NS: Readonly<Record<keyof ThemeSpec, string>> = {
++  colors: "color", fontSize: "tok:--text", shadow: "tok:--shadow", fonts: "tok:--font", radius: "tok:--radius", spacing: "num",
++};
++const TOKENS = new Map<string, string[]>();
++const CAP = 10_000;
++const TOKEN_FAMILY = new Map<string, number>();
++const FAMILY_KEYS = new Map<string, number>();
++const MEMO = new Map<string, string>();
++let seen = new Int32Array(1024);
++let gen = 0;
++
++/**
++ * Turn on last-write-wins per class family, passing the app's `defineTheme`
++ * tokens (custom names like `text-danger` vs `text-display` are classified by
++ * them); `false` turns it off. Off by default in 8.x.
++ *
++ * @example
++ * import { setClassMerge } from "fluent-html";
++ * import { theme } from "./app/theme.js";
++ * setClassMerge(theme);
++ * Div().apply(card).p("4")   // class="bg-surface rounded-card p-4", not "p-6 … p-4"
++ */
++export function setClassMerge(theme: ThemeSpec | false): void {
++  TOKENS.clear();
++  TOKEN_FAMILY.clear();
++  MEMO.clear();
++  if (theme === false) {
++    classMerge = false;
++    return;
++  }
++  for (const ns of Object.keys(KIND_OF_NS) as (keyof ThemeSpec)[]) {
++    const kind = KIND_OF_NS[ns];
++    for (const k of Object.keys(theme[ns] ?? {})) {
++      const kinds = TOKENS.get(k);
++      if (kinds) kinds.push(kind); else TOKENS.set(k, [kind]);
++    }
++  }
++  classMerge = true;
++}
++
++const COLOR_ARB = /^\[(?:#|(?:rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color)\(|color:)/;
++const NUM_ARB = /^\[-?[0-9.]+\]$/;
++const LEN_ARB = /^\[(?:-?[0-9.]+[a-z%]+\]|length:|calc\(|clamp\(|min\(|max\()/;
++
++function valueFamily(rule: Readonly<Record<string, number>>, v: string): number {
++  if (v.charCodeAt(0) === 91 /* [ */) {
++    const kind = COLOR_ARB.test(v) ? "a:color" : NUM_ARB.test(v) ? "a:num" : LEN_ARB.test(v) ? "a:len" : "";
++    return kind === "" ? 0 : rule[kind] ?? 0;
++  }
++  let only = 0;
++  let distinct = 0;
++  for (const k in rule) {
++    if (k === "bare" || k.charCodeAt(0) === 97 /* a: */) continue;
++    const f = rule[k]!;
++    if (f !== only) { only = f; distinct++; }
++  }
++  if (distinct === 1 && rule["color"] === undefined) return only;
++  const slash = v.indexOf("/");
++  const name = slash === -1 ? v : v.slice(0, slash);
++  const c = name.charCodeAt(0);
++  if (c >= 48 && c <= 57) return rule["num"] ?? 0;
++  const kinds = TOKENS.get(name);
++  if (kinds !== undefined) {
++    let hit = 0;
++    for (const k of kinds) {
++      const f = rule[k];
++      if (f !== undefined) { if (hit !== 0 && hit !== f) return 0; hit = f; }
++    }
++    if (hit !== 0) return hit;
++  }
++  if (PALETTE.has(name) || name === "black" || name === "white") return rule["color"] ?? 0;
++  return 0;
++}
++
++/** Family key of one class token: `<variant chain>:<family id>`, or "" when unclassified. */
++function classify(tok: string): string {
++  let depth = 0;
++  let cut = -1;
++  for (let i = tok.length - 1; i >= 0; i--) {
++    const c = tok.charCodeAt(i);
++    if (c === 93) depth++;
++    else if (c === 91) depth--;
++    else if (c === 58 && depth === 0) { cut = i; break; }
++  }
++  let base = cut === -1 ? tok : tok.slice(cut + 1);
++  const c0 = base.charCodeAt(0);
++  // Important (`!p-4` / `p-4!`) outranks order, so it is never merged.
++  if (base.length === 0 || c0 === 33 || base.charCodeAt(base.length - 1) === 33) return "";
++  if (c0 === 91 /* [prop:value] */) {
++    const colon = base.indexOf(":");
++    if (colon < 2 || base.charCodeAt(base.length - 1) !== 93) return "";
++    return (cut === -1 ? "" : tok.slice(0, cut + 1)) + base.slice(0, colon);
++  }
++  if (c0 === 45 /* - */) base = base.slice(1);
++  let fam = EXACT.get(base) ?? 0;
++  if (fam === 0) {
++    for (let i = base.lastIndexOf("-"); i > 0; i = base.lastIndexOf("-", i - 1)) {
++      const rule = ROOTS.get(base.slice(0, i));
++      if (rule !== undefined) { fam = valueFamily(rule, base.slice(i + 1)); break; }
++    }
++  }
++  return fam === 0 ? "" : (cut === -1 ? "" : tok.slice(0, cut + 1)) + fam;
++}
++
++function familyOf(tok: string): number {
++  let id = TOKEN_FAMILY.get(tok);
++  if (id !== undefined) return id;
++  const key = classify(tok);
++  id = 0;
++  if (key !== "") {
++    id = FAMILY_KEYS.get(key) ?? 0;
++    if (id === 0) {
++      id = FAMILY_KEYS.size + 1;
++      FAMILY_KEYS.set(key, id);
++      if (id >= seen.length) { const grown = new Int32Array(seen.length * 2); grown.set(seen); seen = grown; }
++    }
++  }
++  if (TOKEN_FAMILY.size >= CAP) TOKEN_FAMILY.clear();
++  TOKEN_FAMILY.set(tok, id);
++  return id;
++}
++
++/** @internal Keep the last class of each family, in written order; returns `cls` when nothing repeats. */
++export function mergeClassList(cls: string): string {
++  // Ids are only compared within one call, so the id table is reset between calls, never inside one.
++  if (FAMILY_KEYS.size >= CAP) { FAMILY_KEYS.clear(); TOKEN_FAMILY.clear(); }
++  const toks = cls.split(" ");
++  const n = toks.length;
++  if (n < 2) return cls;
++  const ids = new Int32Array(n);
++  let dup = false;
++  if (++gen === 0x7fffffff) { gen = 1; seen.fill(0); }
++  for (let i = 0; i < n; i++) {
++    const f = familyOf(toks[i]!);
++    ids[i] = f;
++    if (f !== 0) { if (seen[f] === gen) dup = true; else seen[f] = gen; }
++  }
++  if (!dup) return cls;
++  if (++gen === 0x7fffffff) { gen = 1; seen.fill(0); }
++  let out = "";
++  for (let i = n - 1; i >= 0; i--) {
++    const f = ids[i]!;
++    if (f !== 0) { if (seen[f] === gen) continue; seen[f] = gen; }
++    const tok = toks[i]!;
++    if (tok !== "") out = out === "" ? tok : tok + " " + out;
++  }
++  return out;
++}
++
++/**
++ * @internal The class emit while the merge is on: merged and attribute-escaped, memoized on
++ * the raw string. A hit is one Map lookup in place of the escape scan the plain path runs.
++ * The memo is cleared at 10,000 entries, never frozen.
++ */
++export function mergedClassAttr(cls: string): string {
++  let out = MEMO.get(cls);
++  if (out === undefined) {
++    out = escapeAttr(mergeClassList(cls));
++    if (MEMO.size >= CAP) MEMO.clear();
++    MEMO.set(cls, out);
++  }
++  return out;
++}
+diff --git a/src/render/index.ts b/src/render/index.ts
+index 655f1d5..5137808 100644
+--- a/src/render/index.ts
++++ b/src/render/index.ts
+@@ -1,4 +1,5 @@
+ export { render, renderWithNonce } from "./render.js";
++export { setClassMerge } from "./class-merge.js";
+ export { renderToStream, renderToStreamWithNonce, renderToIterable } from "./stream.js";
+ export { escapeHtml, escapeAttr, htmlEscapes, sanitizeUrl } from "./escape.js";
+ export type { RenderOptions, RenderStreamOptions } from "./serialize.js";
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 5bc32a6..f001b3f 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -6,6 +6,7 @@ import type { View } from "../core/types.js";
+ import { isTag, isRawString } from "../core/guards.js";
+ import { devChecks, nextRenderEpoch } from "../core/dev-checks.js";
+ import { escapeHtml, escapeAttr, sanitizeUrl } from "./escape.js";
++import { classMerge, mergedClassAttr } from "./class-merge.js";
+ 
+ // URL-valued attributes emitted by the typed setters. Their values are run
+ // through sanitizeUrl (scheme filtering) before attribute-escaping, so a
+@@ -225,7 +226,7 @@ export function buildAttrs(tag: Tag): string {
+   const tid = storage._id;
+   if (tid !== undefined) attrs += ' id="' + escapeAttr(tid) + '"';
+   const tcls = storage._class;
+-  if (tcls !== undefined) attrs += ' class="' + escapeAttr(tcls) + '"';
++  if (tcls !== undefined) attrs += ' class="' + (classMerge ? mergedClassAttr(tcls) : escapeAttr(tcls)) + '"';
+   const tsty = storage._style;
+   if (tsty !== undefined) attrs += ' style="' + escapeAttr(tsty) + '"';
+ 
+diff --git a/test/class-merge.test.ts b/test/class-merge.test.ts
+new file mode 100644
+index 0000000..886f2c3
+--- /dev/null
++++ b/test/class-merge.test.ts
+@@ -0,0 +1,106 @@
++import { describe, it, afterEach } from "node:test";
++import assert from "node:assert/strict";
++
++import { render, renderToIterable, setClassMerge, Div, H3, P, Span, Input, type Tag } from "../src/index.js";
++
++afterEach(() => setClassMerge(false));
++
++const theme = {
++  colors: { surface: "#fff", "surface-2": "#eee", danger: "#f00", primary: "#00f", text: "#111", "text-faint": "#999", line: "#ddd", hairline: "#ccc", accent: "#0aa" },
++  fontSize: { display: "3rem" },
++  radius: { card: "1rem" },
++  fonts: { accent: "x" },
++  shadow: { card: "0 0 1px #000" },
++} as const;
++// Custom tokens are app-declared (FluentCustomColors); the lib's own tests have none, so token
++// calls go through an untyped view of the chain.
++// eslint-disable-next-line @typescript-eslint/no-explicit-any
++const u = (t: Tag): any => t;
++const cls = (t: Tag): string => /class="([^"]*)"/.exec(render(t))![1]!;
++const card = (t: Tag) => u(t).p("6").bg("surface").rounded("card");
++const cardTitle = (t: Tag) => u(t).text("lg").font("semibold").text("text");
++
++describe("class merge — off (8.x default)", () => {
++  it("emits every written class, as 8.1.0 did", () => {
++    assert.equal(cls(u(Div("x")).apply(card).p("4")), "p-6 bg-surface rounded-card p-4");
++  });
++  it("setClassMerge(false) restores append-only output", () => {
++    setClassMerge(theme);
++    setClassMerge(false);
++    assert.equal(cls(u(Div("x")).bg("surface").when(true, (t: Tag) => u(t).bg("danger/10"))), "bg-surface bg-danger/10");
++  });
++});
++
++describe("class merge — the later write of a family wins", () => {
++  const cases: [string, Tag, string][] = [
++    ["preset then direct", u(Div("x")).apply(card).p("4"), "bg-surface rounded-card p-4"],
++    ["base then .when", u(Div("x")).bg("surface").when(true, (t: Tag) => u(t).bg("danger/10")), "bg-danger/10"],
++    ["base then .whenMatch", u(Div("x")).bg("surface").whenMatch("err" as "ok" | "err", { ok: (t: Tag) => u(t).bg("surface-2"), err: (t: Tag) => u(t).bg("danger/10") }), "bg-danger/10"],
++    ["repeated variant object", u(Div("x")).hover({ bg: "primary" }).hover({ bg: "danger" }), "hover:bg-danger"],
++    ["nested variant chain", u(Div("x")).md({ hover: { bg: "primary" } }).md({ hover: { bg: "danger" } }), "md:hover:bg-danger"],
++    ["component base, no composition", u(Div("x")).w("full").w("20"), "w-20"],
++    ["custom color tokens", u(H3("x")).apply(cardTitle).text("danger"), "text-lg font-semibold text-danger"],
++    ["disabled cursor", u(Div("x")).cursor("pointer").when(true, (t: Tag) => u(t).opacity("50").cursor("not-allowed")), "opacity-50 cursor-not-allowed"],
++    ["custom font-size token", u(Div("x")).text("lg").text("display"), "text-display"],
++    ["arbitrary size over a scale size", u(Span("x")).text("xs").text("px", 11), "text-[11px]"],
++    ["arbitrary weight over a keyword weight", u(Div("x")).font("bold").font("[600]"), "font-[600]"],
++    ["custom shadow token", u(Div("x")).shadow("md").shadow("card"), "shadow-card"],
++    ["negative over positive", u(Div("x")).mt("4").neg("mt-2"), "-mt-2"],
++    ["cssProp on one property", u(Div("x")).cssProp("mask-repeat", "no-repeat").cssProp("mask-repeat", "repeat"), "[mask-repeat:repeat]"],
++    ["exact duplicate", u(Div("x")).cursor("pointer").cursor("pointer"), "cursor-pointer"],
++  ];
++  for (const [name, tag, want] of cases) it(name, () => { setClassMerge(theme); assert.equal(cls(tag), want); });
++});
++
++describe("class merge — different families are kept", () => {
++  const keep: [string, Tag, string][] = [
++    ["side width + color", u(Div("x")).border("b").border("line"), "border-b border-line"],
++    ["size + color + align", u(Div("x")).text("lg").text("primary").text("center"), "text-lg text-primary text-center"],
++    ["ring width + color (focus)", u(Div("x")).focus({ ring: "2" }).focus({ ring: "primary/40" }), "focus:ring-2 focus:ring-primary/40"],
++    ["shorthand vs longhand", u(Div("x")).px("8").p("6"), "px-8 p-6"],
++    ["display vs direction vs flex", u(Div("x")).flex().flex("col").flex("1"), "flex flex-col flex-1"],
++    ["weight vs family", u(Div("x")).font("bold").font("mono"), "font-bold font-mono"],
++    ["family vs arbitrary weight", u(Div("x")).font("mono").font("[600]"), "font-mono font-[600]"],
++    ["shadow size vs color", u(Div("x")).shadow("md").shadow("danger"), "shadow-md shadow-danger"],
++    ["children's border color vs own", u(Div("x")).divideY().divide("line").border().border("line"), "divide-y divide-line border border-line"],
++    ["hidden stays out of display", u(Div("x")).hidden().flex().flex("col"), "hidden flex flex-col"],
++    ["variant vs base", u(Div("x")).bg("surface").hover({ bg: "surface-2" }), "bg-surface hover:bg-surface-2"],
++    ["important is never merged", u(Div("x")).p("6").cssClass("p-4!"), "p-6 p-4!"],
++    ["unknown hooks pass through", u(Div("x")).cssClass("js-row").p("6").cssClass("js-row-2").p("4"), "js-row js-row-2 p-4"],
++  ];
++  for (const [name, tag, want] of keep) it(name, () => { setClassMerge(theme); assert.equal(cls(tag), want); });
++});
++
++describe("class merge — token registry", () => {
++  it("an unregistered custom token is never merged", () => {
++    setClassMerge({});
++    assert.equal(cls(u(H3("x")).apply(cardTitle).text("danger")), "text-lg font-semibold text-text text-danger");
++  });
++  it("a token registered in two families that share a prefix is never merged", () => {
++    setClassMerge({ colors: { big: "#000" }, fontSize: { big: "2rem" } });
++    assert.equal(cls(u(Div("x")).text("lg").text("big" as "lg")), "text-lg text-big");
++  });
++});
++
++describe("class merge — emit contract", () => {
++  it("escapes the merged value", () => {
++    setClassMerge(theme);
++    assert.equal(render(u(Div("x")).cssClass('a"b').p("6").p("4")), '<div class="a&quot;b p-4">x</div>');
++  });
++  it("the streaming serializer merges too", () => {
++    setClassMerge(theme);
++    assert.equal([...renderToIterable(u(Div("x")).apply(card).p("4"))].join(""), '<div class="bg-surface rounded-card p-4">x</div>');
++  });
++  it("stays correct past the memo cap (cleared, never frozen)", () => {
++    setClassMerge(theme);
++    for (let i = 0; i < 10_050; i++) render(u(Div("x")).cssClass(`js-${i}`).p("6").p("4"));
++    assert.equal(cls(u(Div("x")).apply(card).p("8")), "bg-surface rounded-card p-8");
++    assert.equal(cls(u(P("x")).cssClass("js-new").p("6").p("4")), "js-new p-4");
++  });
++  it("leaves the tag's own class storage untouched", () => {
++    setClassMerge(theme);
++    const t = Input().p("6").p("4");
++    render(t);
++    assert.equal(t.getClass(), "p-6 p-4");
++  });
++});

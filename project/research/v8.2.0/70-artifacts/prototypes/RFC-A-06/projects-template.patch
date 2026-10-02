@@ -1,0 +1,15 @@
+diff --git a/templates/full-stack/src/app/seo/seo.meta.ts b/templates/full-stack/src/app/seo/seo.meta.ts
+index e1a9138..7265890 100644
+--- a/templates/full-stack/src/app/seo/seo.meta.ts
++++ b/templates/full-stack/src/app/seo/seo.meta.ts
+@@ -34,9 +34,8 @@ export type SeoMetaProps = {
+   jsonLd?: readonly Record<string, unknown>[];
+ };
+ 
+-// JSON.stringify leaves "</script>" intact; escaping "<" keeps the payload inside the script element.
+ function jsonLdScript(schema: Record<string, unknown>): Tag {
+-  return Script(JSON.stringify(schema).replace(/</g, "\\u003c")).setType("application/ld+json");
++  return Script(JSON.stringify(schema)).setType("application/ld+json");
+ }
+ 
+ // Excluded (noindex) pages carry no canonical; everything else self-references by default.

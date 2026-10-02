@@ -1,0 +1,1553 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8b82b95..ec53828 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -6,6 +6,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); this repo uses
+ 
+ ## [Unreleased]
+ 
++### `packages/ui` is gone; `src/shared/ui` is the component layer
++
++`@jtdigital/ui` had no consumer in any of the 58 fluent-html repos and failed the fluent-html lint with 36
++errors. Installed as a dependency, its classes would not reach an app's CSS either: the safelist scans
++`src/**/*.ts` and the extractor skips `node_modules`. Every app already takes its components from
++`src/shared/ui`.
++
++- `packages/ui` is deleted, with its lockfile importer, its row in the workspace fluent-html pin test
++  and its README entry. The design-system PM scope is archived as killed.
++- `selectStyle` joins `inputStyle` and `textareaStyle` in `src/shared/ui/form.ts`: the same field look
++  on a `<select>`. Three apps and three of four agent runs had been writing it by hand.
++
+ ### The integration suite passes beside every module, and CI runs it that way
+ 
+ CI ran the integration suite on one combo, `auth + account + files + renderbox*`, so a test that
+diff --git a/README.md b/README.md
+index 0f46ab6..2c63302 100644
+--- a/README.md
++++ b/README.md
+@@ -169,7 +169,6 @@ templates/
+ └── web/                 # Static site template (deprecated)
+ 
+ packages/
+-├── ui/                  # @jtdigital/ui — shared fluent-html components
+ └── config-typescript/   # Shared tsconfig
+ 
+ scripts/                 # cPanel and GitHub automation scripts
+diff --git a/packages/ui/package-lock.json b/packages/ui/package-lock.json
+deleted file mode 100644
+index 38223e3..0000000
+--- a/packages/ui/package-lock.json
++++ /dev/null
+@@ -1,43 +0,0 @@
+-{
+-  "name": "@jtdigital/ui",
+-  "version": "1.0.0",
+-  "lockfileVersion": 3,
+-  "requires": true,
+-  "packages": {
+-    "": {
+-      "name": "@jtdigital/ui",
+-      "version": "1.0.0",
+-      "devDependencies": {
+-        "lambda.html": "^5.3.0",
+-        "typescript": "^5.9.3"
+-      },
+-      "peerDependencies": {
+-        "lambda.html": "^5.0.0"
+-      }
+-    },
+-    "node_modules/lambda.html": {
+-      "version": "5.2.1",
+-      "resolved": "https://registry.npmjs.org/lambda.html/-/lambda.html-5.2.1.tgz",
+-      "integrity": "sha512-4+mOkGGaAqThSlWrq6bPR8tme1tbzZCgYn3VocsIMSCctCS9b5h3DwKZdP2bys7p54Rs9AsqV8icYuo6SOEBPA==",
+-      "dev": true,
+-      "license": "ISC",
+-      "engines": {
+-        "node": ">=16.0.0"
+-      }
+-    },
+-    "node_modules/typescript": {
+-      "version": "5.9.3",
+-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+-      "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+-      "dev": true,
+-      "license": "Apache-2.0",
+-      "bin": {
+-        "tsc": "bin/tsc",
+-        "tsserver": "bin/tsserver"
+-      },
+-      "engines": {
+-        "node": ">=14.17"
+-      }
+-    }
+-  }
+-}
+diff --git a/packages/ui/package.json b/packages/ui/package.json
+deleted file mode 100644
+index 6b69e5e..0000000
+--- a/packages/ui/package.json
++++ /dev/null
+@@ -1,41 +0,0 @@
+-{
+-  "name": "@jtdigital/ui",
+-  "version": "1.0.0",
+-  "description": "Shared UI components for JT Digital templates (fluent-html)",
+-  "type": "module",
+-  "main": "./dist/index.js",
+-  "types": "./dist/index.d.ts",
+-  "exports": {
+-    ".": {
+-      "types": "./dist/index.d.ts",
+-      "import": "./dist/index.js"
+-    },
+-    "./layout": {
+-      "types": "./dist/layout/index.d.ts",
+-      "import": "./dist/layout/index.js"
+-    },
+-    "./form": {
+-      "types": "./dist/form/index.d.ts",
+-      "import": "./dist/form/index.js"
+-    },
+-    "./feedback": {
+-      "types": "./dist/feedback/index.d.ts",
+-      "import": "./dist/feedback/index.js"
+-    }
+-  },
+-  "files": [
+-    "dist",
+-    "src"
+-  ],
+-  "scripts": {
+-    "build": "tsc",
+-    "dev": "tsc --watch"
+-  },
+-  "peerDependencies": {
+-    "fluent-html": "*"
+-  },
+-  "devDependencies": {
+-    "fluent-html": "github:JT-Digital-d-o-o/fluent-html#main",
+-    "typescript": "^6.0.3"
+-  }
+-}
+diff --git a/packages/ui/src/feedback/Alert.ts b/packages/ui/src/feedback/Alert.ts
+deleted file mode 100644
+index e5560f9..0000000
+--- a/packages/ui/src/feedback/Alert.ts
++++ /dev/null
+@@ -1,94 +0,0 @@
+-import { Div, IfThen, P, View } from "fluent-html";
+-import type { TailwindColor } from "fluent-html/core";
+-
+-export type AlertType = "success" | "danger" | "warning" | "info";
+-
+-export type AlertProps = {
+-  /** Alert message content */
+-  message: View;
+-  /** Alert type/severity */
+-  type?: AlertType;
+-  /** Whether the alert can be dismissed */
+-  dismissible?: boolean;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-const alertColors: Record<AlertType, { bg: TailwindColor; border: TailwindColor; text: TailwindColor }> = {
+-  success: { bg: "green-50", border: "green-200", text: "green-700" },
+-  danger: { bg: "red-50", border: "red-200", text: "red-700" },
+-  warning: { bg: "yellow-50", border: "yellow-200", text: "yellow-700" },
+-  info: { bg: "blue-50", border: "blue-200", text: "blue-700" },
+-};
+-
+-const iconMap: Record<AlertType, string> = {
+-  success: "✓",
+-  danger: "✕",
+-  warning: "⚠",
+-  info: "ℹ",
+-};
+-
+-function AlertIcon(type: AlertType): View {
+-  return Div(P(iconMap[type]))
+-    .flex()
+-    .items("center")
+-    .justify("center")
+-    .w("5")
+-    .h("5")
+-    .rounded("full")
+-    .shrink("0");
+-}
+-
+-function AlertMessage(message: View): View {
+-  let content: View;
+-  if (typeof message === "string") {
+-    content = P(message).text("sm");
+-  } else if (Array.isArray(message)) {
+-    content = Div(message);
+-  } else {
+-    content = message;
+-  }
+-
+-  return Div(content as View).flex("1").text("sm");
+-}
+-
+-function DismissButton(): View {
+-  return Div(P("×"))
+-    .cursor("pointer")
+-    .text("lg")
+-    .leading("none")
+-    .addClass("hover:opacity-70")
+-    .addAttribute("onclick", "this.parentElement.remove()");
+-}
+-
+-/**
+- * Alert component for displaying feedback messages.
+- *
+- * @example
+- * Alert({ message: "Your changes have been saved.", type: "success" })
+- * Alert({ message: "Please fix the errors below.", type: "danger" })
+- */
+-export function Alert({
+-  message,
+-  type = "info",
+-  dismissible = false,
+-  className,
+-}: AlertProps): View {
+-  const colors = alertColors[type];
+-  const alert = Div(
+-    AlertIcon(type),
+-    AlertMessage(message),
+-    IfThen(dismissible, () => DismissButton()),
+-  )
+-    .flex()
+-    .items("start")
+-    .gap("3")
+-    .border()
+-    .rounded("lg")
+-    .p("4")
+-    .bg(colors.bg)
+-    .border(colors.border)
+-    .text(colors.text);
+-  if (className) alert.addClass(className);
+-  return alert;
+-}
+diff --git a/packages/ui/src/feedback/index.ts b/packages/ui/src/feedback/index.ts
+deleted file mode 100644
+index b00d6c4..0000000
+--- a/packages/ui/src/feedback/index.ts
++++ /dev/null
+@@ -1 +0,0 @@
+-export { Alert, type AlertProps, type AlertType } from "./Alert.js";
+diff --git a/packages/ui/src/form/Button.ts b/packages/ui/src/form/Button.ts
+deleted file mode 100644
+index 5814843..0000000
+--- a/packages/ui/src/form/Button.ts
++++ /dev/null
+@@ -1,93 +0,0 @@
+-import { Button as LambdaButton, View } from "fluent-html";
+-
+-export type ButtonVariant = "solid" | "outline" | "ghost";
+-export type ButtonSize = "sm" | "md" | "lg";
+-export type ColorVariant = "primary" | "secondary" | "success" | "danger" | "warning" | "info";
+-
+-export type ButtonProps = {
+-  /** Button label text */
+-  label: string;
+-  /** Button variant style */
+-  variant?: ButtonVariant;
+-  /** Button size */
+-  size?: ButtonSize;
+-  /** Color theme */
+-  color?: ColorVariant;
+-  /** Full width button */
+-  fullWidth?: boolean;
+-  /** Disabled state */
+-  disabled?: boolean;
+-  /** Button type attribute */
+-  type?: "button" | "submit" | "reset";
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-const sizeClasses: Record<ButtonSize, string> = {
+-  sm: "px-3 py-1.5 text-sm",
+-  md: "px-4 py-2",
+-  lg: "px-6 py-3 text-lg",
+-};
+-
+-const colorMap: Record<ColorVariant, { solid: string; outline: string; ghost: string }> = {
+-  primary: {
+-    solid: "bg-primary text-white hover:bg-primary-700",
+-    outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white",
+-    ghost: "text-primary hover:bg-primary-50",
+-  },
+-  secondary: {
+-    solid: "bg-gray-600 text-white hover:bg-gray-700",
+-    outline: "border-2 border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white",
+-    ghost: "text-gray-600 hover:bg-gray-100",
+-  },
+-  success: {
+-    solid: "bg-green-600 text-white hover:bg-green-700",
+-    outline: "border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white",
+-    ghost: "text-green-600 hover:bg-green-50",
+-  },
+-  danger: {
+-    solid: "bg-red-600 text-white hover:bg-red-700",
+-    outline: "border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white",
+-    ghost: "text-red-600 hover:bg-red-50",
+-  },
+-  warning: {
+-    solid: "bg-yellow-500 text-white hover:bg-yellow-600",
+-    outline: "border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white",
+-    ghost: "text-yellow-600 hover:bg-yellow-50",
+-  },
+-  info: {
+-    solid: "bg-blue-500 text-white hover:bg-blue-600",
+-    outline: "border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white",
+-    ghost: "text-blue-500 hover:bg-blue-50",
+-  },
+-};
+-
+-/**
+- * Styled button component with multiple variants and sizes.
+- *
+- * @example
+- * Button({ label: "Submit", variant: "solid", color: "primary", size: "lg" })
+- * Button({ label: "Cancel", variant: "outline", color: "secondary" })
+- */
+-export function Button({
+-  label,
+-  variant = "solid",
+-  size = "md",
+-  color = "primary",
+-  fullWidth = false,
+-  disabled = false,
+-  type = "button",
+-  className,
+-}: ButtonProps): View {
+-  return LambdaButton(label)
+-    .setType(type)
+-    .rounded("lg")
+-    .font("medium")
+-    .addClass("transition-colors")
+-    .addClass(sizeClasses[size])
+-    .addClass(colorMap[color][variant])
+-    .when(fullWidth, t => t.w("full"))
+-    .when(disabled, t => t.opacity("50").cursor("not-allowed"))
+-    .toggle("disabled", disabled)
+-    .addClass(className ?? "");
+-}
+diff --git a/packages/ui/src/form/FormField.ts b/packages/ui/src/form/FormField.ts
+deleted file mode 100644
+index 3e6f321..0000000
+--- a/packages/ui/src/form/FormField.ts
++++ /dev/null
+@@ -1,59 +0,0 @@
+-import { Div, Label, P, View } from "fluent-html";
+-import type { TailwindSpacing } from "fluent-html/core";
+-
+-export type FormFieldProps = {
+-  /** The input element to wrap */
+-  input: View;
+-  /** Field label text */
+-  label: string;
+-  /** Whether the field is required */
+-  required?: boolean;
+-  /** Error message to display */
+-  error?: string;
+-  /** Help text to display below the input */
+-  helpText?: string;
+-  /** Bottom margin */
+-  marginBottom?: TailwindSpacing;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Form field wrapper with label, input slot, and optional error/help text.
+- *
+- * @example
+- * FormField({
+- *   input: TextInput({ name: "email", type: "email" }),
+- *   label: "Email",
+- *   required: true,
+- *   error: "Invalid email",
+- * })
+- */
+-function HintText(error?: string, helpText?: string): View {
+-  if (error) return [P(error).text("sm").text("red-600").m("t", "1")];
+-  if (helpText) return [P(helpText).text("sm").text("gray-500").m("t", "1")];
+-  return [];
+-}
+-
+-export function FormField({
+-  input,
+-  label,
+-  required = false,
+-  error,
+-  helpText,
+-  marginBottom = "4",
+-  className,
+-}: FormFieldProps): View {
+-  return Div(
+-    Label(required ? `${label} *` : label)
+-      .text("sm")
+-      .font("medium")
+-      .text("gray-700")
+-      .m("b", "1")
+-      .block(),
+-    input,
+-    HintText(error, helpText),
+-  )
+-    .m("b", marginBottom)
+-    .addClass(className ?? "");
+-}
+diff --git a/packages/ui/src/form/Select.ts b/packages/ui/src/form/Select.ts
+deleted file mode 100644
+index 2b89d61..0000000
+--- a/packages/ui/src/form/Select.ts
++++ /dev/null
+@@ -1,84 +0,0 @@
+-import { Select as HtmlSelect, Option, View, IfThen, ForEach } from "fluent-html";
+-
+-export type SelectOption = {
+-  /** Option value */
+-  value: string;
+-  /** Option display label */
+-  label: string;
+-  /** Whether the option is disabled */
+-  disabled?: boolean;
+-}
+-
+-export type SelectProps = {
+-  /** Select name attribute */
+-  name: string;
+-  /** Available options */
+-  options: SelectOption[];
+-  /** Currently selected value */
+-  value?: string;
+-  /** Placeholder option text */
+-  placeholder?: string;
+-  /** Whether the select is required */
+-  required?: boolean;
+-  /** Whether the select is disabled */
+-  disabled?: boolean;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Styled select dropdown component.
+- *
+- * @example
+- * Select({
+- *   name: "country",
+- *   placeholder: "Select a country",
+- *   options: [
+- *     { value: "us", label: "United States" },
+- *     { value: "uk", label: "United Kingdom" },
+- *   ],
+- *   required: true
+- * })
+- */
+-function SelectOption(opt: SelectOption, selectedValue?: string): View {
+-  return Option(opt.label)
+-    .setValue(opt.value)
+-    .toggle("selected", opt.value === selectedValue)
+-    .toggle("disabled", opt.disabled);
+-}
+-
+-function PlaceholderOption(text: string, hasValue: boolean): View {
+-  return Option(text)
+-    .setValue("")
+-    .toggle("disabled")
+-    .toggle("selected", !hasValue);
+-}
+-
+-export function Select({
+-  name,
+-  options,
+-  value,
+-  placeholder,
+-  required = false,
+-  disabled = false,
+-  className,
+-}: SelectProps): View {
+-  return HtmlSelect(
+-    IfThen(placeholder, (text: string) => PlaceholderOption(text, !!value)),
+-    ForEach(options, (opt: SelectOption) => SelectOption(opt, value)),
+-  )
+-    .setName(name)
+-    .w("full")
+-    .p("x", "4")
+-    .p("y", "3")
+-    .border("2")
+-    .border("gray-200")
+-    .rounded("lg")
+-    .bg("white")
+-    .cursor("pointer")
+-    .addClass("focus:border-primary focus:outline-none transition-colors appearance-none")
+-    .toggle("required", required)
+-    .toggle("disabled", disabled)
+-    .when(disabled, t => t.opacity("50").cursor("not-allowed"))
+-    .addClass(className ?? "");
+-}
+diff --git a/packages/ui/src/form/TextInput.ts b/packages/ui/src/form/TextInput.ts
+deleted file mode 100644
+index 5a5de44..0000000
+--- a/packages/ui/src/form/TextInput.ts
++++ /dev/null
+@@ -1,73 +0,0 @@
+-import { Input, View } from "fluent-html";
+-
+-type InputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search";
+-
+-export type TextInputProps = {
+-  /** Input type */
+-  type?: InputType;
+-  /** Input name attribute */
+-  name: string;
+-  /** Placeholder text */
+-  placeholder?: string;
+-  /** Current value */
+-  value?: string;
+-  /** Whether the input is required */
+-  required?: boolean;
+-  /** Whether the input is disabled */
+-  disabled?: boolean;
+-  /** Minimum length for text inputs */
+-  minLength?: number;
+-  /** Maximum length for text inputs */
+-  maxLength?: number;
+-  /** Autocomplete attribute */
+-  autocomplete?: string;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Styled text input component.
+- *
+- * @example
+- * TextInput({
+- *   name: "email",
+- *   type: "email",
+- *   placeholder: "name@company.com",
+- *   required: true
+- * })
+- */
+-export function TextInput({
+-  type = "text",
+-  name,
+-  placeholder,
+-  value,
+-  required = false,
+-  disabled = false,
+-  minLength,
+-  maxLength,
+-  autocomplete,
+-  className,
+-}: TextInputProps): View {
+-  const input = Input()
+-    .setType(type)
+-    .setName(name)
+-    .setPlaceholder(placeholder ?? "")
+-    .setValue(value ?? "")
+-    .w("full")
+-    .p("x", "4")
+-    .p("y", "3")
+-    .border("2")
+-    .border("gray-200")
+-    .rounded("lg")
+-    .addClass("focus:border-primary focus:outline-none transition-colors")
+-    .toggle("required", required)
+-    .toggle("disabled", disabled)
+-    .when(disabled, t => t.opacity("50").cursor("not-allowed"))
+-    .addClass(className ?? "");
+-
+-  if (minLength !== undefined) input.setMinlength(minLength);
+-  if (maxLength !== undefined) input.setMaxlength(maxLength);
+-  if (autocomplete) input.setAutocomplete(autocomplete);
+-
+-  return input;
+-}
+diff --git a/packages/ui/src/form/Textarea.ts b/packages/ui/src/form/Textarea.ts
+deleted file mode 100644
+index d508981..0000000
+--- a/packages/ui/src/form/Textarea.ts
++++ /dev/null
+@@ -1,68 +0,0 @@
+-import { Textarea as HtmlTextarea, View } from "fluent-html";
+-
+-export type TextareaProps = {
+-  /** Textarea name attribute */
+-  name: string;
+-  /** Placeholder text */
+-  placeholder?: string;
+-  /** Current value */
+-  value?: string;
+-  /** Number of visible rows */
+-  rows?: number;
+-  /** Whether the textarea is required */
+-  required?: boolean;
+-  /** Whether the textarea is disabled */
+-  disabled?: boolean;
+-  /** Minimum length */
+-  minLength?: number;
+-  /** Maximum length */
+-  maxLength?: number;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Styled textarea component.
+- *
+- * @example
+- * Textarea({
+- *   name: "message",
+- *   placeholder: "Enter your message...",
+- *   rows: 4,
+- *   required: true
+- * })
+- */
+-export function Textarea({
+-  name,
+-  placeholder,
+-  value,
+-  rows = 4,
+-  required = false,
+-  disabled = false,
+-  minLength,
+-  maxLength,
+-  className,
+-}: TextareaProps): View {
+-  const textarea = HtmlTextarea(value || "")
+-    .setName(name)
+-    .setPlaceholder(placeholder ?? "")
+-    .setRows(rows)
+-    .w("full")
+-    .p("x", "4")
+-    .p("y", "3")
+-    .border("2")
+-    .border("gray-200")
+-    .rounded("lg")
+-    .addClass("resize-y")
+-    .transition("colors")
+-    .focus({ border: "primary", outline: "none" })
+-    .toggle("required", required)
+-    .toggle("disabled", disabled)
+-    .when(disabled, t => t.opacity("50").cursor("not-allowed"))
+-    .addClass(className ?? "");
+-
+-  if (minLength !== undefined) textarea.setMinlength(minLength);
+-  if (maxLength !== undefined) textarea.setMaxlength(maxLength);
+-
+-  return textarea;
+-}
+diff --git a/packages/ui/src/form/index.ts b/packages/ui/src/form/index.ts
+deleted file mode 100644
+index 279a77f..0000000
+--- a/packages/ui/src/form/index.ts
++++ /dev/null
+@@ -1,5 +0,0 @@
+-export { TextInput, type TextInputProps } from "./TextInput.js";
+-export { Textarea, type TextareaProps } from "./Textarea.js";
+-export { Select, type SelectProps, type SelectOption } from "./Select.js";
+-export { FormField, type FormFieldProps } from "./FormField.js";
+-export { Button, type ButtonProps, type ButtonVariant, type ButtonSize, type ColorVariant } from "./Button.js";
+diff --git a/packages/ui/src/index.ts b/packages/ui/src/index.ts
+deleted file mode 100644
+index 6af52f4..0000000
+--- a/packages/ui/src/index.ts
++++ /dev/null
+@@ -1,40 +0,0 @@
+-import "./theme-contract.js";
+-
+-// Layout components
+-export {
+-  Container,
+-  Section,
+-  Stack,
+-  Row,
+-  Card,
+-  type ContainerProps,
+-  type SectionProps,
+-  type StackProps,
+-  type RowProps,
+-  type CardProps,
+-} from "./layout/index.js";
+-
+-// Form components
+-export {
+-  TextInput,
+-  Textarea,
+-  Select,
+-  FormField,
+-  Button,
+-  type TextInputProps,
+-  type TextareaProps,
+-  type SelectProps,
+-  type SelectOption,
+-  type FormFieldProps,
+-  type ButtonProps,
+-  type ButtonVariant,
+-  type ButtonSize,
+-  type ColorVariant,
+-} from "./form/index.js";
+-
+-// Feedback components
+-export {
+-  Alert,
+-  type AlertProps,
+-  type AlertType,
+-} from "./feedback/index.js";
+diff --git a/packages/ui/src/layout/Card.ts b/packages/ui/src/layout/Card.ts
+deleted file mode 100644
+index 40a74c9..0000000
+--- a/packages/ui/src/layout/Card.ts
++++ /dev/null
+@@ -1,73 +0,0 @@
+-import { Div, H2, IfThen, P, View } from "fluent-html";
+-import { TailwindMaxWidth, TailwindRounded, TailwindSpacing } from "fluent-html/core";
+-
+-export type CardProps = {
+-  /** Card content */
+-  children: View;
+-  /** Card title */
+-  title?: string;
+-  /** Card subtitle/description */
+-  subtitle?: string;
+-  /** Padding size */
+-  padding?: TailwindSpacing;
+-  /** Border radius */
+-  rounded?: TailwindRounded;
+-  /** Maximum width */
+-  maxWidth?: TailwindMaxWidth;
+-  /** Center the card horizontally */
+-  centered?: boolean;
+-  /** Whether to show a shadow */
+-  shadow?: boolean;
+-  /** Whether to show a border */
+-  border?: boolean;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Card component for containing related content.
+- *
+- * @example
+- * Card({
+- *   children: P("Card content here"),
+- *   title: "Card Title",
+- *   subtitle: "Optional description",
+- *   maxWidth: "md",
+- * })
+- */
+-function CardHeader(title?: string, subtitle?: string): View {
+-  return Div(
+-    IfThen(title, (t) =>
+-      H2(t).text("2xl").font("bold").text("gray-900").m("b", subtitle ? "2" : "0")
+-    ),
+-    IfThen(subtitle, (s) =>
+-      P(s).text("gray-600")
+-    ),
+-  )
+-    .text("center")
+-    .m("b", "8");
+-}
+-
+-export function Card({
+-  children,
+-  title,
+-  subtitle,
+-  padding = "8",
+-  rounded = "2xl",
+-  maxWidth,
+-  centered = false,
+-  shadow = true,
+-  border = true,
+-  className,
+-}: CardProps): View {
+-  const card = Div(CardHeader(title, subtitle), children)
+-    .bg("white")
+-    .rounded(rounded)
+-    .p(padding);
+-  if (shadow) card.shadow("sm");
+-  if (border) card.border().border("gray-200");
+-  if (maxWidth) card.maxW(maxWidth);
+-  if (centered) card.m("x", "auto");
+-  if (className) card.addClass(className);
+-  return card;
+-}
+diff --git a/packages/ui/src/layout/Container.ts b/packages/ui/src/layout/Container.ts
+deleted file mode 100644
+index a16d014..0000000
+--- a/packages/ui/src/layout/Container.ts
++++ /dev/null
+@@ -1,44 +0,0 @@
+-import { Div, View } from "fluent-html";
+-import { TailwindMaxWidth, TailwindSpacing } from "fluent-html/core";
+-
+-export type ContainerProps = {
+-  /** Container content */
+-  children: View;
+-  /** Maximum width of the container */
+-  maxWidth?: TailwindMaxWidth;
+-  /** Horizontal padding */
+-  paddingX?: TailwindSpacing;
+-  /** Vertical padding */
+-  paddingY?: TailwindSpacing;
+-  /** Center the container horizontally */
+-  centered?: boolean;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Container component for constraining content width with consistent padding.
+- *
+- * @example
+- * Container({
+- *   children: [H1("Page Title"), P("Content here...")],
+- *   maxWidth: "4xl",
+- * })
+- */
+-export function Container({
+-  children,
+-  maxWidth = "7xl",
+-  paddingX = "4",
+-  paddingY,
+-  centered = true,
+-  className,
+-}: ContainerProps): View {
+-  return Div(children)
+-    .maxW(maxWidth)
+-    .p("x", paddingX)
+-    .when(!!paddingY, t => t.p("y", paddingY!))
+-    .when(centered, t => t.m("x", "auto"))
+-    .sm({ px: "6" })
+-    .lg({ px: "8" })
+-    .addClass(className ?? "");
+-}
+diff --git a/packages/ui/src/layout/Row.ts b/packages/ui/src/layout/Row.ts
+deleted file mode 100644
+index d7ab0f3..0000000
+--- a/packages/ui/src/layout/Row.ts
++++ /dev/null
+@@ -1,48 +0,0 @@
+-import { Div, View } from "fluent-html";
+-import type { TailwindSpacing } from "fluent-html/core";
+-
+-export type RowProps = {
+-  /** Row content */
+-  children: View;
+-  /** Gap between children */
+-  gap?: TailwindSpacing;
+-  /** Align items along the cross axis */
+-  align?: "start" | "end" | "center" | "baseline" | "stretch";
+-  /** Justify content along the main axis */
+-  justify?: "start" | "end" | "center" | "between" | "around" | "evenly";
+-  /** Wrap children to next line */
+-  wrap?: boolean;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Row component for horizontal flex layouts with consistent spacing.
+- *
+- * @example
+- * Row({
+- *   children: [
+- *     Button({ label: "Cancel", variant: "outline" }),
+- *     Button({ label: "Save", variant: "solid" }),
+- *   ],
+- *   gap: "4",
+- *   justify: "end",
+- * })
+- */
+-export function Row({
+-  children,
+-  gap = "4",
+-  align,
+-  justify,
+-  wrap = false,
+-  className,
+-}: RowProps): View {
+-  const row = Div(children)
+-    .flex()
+-    .gap(gap);
+-  if (align) row.items(align);
+-  if (justify) row.justify(justify);
+-  if (wrap) row.flex("wrap");
+-  if (className) row.addClass(className);
+-  return row;
+-}
+diff --git a/packages/ui/src/layout/Section.ts b/packages/ui/src/layout/Section.ts
+deleted file mode 100644
+index 50ef8ea..0000000
+--- a/packages/ui/src/layout/Section.ts
++++ /dev/null
+@@ -1,40 +0,0 @@
+-import { Div, View } from "fluent-html";
+-import type { TailwindColor, TailwindSpacing } from "fluent-html/core";
+-
+-export type SectionProps = {
+-  /** Section content */
+-  children: View;
+-  /** Vertical padding */
+-  paddingY?: TailwindSpacing;
+-  /** Horizontal padding */
+-  paddingX?: TailwindSpacing;
+-  /** Background color (Tailwind class name without 'bg-' prefix) */
+-  background?: TailwindColor;
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Section component for vertical rhythm and background styling.
+- *
+- * @example
+- * Section({
+- *   children: Container({ children: [...] }),
+- *   paddingY: "16",
+- *   background: "gray-50",
+- * })
+- */
+-export function Section({
+-  children,
+-  paddingY = "12",
+-  paddingX,
+-  background,
+-  className,
+-}: SectionProps): View {
+-  const section = Div(children)
+-    .p("y", paddingY);
+-  if (paddingX) section.p("x", paddingX);
+-  if (background) section.bg(background);
+-  if (className) section.addClass(className);
+-  return section;
+-}
+diff --git a/packages/ui/src/layout/Stack.ts b/packages/ui/src/layout/Stack.ts
+deleted file mode 100644
+index 2f51f6f..0000000
+--- a/packages/ui/src/layout/Stack.ts
++++ /dev/null
+@@ -1,42 +0,0 @@
+-import { Div, View } from "fluent-html";
+-import type { TailwindSpacing } from "fluent-html/core";
+-
+-export type StackProps = {
+-  /** Stack content */
+-  children: View;
+-  /** Gap between children */
+-  gap?: TailwindSpacing;
+-  /** Align items along the cross axis */
+-  align?: "start" | "end" | "center" | "baseline" | "stretch";
+-  /** Justify content along the main axis */
+-  justify?: "start" | "end" | "center" | "between" | "around" | "evenly";
+-  /** Additional CSS classes */
+-  className?: string;
+-}
+-
+-/**
+- * Stack component for vertical flex layouts with consistent spacing.
+- *
+- * @example
+- * Stack({
+- *   children: [H1("Title"), P("Description"), Button({ label: "Action" })],
+- *   gap: "4",
+- *   align: "center",
+- * })
+- */
+-export function Stack({
+-  children,
+-  gap = "4",
+-  align,
+-  justify,
+-  className,
+-}: StackProps): View {
+-  const stack = Div(children)
+-    .flex()
+-    .flex("col")
+-    .gap(gap);
+-  if (align) stack.items(align);
+-  if (justify) stack.justify(justify);
+-  if (className) stack.addClass(className);
+-  return stack;
+-}
+diff --git a/packages/ui/src/layout/index.ts b/packages/ui/src/layout/index.ts
+deleted file mode 100644
+index f9ba101..0000000
+--- a/packages/ui/src/layout/index.ts
++++ /dev/null
+@@ -1,5 +0,0 @@
+-export { Container, type ContainerProps } from "./Container.js";
+-export { Section, type SectionProps } from "./Section.js";
+-export { Stack, type StackProps } from "./Stack.js";
+-export { Row, type RowProps } from "./Row.js";
+-export { Card, type CardProps } from "./Card.js";
+diff --git a/packages/ui/src/theme-contract.ts b/packages/ui/src/theme-contract.ts
+deleted file mode 100644
+index 634143d..0000000
+--- a/packages/ui/src/theme-contract.ts
++++ /dev/null
+@@ -1,13 +0,0 @@
+-/**
+- * Shared components style against the app theme's `primary` token — every
+- * template's `defineTheme` declares it (each template's `src/theme.ts`). This
+- * augmentation mirrors that contract so the package typechecks standalone;
+- * it merges with the app's own `ThemeKeys` augmentation at consumption.
+- */
+-declare module "fluent-html" {
+-  interface FluentCustomColors {
+-    primary: true;
+-  }
+-}
+-
+-export {};
+diff --git a/packages/ui/src/types.ts b/packages/ui/src/types.ts
+deleted file mode 100644
+index e33f25f..0000000
+--- a/packages/ui/src/types.ts
++++ /dev/null
+@@ -1,5 +0,0 @@
+-// All types have been migrated:
+-// - Tailwind types (SpacingSize, MaxWidth, Rounded, TextSize, FontWeight) → fluent-html/core
+-// - Flex types (FlexAlign, FlexJustify, FlexDirection) → inlined in component props (match fluent-html method signatures)
+-// - Domain types (AlertType, ButtonVariant, ButtonSize, ColorVariant, InputType) → defined locally in their components
+-// - Children → View from fluent-html
+diff --git a/packages/ui/tsconfig.json b/packages/ui/tsconfig.json
+deleted file mode 100644
+index 6e46d8d..0000000
+--- a/packages/ui/tsconfig.json
++++ /dev/null
+@@ -1,19 +0,0 @@
+-{
+-  "compilerOptions": {
+-    "target": "ES2022",
+-    "lib": ["ES2022"],
+-    "module": "NodeNext",
+-    "moduleResolution": "NodeNext",
+-    "outDir": "./dist",
+-    "rootDir": "./src",
+-    "strict": true,
+-    "esModuleInterop": true,
+-    "skipLibCheck": true,
+-    "forceConsistentCasingInFileNames": true,
+-    "declaration": true,
+-    "declarationMap": true,
+-    "sourceMap": true
+-  },
+-  "include": ["src/**/*"],
+-  "exclude": ["node_modules", "dist"]
+-}
+diff --git a/project/pm/INDEX.md b/project/pm/INDEX.md
+index 0908d94..a9c3471 100644
+--- a/project/pm/INDEX.md
++++ b/project/pm/INDEX.md
+@@ -1,6 +1,6 @@
+ # Project Management
+ 
+-- [fluent-html v6 migration](fluent-html-v6/INDEX.md) — the final goal: move the template to fluent-html@6 (new core API + Tailwind v4) and own the cut surface (`@fluent-html/fastify` · `@jtdigital/ui` · `@jtdigital/web`)
++- [fluent-html v6 migration](fluent-html-v6/INDEX.md) — the final goal: move the template to fluent-html@6 (new core API + Tailwind v4) and own the cut surface (`@fluent-html/fastify` · `@jtdigital/web`; components stay in each app's `src/shared/ui`)
+ - [Template Update](template-update/INDEX.md) — restructure + quality uplift of `templates/full-stack`
+ - [Agent Fitness](agent-fitness/prd.md) — the 8/9 program: measured scorecard (fluent-html 7.5 · stack 7.5 · guidelines 4.5) worked cell by cell across three cycles + the update-path scope; exit gate is a protocol re-run
+ - [Agent Leverage](agent-leverage/prd.md) — the loop around the stack: mine the 1,427-session transcript corpus, make the app runnable for verification, converge the 34 active repos off 8 guideline versions, generate features instead of imitating them
+diff --git a/project/pm/archive/design-system/prd.md b/project/pm/archive/design-system/prd.md
+new file mode 100644
+index 0000000..f6ddcb3
+--- /dev/null
++++ b/project/pm/archive/design-system/prd.md
+@@ -0,0 +1,38 @@
++> **Outcome:** killed: components stay in each app's `src/shared/ui`; `packages/ui` deleted ([decision](../../fluent-html-v6/decisions.md), 01. 10. 26).
++
++# design-system (`@jtdigital/ui`) — PRD
++
++## Problem
++
++v6 cut every opinionated visual component to user-land (curation §4 — "instruction set, not a component kit"): semantic blocks (Alert/Badge/Card/…), overlays (Modal/Drawer/Toast), layout (Shell/Nav/LoadingBar), form field stacks (Field/FieldError), icons, the data grid, and the SEO head. The template already has working versions of most; without a shared package, every scaffolded app re-copies them.
++
++## Appetite
++
++Large — a net-new component library built **on v6 primitives**, shared across apps. Roadmap **P6**. Depends on the published core and (for context-reading components) [../fastify-adapter](../fastify-adapter/).
++
++## Solution
++
++Stand up **`@jtdigital/ui`** — components composed on v6 primitives, no opinions the library should own:
++
++- **Semantic** (B-03) — `Alert`/`Callout`/`Badge` (enum→variant via `Match`), `Card`/`CardHeader`/`StatCard`, `Skeleton`; button-variant + typography `.apply()` helpers.
++- **Overlays** (B-02) — `Modal`/`Drawer` composing native `Dialog()` + `behavior("openDialog"/"closeDialog")`; `ToastContainer` (receiver script + `.trigger("showToast")` contract).
++- **Layout** (B-04) — `Container`/`Shell`/`NavItem`/`SidebarNav`/`TabNav`/`LoadingBar` on `Document()` + styling + `.htmxIndicator()`.
++- **Forms** (B-01) — `Field` (label+input+error stack), `FieldError`, `FieldHint` on the library's `Form<T>` binding + `f.error(name)`.
++- **Icons** (B-05) — the `Icon` component + the vendored icon set on the v6 SVG element coverage (no `Raw("<svg…>")` — enforced by `no-raw-icon-string`).
++- **Data grid** (B-06) — `DataTable`/`Pagination`/sortable headers/`tableState` on `Table`/`Th`/`Td` + `defineRoutes`.
++- **SEO head** (A-06) — `SeoHead`/`OgMeta`/`TwitterCard` on `Document()` + typed `Meta().setProperty()`.
++
++## Rabbit Holes
++
++- **Promote, don't rewrite** — the template's existing components are the starting point; repackage into the canonical shape and drop their v5/v3 styling assumptions.
++- **Presets are `.apply()` helpers, not theme** — card/button styles live here as composable helpers, not in `defineTheme`.
++- **Styling stays render-time fluent methods** — so the extractor safelist picks classes up; if a component emits classes invisibly (like `.overlay()`), document the safelist need.
++
++## No-Gos
++
++- No business logic / auth / data fetching — pure presentation composed on primitives.
++- No `Raw(icon)` — icons are typed SVG Views.
++
++## Cross-reference
++
++`fluent-html/product/research/v6/40-synthesis/curation.md` §4 (the cut rows) · the B-01..B-06 / A-06 RFCs under `…/20-design/track-b-new-apis/`. Alignment §2. v6 primitives these build on shipped in `fluent-html@6` (Form<T>, dialog behaviors, SVG coverage, `.htmxIndicator()`, `Document()`).
+diff --git a/project/pm/archive/design-system/todo.md b/project/pm/archive/design-system/todo.md
+new file mode 100644
+index 0000000..4e3e63b
+--- /dev/null
++++ b/project/pm/archive/design-system/todo.md
+@@ -0,0 +1,33 @@
++# design-system (`@jtdigital/ui`) — Tasks
++
++<!-- hill: uphill -->
++### As a maintainer I want the package scaffold so that components ship from one shared place
++
++- [ ] [P0] Spike: `@jtdigital/ui` skeleton, peer-dep `fluent-html@^6` (+ `@fluent-html/fastify` where components read context); decide the export surface + per-family entry points
++- [ ] [P1] Port the template's existing components as the starting point (inventory from `templates/full-stack/src` + the audit docs)
++- [ ] [P1] Check for bugs — the `no-raw-icon-string` / `prefer-set-method` v6 rules pass on the ported code
++
++<!-- hill: uphill -->
++### As an app author I want semantic + form components so that I stop re-copying Alert/Card/Field per app
++
++- [ ] [P1] Semantic (B-03): `Alert`/`Callout`/`Badge` (enum→variant via `Match`), `Card`/`CardHeader`/`StatCard`, `Skeleton` + button-variant/typography `.apply()` helpers
++- [ ] [P1] Forms (B-01): `Field` (label+input+error stack), `FieldError`, `FieldHint` on `Form<T>` + `f.error(name)`
++- [ ] [P1] Write tests — render snapshots per component; `Field` wires value/error from `FormState`
++- [ ] [P1] Check for bugs — escaping of label/error text, variant exhaustiveness
++
++<!-- hill: uphill -->
++### As an app author I want overlays + layout so that modals/shell/nav are native and consistent
++
++- [ ] [P1] Overlays (B-02): `Modal`/`Drawer` on native `Dialog()` + `behavior("openDialog"/"closeDialog")`; `ToastContainer` (receiver + `.trigger("showToast")` contract)
++- [ ] [P1] Layout (B-04): `Container`/`Shell`/`NavItem`/`SidebarNav`/`TabNav`/`LoadingBar` on `Document()` + `.htmxIndicator()`
++- [ ] [P1] Write tests — Modal emits the right open/close `hx-on`; Shell composes `Document()` DOCTYPE
++- [ ] [P1] Check for bugs — focus-trap/Esc behavior, indicator class safelisting
++
++<!-- hill: uphill -->
++### As an app author I want icons, the data grid, and SEO head so that the last cut surfaces are owned
++
++- [ ] [P1] Icons (B-05): `Icon` + the vendored icon set on the typed SVG coverage (no `Raw`)
++- [ ] [P1] Data grid (B-06): `DataTable`/`Pagination`/sortable headers/`tableState` on `Table` + `defineRoutes` — revisit the deferred `preserveQuery`/filter-reset fix here
++- [ ] [P1] SEO head (A-06): `SeoHead`/`OgMeta`/`TwitterCard` on `Document()` + typed `Meta().setProperty()`
++- [ ] [P1] Write tests — icon renders as SVG Views; DataTable sort/page round-trips; SeoHead emits og/twitter meta
++- [ ] [P1] Check for bugs — icon safelist, data-grid query-param round-trip, meta escaping
+diff --git a/project/pm/fluent-html-v6/INDEX.md b/project/pm/fluent-html-v6/INDEX.md
+index 99484c0..696a346 100644
+--- a/project/pm/fluent-html-v6/INDEX.md
++++ b/project/pm/fluent-html-v6/INDEX.md
+@@ -9,7 +9,7 @@ Migrate the projects-template to **fluent-html v6** — the greenfield, instruct
+ 
+ The **literal-styling pattern** (closed-union→apply-fn map, ternary→`whenElse`, push variable sizing to the caller, `.setStyle` for open domains) + two **extractor false-positive fixes** (name-collision + comment-scanning, pushed `c3972f1`) made `onUnresolved: "error"` viable. Pins (full SHA, git branches): `fluent-html` `e51a3a7`, `eslint-plugin-fluent-html` `c111bb2`, `fluent-html-tailwind-extractor` `c3972f1`.
+ 
+-**Open:** the package-cutover half (`@fluent-html/fastify` / `@jtdigital/ui` / `@jtdigital/web`) is still gated on the [fastify-adapter](fastify-adapter/) / [design-system](design-system/) / [app-framework](app-framework/) scopes. Requirements: [prd.md](prd.md) · decisions: [decisions.md](decisions.md).
++**Open:** the package-cutover half (`@fluent-html/fastify` / `@jtdigital/web`) is still gated on the [fastify-adapter](fastify-adapter/) / [app-framework](app-framework/) scopes. Components stay in each app's `src/shared/ui` ([decisions.md](decisions.md)). Requirements: [prd.md](prd.md) · decisions: [decisions.md](decisions.md).
+ 
+ > **Resolved 2026-07-25:** the `packages/config-tailwind` / `config-eslint` update-vs-remove question is moot — both directories were already deleted; this INDEX had gone stale.
+ 
+@@ -25,9 +25,8 @@ The **literal-styling pattern** (closed-union→apply-fn map, ternary→`whenEls
+ |------|------|----------|
+ | [app-migration](app-migration/) | `templates/full-stack` (+ shared/web) → the v6 core API + Tailwind v4 + `defineTheme()` | Track A/C breaking changes; alignment §3 |
+ | [fastify-adapter](fastify-adapter/) | `@fluent-html/fastify` — render adapter + the context system (leaves core) | roadmap **P5**; B-07/B-08/A-05/B-09; alignment §1 |
+-| [design-system](design-system/) | `@jtdigital/ui` — the cut visual components (Alert/Modal/Field/Icon/…) | roadmap **P6**; B-01..B-06, A-06; alignment §2 |
+ | [app-framework](app-framework/) | `@jtdigital/web` — auth · errors · i18n | roadmap **P6**; B-07/B-09; alignment §1 |
+ | [behaviors-v4](behaviors-v4/) | behavior v4 glue module + `jt:` extension pack (interim framework home) · v3 fork deletion | `fluent-html/project/research/behavior-v4/` W5/W8; ADR-02 + ADR-07 amendment |
+ | [whenmatch-adoption](whenmatch-adoption/) | 6.5.0 pin bump + converting chained `.when(x === …)` discriminant styling to `Tag.whenMatch` | fluent-html 6.5.0 changelog; guidelines `fluent-html.md` § Modifiers & Composition |
+ 
+-**Sequencing:** `app-migration` (pure-core breaking fixes + theme) and `fastify-adapter` start now on published core. `design-system` needs the adapter (context); `app-framework` needs both. The template's full cutover lands last (it imports from all three packages).
++**Sequencing:** `app-migration` (pure-core breaking fixes + theme) and `fastify-adapter` start now on published core. `app-framework` needs the adapter. The template's full cutover lands last (it imports from both packages).
+diff --git a/project/pm/fluent-html-v6/app-framework/prd.md b/project/pm/fluent-html-v6/app-framework/prd.md
+index 06d2c2b..cf7d7ea 100644
+--- a/project/pm/fluent-html-v6/app-framework/prd.md
++++ b/project/pm/fluent-html-v6/app-framework/prd.md
+@@ -6,14 +6,14 @@ Auth, error handling, and i18n are app-domain concerns the library never owned a
+ 
+ ## Appetite
+ 
+-Medium-Large — a net-new JT package built on [../fastify-adapter](../fastify-adapter/) (context/render) and [../design-system](../design-system/) (`ErrorPage`/`AuthShell` views). Roadmap **P6**.
++Medium-Large — a net-new JT package built on [../fastify-adapter](../fastify-adapter/) (context/render) and the app's `src/shared/views` (`ErrorPage`). Roadmap **P6**.
+ 
+ ## Solution
+ 
+ Stand up **`@jtdigital/web`**:
+ 
+ - **Auth kit** (B-07) — `createAuthPlugin`/`signIn`/`signOut`, a typed `requireUser`-style accessor (kills `request.user!`), and a `safeReturnTo` open-redirect guard. Promote the template's existing `auth/plugin.ts` + guards + `auth.return-to.ts` into the canonical reusable shape; the auth **user context** is built on the adapter's context system.
+-- **Errors** (B-07) — one helper wrapping the three-branch `setErrorHandler` (validation-400 / operational-4xx / 500-hide-in-prod) + `setNotFoundHandler`; the `ErrorPage` view lives in `@jtdigital/ui` and is wired here.
++- **Errors** (B-07) — one helper wrapping the three-branch `setErrorHandler` (validation-400 / operational-4xx / 500-hide-in-prod) + `setNotFoundHandler`; the `ErrorPage` view stays in the app (`src/shared/views/error.view.ts`) and is wired here.
+ - **i18n** (B-09) — `createI18nContext`/`i18nPlugin` + a typed `TranslationKey<T>`, built on the adapter's request-scoped context (load locale in a preHandler, read in views).
+ 
+ ## Rabbit Holes
+diff --git a/project/pm/fluent-html-v6/app-framework/todo.md b/project/pm/fluent-html-v6/app-framework/todo.md
+index 0737750..8a71eb0 100644
+--- a/project/pm/fluent-html-v6/app-framework/todo.md
++++ b/project/pm/fluent-html-v6/app-framework/todo.md
+@@ -3,7 +3,7 @@
+ <!-- hill: uphill -->
+ ### As an app author I want a shared auth kit so that login/guards/return-to aren't re-copied per app
+ 
+-- [ ] [P0] Spike: `@jtdigital/web` skeleton, deps on `@fluent-html/fastify` (context/render) + `@jtdigital/ui` (AuthShell/ErrorPage views)
++- [ ] [P0] Spike: `@jtdigital/web` skeleton, deps on `@fluent-html/fastify` (context/render) (views stay in the app's `src/shared`)
+ - [ ] [P1] Promote `auth/plugin.ts` + guards + `auth.return-to.ts` into `createAuthPlugin`/`signIn`/`signOut`; typed `requireUser` accessor (kills `request.user!`) reading the adapter's request-scoped user context
+ - [ ] [P1] `safeReturnTo` open-redirect guard (allow-list same-origin paths)
+ - [ ] [P1] Write tests — requireUser narrows the user type / 401s when absent; safeReturnTo rejects external URLs
+@@ -12,7 +12,7 @@
+ <!-- hill: uphill -->
+ ### As an app author I want one error-handling helper so that 400/4xx/500 + 404 are consistent and prod-safe
+ 
+-- [ ] [P1] One helper wrapping the three-branch `setErrorHandler` (validation-400 / operational-4xx / 500-hide-in-prod) + `setNotFoundHandler`; render `ErrorPage` (from `@jtdigital/ui`)
++- [ ] [P1] One helper wrapping the three-branch `setErrorHandler` (validation-400 / operational-4xx / 500-hide-in-prod) + `setNotFoundHandler`; render the app's `ErrorPage`
+ - [ ] [P1] Write tests — each branch renders the right status + page; 500 hides internals in prod
+ - [ ] [P1] Check for bugs — leaking stack traces in prod, status-code mapping
+ 
+diff --git a/project/pm/fluent-html-v6/app-migration/prd.md b/project/pm/fluent-html-v6/app-migration/prd.md
+index ecffaeb..f832834 100644
+--- a/project/pm/fluent-html-v6/app-migration/prd.md
++++ b/project/pm/fluent-html-v6/app-migration/prd.md
+@@ -28,7 +28,7 @@ Medium — mostly mechanical, ESLint-driven. The Tailwind-v4 cutover is the only
+ ## Rabbit Holes
+ 
+ - **Don't hand-edit what ESLint `--fix` handles** — run the auto-fixers first, review, then mop up the non-auto-fixable (dynamic `Form<T>` field names, `aria-*`/`data-*` object setters).
+-- **Theme = tokens only** — design tokens into `defineTheme`; component presets stay user-land `.apply()` helpers (→ `@jtdigital/ui`).
++- **Theme = tokens only** — design tokens into `defineTheme`; component presets stay user-land `.apply()` helpers (→ `src/shared/ui`).
+ 
+ ## No-Gos
+ 
+diff --git a/project/pm/fluent-html-v6/app-migration/todo.md b/project/pm/fluent-html-v6/app-migration/todo.md
+index ba98378..cacf1c8 100644
+--- a/project/pm/fluent-html-v6/app-migration/todo.md
++++ b/project/pm/fluent-html-v6/app-migration/todo.md
+@@ -45,11 +45,10 @@
+ - [ ] [P1] Check for bugs — `onUnresolved: "error"` failing the build on a dynamic class arg; safelist staleness
+ 
+ <!-- hill: uphill -->
+-### As a maintainer I want the template to consume the three v6 packages so that no app re-duplicates the cut surface
++### As a maintainer I want the template to consume the two v6 packages so that no app re-duplicates the cut surface
+ 
+ - [ ] [P0] Swap the **2** `createContext` sites + local `decorateReply`/`declare module` for `@fluent-html/fastify` (gated on [../fastify-adapter](../fastify-adapter/))
+-- [ ] [P1] Replace local visual components with `@jtdigital/ui` imports (gated on [../design-system](../design-system/))
+ - [ ] [P1] Replace local auth/error/i18n glue with `@jtdigital/web` (gated on [../app-framework](../app-framework/))
+-- [ ] [P1] Update `create-project.sh` scaffolds to depend on + import from the three packages
++- [ ] [P1] Update `create-project.sh` scaffolds to depend on + import from the two packages
+ - [ ] [P1] Verify the full scaffold path (`create-project.sh` → build → run) end-to-end
+ - [ ] [P1] Check for bugs in the cutover — request-scoped context surviving `await`, no leftover local copies
+diff --git a/project/pm/fluent-html-v6/behaviors-v4/todo.md b/project/pm/fluent-html-v6/behaviors-v4/todo.md
+index c2960a0..c121839 100644
+--- a/project/pm/fluent-html-v6/behaviors-v4/todo.md
++++ b/project/pm/fluent-html-v6/behaviors-v4/todo.md
+@@ -44,5 +44,4 @@ Spec: `fluent-html/project/research/behavior-v4/` (ADR-02, ADR-07 amendment, W5/
+   with open class `block!` (beats the base `hidden`; safelisted via
+   `staticManifest`).
+ - Deferred to the fastify-adapter split: extraction of the glue to
+-  `@fluent-html/fastify`. Deferred to W9 (apps): rideshare/ttl migrations,
+-  packages/ui Alert.ts `remove {closest}`.
++  `@fluent-html/fastify`. Deferred to W9 (apps): rideshare/ttl migrations.
+diff --git a/project/pm/fluent-html-v6/decisions.md b/project/pm/fluent-html-v6/decisions.md
+index eb70bbd..c2ab95b 100644
+--- a/project/pm/fluent-html-v6/decisions.md
++++ b/project/pm/fluent-html-v6/decisions.md
+@@ -9,6 +9,7 @@
+ - **`@jtdigital/web`** — auth · errors · i18n. *JT app-domain framework.*
+ **Reasoning:** Mirrors the library's own boundary (generic adapter vs. opinionated JT layer) and lets non-JT consumers take `@fluent-html/fastify` alone. Names per the v6 roadmap §7/§8 (deferred there; fixed here).
+ **Consequences:** The template depends on all three; `create-project.sh` scaffolds import from them instead of carrying local copies.
++**Superseded (01. 10. 26):** the `@jtdigital/ui` third, by "Components stay in each app's `src/shared/ui`; `@jtdigital/ui` retired" below.
+ 
+ ## Sequencing: pure-core fixes + adapter first, then the design system, then app-framework
+ **Date:** 25. 06. 26
+@@ -51,3 +52,10 @@
+ **Decision:** Both templates derive the served URL from a sha256 of the bytes they serve (`contentAddressedUrl`); the on-disk name stays as built and is used only to find the file. The identical blindness in `behaviorStamp()` (`version:registryHash`) is **not** patched around in the template.
+ **Reasoning:** The template owns the route, so it can make `immutable` true with four lines and no library change. The stamp is different: it is asserted by the compiled runtime against its baked-in `__FB_HASH__`, so making it byte-aware means changing what `buildBehaviorRuntime` embeds and what the client asserts — a fluent-html change, and forking it template-side would break the handshake it exists to protect.
+ **Consequences:** A behavior fix now reaches returning users on their next page load. Two gaps remain upstream, both from the same cause: the `HX-Refresh` skew hook stays quiet on a handler-only deploy (benign — the open tab's runtime still matches the grammar it was served with), and `assertBehaviorRuntimeAsset` cannot detect a committed asset that is stale in handler code alone, so a forgotten `npm run behaviors:build` is still silent at boot. The fluent-html fix is to carry a digest of the built bytes in the banner and the stamp; until then a CI rebuild-and-diff is the only guard, and there is none.
++
++## Components stay in each app's `src/shared/ui`; `@jtdigital/ui` retired
++**Date:** 01. 10. 26
++**Context:** `packages/ui` (`@jtdigital/ui`) had 0 consumers in 58 repos, failed eslint-plugin-fluent-html recommended with 36 errors, and as a dependency its classes miss the app safelist (the extractor skips `node_modules`). Every app instead carries `src/shared/ui`, seeded by `templates/full-stack` (16/16 canonical apps, 788 import sites). Supersedes the `@jtdigital/ui` third of "Package layout" (25. 06. 26).
++**Decision:** Delete `packages/ui` and the design-system scope. Shared components live in the app's `src/shared/ui`; the template seeds it, apps own their copy.
++**Reasoning:** One component layer, the one apps import; its classes sit inside the `src/**/*.ts` safelist glob, so nothing needs a published safelist. fluent-html v8.2.0 RFC-C-04.
++**Consequences:** `app-framework`'s `ErrorPage` is the template's `src/shared/views/error.view.ts`. `@fluent-html/fastify` and `@jtdigital/web` are unaffected.
+diff --git a/project/pm/fluent-html-v6/design-system/prd.md b/project/pm/fluent-html-v6/design-system/prd.md
+deleted file mode 100644
+index a9f0db8..0000000
+--- a/project/pm/fluent-html-v6/design-system/prd.md
++++ /dev/null
+@@ -1,36 +0,0 @@
+-# design-system (`@jtdigital/ui`) — PRD
+-
+-## Problem
+-
+-v6 cut every opinionated visual component to user-land (curation §4 — "instruction set, not a component kit"): semantic blocks (Alert/Badge/Card/…), overlays (Modal/Drawer/Toast), layout (Shell/Nav/LoadingBar), form field stacks (Field/FieldError), icons, the data grid, and the SEO head. The template already has working versions of most; without a shared package, every scaffolded app re-copies them.
+-
+-## Appetite
+-
+-Large — a net-new component library built **on v6 primitives**, shared across apps. Roadmap **P6**. Depends on the published core and (for context-reading components) [../fastify-adapter](../fastify-adapter/).
+-
+-## Solution
+-
+-Stand up **`@jtdigital/ui`** — components composed on v6 primitives, no opinions the library should own:
+-
+-- **Semantic** (B-03) — `Alert`/`Callout`/`Badge` (enum→variant via `Match`), `Card`/`CardHeader`/`StatCard`, `Skeleton`; button-variant + typography `.apply()` helpers.
+-- **Overlays** (B-02) — `Modal`/`Drawer` composing native `Dialog()` + `behavior("openDialog"/"closeDialog")`; `ToastContainer` (receiver script + `.trigger("showToast")` contract).
+-- **Layout** (B-04) — `Container`/`Shell`/`NavItem`/`SidebarNav`/`TabNav`/`LoadingBar` on `Document()` + styling + `.htmxIndicator()`.
+-- **Forms** (B-01) — `Field` (label+input+error stack), `FieldError`, `FieldHint` on the library's `Form<T>` binding + `f.error(name)`.
+-- **Icons** (B-05) — the `Icon` component + the vendored icon set on the v6 SVG element coverage (no `Raw("<svg…>")` — enforced by `no-raw-icon-string`).
+-- **Data grid** (B-06) — `DataTable`/`Pagination`/sortable headers/`tableState` on `Table`/`Th`/`Td` + `defineRoutes`.
+-- **SEO head** (A-06) — `SeoHead`/`OgMeta`/`TwitterCard` on `Document()` + typed `Meta().setProperty()`.
+-
+-## Rabbit Holes
+-
+-- **Promote, don't rewrite** — the template's existing components are the starting point; repackage into the canonical shape and drop their v5/v3 styling assumptions.
+-- **Presets are `.apply()` helpers, not theme** — card/button styles live here as composable helpers, not in `defineTheme`.
+-- **Styling stays render-time fluent methods** — so the extractor safelist picks classes up; if a component emits classes invisibly (like `.overlay()`), document the safelist need.
+-
+-## No-Gos
+-
+-- No business logic / auth / data fetching — pure presentation composed on primitives.
+-- No `Raw(icon)` — icons are typed SVG Views.
+-
+-## Cross-reference
+-
+-`fluent-html/product/research/v6/40-synthesis/curation.md` §4 (the cut rows) · the B-01..B-06 / A-06 RFCs under `…/20-design/track-b-new-apis/`. Alignment §2. v6 primitives these build on shipped in `fluent-html@6` (Form<T>, dialog behaviors, SVG coverage, `.htmxIndicator()`, `Document()`).
+diff --git a/project/pm/fluent-html-v6/design-system/todo.md b/project/pm/fluent-html-v6/design-system/todo.md
+deleted file mode 100644
+index 4e3e63b..0000000
+--- a/project/pm/fluent-html-v6/design-system/todo.md
++++ /dev/null
+@@ -1,33 +0,0 @@
+-# design-system (`@jtdigital/ui`) — Tasks
+-
+-<!-- hill: uphill -->
+-### As a maintainer I want the package scaffold so that components ship from one shared place
+-
+-- [ ] [P0] Spike: `@jtdigital/ui` skeleton, peer-dep `fluent-html@^6` (+ `@fluent-html/fastify` where components read context); decide the export surface + per-family entry points
+-- [ ] [P1] Port the template's existing components as the starting point (inventory from `templates/full-stack/src` + the audit docs)
+-- [ ] [P1] Check for bugs — the `no-raw-icon-string` / `prefer-set-method` v6 rules pass on the ported code
+-
+-<!-- hill: uphill -->
+-### As an app author I want semantic + form components so that I stop re-copying Alert/Card/Field per app
+-
+-- [ ] [P1] Semantic (B-03): `Alert`/`Callout`/`Badge` (enum→variant via `Match`), `Card`/`CardHeader`/`StatCard`, `Skeleton` + button-variant/typography `.apply()` helpers
+-- [ ] [P1] Forms (B-01): `Field` (label+input+error stack), `FieldError`, `FieldHint` on `Form<T>` + `f.error(name)`
+-- [ ] [P1] Write tests — render snapshots per component; `Field` wires value/error from `FormState`
+-- [ ] [P1] Check for bugs — escaping of label/error text, variant exhaustiveness
+-
+-<!-- hill: uphill -->
+-### As an app author I want overlays + layout so that modals/shell/nav are native and consistent
+-
+-- [ ] [P1] Overlays (B-02): `Modal`/`Drawer` on native `Dialog()` + `behavior("openDialog"/"closeDialog")`; `ToastContainer` (receiver + `.trigger("showToast")` contract)
+-- [ ] [P1] Layout (B-04): `Container`/`Shell`/`NavItem`/`SidebarNav`/`TabNav`/`LoadingBar` on `Document()` + `.htmxIndicator()`
+-- [ ] [P1] Write tests — Modal emits the right open/close `hx-on`; Shell composes `Document()` DOCTYPE
+-- [ ] [P1] Check for bugs — focus-trap/Esc behavior, indicator class safelisting
+-
+-<!-- hill: uphill -->
+-### As an app author I want icons, the data grid, and SEO head so that the last cut surfaces are owned
+-
+-- [ ] [P1] Icons (B-05): `Icon` + the vendored icon set on the typed SVG coverage (no `Raw`)
+-- [ ] [P1] Data grid (B-06): `DataTable`/`Pagination`/sortable headers/`tableState` on `Table` + `defineRoutes` — revisit the deferred `preserveQuery`/filter-reset fix here
+-- [ ] [P1] SEO head (A-06): `SeoHead`/`OgMeta`/`TwitterCard` on `Document()` + typed `Meta().setProperty()`
+-- [ ] [P1] Write tests — icon renders as SVG Views; DataTable sort/page round-trips; SeoHead emits og/twitter meta
+-- [ ] [P1] Check for bugs — icon safelist, data-grid query-param round-trip, meta escaping
+diff --git a/project/pm/fluent-html-v6/prd.md b/project/pm/fluent-html-v6/prd.md
+index b3aa863..c52020f 100644
+--- a/project/pm/fluent-html-v6/prd.md
++++ b/project/pm/fluent-html-v6/prd.md
+@@ -5,7 +5,7 @@
+ The template (`templates/full-stack`) is on **`fluent-html@^5.3.0`** with **Tailwind v3**. v6 is a greenfield, **instruction-set** rewrite: the library now ships primitives and **moves opinionated components + framework glue to app-land**. Two consequences for the template:
+ 
+ 1. **The core API moved** — named boolean setters removed (`.toggle()` only), `formFor` → `Form<T>`, `Overlay()` → `.overlay()`, `.position()`/`.display()` passthroughs → dedicated shortcuts, setter renames, the fold layer removed, and Tailwind v4-native (`defineTheme()` + extractor safelist, no `tailwind.config.js`). The template's existing usage breaks against v6.
+-2. **The cut surface must be re-homed** — context/DI + the Fastify render adapter leave core (→ `@fluent-html/fastify`); visual components (Alert/Modal/Field/Icon/DataTable/SeoHead/…) leave core (→ `@jtdigital/ui`); auth/errors/i18n are app-domain (→ `@jtdigital/web`). If the template doesn't own these, **every new app re-duplicates them** — the exact problem v6 solves from the library side.
++2. **The cut surface must be re-homed** — context/DI + the Fastify render adapter leave core (→ `@fluent-html/fastify`); visual components (Alert/Modal/Field/Icon/DataTable/SeoHead/…) leave core (→ each app's `src/shared/ui`); auth/errors/i18n are app-domain (→ `@jtdigital/web`). If the template doesn't own these, **every new app re-duplicates them** — the exact problem v6 solves from the library side.
+ 
+ Measured surface in `templates/full-stack`: `formFor` (15 files), `.display()` (23), `.position()` (7), `setCrossorigin` (1), `createContext` (2), plus the v3 `tailwind.config.js`.
+ 
+@@ -17,7 +17,7 @@ Large — a multi-package program, not a single batch. Split into four work stre
+ 
+ 1. **[app-migration](app-migration/)** — bump to `fluent-html@6` + `eslint-plugin-fluent-html@1.7.0`; mechanically migrate the breaking API usage (`formFor`→`Form<T>`, `.display()`/`.position()`→shortcuts, `setCrossorigin`→`setCrossOrigin`); move to Tailwind v4 (`src/app/theme.ts` via `defineTheme(tokens)` + the `declare module` block, `generateFluentSafelist` prebuild, `@tailwindcss/postcss`). Let the v6 ESLint rules (`prefer-toggle`/`no-removed-v4-utilities`/`prefer-form-for`→`Form<T>`) drive the sweep.
+ 2. **[fastify-adapter](fastify-adapter/)** (`@fluent-html/fastify`, roadmap P5) — the thin render adapter (`reply.renderView`/`renderHx`/streaming) + the **context system** (`createContext`/`scope` + request-scoped bridge that survives `await`). Replaces the template's local `decorateReply`/`declare module` and the two `createContext` sites.
+-3. **[design-system](design-system/)** (`@jtdigital/ui`, roadmap P6) — the cut visual components, composed on v6 primitives: semantic (Alert/Badge/Card/…), overlays (Modal/Drawer/Toast on native `<dialog>` + `behavior("openDialog")`), layout (Shell/Nav/LoadingBar via `Document()` + `.htmxIndicator()`), forms (Field/FieldError on `Form<T>`), icons (on the typed SVG coverage, no `Raw`), data grid, SEO head.
++3. ~~design-system~~ (`@jtdigital/ui`): killed 01. 10. 26, see [decisions.md](decisions.md).
+ 4. **[app-framework](app-framework/)** (`@jtdigital/web`, roadmap P6) — auth kit (`requireUser`/`safeReturnTo`, kill `request.user!`), error handlers + `ErrorPage`, i18n (`createI18nContext`/typed `TranslationKey<T>`).
+ 
+ Each stream's tasks cite the governing v6 RFC and the alignment-doc section.
+diff --git a/project/pm/quality/dependency-upgrades/prd.md b/project/pm/quality/dependency-upgrades/prd.md
+index ef58b4a..7cf695d 100644
+--- a/project/pm/quality/dependency-upgrades/prd.md
++++ b/project/pm/quality/dependency-upgrades/prd.md
+@@ -42,7 +42,7 @@ The template's dependencies have drifted behind upstream. An `npm outdated` snap
+ | @aws-sdk/* | 3.983.0 | 3.1071.0 | rolling (in-range) |
+ | bullmq, ioredis, pg, pino, jose, postcss, autoprefixer, tsx | — | — | minor/patch (in-range) |
+ 
+-> The `web` template and `packages/{ui,config-*}` share the same TypeScript/Tailwind/vitest/eslint majors; apply the Tier 3 work to them too. `fluent-html`, `fluent-html-eslint-plugin`, and `fluent-html-tailwind-extractor` are pinned to internal git commits (not semver) — out of scope for "latest npm", updated by re-pinning the commit, but **Tailwind v4 (Tier 3) is coupled to them** (the extractor and the fluent Tailwind methods emit v3 class syntax).
++> The `web` template and `packages/config-*` share the same TypeScript/Tailwind/vitest/eslint majors; apply the Tier 3 work to them too. `fluent-html`, `fluent-html-eslint-plugin`, and `fluent-html-tailwind-extractor` are pinned to internal git commits (not semver) — out of scope for "latest npm", updated by re-pinning the commit, but **Tailwind v4 (Tier 3) is coupled to them** (the extractor and the fluent Tailwind methods emit v3 class syntax).
+ 
+ ## Solution
+ 
+diff --git a/project/pm/quality/dependency-upgrades/todo.md b/project/pm/quality/dependency-upgrades/todo.md
+index 20bbc73..8189638 100644
+--- a/project/pm/quality/dependency-upgrades/todo.md
++++ b/project/pm/quality/dependency-upgrades/todo.md
+@@ -54,7 +54,7 @@
+ - [ ] [P1] **typescript 5.9 → 6.0** — `tsc -p` across every workspace; resolve new diagnostics; confirm `@typescript-eslint` 8.x (or newer) supports TS 6, bump if needed
+ - [ ] [P1] **@types/node 22 → 24** — align to the Node 24 runtime (not 25); fix any surfaced type drift
+ - [ ] [P1] **eslint 9 → 10** — verify flat config + `@typescript-eslint` + `eslint-plugin-fluent-html` are v10-compatible; run `eslint .` clean
+-- [ ] [P1] Apply the same three bumps to `templates/web` and `packages/{ui,config-eslint,config-typescript}`
++- [ ] [P1] Apply the same three bumps to `templates/web` and `packages/{config-eslint,config-typescript}`
+ - [ ] [P2] ~Update `packages/config-eslint` / `config-typescript` shared presets if v10/TS6 change recommended rules/flags
+ - [ ] [P1] Write/adjust tests; ensure compile + scaffold tests pass on TS 6
+ - [ ] [P1] Check for bugs (no `skipLibCheck`-masked errors, no dropped flags)
+diff --git a/project/pm/template-update/INDEX.md b/project/pm/template-update/INDEX.md
+index 324cdbc..68ec10d 100644
+--- a/project/pm/template-update/INDEX.md
++++ b/project/pm/template-update/INDEX.md
+@@ -29,7 +29,7 @@ Cross-cutting tasks (lint `warn → error` promotion, final verify): [todo.md](t
+ - [compliance-backprop](compliance-backprop/prd.md) — fresh 2026-06 guideline audit of an instantiated project, reconciled against the current template; ~18 behavior-preserving idiom/quality backprops. Source audit had 24 findings; 7 dropped as already-fixed/absent (see its [prd.md](compliance-backprop/prd.md) reconciliation table).
+ - [module-consolidation](module-consolidation/prd.md) — merged the duplicated `settings` + `profile` modules into one `account` module (`profile` as opt-in extension); dropped `displayName`; folded in compliance M-4/M-5. Verified: `test:compile` 84/84 (incl. lean base), `test:setup` 403/403.
+ 
+-**Forward-looking → now its own scope:** [fluent-html-v6-alignment.md](fluent-html-v6-alignment.md) is the cut-surface inventory/rationale; **execution moved to [../fluent-html-v6/](../fluent-html-v6/INDEX.md)** now that `fluent-html@6.0.0` has shipped (the migration: new core API + Tailwind v4 + the `@fluent-html/fastify` / `@jtdigital/ui` / `@jtdigital/web` packages).
++**Forward-looking → now its own scope:** [fluent-html-v6-alignment.md](fluent-html-v6-alignment.md) is the cut-surface inventory/rationale; **execution moved to [../fluent-html-v6/](../fluent-html-v6/INDEX.md)** now that `fluent-html@6.0.0` has shipped (the migration: new core API + Tailwind v4 + the `@fluent-html/fastify` / `@jtdigital/web` packages).
+ 
+ ---
+ 
+diff --git a/project/pm/template-update/fluent-html-v6-alignment.md b/project/pm/template-update/fluent-html-v6-alignment.md
+index d302bbb..f53def8 100644
+--- a/project/pm/template-update/fluent-html-v6-alignment.md
++++ b/project/pm/template-update/fluent-html-v6-alignment.md
+@@ -23,6 +23,8 @@ These were RFC-B-07. The library keeps only the thin `fluent-html/fastify` rende
+ 
+ ## 2. Design-system package (`@jtdigital/ui`) → owns the cut components
+ 
++> **Killed 01. 10. 26:** no package; components stay in each app's `src/shared/ui` ([decision](../fluent-html-v6/decisions.md)).
++
+ Per curation §4, these are user-land. Build once, share across apps:
+ 
+ - [ ] **Semantic components** (B-03): `Alert`, `Callout`, `Badge` (+ enum→variant via `Match`), `Card`, `CardHeader`, `StatCard`, `Skeleton`, button-variant + typography helpers.
+@@ -39,9 +41,9 @@ Per curation §4, these are user-land. Build once, share across apps:
+ 
+ - [ ] Add **one** `src/app/theme.ts`: a `tokens` const (`colors`/`spacing`/`fontSize`/`radius`/`shadow` — **design tokens only**) → `defineTheme(tokens)` + a once-written `declare module "fluent-html"` block that **derives** typed tokens from the const (`interface FluentCustomColors extends ThemeKeys<typeof tokens, "colors"> {}`, one line per family). Replaces the v5 `createInputTheme`/semantic/typography theme objects. _(curation §C-02; mechanism = 01b)_
+ - [ ] Add a prebuild step: `generateFluentSafelist(globFiles([...]), { theme, onUnresolved: "error" })` → write `src/fluent-safelist.css`; the app CSS `@import`s it. Switch the postcss plugin `tailwindcss: {}` → `@tailwindcss/postcss: {}` and `@tailwind` directives → `@import "tailwindcss"`. Types stay live in `tsc` (no codegen, no staleness). _(No Vite/bundler plugin — the template is Fastify SSR + PostCSS.)_
+-- [ ] **Component presets** (card/button/input styles) are **user-land `.apply()` helpers** (`const card = (t) => t.padding("6")…`), NOT part of `defineTheme` — keep them in `@jtdigital/ui` (§2), not the theme.
++- [ ] **Component presets** (card/button/input styles) are **user-land `.apply()` helpers** (`const card = (t) => t.padding("6")…`), NOT part of `defineTheme` — keep them in the app's `src/shared/ui`, not the theme.
+ - [x] **Canonical doc content** shipped to the lib README + `guidelines/web-development/**` (was: `fluent-html/product/research/v6/spikes/define-theme/defineTheme.docs.md`; runnable proof: spikes `01b`/`01c`).
+ 
+ ---
+ 
+-> When v6 lands: do §1 in the template repo, stand up §2 as `@jtdigital/ui`, and wire §3. Each item's rationale + before/after lives in the cited RFC under `fluent-html/product/research/v6/20-design/`.
++> When v6 lands: do §1 in the template repo and wire §3. Each item's rationale + before/after lives in the cited RFC under `fluent-html/product/research/v6/20-design/`.
+diff --git a/project/pm/update-path/prd.md b/project/pm/update-path/prd.md
+index 8641aa3..30ea69f 100644
+--- a/project/pm/update-path/prd.md
++++ b/project/pm/update-path/prd.md
+@@ -30,8 +30,8 @@ Three answers already exist in the tree and none of them close this:
+ 
+ 1. **The package cutover** ([fluent-html-v6](../fluent-html-v6/INDEX.md)) is the real fix for
+    part of the surface, and its boundaries are already decided: render adapter + context to
+-   `@fluent-html/fastify`, visual components to `@jtdigital/ui`, auth/errors/i18n to
+-   `@jtdigital/web`. But it is gated on three child scopes, the template's own cutover lands
++   `@fluent-html/fastify`, auth/errors/i18n to `@jtdigital/web` (visual components stay
++   in each app's `src/shared/ui`). But it is gated on two child scopes, the template's own cutover lands
+    last, and **no package upgrade reaches an app that was scaffolded before it existed**.
+    It also claims none of `core/htmx/`, `core/server/security-headers.ts`,
+    `core/server/lifecycle.ts` or `shared/stylers.ts`, which stay vendored either way.
+diff --git a/templates/full-stack/src/shared/ui/form.ts b/templates/full-stack/src/shared/ui/form.ts
+index 4fdd975..7b727d8 100644
+--- a/templates/full-stack/src/shared/ui/form.ts
++++ b/templates/full-stack/src/shared/ui/form.ts
+@@ -3,6 +3,7 @@ import {
+   P,
+   Input,
+   InputTag,
++  SelectTag,
+   TextareaTag,
+   Label,
+   Tag,
+@@ -41,7 +42,7 @@ export function FormGroup({ label, input, name, required = false, htmlFor, spaci
+   });
+ }
+ 
+-// Shared field look for inputs and textareas (byte-identical styling).
++// Shared field look for inputs, textareas and selects (byte-identical styling).
+ const fieldStyle: Styler = (t) => t
+   .w("full")
+   .p("x", "4")
+@@ -59,6 +60,8 @@ export function StyledInput(): InputTag {
+ 
+ export const textareaStyle = (t: TextareaTag): TextareaTag => fieldStyle(t);
+ 
++export const selectStyle = (t: SelectTag): SelectTag => fieldStyle(t);
++
+ export type NoticeTone = "danger" | "success" | "warning" | "info" | "neutral";
+ 
+ /**
+diff --git a/templates/full-stack/src/shared/ui/index.ts b/templates/full-stack/src/shared/ui/index.ts
+index 0ed55c7..42de90f 100644
+--- a/templates/full-stack/src/shared/ui/index.ts
++++ b/templates/full-stack/src/shared/ui/index.ts
+@@ -1,5 +1,5 @@
+ // Barrel re-exports — individual components live in focused files
+-export { FormGroup, StyledInput, inputStyle, textareaStyle, Alert, noticeBox } from "./form.js";
++export { FormGroup, StyledInput, inputStyle, textareaStyle, selectStyle, Alert, noticeBox } from "./form.js";
+ export type { NoticeTone } from "./form.js";
+ export { Card, DashboardSection, CenteredPage, cardChrome, cardTitle } from "./layout.js";
+ export { StatCard, EmptyState, ThCell, TdCell, Pagination, alignText, TREND_ARROWS, trendColor, thCell, tdCell } from "./data.js";
+diff --git a/tests/behavior-asset-pin.test.ts b/tests/behavior-asset-pin.test.ts
+index a2d842f..396d03b 100644
+--- a/tests/behavior-asset-pin.test.ts
++++ b/tests/behavior-asset-pin.test.ts
+@@ -88,7 +88,6 @@ describe("the committed behavior asset matches a fresh build byte-for-byte", ()
+ describe("one fluent-html across the workspace", () => {
+   const manifests = [
+     "package.json",
+-    "packages/ui/package.json",
+     "templates/full-stack/package.json",
+     "templates/web/package.json",
+   ];
+diff --git a/tests/component-layer.test.ts b/tests/component-layer.test.ts
+new file mode 100644
+index 0000000..a38d9d9
+--- /dev/null
++++ b/tests/component-layer.test.ts
+@@ -0,0 +1,40 @@
++import { describe, it, expect } from "vitest";
++import fs from "node:fs";
++import path from "node:path";
++import { fileURLToPath } from "node:url";
++import { createRequire } from "node:module";
++
++const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
++const fullStack = createRequire(path.join(ROOT_DIR, "templates/full-stack/package.json"));
++const SOURCE = /\.(?:[cm]?[jt]s|tsx)$/;
++const SKIP = new Set(["node_modules", "dist"]);
++
++function sources(dir: string): string[] {
++  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
++    const full = path.join(dir, e.name);
++    if (e.isDirectory()) return SKIP.has(e.name) ? [] : sources(full);
++    return SOURCE.test(e.name) && !e.name.endsWith(".d.ts") ? [full] : [];
++  });
++}
++
++describe("the component layer", () => {
++  it("no workspace package under packages/ emits fluent-html classes", async () => {
++    const { scanFluent } = (await import(fullStack.resolve("fluent-html-tailwind-extractor"))) as {
++      scanFluent: (content: string, file?: string) => { classes: Set<string>; unresolved: unknown[] };
++    };
++    const pkgs = path.join(ROOT_DIR, "packages");
++    const offenders = (fs.existsSync(pkgs) ? fs.readdirSync(pkgs) : []).flatMap((pkg) => {
++      let classes = 0, unresolved = 0;
++      for (const file of sources(path.join(pkgs, pkg))) {
++        const r = scanFluent(fs.readFileSync(file, "utf-8"), file);
++        classes += r.classes.size; unresolved += r.unresolved.length;
++      }
++      return classes + unresolved > 0 ? [`packages/${pkg} emits ${classes} fluent-html classes and ${unresolved} dynamic styling calls`] : [];
++    });
++    expect(
++      offenders,
++      `${offenders.join("; ")}. An app's safelist never sees a package's classes, so its ` +
++        "components render unstyled. Put shared components in templates/full-stack/src/shared/ui.",
++    ).toEqual([]);
++  });
++});

@@ -1,0 +1,120 @@
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 5bc32a6..a33bdae 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -186,7 +186,32 @@ export function buildHtmx(htmx: HTMX): string {
+   return result;
+ }
+ 
++// htmx parses hx-status as HCON: a bare value ends at whitespace or a comma, and a leading
++// `"`, `'` or `<` opens a delimited form. Any other value is emitted double-quoted; one that
++// itself holds `"` switches the whole config to the JSON object form HCON also accepts.
++const HCON_BREAK_RE = /[\s,]/;
++
++// A value already written as one whole HCON token ("…", '…', <…/>) worked unquoted on 8.1.0; keep it verbatim.
++const HCON_TOKEN_RE = /^(?:"[^"]*"|'[^']*'|<(?:[^/]|\/(?!>))+\/>)$/;
++
++function hconBare(v: unknown): boolean {
++  const s = typeof v === 'string' ? v : String(v);
++  if (s === '') return false;
++  const c = s.charCodeAt(0);
++  if (c === 34 || c === 39 || c === 60) return HCON_TOKEN_RE.test(s);
++  return !HCON_BREAK_RE.test(s);
++}
++
++function hconUnwrap(s: string): string {
++  if (!HCON_TOKEN_RE.test(s)) return s;
++  return s.charCodeAt(0) === 60 ? s.slice(1, -2) : s.slice(1, -1);
++}
++
+ function buildStatusConfig(cfg: HxStatusConfig): string {
++  if ((cfg.swap && !hconBare(cfg.swap)) || (cfg.target && !hconBare(cfg.target)) || (cfg.select && !hconBare(cfg.select))
++    || (typeof cfg.push === 'string' && !hconBare(cfg.push)) || (typeof cfg.replace === 'string' && !hconBare(cfg.replace))) {
++    return quotedStatusConfig(cfg);
++  }
+   const parts: string[] = [];
+   if (cfg.swap) parts.push('swap:' + cfg.swap);
+   if (cfg.target) parts.push('target:' + cfg.target);
+@@ -197,6 +222,23 @@ function buildStatusConfig(cfg: HxStatusConfig): string {
+   return parts.join(' ');
+ }
+ 
++function quotedStatusConfig(cfg: HxStatusConfig): string {
++  const pairs: [string, string | boolean][] = [];
++  if (cfg.swap) pairs.push(['swap', String(cfg.swap)]);
++  if (cfg.target) pairs.push(['target', String(cfg.target)]);
++  if (cfg.select) pairs.push(['select', String(cfg.select)]);
++  if (cfg.push !== undefined) pairs.push(['push', cfg.push]);
++  if (cfg.replace !== undefined) pairs.push(['replace', cfg.replace]);
++  if (cfg.transition !== undefined) pairs.push(['transition', cfg.transition]);
++  let out = '';
++  for (const [key, v] of pairs) {
++    const bare = typeof v !== 'string' || hconBare(v);
++    if (!bare && v.includes('"')) return JSON.stringify(Object.fromEntries(pairs.map(([k, x]) => [k, typeof x === 'string' ? hconUnwrap(x) : x])));
++    out += (out === '' ? '' : ' ') + key + ':' + (bare ? v : '"' + v + '"');
++  }
++  return out;
++}
++
+ // Closing tags inside script/style (case-insensitive). Only the closer is neutralized:
+ // `<\/script` is byte-safe (the `\` lands before `/`, harmless in a JS string/regex, and
+ // `</script>` is never valid JS). Neutralizing the `<!--`/`<script` OPENERS (to defeat the
+diff --git a/test/htmx.test.ts b/test/htmx.test.ts
+index 796c55e..bd595b8 100644
+--- a/test/htmx.test.ts
++++ b/test/htmx.test.ts
+@@ -188,6 +188,33 @@ describe("HTMX - Status Code Handling", () => {
+     }}))),
+     `<div hx-get="/page" hx-status:200="swap:outerMorph transition:true"></div>`);
+   });
++
++  it("hx-status quotes a spaced target and a swap carrying a modifier", () => {
++    assert.strictEqual(render(Form().setHtmx(hx(assetUrl("/users"), { method: "post", status: {
++      422: { swap: "outerHTML scroll:top", target: "closest form", push: false },
++    }}))),
++    `<form hx-post="/users" hx-status:422="swap:&quot;outerHTML scroll:top&quot; target:&quot;closest form&quot; push:false"></form>`);
++  });
++
++  it("hx-status quotes a value holding a comma", () => {
++    assert.strictEqual(render(Div().setHtmx(hx(assetUrl("/x"), { status: { 422: { select: "#a,#b" } } }))),
++    `<div hx-get="/x" hx-status:422="select:&quot;#a,#b&quot;"></div>`);
++  });
++
++  it("hx-status falls back to the JSON form when a value that needs quoting holds a double quote", () => {
++    assert.strictEqual(render(Div().setHtmx(hx(assetUrl("/x"), { status: { 422: { target: `closest [data-k="a"]`, push: false } } }))),
++    `<div hx-get="/x" hx-status:422="{&quot;target&quot;:&quot;closest [data-k=\\&quot;a\\&quot;]&quot;,&quot;push&quot;:false}"></div>`);
++  });
++
++  it("hx-status keeps a quote-free bare value byte-identical", () => {
++    assert.strictEqual(render(Div().setHtmx(hx(assetUrl("/x"), { status: { 422: { select: `[name="q"]`, replace: "/r?a=1&b=2" } } }))),
++    `<div hx-get="/x" hx-status:422="select:[name=&quot;q&quot;] replace:/r?a=1&amp;b=2"></div>`);
++  });
++
++  it("hx-status string config stays verbatim HCON", () => {
++    assert.strictEqual(render(Div().setHtmx(hx(assetUrl("/x"), { status: { 422: "swap:none target:closest form" } }))),
++    `<div hx-get="/x" hx-status:422="swap:none target:closest form"></div>`);
++  });
+ });
+ 
+ // ------------------------------------
+diff --git a/test/security.test.ts b/test/security.test.ts
+index 7af837c..5092e79 100644
+--- a/test/security.test.ts
++++ b/test/security.test.ts
+@@ -97,6 +97,16 @@ describe("hx-status key injection prevention", () => {
+     const evilOpts = { status: { "404 onload=alert(1)": "swap:none" } } as unknown as Parameters<typeof hx>[1];
+     assert.throws(() => render(Div().setHtmx(hx(assetUrl("/x"), evilOpts))), /Invalid hx-status key/);
+   });
++
++  it("a status value cannot inject a second HCON key", () => {
++    assert.ok(render(Div().setHtmx(hx(assetUrl("/x"), { status: { 422: { replace: "/q?x=1 target:#main" } } })))
++      .includes('hx-status:422="replace:&quot;/q?x=1 target:#main&quot;"'));
++  });
++
++  it("a status value holding a double quote cannot close the HCON quote", () => {
++    assert.ok(render(Div().setHtmx(hx(assetUrl("/x"), { status: { 422: { select: `a" target:"#main` } } })))
++      .includes('hx-status:422="{&quot;select&quot;:&quot;a\\&quot; target:\\&quot;#main&quot;}"'));
++  });
+ });
+ 
+ // ------------------------------------

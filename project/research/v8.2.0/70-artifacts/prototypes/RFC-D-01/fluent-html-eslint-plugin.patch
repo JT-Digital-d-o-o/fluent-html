@@ -1,0 +1,688 @@
+diff --git a/src/rules/no-dynamic-class-argument.ts b/src/rules/no-dynamic-class-argument.ts
+index 531bc39..7125a76 100644
+--- a/src/rules/no-dynamic-class-argument.ts
++++ b/src/rules/no-dynamic-class-argument.ts
+@@ -1,13 +1,16 @@
+ import { Rule } from "eslint";
+ 
+-// The safelist hazard guard (llm-styling/escape-hatch): a non-literal argument
+-// to addClass/setClass/cssClass is invisible to the Tailwind safelist
+-// extractor — extractDirectClasses records literals only, so a computed class
+-// can vanish from the production CSS with zero build signal. The fix is a
+-// statically-analyzable form: `.when()` / `Match` branches with literal
+-// classes, or a `defineTheme` staticManifest entry.
++// A non-literal argument to addClass/setClass/cssClass is a class string no
++// lint rule can check. A class name assembled at runtime (`bg-${c}`) is also
++// missing from the CSS: Tailwind generates only classes it finds whole in
++// source. The fix depends on the argument's shape, so each shape names its own.
+ 
+ const TARGETS = new Set(["addClass", "setClass", "cssClass"]);
++const MAX_TEXT = 40;
++
++function clip(text: string): string {
++  return text.length > MAX_TEXT ? `${text.slice(0, MAX_TEXT)}…` : text;
++}
+ 
+ function isStaticString(node: any): boolean {
+   if (node.type === "Literal" && typeof node.value === "string") return true;
+@@ -16,23 +19,140 @@ function isStaticString(node: any): boolean {
+   return false;
+ }
+ 
++// whenElse branches on `!= null`, a ternary on truthiness: "" and 0 pick
++// different branches. Keep the test verbatim only when it is boolean.
++const BOOLEAN_OPERATORS = new Set(["===", "!==", "==", "!=", "<", ">", "<=", ">=", "in", "instanceof"]);
++
++function isSyntacticBoolean(node: any): boolean {
++  if (node.type === "Literal" && typeof node.value === "boolean") return true;
++  if (node.type === "UnaryExpression" && node.operator === "!") return true;
++  if (node.type === "BinaryExpression" && BOOLEAN_OPERATORS.has(node.operator)) return true;
++  if (node.type === "LogicalExpression") return isSyntacticBoolean(node.left) && isSyntacticBoolean(node.right);
++  if (node.type === "CallExpression" && node.callee.type === "Identifier" && node.callee.name === "Boolean") return true;
++  return false;
++}
++
++function isBooleanTyped(node: any, services: any): boolean {
++  if (!services || !services.program || !services.esTreeNodeToTSNodeMap) return false;
++  const tsNode = services.esTreeNodeToTSNodeMap.get(node);
++  if (!tsNode) return false;
++  const checker = services.program.getTypeChecker();
++  const text = checker.typeToString(checker.getTypeAtLocation(tsNode));
++  return text === "boolean" || text === "true" || text === "false";
++}
++
++function conditionText(test: any, sourceCode: any, services: any): string {
++  const text = sourceCode.getText(test);
++  if (isSyntacticBoolean(test) || isBooleanTyped(test, services)) return clip(text);
++  return `Boolean(${clip(text)})`;
++}
++
++// LABEL_CLASSES → label, controlClass → control, styles.cell → cell.
++function stylerName(node: any): string {
++  let name: string | null = null;
++  if (node.type === "Identifier") name = node.name;
++  else if (node.type === "MemberExpression" && !node.computed && node.property.type === "Identifier") name = node.property.name;
++  else if (node.type === "CallExpression") return stylerName(node.callee);
++  else if (node.type === "TemplateLiteral" && node.expressions.length > 0) return stylerName(node.expressions[0]);
++  if (name === null) return "style";
++  const stripped = name.replace(/(_?CLASS(ES|_?NAMES?)?|_?CLS|Class(es|Names?)?|Cls|^classes|^className)$/u, "");
++  if (stripped.length === 0) {
++    return node.type === "MemberExpression" ? stylerName(node.object) : "style";
++  }
++  if (/^[A-Z0-9_]+$/u.test(stripped)) {
++    return stripped.toLowerCase().replace(/_([a-z0-9])/gu, (_m, c: string) => c.toUpperCase());
++  }
++  return stripped.charAt(0).toLowerCase() + stripped.slice(1);
++}
++
++// `bg-${color}`: an interpolation glued to token text builds a class name.
++function gluedExpression(node: any): any | null {
++  if (node.type === "TemplateLiteral") {
++    for (let i = 0; i < node.expressions.length; i++) {
++      const before = node.quasis[i].value.cooked ?? "";
++      const after = node.quasis[i + 1].value.cooked ?? "";
++      if ((before.length > 0 && !/\s$/u.test(before)) || (after.length > 0 && !/^\s/u.test(after))) {
++        return node.expressions[i];
++      }
++    }
++    return null;
++  }
++  if (node.type === "BinaryExpression" && node.operator === "+") {
++    return isStaticString(node.left) ? node.right : node.left;
++  }
++  return null;
++}
++
++function constInit(id: any, sourceCode: any): any | null {
++  let scope: any = sourceCode.getScope ? sourceCode.getScope(id) : null;
++  while (scope) {
++    const variable = scope.set && scope.set.get(id.name);
++    if (variable) {
++      const def = variable.defs[0];
++      if (!def || def.type !== "Variable" || def.parent.kind !== "const") return null;
++      return def.node.init ?? null;
++    }
++    scope = scope.upper;
++  }
++  return null;
++}
++
++// MAP[key], MAP[key].prop, or a const alias of either (`const { classes } = MAP[key]`).
++function computedLookup(node: any, sourceCode: any, depth = 0): any | null {
++  let cur = node;
++  while (cur && cur.type === "MemberExpression") {
++    if (cur.computed) return cur;
++    cur = cur.object;
++  }
++  if (depth < 2 && cur && cur.type === "Identifier") {
++    const init = constInit(cur, sourceCode);
++    if (init) return computedLookup(init, sourceCode, depth + 1);
++  }
++  return null;
++}
++
++function templateLookup(node: any, sourceCode: any): any | null {
++  if (node.type !== "TemplateLiteral") return computedLookup(node, sourceCode);
++  for (const e of node.expressions) {
++    const found = computedLookup(e, sourceCode);
++    if (found) return found;
++  }
++  return null;
++}
++
++function branchText(node: any, sourceCode: any): string {
++  if (isStaticString(node)) return "t => t.…";
++  if (node.type === "Identifier" || (node.type === "MemberExpression" && !node.computed)) return stylerName(node);
++  return clip(sourceCode.getText(node));
++}
++
+ const rule: Rule.RuleModule = {
+   meta: {
+     type: "problem",
+     docs: {
+       description:
+-        "Disallow non-literal arguments to addClass/setClass/cssClass — the safelist extractor cannot see them, so the classes can silently disappear from production CSS",
++        "Disallow non-literal arguments to addClass/setClass/cssClass — no lint rule can check a computed class string, and a class name assembled at runtime is missing from the Tailwind CSS",
+       category: "Possible Errors",
+       recommended: true,
+     },
+     messages: {
+       dynamicArg:
+-        ".{{callee}}({{argText}}) is invisible to the safelist extractor — styles can silently disappear in production. Use .when(...) / Match(...) with literal classes per branch, or defineTheme's staticManifest for token-driven values.",
++        ".{{callee}}({{argText}}) passes a class string held in code: no lint rule can check it, and a class name assembled at runtime is missing from the CSS. Make the shared style a styler (a function that applies typed methods to the tag) and apply it: .apply({{name}}); branch the part that varies with .when()/.whenElse().",
++      conditional:
++        ".{{callee}}({{argText}}) picks a class string with a ternary. Make each branch a styler and branch on the condition: .whenElse({{test}}, {{thenBranch}}, {{elseBranch}}).",
++      lookup:
++        ".{{callee}}({{argText}}) looks a class string up by key. Make {{map}}'s values stylers and .apply({{map}}[{{key}}]), or branch: .whenMatch({{key}}, { key: t => t.…, … }).",
++      fragment:
++        ".{{callee}}({{argText}}) assembles a class name at runtime; Tailwind generates only classes it finds whole in source, so this style is missing from the CSS. Branch with one literal per case: .whenMatch({{subject}}, { key: t => t.…(\"…\"), … }).",
++      hookClass:
++        ".cssClass({{argText}}) takes a computed class. Pass the hook class as a literal so lint can check it is not a Tailwind utility: .cssClass(\"js-…\"), branched with .when()/.whenElse() if it varies.",
+     },
+     schema: [],
+   },
+ 
+   create(context: Rule.RuleContext): Rule.RuleListener {
++    const sourceCode = context.sourceCode;
++    const services: any = (sourceCode as any).parserServices ?? (context as any).parserServices;
+     return {
+       CallExpression(node: any) {
+         if (node.callee.type !== "MemberExpression" || node.callee.property.type !== "Identifier") return;
+@@ -43,12 +163,41 @@ const rule: Rule.RuleModule = {
+         const arg = node.arguments[0];
+         if (isStaticString(arg)) return;
+ 
+-        const source = context.sourceCode.getText(arg);
+-        context.report({
+-          node: arg,
+-          messageId: "dynamicArg",
+-          data: { callee: calleeName, argText: source.length > 40 ? `${source.slice(0, 40)}…` : source },
+-        });
++        const argText = clip(sourceCode.getText(arg));
++        const base = { callee: calleeName, argText };
++
++        if (calleeName === "cssClass") {
++          context.report({ node: arg, messageId: "hookClass", data: base });
++          return;
++        }
++        const glued = gluedExpression(arg);
++        if (glued) {
++          context.report({ node: arg, messageId: "fragment", data: { ...base, subject: clip(sourceCode.getText(glued)) } });
++          return;
++        }
++        if (arg.type === "ConditionalExpression") {
++          context.report({
++            node: arg,
++            messageId: "conditional",
++            data: {
++              ...base,
++              test: conditionText(arg.test, sourceCode, services),
++              thenBranch: branchText(arg.consequent, sourceCode),
++              elseBranch: branchText(arg.alternate, sourceCode),
++            },
++          });
++          return;
++        }
++        const lookup = templateLookup(arg, sourceCode);
++        if (lookup) {
++          context.report({
++            node: arg,
++            messageId: "lookup",
++            data: { ...base, map: clip(sourceCode.getText(lookup.object)), key: clip(sourceCode.getText(lookup.property)) },
++          });
++          return;
++        }
++        context.report({ node: arg, messageId: "dynamicArg", data: { ...base, name: stylerName(arg) } });
+       },
+     };
+   },
+diff --git a/src/rules/no-dynamic-typed-styling-arg.ts b/src/rules/no-dynamic-typed-styling-arg.ts
+index d6d8dda..80cf669 100644
+--- a/src/rules/no-dynamic-typed-styling-arg.ts
++++ b/src/rules/no-dynamic-typed-styling-arg.ts
+@@ -72,6 +72,145 @@ function isStaticArg(node: any): boolean {
+   return false;
+ }
+ 
++
++const MAX_TEXT = 40;
++
++// Unit-overload methods (`.w("px", n)`) → the CSS property a runtime amount sets.
++const UNIT_PROPERTY: Record<string, string> = {
++  w: "width", h: "height", minW: "min-width", maxW: "max-width", minH: "min-height", maxH: "max-height",
++  p: "padding", px: "padding-inline", py: "padding-block", pt: "padding-top", pr: "padding-right", pb: "padding-bottom", pl: "padding-left",
++  m: "margin", mx: "margin-inline", my: "margin-block", mt: "margin-top", mr: "margin-right", mb: "margin-bottom", ml: "margin-left",
++  gap: "gap", top: "top", right: "right", bottom: "bottom", left: "left", inset: "inset",
++  text: "font-size", leading: "line-height", tracking: "letter-spacing", underlineOffset: "text-underline-offset",
++};
++const UNITS = new Set(["px", "rem", "em", "%", "vh", "vw", "dvh", "svh", "lvh"]);
++const MAX_REWRITE = 160;
++
++function clip(text: string): string {
++  return text.length > MAX_TEXT ? `${text.slice(0, MAX_TEXT)}…` : text;
++}
++
++// whenElse/when branch on `!= null`, a ternary on truthiness: "" and 0 pick
++// different branches. Keep the test verbatim only when it is boolean.
++const BOOLEAN_OPERATORS = new Set(["===", "!==", "==", "!=", "<", ">", "<=", ">=", "in", "instanceof"]);
++
++function isSyntacticBoolean(node: any): boolean {
++  if (node.type === "Literal" && typeof node.value === "boolean") return true;
++  if (node.type === "UnaryExpression" && node.operator === "!") return true;
++  if (node.type === "BinaryExpression" && BOOLEAN_OPERATORS.has(node.operator)) return true;
++  if (node.type === "LogicalExpression") return isSyntacticBoolean(node.left) && isSyntacticBoolean(node.right);
++  if (node.type === "CallExpression" && node.callee.type === "Identifier" && node.callee.name === "Boolean") return true;
++  return false;
++}
++
++function isBooleanTyped(node: any, services: any): boolean {
++  if (!services || !services.program || !services.esTreeNodeToTSNodeMap) return false;
++  const tsNode = services.esTreeNodeToTSNodeMap.get(node);
++  if (!tsNode) return false;
++  const text = services.program.getTypeChecker().typeToString(
++    services.program.getTypeChecker().getTypeAtLocation(tsNode),
++  );
++  return text === "boolean" || text === "true" || text === "false";
++}
++
++function conditionText(test: any, sourceCode: any, services: any): string {
++  const text = sourceCode.getText(test);
++  if (isSyntacticBoolean(test) || isBooleanTyped(test, services)) return clip(text);
++  return `Boolean(${clip(text)})`;
++}
++
++// The call with the dynamic argument swapped for `value`: t.w("px", 180).
++function callWith(method: string, args: any[], dynamicArg: any, value: string, sourceCode: any): string {
++  const parts = args.map((a: any) => (a === dynamicArg ? value : sourceCode.getText(a)));
++  return `t.${method}(${parts.join(", ")})`;
++}
++
++function staticCases(obj: any, sourceCode: any): Array<[string, string]> | null {
++  if (!obj || obj.type !== "ObjectExpression") return null;
++  const cases: Array<[string, string]> = [];
++  for (const p of obj.properties) {
++    if (p.type !== "Property" || p.computed || p.kind !== "init") return null;
++    if (!isStaticArg(p.value)) return null;
++    cases.push([sourceCode.getText(p.key), sourceCode.getText(p.value)]);
++  }
++  return cases.length > 0 ? cases : null;
++}
++
++function unwrapExpression(node: any): any {
++  let cur = node;
++  while (cur && (cur.type === "TSAsExpression" || cur.type === "TSSatisfiesExpression" || cur.type === "TSTypeAssertion")) {
++    cur = cur.expression;
++  }
++  return cur;
++}
++
++// `const BG = { active: "success", … } as const` in scope → its literal cases.
++function resolveMapCases(mapNode: any, sourceCode: any): Array<[string, string]> | null {
++  if (mapNode.type !== "Identifier") return null;
++  let scope: any = sourceCode.getScope ? sourceCode.getScope(mapNode) : null;
++  while (scope) {
++    const variable = scope.set && scope.set.get(mapNode.name);
++    if (variable) {
++      const def = variable.defs[0];
++      if (!def || def.type !== "Variable" || def.parent.kind !== "const") return null;
++      return staticCases(unwrapExpression(def.node.init), sourceCode);
++    }
++    scope = scope.upper;
++  }
++  return null;
++}
++
++// The finite literal members of the subject's type, or null (open, no checker).
++function literalMembers(node: any, services: any): string[] | null {
++  if (!services || !services.program || !services.esTreeNodeToTSNodeMap) return null;
++  const tsNode = services.esTreeNodeToTSNodeMap.get(node);
++  if (!tsNode) return null;
++  const type = services.program.getTypeChecker().getTypeAtLocation(tsNode);
++  const members = type.isUnion && type.isUnion() ? type.types : [type];
++  const keys: string[] = [];
++  for (const t of members) {
++    if (t.isStringLiteral && t.isStringLiteral()) keys.push(String(t.value));
++    else if (t.isNumberLiteral && t.isNumberLiteral()) keys.push(String(t.value));
++    else return null;
++  }
++  return keys;
++}
++
++// A default over a finite union trips match-subset-default: spell the
++// missing members out with the default's value instead.
++function expandDefault(
++  cases: Array<[string, string]>,
++  fallback: string | undefined,
++  subject: any,
++  services: any,
++): { cases: Array<[string, string]>; fallback: string | undefined } {
++  if (fallback === undefined) return { cases, fallback };
++  const members = literalMembers(subject, services);
++  if (!members) return { cases, fallback };
++  const present = new Set(cases.map(([k]) => k.replace(/^["']|["']$/gu, "")));
++  const missing = members.filter((m) => !present.has(m));
++  const quote = (k: string) => (/^[A-Za-z_$][\w$]*$/u.test(k) ? k : JSON.stringify(k));
++  return { cases: [...cases, ...missing.map((m): [string, string] => [quote(m), fallback])], fallback: undefined };
++}
++
++function renderWhenMatch(
++  subject: string,
++  cases: Array<[string, string]>,
++  method: string,
++  args: any[],
++  dynamicArg: any,
++  sourceCode: any,
++  fallback?: string,
++): string {
++  const body = cases.map(([k, v]) => `${k}: t => ${callWith(method, args, dynamicArg, v, sourceCode)}`);
++  const tail = fallback !== undefined ? `, t => ${callWith(method, args, dynamicArg, fallback, sourceCode)}` : "";
++  let text = `.whenMatch(${subject}, { ${body.join(", ")} }${tail})`;
++  if (text.length > MAX_REWRITE && body.length > 2) {
++    text = `.whenMatch(${subject}, { ${body.slice(0, 2).join(", ")}, … }${tail})`;
++  }
++  return text;
++}
++
+ type ChainInfo = {
+   rootElementCall: boolean;
+   rootIdentifier: string | null;
+@@ -237,7 +376,15 @@ const rule: Rule.RuleModule = {
+     },
+     messages: {
+       dynamicArg:
+-        ".{{method}}({{argText}}) uses a non-literal argument the safelist extractor can't resolve — the css build fails on it, and a dropped class is invisible to Tailwind v4 (renders unstyled). Inline the literal (branch with .when()/.whenElse()/.whenMatch() or Match, one literal per branch), or add the token to staticManifest (defineTheme()).",
++        "{{call}} has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. Pass a literal, or branch with one literal per branch: .when(cond, t => t.{{method}}({{slot}})), .whenElse(cond, t => …, t => …), .whenMatch(value, { key: t => t.{{method}}({{slot}}) }).",
++      conditional:
++        "{{call}} has a non-literal argument; the safelist extractor reads literals only (a ternary included), so the css build fails on this call. Branch instead: {{rewrite}}",
++      matchValue:
++        "{{call}} has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. Branch instead: {{rewrite}}",
++      unitAmount:
++        "{{call}} has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. An amount computed at runtime goes in an inline style: .setStyle(`{{property}}: ${{{amount}}}{{unit}}`); a fixed set of sizes branches with one literal each: .whenMatch(size, { sm: t => {{sample}}, … }).",
++      lookup:
++        "{{call}} has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. Branch on the key instead: {{rewrite}}",
+     },
+     schema: [],
+   },
+@@ -274,14 +421,90 @@ const rule: Rule.RuleModule = {
+               isTagCallbackParam(node, chain.rootIdentifier, sourceCode)));
+         if (!fluent) return;
+ 
+-        const argText = sourceCode.getText(dynamicArg);
++        const services: any = (sourceCode as any).parserServices ?? (context as any).parserServices;
++        const call = `.${method}(${node.arguments
++          .map((a: any) => clip(sourceCode.getText(a)))
++          .join(", ")})`;
++        const arg = unwrapExpression(dynamicArg);
++
++        if (arg.type === "ConditionalExpression" && isStaticArg(arg.consequent) && isStaticArg(arg.alternate)) {
++          const test = conditionText(arg.test, sourceCode, services);
++          const thenText = sourceCode.getText(arg.consequent);
++          const elseText = sourceCode.getText(arg.alternate);
++          const rewrite =
++            elseText === "undefined"
++              ? `.when(${test}, t => ${callWith(method, node.arguments, dynamicArg, thenText, sourceCode)})`
++              : `.whenElse(${test}, t => ${callWith(method, node.arguments, dynamicArg, thenText, sourceCode)}, t => ${callWith(method, node.arguments, dynamicArg, elseText, sourceCode)})`;
++          context.report({ node: dynamicArg, messageId: "conditional", data: { call, rewrite } });
++          return;
++        }
++
++        if (
++          arg.type === "CallExpression" &&
++          arg.callee.type === "Identifier" &&
++          arg.callee.name === "MatchValue" &&
++          (arg.arguments.length === 2 || arg.arguments.length === 3)
++        ) {
++          const cases = staticCases(arg.arguments[1], sourceCode);
++          const fallback = arg.arguments[2];
++          if (cases && (!fallback || isStaticArg(fallback))) {
++            const expanded = expandDefault(
++              cases,
++              fallback ? sourceCode.getText(fallback) : undefined,
++              arg.arguments[0],
++              services,
++            );
++            const rewrite = renderWhenMatch(
++              clip(sourceCode.getText(arg.arguments[0])),
++              expanded.cases,
++              method,
++              node.arguments,
++              dynamicArg,
++              sourceCode,
++              expanded.fallback,
++            );
++            context.report({ node: dynamicArg, messageId: "matchValue", data: { call, rewrite } });
++            return;
++          }
++        }
++
++        const unitArg = node.arguments[0];
++        if (
++          node.arguments.length === 2 &&
++          dynamicArg === node.arguments[1] &&
++          UNIT_PROPERTY[method] !== undefined &&
++          unitArg.type === "Literal" &&
++          typeof unitArg.value === "string" &&
++          UNITS.has(unitArg.value)
++        ) {
++          context.report({
++            node: dynamicArg,
++            messageId: "unitAmount",
++            data: {
++              call,
++              property: UNIT_PROPERTY[method],
++              amount: clip(sourceCode.getText(dynamicArg)),
++              unit: unitArg.value,
++              sample: callWith(method, node.arguments, dynamicArg, "120", sourceCode),
++            },
++          });
++          return;
++        }
++
++        if (arg.type === "MemberExpression" && arg.computed) {
++          const subject = clip(sourceCode.getText(arg.property));
++          const cases = resolveMapCases(arg.object, sourceCode);
++          const rewrite = cases
++            ? renderWhenMatch(subject, cases, method, node.arguments, dynamicArg, sourceCode)
++            : `.whenMatch(${subject}, { key: t => ${callWith(method, node.arguments, dynamicArg, "…", sourceCode)}, … }), one literal per key`;
++          context.report({ node: dynamicArg, messageId: "lookup", data: { call, rewrite } });
++          return;
++        }
++
+         context.report({
+           node: dynamicArg,
+           messageId: "dynamicArg",
+-          data: {
+-            method,
+-            argText: argText.length > 40 ? `${argText.slice(0, 40)}…` : argText,
+-          },
++          data: { call, method, slot: node.arguments.map((a: any) => (a === dynamicArg ? "…" : sourceCode.getText(a))).join(", ") },
+         });
+       },
+     };
+diff --git a/test/rule.test.js b/test/rule.test.js
+index b005bb1..cda127d 100644
+--- a/test/rule.test.js
++++ b/test/rule.test.js
+@@ -1567,15 +1567,39 @@ runSuite("no-dynamic-class-argument", noDynamicClassArgument, {
+   ],
+   invalid: [
+     {
+-      code: `Div().addClass(colors)`,
+-      errors: [{
+-        message: `.addClass(colors) is invisible to the safelist extractor — styles can silently disappear in production. Use .when(...) / Match(...) with literal classes per branch, or defineTheme's staticManifest for token-driven values.`,
+-      }],
++      code: `Label("Name").addClass(LABEL_CLASSES)`,
++      errors: [{ message: `.addClass(LABEL_CLASSES) passes a class string held in code: no lint rule can check it, and a class name assembled at runtime is missing from the CSS. Make the shared style a styler (a function that applies typed methods to the tag) and apply it: .apply(label); branch the part that varies with .when()/.whenElse().` }],
++    },
++    {
++      code: "Td(x).addClass(`${CELL_CLASS} text-slate-600`)",
++      errors: [{ message: ".addClass(`${CELL_CLASS} text-slate-600`) passes a class string held in code: no lint rule can check it, and a class name assembled at runtime is missing from the CSS. Make the shared style a styler (a function that applies typed methods to the tag) and apply it: .apply(cell); branch the part that varies with .when()/.whenElse()." }],
++    },
++    {
++      code: `Div().addClass(controlClass(error))`,
++      errors: [{ messageId: "dynamicArg", data: { callee: "addClass", argText: "controlClass(error)", name: "control" } }],
++    },
++    {
++      code: `Div().addClass(cond ? "bg-red-500" : "bg-green-500")`,
++      errors: [{ message: `.addClass(cond ? "bg-red-500" : "bg-green-500") picks a class string with a ternary. Make each branch a styler and branch on the condition: .whenElse(Boolean(cond), t => t.…, t => t.…).` }],
++    },
++    {
++      code: `Div().addClass(error === "" ? CONTROL_CLASSES : CONTROL_ERROR_CLASSES)`,
++      errors: [{ message: `.addClass(error === "" ? CONTROL_CLASSES : CONTROL…) picks a class string with a ternary. Make each branch a styler and branch on the condition: .whenElse(error === "", control, controlError).` }],
++    },
++    {
++      code: `Div().addClass(STATUS_BADGES[status].className)`,
++      errors: [{ message: `.addClass(STATUS_BADGES[status].className) looks a class string up by key. Make STATUS_BADGES's values stylers and .apply(STATUS_BADGES[status]), or branch: .whenMatch(status, { key: t => t.…, … }).` }],
++    },
++    {
++      code: "Div().addClass(`bg-${color}`)",
++      errors: [{ message: ".addClass(`bg-${color}`) assembles a class name at runtime; Tailwind generates only classes it finds whole in source, so this style is missing from the CSS. Branch with one literal per case: .whenMatch(color, { key: t => t.…(\"…\"), … })." }],
+     },
+-    { code: `Div().addClass(cond ? "bg-red-500" : "bg-green-500")`, errors: [{ messageId: "dynamicArg" }] },
+-    { code: "Div().addClass(`bg-${color}`)", errors: [{ messageId: "dynamicArg" }] },
++    { code: `Div().addClass("text-" + size)`, errors: [{ messageId: "fragment" }] },
+     { code: `Div().setClass(classNames.join(" "))`, errors: [{ messageId: "dynamicArg" }] },
+-    { code: `Div().cssClass(hookName)`, errors: [{ messageId: "dynamicArg" }] },
++    {
++      code: `Div().cssClass(hookName)`,
++      errors: [{ message: `.cssClass(hookName) takes a computed class. Pass the hook class as a literal so lint can check it is not a Tailwind utility: .cssClass("js-…"), branched with .when()/.whenElse() if it varies.` }],
++    },
+   ],
+ });
+ 
+@@ -1860,68 +1884,83 @@ runSuite("no-dynamic-typed-styling-arg", noDynamicTypedStylingArg, {
+     // Identifier arg on an element-rooted chain
+     {
+       code: `Div().bg(color)`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "color" } }],
++      errors: [{ message: `.bg(color) has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. Pass a literal, or branch with one literal per branch: .when(cond, t => t.bg(…)), .whenElse(cond, t => …, t => …), .whenMatch(value, { key: t => t.bg(…) }).` }],
+     },
+     // Unit overload with a dynamic amount
+     {
+       code: `Div().w("px", width)`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "w", argText: "width" } }],
++      errors: [{ message: ".w(\"px\", width) has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. An amount computed at runtime goes in an inline style: .setStyle(`width: ${width}px`); a fixed set of sizes branches with one literal each: .whenMatch(size, { sm: t => t.w(\"px\", 120), … })." }],
+     },
+     // Member-expression lookup — the extractor's own headline example
+     {
+       code: `Div().bg(BG[status])`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "BG[status]" } }],
++      errors: [{ message: `.bg(BG[status]) has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. Branch on the key instead: .whenMatch(status, { key: t => t.bg(…), … }), one literal per key` }],
++    },
++    // Lookup into a same-file const map renders its cases
++    {
++      code: `const BG = { active: "success", closed: "surface-2" }; Div().bg(BG[status])`,
++      errors: [{ message: `.bg(BG[status]) has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. Branch on the key instead: .whenMatch(status, { active: t => t.bg("success"), closed: t => t.bg("surface-2") })` }],
+     },
+     // Ternary — even with two literal branches the extractor can't resolve it
+     {
+       code: `Div().bg(cond ? "primary" : "surface")`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: `cond ? "primary" : "surface"` } }],
++      errors: [{ message: `.bg(cond ? "primary" : "surface") has a non-literal argument; the safelist extractor reads literals only (a ternary included), so the css build fails on this call. Branch instead: .whenElse(Boolean(cond), t => t.bg("primary"), t => t.bg("surface"))` }],
++    },
++    // A boolean test stays verbatim; an undefined branch becomes .when()
++    {
++      code: `Div().bg(a === b ? "primary" : undefined)`,
++      errors: [{ messageId: "conditional", data: { call: `.bg(a === b ? "primary" : undefined)`, rewrite: `.when(a === b, t => t.bg("primary"))` } }],
++    },
++    // MatchValue renders the whenMatch twin
++    {
++      code: `Div().bg(MatchValue(tone, { ok: "success", err: "danger" }))`,
++      errors: [{ message: `.bg(MatchValue(tone, { ok: "success", err: "…) has a non-literal argument; the safelist extractor reads literals only, so the css build fails on this call. Branch instead: .whenMatch(tone, { ok: t => t.bg("success"), err: t => t.bg("danger") })` }],
+     },
+     // Interpolated template literal
+     {
+       code: "Div().text(`${tone}`)",
+-      errors: [{ messageId: "dynamicArg", data: { method: "text", argText: "`${tone}`" } }],
++      errors: [{ messageId: "dynamicArg" }],
+     },
+     // Call-expression arg
+     {
+       code: `Div().bg(pickColor())`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "pickColor()" } }],
++      errors: [{ messageId: "dynamicArg" }],
+     },
+     // Two vocab links make the chain fluent even without an element root
+     {
+       code: `const card = (t) => t.p("6").bg(color)`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "color" } }],
++      errors: [{ messageId: "dynamicArg" }],
+     },
+     // Callback param of a fluent context method
+     {
+       code: `Button("Save").when(isActive, (t) => t.bg(activeColor))`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "activeColor" } }],
++      errors: [{ messageId: "dynamicArg" }],
+     },
+     // whenMatch case-object branches are Tag callbacks too
+     {
+       code: `Span(s).whenMatch(s, { active: t => t.bg(BG[s]), closed: t => t.bg("surface-2") })`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "BG[s]" } }],
++      errors: [{ messageId: "lookup" }],
+     },
+     // whenMatch default fn is a direct argument — covered by the context gate
+     {
+       code: `Span(s).whenMatch(s, { active: t => t.bg("success/10") }, t => t.bg(fallback))`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "fallback" } }],
++      errors: [{ messageId: "dynamicArg" }],
+     },
+     // Match branches receive values, not Tags — their output chains root at
+     // element constructors, so the existing evidence already covers them
+     {
+       code: `Match(x, "status", { PENDING: () => Span(label).bg(STATUS_BG[x.status]) })`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "STATUS_BG[x.status]" } }],
++      errors: [{ messageId: "lookup" }],
+     },
+     // cssProp with a dynamic value
+     {
+       code: `Div().cssProp("mask-repeat", repeatMode)`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "cssProp", argText: "repeatMode" } }],
++      errors: [{ messageId: "dynamicArg" }],
+     },
+     // Deep chain keeps the element root
+     {
+       code: `Span(label).p("2").text(SIZES[level]).rounded("control")`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "text", argText: "SIZES[level]" } }],
++      errors: [{ messageId: "lookup" }],
+     },
+   ],
+ });
+@@ -1937,12 +1976,12 @@ runTsSuite("no-dynamic-typed-styling-arg (Styler annotations)", noDynamicTypedSt
+     // Styler-annotated single-link body
+     {
+       code: `const accent: Styler = (t) => t.bg(color);`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "color" } }],
++      errors: [{ messageId: "dynamicArg" }],
+     },
+     // StylerFor — the everyframe dynamic styler-map shape
+     {
+       code: `const byStatus: StylerFor<Status> = (s) => (t) => t.bg(BG[s]);`,
+-      errors: [{ messageId: "dynamicArg", data: { method: "bg", argText: "BG[s]" } }],
++      errors: [{ messageId: "lookup" }],
+     },
+   ],
+ });
+diff --git a/test/type-aware.test.js b/test/type-aware.test.js
+index 2919555..77b4485 100644
+--- a/test/type-aware.test.js
++++ b/test/type-aware.test.js
+@@ -156,6 +156,39 @@ runSuite("match-subset-default (no parserServices — no-op)", untypedTester, ma
+   invalid: [],
+ });
+ 
++const noDynamicTypedStylingArg = require("../dist/rules/no-dynamic-typed-styling-arg");
++const STYLE = `declare function Div(): { bg(v: string): any; border(v: string): any };\ndeclare function MatchValue(v: unknown, cases: unknown, def?: unknown): string;\n`;
++
++runSuite("no-dynamic-typed-styling-arg (type-aware rewrites)", typedTester, noDynamicTypedStylingArg, {
++  valid: [],
++  invalid: [
++    // A boolean-typed test stays verbatim in the whenElse rewrite
++    {
++      filename,
++      code: `${STYLE}declare const active: boolean;\nDiv().bg(active ? "primary" : "surface");`,
++      errors: [{ messageId: "conditional", data: { call: `.bg(active ? "primary" : "surface")`, rewrite: `.whenElse(active, t => t.bg("primary"), t => t.bg("surface"))` } }],
++    },
++    // A string test is wrapped: whenElse branches on != null, the ternary on truthiness
++    {
++      filename,
++      code: `${STYLE}declare const error: string | undefined;\nDiv().border(error ? "danger" : "line");`,
++      errors: [{ messageId: "conditional", data: { call: `.border(error ? "danger" : "line")`, rewrite: `.whenElse(Boolean(error), t => t.border("danger"), t => t.border("line"))` } }],
++    },
++    // A MatchValue default over a finite union is spelled out per member (match-subset-default stays green)
++    {
++      filename,
++      code: `${STYLE}type Tone = "ok" | "err" | "warn"; declare const tone: Tone;\nDiv().bg(MatchValue(tone, { ok: "success" }, "surface"));`,
++      errors: [{ messageId: "matchValue", data: { call: `.bg(MatchValue(tone, { ok: "success" }, "sur…)`, rewrite: `.whenMatch(tone, { ok: t => t.bg("success"), err: t => t.bg("surface"), warn: t => t.bg("surface") })` } }],
++    },
++    // An open subject keeps the default
++    {
++      filename,
++      code: `${STYLE}declare const tone: string;\nDiv().bg(MatchValue(tone, { ok: "success" }, "surface"));`,
++      errors: [{ messageId: "matchValue", data: { call: `.bg(MatchValue(tone, { ok: "success" }, "sur…)`, rewrite: `.whenMatch(tone, { ok: t => t.bg("success") }, t => t.bg("surface"))` } }],
++    },
++  ],
++});
++
+ console.log(`\n${"=".repeat(50)}`);
+ console.log("TYPE-AWARE TEST SUMMARY");
+ console.log("=".repeat(50));

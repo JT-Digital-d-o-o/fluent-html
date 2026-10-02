@@ -1,0 +1,29 @@
+diff --git a/src/elements/forms.ts b/src/elements/forms.ts
+index 92e9472..568c1c3 100644
+--- a/src/elements/forms.ts
++++ b/src/elements/forms.ts
+@@ -447,6 +447,10 @@ type FieldValue<T, K extends keyof T> = [T[K]] extends [infer V]
+ 
+ type Checked<V extends string, T, K extends keyof T> = string extends V ? V : FieldValue<T, K>;
+ 
++// A boolean field's checkbox submits whatever value it carries (RFC-A-07's valued boolean box).
++type CheckboxValue<V extends string, T, K extends keyof T> =
++  [Exclude<T[K], undefined | null>] extends [boolean] ? V : Checked<V, T, K>;
++
+ /** `{ value: label }` for every value the field takes; the `""` (blank) entry is optional and renders first. */
+ type OptionLabels<L extends string | number, F extends string> = number extends L ? never : {
+   readonly [P in L | Exclude<F, "">]: `${P}` extends F ? string : `"${P}" is not a value of this field`;
+@@ -468,10 +472,10 @@ export interface FormBinding<T> {
+    * A checkbox bound to a boolean field — `checked` reflects `Boolean(state.values[name])`.
+    * Pass `value` for the submitted value (HTML defaults to `"on"` when omitted).
+    */
+-  checkbox(name: keyof T & string, value?: string): InputTag;
++  checkbox<K extends keyof T & string, V extends string = string>(name: K, value?: CheckboxValue<V, T, K>): InputTag;
+   /** A radio in the `name` group — `checked` when `String(state.values[name])` equals `value`. */
+-  radio(name: keyof T & string, value: string): InputTag;
+-  hidden(name: keyof T & string, value: string): InputTag;
++  radio<K extends keyof T & string, V extends string = string>(name: K, value: Checked<V, T, K>): InputTag;
++  hidden<K extends keyof T & string, V extends string = string>(name: K, value: Checked<V, T, K>): InputTag;
+   /**
+    * A `<label>` bound to the `name` control — `for` targets the control's default id, so no
+    * stringly id/for repetition. Use the correct HTML for radio groups instead (a `Fieldset` +

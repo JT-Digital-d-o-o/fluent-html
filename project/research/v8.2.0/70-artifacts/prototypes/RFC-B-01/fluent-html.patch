@@ -1,0 +1,112 @@
+diff --git a/src/core/dev-checks.ts b/src/core/dev-checks.ts
+index e3e91c3..d1dd008 100644
+--- a/src/core/dev-checks.ts
++++ b/src/core/dev-checks.ts
+@@ -102,6 +102,25 @@ export function assertMutable(tag: { el: string; _e: number; _p: number }, metho
+   }
+ }
+ 
++const HX_METHODS = new Set(["get", "post", "put", "patch", "delete"]);
++
++/**
++ * The request gate. Called by `_setHx` on every HTMX bag a tag stores; throws when the bag
++ * names no request, because `buildHtmx` would emit `hx-undefined="undefined"` (an inert
++ * control) or `hx-get="undefined"` (a GET to `/undefined`). A verb that spreads a URL string,
++ * a `.resolve()`d route or an uncalled route callable into its bag lands here.
++ *
++ * @internal
++ */
++export function assertRequestBag(tag: { el: string }, htmx: { method?: unknown; endpoint?: unknown }, method: string): void {
++  if (htmx.endpoint != null && typeof htmx.method === "string" && HX_METHODS.has(htmx.method.toLowerCase())) return;
++  throw new Error(
++    `<${tag.el}>.${method}() got an HTMX bag with no request (method: ${String(htmx.method)}, ` +
++      `endpoint: ${String(htmx.endpoint)}). Pass a route callable result such as routes.x(), ` +
++      `not a URL string, routes.x.resolve() or the uncalled routes.x.`,
++  );
++}
++
+ /**
+  * Record that `children` have been taken as children of a tag, so a later
+  * mutation of a shared instance can be identified. Walks nested arrays because
+diff --git a/src/core/tag.ts b/src/core/tag.ts
+index 2b01bad..058ce63 100644
+--- a/src/core/tag.ts
++++ b/src/core/tag.ts
+@@ -1,5 +1,5 @@
+ import { setDiscriminant } from "./proto.js";
+-import { devChecks, assertMutable, countParents } from "./dev-checks.js";
++import { devChecks, assertMutable, assertRequestBag, countParents } from "./dev-checks.js";
+ import type { ResolvedSchemaKey } from "./proto.js";
+ import type { HTMX } from "../htmx.js";
+ import type { Id, Rooted } from "../ids.js";
+@@ -636,7 +636,10 @@ export class Tag {
+    * outside the class body and so cannot write the private field directly.
+    */
+   _setHx(htmx: HTMX | undefined, method: string): this {
+-    if (devChecks) assertMutable(this, method);
++    if (devChecks) {
++      assertMutable(this, method);
++      if (htmx != null) assertRequestBag(this, htmx, method);
++    }
+     this._htmx = htmx;
+     return this;
+   }
+diff --git a/test/dev-checks.test.ts b/test/dev-checks.test.ts
+index 68a4489..2a62d29 100644
+--- a/test/dev-checks.test.ts
++++ b/test/dev-checks.test.ts
+@@ -6,8 +6,9 @@ import {
+   renderToIterable,
+   setDevChecks,
+   Div, Span, Ul, Li, Input, Button,
+-  ForEach,
++  ForEach, A, defineRoutes, hx,
+ } from "../src/index.js";
++import type { HTMX } from "../src/index.js";
+ import { assetUrl } from "../src/htmx.js";
+ 
+ // The guards are on by default outside NODE_ENV=production; a test that turns
+@@ -176,3 +177,43 @@ describe("dev-checks — element-specific setters", () => {
+     throws(() => input.setTitle("x"), /already been rendered/);
+   });
+ });
++
++// ------------------------------------
++// Request gate (RFC-B-01)
++// ------------------------------------
++
++describe("dev-checks — an HTMX bag must name a request", () => {
++  const routes = defineRoutes("/team", { index: { path: "/" } } as const);
++  // What a swap verb builds when handed the wrong shape: it spreads its argument into the bag.
++  const spread = (arg: unknown) => ({ ...(arg as object), target: "#main-content" }) as unknown as HTMX;
++
++  it("a spread URL string throws, naming the fix", () => {
++    throws(() => A("Team").setHtmx(spread("/team")), /<a>\.setHtmx\(\) got an HTMX bag with no request \(method: undefined, endpoint: undefined\)\. Pass a route callable result such as routes\.x\(\)/);
++  });
++
++  it("a spread .resolve() string throws", () => {
++    throws(() => A("Team").setHtmx(spread(routes.index.resolve())), /no request/);
++  });
++
++  it("a spread uncalled route callable throws (method set, endpoint missing)", () => {
++    throws(() => A("Team").setHtmx(spread(routes.index)), /method: get, endpoint: undefined/);
++  });
++
++  it("an unknown method throws (it would become the attribute name)", () => {
++    throws(() => A("Team").setHtmx({ method: "x onclick", endpoint: "/team" } as unknown as HTMX), /method: x onclick/);
++  });
++
++  it("route callables, hx() bags, hxGet/hxPost and a clearing setHtmx() pass", () => {
++    assert.doesNotThrow(() => {
++      A("Team").setHtmx(routes.index());
++      A("Team").setHtmx(hx(assetUrl("/x"), { method: "delete" }));
++      A("Team").hxGet(routes.index.resolve()).hxPost(assetUrl("/y"));
++      A("Team").setHtmx(routes.index()).setHtmx();
++    });
++  });
++
++  it("setDevChecks(false) restores the unguarded emit", () => {
++    setDevChecks(false);
++    assert.match(render(A("Team").setHtmx(spread("/team"))), /hx-undefined="undefined"/);
++  });
++});

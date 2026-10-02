@@ -1,0 +1,180 @@
+diff --git a/src/core/htmx-methods.ts b/src/core/htmx-methods.ts
+index c443d67..0d5488a 100644
+--- a/src/core/htmx-methods.ts
++++ b/src/core/htmx-methods.ts
+@@ -9,15 +9,16 @@
+ import { Tag } from "./tag.js";
+ import type { HTMX, HxOptions, ResolvedRoute, ExternalHref } from "../htmx.js";
+ import { hx } from "../htmx.js";
++import type { RouteSinkHint } from "./route-sink-hint.js";
+ 
+ // ── Declaration merging ─────────────────────────────────────────────
+ 
+ declare module "./tag.js" {
+   interface Tag {
+     setHtmx(htmx?: HTMX): this;
+-    setHtmx(endpoint: ResolvedRoute | ExternalHref, options?: HxOptions): this;
+-    hxGet(endpoint: ResolvedRoute | ExternalHref, options?: Omit<HxOptions, "method">): this;
+-    hxPost(endpoint: ResolvedRoute | ExternalHref, options?: Omit<HxOptions, "method">): this;
++    setHtmx(endpoint: ResolvedRoute | ExternalHref | (string & { readonly [K in RouteSinkHint<".setHtmx">]: never }), options?: HxOptions): this;
++    hxGet(endpoint: ResolvedRoute | ExternalHref | (string & { readonly [K in RouteSinkHint<".hxGet">]: never }), options?: Omit<HxOptions, "method">): this;
++    hxPost(endpoint: ResolvedRoute | ExternalHref | (string & { readonly [K in RouteSinkHint<".hxPost">]: never }), options?: Omit<HxOptions, "method">): this;
+     /**
+      * Mark this element as an htmx loading indicator — adds the library-known
+      * `htmx-indicator` class (shown only while a request targeting it is in flight).
+@@ -32,9 +33,9 @@ declare module "./tag.js" {
+ 
+ const p = Tag.prototype;
+ 
+-p.setHtmx = function (endpointOrHtmx?: ResolvedRoute | ExternalHref | HTMX, options?: HxOptions) {
++p.setHtmx = function (endpointOrHtmx?: string | HTMX, options?: HxOptions) {
+   return this._setHx(
+-    typeof endpointOrHtmx === "string" ? hx(endpointOrHtmx, options) : endpointOrHtmx,
++    typeof endpointOrHtmx === "string" ? hx(endpointOrHtmx as ResolvedRoute, options) : endpointOrHtmx,
+     "setHtmx",
+   );
+ };
+diff --git a/src/core/route-sink-hint.ts b/src/core/route-sink-hint.ts
+new file mode 100644
+index 0000000..19b4f2f
+--- /dev/null
++++ b/src/core/route-sink-hint.ts
+@@ -0,0 +1,7 @@
++// The sentence tsc prints when a raw string reaches a route sink. Sinks use it inside an
++// inline mapped key so tsc prints the text; a named alias would print only its name.
++export type RouteSinkHint<S extends string> = S extends "hx()"
++  ? `hx() takes routes.x.resolve([params,] query?) from defineRoutes, assetUrl(path) for a static file or externalUrl(url) for an off-site URL (never request input), not a URL string; for a defineRoutes route, routes.x(options) replaces hx()`
++  : S extends ".setHtmx"
++    ? `.setHtmx takes routes.x(options) from defineRoutes, or routes.x.resolve([params,] query?), assetUrl(path) for a static file or externalUrl(url) for an off-site URL (never request input), not a URL string`
++    : `${S} takes routes.x.resolve([params,] query?) from defineRoutes, assetUrl(path) for a static file or externalUrl(url) for an off-site URL (never request input), not a URL string or routes.x()`;
+diff --git a/src/elements/links.ts b/src/elements/links.ts
+index f497b68..d72317a 100644
+--- a/src/elements/links.ts
++++ b/src/elements/links.ts
+@@ -3,6 +3,7 @@ import { devChecks, assertMutable } from "../core/dev-checks.js";
+ import { Tag } from "../core/tag.js";
+ import type { View } from "../core/types.js";
+ import type { ResolvedRoute, ExternalHref } from "../htmx.js";
++import type { RouteSinkHint } from "../core/route-sink-hint.js";
+ import type { BrowsingContext, LinkRel, ReferrerPolicy } from "./html-types.js";
+ 
+ 
+@@ -27,7 +28,7 @@ export class AnchorTag extends Tag {
+    * `tel:…`/`#…` pass directly; runtime externals go through `externalUrl()`.
+    * In-app navigation should prefer the swap verbs (`.nav()`) over `setHref`.
+    */
+-  setHref(href?: ResolvedRoute | ExternalHref): this {
++  setHref(href?: ResolvedRoute | ExternalHref | (string & { readonly [K in RouteSinkHint<".setHref">]: never })): this {
+     if (devChecks) assertMutable(this, "setHref");
+     this._href = href;
+     return this;
+diff --git a/src/htmx.ts b/src/htmx.ts
+index b787c94..4f58089 100644
+--- a/src/htmx.ts
++++ b/src/htmx.ts
+@@ -5,6 +5,7 @@
+ 
+ import type { Id} from "./ids.js";
+ import { isId } from "./ids.js";
++import type { RouteSinkHint } from "./core/route-sink-hint.js";
+ 
+ // ------------------------------------
+ // Branded Route Strings (8.0.0)
+@@ -417,7 +418,7 @@ export function resolveSelector(value: string | Id | undefined): string | undefi
+  * the request body and is not url-encoded — never reach for `vals` to build a query string.
+  */
+ export function hx(
+-  endpoint: ResolvedRoute | ExternalHref,
++  endpoint: ResolvedRoute | ExternalHref | (string & { readonly [K in RouteSinkHint<"hx()">]: never }),
+   options: HxOptions = {}
+ ): HTMX {
+   const { method, target, select, indicator, disable, include, query, ...rest } = options;
+diff --git a/test/brand-errors.test.ts b/test/brand-errors.test.ts
+index 2780b64..ee3e683 100644
+--- a/test/brand-errors.test.ts
++++ b/test/brand-errors.test.ts
+@@ -15,7 +15,7 @@ import { resolve } from "node:path";
+ 
+ import ts from "typescript";
+ 
+-type Probe = { readonly code: number; readonly message: string; readonly line: number; readonly text: string };
++type Probe = { readonly code: number; readonly message: string; readonly first: string; readonly line: number; readonly text: string };
+ 
+ let probes: Probe[] = [];
+ 
+@@ -37,6 +37,7 @@ before(() => {
+     return {
+       code: d.code,
+       message: ts.flattenDiagnosticMessageText(d.messageText, " "),
++      first: typeof d.messageText === "string" ? d.messageText : d.messageText.messageText,
+       line,
+       text: lines[line - 1] ?? "",
+     };
+@@ -50,26 +51,35 @@ function probeOn(fragment: string): Probe {
+ }
+ 
+ describe("ResolvedRoute brand — unsafe route strings fail at the sink", () => {
+-  it("exactly the five unsafe shapes produce diagnostics — every sanctioned shape compiles", () => {
+-    assert.equal(probes.length, 5, probes.map((p) => `L${p.line} TS${p.code}: ${p.message}`).join("\n"));
++  it("exactly the nine unsafe shapes produce diagnostics — every sanctioned shape compiles", () => {
++    assert.equal(probes.length, 9, probes.map((p) => `L${p.line} TS${p.code}: ${p.message}`).join("\n"));
+   });
+ 
+-  it("concatenating onto .resolve() strips the brand (the '?offset=' shape)", () => {
+-    const p = probeOn('"?offset="');
+-    assert.match(p.message, /not assignable to parameter of type 'ResolvedRoute/);
+-  });
+-
+-  it("a raw request-body string into setHref fails (the open-redirect shape)", () => {
+-    const p = probeOn("setHref(requestBody.redirect)");
+-    assert.match(p.message, /type 'string' is not assignable to parameter of type 'ResolvedRoute/i);
+-  });
++  // The first line names the producers that satisfy the brand, per sink.
++  const NAMES_PRODUCERS = /routes\.x\.resolve\(\[params,\] query\?\) from defineRoutes, assetUrl\(path\) for a static file or externalUrl\(url\) for an off-site URL \(never request input\), not a URL string/;
++  for (const [fragment, sink] of [
++    ['"?offset="', "hx\\(\\) takes"],
++    ["setHref(requestBody.redirect)", "\\.setHref takes"],
++    ["hx(requestBody.redirect)", "hx\\(\\) takes"],
++    ['hx("/tasks")', "hx\\(\\) takes"],
++    ['setHref("/team")', "\\.setHref takes"],
++    ['hxGet("/tasks")', "\\.hxGet takes"],
++    ['hxPost("/tasks/new")', "\\.hxPost takes"],
++  ] as const) {
++    it(`${fragment} gets the producers on line 1 (${sink.replace(/\\/g, "")})`, () => {
++      const p = probeOn(fragment);
++      assert.equal(p.code, 2345);
++      assert.match(p.first, new RegExp(sink + " " + NAMES_PRODUCERS.source));
++    });
++  }
+ 
+-  it("a raw request-body string into hx() fails", () => {
+-    probeOn("hx(requestBody.redirect)");
++  it("hx() prints its whole sentence: tsc truncates a parameter type at 320 chars", () => {
++    assert.match(probeOn('hx("/tasks")').first, /routes\.x\(options\) replaces hx\(\)": never; \}\)'\.$/);
+   });
+ 
+-  it("a hardcoded route string into hx() fails", () => {
+-    probeOn('hx("/tasks")');
++  it("setHtmx(path, options) names the route callable first, then the producers", () => {
++    const p = probeOn('setHtmx("/tasks", {');
++    assert.match(p.first, /\.setHtmx takes routes\.x\(options\) from defineRoutes, or routes\.x\.resolve\(\[params,\] query\?\), assetUrl\(path\)/);
+   });
+ 
+   it("a hand-written HTMX bag with a raw endpoint fails", () => {
+diff --git a/test/types/brand-probe/probe.ts b/test/types/brand-probe/probe.ts
+index 28e87b4..83af75a 100644
+--- a/test/types/brand-probe/probe.ts
++++ b/test/types/brand-probe/probe.ts
+@@ -29,6 +29,12 @@ Div().setHtmx(hx("/tasks"));
+ // (4) a hand-written HTMX bag with a raw endpoint
+ Div().setHtmx({ method: "get", endpoint: "/tasks" });
+ 
++// (5) a raw route into the remaining sinks
++A("team").setHref("/team");
++Div().hxGet("/tasks");
++Div().hxPost("/tasks/new");
++Div().setHtmx("/tasks", { target: "#list" });
++
+ // ── Must PASS (zero diagnostics) ───────────────────────────────────────────
+ 
+ hx(routes.list.resolve());

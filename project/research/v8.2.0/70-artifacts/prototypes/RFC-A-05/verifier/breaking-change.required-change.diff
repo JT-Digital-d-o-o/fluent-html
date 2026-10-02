@@ -1,0 +1,70 @@
+--- ../librfc/src/patterns.ts	2026-10-01 12:56:17
++++ src/patterns.ts	2026-10-01 13:30:09
+@@ -194,6 +194,10 @@
+  *   res.send(response.html);
+  * });
+  */
++// A root-relative or http(s) path with no whitespace, comma or non-ASCII: both bundles read the bare
++// header as exactly this path, so its bytes stay as shipped; anything else goes out in the object form.
++const PLAIN_LOCATION_RE = /^(\/|https?:\/\/)[\x21-\x2b\x2d-\x7e]*$/;
++
+ export class HxResponse {
+   private _content: View;
+   private _headers: Record<string, string> = {};
+@@ -240,7 +244,7 @@
+    * hxResponse(content).pushUrl("/items/123")
+    */
+   pushUrl(url: string): this {
+-    this._headers["HX-Push-Url"] = sanitizeUrl(url);
++    this._headers["HX-Push-Url"] = sanitizeUrl(typeof url === "string" ? url : String(url));
+     return this;
+   }
+ 
+@@ -250,7 +254,7 @@
+    * @param url - URL to replace with (use "false" to prevent)
+    */
+   replaceUrl(url: string): this {
+-    this._headers["HX-Replace-Url"] = sanitizeUrl(url);
++    this._headers["HX-Replace-Url"] = sanitizeUrl(typeof url === "string" ? url : String(url));
+     return this;
+   }
+ 
+@@ -263,7 +267,7 @@
+    * hxResponse(Empty()).redirect("/login")
+    */
+   redirect(url: string): this {
+-    this._headers["HX-Redirect"] = sanitizeUrl(url);
++    this._headers["HX-Redirect"] = sanitizeUrl(typeof url === "string" ? url : String(url));
+     return this;
+   }
+ 
+@@ -325,7 +329,8 @@
+     // Always the object form: htmx reads a bare string with whitespace, a comma or a `path:`
+     // key as HCON config (beta6 htmx.js:688, 4.0.0 htmx.js:657), so a string is a path only here.
+     if (typeof config === 'string') {
+-      this._headers["HX-Location"] = toHeaderSafeJson({ path: sanitizeUrl(config) });
++      const path = sanitizeUrl(config);
++      this._headers["HX-Location"] = PLAIN_LOCATION_RE.test(path) ? path : toHeaderSafeJson({ path });
+     } else {
+       const path = sanitizeUrl(config.path);
+       this._headers["HX-Location"] = toHeaderSafeJson(path === config.path ? config : { ...config, path });
+--- ../librfc/src/render/serialize.ts	2026-10-01 12:56:17
++++ src/render/serialize.ts	2026-10-01 13:30:09
+@@ -137,7 +137,7 @@
+ 
+ /** Serialize an HTMX config to its attribute string. @internal */
+ export function buildHtmx(htmx: HTMX): string {
+-  let result = 'hx-' + htmx.method + '="' + escapeAttr(sanitizeUrl(htmx.endpoint)) + '"';
++  let result = 'hx-' + htmx.method + '="' + escapeAttr(sanitizeUrl(typeof htmx.endpoint === 'string' ? htmx.endpoint : String(htmx.endpoint))) + '"';
+ 
+   if (htmx.target !== undefined) result += ' hx-target="' + escapeAttr(htmx.target) + '"';
+   if (htmx.swap !== undefined) result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
+@@ -153,7 +153,7 @@
+   if (htmx.include !== undefined) result += ' hx-include="' + escapeAttr(htmx.include) + '"';
+   if (htmx.encoding !== undefined) result += ' hx-encoding="' + escapeAttr(htmx.encoding) + '"';
+   if (htmx.validate !== undefined) result += ' hx-validate="' + htmx.validate + '"';
+-  if (htmx.confirm !== undefined) result += ' hx-confirm="' + htmxText(htmx.confirm) + '"';
++  if (htmx.confirm !== undefined) result += ' hx-confirm="' + htmxText(typeof htmx.confirm === 'string' ? htmx.confirm : String(htmx.confirm)) + '"';
+   if (htmx.indicator !== undefined) result += ' hx-indicator="' + escapeAttr(htmx.indicator) + '"';
+   if (htmx.disable !== undefined) result += ' hx-disable="' + escapeAttr(htmx.disable) + '"';
+   if (htmx.sync !== undefined) result += ' hx-sync="' + escapeAttr(htmx.sync) + '"';

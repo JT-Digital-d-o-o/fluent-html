@@ -1,0 +1,25 @@
+--- <scratch>/wave2/RFC-A-01/lib/src/behaviors/client/runtime.ts	2026-10-01 09:36:06
++++ <scratch>/wave3/RFC-A-01-agent-fitness/lib2/src/behaviors/client/runtime.ts	2026-10-01 09:59:13
+@@ -159,7 +159,7 @@
+ };
+ 
+ const focusables = (root: Element): HTMLElement[] =>
+-  [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,[tabindex]")].filter(
++  [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,summary,[contenteditable],[tabindex]")].filter(
+     (el) => !(el as HTMLInputElement).disabled && el.tabIndex > -1 && shown(el),
+   );
+ 
+@@ -174,7 +174,12 @@
+   // Every Tab moves within the list: native order is engine-dependent (WebKit skips links by default).
+   const at = items.indexOf(doc.activeElement as HTMLElement);
+   e.preventDefault();
+-  items[at < 0 ? (e.shiftKey ? n - 1 : 0) : (at + (e.shiftKey ? n - 1 : 1)) % n]!.focus();
++  // Step until focus lands: a node can have a box and still refuse focus (closed <details>, content-visibility).
++  for (let i = 0, k = at < 0 ? (e.shiftKey ? 0 : n - 1) : at; i < n; i++) {
++    k = (k + (e.shiftKey ? n - 1 : 1)) % n;
++    items[k]!.focus();
++    if (doc.activeElement === items[k]) break;
++  }
+   return true;
+ }
+ 

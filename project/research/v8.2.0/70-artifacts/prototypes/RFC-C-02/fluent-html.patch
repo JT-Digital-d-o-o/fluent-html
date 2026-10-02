@@ -1,0 +1,767 @@
+diff --git a/FLUENT-STYLING.md b/FLUENT-STYLING.md
+index a7a85d7..c73a311 100644
+--- a/FLUENT-STYLING.md
++++ b/FLUENT-STYLING.md
+@@ -37,7 +37,7 @@ Div().dark({ bg: "gray-900", hover: { bg: "gray-800" } })
+ // -> dark:bg-gray-900 dark:hover:bg-gray-800
+ ```
+ 
+-**`.variant(name, styles)`** — the generic form for the long tail (same object, typed `TailwindState | TailwindBreakpoint` name): `required` `invalid` `valid` `placeholder` `group-focus` `peer-hover`, typed `aria-*`/`aria-[…]`, `data-[…]`, named `group-…/name`/`peer-…/name`, structural `nth-3`/`nth-[3n+1]`, child/descendant `*`/`**`, `not-*`, `supports-[…]`, arbitrary `[&>li]` selectors, relational `has-[…]`/`in-[…]` — and container-query breakpoints `@3xs`…`@7xl` (`@max-lg`, `@[480px]`, named scope `@lg/sidebar`) for children of a `.containerQuery()` element, plus the exact `"2xl"` spelling:
++**`.variant(name, styles)`** — the generic form for the long tail (same object, typed `TailwindState | TailwindBreakpoint` name): `required` `invalid` `valid` `placeholder` `group-focus` `peer-hover`, typed `aria-*`/`aria-[…]`, `data-[…]`, named `group-…/name`/`peer-…/name`, structural `nth-3`/`nth-[3n+1]`, child/descendant `*`/`**`, `not-*`, `supports-[…]`, arbitrary `[&>li]` selectors, relational `has-[…]`/`in-[…]` — and container-query breakpoints `@3xs`…`@7xl` (`@max-lg`, `@[480px]`, named scope `@lg/sidebar`) for children of a `.cssProp("container-type", "inline-size")` element, plus the exact `"2xl"` spelling:
+ 
+ ```typescript
+ Div().variant("data-[state=open]", { rounded: "lg" })
+@@ -89,7 +89,7 @@ The prefix rule has a few deliberate exceptions — worth knowing when deriving
+ - **Negative utilities go through `.neg()`.** `-mt-2` → `.neg("mt-2")`, `-inset-px` → `.neg("inset-px")`. Methods with numeric arguments relocate the sign themselves: `.rotate(-45)` → `-rotate-45`, `.colEnd(-1)` → `-col-end-1`, `.bgLinear(-65)` → `-bg-linear-65`.
+ - **Translate takes its axis as an argument** — `.translate("y", "-1")` → `-translate-y-1` — while rotate/scale use per-axis methods (`.rotateX("45")`, `.scaleX("110")`). In variant objects the axis flattens into the key: `translateY: "-1"`.
+ - **The `2xl` breakpoint is spelled `xl2`** as a variant method and nested key (`2xl` isn't a valid identifier); `.variant("2xl", {…})` keeps the exact spelling.
+-- **A few names can't equal their prefix:** `.containerQuery()` (`@container` isn't a valid identifier), `.gradient(from, to, dir?)` (a multi-class convenience over `.bgLinear()`/`.from()`/`.to()`), and `.snap("x", "mandatory")` (emits the `snap-x snap-mandatory` pair; `"none"` would collide between the axis and align families, so children use `.snapAlign()`/`.snapStop()`).
++- **A few names can't equal their prefix:** `.gradient(from, to, dir?)` (a multi-class convenience over `.bgLinear()`/`.from()`/`.to()`), and `.snap("x", "mandatory")` (emits the `snap-x snap-mandatory` pair; `"none"` would collide between the axis and align families, so children use `.snapAlign()`/`.snapStop()`).
+ 
+ ### Spacing
+ 
+diff --git a/REFERENCE.md b/REFERENCE.md
+index efa1c30..09b1422 100644
+--- a/REFERENCE.md
++++ b/REFERENCE.md
+@@ -1182,13 +1182,13 @@ Everything beyond the tier-1 set goes through the generic form — same object,
+ Div().variant("data-[state=open]", { rounded: "lg" })
+ Div().variant("group-focus", { ring: "2" })
+ Div().variant("has-[:checked]", { bg: "blue-50" })
+-Div().variant("@sm", { flex: "row" })          // container query (see .containerQuery())
++Div().variant("@sm", { flex: "row" })          // container query (parent: .cssProp("container-type", "inline-size"))
+ Div().variant("2xl", { px: "16" })             // exact Tailwind spelling of xl2
+ ```
+ 
+ **Supported states** (via `TailwindState`): interaction (`visited`, …), form (`enabled`, `indeterminate`, `required`, `invalid`, `valid`), position (`empty`, `first-of-type`, `last-of-type`, `only`, `only-of-type`), pseudo-elements (`placeholder`, `selection`, `marker`, `file`), group/peer states incl. named scopes (`group-hover/name`), the nine ARIA boolean heads plus `aria-[…]`, `data-[…]`, structural `nth-*`, children `*`/`**`, `not-*` negation, `supports-[…]`, arbitrary `[&>li]` selectors, relational `has-[…]`/`group-has-[…]`/`peer-has-[…]`/`in-[…]`, and the v4 additions (`print`, `motion-reduce`/`safe`, `starting`, `open`, `inert`, `rtl`/`ltr`, …).
+ 
+-**Breakpoints** (via `TailwindBreakpoint`): `sm`–`2xl` plus container-query forms `@3xs`…`@7xl`, `@max-lg`, `@[480px]`, and named scopes `@lg/sidebar` for children of a `.containerQuery()` element.
++**Breakpoints** (via `TailwindBreakpoint`): `sm`–`2xl` plus container-query forms `@3xs`…`@7xl`, `@max-lg`, `@[480px]`, and named scopes `@lg/sidebar` for children of a `.cssProp("container-type", "inline-size")` element.
+ 
+ ### Composing Variants
+ 
+@@ -1907,9 +1907,6 @@ Div(ForEach(5, i =>
+ Div(ForEach(1, 6, i =>
+   Button(`Page ${i}`).px("3").py("1")
+ ))
+-
+-// Repeat n times
+-Div(Repeat(5, () => Span("⭐")))
+ ```
+ 
+ > **Note:** The legacy `ForEach1`, `ForEach2`, `ForEach3` aliases have been removed. Use `ForEach` with the appropriate overload.
+diff --git a/examples/control-flow.ts b/examples/control-flow.ts
+index 83cf304..aed94dd 100644
+--- a/examples/control-flow.ts
++++ b/examples/control-flow.ts
+@@ -5,7 +5,7 @@
+  */
+ import {
+   Div, Ul, Li, Span, H2, P, Img,
+-  IfThen, IfThenElse, ForEach, Match, Repeat,
++  IfThen, IfThenElse, ForEach, Match,
+   render,
+ } from '../src/index.js';
+ 
+@@ -52,7 +52,7 @@ console.log("\n--- ForEach (items) ---");
+ console.log(render(userList));
+ 
+ // Repeat n times
+-const stars = Div(Repeat(5, () => Span("★")));
++const stars = Div(ForEach(5, () => Span("★")));
+ 
+ console.log("\n--- Repeat ---");
+ console.log(render(stars));
+diff --git a/package.json b/package.json
+index 95cfe9e..19426be 100644
+--- a/package.json
++++ b/package.json
+@@ -62,8 +62,8 @@
+   ],
+   "scripts": {
+     "build": "tsc && tsc -p src/behaviors/client/tsconfig.json && node scripts/build-behaviors.mjs",
+-    "test": "npm run build && tsc -p test/types/color-optout/tsconfig.json && node --test dist/test/dev-checks.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/form-for.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/define-theme.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js",
+-    "test:coverage": "npm run build && c8 --lines 95 --branches 90 node --test dist/test/dev-checks.test.js dist/test/form-for.test.js dist/test/define-theme.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js",
++    "test": "npm run build && tsc -p test/types/color-optout/tsconfig.json && node --test dist/test/dev-checks.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/form-for.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/define-theme.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js dist/test/prune-gate.test.js",
++    "test:coverage": "npm run build && c8 --lines 95 --branches 90 node --test dist/test/dev-checks.test.js dist/test/form-for.test.js dist/test/define-theme.test.js dist/test/elements.test.js dist/test/attributes.test.js dist/test/forms.test.js dist/test/tables.test.js dist/test/htmx.test.js dist/test/control-flow.test.js dist/test/composition.test.js dist/test/security.test.js dist/test/security.js dist/test/patterns.js dist/test/routes.js dist/test/ids.js dist/test/fluent-styling-v2.js dist/test/type-safety.js dist/test/escape.js dist/test/guards.js dist/test/elements.js dist/test/overlay.js dist/test/fuzz.js dist/test/behavior.test.js dist/test/stream.test.js dist/test/class-vocab.test.js dist/test/native-interactivity.test.js dist/test/packaging.test.js dist/test/routes-ids-parity.test.js dist/test/vocab-validity.test.js dist/test/gen-types.test.js dist/test/vocab-coverage.test.js dist/test/gen-vocab-loader.test.js dist/test/codemod-canonical.test.js dist/test/codemod-storage-fields.test.js dist/test/setter-errors.test.js dist/test/brand-errors.test.js dist/test/prune-gate.test.js",
+     "test:acceptance": "npm run build && playwright test -c test/acceptance/playwright.config.mjs",
+     "bench": "npm run build && node dist/bench/render.js",
+     "bench:mem": "npm run build && node --expose-gc dist/bench/render.js",
+@@ -77,7 +77,8 @@
+     "guidelines:pull": "bash scripts/guidelines.sh pull",
+     "gen:vocab": "tsc && node dist/scripts/gen-vocab/gen-vocab.js",
+     "codemod:canonical": "tsc && node dist/scripts/codemod/canonical-names.js",
+-    "codemod:storage-fields": "tsc && node dist/scripts/codemod/storage-fields.js"
++    "codemod:storage-fields": "tsc && node dist/scripts/codemod/storage-fields.js",
++    "codemod:prune-9": "tsc && node dist/scripts/codemod/prune-9.js"
+   },
+   "files": [
+     "dist/fluent-behaviors.*.js",
+diff --git a/scripts/census/method-census.mjs b/scripts/census/method-census.mjs
+index 3642b54..d211169 100644
+--- a/scripts/census/method-census.mjs
++++ b/scripts/census/method-census.mjs
+@@ -90,7 +90,7 @@ const NON_TAG_RECEIVER = /(?:\b\w*[Rr]outes|classList|Promise|path|require|impor
+ // Standalone pattern functions — counted as `Name(`, not `.name(`.
+ const STANDALONE = [
+   "ForEach", "ForEachKeyed", "IfThen", "IfThenElse", "Match", "MatchValue",
+-  "Intersperse", "Repeat", "defineRoutes", "defineIds", "defineTheme", "hx",
++  "Intersperse", "defineRoutes", "defineIds", "defineTheme", "hx",
+   "Partial", "hxResponse", "externalUrl", "assetUrl",
+ ];
+ 
+diff --git a/scripts/codemod/prune-9.ts b/scripts/codemod/prune-9.ts
+new file mode 100644
+index 0000000..3b2d846
+--- /dev/null
++++ b/scripts/codemod/prune-9.ts
+@@ -0,0 +1,223 @@
++/**
++ * `npm run codemod:prune-9 -- <tsconfig> [--dry]` — move a consumer repo off the names 9.0.0
++ * removes, onto the spelling each one already duplicated:
++ *
++ *   `.multipart()`                      → `.setEnctype("multipart/form-data")`
++ *   `.containerQuery()` / `("name")`    → `.cssProp("container-type", "inline-size")` (+ `container-name`)
++ *   `.setMicrodata({ type, prop, ref, id })` → `.toggle("itemscope").addAttribute("itemtype", …)…`
++ *   `Repeat(n, f)`                      → `ForEach(n, f)`
++ *   root imports of `setDevChecks`, `extractId`, `extractSelector`, `EVENT_TABLE`, `HTMX_EVENTS`
++ *                                       → the same names from their subpath
++ *
++ * A method call is rewritten only when its receiver types as fluent-html's `Tag`; anything the
++ * map cannot express (non-literal containerQuery name, non-literal setMicrodata object, a call
++ * under `@ts-expect-error`) is left untouched and reported.
++ *
++ * @module
++ */
++import { existsSync, readFileSync } from "node:fs";
++import * as path from "node:path";
++import { pathToFileURL } from "node:url";
++
++import { Node, Project, type CallExpression, type Expression, type SourceFile, type Type } from "ts-morph";
++
++/** Root exports 9.0.0 keeps only on their subpath. */
++export const MOVED_TO_SUBPATH: Readonly<Record<string, string>> = {
++  setDevChecks: "core",
++  extractId: "ids",
++  extractSelector: "ids",
++  EVENT_TABLE: "behaviors",
++  HTMX_EVENTS: "behaviors",
++};
++
++/** Every name 9.0.0 removes, with the successor the deletion gate expects (`test/prune-gate.test.ts`). */
++export const PRUNED_9: Readonly<Record<string, string>> = {
++  multipart: '.setEnctype("multipart/form-data")',
++  containerQuery: '.cssProp("container-type", "inline-size")',
++  setMicrodata: '.toggle("itemscope").addAttribute("itemtype", …)',
++  Repeat: "ForEach(n, render)",
++  ...Object.fromEntries(Object.entries(MOVED_TO_SUBPATH).map(([n, sub]) => [n, `import { ${n} } from "fluent-html/${sub}"`])),
++};
++
++const METHODS = new Set(["multipart", "containerQuery", "setMicrodata"]);
++
++export type Edit = { readonly start: number; readonly end: number; readonly text: string };
++export type Skip = { readonly line: number; readonly name: string; readonly reason: string };
++
++function typeIsTag(type: Type, seen = new Set<Type>()): boolean {
++  if (seen.has(type)) return false;
++  seen.add(type);
++  const apparent = type.getApparentType();
++  const parts = (apparent.isUnion() ? apparent.getUnionTypes() : apparent.isIntersection() ? apparent.getIntersectionTypes() : [apparent]).map((p) => p.getApparentType());
++  for (const part of parts) {
++    const symbol = part.getSymbol();
++    if (symbol?.getName() === "Tag") {
++      const declFile = symbol.getDeclarations()[0]?.getSourceFile().getBaseName();
++      if (declFile === "tag.ts" || declFile === "tag.d.ts") return true;
++    }
++    // A `this & Rooted<N>` part (setId's 8.1.0 return) loses its base types; fall back to the declared class.
++    const bases = part.getBaseTypes();
++    for (const base of bases.length ? bases : symbol ? [symbol.getDeclaredType()] : []) if (typeIsTag(base, seen)) return true;
++  }
++  return false;
++}
++
++function receiverIsTag(expr: Expression): boolean {
++  if (typeIsTag(expr.getType())) return true;
++  if (Node.isCallExpression(expr)) {
++    const callee = expr.getExpression();
++    if (Node.isPropertyAccessExpression(callee) && METHODS.has(callee.getName())) return receiverIsTag(callee.getExpression());
++  }
++  return false;
++}
++
++const underExpectError = (node: Node): boolean => {
++  const stmt = node.getFirstAncestor((a) => Node.isStatement(a)) ?? node;
++  return stmt.getLeadingCommentRanges().some((c) => c.getText().includes("@ts-expect-error"));
++};
++
++function methodRewrite(name: string, call: CallExpression): { text?: string; skip?: string } {
++  const args = call.getArguments();
++  if (name === "multipart") return args.length === 0 ? { text: 'setEnctype("multipart/form-data")' } : { skip: "multipart() takes no arguments" };
++  if (name === "containerQuery") {
++    if (args.length === 0) return { text: 'cssProp("container-type", "inline-size")' };
++    const [n] = args;
++    if (args.length === 1 && Node.isStringLiteral(n) && /^[\w-]+$/.test(n.getLiteralValue())) {
++      return { text: `cssProp("container-type", "inline-size").cssProp("container-name", "${n.getLiteralValue()}")` };
++    }
++    return { skip: "containerQuery name is not a string literal; .cssProp() takes literals only" };
++  }
++  // setMicrodata
++  const [o] = args;
++  if (args.length !== 1 || !Node.isObjectLiteralExpression(o)) return { skip: "setMicrodata argument is not an object literal" };
++  if (o.getProperties().some((p) => !Node.isPropertyAssignment(p))) return { skip: "setMicrodata object has spread/shorthand members" };
++  const get = (k: string): string | undefined => {
++    const p = o.getProperty(k);
++    return p && Node.isPropertyAssignment(p) ? p.getInitializerOrThrow().getText() : undefined;
++  };
++  const parts: string[] = [];
++  const t = get("type"), pr = get("prop"), r = get("ref"), i = get("id");
++  if (t !== undefined) parts.push('toggle("itemscope")', `addAttribute("itemtype", ${t})`);
++  if (pr !== undefined) parts.push(`addAttribute("itemprop", ${pr})`);
++  if (r !== undefined) parts.push(`addAttribute("itemref", ${r})`);
++  if (i !== undefined) parts.push(`addAttribute("itemid", ${i})`);
++  return parts.length ? { text: parts.join(".") } : { skip: "setMicrodata({}) writes nothing; delete the call" };
++}
++
++/** Module specifiers that resolve to fluent-html in this repo: the package name plus npm aliases (`lambda.html`). */
++export function libSpecifiers(repoRoot: string): Set<string> {
++  const out = new Set(["fluent-html"]);
++  const pj = path.join(repoRoot, "package.json");
++  if (!existsSync(pj)) return out;
++  const json = JSON.parse(readFileSync(pj, "utf8")) as Record<string, Record<string, string> | undefined>;
++  for (const deps of [json.dependencies, json.devDependencies, json.peerDependencies]) {
++    for (const [k, v] of Object.entries(deps ?? {})) if (/(^|[/:])fluent-html(#|@|$)/.test(v)) out.add(k);
++  }
++  return out;
++}
++
++export function collectEdits(file: SourceFile, specs: ReadonlySet<string>): { edits: Edit[]; skips: Skip[] } {
++  const edits: Edit[] = [];
++  const skips: Skip[] = [];
++  let repeatLocal: string | undefined;
++  for (const imp of file.getImportDeclarations()) {
++    const spec = imp.getModuleSpecifierValue();
++    if (!specs.has(spec)) continue;
++    const moved = new Map<string, string[]>();
++    const keep: string[] = [];
++    let changed = false;
++    let hasForEach = false;
++    for (const ni of imp.getNamedImports()) {
++      const name = ni.getName();
++      const alias = ni.getAliasNode()?.getText();
++      if (name === "ForEach") hasForEach = true;
++      if (name === "Repeat") {
++        changed = true;
++        if (alias) keep.push(`ForEach as ${alias}`);
++        else repeatLocal = "Repeat";
++        continue;
++      }
++      const sub = MOVED_TO_SUBPATH[name];
++      if (sub) {
++        changed = true;
++        const list = moved.get(sub) ?? [];
++        list.push(ni.getText());
++        moved.set(sub, list);
++        continue;
++      }
++      keep.push(ni.getText());
++    }
++    if (repeatLocal === "Repeat" && !hasForEach) keep.push("ForEach");
++    if (!changed) continue;
++    const typeOnly = imp.isTypeOnly() ? "type " : "";
++    const def = imp.getDefaultImport()?.getText();
++    const lines: string[] = [];
++    if (keep.length || def) lines.push(`import ${typeOnly}${def ?? ""}${def && keep.length ? ", " : ""}${keep.length ? `{ ${keep.join(", ")} }` : ""} from "${spec}";`);
++    for (const [sub, names] of moved) lines.push(`import ${typeOnly}{ ${names.join(", ")} } from "${spec}/${sub}";`);
++    edits.push({ start: imp.getStart(), end: imp.getEnd(), text: lines.join("\n") });
++  }
++  file.forEachDescendant((node) => {
++    if (!Node.isCallExpression(node)) return;
++    const callee = node.getExpression();
++    if (repeatLocal === "Repeat" && Node.isIdentifier(callee) && callee.getText() === "Repeat") {
++      edits.push({ start: callee.getStart(), end: callee.getEnd(), text: "ForEach" });
++      return;
++    }
++    if (!Node.isPropertyAccessExpression(callee)) return;
++    const name = callee.getName();
++    if (!METHODS.has(name)) return;
++    const line = callee.getNameNode().getStartLineNumber();
++    if (underExpectError(node)) { skips.push({ line, name, reason: "under @ts-expect-error" }); return; }
++    if (!receiverIsTag(callee.getExpression())) { skips.push({ line, name, reason: "receiver does not type as Tag" }); return; }
++    const { text, skip } = methodRewrite(name, node);
++    if (text === undefined) skips.push({ line, name, reason: skip ?? "unsupported" });
++    else edits.push({ start: callee.getNameNode().getStart(), end: node.getEnd(), text });
++  });
++  // `containerQuery` as a style-object key inside a Tag call: report (the successor is the `cssProp` key).
++  file.forEachDescendant((node) => {
++    if (!Node.isPropertyAssignment(node) || node.getName() !== "containerQuery") return;
++    const inTagCall = node.getAncestors().some((a) => {
++      if (!Node.isCallExpression(a)) return false;
++      const c = a.getExpression();
++      return Node.isPropertyAccessExpression(c) && receiverIsTag(c.getExpression());
++    });
++    if (inTagCall) skips.push({ line: node.getStartLineNumber(), name: "containerQuery", reason: 'style-object key removed; use cssProp: ["container-type", "inline-size"]' });
++  });
++  return { edits, skips };
++}
++
++/** Splice all edits into the file text once (descending start), then reparse — no per-edit tree surgery. */
++export function applyEdits(file: SourceFile, edits: readonly Edit[]): void {
++  let text = file.getFullText();
++  for (const e of [...edits].sort((a, b) => b.start - a.start)) text = text.slice(0, e.start) + e.text + text.slice(e.end);
++  file.replaceWithText(text);
++}
++
++function run(): void {
++  const argv = process.argv.slice(2);
++  const dry = argv.includes("--dry");
++  const tsConfigFilePath = argv.find((a) => !a.startsWith("--"));
++  if (!tsConfigFilePath) {
++    console.error("Usage: npm run codemod:prune-9 -- <path/to/tsconfig.json> [--dry]");
++    process.exitCode = 1;
++    return;
++  }
++  const specs = libSpecifiers(path.dirname(path.resolve(tsConfigFilePath)));
++  const project = new Project({ tsConfigFilePath });
++  const files = project.getSourceFiles().filter((f) => !f.isDeclarationFile() && !f.getFilePath().includes("/node_modules/"));
++  let totalEdits = 0;
++  let totalSkips = 0;
++  const collected = files.map((file) => ({ file, ...collectEdits(file, specs) }));
++  for (const { file, edits, skips } of collected) {
++    for (const s of skips) console.warn(`SKIP ${file.getFilePath()}:${s.line} ${s.name} — ${s.reason}`);
++    totalSkips += skips.length;
++    if (edits.length === 0) continue;
++    applyEdits(file, edits);
++    totalEdits += edits.length;
++    console.log(`${dry ? "[dry] " : ""}${file.getFilePath()} — ${edits.length} edit(s)`);
++  }
++  if (!dry) project.saveSync();
++  console.log(`codemod:prune-9 ${dry ? "(dry run) " : ""}— ${totalEdits} edit(s) across ${files.length} file(s) [specifiers: ${[...specs].join(", ")}]; ${totalSkips} skipped for manual review.`);
++}
++
++if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) run();
+diff --git a/src/class-vocab/vocab.ts b/src/class-vocab/vocab.ts
+index e448dc0..22235e8 100644
+--- a/src/class-vocab/vocab.ts
++++ b/src/class-vocab/vocab.ts
+@@ -321,8 +321,6 @@ export const classVocab: readonly UtilityDef[] = [
+   opt("group", "group", "/", { doc: "Group marker — enables `group-*` variants on descendants; optionally named.", variantObject: vo("true | string") }),
+   opt("peer", "peer", "/", { doc: "Peer marker — enables `peer-*` variants on siblings; optionally named.", variantObject: vo("true | string") }),
+ 
+-  // Container-query container (v4): @container / @container/{name}
+-  opt("containerQuery", "@container", "/", { doc: "Container-query container; optionally named.", variantObject: vo("true | string") }),
+ 
+   // Filters
+   opt("blur", "blur", undefined, { values: lit("none", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"), doc: "Blur filter (bare = default)." }),
+diff --git a/src/control/index.ts b/src/control/index.ts
+index a364496..e8de1da 100644
+--- a/src/control/index.ts
++++ b/src/control/index.ts
+@@ -13,7 +13,6 @@ export {
+   ForEach,
+   ForEachElse,
+   ForEachKeyed,
+-  Repeat,
+   Intersperse,
+ } from "./iteration.js";
+ 
+diff --git a/src/control/iteration.ts b/src/control/iteration.ts
+index ce6bb51..07f9f44 100644
+--- a/src/control/iteration.ts
++++ b/src/control/iteration.ts
+@@ -165,19 +165,3 @@ export function Intersperse<T>(
+   return result;
+ }
+ 
+-/**
+- * Repeat a view a fixed number of times.
+- *
+- * @param times - How many times to repeat
+- * @param content - Thunk producing the view to repeat
+- * @returns An array of Views
+- *
+- * @example
+- * Div(Repeat(3, () => Span("★")))
+- */
+-export function Repeat(
+-  times: number,
+-  content: () => View
+-): View {
+-  return ForEach(times, content);
+-}
+diff --git a/src/core/tag.ts b/src/core/tag.ts
+index 2b01bad..43f82bc 100644
+--- a/src/core/tag.ts
++++ b/src/core/tag.ts
+@@ -604,22 +604,6 @@ export class Tag {
+     return this.addAttribute("hidden", value);
+   }
+ 
+-  /**
+-   * Schema.org microdata (`itemtype`/`itemprop`/`itemref`/`itemid`) for structured-data SEO —
+-   * the value-bearing counterpart to the `itemscope` boolean (`.toggle("itemscope")`). Setting
+-   * `type` also marks the element an item scope (an `itemtype` without `itemscope` is invalid).
+-   *
+-   * @example
+-   * Article().setMicrodata({ type: "https://schema.org/Article" })  // itemscope itemtype="…"
+-   * Span(author).setMicrodata({ prop: "author" })
+-   */
+-  setMicrodata(attrs: { type?: string; prop?: string; ref?: string; id?: string }): this {
+-    if (attrs.type !== undefined) { this.toggle("itemscope"); this.addAttribute("itemtype", attrs.type); }
+-    if (attrs.prop !== undefined) this.addAttribute("itemprop", attrs.prop);
+-    if (attrs.ref !== undefined) this.addAttribute("itemref", attrs.ref);
+-    if (attrs.id !== undefined) this.addAttribute("itemid", attrs.id);
+-    return this;
+-  }
+ 
+   /**
+    * Associate a form-associated control (`input`/`button`/`select`/`textarea`/`output`/`fieldset`)
+diff --git a/src/core/tailwind-methods.ts b/src/core/tailwind-methods.ts
+index 43c485b..4f457f2 100644
+--- a/src/core/tailwind-methods.ts
++++ b/src/core/tailwind-methods.ts
+@@ -401,8 +401,6 @@ declare module "./tag.js" {
+     group(name?: string): this;
+     peer(name?: string): this;
+ 
+-    /** Mark this element a container-query container (v4): `@container` / `@container/{name}`. Children query it with `.variant("@sm", {…})`. */
+-    containerQuery(name?: string): this;
+ 
+     // Filters
+     blur(value?: TailwindBlur): this;
+@@ -910,9 +908,6 @@ p.group = function (name?: string) {
+ p.peer = function (name?: string) {
+   return name === undefined ? this.addClass("peer") : this.addClass(`peer/${name}`);
+ };
+-p.containerQuery = function (name?: string) {
+-  return name === undefined ? this.addClass("@container") : this.addClass(`@container/${name}`);
+-};
+ 
+ // Filters
+ 
+diff --git a/src/elements/forms.ts b/src/elements/forms.ts
+index 2ccc7ea..1337e51 100644
+--- a/src/elements/forms.ts
++++ b/src/elements/forms.ts
+@@ -409,12 +409,6 @@ export class FormTag extends Tag {
+     return this._enctype;
+   }
+ 
+-  /** Set `enctype="multipart/form-data"` (required for file uploads). */
+-  multipart(): this {
+-    if (devChecks) assertMutable(this, "multipart");
+-    this._enctype = 'multipart/form-data';
+-    return this;
+-  }
+ }
+ 
+ defineSchemaKeys(FormTag, ['action', 'method', 'enctype', 'target', 'autocomplete']);
+diff --git a/src/index.ts b/src/index.ts
+index 5a399d1..7594e4d 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -6,9 +6,6 @@ export { RawString, Raw } from './core/index.js';
+ export { Empty, El } from './core/index.js';
+ export { isTag, isRawString } from './core/index.js';
+ 
+-// Dev-mode structural guards — mutate-after-render / aliased-child detection
+-export { setDevChecks } from './core/index.js';
+-
+ // ARIA types — for setRole / setAria (A-02)
+ export type { AriaRole, AriaAttributeName, AriaValue, AriaAttrs } from './core/index.js';
+ 
+@@ -338,7 +335,6 @@ export {
+   ForEach,
+   ForEachElse,
+   ForEachKeyed,
+-  Repeat,
+   Intersperse,
+ } from './control/index.js';
+ 
+@@ -397,8 +393,6 @@ export {
+   createId,
+   defineIds,
+   isId,
+-  extractId,
+-  extractSelector,
+ } from './ids.js';
+ export type { Id, Rooted, RootedView } from './ids.js';
+ 
+@@ -431,4 +425,3 @@ export type {
+ // Behavior system (v4 — flat data-behavior-* emission, ADR-01)
+ export type { BehaviorMap, BehaviorName, BehaviorTarget } from './behaviors/map.js';
+ export type { BehaviorEvent, LifecycleEvent } from './behaviors/events.js';
+-export { EVENT_TABLE, HTMX_EVENTS } from './behaviors/events.js';
+diff --git a/test/attributes.test.ts b/test/attributes.test.ts
+index 84ef8e6..3ba4ebb 100644
+--- a/test/attributes.test.ts
++++ b/test/attributes.test.ts
+@@ -169,7 +169,7 @@ describe("Global editing/keyboard + microdata", () => {
+   it("setForm by string id", () => { assert.strictEqual(render(Input().setName("q").setForm("search-form")), `<input name="q" form="search-form">`); });
+ 
+   it("setMicrodata sets itemscope+itemtype (with id), and bare itemprop", () => {
+-    assert.strictEqual(render(Div().setMicrodata({ type: "https://schema.org/Product", id: "/p/1" })), `<div itemtype="https://schema.org/Product" itemid="/p/1" itemscope></div>`);
+-    assert.strictEqual(render(Div("Jane").setMicrodata({ prop: "author" })), `<div itemprop="author">Jane</div>`);
++    assert.strictEqual(render(Div().toggle("itemscope").addAttribute("itemtype", "https://schema.org/Product").addAttribute("itemid", "/p/1")), `<div itemtype="https://schema.org/Product" itemid="/p/1" itemscope></div>`);
++    assert.strictEqual(render(Div("Jane").addAttribute("itemprop", "author")), `<div itemprop="author">Jane</div>`);
+   });
+ });
+diff --git a/test/control-flow.test.ts b/test/control-flow.test.ts
+index 8654353..513a78c 100644
+--- a/test/control-flow.test.ts
++++ b/test/control-flow.test.ts
+@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
+ import {
+   render,
+   Div, P, Span, Ul, Li,
+-  IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, ForEachKeyed, Repeat, Intersperse, Button,
++  IfThen, IfThenElse, Match, MatchValue, ForEach, ForEachElse, ForEachKeyed, Intersperse, Button,
+ } from "../src/index.js";
+ 
+ // ------------------------------------
+@@ -164,7 +164,6 @@ describe("Control Flow - ForEach", () => {
+ 
+   it("ForEach range with start", () => { assert.strictEqual(render(Ul(ForEach(5, 8, idx => Li(`Item ${idx}`)))), `<ul><li>Item 5</li>\n<li>Item 6</li>\n<li>Item 7</li></ul>`); });
+ 
+-  it("Repeat", () => { assert.strictEqual(render(Div(Repeat(3, () => Span("*")))), `<div><span>*</span>\n<span>*</span>\n<span>*</span></div>`); });
+ 
+   it("ForEachKeyed stamps a stable id from the key (for idiomorph)", () => {
+     const users = [{ id: 42, name: "A" }, { id: 7, name: "B" }];
+diff --git a/test/dev-checks.test.ts b/test/dev-checks.test.ts
+index 68a4489..a449e70 100644
+--- a/test/dev-checks.test.ts
++++ b/test/dev-checks.test.ts
+@@ -4,11 +4,11 @@ import assert from "node:assert/strict";
+ import {
+   render,
+   renderToIterable,
+-  setDevChecks,
+   Div, Span, Ul, Li, Input, Button,
+   ForEach,
+ } from "../src/index.js";
+ import { assetUrl } from "../src/htmx.js";
++import { setDevChecks } from "../src/core/index.js";
+ 
+ // The guards are on by default outside NODE_ENV=production; a test that turns
+ // them off restores them here so ordering can't leak.
+diff --git a/test/fluent-styling-v2.ts b/test/fluent-styling-v2.ts
+index a8171d1..eafea5e 100644
+--- a/test/fluent-styling-v2.ts
++++ b/test/fluent-styling-v2.ts
+@@ -171,10 +171,6 @@ describe("v4 type-value updates (xs slots, ring 3)", () => {
+ });
+ 
+ describe("v4 variants (C-06): widened states + container queries", () => {
+-  it("containerQuery marks a container", () => {
+-    assert.strictEqual(render(Div().containerQuery()), '<div class="@container"></div>');
+-    assert.strictEqual(render(Div().containerQuery("sidebar")), '<div class="@container/sidebar"></div>');
+-  });
+   it(".variant() accepts container-query breakpoints", () => {
+     assert.strictEqual(render(Div().variant("@sm", { p: "4" })), '<div class="@sm:p-4"></div>');
+     assert.strictEqual(render(Div().variant("@max-lg", { hidden: true })), '<div class="@max-lg:hidden"></div>');
+diff --git a/test/form-for.test.ts b/test/form-for.test.ts
+index ff0b08b..2f3c368 100644
+--- a/test/form-for.test.ts
++++ b/test/form-for.test.ts
+@@ -97,7 +97,7 @@ describe("Form<T> binding", () => {
+ 
+   it(".multipart() sets the enctype", () => {
+     assert.strictEqual(
+-      render(Form<CreateUserReq>((f) => f.input("name")).multipart().setAction("/u")),
++      render(Form<CreateUserReq>((f) => f.input("name")).setEnctype("multipart/form-data").setAction("/u")),
+       `<form action="/u" enctype="multipart/form-data"><input id="name" name="name"></form>`,
+     );
+   });
+diff --git a/test/prune-gate.test.ts b/test/prune-gate.test.ts
+new file mode 100644
+index 0000000..d481ef6
+--- /dev/null
++++ b/test/prune-gate.test.ts
+@@ -0,0 +1,63 @@
++/**
++ * Deletion gate for surface prunes. A name may leave the package only when
++ * (1) its removal draws a plain "does not exist" (TS2339 / TS2305), never a
++ *     "Did you mean" that points at a different live member, and
++ * (2) no recorded pure-prior guess uses it: every guess in prior.ts keeps
++ *     compiling and every one-hop heal in heals.ts keeps naming its member.
++ * A census at zero is not enough: the names agents guess for a job are the
++ * ones the census never sees until the job comes up.
++ */
++import { describe, it } from "node:test";
++import assert from "node:assert/strict";
++import { readFileSync } from "node:fs";
++import { resolve } from "node:path";
++
++import ts from "typescript";
++
++import { PRUNED_9 } from "../scripts/codemod/prune-9.js";
++
++type Diag = { readonly code: number; readonly message: string; readonly line: number };
++
++function diagnose(file: string): Diag[] {
++  const fixture = resolve(process.cwd(), "test/types/prune-gate", file);
++  const program = ts.createProgram([fixture], {
++    target: ts.ScriptTarget.ES2020,
++    module: ts.ModuleKind.ES2020,
++    moduleResolution: ts.ModuleResolutionKind.Bundler,
++    strict: true,
++    noEmit: true,
++    skipLibCheck: true,
++  });
++  return ts.getPreEmitDiagnostics(program, program.getSourceFile(fixture)).map((d) => ({
++    code: d.code,
++    message: ts.flattenDiagnosticMessageText(d.messageText, " "),
++    line: d.file && d.start !== undefined ? d.file.getLineAndCharacterOfPosition(d.start).line + 1 : -1,
++  }));
++}
++
++describe("prune gate — removed names die plainly, recorded guesses keep working", () => {
++  it("every removed name fails as a plain missing member or export", () => {
++    const diags = diagnose("removed.ts");
++    for (const name of Object.keys(PRUNED_9)) {
++      const hit = diags.find((d) => d.message.includes(`'${name}'`));
++      assert.ok(hit, `removed.ts has no probe for ${name}`);
++      assert.ok([2339, 2305].includes(hit.code), `${name}: TS${hit.code} ${hit.message} (successor: ${PRUNED_9[name]})`);
++    }
++    assert.equal(diags.length, Object.keys(PRUNED_9).length, diags.map((d) => `TS${d.code}: ${d.message}`).join("\n"));
++  });
++
++  it("no recorded pure-prior guess uses a removed name, and every one compiles", () => {
++    const text = readFileSync(resolve(process.cwd(), "test/types/prune-gate/prior.ts"), "utf8")
++      .replace(/\/\/.*$/gm, "")
++      .replace(/"(?:[^"\\\n]|\\.)*"/g, '""');
++    for (const name of Object.keys(PRUNED_9)) assert.ok(!new RegExp(`\\b${name}\\b`).test(text), `${name} is a recorded pure-prior guess`);
++    const diags = diagnose("prior.ts");
++    assert.deepEqual(diags.map((d) => `prior.ts:${d.line} TS${d.code} ${d.message}`), []);
++  });
++
++  it("every recorded one-hop heal still names its member", () => {
++    const want = ["setContenteditable", "setEnterkeyhint", "setFormenctype", "setFormtarget", "setDatetime", "transform"];
++    const diags = diagnose("heals.ts");
++    assert.deepEqual(diags.map((d) => [d.code, d.message.match(/Did you mean '(\w+)'\?/)?.[1]]), want.map((w) => [2551, w]));
++  });
++});
+diff --git a/test/types/prune-gate/heals.ts b/test/types/prune-gate/heals.ts
+new file mode 100644
+index 0000000..1a14737
+--- /dev/null
++++ b/test/types/prune-gate/heals.ts
+@@ -0,0 +1,9 @@
++// Pure-prior guesses that fail on 8.1.0 with a TS2551 naming the right member (one hop). Excluded from the build tsconfig.
++import { Button, Div, Input, Ins } from "../../../src/index.js";
++
++Div().setContentEditable(true);
++Input().setEnterKeyHint("search");
++Button("Submit").setFormEnctype("multipart/form-data");
++Button("Submit").setFormTarget("_blank");
++Ins().setDateTime("2026-10-01");
++Div().transform3d();
+diff --git a/test/types/prune-gate/prior.ts b/test/types/prune-gate/prior.ts
+new file mode 100644
+index 0000000..1844ddd
+--- /dev/null
++++ b/test/types/prune-gate/prior.ts
+@@ -0,0 +1,44 @@
++// Pure-prior guesses (claude-opus-5-5, 2026-10-01, the org CLAUDE.md fluent-html rules, no docs; 50 jobs x 3 runs)
++// that compile on 8.1.0. Every line must keep compiling: a release that deletes a name an agent guesses
++// for its job turns a working first guess into an anonymous TS2339. Excluded from the build tsconfig.
++import { Area, ClipPath, Col, Div, FeGaussianBlur, Filter, Form, Input, Ins, LinearGradient, Link, Mask, Meter, Option, Path, Script, Select, Source, Span, Stop, Textarea, Th, Time } from "../../../src/index.js";
++import { Doctype, escapeAttr, sanitizeUrl } from "../../../src/index.js";
++declare const nonce: string;
++void [Doctype, escapeAttr, sanitizeUrl];
++
++Area().setShape("rect").setCoords("0,0,10,10").setHref("/a");
++ClipPath().setClipPathUnits("userSpaceOnUse");
++Col().setSpan(2);
++Div().bgBlend("multiply");
++Div().colEnd(3);
++Div().grid().autoCols("min");
++Div().grid().autoRows("min");
++Div().grid().gridFlow("col-dense");
++Div().inlineGrid();
++Div().perspective("near");
++Div().rowEnd(4);
++Div().scroll("smooth");
++Div().setDir("rtl");
++Div(Span("★"), Span("★"), Span("★"));
++FeGaussianBlur().setStdDeviation(2).setResult("blur").setEdgeMode("wrap");
++Filter().setFilterUnits("userSpaceOnUse").setPrimitiveUnits("userSpaceOnUse");
++Form().setEnctype("multipart/form-data");
++Form().setMethod("post").setEnctype("multipart/form-data");
++Input().caret("blue-500");
++Input().setAutocapitalize("words");
++Input().setType("file").setCapture("environment");
++Ins().setDatetime("2026-10-01");
++LinearGradient().setGradientUnits("userSpaceOnUse").setGradientTransform("rotate(45)").setSpreadMethod("reflect");
++Link().setHref("/print.css").setRel("stylesheet").setMedia("print");
++Link().setRel("stylesheet").setHref("/print.css").setMedia("print");
++Mask().setMaskUnits("userSpaceOnUse").setMaskContentUnits("userSpaceOnUse");
++Meter().setValue(0.7).setLow(0.3).setHigh(0.8).setOptimum(0.9);
++Option().setValue("si").setLabel("Slovenia");
++Path().setD("M0 0 L10 10").setFillRule("evenodd");
++Script("init()").setNonce(nonce);
++Select().setName("country").setSize(5);
++Source().setMedia("(min-width: 800px)");
++Stop().setOffset(0.5).setStopOpacity(0.5);
++Textarea().setName("notes").setCols(40).setWrap("hard");
++Th("Temperature").setAbbr("Temp");
++Time("1 Oct 2026").setDatetime("2026-10-01");
+diff --git a/test/types/prune-gate/removed.ts b/test/types/prune-gate/removed.ts
+new file mode 100644
+index 0000000..41525a3
+--- /dev/null
++++ b/test/types/prune-gate/removed.ts
+@@ -0,0 +1,8 @@
++// One guess per name 9.0.0 removes (scripts/codemod/prune-9.ts PRUNED_9). Excluded from the build tsconfig.
++import { Article, Div, Form } from "../../../src/index.js";
++import { Repeat, setDevChecks, extractId, extractSelector, EVENT_TABLE, HTMX_EVENTS } from "../../../src/index.js";
++
++Form().multipart();
++Div().containerQuery();
++Article().setMicrodata({ type: "https://schema.org/Article" });
++void [Repeat, setDevChecks, extractId, extractSelector, EVENT_TABLE, HTMX_EVENTS];
+diff --git a/test/vocab-coverage.test.ts b/test/vocab-coverage.test.ts
+index 07e67eb..a18ec8d 100644
+--- a/test/vocab-coverage.test.ts
++++ b/test/vocab-coverage.test.ts
+@@ -44,6 +44,7 @@ const IGNORED_ROOTS: readonly IgnoredRoot[] = [
+   { prefix: "scheme", reason: "pruned 8.0.0: zero fleet use" },
+   { prefix: "skew", reason: "pruned 8.0.0: zero fleet use" },
+   { prefix: "snap", reason: "pruned 8.0.0: zero fleet use (whole snap family)" },
++  { prefix: "@container", reason: "pruned 9.0.0: zero use on 3 channels; successor .cssProp(\"container-type\", …)" },
+   // Backlog — no fluent method yet (see vocab-generator/backlog.md)
+   { prefix: "align", reason: "backlog: vertical-align" },
+   { prefix: "basis", reason: "backlog: flex-basis" },
+@@ -52,7 +53,7 @@ const IGNORED_ROOTS: readonly IgnoredRoot[] = [
+   { prefix: "indent", reason: "backlog: text-indent" },
+   { prefix: "tab", reason: "backlog: tab-size" },
+   { prefix: "contain", reason: "backlog: contain-*" },
+-  { prefix: "container", reason: "backlog: fixed-width container (container queries are covered)" },
++  { prefix: "container", reason: "backlog: fixed-width container" },
+   { prefix: "filter", reason: "backlog: bare filter enable/disable" },
+   { prefix: "backdrop-filter", reason: "backlog: bare backdrop-filter enable/disable" },
+   { prefix: "backdrop-opacity", reason: "backlog: backdrop opacity filter" },
+diff --git a/test/vocab-validity.test.ts b/test/vocab-validity.test.ts
+index dbd4e7c..acc2ad5 100644
+--- a/test/vocab-validity.test.ts
++++ b/test/vocab-validity.test.ts
+@@ -142,7 +142,6 @@ const ORACLE_ARGS: Readonly<Record<string, readonly (readonly string[])[]>> = {
+   tabularNums: [[]],
+   breakAll: [[]],
+   // Container queries
+-  containerQuery: [[], ["sidebar"]],
+   // Filters
+   blur: [[], ["sm"]],
+   backdropBlur: [[], ["sm"]],
+diff --git a/tsconfig.json b/tsconfig.json
+index 260a662..5728f73 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -46,6 +46,7 @@
+     "test/acceptance",
+     "test/types/color-optout",
+     "test/types/setter-probe",
++    "test/types/prune-gate",
+     "test/types/brand-probe"
+   ]
+ }
+\ No newline at end of file

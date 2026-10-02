@@ -337,7 +337,7 @@ title size? Write the heading yourself; don't compose `cardTitle` and then fight
 Card({ title, content }).apply(t => t.p("5"))   // ✗ silently keeps p-6 — not an override
 ```
 `````
-Replacement (the agent-fitness lens's tested text, `scratchpad/wave3/RFC-A-09-agent-fitness/required-views-md.txt`, lines 1-4):
+Replacement (the agent-fitness lens's tested text, [`required-views-md.txt`](../70-artifacts/probes/wave3/RFC-A-09-agent-fitness/required-views-md.txt), lines 1-4):
 `````
 **Override by chaining only where boot calls `setClassMerge(theme)`** (grep `src/` for it; the template's
 `buildServer` does). Then a later call of the same family replaces the earlier one: `Card(…).apply(t => t.p("5"))`

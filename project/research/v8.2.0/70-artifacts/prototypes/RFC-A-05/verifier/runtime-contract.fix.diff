@@ -1,0 +1,66 @@
+--- <scratch>/wave2/RFC-A-05/lib/src/render/escape.ts	2026-10-01 12:17:35
++++ fix/src/render/escape.ts	2026-10-01 13:07:17
+@@ -97,6 +97,20 @@
+ }
+ 
+ /**
++ * `sanitizeUrl` for a URL htmx will fetch or navigate to. htmx parses every response body as
++ * HTML (no content-type gate), so the media `data:` allowlist that is safe in `src` is not
++ * safe here: every `data:` URL is blocked.
++ * @internal
++ */
++export function sanitizeHtmxUrl(url: string): string {
++  const safe = sanitizeUrl(url);
++  if (safe !== url) return safe;
++  const colon = url.indexOf(":");
++  if (colon === -1) return url;
++  return url.slice(0, colon + 1).replace(URL_SCHEME_NOISE_RE, "").toLowerCase() === "data:" ? BLOCKED_URL : url;
++}
++
++/**
+  * The prefix htmx 4 reads as "run this as JavaScript" in `hx-confirm` and `hx-vals`
+  * (case-sensitive, untrimmed: htmx.js #extractJavascriptContent), or `null`.
+  * @internal
+--- <scratch>/wave2/RFC-A-05/lib/src/render/serialize.ts	2026-10-01 12:10:29
++++ fix/src/render/serialize.ts	2026-10-01 13:07:17
+@@ -5,7 +5,7 @@
+ import type { View } from "../core/types.js";
+ import { isTag, isRawString } from "../core/guards.js";
+ import { devChecks, nextRenderEpoch } from "../core/dev-checks.js";
+-import { escapeHtml, escapeAttr, sanitizeUrl, htmxScriptPrefix } from "./escape.js";
++import { escapeHtml, escapeAttr, sanitizeUrl, sanitizeHtmxUrl, htmxScriptPrefix } from "./escape.js";
+ 
+ // URL-valued attributes emitted by the typed setters. Their values are run
+ // through sanitizeUrl (scheme filtering) before attribute-escaping, so a
+@@ -137,7 +137,7 @@
+ 
+ /** Serialize an HTMX config to its attribute string. @internal */
+ export function buildHtmx(htmx: HTMX): string {
+-  let result = 'hx-' + htmx.method + '="' + escapeAttr(sanitizeUrl(htmx.endpoint)) + '"';
++  let result = 'hx-' + htmx.method + '="' + escapeAttr(sanitizeHtmxUrl(htmx.endpoint)) + '"';
+ 
+   if (htmx.target !== undefined) result += ' hx-target="' + escapeAttr(htmx.target) + '"';
+   if (htmx.swap !== undefined) result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
+--- <scratch>/wave2/RFC-A-05/lib/src/patterns.ts	2026-10-01 12:17:35
++++ fix/src/patterns.ts	2026-10-01 13:07:17
+@@ -12,7 +12,7 @@
+ import type { Id, Rooted } from "./ids.js";
+ import { isId } from "./ids.js";
+ import { render } from "./render/render.js";
+-import { sanitizeUrl } from "./render/escape.js";
++import { sanitizeUrl, sanitizeHtmxUrl } from "./render/escape.js";
+ 
+ // HTTP header values must be Latin-1 — Node's setHeader throws ERR_INVALID_CHAR on
+ // any character above U+00FF (routine in non-English detail payloads: š, č, emoji,
+@@ -325,9 +325,9 @@
+     // Always the object form: htmx reads a bare string with whitespace, a comma or a `path:`
+     // key as HCON config (beta6 htmx.js:688, 4.0.0 htmx.js:657), so a string is a path only here.
+     if (typeof config === 'string') {
+-      this._headers["HX-Location"] = toHeaderSafeJson({ path: sanitizeUrl(config) });
++      this._headers["HX-Location"] = toHeaderSafeJson({ path: sanitizeHtmxUrl(config) });
+     } else {
+-      const path = sanitizeUrl(config.path);
++      const path = sanitizeHtmxUrl(config.path);
+       this._headers["HX-Location"] = toHeaderSafeJson(path === config.path ? config : { ...config, path });
+     }
+     return this;

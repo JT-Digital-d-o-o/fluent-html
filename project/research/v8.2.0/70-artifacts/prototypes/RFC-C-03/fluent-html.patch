@@ -1,0 +1,411 @@
+diff --git a/scripts/codemod/nonce-bag.ts b/scripts/codemod/nonce-bag.ts
+new file mode 100644
+index 0000000..4c2a374
+--- /dev/null
++++ b/scripts/codemod/nonce-bag.ts
+@@ -0,0 +1,168 @@
++/**
++ * `npm run codemod:nonce-bag -- <tsconfig> [--dry]` — move render-time CSP nonces
++ * off the removed options bag onto the named functions (9.0.0).
++ *
++ *  - `render(...views, { nonce: n })`         → `renderWithNonce(n, ...views)`
++ *  - `renderToStream(...views, { nonce: n })` → `renderToStreamWithNonce(n, ...views)`
++ *
++ * Rewritten only when the callee resolves to fluent-html's `render` /
++ * `renderToStream` and the bag is an object literal. Skipped and reported: a
++ * stream bag that also sets `chunkSize`/`highWaterMark`, any `renderToIterable`
++ * nonce, a bag passed by reference, a spread or computed key, a nonce expression
++ * with side effects (the rewrite moves it before the views), and every
++ * `RenderOptions` type reference.
++ *
++ * @module
++ */
++import { pathToFileURL } from "node:url";
++
++import { Node, Project, SyntaxKind, type CallExpression, type SourceFile } from "ts-morph";
++
++const SUCCESSOR: Readonly<Record<string, string>> = {
++  render: "renderWithNonce",
++  renderToStream: "renderToStreamWithNonce",
++};
++const SOURCE_NAMES = new Set(["render", "renderToStream", "renderToIterable"]);
++const DECL_FILES = new Set(["render.ts", "render.d.ts", "stream.ts", "stream.d.ts", "serialize.ts", "serialize.d.ts"]);
++
++export type Skip = { readonly line: number; readonly name: string; readonly reason: string };
++type Edit = { readonly start: number; readonly end: number; readonly text: string };
++
++function fluentDecl(node: Node): string | undefined {
++  let symbol = node.getSymbol();
++  if (symbol?.isAlias()) symbol = symbol.getAliasedSymbol();
++  const decl = symbol?.getDeclarations()[0];
++  if (decl === undefined) return undefined;
++  const file = decl.getSourceFile();
++  if (!DECL_FILES.has(file.getBaseName()) || !file.getFilePath().includes("/render/")) return undefined;
++  return symbol!.getName();
++}
++
++function hasSideEffects(expr: Node): boolean {
++  if (Node.isCallExpression(expr) || Node.isNewExpression(expr) || Node.isAwaitExpression(expr)) return true;
++  if (Node.isBinaryExpression(expr) && expr.getOperatorToken().getKind() >= SyntaxKind.FirstAssignment
++      && expr.getOperatorToken().getKind() <= SyntaxKind.LastAssignment) return true;
++  if (Node.isPrefixUnaryExpression(expr) || Node.isPostfixUnaryExpression(expr)) {
++    const op = expr.getOperatorToken();
++    if (op === SyntaxKind.PlusPlusToken || op === SyntaxKind.MinusMinusToken) return true;
++  }
++  return expr.getChildren().some(hasSideEffects);
++}
++
++function rewriteCall(call: CallExpression, name: string, edits: Edit[], skips: Skip[], needs: Set<string>): void {
++  const args = call.getArguments();
++  const last = args[args.length - 1];
++  const line = call.getStartLineNumber();
++  if (last === undefined) return;
++  if (!Node.isObjectLiteralExpression(last)) {
++    if (args.length >= 2 && !Node.isSpreadElement(last) && last.getType().getProperty("nonce") !== undefined
++        && last.getType().getCallSignatures().length === 0 && !last.getType().isArray()) {
++      skips.push({ line, name, reason: "options bag passed by reference; move its nonce to the first argument of the *WithNonce function by hand" });
++    }
++    return;
++  }
++  const props = last.getProperties();
++  let nonceText: string | undefined;
++  const others: string[] = [];
++  for (const p of props) {
++    if (Node.isShorthandPropertyAssignment(p)) {
++      if (p.getName() === "nonce") nonceText = "nonce"; else others.push(p.getName());
++    } else if (Node.isPropertyAssignment(p) && !Node.isComputedPropertyName(p.getNameNode())) {
++      if (p.getName() === "nonce") {
++        const init = p.getInitializerOrThrow();
++        if (hasSideEffects(init)) {
++          skips.push({ line, name, reason: "nonce expression has side effects; the rewrite would evaluate it before the views" });
++          return;
++        }
++        nonceText = init.getText();
++      } else others.push(p.getName());
++    } else {
++      skips.push({ line, name, reason: "options bag with a spread or computed key" });
++      return;
++    }
++  }
++  if (nonceText === undefined) return;
++  if (name === "renderToIterable") {
++    skips.push({ line, name, reason: "renderToIterable has no nonce form; iterate renderToStreamWithNonce(nonce, ...views) with for await" });
++    return;
++  }
++  if (others.length > 0) {
++    skips.push({ line, name, reason: `renderToStreamWithNonce takes no options; drop ${others.join("/")} or the nonce` });
++    return;
++  }
++  const successor = SUCCESSOR[name]!;
++  const callee = call.getExpression();
++  const calleeText = Node.isPropertyAccessExpression(callee)
++    ? `${callee.getExpression().getText()}.${successor}`
++    : successor;
++  if (!Node.isPropertyAccessExpression(callee)) needs.add(successor);
++  const views = args.slice(0, -1).map((a) => a.getText());
++  edits.push({ start: call.getStart(), end: call.getEnd(), text: `${calleeText}(${[nonceText, ...views].join(", ")})` });
++}
++
++export function collectEdits(file: SourceFile): { edits: Edit[]; skips: Skip[]; needs: Set<string> } {
++  const edits: Edit[] = [];
++  const skips: Skip[] = [];
++  const needs = new Set<string>();
++  file.forEachDescendant((node) => {
++    if (Node.isCallExpression(node)) {
++      const callee = node.getExpression();
++      const id = Node.isPropertyAccessExpression(callee) ? callee.getNameNode() : callee;
++      if (!Node.isIdentifier(id)) return;
++      const name = fluentDecl(id);
++      if (name === undefined || !SOURCE_NAMES.has(name)) return;
++      rewriteCall(node, name, edits, skips, needs);
++    } else if (Node.isTypeReference(node)) {
++      const tn = node.getTypeName();
++      if (Node.isIdentifier(tn) && tn.getText() === "RenderOptions" && fluentDecl(tn) === "RenderOptions") {
++        skips.push({ line: node.getStartLineNumber(), name: "RenderOptions", reason: "RenderOptions is removed; pass the nonce to renderWithNonce(nonce, ...views)" });
++      }
++    }
++  });
++  return { edits, skips, needs };
++}
++
++export function applyEdits(file: SourceFile, edits: readonly Edit[], needs: ReadonlySet<string>): void {
++  for (const edit of [...edits].sort((a, b) => b.start - a.start)) file.replaceText([edit.start, edit.end], edit.text);
++  if (needs.size === 0) return;
++  const decl = file.getImportDeclarations().find((d) =>
++    d.getNamedImports().some((n) => SOURCE_NAMES.has(n.getName()) && fluentDecl(n.getNameNode()) !== undefined),
++  ) ?? file.getImportDeclarations().find((d) => d.getNamedImports().some((n) => SOURCE_NAMES.has(n.getName())));
++  if (decl === undefined) return;
++  const have = new Set(decl.getNamedImports().map((n) => n.getName()));
++  for (const name of needs) if (!have.has(name)) decl.addNamedImport(name);
++  for (const n of decl.getNamedImports()) {
++    if (n.getName() !== "render" && n.getName() !== "renderToStream") continue;
++    const local = (n.getAliasNode() ?? n.getNameNode()).getText();
++    const used = file.getDescendantsOfKind(SyntaxKind.Identifier).some((i) => i.getText() === local && !i.getFirstAncestorByKind(SyntaxKind.ImportDeclaration));
++    if (!used) n.remove();
++  }
++}
++
++function run(): void {
++  const argv = process.argv.slice(2);
++  const dry = argv.includes("--dry");
++  const tsConfigFilePath = argv.find((a) => !a.startsWith("--"));
++  if (!tsConfigFilePath) {
++    console.error("Usage: npm run codemod:nonce-bag -- <path/to/tsconfig.json> [--dry]");
++    process.exitCode = 1;
++    return;
++  }
++  const project = new Project({ tsConfigFilePath });
++  const files = project.getSourceFiles().filter((f) => !f.isDeclarationFile() && !f.getFilePath().includes("/node_modules/"));
++  let totalEdits = 0;
++  let totalSkips = 0;
++  const collected = files.map((file) => ({ file, ...collectEdits(file) }));
++  for (const { file, edits, skips, needs } of collected) {
++    for (const skip of skips) console.warn(`SKIP ${file.getFilePath()}:${skip.line} ${skip.name} — ${skip.reason}`);
++    totalSkips += skips.length;
++    if (edits.length === 0) continue;
++    applyEdits(file, edits, needs);
++    totalEdits += edits.length;
++    console.log(`${dry ? "[dry] " : ""}${file.getFilePath()} — ${edits.length} call site(s)`);
++  }
++  if (!dry) project.saveSync();
++  console.log(`codemod:nonce-bag ${dry ? "(dry run) " : ""}— ${totalEdits} call site(s) rewritten across ${files.length} file(s); ${totalSkips} skipped for manual review.`);
++}
++
++if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) run();
+diff --git a/src/index.ts b/src/index.ts
+index 5a399d1..b8f25cf 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -81,7 +81,7 @@ export type { TableCellScope } from './elements/index.js';
+ // Render
+ export { render, renderWithNonce } from './render/index.js';
+ export { renderToStream, renderToStreamWithNonce, renderToIterable } from './render/index.js';
+-export type { RenderOptions, RenderStreamOptions } from './render/index.js';
++export type { RenderStreamOptions } from './render/index.js';
+ 
+ // Escaping / URL sanitization helpers — the typed setters apply sanitizeUrl
+ // automatically; exported for consumers who build attribute values by hand.
+diff --git a/src/render/index.ts b/src/render/index.ts
+index 655f1d5..4dbc9bd 100644
+--- a/src/render/index.ts
++++ b/src/render/index.ts
+@@ -1,4 +1,4 @@
+ export { render, renderWithNonce } from "./render.js";
+ export { renderToStream, renderToStreamWithNonce, renderToIterable } from "./stream.js";
+ export { escapeHtml, escapeAttr, htmlEscapes, sanitizeUrl } from "./escape.js";
+-export type { RenderOptions, RenderStreamOptions } from "./serialize.js";
++export type { RenderStreamOptions } from "./serialize.js";
+diff --git a/src/render/render.ts b/src/render/render.ts
+index 613ef90..287a8f0 100644
+--- a/src/render/render.ts
++++ b/src/render/render.ts
+@@ -1,12 +1,12 @@
+ import type { View } from "../core/types.js";
+-import { StringSink, emit, splitArgs, type RenderOptions } from "./serialize.js";
++import { StringSink, emit } from "./serialize.js";
+ 
+ /**
+  * Render one or more Views to an HTML string.
+  *
+  * All text content and attributes are automatically HTML-escaped for XSS protection.
+- * Pass multiple views (e.g. `Partial` elements) for multi-swap responses, or a
+- * single view plus `{ nonce }` to stamp a render-time CSP nonce.
++ * Pass multiple views (e.g. `Partial` elements) for multi-swap responses. For a
++ * render-time CSP nonce, use `renderWithNonce(nonce, ...views)`.
+  *
+  * @example
+  * render(Div(H1("Hello"), P("World")))
+@@ -15,17 +15,10 @@ import { StringSink, emit, splitArgs, type RenderOptions } from "./serialize.js"
+  * @example
+  * // Multi-swap response
+  * render(Partial(ids.list, UserList(users)), Partial(ids.count, Span(`${users.length}`)))
+- *
+- * @example
+- * // Render-time CSP nonce (non-mutating)
+- * render(PageView(), { nonce: reply.cspNonce.script })
+  */
+-export function render(...views: View[]): string;
+-export function render(view: View, opts: RenderOptions): string;
+-export function render(...args: (View | RenderOptions)[]): string {
+-  const { view, opts } = splitArgs(args);
++export function render(...views: View[]): string {
+   const sink = new StringSink();
+-  emit(sink, view, 'escape', opts?.nonce);
++  emit(sink, views.length === 1 ? views[0]! : views, 'escape');
+   return sink.html;
+ }
+ 
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 5bc32a6..fcd5318 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -72,18 +72,8 @@ export class StreamSink implements Sink {
+   }
+ }
+ 
+-/** Per-render options bag. Re-exported publicly from the render barrel. */
+-export type RenderOptions = {
+-  /**
+-   * CSP nonce stamped on every `<script>` and `<style>` that has no author-set
+-   * nonce. Applied at RENDER time — the view tree is never mutated, so a shared
+-   * layout is safe to reuse across requests. An author `.setNonce(...)` wins.
+-   */
+-  readonly nonce?: string;
+-};
+-
+ /** Options for the streaming render paths (`renderToStream` / `renderToIterable`). */
+-export type RenderStreamOptions = RenderOptions & {
++export type RenderStreamOptions = {
+   /** Minimum size (chars) of each streamed chunk; smaller writes are batched. Default 16384. */
+   readonly chunkSize?: number;
+   /** Readable `highWaterMark` (bytes) — the buffer level that triggers backpressure. */
+@@ -94,8 +84,8 @@ export type RenderStreamOptions = RenderOptions & {
+ export const DEFAULT_CHUNK_SIZE = 16384;
+ 
+ /**
+- * Split variadic render args into the view + render options. The trailing arg is
+- * treated as `RenderOptions` iff it is a plain object — i.e. NOT a View (Tag,
++ * Split variadic stream args into the view + stream options. The trailing arg is
++ * treated as `RenderStreamOptions` iff it is a plain object — i.e. NOT a View (Tag,
+  * RawString, array, or string). Views are never plain objects, so this is
+  * unambiguous. @internal
+  */
+diff --git a/src/render/stream.ts b/src/render/stream.ts
+index 1ba529a..d8cd1e8 100644
+--- a/src/render/stream.ts
++++ b/src/render/stream.ts
+@@ -11,27 +11,27 @@ import {
+  * Variadic and symmetric with `render`. The view is walked by a generator that
+  * suspends mid-tree when the consumer's buffer is full (`push()` returns `false`)
+  * and resumes when it drains — so memory stays bounded under slow clients, and the
+- * tree is walked exactly once. Pass `{ nonce }`, `{ chunkSize }`, or
+- * `{ highWaterMark }` to tune CSP and chunking.
++ * tree is walked exactly once. Pass `{ chunkSize }` or `{ highWaterMark }` to tune
++ * chunking. For a render-time CSP nonce, use `renderToStreamWithNonce(nonce, ...views)`.
+  *
+  * @example
+  * renderToStream(PageView())
+  * renderToStream(Partial(ids.list, L()), Partial(ids.count, C()))  // multi-swap
+- * renderToStream(PageView(), { nonce, chunkSize: 8192 })
++ * renderToStream(PageView(), { chunkSize: 8192 })
+  */
+ export function renderToStream(...views: View[]): Readable;
+ export function renderToStream(view: View, opts: RenderStreamOptions): Readable;
+ export function renderToStream(...args: (View | RenderStreamOptions)[]): Readable {
+   const { view, opts } = splitArgs(args);
+-  return streamOf(view, opts?.nonce, opts?.chunkSize, opts?.highWaterMark);
++  return streamOf(view, undefined, opts?.chunkSize, opts?.highWaterMark);
+ }
+ 
+ /**
+  * Streaming counterpart to `renderWithNonce` — applies a render-time CSP nonce to
+  * every `<script>`/`<style>` without an author nonce. Non-mutating.
+  */
+-export function renderToStreamWithNonce(nonce: string, view: View): Readable {
+-  return streamOf(view, nonce, undefined, undefined);
++export function renderToStreamWithNonce(nonce: string, ...views: View[]): Readable {
++  return streamOf(views.length === 1 ? views[0]! : views, nonce, undefined, undefined);
+ }
+ 
+ /**
+@@ -43,7 +43,7 @@ export function renderToStreamWithNonce(nonce: string, view: View): Readable {
+  * for (const chunk of renderToIterable(PageView())) socket.write(chunk);
+  */
+ export function renderToIterable(view: View, options?: RenderStreamOptions): Generator<string, void, undefined> {
+-  return emitChunks(view, 'escape', options?.nonce, options?.chunkSize ?? DEFAULT_CHUNK_SIZE);
++  return emitChunks(view, 'escape', undefined, options?.chunkSize ?? DEFAULT_CHUNK_SIZE);
+ }
+ 
+ function streamOf(view: View, nonce: string | undefined, chunkSize: number | undefined, highWaterMark: number | undefined): Readable {
+diff --git a/test/security.ts b/test/security.ts
+index eafd365..916a7be 100644
+--- a/test/security.ts
++++ b/test/security.ts
+@@ -288,8 +288,8 @@ describe("CSP Nonce", () => {
+ 
+   // ── D-04: render-time, non-mutating ────────────────────────────
+ 
+-  it("render(view, { nonce }) stamps script/style (option form)", () => {
+-    const result = render(Div(Script("a"), Style(".b{}")), { nonce: "n1" });
++  it("renderWithNonce stamps script/style", () => {
++    const result = renderWithNonce("n1", Div(Script("a"), Style(".b{}")));
+     assert.strictEqual((result.match(/nonce="n1"/g) || []).length, 2);
+   });
+ 
+@@ -302,7 +302,7 @@ describe("CSP Nonce", () => {
+   });
+ 
+   it("author-set nonce wins over the render-time nonce (no double nonce)", () => {
+-    const result = render(Script("x").setNonce("author"), { nonce: "ambient" });
++    const result = renderWithNonce("ambient", Script("x").setNonce("author"));
+     assert.ok(result.includes('nonce="author"'));
+     assert.ok(!result.includes('nonce="ambient"'));
+     assert.strictEqual((result.match(/nonce=/g) || []).length, 1);
+@@ -318,6 +318,12 @@ describe("CSP Nonce", () => {
+     });
+     assert.strictEqual((chunks.join("").match(/nonce="s1"/g) || []).length, 2);
+   });
++
++  it("renderToStreamWithNonce takes several views, like renderWithNonce", async () => {
++    let out = "";
++    for await (const c of renderToStreamWithNonce("m1", Div(Script("a")), Style(".b{}"))) out += c;
++    assert.strictEqual(out, renderWithNonce("m1", Div(Script("a")), Style(".b{}")));
++  });
+ });
+ 
+ // ------------------------------------
+diff --git a/test/stream.test.ts b/test/stream.test.ts
+index 0f3673c..979c7da 100644
+--- a/test/stream.test.ts
++++ b/test/stream.test.ts
+@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
+ 
+ import type { Readable } from "node:stream";
+ import {
+-  render, renderToStream, renderToIterable,
++  render, renderToStream, renderToIterable, renderToStreamWithNonce,
+   Div, P, H1, H2, Span, A, Ul, Li, Button, Form, Input,
+   Img, Br, Hr, Meta, Link, Script, Style, Source, Col,
+   Raw, Table, Tr, Td, Th, Thead, Tbody, Nav, Section,
+@@ -418,8 +418,9 @@ describe("Stream: backpressure + renderToIterable", () => {
+     assert.equal(chunks.join(""), render(big));
+   });
+ 
+-  it("renderToIterable threads a nonce", () => {
+-    const out = [...renderToIterable(Div(Script("a")), { nonce: "n9" })].join("");
++  it("renderToStreamWithNonce is the nonce path for chunk iteration", async () => {
++    let out = "";
++    for await (const c of renderToStreamWithNonce("n9", Div(Script("a")))) out += c;
+     assert.ok(out.includes('nonce="n9"'));
+   });
+ 
+diff --git a/test/types/type-surface.test-d.ts b/test/types/type-surface.test-d.ts
+index ed54f68..bbdf439 100644
+--- a/test/types/type-surface.test-d.ts
++++ b/test/types/type-surface.test-d.ts
+@@ -15,6 +15,7 @@ import {
+   Ins, Del, Q, Blockquote,
+   type InsTag, type DelTag, type QTag, type BlockquoteTag,
+   type VariantStyleObject,
++  render, renderWithNonce, renderToStream, renderToStreamWithNonce, renderToIterable,
+ } from "../../src/index.js";
+ import { assetUrl } from "../../src/htmx.js";
+ 
+@@ -664,3 +665,17 @@ renderFragmentGated(rootIds.mainContent, CountFragment());
+ const widenedRootId: Id = rootIds.mainContent;
+ // @ts-expect-error — a widened `Id` collapses N to `string`, which would accept any root
+ renderFragmentGated(widenedRootId, CountFragment());
++
++// ── CSP nonce: the *WithNonce functions are the only spelling (9.0.0) ──
++{
++  const v = Div(Script("a"));
++  renderWithNonce("n", v, Span("b"));
++  renderToStreamWithNonce("n", v, Span("b"));
++  renderToStream(v, { chunkSize: 64, highWaterMark: 16 });
++  // @ts-expect-error — render takes views only; the nonce goes first in renderWithNonce
++  render(v, { nonce: "n" });
++  // @ts-expect-error — the stream bag carries chunking only
++  renderToStream(v, { nonce: "n" });
++  // @ts-expect-error — the iterable bag carries chunking only
++  renderToIterable(v, { nonce: "n" });
++}

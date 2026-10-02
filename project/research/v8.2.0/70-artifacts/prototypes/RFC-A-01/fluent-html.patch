@@ -1,0 +1,329 @@
+diff --git a/src/behaviors/client/runtime.ts b/src/behaviors/client/runtime.ts
+index 7c858f5..93de9b5 100644
+--- a/src/behaviors/client/runtime.ts
++++ b/src/behaviors/client/runtime.ts
+@@ -50,6 +50,8 @@ const has = (el: Element, cls: string): boolean => el.classList.contains(cls);
+ const setCls = (el: Element | null, cls: string, on: boolean): void => {
+   el?.classList.toggle(cls, on);
+ };
++/** Rendered now: a class-hidden element, a closed `<dialog>`/popover and anything under a hidden ancestor have no box. */
++const shown = (el: Element): boolean => el.getClientRects().length > 0 || getComputedStyle(el).display === "contents";
+ 
+ /** Attribute getter for a verb's options — built-in handlers pass kebab-case keys. */
+ function getterFor(carrier: Element, verb: string): (key: string) => string | null {
+@@ -157,25 +159,31 @@ const closeDrawer = (): void => {
+ };
+ 
+ const focusables = (root: Element): HTMLElement[] =>
+-  [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,[tabindex]")].filter(
+-    (el) => !(el as HTMLInputElement).disabled && el.tabIndex > -1,
++  [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,summary,[contenteditable],[tabindex]")].filter(
++    (el) => !(el as HTMLInputElement).disabled && (el.tabIndex > -1 || (el.isContentEditable && !el.hasAttribute("tabindex"))) && shown(el),
+   );
+ 
+ /** Focus trap: one document keydown capture path, guarded by the DOM predicate. */
+ function trapTab(e: KeyboardEvent): boolean {
+   if (e.key !== "Tab" || !drawerOpen() || !drawer!.f) return false;
+   const items = focusables(drawer!.t);
+-  const first = items[0];
++  const n = items.length;
+   // Nothing focusable inside: trapping is impossible — let Tab proceed rather
+   // than becoming a document-wide Tab-killer (the ADR-05 failure class).
+-  if (!first) return false;
+-  const last = items[items.length - 1]!;
+-  const active = doc.activeElement;
+-  const inside = active !== null && drawer!.t.contains(active);
+-  if (inside && !(e.shiftKey ? active === first : active === last)) return false;
+-  e.preventDefault();
+-  (e.shiftKey ? last : first).focus();
+-  return true;
++  if (!n) return false;
++  // Every Tab moves within the list: native order is engine-dependent (WebKit skips links by default).
++  let at = items.indexOf(doc.activeElement as HTMLElement);
++  if (at < 0) at = e.shiftKey ? 0 : n - 1;
++  // A box is not focusability (closed <details>, visibility:hidden, inert, disabled fieldset): step until focus lands.
++  for (let k = n; k--; ) {
++    const el = items[(at = (at + (e.shiftKey ? n - 1 : 1)) % n)]!;
++    el.focus();
++    if (doc.activeElement === el) {
++      e.preventDefault();
++      return true;
++    }
++  }
++  return false;
+ }
+ 
+ // ── built-in handlers (direct attribute reads — kebab keys) ──────
+@@ -402,24 +410,26 @@ function documentEscape(e: Event, start: Element | null): boolean {
+   return false;
+ }
+ 
+-function outsideScan(start: Element | null): void {
+-  for (const carrier of doc.querySelectorAll("[" + DB + '~="onClickOutside"]')) {
+-    if ((start && carrier.contains(start)) || has(carrier, HIDDEN)) continue;
+-    const o = getterFor(carrier, "onClickOutside");
+-    const t = resolveTarget(o("target"), carrier);
+-    const action = o("action");
+-    if (t && action !== null) actOn(action, t);
+-  }
++/** The dismissal a click outside this carrier owes, or null: only what is showing can be dismissed. */
++function outside(carrier: Element, start: Element | null): (() => boolean) | null {
++  const o = getterFor(carrier, "onClickOutside");
++  const t = resolveTarget(o("target"), carrier);
++  const action = o("action");
++  return t && action !== null && !(start && carrier.contains(start)) && !has(carrier, HIDDEN) && shown(action === "click" ? carrier : t)
++    ? () => actOn(action, t)
++    : null;
+ }
+ 
+ function dispatch(e: Event): void {
+   const start = startElement(e);
+   if (e.type === "keydown" && trapTab(e as KeyboardEvent)) return;
+ 
++  // Taken BEFORE the walk: a panel this same click opens was not showing, so it owes no dismissal.
++  const owed = e.type === "click" ? [...doc.querySelectorAll("[" + DB + '~="onClickOutside"]')].filter((c) => outside(c, start)) : [];
+   const consumed = walk(start, e);
+ 
+   if (e.type === "click") {
+-    outsideScan(start); // clicks elsewhere dismiss even when consumed there
++    for (const c of owed) outside(c, start)?.(); // clicks elsewhere dismiss even when consumed there; re-checked after the walk
+     if (!consumed && drawerOpen() && drawer!.o.includes("backdrop") && drawer!.b && start && drawer!.b.contains(start)) {
+       closeDrawer();
+     }
+@@ -436,15 +446,9 @@ function dispatch(e: Event): void {
+ 
+ // ── htmx lifecycle (C4: the only two htmx literals, read defensively) ──
+ 
+-function lifecycleStart(e: Event): Element | null {
+-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- defensive detail read (C4)
+-  const d = (e as CustomEvent).detail as any;
+-  const elt: unknown = d?.elt ?? d?.ctx?.elt;
+-  return elt instanceof Element ? elt : startElement(e);
+-}
+-
++// htmx 4 dispatches its lifecycle events on ctx.sourceElement, so the event's own path is the start.
+ const lifecycleWalk = (e: Event): void => {
+-  walk(lifecycleStart(e), e);
++  walk(startElement(e), e);
+ };
+ 
+ function onAfterSwap(e: Event): void {
+@@ -453,12 +457,13 @@ function onAfterSwap(e: Event): void {
+   if (drawer && !drawerOpen()) closeDrawer();
+   // Close-on-nav, GATED: containing swap or pushUrl navigation — never background polls.
+   if (drawer && drawer.o.includes("nav")) {
+-    const swapTarget = e.target instanceof Element ? e.target : null;
++    // htmx 4 detail is { ctx }: the event fires on the trigger, ctx.target is the swapped region,
++    // ctx.push the raw hx-push-url value and ctx.hx.pushurl the HX-Push-Url header that overrides it.
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- defensive detail read (C4)
+-    const d = (e as CustomEvent).detail as any;
+-    const pushUrl: unknown = d?.ctx?.pushUrl ?? d?.pushUrl;
+-    const contains = swapTarget !== null && (swapTarget.contains(drawer.t) || swapTarget.contains(drawer.g));
+-    if (contains || (pushUrl != null && pushUrl !== false)) closeDrawer();
++    const c = ((e as CustomEvent).detail as any)?.ctx;
++    const t: unknown = c?.target;
++    const push: unknown = c?.hx?.pushurl ?? c?.push;
++    if ((t instanceof Element && t !== drawer.t && t.contains(drawer.t)) || (push && push !== "false")) closeDrawer();
+   }
+   lifecycleWalk(e);
+ }
+diff --git a/test/acceptance/app.mjs b/test/acceptance/app.mjs
+index 4f02e6f..be87221 100644
+--- a/test/acceptance/app.mjs
++++ b/test/acceptance/app.mjs
+@@ -11,7 +11,7 @@ import { join, dirname } from "node:path";
+ import { fileURLToPath } from "node:url";
+ import {
+   render, Document, Head, Body, Title, Script, Style, Main,
+-  Div, Span, Button, Form, Input, A, Ul, Li, Empty, Dialog, P,
++  Div, Span, Button, Form, Input, A, Ul, Li, Empty, Dialog, P, Details, Summary,
+ } from "../../dist/src/index.js";
+ import {
+   behaviorStamp, buildBehaviorRuntime, fixtureIds,
+@@ -29,7 +29,7 @@ const built = await buildBehaviorRuntime({
+   publicPath: "/assets",
+ });
+ const assetSource = readFileSync(join(here, ".assets", built.fileName), "utf8");
+-const htmxSource = readFileSync(join(here, "..", "..", "node_modules", "htmx.org", "dist", "htmx.min.js"), "utf8");
++const htmxSource = readFileSync(process.env.HTMX_PATH ?? join(here, "..", "..", "node_modules", "htmx.org", "dist", "htmx.min.js"), "utf8");
+ const stamp = behaviorStamp();
+ const behaviors = new Map(allBehaviors().map((b) => [b.name, b]));
+ 
+@@ -163,6 +163,91 @@ app.post("/submit/invalid", (_req, reply) => reply.code(422).type("text/html").s
+ 
+ // ── targeted-row pages ───────────────────────────────────────────
+ 
++// Row 31: onClickOutside on the panel it hides, opened by a toggle outside it (F-A-601).
++app.get("/outside-opener", (_req, reply) =>
++  page(
++    reply,
++    Main(
++      Button("open").setId("opener").behavior("toggle", { target: fixtureIds.panel }),
++      Div("panel content").setId(fixtureIds.panel).hidden().behavior("onClickOutside", { action: "hide" }),
++      Div("banner").setId(fixtureIds.banner),
++    ),
++  ),
++);
++
++// Row 32: drawer in the shell, nav swaps #main-content outside it (F-A-107).
++app.get("/drawer-shell-nav", (_req, reply) =>
++  page(
++    reply,
++    Main(
++      Div(
++        A("drawer nav")
++          .setId("drawer-nav")
++          .addAttribute("href", "#")
++          .addAttribute("hx-get", "/main-fresh")
++          .addAttribute("hx-target", "#main-content")
++          .addAttribute("hx-swap", "outerMorph")
++          .addAttribute("hx-push-url", "true"),
++      ).setId(fixtureIds.drawerPanel),
++      Div().setId(fixtureIds.drawerBackdrop),
++      Button("menu").setId("carrier").behavior("drawer", { target: fixtureIds.drawerPanel, backdrop: fixtureIds.drawerBackdrop, bodyClass: "overflow-hidden" }),
++      Div("main-old").setId("main-content"),
++    ),
++  ),
++);
++app.get("/main-fresh", (_req, reply) => reply.type("text/html").send(render(Div("main-new").setId("main-content"))));
++
++// Row 33: trapFocus with a hidden item at the end of the list (F-A-602).
++app.get("/drawer-hidden-item", (_req, reply) =>
++  page(
++    reply,
++    Main(
++      Div(
++        A("home").setId("drawer-nav").addAttribute("href", "#"),
++        Button("drawer btn").setId("drawer-btn"),
++        A("desktop only").setId("drawer-hidden").addAttribute("href", "#").hidden(),
++      ).setId(fixtureIds.drawerPanel),
++      Div().setId(fixtureIds.drawerBackdrop),
++      Button("menu").setId("carrier").behavior("drawer", { target: fixtureIds.drawerPanel, backdrop: fixtureIds.drawerBackdrop, trapFocus: true, focusFirst: true }),
++      Input().setId(fixtureIds.search),
++    ),
++  ),
++);
++
++// Row 34: an in-drawer load-more appends into the drawer root; the drawer stays open.
++app.get("/drawer-more", (_req, reply) =>
++  page(
++    reply,
++    Main(
++      Div(
++        Div("item 1"),
++        Button("more").setId("drawer-more").addAttribute("hx-get", "/drawer-more-frag").addAttribute("hx-target", "#fx-drawer").addAttribute("hx-swap", "beforeend"),
++      ).setId(fixtureIds.drawerPanel),
++      Div().setId(fixtureIds.drawerBackdrop),
++      Button("menu").setId("carrier").behavior("drawer", { target: fixtureIds.drawerPanel, backdrop: fixtureIds.drawerBackdrop, bodyClass: "overflow-hidden" }),
++    ),
++  ),
++);
++app.get("/drawer-more-frag", (_req, reply) => reply.type("text/html").send(render(Div("item 2").setId("more-item"))));
++
++// Row 35: trapFocus over a closed <details> and an inert item: Tab reaches the summary and never sticks.
++app.get("/drawer-details", (_req, reply) =>
++  page(
++    reply,
++    Main(
++      Div(
++        A("home").setId("drawer-nav").addAttribute("href", "#"),
++        Details(Summary("more").setId("drawer-sum"), A("sub").setId("drawer-sub").addAttribute("href", "#")),
++        Div(Button("inert btn").setId("drawer-inert")).toggle("inert"),
++        Button("drawer btn").setId("drawer-btn"),
++      ).setId(fixtureIds.drawerPanel),
++      Div().setId(fixtureIds.drawerBackdrop),
++      Button("menu").setId("carrier").behavior("drawer", { target: fixtureIds.drawerPanel, backdrop: fixtureIds.drawerBackdrop, trapFocus: true, focusFirst: true }),
++      Input().setId(fixtureIds.search),
++    ),
++  ),
++);
++
+ // Row 2: version skew — attributes from "vN+1" carrying an unknown verb.
+ app.get("/skew", (_req, reply) =>
+   page(
+diff --git a/test/acceptance/rows.spec.mjs b/test/acceptance/rows.spec.mjs
+index de84666..fc9ab35 100644
+--- a/test/acceptance/rows.spec.mjs
++++ b/test/acceptance/rows.spec.mjs
+@@ -389,3 +389,81 @@ test("row 28: native dialog opens via Invoker Commands, closes via closedby", as
+   await expect(page.locator("#confirm-dialog")).not.toHaveAttribute("open", "");
+   await guards.assertClean();
+ });
++
++// Row 31 — onClickOutside on the panel it hides: the click that opens it is
++// not "outside" (the panel was not showing when the click began).
++test("row 31: outside toggle opens an onClickOutside panel", async ({ page }) => {
++  const guards = await armGuards(page);
++  await page.goto("/outside-opener");
++  await page.click("#opener");
++  await expect(page.locator("#fx-panel")).toBeVisible();
++  await page.click("#fx-banner");
++  await expect(page.locator("#fx-panel")).toBeHidden();
++  await page.click("#opener");
++  await expect(page.locator("#fx-panel")).toBeVisible();
++  await page.click("#opener");
++  await expect(page.locator("#fx-panel")).toBeHidden();
++  await guards.assertClean();
++});
++
++// Row 32 — pushUrl nav whose swap target does NOT contain the drawer still
++// runs the full close routine (row 10 covers only the containing swap).
++test("row 32: pushUrl nav outside the drawer closes it", async ({ page }) => {
++  const guards = await armGuards(page);
++  await page.goto("/drawer-shell-nav");
++  await page.click("#carrier");
++  await expect(page.locator("#fx-drawer")).toHaveClass(/is-open/);
++  const nav = page.waitForResponse((r) => r.url().includes("/main-fresh"));
++  await page.click("#drawer-nav");
++  await nav;
++  await expect(page.locator("#main-content")).toHaveText("main-new");
++  await expect(page.locator("#fx-drawer")).not.toHaveClass(/is-open/);
++  await expect(page.locator("#fx-drawer-backdrop")).not.toHaveClass(/is-open/);
++  await expect(page.locator("body")).not.toHaveClass(/overflow-hidden/);
++  await expect(page.locator("#carrier")).toHaveAttribute("aria-expanded", "false");
++  await guards.assertClean();
++});
++
++// Row 33 — trapFocus skips an unrendered item and never hands Tab to native order.
++test("row 33: focus trap skips a hidden last item", async ({ page }) => {
++  const guards = await armGuards(page);
++  await page.goto("/drawer-hidden-item");
++  await page.click("#carrier");
++  await expect(page.locator("#drawer-nav")).toBeFocused();
++  await page.keyboard.press("Tab");
++  await expect(page.locator("#drawer-btn")).toBeFocused();
++  await page.keyboard.press("Tab");
++  await expect(page.locator("#drawer-nav")).toBeFocused();
++  await page.keyboard.press("Shift+Tab");
++  await expect(page.locator("#drawer-btn")).toBeFocused();
++  await guards.assertClean();
++});
++
++test("row 34: in-drawer append into the drawer root keeps it open", async ({ page }) => {
++  const guards = await armGuards(page);
++  await page.goto("/drawer-more");
++  await page.click("#carrier");
++  await expect(page.locator("#fx-drawer")).toHaveClass(/is-open/);
++  await page.click("#drawer-more");
++  await expect(page.locator("#more-item")).toHaveText("item 2");
++  await page.waitForTimeout(100);
++  await expect(page.locator("#fx-drawer")).toHaveClass(/is-open/);
++  await expect(page.locator("body")).toHaveClass(/overflow-hidden/);
++  await guards.assertClean();
++});
++
++test("row 35: focus trap reaches a summary and skips an inert item", async ({ page }) => {
++  const guards = await armGuards(page);
++  await page.goto("/drawer-details");
++  await page.click("#carrier");
++  await expect(page.locator("#drawer-nav")).toBeFocused();
++  await page.keyboard.press("Tab");
++  await expect(page.locator("#drawer-sum")).toBeFocused();
++  await page.keyboard.press("Tab");
++  await expect(page.locator("#drawer-btn")).toBeFocused();
++  await page.keyboard.press("Tab");
++  await expect(page.locator("#drawer-nav")).toBeFocused();
++  await page.keyboard.press("Shift+Tab");
++  await expect(page.locator("#drawer-btn")).toBeFocused();
++  await guards.assertClean();
++});

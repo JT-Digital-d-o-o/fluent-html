@@ -1,0 +1,4 @@
+**Override by chaining only where boot calls `setClassMerge(theme)`** (grep `src/` for it; the template's
+`buildServer` does). Then a later call of the same family replaces the earlier one: `Card(…).apply(t => t.p("5"))`
+renders `p-5`, not `p-6 … p-5`. Without that call fluent appends and stylesheet order picks the winner, so
+compose the chrome onto your own element instead of chaining an override. Families are per prefix (`p-2` does not replace `px-6`) and `hidden` is never merged.

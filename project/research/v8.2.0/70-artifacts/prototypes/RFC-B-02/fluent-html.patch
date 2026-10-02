@@ -1,0 +1,132 @@
+diff --git a/src/htmx.ts b/src/htmx.ts
+index b787c94..068461a 100644
+--- a/src/htmx.ts
++++ b/src/htmx.ts
+@@ -98,8 +98,10 @@ type SwapScrollValue = 'scroll:top' | 'scroll:bottom' | 'scroll:window:top' | 's
+ type SwapShowValue = 'show:top' | 'show:bottom' | 'show:window:top' | 'show:window:bottom' | 'show:none';
+ type SwapTimingValue = `swap:${DelayValue}` | `settle:${DelayValue}`;
+ type SwapFocusScroll = 'focus-scroll:true' | 'focus-scroll:false';
+-type SwapTransition = 'transition:true';
+-type SwapIgnoreTitle = 'ignoreTitle:true';
++type SwapTransition = 'transition:true' | 'transition:false';
++type SwapIgnoreTitle = 'ignoreTitle:true' | 'ignoreTitle:false';
++type SwapStrip = 'strip:true' | 'strip:false';
++type SwapEmpty = 'swapEmpty:true' | 'swapEmpty:false';
+ 
+ type SwapModifier =
+   | SwapScrollValue
+@@ -107,7 +109,9 @@ type SwapModifier =
+   | SwapTimingValue
+   | SwapFocusScroll
+   | SwapTransition
+-  | SwapIgnoreTitle;
++  | SwapIgnoreTitle
++  | SwapStrip
++  | SwapEmpty;
+ 
+ // Style + single modifier: "outerHTML scroll:top", "innerHTML transition:true"
+ type SwapWithModifier = `${HxSwapStyle} ${SwapModifier}`;
+@@ -115,6 +119,14 @@ type SwapWithModifier = `${HxSwapStyle} ${SwapModifier}`;
+ // Style + two modifiers: "outerHTML scroll:top swap:500ms"
+ type SwapWithTwoModifiers = `${HxSwapStyle} ${SwapScrollValue | SwapShowValue} ${SwapTimingValue | SwapTransition}`;
+ 
++// htmx 4 restores focus, and so reads focusScroll, only after an innerHTML or outerHTML swap.
++type SwapFocusScrollFlag = `${'innerHTML' | 'outerHTML'} focusScroll:${'true' | 'false'}`;
++
++// Open after the # or . of a selector, so it ends the spec; html and body are the page for each key.
++type SwapElementSelector = `#${string}` | `.${string}`;
++type SwapScrollTarget = `${HxSwapStyle} ${'scroll:top' | 'scroll:bottom'} scrollTarget:${SwapElementSelector | 'html'}`;
++type SwapShowTarget = `${HxSwapStyle} ${'show:top' | 'show:bottom'} showTarget:${SwapElementSelector | 'body'}`;
++
+ /**
+  * HTMX swap spec with deep autocomplete. A **closed** union — a typo (`"innerHTM"`,
+  * `"scroll:middle"`) is a compile error.
+@@ -123,20 +135,24 @@ type SwapWithTwoModifiers = `${HxSwapStyle} ${SwapScrollValue | SwapShowValue} $
+  * - Style only: `"innerHTML"`, `"outerHTML"`, `"beforeend"`, `"outerMorph"`, …
+  * - Style + one modifier: `"outerHTML scroll:top"`, `"innerHTML settle:250ms"`, `"outerHTML ignoreTitle:true"`
+  * - Style + a positional + a timing/transition modifier: `"outerHTML scroll:top swap:500ms"`
++ * - Another element scrolled or shown: `"outerMorph show:top showTarget:body"`, `"outerMorph scroll:bottom scrollTarget:#log"`
+  *
+  * Delays accept any `${n}ms`/`${n}s`. For an exotic combination this union does not
+- * model (three+ modifiers, or `scroll:<selector>:top` element targeting), drop to the
+- * explicit escape hatch: `.addAttribute("hx-swap", "…")`.
++ * model (three+ modifiers), drop to the explicit escape hatch: `.addAttribute("hx-swap", "…")`.
+  */
+-export type HxSwap = HxSwapStyle | SwapWithModifier | SwapWithTwoModifiers;
++export type HxSwap =
++  | HxSwapStyle
++  | SwapWithModifier
++  | SwapWithTwoModifiers
++  | SwapFocusScrollFlag
++  | SwapScrollTarget
++  | SwapShowTarget;
+ 
+ // CSS Selectors (standard + HTMX extended)
+ type StandardCSSSelector = string;
+ type ExtendedCSSSelector =
+   | 'this'
+   | 'body'
+-  | 'window'
+-  | 'document'
+   | `closest ${string}`
+   | `next`
+   | `next ${string}`
+@@ -167,7 +183,6 @@ type DOMEvent =
+   | 'focusin'
+   | 'focusout'
+   | 'scroll'
+-  | 'resize'
+   | 'touchstart'
+   | 'touchend'
+   | 'touchmove';
+@@ -178,8 +193,11 @@ type HtmxEvent =
+   | 'revealed'       // Fires when element scrolls into viewport
+   | 'intersect';     // Fires on intersection observer
+ 
++// resize fires only on window; scroll on an element fires only if that element scrolls
++type WindowTrigger = 'resize from:window' | 'scroll from:window';
++
+ // Basic trigger is a DOM or HTMX event
+-type BasicTrigger = DOMEvent | HtmxEvent;
++type BasicTrigger = DOMEvent | HtmxEvent | WindowTrigger;
+ 
+ // Trigger modifiers
+ type TriggerModifier = 'once' | 'changed' | 'consume';
+@@ -216,8 +234,6 @@ export type HxTrigger =
+   | ThrottledTrigger
+   | ChangedDelayTrigger
+   | PollingTrigger
+-  | 'sse:message'
+-  | 'ws:message'
+   | (string & {});
+ 
+ /**
+diff --git a/test/types/type-surface.test-d.ts b/test/types/type-surface.test-d.ts
+index ed54f68..3e839cf 100644
+--- a/test/types/type-surface.test-d.ts
++++ b/test/types/type-surface.test-d.ts
+@@ -664,3 +664,24 @@ renderFragmentGated(rootIds.mainContent, CountFragment());
+ const widenedRootId: Id = rootIds.mainContent;
+ // @ts-expect-error — a widened `Id` collapses N to `string`, which would accept any root
+ renderFragmentGated(widenedRootId, CountFragment());
++
++// ── hx-swap: the htmx 4 modifier spellings compile; the near misses stay errors (RFC-B-02) ──
++{
++  const u = assetUrl("/x");
++  const ids = defineIds(["log"] as const);
++  for (const swap of [
++    "outerHTML focusScroll:true", "innerHTML focusScroll:false", "innerHTML transition:false",
++    "outerHTML ignoreTitle:false", "innerHTML strip:true", "outerMorph swapEmpty:true",
++    "outerMorph show:top showTarget:body", "outerMorph scroll:bottom scrollTarget:#log",
++  ] as const) hx(u, { swap });
++  hx(u, { swap: `outerMorph scroll:bottom scrollTarget:${ids.log.selector}` });
++  HxPartial(ids.log, Span("x"), "outerMorph transition:false");
++  // @ts-expect-error a morph keeps focus, so htmx never reads focusScroll after it
++  hx(u, { swap: "outerMorph focusScroll:true" });
++  // @ts-expect-error window is not an element: scrollIntoView is a no-op; showTarget:body scrolls the page
++  hx(u, { swap: "outerMorph show:top showTarget:window" });
++  // @ts-expect-error scrollTarget resolves from document, where closest/find/next have no anchor
++  hx(u, { swap: "innerHTML scroll:top scrollTarget:closest div" });
++  // @ts-expect-error retarget with the target option, not a target: swap modifier
++  hx(u, { swap: "outerHTML target:#other" });
++}

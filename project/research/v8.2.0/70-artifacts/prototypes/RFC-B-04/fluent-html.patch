@@ -1,0 +1,590 @@
+diff --git a/scripts/codemod/bare-selector.mjs b/scripts/codemod/bare-selector.mjs
+new file mode 100644
+index 0000000..6305b10
+--- /dev/null
++++ b/scripts/codemod/bare-selector.mjs
+@@ -0,0 +1,84 @@
++// 9.0.0 codemod for RFC-B-04. Usage: node bare-selector.mjs <tsconfig> [--write] [--ts <typescript.js>]
++// Rewrites Partial("<bare word>") to Partial("#<bare word>") (the bytes 8.x emitted) when the callee
++// resolves to fluent-html's Partial. Reports, never rewrites: a bare-word literal in another selector
++// sink (it was a tag selector that matched only a custom element) and a Partial target the checker
++// types as a wide string (8.x prefixed '#' at runtime when it was a bare word).
++import { readFileSync, writeFileSync } from "node:fs";
++import * as path from "node:path";
++const args = process.argv.slice(2);
++const tsPath = args.includes("--ts") ? args[args.indexOf("--ts") + 1] : "fluent-html/node_modules/typescript/lib/typescript.js";
++const ts = (await import(tsPath)).default;
++const cfgPath = path.resolve(args[0]);
++const WRITE = args.includes("--write");
++const KEYWORDS = new Set(["this", "body", "host", "next", "previous", "nextElementSibling", "previousElementSibling", "document", "window"]);
++const TAGS = new Set("a abbr address area article aside audio b base bdi bdo blockquote body br button canvas caption cite code col colgroup data datalist dd del details dfn dialog div dl dt em embed fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 head header hgroup hr html i iframe img input ins kbd label legend li link main map mark math menu meta meter nav noscript object ol optgroup option output p picture pre progress q rp rt ruby s samp script search section select selectedcontent slot small source span strong style sub summary sup svg table tbody td template textarea tfoot th thead time title tr track u ul var video wbr".split(" "));
++const BARE = /^[A-Za-z][\w-]*$/;
++const SINK_KEYS = new Set(["target", "select", "include", "indicator", "disable"]);
++
++const cfg = ts.getParsedCommandLineOfConfigFile(cfgPath, {}, { ...ts.sys, onUnRecoverableConfigFileDiagnostic: (d) => { throw new Error(ts.flattenDiagnosticMessageText(d.messageText, "\n")); } });
++const program = ts.createProgram({ rootNames: cfg.fileNames, options: { ...cfg.options, noEmit: true } });
++const checker = program.getTypeChecker();
++const isFluentDecl = (sym) => {
++  if (!sym) return false;
++  if (sym.flags & ts.SymbolFlags.Alias) sym = checker.getAliasedSymbol(sym);
++  return (sym.declarations ?? []).some((d) => /fluent-html|dist-(base|after)|\/lib\/src\/patterns\.ts$/.test(d.getSourceFile().fileName));
++};
++const HTMX_DECL = /(fluent-html|dist-(base|after)|\/lib)\/(dist\/)?src\/(htmx|routes|patterns)\.(d\.)?ts$/;
++const isHtmxBagProp = (node) => {
++  const ctx = checker.getContextualType(node.parent);
++  if (!ctx) return false;
++  const key = node.name.getText();
++  const types = ctx.isUnion() ? ctx.types : [ctx];
++  return types.some((t) => { const p = t.getProperty(key); return (p?.declarations ?? []).some((d) => HTMX_DECL.test(d.getSourceFile().fileName)); });
++};
++const report = { rewritten: [], reported: [], scannedFiles: 0, partialCalls: 0, sinkLiterals: 0 };
++for (const sf of program.getSourceFiles()) {
++  if (sf.isDeclarationFile || sf.fileName.includes("/node_modules/")) continue;
++  report.scannedFiles++;
++  const edits = [];
++  const loc = (n) => path.relative(process.cwd(), sf.fileName) + ":" + (sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1);
++  const visit = (node) => {
++    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && node.arguments.length >= 2) {
++      let sym = checker.getSymbolAtLocation(node.expression);
++      if (sym && sym.flags & ts.SymbolFlags.Alias) sym = checker.getAliasedSymbol(sym);
++      if (sym?.name === "Partial" && (sym.declarations ?? []).some((d) => /(fluent-html|dist-(base|after)|\/lib)\/(dist\/)?src\/patterns\.(d\.)?ts$/.test(d.getSourceFile().fileName))) {
++        report.partialCalls++;
++        const a0 = node.arguments[0];
++        if (ts.isStringLiteral(a0) || ts.isNoSubstitutionTemplateLiteral(a0)) {
++          if (BARE.test(a0.text)) {
++            if (KEYWORDS.has(a0.text)) report.reported.push({ at: loc(a0), why: `Partial("${a0.text}") emitted #${a0.text} in 8.x; ${a0.text} is now the htmx keyword` });
++            else { const q = a0.getText(sf)[0]; edits.push({ start: a0.getStart(sf), end: a0.getEnd(), text: q + "#" + a0.text + q }); report.rewritten.push({ at: loc(a0), from: a0.getText(sf), to: q + "#" + a0.text + q }); }
++          }
++        } else {
++          const t = checker.getTypeAtLocation(a0);
++          const isStr = (t.flags & ts.TypeFlags.String) || (t.isUnion() && t.types.some((u) => u.flags & ts.TypeFlags.String));
++          if (isStr) report.reported.push({ at: loc(a0), why: "Partial target typed string: 8.x prefixed # when the value was a bare word" });
++        }
++      }
++    }
++    if (ts.isPropertyAssignment(node) && SINK_KEYS.has(node.name.getText(sf)) && (ts.isStringLiteral(node.initializer) || ts.isNoSubstitutionTemplateLiteral(node.initializer)) && isHtmxBagProp(node)) {
++      const v = node.initializer.text;
++      report.sinkLiterals++;
++      if (BARE.test(v) && !KEYWORDS.has(v) && !TAGS.has(v)) report.reported.push({ at: loc(node), why: `${node.name.getText(sf)}: "${v}" is a tag selector for <${v}>; write ids.x or "#${v}"` });
++    }
++    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && /^(retarget|reselect)$/.test(node.expression.name.text) && node.arguments[0] && ts.isStringLiteral(node.arguments[0])) {
++      const v = node.arguments[0].text;
++      if (BARE.test(v) && !KEYWORDS.has(v) && !TAGS.has(v)) report.reported.push({ at: loc(node), why: `${node.expression.name.text}("${v}") is a tag selector for <${v}>` });
++    }
++    ts.forEachChild(node, visit);
++  };
++  visit(sf);
++  if (edits.length && WRITE) {
++    let text = sf.getFullText();
++    for (const e of edits.sort((a, b) => b.start - a.start)) text = text.slice(0, e.start) + e.text + text.slice(e.end);
++    writeFileSync(sf.fileName, text);
++  }
++}
++// Selector values the checker types as a wide string: no mechanical rewrite exists, so report them.
++for (const d of ts.getPreEmitDiagnostics(program)) {
++  const text = ts.flattenDiagnosticMessageText(d.messageText, " ");
++  if (!d.file || d.file.fileName.includes("/node_modules/") || !text.includes("a bare word is an HTML tag or htmx keyword")) continue;
++  const line = d.file.getLineAndCharacterOfPosition(d.start).line + 1;
++  report.reported.push({ at: path.relative(process.cwd(), d.file.fileName) + ":" + line, why: "TS" + d.code + " selector typed string; type it HxTarget or pass an Id" });
++}
++console.log(JSON.stringify(report, null, 1));
+diff --git a/src/htmx.ts b/src/htmx.ts
+index b787c94..7ccda7a 100644
+--- a/src/htmx.ts
++++ b/src/htmx.ts
+@@ -130,21 +130,47 @@ type SwapWithTwoModifiers = `${HxSwapStyle} ${SwapScrollValue | SwapShowValue} $
+  */
+ export type HxSwap = HxSwapStyle | SwapWithModifier | SwapWithTwoModifiers;
+ 
+-// CSS Selectors (standard + HTMX extended)
+-type StandardCSSSelector = string;
+-type ExtendedCSSSelector =
+-  | 'this'
+-  | 'body'
+-  | 'window'
+-  | 'document'
+-  | `closest ${string}`
+-  | `next`
+-  | `next ${string}`
+-  | `previous`
+-  | `previous ${string}`
+-  | `find ${string}`;
+-
+-export type HxTarget = StandardCSSSelector | ExtendedCSSSelector;
++/** Every HTML element name: a bare word in a selector is a type selector for one of these. */
++export type HtmlTagName =
++  | 'a' | 'abbr' | 'address' | 'area' | 'article' | 'aside' | 'audio' | 'b' | 'base' | 'bdi' | 'bdo'
++  | 'blockquote' | 'body' | 'br' | 'button' | 'canvas' | 'caption' | 'cite' | 'code' | 'col' | 'colgroup'
++  | 'data' | 'datalist' | 'dd' | 'del' | 'details' | 'dfn' | 'dialog' | 'div' | 'dl' | 'dt' | 'em' | 'embed'
++  | 'fieldset' | 'figcaption' | 'figure' | 'footer' | 'form' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
++  | 'head' | 'header' | 'hgroup' | 'hr' | 'html' | 'i' | 'iframe' | 'img' | 'input' | 'ins' | 'kbd' | 'label'
++  | 'legend' | 'li' | 'link' | 'main' | 'map' | 'mark' | 'math' | 'menu' | 'meta' | 'meter' | 'nav'
++  | 'noscript' | 'object' | 'ol' | 'optgroup' | 'option' | 'output' | 'p' | 'picture' | 'pre' | 'progress'
++  | 'q' | 'rp' | 'rt' | 'ruby' | 's' | 'samp' | 'script' | 'search' | 'section' | 'select' | 'selectedcontent'
++  | 'slot' | 'small' | 'source' | 'span' | 'strong' | 'style' | 'sub' | 'summary' | 'sup' | 'svg' | 'table'
++  | 'tbody' | 'td' | 'template' | 'textarea' | 'tfoot' | 'th' | 'thead' | 'time' | 'title' | 'tr' | 'track'
++  | 'u' | 'ul' | 'var' | 'video' | 'wbr';
++
++// The bare words htmx 4 reads as keywords before CSS (pinned bundle #findAllExt).
++// 'window' and 'document' are left out: as a target they throw before the request.
++type HtmxSelectorKeyword =
++  | 'this' | 'body' | 'host' | 'next' | 'previous' | 'nextElementSibling' | 'previousElementSibling';
++type HtmxSelectorPrefix = 'closest' | 'find' | 'findAll' | 'next' | 'previous' | 'global';
++type SelectorPunctuation = '#' | '.' | '[' | ':' | ' ' | '>' | '+' | '~' | ',' | '*' | '(' | '<';
++
++/**
++ * An htmx selector. One meaning for a bare word in every selector sink: an htmx keyword
++ * (`this`, `next`, …) or an HTML tag name (`main`, `tbody`), exactly as htmx reads it.
++ * fluent-html never rewrites a selector string; only an `Id` resolves to `#id`. Any other
++ * bare word (`"user-list"`) is a compile error: it would match a `<user-list>` element.
++ */
++export type HxTarget =
++  | HtmxSelectorKeyword
++  | `${HtmxSelectorPrefix} ${string}`
++  | HtmlTagName
++  | `${string}${SelectorPunctuation}${string}`;
++
++/** @internal Prints its message on line 1 of the error a rejected selector gets. */
++export type SelectorHint<M extends string> = { readonly [K in M]: never };
++/** @internal Sinks that take an `Id`. */
++export type BareWordMessage =
++  "use ids.x for an element id; a bare word is an HTML tag or htmx keyword; type a string variable as HxTarget";
++/** @internal Sinks that store the string verbatim (raw bag, status bag, response headers). */
++export type BareWordSelectorMessage =
++  "use ids.x.selector for an element id; a bare word is an HTML tag or htmx keyword; type a string variable as HxTarget";
+ 
+ // Standard DOM events
+ type DOMEvent =
+@@ -248,8 +274,8 @@ export type HxConfig = {
+ // Status-code-specific swap behavior
+ export type HxStatusConfig = {
+   swap?: HxSwap;
+-  target?: HxTarget;
+-  select?: string;
++  target?: HxTarget | SelectorHint<BareWordSelectorMessage>;
++  select?: HxTarget | SelectorHint<BareWordSelectorMessage>;
+   push?: boolean | string;
+   replace?: boolean | string;
+   transition?: boolean;
+@@ -276,10 +302,10 @@ export interface HTMX {
+   method: HxHttpMethod;
+ 
+   // Targeting & Swapping
+-  target?: HxTarget;
++  target?: HxTarget | SelectorHint<BareWordSelectorMessage>;
+   swap?: HxSwap;
+   swapOob?: boolean | string;  // Out-of-band swap
+-  select?: string;             // Select content from response
++  select?: HxTarget | SelectorHint<BareWordSelectorMessage>;  // Select content from response
+ 
+   // Triggering
+   trigger?: HxTrigger;
+@@ -291,7 +317,7 @@ export interface HTMX {
+   // Data
+   vals?: Record<string, unknown> | string;
+   headers?: Record<string, string>;
+-  include?: string;
++  include?: HxTarget | SelectorHint<BareWordSelectorMessage>;
+   encoding?: HxEncoding;
+ 
+   // Validation & Confirmation
+@@ -299,8 +325,8 @@ export interface HTMX {
+   confirm?: string;
+ 
+   // Loading states
+-  indicator?: string;
+-  disable?: string;            // Elements to disable during request (was disabledElt)
++  indicator?: HxTarget | SelectorHint<BareWordSelectorMessage>;
++  disable?: HxTarget | SelectorHint<BareWordSelectorMessage>;  // Elements to disable during request (was disabledElt)
+ 
+   // Synchronization
+   sync?: HxSync;
+@@ -355,11 +381,11 @@ export function buildQueryString(base: string, query: QueryParams): string {
+ /** Options for the `hx()` helper. Selector fields also accept `Id` objects. */
+ export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 'select' | 'indicator' | 'disable' | 'include'>> & {
+   method?: HxHttpMethod;
+-  target?: HxTarget | Id;
+-  select?: string | Id;
+-  indicator?: string | Id;
+-  disable?: string | Id;
+-  include?: string | Id;
++  target?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  select?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  indicator?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  disable?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  include?: HxTarget | Id | SelectorHint<BareWordMessage>;
+   /**
+    * Query parameters folded into the endpoint URL (via the join-aware `buildQueryString`):
+    * nullish entries are skipped and values are url-encoded. Join-aware — if `endpoint` already
+@@ -384,9 +410,9 @@ export type HxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 's
+  * resolveSelector("#my-el")    // "#my-el"
+  * resolveSelector(undefined)   // undefined
+  */
+-export function resolveSelector(value: string | Id | undefined): string | undefined {
++export function resolveSelector(value: HxTarget | Id | SelectorHint<BareWordMessage> | undefined): HxTarget | undefined {
+   if (!value) return undefined;
+-  return isId(value) ? value.selector : value;
++  return isId(value) ? value.selector : value as HxTarget;
+ }
+ 
+ /**
+@@ -440,7 +466,7 @@ export function hx(
+  * @returns The CSS ID selector string
+  * @example hx("/api", { target: id("content") }) // hx-target="#content"
+  */
+-export function id(elementId: string): HxTarget {
++export function id<const N extends string>(elementId: N): `#${N}` {
+   return `#${elementId}`;
+ }
+ 
+@@ -451,7 +477,7 @@ export function id(elementId: string): HxTarget {
+  * @returns The CSS class selector string
+  * @example hx("/api", { target: clss("items") }) // hx-target=".items"
+  */
+-export function clss(className: string): HxTarget {
++export function clss<const N extends string>(className: N): `.${N}` {
+   return `.${className}`;
+ }
+ 
+@@ -462,7 +488,7 @@ export function clss(className: string): HxTarget {
+  * @returns The HTMX extended selector string
+  * @example hx("/api", { target: closest("tr") }) // hx-target="closest tr"
+  */
+-export function closest(selector: string): HxTarget {
++export function closest<const S extends string>(selector: S): `closest ${S}` {
+   return `closest ${selector}`;
+ }
+ 
+@@ -473,7 +499,7 @@ export function closest(selector: string): HxTarget {
+  * @returns The HTMX extended selector string
+  * @example hx("/api", { target: find(".content") }) // hx-target="find .content"
+  */
+-export function find(selector: string): HxTarget {
++export function find<const S extends string>(selector: S): `find ${S}` {
+   return `find ${selector}`;
+ }
+ 
+@@ -484,7 +510,7 @@ export function find(selector: string): HxTarget {
+  * @returns The HTMX extended selector string
+  * @example hx("/api", { target: next("div") }) // hx-target="next div"
+  */
+-export function next(selector?: string): HxTarget {
++export function next(selector?: string): 'next' | `next ${string}` {
+   return selector ? `next ${selector}` : 'next';
+ }
+ 
+@@ -495,6 +521,6 @@ export function next(selector?: string): HxTarget {
+  * @returns The HTMX extended selector string
+  * @example hx("/api", { target: previous("div") }) // hx-target="previous div"
+  */
+-export function previous(selector?: string): HxTarget {
++export function previous(selector?: string): 'previous' | `previous ${string}` {
+   return selector ? `previous ${selector}` : 'previous';
+ }
+diff --git a/src/patterns.ts b/src/patterns.ts
+index ccf50d6..702e725 100644
+--- a/src/patterns.ts
++++ b/src/patterns.ts
+@@ -8,7 +8,7 @@
+ import { Tag } from "./core/tag.js";
+ import type { View } from "./core/types.js";
+ import type { BooleanAttribute } from "./elements/html-types.js";
+-import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
++import type { HxSwap, HxSwapStyle, HxTarget, SelectorHint, BareWordMessage, BareWordSelectorMessage } from "./htmx.js";
+ import type { Id, Rooted } from "./ids.js";
+ import { isId } from "./ids.js";
+ import { render } from "./render/render.js";
+@@ -69,28 +69,17 @@ function toHeaderSafeJson(value: unknown): string {
+  * )
+  * // <template type="partial" hx-target="#user-list" hx-swap="outerMorph" hx>…</template>
+  */
+-export function Partial<const N extends string>(
+-  target: Id<N>,
++export function Partial<const T extends HxTarget | Id>(
++  target: T | SelectorHint<BareWordMessage>,
+   content: View,
+   swap?: HxSwap
+-): Tag & Rooted<N>;
++): [T] extends [Id<infer N>] ? Tag & Rooted<N> : Tag;
+ export function Partial(
+-  target: HxTarget,
+-  content: View,
+-  swap?: HxSwap
+-): Tag;
+-export function Partial(
+-  target: HxTarget | Id,
++  target: HxTarget | Id | SelectorHint<BareWordMessage>,
+   content: View,
+   swap: HxSwap = "outerMorph"
+ ): Tag {
+-  // Resolve an Id to its selector; pass any explicit CSS selector through verbatim
+-  // (HxTarget legitimately includes class/closest/find/attribute selectors — a partial
+-  // takes any selector). Only a bare id token (`user-list`) gets the `#` convenience;
+-  // never a value containing '.', a space, or a combinator/pseudo character, which the
+-  // old `#${target}` blanket-prefix corrupted (e.g. `.items` → `#.items`).
+-  const selector = isId(target) ? target.selector :
+-    /^[A-Za-z][\w-]*$/.test(target) ? `#${target}` : target;
++  const selector = isId(target) ? target.selector : target as HxTarget;
+   return new Tag("template", content)
+     .addAttribute("type", "partial")
+     .addAttribute("hx-target", selector)
+@@ -155,9 +144,9 @@ export function HtmxConfig(config: HtmxGlobalConfig): Tag {
+  */
+ export interface HxLocationConfig {
+   path: string;
+-  target?: string;
++  target?: HxTarget | SelectorHint<BareWordSelectorMessage>;
+   swap?: HxSwapStyle;
+-  select?: string;
++  select?: HxTarget | SelectorHint<BareWordSelectorMessage>;
+   source?: string;
+   event?: string;
+   handler?: string;
+@@ -279,8 +268,8 @@ export class HxResponse {
+    *
+    * @param selector - CSS selector for the new target
+    */
+-  retarget(selector: string): this {
+-    this._headers["HX-Retarget"] = selector;
++  retarget(selector: HxTarget | SelectorHint<BareWordSelectorMessage>): this {
++    this._headers["HX-Retarget"] = selector as HxTarget;
+     return this;
+   }
+ 
+@@ -299,8 +288,8 @@ export class HxResponse {
+    *
+    * @param selector - CSS selector to select content
+    */
+-  reselect(selector: string): this {
+-    this._headers["HX-Reselect"] = selector;
++  reselect(selector: HxTarget | SelectorHint<BareWordSelectorMessage>): this {
++    this._headers["HX-Reselect"] = selector as HxTarget;
+     return this;
+   }
+ 
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 5bc32a6..c623c5b 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -139,23 +139,23 @@ const RESERVED_BAG_KEYS = new Set<string>(['id', 'class', 'style']);
+ export function buildHtmx(htmx: HTMX): string {
+   let result = 'hx-' + htmx.method + '="' + escapeAttr(htmx.endpoint) + '"';
+ 
+-  if (htmx.target !== undefined) result += ' hx-target="' + escapeAttr(htmx.target) + '"';
++  if (htmx.target !== undefined) result += ' hx-target="' + escapeAttr(htmx.target as string) + '"';
+   if (htmx.swap !== undefined) result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
+   // hx-swap-oob: any non-"true" value is read as a swap style, so `false` must omit the attr.
+   if (htmx.swapOob !== undefined && htmx.swapOob !== false) result += ' hx-swap-oob="' + (typeof htmx.swapOob === 'string' ? escapeAttr(htmx.swapOob) : htmx.swapOob) + '"';
+-  if (htmx.select !== undefined) result += ' hx-select="' + escapeAttr(htmx.select) + '"';
++  if (htmx.select !== undefined) result += ' hx-select="' + escapeAttr(htmx.select as string) + '"';
+   if (htmx.trigger !== undefined) result += ' hx-trigger="' + escapeAttr(htmx.trigger) + '"';
+   // push-url / replace-url: the literal `false` is meaningful htmx grammar, so it is kept.
+   if (htmx.pushUrl !== undefined) result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(htmx.pushUrl) : htmx.pushUrl) + '"';
+   if (htmx.replaceUrl !== undefined) result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(htmx.replaceUrl) : htmx.replaceUrl) + '"';
+   if (htmx.vals !== undefined) result += ' hx-vals="' + escapeAttr(typeof htmx.vals === 'string' ? htmx.vals : JSON.stringify(htmx.vals)) + '"';
+   if (htmx.headers !== undefined) result += ' hx-headers="' + escapeAttr(JSON.stringify(htmx.headers)) + '"';
+-  if (htmx.include !== undefined) result += ' hx-include="' + escapeAttr(htmx.include) + '"';
++  if (htmx.include !== undefined) result += ' hx-include="' + escapeAttr(htmx.include as string) + '"';
+   if (htmx.encoding !== undefined) result += ' hx-encoding="' + escapeAttr(htmx.encoding) + '"';
+   if (htmx.validate !== undefined) result += ' hx-validate="' + htmx.validate + '"';
+   if (htmx.confirm !== undefined) result += ' hx-confirm="' + escapeAttr(htmx.confirm) + '"';
+-  if (htmx.indicator !== undefined) result += ' hx-indicator="' + escapeAttr(htmx.indicator) + '"';
+-  if (htmx.disable !== undefined) result += ' hx-disable="' + escapeAttr(htmx.disable) + '"';
++  if (htmx.indicator !== undefined) result += ' hx-indicator="' + escapeAttr(htmx.indicator as string) + '"';
++  if (htmx.disable !== undefined) result += ' hx-disable="' + escapeAttr(htmx.disable as string) + '"';
+   if (htmx.sync !== undefined) result += ' hx-sync="' + escapeAttr(htmx.sync) + '"';
+   if (htmx.preserve !== undefined) result += ' hx-preserve="' + htmx.preserve + '"';
+   if (htmx.boost !== undefined) result += ' hx-boost="' + htmx.boost + '"';
+diff --git a/src/routes.ts b/src/routes.ts
+index 22a8482..fe33454 100644
+--- a/src/routes.ts
++++ b/src/routes.ts
+@@ -8,7 +8,7 @@
+ // Complementary to defineIds() which protects target selectors,
+ // defineRoutes() protects endpoint URLs and HTTP methods.
+ 
+-import type { HTMX, HxHttpMethod, HxTarget, QueryParams, ResolvedRoute } from "./htmx.js";
++import type { HTMX, HxHttpMethod, HxTarget, QueryParams, ResolvedRoute, SelectorHint, BareWordMessage } from "./htmx.js";
+ import { resolveSelector, buildQueryString } from "./htmx.js";
+ import type { Id } from "./ids.js";
+ 
+@@ -234,11 +234,11 @@ type PrefixedRouteDefs<P extends `/${string}`, T extends RouteDefinitions> = {
+  * Excludes `endpoint` (derived from path) and `method` (locked by definition).
+  */
+ export type RouteHxOptions = Partial<Omit<HTMX, 'endpoint' | 'method' | 'target' | 'select' | 'indicator' | 'disable' | 'include'>> & {
+-  target?: HxTarget | Id;
+-  select?: string | Id;
+-  indicator?: string | Id;
+-  disable?: string | Id;
+-  include?: string | Id;
++  target?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  select?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  indicator?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  disable?: HxTarget | Id | SelectorHint<BareWordMessage>;
++  include?: HxTarget | Id | SelectorHint<BareWordMessage>;
+   query?: QueryParams;
+ };
+ 
+diff --git a/test/patterns.ts b/test/patterns.ts
+index eb03e31..626abb3 100644
+--- a/test/patterns.ts
++++ b/test/patterns.ts
+@@ -165,7 +165,7 @@ describe("Partial (htmx 4)", () => {
+   // browser while staying tsc-, lint- and test-clean (the 8.0.0 `<hx-partial>` defect).
+   it("emits template[hx] with type=partial for a bare-token target", () => {
+     assert.strictEqual(
+-      render(Partial("user-list", Div("Users"))),
++      render(Partial("#user-list", Div("Users"))),
+       '<template type="partial" hx-target="#user-list" hx-swap="outerMorph" hx><div>Users</div></template>',
+     );
+   });
+@@ -187,13 +187,13 @@ describe("Partial (htmx 4)", () => {
+ 
+   it("emits template[hx] with a custom swap", () => {
+     assert.strictEqual(
+-      render(Partial("list", Div("Items"), "innerHTML")),
++      render(Partial("#list", Div("Items"), "innerHTML")),
+       '<template type="partial" hx-target="#list" hx-swap="innerHTML" hx><div>Items</div></template>',
+     );
+   });
+ 
+   it("carries the bare hx marker htmx's template[hx] scan selects on", () => {
+-    const html = render(Partial("user-list", "X"));
++    const html = render(Partial("#user-list", "X"));
+     assert.ok(/<template[^>]*\shx(?=[\s>])/.test(html), "expected a valueless hx attribute");
+     assert.ok(!html.includes("hx-partial"), "the pre-htmx-4 element name must not come back");
+   });
+@@ -204,14 +204,14 @@ describe("Partial (htmx 4)", () => {
+   });
+ 
+   it("supports custom swap strategy", () => {
+-    const html = render(Partial("list", Div("Items"), "innerHTML"));
++    const html = render(Partial("#list", Div("Items"), "innerHTML"));
+     assert.ok(html.includes('hx-swap="innerHTML"'));
+   });
+ 
+   it("multiple Partials render in a single response", () => {
+     const html = render(
+-      Partial("content", Div("Main")),
+-      Partial("count", Span("5")),
++      Partial("#content", Div("Main")),
++      Partial("#count", Span("5")),
+     );
+     assert.strictEqual(html.match(/<template type="partial"/g)?.length, 2);
+     assert.ok(html.includes('hx-target="#content"'));
+@@ -225,8 +225,15 @@ describe("Partial (htmx 4)", () => {
+     assert.ok(render(Partial(find(".row"), "X")).includes('hx-target="find .row"'));
+   });
+ 
++  it("passes a bare tag name through verbatim, like every other selector sink", () => {
++    assert.strictEqual(
++      render(Partial("main", Div("x"))),
++      '<template type="partial" hx-target="main" hx-swap="outerMorph" hx><div>x</div></template>',
++    );
++  });
++
+   it("prefixes # only for a bare id token, never a raw selector string", () => {
+-    assert.ok(render(Partial("user-list", "X")).includes('hx-target="#user-list"'));
++    assert.ok(render(Partial("#user-list", "X")).includes('hx-target="#user-list"'));
+     assert.ok(render(Partial(".items", "X")).includes('hx-target=".items"'));
+     assert.ok(render(Partial("#main", "X")).includes('hx-target="#main"'));
+     // `>` is attribute-escaped (the selector is preserved; the browser un-escapes it).
+diff --git a/test/selector-errors.test.ts b/test/selector-errors.test.ts
+new file mode 100644
+index 0000000..b298f37
+--- /dev/null
++++ b/test/selector-errors.test.ts
+@@ -0,0 +1,31 @@
++import { describe, it, before } from "node:test";
++import assert from "node:assert/strict";
++import { resolve } from "node:path";
++import ts from "typescript";
++
++type Probe = { readonly code: number; readonly first: string; readonly line: number; readonly text: string };
++let probes: Probe[] = [];
++
++before(() => {
++  const fixture = resolve(process.cwd(), "test/types/selector-probe/probe.ts");
++  const program = ts.createProgram([fixture], {
++    target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ES2020, moduleResolution: ts.ModuleResolutionKind.Bundler,
++    strict: true, noEmit: true, skipLibCheck: true,
++  });
++  const source = program.getSourceFile(fixture)!;
++  const lines = source.text.split("\n");
++  probes = ts.getPreEmitDiagnostics(program, source).map((d) => {
++    const line = d.file && d.start !== undefined ? d.file.getLineAndCharacterOfPosition(d.start).line + 1 : -1;
++    const first = typeof d.messageText === "string" ? d.messageText : d.messageText.messageText;
++    return { code: d.code, first, line, text: lines[line - 1] ?? "" };
++  });
++});
++
++describe("one meaning for a bare selector word", () => {
++  it("exactly the six bad shapes fail, every sanctioned shape compiles", () => {
++    assert.equal(probes.length, 6, probes.map((p) => `L${p.line} TS${p.code}: ${p.first}`).join("\n"));
++  });
++  it("every failure names the fix on its first line", () => {
++    for (const p of probes) assert.match(p.first.replace(/^Argument of type/, 'Type'), /^Type .* is not assignable to .*SelectorHint<"use ids\.x(\.selector)? for an element id; a bare word is an HTML tag or htmx keyword; type a string variable as HxTarget">/, `L${p.line}: ${p.first}`);
++  });
++});
+diff --git a/test/types/selector-probe/probe.ts b/test/types/selector-probe/probe.ts
+new file mode 100644
+index 0000000..134b9e5
+--- /dev/null
++++ b/test/types/selector-probe/probe.ts
+@@ -0,0 +1,30 @@
++// Deliberately-mixed probe fixture for test/selector-errors.test.ts (RFC-B-04): one meaning for a
++// bare word in every selector sink. Excluded from the root tsconfig.
++import { A, Button, Div, Form, Partial, hx, hxResponse, assetUrl, defineIds, defineRoutes, closest, type HxTarget } from "../../../src/index.js";
++
++const ids = defineIds(["team-list", "invite-form", "main-content"] as const);
++const routes = defineRoutes("/team", { list: { path: "/list" }, invite: { method: "post", path: "/invite" } } as const);
++const u = assetUrl("/x");
++declare const wide: string;
++
++// ── Must FAIL: a bare word that is neither an HTML tag nor an htmx keyword ──
++Button("a").setHtmx(hx(u, { target: "team-list" }));
++Partial("team-list", Div("x"));
++Button("b").setHtmx(routes.list({ target: "team-list" }));
++hxResponse(Div("x")).retarget("main-content");
++Button("c").setHtmx(routes.list({ include: "filters" }));
++Button("d").setHtmx(hx(u, { target: wide }));
++
++// ── Must PASS ──
++Button("e").setHtmx(hx(u, { target: ids.teamList }));
++Button("f").setHtmx(hx(u, { target: "#team-list", include: "closest form", disable: "find button" }));
++Button("g").setHtmx(hx(u, { target: "main" }));
++Button("h").setHtmx(hx(u, { target: "this", indicator: `${ids.mainContent.selector}, #row-1` }));
++Button("i").setHtmx(routes.list({ target: ids.teamList.selector }));
++Form().setHtmx(routes.invite({ status: { 422: { target: ids.inviteForm.selector } } }));
++Partial(ids.teamList, Div("x"));
++Partial("main", Div("x"));
++Partial(closest("tr"), Div("x"));
++hxResponse(Div("x")).retarget(ids.mainContent.selector);
++const typed: HxTarget = "#a, #b";
++A("j").setHtmx(hx(u, { target: typed }));
+diff --git a/test/types/type-surface.test-d.ts b/test/types/type-surface.test-d.ts
+index ed54f68..f7e3625 100644
+--- a/test/types/type-surface.test-d.ts
++++ b/test/types/type-surface.test-d.ts
+@@ -642,7 +642,7 @@ expectType<Tag & Rooted<"user-count">>(HxPartial(rootIds.userCount, Span("3")));
+ // @ts-expect-error — envelope targets #main-content, consumer wants #user-count
+ needsCountRoot(HxPartial(rootIds.mainContent, Span("3")));
+ // @ts-expect-error — a raw selector target witnesses nothing, so it stays unbranded
+-needsCountRoot(HxPartial("user-count", Span("3")));
++needsCountRoot(HxPartial("#user-count", Span("3")));
+ // the selector overload is still there, still a Tag, and still takes extended selectors
+ expectType<Tag>(HxPartial("closest tr", Span("3")));
+ expectType<Tag>(HxPartial(".items", Span("3"), "innerHTML"));
+diff --git a/tsconfig.json b/tsconfig.json
+index 260a662..f438326 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -46,6 +46,7 @@
+     "test/acceptance",
+     "test/types/color-optout",
+     "test/types/setter-probe",
++    "test/types/selector-probe",
+     "test/types/brand-probe"
+   ]
+ }
+\ No newline at end of file

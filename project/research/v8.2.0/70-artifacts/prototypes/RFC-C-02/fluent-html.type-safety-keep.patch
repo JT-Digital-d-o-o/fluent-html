@@ -1,0 +1,53 @@
+diff --git a/scripts/codemod/prune-9.ts b/scripts/codemod/prune-9.ts
+index 3b2d846..c3a42f1 100644
+--- a/scripts/codemod/prune-9.ts
++++ b/scripts/codemod/prune-9.ts
+@@ -34,7 +34,6 @@ export const MOVED_TO_SUBPATH: Readonly<Record<string, string>> = {
+ export const PRUNED_9: Readonly<Record<string, string>> = {
+   multipart: '.setEnctype("multipart/form-data")',
+   containerQuery: '.cssProp("container-type", "inline-size")',
+-  setMicrodata: '.toggle("itemscope").addAttribute("itemtype", …)',
+   Repeat: "ForEach(n, render)",
+   ...Object.fromEntries(Object.entries(MOVED_TO_SUBPATH).map(([n, sub]) => [n, `import { ${n} } from "fluent-html/${sub}"`])),
+ };
+diff --git a/src/core/tag.ts b/src/core/tag.ts
+index 43f82bc..2b01bad 100644
+--- a/src/core/tag.ts
++++ b/src/core/tag.ts
+@@ -604,6 +604,22 @@ export class Tag {
+     return this.addAttribute("hidden", value);
+   }
+ 
++  /**
++   * Schema.org microdata (`itemtype`/`itemprop`/`itemref`/`itemid`) for structured-data SEO —
++   * the value-bearing counterpart to the `itemscope` boolean (`.toggle("itemscope")`). Setting
++   * `type` also marks the element an item scope (an `itemtype` without `itemscope` is invalid).
++   *
++   * @example
++   * Article().setMicrodata({ type: "https://schema.org/Article" })  // itemscope itemtype="…"
++   * Span(author).setMicrodata({ prop: "author" })
++   */
++  setMicrodata(attrs: { type?: string; prop?: string; ref?: string; id?: string }): this {
++    if (attrs.type !== undefined) { this.toggle("itemscope"); this.addAttribute("itemtype", attrs.type); }
++    if (attrs.prop !== undefined) this.addAttribute("itemprop", attrs.prop);
++    if (attrs.ref !== undefined) this.addAttribute("itemref", attrs.ref);
++    if (attrs.id !== undefined) this.addAttribute("itemid", attrs.id);
++    return this;
++  }
+ 
+   /**
+    * Associate a form-associated control (`input`/`button`/`select`/`textarea`/`output`/`fieldset`)
+diff --git a/test/types/prune-gate/removed.ts b/test/types/prune-gate/removed.ts
+index 41525a3..b803f05 100644
+--- a/test/types/prune-gate/removed.ts
++++ b/test/types/prune-gate/removed.ts
+@@ -1,8 +1,7 @@
+ // One guess per name 9.0.0 removes (scripts/codemod/prune-9.ts PRUNED_9). Excluded from the build tsconfig.
+-import { Article, Div, Form } from "../../../src/index.js";
++import { Div, Form } from "../../../src/index.js";
+ import { Repeat, setDevChecks, extractId, extractSelector, EVENT_TABLE, HTMX_EVENTS } from "../../../src/index.js";
+ 
+ Form().multipart();
+ Div().containerQuery();
+-Article().setMicrodata({ type: "https://schema.org/Article" });
+ void [Repeat, setDevChecks, extractId, extractSelector, EVENT_TABLE, HTMX_EVENTS];

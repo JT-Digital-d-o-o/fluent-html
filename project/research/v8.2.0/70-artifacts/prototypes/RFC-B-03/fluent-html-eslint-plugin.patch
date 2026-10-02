@@ -1,0 +1,108 @@
+diff --git a/src/rules/prefer-set-method.ts b/src/rules/prefer-set-method.ts
+index 54e9da9..e3a1125 100644
+--- a/src/rules/prefer-set-method.ts
++++ b/src/rules/prefer-set-method.ts
+@@ -109,6 +109,26 @@ const ATTRIBUTE_TO_METHOD: Record<string, string> = {
+   label: "setLabel",
+ };
+ 
++// Setters whose argument is the ResolvedRoute brand, keyed by attribute, with the factories
++// that return the branded tag. A raw value there is a compile error, so it is never autofixed.
++const BRANDED_URL_SETTERS: Record<string, readonly string[]> = { href: ["A"] };
++const EXTERNAL_HREF = /^(https?:\/\/|mailto:|tel:|#)/;
++
++function brandSafe(value: any): boolean {
++  if (value.type === "Literal") return typeof value.value === "string" && EXTERNAL_HREF.test(value.value);
++  if (value.type === "TemplateLiteral") return EXTERNAL_HREF.test(value.quasis[0]?.value.cooked ?? "");
++  if (value.type !== "CallExpression") return false;
++  const c = value.callee;
++  if (c.type === "Identifier") return c.name === "assetUrl" || c.name === "externalUrl";
++  return c.type === "MemberExpression" && !c.computed && c.property.type === "Identifier" && c.property.name === "resolve";
++}
++
++function rootFactory(node: any): string | null {
++  let cur = node.callee.object;
++  while (cur?.type === "CallExpression" && cur.callee.type === "MemberExpression") cur = cur.callee.object;
++  return cur?.type === "CallExpression" && cur.callee.type === "Identifier" ? cur.callee.name : null;
++}
++
+ const rule: Rule.RuleModule = {
+   meta: {
+     type: "suggestion",
+@@ -122,6 +142,8 @@ const rule: Rule.RuleModule = {
+     messages: {
+       preferSetMethod:
+         'Use .{{method}}({{value}}) instead of .addAttribute("{{attr}}", {{value}}). Dedicated methods provide type safety and autocomplete.',
++      preferBrandedSetter:
++        'Use .{{method}}(…) instead of .addAttribute("{{attr}}", {{value}}). .{{method}} takes routes.x.resolve([params,] query?) from defineRoutes, assetUrl(path) for a static file or externalUrl(url) for an off-site URL (never request input), not a URL string, so this is not auto-fixed.',
+       preferTypedSetter:
+         'Use .{{suggestion}} instead of .addAttribute("{{attr}}", …). Typed setters give autocomplete and validation (e.g. aria typos become compile errors).',
+     },
+@@ -163,6 +185,14 @@ const rule: Rule.RuleModule = {
+           if (node.arguments.length < 2) return;
+           const valueArg = node.arguments[1];
+           const valueText = context.sourceCode.getText(valueArg);
++          const branded = BRANDED_URL_SETTERS[attrName];
++          if (branded && !brandSafe(valueArg)) {
++            const root = rootFactory(node);
++            if (root === null || branded.includes(root)) {
++              context.report({ node, messageId: "preferBrandedSetter", data: { method, attr: attrName, value: valueText } });
++              return;
++            }
++          }
+           context.report({
+             node,
+             messageId: "preferSetMethod",
+diff --git a/test/rule.test.js b/test/rule.test.js
+index b005bb1..c3aa08f 100644
+--- a/test/rule.test.js
++++ b/test/rule.test.js
+@@ -647,10 +647,46 @@ runSuite("prefer-set-method", preferSetMethod, {
+       output: `Img().setSrc("photo.jpg")`,
+       errors: [{ messageId: "preferSetMethod" }],
+     },
+-    // href
++    // href on A() is the ResolvedRoute brand: a raw path is reported, never autofixed into a TS2345
+     {
+       code: `A("Link").addAttribute("href", "/page")`,
+-      output: `A("Link").setHref("/page")`,
++      output: null,
++      errors: [{ messageId: "preferBrandedSetter" }],
++    },
++    {
++      code: `A("Link").addClass("x").addAttribute("href", path)`,
++      output: null,
++      errors: [{ messageId: "preferBrandedSetter" }],
++    },
++    {
++      code: `link.addAttribute("href", "/page")`,
++      output: null,
++      errors: [{ messageId: "preferBrandedSetter" }],
++    },
++    // values that already satisfy the brand, and unbranded receivers, keep the autofix
++    {
++      code: `A("Docs").addAttribute("href", "https://example.com")`,
++      output: `A("Docs").setHref("https://example.com")`,
++      errors: [{ messageId: "preferSetMethod" }],
++    },
++    {
++      code: "A(\"Top\").addAttribute(\"href\", `#${id}`)",
++      output: "A(\"Top\").setHref(`#${id}`)",
++      errors: [{ messageId: "preferSetMethod" }],
++    },
++    {
++      code: `A("All").addAttribute("href", routes.list.resolve())`,
++      output: `A("All").setHref(routes.list.resolve())`,
++      errors: [{ messageId: "preferSetMethod" }],
++    },
++    {
++      code: `A("Icon").addAttribute("href", assetUrl("/favicon.svg"))`,
++      output: `A("Icon").setHref(assetUrl("/favicon.svg"))`,
++      errors: [{ messageId: "preferSetMethod" }],
++    },
++    {
++      code: `Link().addAttribute("href", "/css/app.css")`,
++      output: `Link().setHref("/css/app.css")`,
+       errors: [{ messageId: "preferSetMethod" }],
+     },
+     // name

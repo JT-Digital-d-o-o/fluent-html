@@ -1,0 +1,167 @@
+diff --git a/REFERENCE.md b/REFERENCE.md
+index efa1c30..386935e 100644
+--- a/REFERENCE.md
++++ b/REFERENCE.md
+@@ -1399,7 +1399,7 @@ a `javascript:` URL.
+ 
+ ### Raw Content for Scripts & Styles
+ 
+-Script and Style elements are intentionally **not escaped** (they contain code, not user content):
++Script and Style bodies are not HTML-escaped (they contain code). A closing `</script`/`</style` is neutralized, and a JSON-typed script (`application/json`, any `+json`, `importmap`, `speculationrules`) gets every `<` written as `\u003c`, which parses to the same value:
+ 
+ ```typescript
+ // Script content preserved for valid JavaScript
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 5bc32a6..325e049 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -33,10 +33,11 @@ export const VOID_ELEMENTS = new Set([
+ /**
+  * Render context — replaces the old tri-typed `boolean | string` flag.
+  * `escape` HTML-escapes text (the default); `raw` passes text through
+- * untouched; `script`/`style` sanitize closing tags that would break out.
++ * untouched; `script`/`style` sanitize closing tags that would break out;
++ * `json` (a JSON-typed `<script>` body) rewrites every `<` to `\u003c`.
+  * @internal
+  */
+-export type RenderCtx = 'escape' | 'raw' | 'script' | 'style';
++export type RenderCtx = 'escape' | 'raw' | 'script' | 'json' | 'style';
+ 
+ /**
+  * Output sink. `append` returns a backpressure signal (`false` ⇒ the consumer
+@@ -202,18 +203,33 @@ function buildStatusConfig(cfg: HxStatusConfig): string {
+ // `</script>` is never valid JS). Neutralizing the `<!--`/`<script` OPENERS (to defeat the
+ // HTML script-data-double-escaped state) was tried and reverted — a `\` before `!`/`script`
+ // corrupts benign JS (`/<script/` → whitespace regex; `<!--`/`a<scripts` → syntax errors).
+-// That hardening needs a byte-safe transform; parked (it only matters inside the raw-JS escape hatch).
++// A JSON body has the byte-safe transform JS lacks: `<` can only sit inside a JSON string,
++// where `\u003c` parses to the same value, so a JSON-typed script carries no `<` at all.
+ const SCRIPT_CLOSE_RE = /<\/script/gi;
+ const STYLE_CLOSE_RE = /<\/style/gi;
++const LT_RE = /</g;
+ 
+-/** Sanitize raw context content by escaping the closing tag that would break out. @internal */
+-export function sanitizeRawContent(content: string, element: 'script' | 'style'): string {
++// The script types whose body is JSON: importmap, speculationrules, and any JSON MIME
++// (application/json, text/json, application/ld+json and every other `+json` subtype).
++const JSON_SCRIPT_TYPE_RE = /^\s*(?:importmap|speculationrules|(?:application|text)\/(?:[\w.!#$&^-]+\+)?json)\s*(?:;|$)/i;
++
++/** Sanitize raw context content so it cannot leave its element. @internal */
++export function sanitizeRawContent(content: string, element: 'script' | 'json' | 'style'): string {
+   if (element === 'script') {
+     return content.replace(SCRIPT_CLOSE_RE, '<\\/script');
+   }
++  if (element === 'json') {
++    return content.replace(LT_RE, '\\u003c');
++  }
+   return content.replace(STYLE_CLOSE_RE, '<\\/style');
+ }
+ 
++/** The body context of a `<script>`: `json` when its type (setType, else the bag) is JSON. @internal */
++function scriptCtx(tag: Tag): 'script' | 'json' {
++  const ty = (tag as unknown as { _type?: unknown })._type ?? (tag.attributes !== EMPTY_ATTRS ? tag.attributes['type'] : undefined);
++  return typeof ty === 'string' && JSON_SCRIPT_TYPE_RE.test(ty) ? 'json' : 'script';
++}
++
+ /** @internal The private base-Tag storage the serializer reads past the access modifier. */
+ type TagStorage = { _id?: string; _class?: string; _style?: string; _htmx?: HTMX };
+ 
+@@ -326,7 +342,7 @@ export function* emitChunks(
+       if (typeof v === 'string') {
+         buf += c === 'escape' ? escapeHtml(v) : c === 'raw' ? v : sanitizeRawContent(v, c);
+       } else if (isRawString(v)) {
+-        buf += c === 'script' || c === 'style' ? sanitizeRawContent(v.html, c) : v.html;
++        buf += c === 'escape' || c === 'raw' ? v.html : sanitizeRawContent(v.html, c);
+       } else if (isTag(v)) {
+         const el = v.el;
+         if (epoch !== 0) v._e = epoch;
+@@ -341,7 +357,7 @@ export function* emitChunks(
+         buf += open;
+ 
+         if (!VOID_ELEMENTS.has(el)) {
+-          const childCtx: RenderCtx = el === 'script' ? 'script' : el === 'style' ? 'style' : c;
++          const childCtx: RenderCtx = el === 'script' ? scriptCtx(v) : el === 'style' ? 'style' : c;
+           // Push close first, child second — child pops (and fully expands) before close.
+           stack.push('</' + el + '>');
+           stack.push({ v: v.child, c: childCtx });
+@@ -406,7 +422,7 @@ export function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): vo
+     }
+ 
+     if (isRawString(v)) {
+-      sink.append(c === 'script' || c === 'style' ? sanitizeRawContent(v.html, c) : v.html);
++      sink.append(c === 'escape' || c === 'raw' ? v.html : sanitizeRawContent(v.html, c));
+       continue;
+     }
+ 
+@@ -427,7 +443,7 @@ export function emit(sink: Sink, view: View, ctx: RenderCtx, nonce?: string): vo
+       }
+ 
+       sink.append(open);
+-      const childCtx: RenderCtx = el === 'script' ? 'script' : el === 'style' ? 'style' : c;
++      const childCtx: RenderCtx = el === 'script' ? scriptCtx(v) : el === 'style' ? 'style' : c;
+       stack.push('</' + el + '>');
+       stack.push({ v: v.child, c: childCtx });
+       continue;
+diff --git a/test/security.test.ts b/test/security.test.ts
+index 7af837c..1edc327 100644
+--- a/test/security.test.ts
++++ b/test/security.test.ts
+@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
+ import assert from "node:assert/strict";
+ 
+ import {
+-  render,
++  render, renderToIterable, Raw, El,
+   Div, P, Span, Script, Style, Button,
+   A, Img, Form, ObjectEl, Video, Blockquote,
+   sanitizeUrl,
+@@ -169,6 +169,49 @@ describe("script break-out prevention (A-006)", () => {
+   });
+ });
+ 
++describe("JSON-typed script bodies carry no '<' (C-19)", () => {
++  const data = { "@type": "Product", name: "Deluxe <!--<script> set", note: "a</script>b", cmp: "1 < 2" };
++  const body = (html: string) => html.slice(html.indexOf(">") + 1, html.lastIndexOf("</script>"));
++
++  it("rewrites every '<' to \\u003c in an ld+json body, so <!--<script> cannot open a double-escaped run", () => {
++    assert.strictEqual(
++      render(Script(JSON.stringify({ name: "<!--<script>" })).setType("application/ld+json")),
++      '<script type="application/ld+json">{"name":"\\u003c!--\\u003cscript>"}</script>',
++    );
++  });
++
++  it("parses to the identical value for every JSON script type", () => {
++    for (const type of ["application/json", "application/ld+json", "importmap", "speculationrules", "text/json", "application/geo+json", "Application/JSON; charset=utf-8", " importmap "]) {
++      const out = body(render(Script(JSON.stringify(data)).setType(type)));
++      assert.ok(!out.includes("<"), type);
++      assert.deepStrictEqual(JSON.parse(out), data, type);
++    }
++  });
++
++  it("is idempotent with the hand-rolled .replace(/</g, '\\\\u003c') helper", () => {
++    const hand = render(Script(JSON.stringify(data).replace(/</g, "\\u003c")).setType("application/ld+json"));
++    assert.strictEqual(render(Script(JSON.stringify(data)).setType("application/ld+json")), hand);
++  });
++
++  it("reads a bag-set type when setType was not used", () => {
++    assert.strictEqual(render(El("script", '{"a":"<"}').addAttribute("type", "application/json")), '<script type="application/json">{"a":"\\u003c"}</script>');
++    assert.strictEqual(render(El("script", Raw('{"a":"<"}')).addAttribute("type", "application/json")), '<script type="application/json">{"a":"\\u003c"}</script>');
++  });
++
++  it("leaves JS and non-JSON data blocks on the closer-only rule", () => {
++    for (const type of [undefined, "module", "text/javascript", "text/x-template", "application/jsonp", "application/javascript"]) {
++      const s = Script("if (a<b) x = '<!--<script>'; y = '</script>';");
++      const out = render(type === undefined ? s : s.setType(type));
++      assert.ok(out.includes("if (a<b) x = '<!--<script>'; y = '<\\/script>';"), String(type));
++    }
++  });
++
++  it("streams the same bytes as render", () => {
++    const v = Div(Script(JSON.stringify(data)).setType("application/ld+json"), Script("a<b"));
++    assert.strictEqual([...renderToIterable(v)].join(""), render(v));
++  });
++});
++
+ describe("URL scheme sanitization on typed setters (XSS-1)", () => {
+   it("neutralizes javascript: on href/src/action to about:blank", () => {
+     assert.strictEqual(render(A("x").setHref(assetUrl("javascript:alert(1)"))), `<a href="about:blank">x</a>`);

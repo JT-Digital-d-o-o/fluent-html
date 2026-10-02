@@ -1,0 +1,149 @@
+diff --git a/templates/full-stack/src/core/htmx/swap-verbs.ts b/templates/full-stack/src/core/htmx/swap-verbs.ts
+index 8c8e278..f7bae5f 100644
+--- a/templates/full-stack/src/core/htmx/swap-verbs.ts
++++ b/templates/full-stack/src/core/htmx/swap-verbs.ts
+@@ -325,10 +325,13 @@ p.fragment = function (target: Id, route: HTMX, swap: OuterSwap = "outerMorph")
+   });
+ };
+ 
+-// `sync: "replace"`, not htmx 4's default: that default is `"queue first"`, which queues one
+-// follow-up and marks every request after it `dropped`. A filter whose response outlasts the
+-// debounce window then settles showing results for a query the user has already typed past.
+-// `"replace"` abandons the in-flight request and runs the newest, so the last keystroke wins.
++// `sync: "queue last"`, not htmx 4's default `"queue first"` (one follow-up queued, every later
++// request dropped, so the filter settles on a query the user typed past) and not `"replace"`:
++// on 4.0.0 a replaced request's cleanup frees the slot its replacement holds, so the request
++// after that runs beside it and a slower typed-past response can land last (htmx#4027, fixed by
++// #4028, unreleased). "queue last" runs one request at a time and keeps only the newest
++// waiting, so the newest query always swaps last. Return to "replace" when the pinned bundle
++// carries #4028: tests/e2e/specs/htmx-smoke.spec.ts holds the row that tells them apart.
+ // `include: "this"` states what a GET actually collects — from an input, only that input's own
+ // value — so a filter that must carry siblings passes its own `include` ("closest form" for a
+ // filter bar, "closest tr" for controls in a bare row), which wins over this default. Written
+@@ -342,7 +345,7 @@ p.search = function (targetOrRoute: Id | HTMX, routeOrDelay?: HTMX | SearchDelay
+     ...busyWhileRequesting(this, route),
+     include: route.include ?? "this",
+     trigger: `input changed delay:${delay}`,
+-    sync: "replace",
++    sync: "queue last",
+     target: targeted ? targetOrRoute.selector : MAIN,
+     swap: "outerMorph",
+     indicator: LOADER,
+diff --git a/templates/full-stack/tests/unit/htmx-grammar-contract.test.ts b/templates/full-stack/tests/unit/htmx-grammar-contract.test.ts
+index ad23e08..aee9ad5 100644
+--- a/templates/full-stack/tests/unit/htmx-grammar-contract.test.ts
++++ b/templates/full-stack/tests/unit/htmx-grammar-contract.test.ts
+@@ -127,6 +127,21 @@ describe("htmx grammar contract — what we emit is what the shipped runtime rea
+     expect(unreadBy(emittedTokens("hx", deadShape), scannedTokens())).toEqual(["hx-partial"]);
+   });
+ 
++  /**
++   * `.search` emits `sync: "queue last"` only because this runtime lets a replaced request's
++   * cleanup free the slot its replacement holds (htmx#4027): `continue()` takes no argument.
++   * Once the bundle checks which request is finishing (#4028), `replace` settles on the newest
++   * query again without waiting out the in-flight one, and the workaround only costs latency.
++   */
++  it("the shipped runtime still frees the sync slot for whichever request finishes (htmx#4027)", () => {
++    const bundle = fs.readFileSync(VENDORED_HTMX, "utf-8");
++    expect(
++      /continue\(\)\s*\{\s*this\.#\w+\s*=\s*null/.test(bundle),
++      "public/js/htmx.min.js carries the htmx#4028 fix: return .search to sync \"replace\" in " +
++        "src/core/htmx/swap-verbs.ts once smoke:htmx's 'a slow filter settles' row passes with it",
++    ).toBe(true);
++  });
++
+   /**
+    * The upload half no token check can see. `keepFormEncoding` stamps `enctype` from the
+    * route's `encoding` for the no-JS submit, and leaves a hand-set `enctype` on an
+diff --git a/templates/full-stack/tests/unit/swap-verbs.test.ts b/templates/full-stack/tests/unit/swap-verbs.test.ts
+index 821c799..78926ba 100644
+--- a/templates/full-stack/tests/unit/swap-verbs.test.ts
++++ b/templates/full-stack/tests/unit/swap-verbs.test.ts
+@@ -143,7 +143,7 @@ describe("swap verbs — .search", () => {
+     const html = render(Input("text").search(routes.list()));
+     expect(html).toContain('hx-get="/users"');
+     expect(html).toContain('hx-trigger="input changed delay:300ms"');
+-    expect(html).toContain('hx-sync="replace"');
++    expect(html).toContain('hx-sync="queue last"');
+     expect(html).toContain('hx-include="this"');
+     expect(html).toContain('hx-target="#main-content"');
+     expect(html).toContain('hx-swap="outerMorph"');
+@@ -192,7 +192,7 @@ describe("swap verbs — .search", () => {
+   it("overrides a trigger/sync supplied on the route — the debounce and the newest-wins rule are the verb", () => {
+     const html = render(Input("text").search(routes.list({ trigger: "click", sync: "queue first" })));
+     expect(html).toContain('hx-trigger="input changed delay:300ms"');
+-    expect(html).toContain('hx-sync="replace"');
++    expect(html).toContain('hx-sync="queue last"');
+     expect(html).not.toContain("queue first");
+   });
+ });
+diff --git a/tests/e2e/specs/htmx-smoke.spec.ts b/tests/e2e/specs/htmx-smoke.spec.ts
+index 16b6b44..1c44e64 100644
+--- a/tests/e2e/specs/htmx-smoke.spec.ts
++++ b/tests/e2e/specs/htmx-smoke.spec.ts
+@@ -18,7 +18,7 @@
+  *   ✓ no hx-on handlers: disable → htmx-native hx-disable, back → nonce'd delegated handler;
+  *     zero 'unsafe-eval', no EvalError under the strict CSP
+  *   ✓ .search: an include scope carries the sibling filters a GET would otherwise drop
+- *   ✓ .search: sync "replace" — a slow filter settles on the newest query, not a typed-past one
++ *   ✓ .search: sync "queue last" — a slow filter settles on the newest query, not a typed-past one
+  *   ✓ .onChange: a GET from a select sends its form siblings only with the include scope
+  *   ✓ { invalid }: a 422 swaps the form region alone and leaves the url on /auth/login
+  *
+@@ -222,12 +222,9 @@ test("post-signin redirect navigates to home over http (HX-Redirect, no https up
+ //   2. the default `hx-sync` is "queue first", which DROPS every request after the first
+ //      queued one — the staleness bug in swap-verbs/verb-coverage/qa.md.
+ 
+-// The two `.search` rows below are SKIPPED, not deleted: they guard real htmx semantics
+-// (include-scope carrying sibling filters, and sync:"replace" settling on the newest query),
+-// but the filter row they drove was removed from event-log.view.ts by the UI clean slate
+-// (dd6b340) — the view is 17 lines with no inputs. They have been red ever since, unnoticed,
+-// because smoke:htmx is not part of `verify`. Re-point them at a surviving `.search` site
+-// (payments admin-list is the only one in the template) or restore a filter row, then unskip.
++// The include-scope row below is still SKIPPED (L-010): its filter row was removed by the UI
++// clean slate (dd6b340) and restored by b9b057f, and it has not been re-run against the restored
++// one. The sync row after it runs: it drives the restored `event` filter.
+ const EVENT_LOG = "/admin/analytics/log";
+ 
+ async function signInAsAdmin(page: Page): Promise<void> {
+@@ -257,16 +254,18 @@ test.skip("search: the filter row's siblings ride along (a GET would send the ty
+   expect(params.get("category"), "sibling filter dropped — include scope not applied").toBe("auth");
+ });
+ 
+-test.skip("search: a slow filter settles on the newest query, not one the user typed past", async ({ page }) => {
++test("search: a slow filter settles on the newest query, not one the user typed past", async ({ page }) => {
+   await signInAsAdmin(page);
+   await page.goto(EVENT_LOG);
+ 
+-  // The bug needs a response that outlasts the 300ms debounce; on a fast local query it
+-  // never reproduces, which is why it survived.
+-  const RESPONSE_LAG_MS = 1200;
++  // Asymmetric on purpose: htmx 4.0.0 lets a replaced request free the slot its replacement
++  // holds (htmx#4027), so a typed-past query that answers slower than the newest one swaps last.
++  // A uniform lag cannot see that; it passes on the broken runtime.
++  const lagFor = (event: string) => (event.length < 3 ? 1500 : 50);
+   await page.route(`**${EVENT_LOG}*`, async (route) => {
+-    await new Promise((resolve) => setTimeout(resolve, RESPONSE_LAG_MS));
+-    await route.continue().catch(() => {}); // aborted by sync:replace — expected
++    const event = new URL(route.request().url()).searchParams.get("event") ?? "";
++    await new Promise((resolve) => setTimeout(resolve, lagFor(event)));
++    await route.continue().catch(() => {});
+   });
+ 
+   const settled: string[] = [];
+@@ -277,12 +276,11 @@ test.skip("search: a slow filter settles on the newest query, not one the user t
+   const filter = page.locator('input[name="event"]');
+   for (const value of ["a", "ab", "abc"]) {
+     await filter.fill(value);
+-    await page.waitForTimeout(400); // past the debounce, well inside the response lag
++    await page.waitForTimeout(400); // past the debounce, inside the slow answers
+   }
+-  await page.waitForTimeout(RESPONSE_LAG_MS * 2);
++  await page.waitForTimeout(2500);
+ 
+-  // Under htmx's "queue first" default the third request is dropped and the table settles on
+-  // "ab" while the input reads "abc". `sync: "replace"` abandons the older ones instead.
++  // "queue first" (htmx's default) drops "abc"; "replace" on 4.0.0 lets "ab" land after it.
+   expect(settled.at(-1), `settled on a stale query; responses: ${settled.join(",")}`).toBe("abc");
+   await expect(filter).toHaveValue("abc");
+ });

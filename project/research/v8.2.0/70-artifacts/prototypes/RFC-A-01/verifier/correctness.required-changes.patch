@@ -1,0 +1,52 @@
+--- patched/src/behaviors/client/runtime.ts	2026-10-01 09:57:52
++++ fixed2/src/behaviors/client/runtime.ts	2026-10-01 10:11:55
+@@ -51,7 +51,7 @@
+   el?.classList.toggle(cls, on);
+ };
+ /** Rendered now: a class-hidden element, a closed `<dialog>`/popover and anything under a hidden ancestor have no box. */
+-const shown = (el: Element): boolean => el.getClientRects().length > 0;
++const shown = (el: Element): boolean => el.getClientRects().length > 0 || getComputedStyle(el).display === "contents";
+ 
+ /** Attribute getter for a verb's options — built-in handlers pass kebab-case keys. */
+ function getterFor(carrier: Element, verb: string): (key: string) => string | null {
+@@ -159,7 +159,7 @@
+ };
+ 
+ const focusables = (root: Element): HTMLElement[] =>
+-  [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,[tabindex]")].filter(
++  [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,summary,[tabindex]")].filter(
+     (el) => !(el as HTMLInputElement).disabled && el.tabIndex > -1 && shown(el),
+   );
+ 
+@@ -172,10 +172,18 @@
+   // than becoming a document-wide Tab-killer (the ADR-05 failure class).
+   if (!n) return false;
+   // Every Tab moves within the list: native order is engine-dependent (WebKit skips links by default).
+-  const at = items.indexOf(doc.activeElement as HTMLElement);
+-  e.preventDefault();
+-  items[at < 0 ? (e.shiftKey ? n - 1 : 0) : (at + (e.shiftKey ? n - 1 : 1)) % n]!.focus();
+-  return true;
++  let at = items.indexOf(doc.activeElement as HTMLElement);
++  if (at < 0) at = e.shiftKey ? 0 : n - 1;
++  // A box is not focusability (closed <details>, visibility:hidden, inert, disabled fieldset): step until focus lands.
++  for (let k = n; k--; ) {
++    const el = items[(at = (at + (e.shiftKey ? n - 1 : 1)) % n)]!;
++    el.focus();
++    if (doc.activeElement === el) {
++      e.preventDefault();
++      return true;
++    }
++  }
++  return false;
+ }
+ 
+ // ── built-in handlers (direct attribute reads — kebab keys) ──────
+@@ -455,7 +463,7 @@
+     const c = ((e as CustomEvent).detail as any)?.ctx;
+     const t: unknown = c?.target;
+     const push: unknown = c?.hx?.pushurl ?? c?.push;
+-    if ((t instanceof Element && (t.contains(drawer.t) || t.contains(drawer.g))) || (push && push !== "false")) closeDrawer();
++    if ((t instanceof Element && t !== drawer.t && t.contains(drawer.t)) || (push && push !== "false")) closeDrawer();
+   }
+   lifecycleWalk(e);
+ }

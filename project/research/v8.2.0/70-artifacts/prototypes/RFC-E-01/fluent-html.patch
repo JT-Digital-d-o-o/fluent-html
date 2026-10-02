@@ -1,0 +1,35 @@
+diff --git a/scripts/codemod/storage-fields.ts b/scripts/codemod/storage-fields.ts
+index 6021ccb..e9f3cfc 100644
+--- a/scripts/codemod/storage-fields.ts
++++ b/scripts/codemod/storage-fields.ts
+@@ -42,6 +42,7 @@ import { Node, Project, SyntaxKind, type Expression, type SourceFile, type Type
+ const GETTERS: Readonly<Record<string, { readonly getter: string; readonly fallback?: string }>> = {
+   class: { getter: "getClass", fallback: '""' },
+   enctype: { getter: "getEnctype" },
++  id: { getter: "getId" },
+ };
+ 
+ const COMPOUND_ASSIGN_OPERATORS = new Set<SyntaxKind>([
+diff --git a/src/core/tag.ts b/src/core/tag.ts
+index 2b01bad..4dee9b3 100644
+--- a/src/core/tag.ts
++++ b/src/core/tag.ts
+@@ -147,6 +147,18 @@ export class Tag {
+     return this._class;
+   }
+ 
++  /**
++   * Read the element's `id` (or `undefined` when none is set). A wrapper handed a built
++   * control reads it to point a `label for` / `aria-describedby` at the id the control
++   * already carries, including the one `Form<T>` stamps (with its `idPrefix`).
++   *
++   * @example
++   * Label(text).setFor(control.getId())
++   */
++  getId(): string | undefined {
++    return this._id;
++  }
++
+   /**
+    * Append classes to the element's existing `class` attribute.
+    *

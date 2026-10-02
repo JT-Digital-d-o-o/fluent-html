@@ -1,0 +1,97 @@
+diff --git a/scripts/gen-vocab/tailwind-types.template.txt b/scripts/gen-vocab/tailwind-types.template.txt
+index 87afdfd..c462b2d 100644
+--- a/scripts/gen-vocab/tailwind-types.template.txt
++++ b/scripts/gen-vocab/tailwind-types.template.txt
+@@ -42,6 +42,12 @@ export type TailwindHeight =
+   | TailwindSpacing | "auto" | "full" | "screen" | "svh" | "lvh" | "dvh" | "min" | "max" | "fit"
+   | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6";
+ 
++// Width + height values (`size-*`). CLOSED: the values both axes share, minus `screen`
++// (`size-screen` is not a Tailwind class; write `.w("screen").h("screen")`).
++export type TailwindSize =
++  | TailwindSpacing | "auto" | "full" | "min" | "max" | "fit" | "dvw" | "dvh" | "svw" | "svh" | "lvw" | "lvh"
++  | "1/2" | "1/3" | "2/3" | "1/4" | "2/4" | "3/4" | "1/5" | "2/5" | "3/5" | "4/5" | "1/6" | "2/6" | "3/6" | "4/6" | "5/6";
++
+ // Max-width values. CLOSED — explicit `[${string}]` arm (this union does not embed TailwindSpacing).
+ export type TailwindMaxWidth =
+   | "0" | "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl"
+diff --git a/src/class-vocab/vocab.ts b/src/class-vocab/vocab.ts
+index e448dc0..5b483ab 100644
+--- a/src/class-vocab/vocab.ts
++++ b/src/class-vocab/vocab.ts
+@@ -154,6 +154,7 @@ export const classVocab: readonly UtilityDef[] = [
+   // Sizing
+   size("w", "w", { values: ref("TailwindWidth"), doc: "Width — spacing scale, fractions, keywords, or the unit overload." }),
+   size("h", "h", { values: ref("TailwindHeight"), doc: "Height — spacing scale, fractions, keywords, or the unit overload." }),
++  size("size", "size", { values: ref("TailwindSize"), doc: "Width and height together (`size-*`): spacing scale, fractions, keywords, or the unit overload." }),
+   size("maxW", "max-w", { values: ref("TailwindMaxWidth"), doc: "Max-width — named container sizes, keywords, or the unit overload." }),
+   size("minW", "min-w", { values: ref("TailwindMinWidth"), doc: "Min-width." }),
+   size("maxH", "max-h", { values: ref("TailwindMaxHeight"), doc: "Max-height." }),
+diff --git a/src/core/index.ts b/src/core/index.ts
+index ee9c9ee..254c45b 100644
+--- a/src/core/index.ts
++++ b/src/core/index.ts
+@@ -53,6 +53,7 @@ export type {
+   TailwindSpacing,
+   TailwindWidth,
+   TailwindHeight,
++  TailwindSize,
+   TailwindMaxWidth,
+   TailwindMinWidth,
+   TailwindMaxHeight,
+diff --git a/src/core/tailwind-methods.ts b/src/core/tailwind-methods.ts
+index 43c485b..709471c 100644
+--- a/src/core/tailwind-methods.ts
++++ b/src/core/tailwind-methods.ts
+@@ -17,6 +17,7 @@ import type {
+   TailwindSpacing,
+   TailwindWidth,
+   TailwindHeight,
++  TailwindSize,
+   TailwindMaxWidth,
+   TailwindMinWidth,
+   TailwindMaxHeight,
+@@ -243,6 +244,8 @@ declare module "./tag.js" {
+     w(unit: TailwindUnit, amount: number): this;
+     h(value: TailwindHeight): this;
+     h(unit: TailwindUnit, amount: number): this;
++    size(value: TailwindSize | (string & { readonly 'size() takes a TailwindSize; for size-screen write .w("screen").h("screen")': never }) | (number & { readonly 'size() takes a string step, .size("4"); the <select size> attribute is .setSize(n)': never })): this;
++    size(unit: TailwindUnit, amount: number): this;
+     maxW(value: TailwindMaxWidth): this;
+     maxW(unit: TailwindUnit, amount: number): this;
+     minW(value: TailwindMinWidth): this;
+@@ -695,6 +698,10 @@ p.h = function (unitOrValue: string, amount?: number) {
+   if (amount !== undefined) return this.addClass(`h-[${amount}${unitOrValue}]`);
+   return this.addClass(`h-${unitOrValue}`);
+ };
++p.size = function (unitOrValue: string | number, amount?: number) {
++  if (amount !== undefined) return this.addClass(`size-[${amount}${unitOrValue}]`);
++  return this.addClass(`size-${unitOrValue}`);
++};
+ p.maxW = function (unitOrValue: string, amount?: number) {
+   if (amount !== undefined) return this.addClass(`max-w-[${amount}${unitOrValue}]`);
+   return this.addClass(`max-w-${unitOrValue}`);
+diff --git a/test/vocab-coverage.test.ts b/test/vocab-coverage.test.ts
+index 07e67eb..fd05c23 100644
+--- a/test/vocab-coverage.test.ts
++++ b/test/vocab-coverage.test.ts
+@@ -47,7 +47,6 @@ const IGNORED_ROOTS: readonly IgnoredRoot[] = [
+   // Backlog — no fluent method yet (see vocab-generator/backlog.md)
+   { prefix: "align", reason: "backlog: vertical-align" },
+   { prefix: "basis", reason: "backlog: flex-basis" },
+-  { prefix: "size", reason: "backlog: size-* (width+height shorthand)" },
+   { prefix: "origin", reason: "backlog: transform-origin" },
+   { prefix: "indent", reason: "backlog: text-indent" },
+   { prefix: "tab", reason: "backlog: tab-size" },
+diff --git a/test/vocab-validity.test.ts b/test/vocab-validity.test.ts
+index dbd4e7c..f250065 100644
+--- a/test/vocab-validity.test.ts
++++ b/test/vocab-validity.test.ts
+@@ -56,6 +56,7 @@ const ORACLE_ARGS: Readonly<Record<string, readonly (readonly string[])[]>> = {
+   // Sizing
+   w: [["full"], ["px", "180"]],
+   h: [["8"], ["dvh", "100"]],
++  size: [["4"], ["px"], ["0.5"], ["full"], ["auto"], ["min"], ["max"], ["fit"], ["dvw"], ["dvh"], ["svw"], ["svh"], ["lvw"], ["lvh"], ["1/2"], ["5/6"], ["[18px]"], ["px", "18"], ["rem", "1.5"]],
+   maxW: [["md"], ["rem", "12"]],
+   minW: [["0"]],
+   maxH: [["screen"]],

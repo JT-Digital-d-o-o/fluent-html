@@ -1,0 +1,97 @@
+diff --git a/project/pm/INDEX.md b/project/pm/INDEX.md
+index 41c8244..2881542 100644
+--- a/project/pm/INDEX.md
++++ b/project/pm/INDEX.md
+@@ -18,4 +18,4 @@ v6: a greenfield, v4-native, instruction-set rewrite of the contract for new pro
+ | Phase | Package | Where tracked |
+ |------|---------|---------------|
+ | P5 | `@fluent-html/fastify` — render adapter + context system | future package scope |
+-| P6 | `@jtdigital/ui` + `@jtdigital/web` — design system + auth/i18n/errors | `projects-template/.../template-update/fluent-html-v6-alignment.md` |
++| P6 | `@jtdigital/web` — auth/i18n/errors (components stay in each app's `src/shared/ui`) | `projects-template/.../template-update/fluent-html-v6-alignment.md` |
+diff --git a/project/pm/core-primitives/prd.md b/project/pm/core-primitives/prd.md
+index 49ef2b6..ab15b1e 100644
+--- a/project/pm/core-primitives/prd.md
++++ b/project/pm/core-primitives/prd.md
+@@ -2,7 +2,7 @@
+ 
+ ## Problem
+ 
+-A handful of Track-B patterns genuinely **need library support** (type machinery, native elements, render-known classes) but are reimplemented per app today — typed form binding (`FormGroup` in 8 apps), modal show/hide JS-strings (5+ apps), 170+ raw `<svg>` icon calls via `Raw(string)` (an injection sink), and `htmx-indicator` applied via raw `.setClass`. Per the instruction-set decision, only these primitives stay in core; the opinionated component shells around them are cut to `@jtdigital/ui`.
++A handful of Track-B patterns genuinely **need library support** (type machinery, native elements, render-known classes) but are reimplemented per app today — typed form binding (`FormGroup` in 8 apps), modal show/hide JS-strings (5+ apps), 170+ raw `<svg>` icon calls via `Raw(string)` (an injection sink), and `htmx-indicator` applied via raw `.setClass`. Per the instruction-set decision, only these primitives stay in core; the opinionated component shells around them are cut to the app's `src/shared/ui`.
+ 
+ ## Appetite
+ 
+@@ -20,7 +20,7 @@ Contracts: [`v6-spec.md`](../../../product/research/v6/40-synthesis/v6-spec.md)
+ 
+ ## Rabbit Holes
+ 
+-- **Cut the component shells** — `Field`/`FieldError`/`FieldHint`, `Modal`/`Drawer`/`ToastContainer`, `Alert`/`Badge`/`Card`/…, `Icon` + icon set, `Table.of` data-grid, `SeoHead` → `@jtdigital/ui` (P6).
++- **Cut the component shells** — `Field`/`FieldError`/`FieldHint`, `Modal`/`Drawer`/`ToastContainer`, `Alert`/`Badge`/`Card`/…, `Icon` + icon set, `Table.of` data-grid, `SeoHead` → the app's `src/shared/ui`.
+ - **`.gradient()` is C-03**, not a P4 story.
+ - **No `Raw(icon)`** — SVG element coverage replaces the string-icon sink.
+ 
+@@ -28,4 +28,4 @@ Contracts: [`v6-spec.md`](../../../product/research/v6/40-synthesis/v6-spec.md)
+ 
+ - No opinionated component shells in core.
+ - No `formFor` name (the HOF `Form<T>(state, f => …)` is the binding), no `FormErrors`, no `resetOnSuccess` (→ `outerHTML`-swap guideline).
+-- No bundled icon set in core (opinionated content + license → `@jtdigital/ui`).
++- No bundled icon set in core (opinionated content + license → the app).
+diff --git a/project/pm/decisions.md b/project/pm/decisions.md
+index 406112a..a1d3e51 100644
+--- a/project/pm/decisions.md
++++ b/project/pm/decisions.md
+@@ -29,6 +29,7 @@
+ **Decision:** Core ships **primitives that need library support** (type machinery, render support, native elements, behaviors, styling methods, `defineTheme()`). Opinionated visual components are **user-land** (`@jtdigital/ui`). Converge — no two ways to do one thing.
+ **Reasoning:** The fix for "Alert duplicated in 7 apps" is one shared component package, not the library shipping an opinionated Alert. Test: *"can a user compose this from the instruction set?"* → yes = cut.
+ **Consequences:** Re-scopes Track B — most components cut to user-land; core keeps `Form<T>`, dialog behaviors, `.gradient()`, SVG coverage, `.htmxIndicator()`. The cut surface moves to the template + `@jtdigital/ui`.
++**Superseded in part (01. 10. 26):** the `@jtdigital/ui` home, by "Components live in the app's `src/shared/ui`; `@jtdigital/ui` retired" below.
+ 
+ ## Pure core — no context, no framework glue
+ **Date:** 23. 06. 26
+@@ -99,3 +100,10 @@
+ **Decision:** The tier-1 member is **`xl2`** in both positions — `.xl2({…})` and `{ xl2: {…} }` — emitting the `2xl:` prefix. The generic `.variant("2xl", {…})` form (whose `TailwindBreakpoint` union already contains `"2xl"`) remains the exact-spelling route, as it is for every other variant. Container-query breakpoints (`@sm`, `@max-lg`, …) stay `.variant()`-only.
+ **Reasoning:** A quoted `"2xl"` key would be the only quoted member of the whole surface — visually inconsistent, easy for an LLM to mis-emit unquoted (a compile error, but a needless one), and unusable as a method name, splitting the spelling across positions (`.variant("2xl")` but `md: { "2xl": … }`). `xl2` is one uniform identifier in both positions, keeps the breakpoint family prefix-sortable (`sm md lg xl xl2`), and lands in the already-documented "where names diverge from raw Tailwind" divergence family (compound-prefix boundary, `.neg()`, translate axis). Divergence cost is low: `2xl` is rare, and the generic form preserves the trained spelling.
+ **Consequences:** `DIRECT_VARIANTS` maps `xl2 → "2xl"`; docs teach `xl2` in the tier-1 table and note the divergence in FLUENT-STYLING's divergence section; the ESLint derived tables treat `xl2` as the owner of the `2xl:` prefix.
++
++## Components live in the app's `src/shared/ui`; `@jtdigital/ui` retired
++**Date:** 01. 10. 26
++**Context:** The instruction-set decision (23. 06. 26) named `@jtdigital/ui` as the user-land home. That package (`projects-template/packages/ui`) had 0 consumers in 58 repos and 36 lint errors, and as a dependency its classes miss the app safelist. Every app carries `src/shared/ui`, seeded by the template.
++**Decision:** User-land components live in the app's `src/shared/ui`; the template seeds it. `packages/ui` is deleted. The instruction-set test is unchanged.
++**Reasoning:** One component layer, the one apps import, inside the `src/**/*.ts` safelist glob. v8.2.0 RFC-C-04.
++**Consequences:** "Cut to user-land" rulings (L-411, L-188, L-190, L-236, L-238) point at `src/shared/ui`. No package names a design system.
+diff --git a/project/pm/prd.md b/project/pm/prd.md
+index 7c50ddf..61ea614 100644
+--- a/project/pm/prd.md
++++ b/project/pm/prd.md
+@@ -27,7 +27,7 @@ Large — multi-cycle, sequenced in **6 dependency phases** (roadmap §2). This
+ | P3 | [core-api](core-api/) | `.toggle()`/ARIA/`_sk`/transforms/`.overlay()`/`Document()`/control-flow |
+ | P4 | [core-primitives](core-primitives/) | `Form<T>`, dialog behaviors, SVG coverage, `.htmxIndicator()` |
+ 
+-**Downstream packages (out of this scope):** P5 `@fluent-html/fastify` (render adapter + context system) and P6 `@jtdigital/ui` / `@jtdigital/web` (design system + auth/i18n/errors). The cut surface is tracked in `projects-template/project/pm/template-update/fluent-html-v6-alignment.md`.
++**Downstream packages (out of this scope):** P5 `@fluent-html/fastify` (render adapter + context system) and P6 `@jtdigital/web` (auth/i18n/errors); components stay in each app's `src/shared/ui`. The cut surface is tracked in `projects-template/project/pm/template-update/fluent-html-v6-alignment.md`.
+ 
+ ## Solution
+ 
+@@ -46,6 +46,6 @@ P1 and P2 are independent foundations (buildable in parallel). P3 builds on both
+ ## No-Gos
+ 
+ - No context/DI mechanism in `fluent-html` core (→ `@fluent-html/fastify`).
+-- No opinionated visual components in core (Alert/Badge/Card/Modal/… → `@jtdigital/ui`).
++- No opinionated visual components in core (Alert/Badge/Card/Modal/… → the app's `src/shared/ui`).
+ - No two ways to do one thing — converge (one `defineTheme()`, one `.toggle()`, one `.overlay()`).
+ - No `(string & {})` on themeable unions — they close so tokens typo-check.
+diff --git a/src/elements/forms.ts b/src/elements/forms.ts
+index 2ccc7ea..dee6f9a 100644
+--- a/src/elements/forms.ts
++++ b/src/elements/forms.ts
+@@ -521,8 +521,8 @@ function createFormBinding<T>(state?: FormState<T>): FormBinding<T> {
+     },
+     error(name) {
+       const message = errors[name];
+-      // Unstyled span (the styled FieldError shell lives in @jtdigital/ui), id-linked to the
+-      // control via `aria-describedby` so the message and its input are wired as one unit.
++      // Unstyled span, id-linked to the control via `aria-describedby` so the message and its
++      // input are wired as one unit.
+       return message ? El("span", message).setId(errorId(name)) : Empty();
+     },
+   };

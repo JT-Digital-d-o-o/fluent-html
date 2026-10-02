@@ -1,0 +1,108 @@
+diff --git a/src/patterns.ts b/src/patterns.ts
+index 11493d8..75e2c8d 100644
+--- a/src/patterns.ts
++++ b/src/patterns.ts
+@@ -12,7 +12,7 @@ import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
+ import type { Id, Rooted } from "./ids.js";
+ import { isId } from "./ids.js";
+ import { render } from "./render/render.js";
+-import { sanitizeUrl } from "./render/escape.js";
++import { sanitizeHtmxUrl as sanitizeUrl } from "./render/escape.js";
+ 
+ // HTTP header values must be Latin-1 — Node's setHeader throws ERR_INVALID_CHAR on
+ // any character above U+00FF (routine in non-English detail payloads: š, č, emoji,
+diff --git a/src/render/escape.ts b/src/render/escape.ts
+index 0c4427f..f4be70a 100644
+--- a/src/render/escape.ts
++++ b/src/render/escape.ts
+@@ -73,6 +73,10 @@ const SAFE_DATA_URL_RE =
+  * for it deliberately in the rare case you need a `javascript:` URL.
+  */
+ export function sanitizeUrl(url: string): string {
++  return sanitizeUrlFor(url, false);
++}
++
++function sanitizeUrlFor(url: string, htmx: boolean): string {
+   // Fast path (no allocation): no ':' means a relative URL/fragment, and a ':'
+   // preceded by '/', '?' or '#' is a path/query/fragment colon, not a scheme.
+   const colon = url.indexOf(":");
+@@ -88,14 +92,24 @@ export function sanitizeUrl(url: string): string {
+     const scheme = url.slice(0, colon).toLowerCase();
+     if (scheme === "javascript" || scheme === "vbscript" || scheme === "js") return BLOCKED_URL;
+     if (scheme !== "data") return url;
++    if (htmx) return BLOCKED_URL;
+   }
+   // Possible scheme — normalize the way a browser would, then inspect it.
+   const probe = url.replace(URL_SCHEME_NOISE_RE, "").toLowerCase();
+   if (probe.startsWith("javascript:") || probe.startsWith("vbscript:") || probe.startsWith("js:")) return BLOCKED_URL;
+-  if (probe.startsWith("data:") && !SAFE_DATA_URL_RE.test(probe)) return BLOCKED_URL;
++  if (probe.startsWith("data:") && (htmx || !SAFE_DATA_URL_RE.test(probe))) return BLOCKED_URL;
+   return url;
+ }
+ 
++/**
++ * `sanitizeUrl` for a value htmx fetches and swaps as HTML (endpoint, push/replace, the
++ * HxResponse URL headers): every `data:` URL is blocked, not only the scriptable media types.
++ * @internal
++ */
++export function sanitizeHtmxUrl(url: string): string {
++  return sanitizeUrlFor(url, true);
++}
++
+ /**
+  * The prefix htmx 4 reads as "run this as JavaScript" in `hx-confirm` and `hx-vals`
+  * (case-sensitive, untrimmed: htmx.js #extractJavascriptContent), or `null`.
+diff --git a/src/render/serialize.ts b/src/render/serialize.ts
+index 65f8c77..a886014 100644
+--- a/src/render/serialize.ts
++++ b/src/render/serialize.ts
+@@ -5,7 +5,7 @@ import type { Tag } from "../core/tag.js";
+ import type { View } from "../core/types.js";
+ import { isTag, isRawString } from "../core/guards.js";
+ import { devChecks, nextRenderEpoch } from "../core/dev-checks.js";
+-import { escapeHtml, escapeAttr, sanitizeUrl, htmxScriptPrefix } from "./escape.js";
++import { escapeHtml, escapeAttr, sanitizeUrl, sanitizeHtmxUrl, htmxScriptPrefix } from "./escape.js";
+ 
+ // URL-valued attributes emitted by the typed setters. Their values are run
+ // through sanitizeUrl (scheme filtering) before attribute-escaping, so a
+@@ -137,7 +137,7 @@ const RESERVED_BAG_KEYS = new Set<string>(['id', 'class', 'style']);
+ 
+ /** Serialize an HTMX config to its attribute string. @internal */
+ export function buildHtmx(htmx: HTMX): string {
+-  let result = 'hx-' + htmx.method + '="' + escapeAttr(sanitizeUrl(htmx.endpoint)) + '"';
++  let result = 'hx-' + htmx.method + '="' + escapeAttr(sanitizeHtmxUrl(htmx.endpoint)) + '"';
+ 
+   if (htmx.target !== undefined) result += ' hx-target="' + escapeAttr(htmx.target) + '"';
+   if (htmx.swap !== undefined) result += ' hx-swap="' + escapeAttr(htmx.swap) + '"';
+@@ -146,8 +146,8 @@ export function buildHtmx(htmx: HTMX): string {
+   if (htmx.select !== undefined) result += ' hx-select="' + escapeAttr(htmx.select) + '"';
+   if (htmx.trigger !== undefined) result += ' hx-trigger="' + escapeAttr(htmx.trigger) + '"';
+   // push-url / replace-url: the literal `false` is meaningful htmx grammar, so it is kept.
+-  if (htmx.pushUrl !== undefined) result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(sanitizeUrl(htmx.pushUrl)) : htmx.pushUrl) + '"';
+-  if (htmx.replaceUrl !== undefined) result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(sanitizeUrl(htmx.replaceUrl)) : htmx.replaceUrl) + '"';
++  if (htmx.pushUrl !== undefined) result += ' hx-push-url="' + (typeof htmx.pushUrl === 'string' ? escapeAttr(sanitizeHtmxUrl(htmx.pushUrl)) : htmx.pushUrl) + '"';
++  if (htmx.replaceUrl !== undefined) result += ' hx-replace-url="' + (typeof htmx.replaceUrl === 'string' ? escapeAttr(sanitizeHtmxUrl(htmx.replaceUrl)) : htmx.replaceUrl) + '"';
+   if (htmx.vals !== undefined) result += ' hx-vals="' + (typeof htmx.vals === 'string' ? htmxText(htmx.vals) : escapeAttr(JSON.stringify(htmx.vals))) + '"';
+   if (htmx.headers !== undefined) result += ' hx-headers="' + escapeAttr(JSON.stringify(htmx.headers)) + '"';
+   if (htmx.include !== undefined) result += ' hx-include="' + escapeAttr(htmx.include) + '"';
+@@ -193,13 +193,18 @@ function htmxText(value: string): string {
+   return htmxScriptPrefix(value) === null ? escapeAttr(value) : '&#8203;' + escapeAttr(value);
+ }
+ 
++// HCON has no escape: whitespace, ',' and quotes would start a new key (text:, target:…).
++function hconUrl(url: string): string {
++  return sanitizeHtmxUrl(url).replace(/[\s,'"]/g, (c) => (c === "'" ? '%27' : encodeURIComponent(c)));
++}
++
+ function buildStatusConfig(cfg: HxStatusConfig): string {
+   const parts: string[] = [];
+   if (cfg.swap) parts.push('swap:' + cfg.swap);
+   if (cfg.target) parts.push('target:' + cfg.target);
+   if (cfg.select) parts.push('select:' + cfg.select);
+-  if (cfg.push !== undefined) parts.push('push:' + (typeof cfg.push === 'string' ? sanitizeUrl(cfg.push) : cfg.push));
+-  if (cfg.replace !== undefined) parts.push('replace:' + (typeof cfg.replace === 'string' ? sanitizeUrl(cfg.replace) : cfg.replace));
++  if (cfg.push !== undefined) parts.push('push:' + (typeof cfg.push === 'string' ? hconUrl(cfg.push) : cfg.push));
++  if (cfg.replace !== undefined) parts.push('replace:' + (typeof cfg.replace === 'string' ? hconUrl(cfg.replace) : cfg.replace));
+   if (cfg.transition !== undefined) parts.push('transition:' + cfg.transition);
+   return parts.join(' ');
+ }

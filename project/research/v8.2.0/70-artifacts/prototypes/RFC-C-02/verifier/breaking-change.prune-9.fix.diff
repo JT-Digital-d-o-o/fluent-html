@@ -1,0 +1,158 @@
+--- <scratch>/wave2/RFC-C-02/lib/scripts/codemod/prune-9.ts	2026-10-01 12:43:01
++++ <scratch>/wave3/RFC-C-02-breaking-change/fix/prune-9.ts	2026-10-01 13:34:14
+@@ -19,7 +19,7 @@
+ import * as path from "node:path";
+ import { pathToFileURL } from "node:url";
+ 
+-import { Node, Project, type CallExpression, type Expression, type SourceFile, type Type } from "ts-morph";
++import { Node, Project, SyntaxKind, ts, type CallExpression, type Expression, type SourceFile, type Type } from "ts-morph";
+ 
+ /** Root exports 9.0.0 keeps only on their subpath. */
+ export const MOVED_TO_SUBPATH: Readonly<Record<string, string>> = {
+@@ -91,9 +91,15 @@
+   const [o] = args;
+   if (args.length !== 1 || !Node.isObjectLiteralExpression(o)) return { skip: "setMicrodata argument is not an object literal" };
+   if (o.getProperties().some((p) => !Node.isPropertyAssignment(p))) return { skip: "setMicrodata object has spread/shorthand members" };
++  let maybeUndefined = false;
+   const get = (k: string): string | undefined => {
+     const p = o.getProperty(k);
+-    return p && Node.isPropertyAssignment(p) ? p.getInitializerOrThrow().getText() : undefined;
++    if (!p || !Node.isPropertyAssignment(p)) return undefined;
++    const init = p.getInitializerOrThrow();
++    const t = init.getType();
++    const stringish = (u: Type): boolean => u.isString() || u.isStringLiteral() || u.isTemplateLiteral();
++    if (!(stringish(t) || (t.isUnion() && t.getUnionTypes().every(stringish)))) maybeUndefined = true;
++    return init.getText();
+   };
+   const parts: string[] = [];
+   const t = get("type"), pr = get("prop"), r = get("ref"), i = get("id");
+@@ -101,6 +107,7 @@
+   if (pr !== undefined) parts.push(`addAttribute("itemprop", ${pr})`);
+   if (r !== undefined) parts.push(`addAttribute("itemref", ${r})`);
+   if (i !== undefined) parts.push(`addAttribute("itemid", ${i})`);
++  if (maybeUndefined) return { skip: "a setMicrodata value does not type as string (setMicrodata skipped undefined; addAttribute would not)" };
+   return parts.length ? { text: parts.join(".") } : { skip: "setMicrodata({}) writes nothing; delete the call" };
+ }
+ 
+@@ -116,29 +123,41 @@
+   return out;
+ }
+ 
+-export function collectEdits(file: SourceFile, specs: ReadonlySet<string>): { edits: Edit[]; skips: Skip[] } {
++export function collectEdits(file: SourceFile, specs: ReadonlySet<string>, opts: { readonly node10?: boolean } = {}): { edits: Edit[]; skips: Skip[] } {
+   const edits: Edit[] = [];
+   const skips: Skip[] = [];
++  const isRoot = (spec: string): boolean => specs.has(spec);
++  const isLib = (spec: string): boolean => isRoot(spec) || [...specs].some((s) => spec.startsWith(`${s}/`));
++  const libImports = file.getImportDeclarations().filter((imp) => isLib(imp.getModuleSpecifierValue()));
++  let forEachBound = libImports.some((imp) => imp.getNamedImports().some((ni) => ni.getName() === "ForEach" && !ni.getAliasNode()));
+   let repeatLocal: string | undefined;
+-  for (const imp of file.getImportDeclarations()) {
++  const namespaces = new Set<string>();
++  for (const imp of libImports) {
+     const spec = imp.getModuleSpecifierValue();
+-    if (!specs.has(spec)) continue;
++    const ns = imp.getNamespaceImport();
++    if (ns) { namespaces.add(ns.getText()); continue; }
+     const moved = new Map<string, string[]>();
+     const keep: string[] = [];
+     let changed = false;
+-    let hasForEach = false;
+     for (const ni of imp.getNamedImports()) {
+       const name = ni.getName();
+       const alias = ni.getAliasNode()?.getText();
+-      if (name === "ForEach") hasForEach = true;
+       if (name === "Repeat") {
+         changed = true;
+         if (alias) keep.push(`ForEach as ${alias}`);
+-        else repeatLocal = "Repeat";
++        else {
++          repeatLocal = "Repeat";
++          if (!forEachBound) { keep.push("ForEach"); forEachBound = true; }
++        }
+         continue;
+       }
+-      const sub = MOVED_TO_SUBPATH[name];
++      const sub = isRoot(spec) ? MOVED_TO_SUBPATH[name] : undefined;
+       if (sub) {
++        if (opts.node10) {
++          skips.push({ line: ni.getStartLineNumber(), name, reason: `moduleResolution node10 cannot resolve "${spec}/${sub}" types; set moduleResolution to node16/nodenext/bundler, then re-run` });
++          keep.push(ni.getText());
++          continue;
++        }
+         changed = true;
+         const list = moved.get(sub) ?? [];
+         list.push(ni.getText());
+@@ -147,7 +166,6 @@
+       }
+       keep.push(ni.getText());
+     }
+-    if (repeatLocal === "Repeat" && !hasForEach) keep.push("ForEach");
+     if (!changed) continue;
+     const typeOnly = imp.isTypeOnly() ? "type " : "";
+     const def = imp.getDefaultImport()?.getText();
+@@ -156,13 +174,30 @@
+     for (const [sub, names] of moved) lines.push(`import ${typeOnly}{ ${names.join(", ")} } from "${spec}/${sub}";`);
+     edits.push({ start: imp.getStart(), end: imp.getEnd(), text: lines.join("\n") });
+   }
++  for (const exp of file.getExportDeclarations()) {
++    const spec = exp.getModuleSpecifierValue();
++    if (!spec || !isLib(spec)) continue;
++    for (const ne of exp.getNamedExports()) if (ne.getName() in PRUNED_9) skips.push({ line: ne.getStartLineNumber(), name: ne.getName(), reason: "re-export of a removed root name; rewrite by hand" });
++  }
++  const importsLib = libImports.length > 0;
+   file.forEachDescendant((node) => {
+-    if (!Node.isCallExpression(node)) return;
+-    const callee = node.getExpression();
+-    if (repeatLocal === "Repeat" && Node.isIdentifier(callee) && callee.getText() === "Repeat") {
+-      edits.push({ start: callee.getStart(), end: callee.getEnd(), text: "ForEach" });
++    if (repeatLocal === "Repeat" && Node.isIdentifier(node) && node.getText() === "Repeat" && !node.getFirstAncestorByKind(SyntaxKind.ImportDeclaration)) {
++      const parent = node.getParent();
++      const isMemberName = parent && Node.isPropertyAccessExpression(parent) && parent.getNameNode() === node;
++      const bound = node.getSymbol()?.getDeclarations().some((d) => Node.isImportSpecifier(d)) ?? false;
++      if (!isMemberName && bound) edits.push({ start: node.getStart(), end: node.getEnd(), text: "ForEach" });
+       return;
+     }
++    if (Node.isPropertyAccessExpression(node) && namespaces.has(node.getExpression().getText()) && node.getName() in PRUNED_9) {
++      skips.push({ line: node.getStartLineNumber(), name: node.getName(), reason: "namespace-import member; rewrite by hand" });
++      return;
++    }
++    if ((Node.isPropertyAssignment(node) || Node.isShorthandPropertyAssignment(node)) && node.getName() === "containerQuery" && importsLib) {
++      skips.push({ line: node.getStartLineNumber(), name: "containerQuery", reason: 'style-object key removed; use cssProp: ["container-type", "inline-size"]' });
++      return;
++    }
++    if (!Node.isCallExpression(node)) return;
++    const callee = node.getExpression();
+     if (!Node.isPropertyAccessExpression(callee)) return;
+     const name = callee.getName();
+     if (!METHODS.has(name)) return;
+@@ -173,16 +208,6 @@
+     if (text === undefined) skips.push({ line, name, reason: skip ?? "unsupported" });
+     else edits.push({ start: callee.getNameNode().getStart(), end: node.getEnd(), text });
+   });
+-  // `containerQuery` as a style-object key inside a Tag call: report (the successor is the `cssProp` key).
+-  file.forEachDescendant((node) => {
+-    if (!Node.isPropertyAssignment(node) || node.getName() !== "containerQuery") return;
+-    const inTagCall = node.getAncestors().some((a) => {
+-      if (!Node.isCallExpression(a)) return false;
+-      const c = a.getExpression();
+-      return Node.isPropertyAccessExpression(c) && receiverIsTag(c.getExpression());
+-    });
+-    if (inTagCall) skips.push({ line: node.getStartLineNumber(), name: "containerQuery", reason: 'style-object key removed; use cssProp: ["container-type", "inline-size"]' });
+-  });
+   return { edits, skips };
+ }
+ 
+@@ -207,7 +232,11 @@
+   const files = project.getSourceFiles().filter((f) => !f.isDeclarationFile() && !f.getFilePath().includes("/node_modules/"));
+   let totalEdits = 0;
+   let totalSkips = 0;
+-  const collected = files.map((file) => ({ file, ...collectEdits(file, specs) }));
++  const co = project.getCompilerOptions();
++  const mk = ts.ModuleKind;
++  const mr = co.moduleResolution ?? (co.module === mk.Node16 || co.module === mk.NodeNext ? ts.ModuleResolutionKind.Node16 : co.module === mk.Preserve ? ts.ModuleResolutionKind.Bundler : co.module === mk.CommonJS || co.module === undefined ? ts.ModuleResolutionKind.Node10 : ts.ModuleResolutionKind.Classic);
++  const node10 = mr === ts.ModuleResolutionKind.Node10 || mr === ts.ModuleResolutionKind.Classic;
++  const collected = files.map((file) => ({ file, ...collectEdits(file, specs, { node10 }) }));
+   for (const { file, edits, skips } of collected) {
+     for (const s of skips) console.warn(`SKIP ${file.getFilePath()}:${s.line} ${s.name} — ${s.reason}`);
+     totalSkips += skips.length;

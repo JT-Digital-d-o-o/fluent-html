@@ -1,0 +1,61 @@
+--- fluent-html/src/render/serialize.ts	2026-08-14 08:10:41
++++ src/render/serialize.ts	2026-10-01 12:47:30
+@@ -184,9 +184,34 @@
+   }
+ 
+   return result;
++}
++
++// htmx parses hx-status as HCON: a bare value ends at whitespace or a comma, and a leading
++// `"`, `'` or `<` opens a delimited form. Any other value is emitted double-quoted; one that
++// itself holds `"` switches the whole config to the JSON object form HCON also accepts.
++const HCON_BREAK_RE = /[\s,]/;
++
++// A value already written as one whole HCON token ("…", '…', <…/>) worked unquoted on 8.1.0; keep it verbatim.
++const HCON_TOKEN_RE = /^(?:"[^"]*"|'[^']*'|<(?:[^/]|\/(?!>))+\/>)$/;
++
++function hconBare(v: unknown): boolean {
++  const s = typeof v === 'string' ? v : String(v);
++  if (s === '') return false;
++  const c = s.charCodeAt(0);
++  if (c === 34 || c === 39 || c === 60) return HCON_TOKEN_RE.test(s);
++  return !HCON_BREAK_RE.test(s);
++}
++
++function hconUnwrap(s: string): string {
++  if (!HCON_TOKEN_RE.test(s)) return s;
++  return s.charCodeAt(0) === 60 ? s.slice(1, -2) : s.slice(1, -1);
+ }
+ 
+ function buildStatusConfig(cfg: HxStatusConfig): string {
++  if ((cfg.swap && !hconBare(cfg.swap)) || (cfg.target && !hconBare(cfg.target)) || (cfg.select && !hconBare(cfg.select))
++    || (typeof cfg.push === 'string' && !hconBare(cfg.push)) || (typeof cfg.replace === 'string' && !hconBare(cfg.replace))) {
++    return quotedStatusConfig(cfg);
++  }
+   const parts: string[] = [];
+   if (cfg.swap) parts.push('swap:' + cfg.swap);
+   if (cfg.target) parts.push('target:' + cfg.target);
+@@ -197,6 +222,23 @@
+   return parts.join(' ');
+ }
+ 
++function quotedStatusConfig(cfg: HxStatusConfig): string {
++  const pairs: [string, string | boolean][] = [];
++  if (cfg.swap) pairs.push(['swap', String(cfg.swap)]);
++  if (cfg.target) pairs.push(['target', String(cfg.target)]);
++  if (cfg.select) pairs.push(['select', String(cfg.select)]);
++  if (cfg.push !== undefined) pairs.push(['push', cfg.push]);
++  if (cfg.replace !== undefined) pairs.push(['replace', cfg.replace]);
++  if (cfg.transition !== undefined) pairs.push(['transition', cfg.transition]);
++  let out = '';
++  for (const [key, v] of pairs) {
++    const bare = typeof v !== 'string' || hconBare(v);
++    if (!bare && v.includes('"')) return JSON.stringify(Object.fromEntries(pairs.map(([k, x]) => [k, typeof x === 'string' ? hconUnwrap(x) : x])));
++    out += (out === '' ? '' : ' ') + key + ':' + (bare ? v : '"' + v + '"');
++  }
++  return out;
++}
++
+ // Closing tags inside script/style (case-insensitive). Only the closer is neutralized:
+ // `<\/script` is byte-safe (the `\` lands before `/`, harmless in a JS string/regex, and
+ // `</script>` is never valid JS). Neutralizing the `<!--`/`<script` OPENERS (to defeat the

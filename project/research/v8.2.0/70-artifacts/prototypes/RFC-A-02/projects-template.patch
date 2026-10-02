@@ -1,0 +1,431 @@
+diff --git a/templates/full-stack/eslint.config.mjs b/templates/full-stack/eslint.config.mjs
+index 5e39119..580eae1 100644
+--- a/templates/full-stack/eslint.config.mjs
++++ b/templates/full-stack/eslint.config.mjs
+@@ -4,6 +4,7 @@ import fluentHtml from "eslint-plugin-fluent-html";
+ import simpleControllerHandlers from "../shared/eslint-rules/simple-controller-handlers.mjs";
+ import noManualHxHeaders from "../shared/eslint-rules/no-manual-hx-headers.mjs";
+ import brandedRedirect from "../shared/eslint-rules/branded-redirect.mjs";
++import noHtmxWithoutRuntime, { servesHtmx } from "../shared/eslint-rules/no-htmx-without-runtime.mjs";
+ import returnTheRender from "../shared/eslint-rules/return-the-render.mjs";
+ 
+ const template = {
+@@ -12,6 +13,7 @@ const template = {
+     "no-manual-hx-headers": noManualHxHeaders,
+     "branded-redirect": brandedRedirect,
+     "return-the-render": returnTheRender,
++    "no-htmx-without-runtime": noHtmxWithoutRuntime,
+   },
+ };
+ 
+@@ -104,4 +106,8 @@ export default [
+     files: ["src/core/**/*.ts", "src/app/seo/seo.sitemap.ts"],
+     rules: { "template/no-manual-hx-headers": "off" },
+   },
++  ...(servesHtmx(import.meta.url) ? [] : [{
++    files: ["src/**/*.ts"],
++    rules: { "template/no-htmx-without-runtime": "error", "fluent-html/prefer-htmx-api": "off" },
++  }]),
+ ];
+diff --git a/templates/shared/eslint-rules/no-htmx-without-runtime.mjs b/templates/shared/eslint-rules/no-htmx-without-runtime.mjs
+new file mode 100644
+index 0000000..8f33fde
+--- /dev/null
++++ b/templates/shared/eslint-rules/no-htmx-without-runtime.mjs
+@@ -0,0 +1,47 @@
++import { existsSync } from "node:fs";
++
++const EMITTERS = new Set(["setHtmx", "hxGet", "hxPost"]);
++const IMPORTS = new Set(["hx", "Partial", "HtmxConfig", "hxResponse"]);
++
++/** True when the project beside `configUrl` vendors the htmx bundle its layout loads. */
++export function servesHtmx(configUrl) {
++  return existsSync(new URL("./public/js/htmx.min.js", configUrl));
++}
++
++function literalName(node) {
++  if (node?.type === "Literal" && typeof node.value === "string") return node.value;
++  if (node?.type === "TemplateLiteral" && node.expressions.length === 0) return node.quasis[0].value.cooked;
++  return null;
++}
++
++export default {
++  meta: {
++    type: "problem",
++    docs: { description: "A project that serves no htmx runtime emits no hx-* attributes" },
++    schema: [],
++    messages: {
++      noHtmx:
++        "This site serves no htmx runtime, so hx-* attributes are inert (a form without action/method submits as GET). " +
++        'Use Form().setAction(route.resolve()).setMethod("post") or A().setHref(route.resolve(params)).',
++    },
++  },
++  create(context) {
++    return {
++      CallExpression(node) {
++        const callee = node.callee;
++        if (callee.type !== "MemberExpression" || callee.computed || callee.property.type !== "Identifier") return;
++        const name = callee.property.name;
++        if (EMITTERS.has(name)) context.report({ node: callee.property, messageId: "noHtmx" });
++        else if (name === "addAttribute" && /^hx-/i.test(literalName(node.arguments[0]) ?? "")) {
++          context.report({ node: node.arguments[0], messageId: "noHtmx" });
++        }
++      },
++      ImportDeclaration(node) {
++        if (node.source.value !== "fluent-html") return;
++        for (const s of node.specifiers) {
++          if (s.type === "ImportSpecifier" && IMPORTS.has(s.imported.name)) context.report({ node: s, messageId: "noHtmx" });
++        }
++      },
++    };
++  },
++};
+diff --git a/templates/shared/eslint.config.mjs b/templates/shared/eslint.config.mjs
+index 3144cde..4b80638 100644
+--- a/templates/shared/eslint.config.mjs
++++ b/templates/shared/eslint.config.mjs
+@@ -4,6 +4,7 @@ import fluentHtml from "eslint-plugin-fluent-html";
+ import simpleControllerHandlers from "./eslint-rules/simple-controller-handlers.mjs";
+ import noManualHxHeaders from "./eslint-rules/no-manual-hx-headers.mjs";
+ import brandedRedirect from "./eslint-rules/branded-redirect.mjs";
++import noHtmxWithoutRuntime, { servesHtmx } from "./eslint-rules/no-htmx-without-runtime.mjs";
+ import returnTheRender from "./eslint-rules/return-the-render.mjs";
+ 
+ const template = {
+@@ -12,6 +13,7 @@ const template = {
+     "no-manual-hx-headers": noManualHxHeaders,
+     "branded-redirect": brandedRedirect,
+     "return-the-render": returnTheRender,
++    "no-htmx-without-runtime": noHtmxWithoutRuntime,
+   },
+ };
+ 
+@@ -104,4 +106,8 @@ export default [
+     files: ["src/core/**/*.ts", "src/app/seo/seo.sitemap.ts"],
+     rules: { "template/no-manual-hx-headers": "off" },
+   },
++  ...(servesHtmx(import.meta.url) ? [] : [{
++    files: ["src/**/*.ts"],
++    rules: { "template/no-htmx-without-runtime": "error", "fluent-html/prefer-htmx-api": "off" },
++  }]),
+ ];
+diff --git a/templates/shared/setup-utils.ts b/templates/shared/setup-utils.ts
+index 2786efc..81036ba 100644
+--- a/templates/shared/setup-utils.ts
++++ b/templates/shared/setup-utils.ts
+@@ -587,6 +587,7 @@ export function copySharedFiles(rootDir: string, outputDir: string): void {
+     ["eslint-rules/no-manual-hx-headers.mjs", "eslint-rules/no-manual-hx-headers.mjs"],
+     ["eslint-rules/branded-redirect.mjs", "eslint-rules/branded-redirect.mjs"],
+     ["eslint-rules/return-the-render.mjs", "eslint-rules/return-the-render.mjs"],
++    ["eslint-rules/no-htmx-without-runtime.mjs", "eslint-rules/no-htmx-without-runtime.mjs"],
+     ["postcss.config.cjs", "postcss.config.cjs"],
+     ["public/css/styles.css", "public/css/styles.css"],
+     // Cache headers for static hits, which LiteSpeed serves off disk without ever
+diff --git a/templates/web/CLAUDE.md b/templates/web/CLAUDE.md
+index b83b47f..cca3752 100644
+--- a/templates/web/CLAUDE.md
++++ b/templates/web/CLAUDE.md
+@@ -1,9 +1,9 @@
+ # Project Guidelines
+ 
+-This project uses **Fastify v5 + TypeScript + fluent-html + HTMX + Tailwind CSS** for server-side rendered apps.
++This project uses **Fastify v5 + TypeScript + fluent-html + Tailwind CSS** for server-side rendered pages. It serves no htmx: forms post natively and links use `href`.
+ 
+ > Detailed references:
+-> - [fluent-html.md](fluent-html.md) — Element creation, control flow, HTMX, OOB swaps, rendering
++> - [fluent-html.md](fluent-html.md) — Element creation, control flow, rendering
+ > - [fluent-html-FLUENT-APIs.md](fluent-html-FLUENT-APIs.md) — Fluent Tailwind styling methods (complete reference)
+ > - [fastify.md](fastify.md) — Route controllers, schemas, auth, plugins, error handling
+ > - [typescript.md](typescript.md) — Type patterns: unions, narrowing, generics, branded types, mapped types
+@@ -70,81 +70,14 @@ IfThen(user.avatar, () => Img().setSrc(user.avatar!))
+ user.name ? Span(user.name) : Span("Anonymous")
+ ```
+ 
+-### DO: Use defineIds for type-safe HTMX targets
+-```typescript
+-export const ids = defineIds(["user-list", "user-count"] as const);
+-
+-Div().setId(ids.userList)
+-Button("Load").setHtmx(hx("/api", { target: ids.userList }))
+-OOB(ids.userCount, Span("42"))
+-```
+-
+-### DON'T: Hardcode HTMX target strings
+-```typescript
+-// WRONG — typos cause silent runtime failures
+-hx("/api", { target: "#userList" })
+-```
+-
+ ---
+ 
+-## HTMX
+-
+-### DO: Use outerHTML swap with show:window:top for full page layout swaps
+-This is the default pattern for most navigation — replace the entire content area and scroll to top:
+-```typescript
+-// Navigation link that swaps the main content area
+-A("Settings")
+-  .setHref("/settings")
+-  .setHtmx(hx("/settings", {
+-    target: ids.mainContent,
+-    swap: "outerHTML show:window:top"
+-  }))
+-
+-// Form submission that replaces the page
+-Form([
+-  Input().setName("email").setType("email").setRequired(true),
+-  Button("Save").setType("submit")
+-])
+-  .setHtmx(hx("/users/create", {
+-    method: "post",
+-    target: ids.mainContent,
+-    swap: "outerHTML show:window:top"
+-  }))
+-```
+-
+-### DO: Use OOB swaps to update multiple page sections in one response
+-```typescript
+-// Controller returns main content + OOB updates for other parts of the page
+-render(withOOB(
+-  // Main response — replaces the target
+-  UserList(users).setId(ids.mainContent),
+-
+-  // OOB: update the navbar badge and page title in the same response
+-  OOB(ids.userCount, Span(`${users.length} users`)),
+-  OOB(ids.pageTitle, H1("Users")),
+-))
+-```
++## Forms and links
+ 
+-### DO: Use hxResponse for server-driven navigation and events
++The layout serves no htmx runtime, and lint rejects every htmx emitter (`setHtmx`, `hx`, `Partial`, `addAttribute("hx-…")`).
+ ```typescript
+-// After creating a user, redirect via HTMX and show a toast
+-const { html, headers } = hxResponse(Empty())
+-  .redirect("/users")
+-  .trigger("showToast", { message: "User created!" })
+-  .build();
+-
+-reply.headers(headers);
+-reply.renderView(html);
+-```
+-
+-### DON'T: Use innerHTML when replacing a named target
+-```typescript
+-// WRONG — innerHTML replaces children, losing the target element's id
+-// Subsequent swaps to the same target will fail because the id is gone
+-hx("/users", { target: ids.userList, swap: "innerHTML" })
+-
+-// CORRECT — outerHTML replaces the element itself (re-renders the id)
+-hx("/users", { target: ids.userList, swap: "outerHTML show:window:top" })
++Form(/* fields */).setAction(contactRoutes.submit.resolve()).setMethod("post")
++A("Read more").setHref(blogRoutes.post.resolve({ slug: post.slug }))
+ ```
+ 
+ ---
+@@ -204,11 +137,8 @@ function CreateUserForm(errors: FormErrors = {}) {
+     Button("Create").setType("submit")
+       .w("full").padding("3").background("blue-500").textColor("white").rounded("lg"),
+   ])
+-    .setHtmx(hx("/users/create", {
+-      method: "post",
+-      target: ids.mainContent,
+-      swap: "outerHTML show:window:top"
+-    }));
++    .setAction(userRoutes.create.resolve())
++    .setMethod("post");
+ }
+ 
+ // Controller re-renders the form with errors on validation failure
+diff --git a/templates/web/README.md b/templates/web/README.md
+index 36663ed..0285fc1 100644
+--- a/templates/web/README.md
++++ b/templates/web/README.md
+@@ -131,12 +131,12 @@ Pages with `noIndex: true` are excluded from the sitemap.
+ 
+ ## Form Handling
+ 
+-Forms are built with fluent-html's type-safe form elements and submitted via HTMX.
++Forms are built with fluent-html's type-safe form elements and post natively (this template serves no htmx).
+ 
+ ### Building a Form
+ 
+ ```typescript
+-import { Form, Input, Textarea, Button, Label, Div, hx } from "fluent-html";
++import { Form, Input, Textarea, Button, Label, Div } from "fluent-html";
+ 
+ Form([
+   Div([
+@@ -162,10 +162,8 @@ Form([
+     .w("full").padding("y", "3")
+     .textColor("white").background("blue-600").rounded("lg"),
+ ])
+-  .setHtmx(hx("/api/contact", {
+-    method: "post",
+-    swap: "outerHTML",
+-  }));
++  .setAction(contactRoutes.submit.resolve())
++  .setMethod("post");
+ ```
+ 
+ **Validation:** Use HTML5 attributes through fluent-html methods:
+@@ -182,8 +180,8 @@ fastify.post("/api/contact", async (request, reply) => {
+   const body = request.body as { name?: string; email?: string; message?: string };
+ 
+   if (!body.name || !body.email || !body.message) {
+-    // Re-render the form with an inline error (SSR pattern — no JSON responses)
+-    return reply.renderView(ContactForm({ error: "All fields are required." }));
++    // A native POST replaces the document: re-render the whole page, not the form alone
++    return reply.status(400).renderView(Layout({ seo: { title: "Contact", noIndex: true }, config: siteConfig, children: ContactPage(siteConfig, { _form: "All fields are required." }) }));
+   }
+ 
+   // Process the submission (log, send email, etc.)
+diff --git a/templates/web/eslint.config.mjs b/templates/web/eslint.config.mjs
+index d01f738..f814040 100644
+--- a/templates/web/eslint.config.mjs
++++ b/templates/web/eslint.config.mjs
+@@ -2,12 +2,14 @@ import parser from "@typescript-eslint/parser";
+ import tseslint from "@typescript-eslint/eslint-plugin";
+ import fluentHtml from "eslint-plugin-fluent-html";
+ import noManualHxHeaders from "../shared/eslint-rules/no-manual-hx-headers.mjs";
++import noHtmxWithoutRuntime, { servesHtmx } from "../shared/eslint-rules/no-htmx-without-runtime.mjs";
+ import brandedRedirect from "../shared/eslint-rules/branded-redirect.mjs";
+ 
+ const template = {
+   rules: {
+     "no-manual-hx-headers": noManualHxHeaders,
+     "branded-redirect": brandedRedirect,
++    "no-htmx-without-runtime": noHtmxWithoutRuntime,
+   },
+ };
+ 
+@@ -87,4 +89,8 @@ export default [
+     files: ["src/core/**/*.ts", "src/app/seo/seo.sitemap.ts"],
+     rules: { "template/no-manual-hx-headers": "off" },
+   },
++  ...(servesHtmx(import.meta.url) ? [] : [{
++    files: ["src/**/*.ts"],
++    rules: { "template/no-htmx-without-runtime": "error", "fluent-html/prefer-htmx-api": "off" },
++  }]),
+ ];
+diff --git a/templates/web/src/components/blog/post-card.ts b/templates/web/src/components/blog/post-card.ts
+index 7325bbc..e66a953 100644
+--- a/templates/web/src/components/blog/post-card.ts
++++ b/templates/web/src/components/blog/post-card.ts
+@@ -103,7 +103,7 @@ export function PostCard(post: PostMeta) {
+     )
+       .p("5"),
+   )
+-    .setHtmx(blogRoutes.post({ slug: post.slug }, { target: "body", swap: "outerMorph show:window:top", pushUrl: true }))
++    .setHref(blogRoutes.post.resolve({ slug: post.slug }))
+     .cursor("pointer")
+     .bg("white")
+     .rounded("xl")
+@@ -132,7 +132,7 @@ export function PostCardCompact(post: PostMeta) {
+         .text("gray-500"),
+     ),
+   )
+-    .setHtmx(blogRoutes.post({ slug: post.slug }, { target: "body", swap: "outerMorph show:window:top", pushUrl: true }))
++    .setHref(blogRoutes.post.resolve({ slug: post.slug }))
+     .cursor("pointer")
+     .flex()
+     .gap("3")
+diff --git a/templates/web/src/index.ts b/templates/web/src/index.ts
+index 153a7aa..fb56fd4 100644
+--- a/templates/web/src/index.ts
++++ b/templates/web/src/index.ts
+@@ -12,7 +12,7 @@ const envFiles: Record<string, string> = {
+ dotenv.config({ path: envFiles[process.env.NODE_ENV || ""] || ".env" });
+ import Fastify, { FastifyReply } from "fastify";
+ import { Div, H1, P, renderWithNonce, View, assetUrl, externalUrl } from "fluent-html";
+-import { ContactForm } from "./pages/contact.js";
++import { ContactPage } from "./pages/contact.js";
+ import { PrimaryCTAButton } from "./shared/components.js";
+ import { contactRoutes } from "./shared/routes.js";
+ import { registerRoute } from "./core/render/register-route.js";
+@@ -28,14 +28,13 @@ import staticPagesPlugin from "./core/server/plugins/static-pages.js";
+ import { generateRobotsTxt } from "./core/seo/robots.js";
+ import { generateSitemap } from "./core/seo/sitemap.js";
+ import { getRoutes, renderPage } from "./pages/index.js";
+-import { MinimalLayout } from "./shared/layout.js";
++import { Layout, MinimalLayout } from "./shared/layout.js";
+ import { siteConfig } from "./config.js";
+ 
+ // [module:cms] start
+ import { PrismaClient } from "../prisma/generated/prisma/client.js";
+ import { createCmsPlugin, type CmsPluginOptions } from "@jtdigital/cms";
+ import { createCmsAdminPlugin } from "@jtdigital/cms/admin";
+-import { Layout } from "./shared/layout.js";
+ import { invalidateCache } from "./core/server/static-cache.js";
+ import { assertCmsAuthConfigured, requireCmsAuth } from "./core/server/cms-auth.js";
+ 
+@@ -204,7 +203,9 @@ async function buildServer() {
+     if (!message) errors.message = "Message is required";
+ 
+     if (Object.keys(errors).length > 0) {
+-      return reply.status(400).renderView!(ContactForm({ errors }));
++      return reply.status(400).renderView!(
++        Layout({ seo: { title: "Contact", noIndex: true }, config: siteConfig, children: ContactPage(siteConfig, errors) }),
++      );
+     }
+ 
+     fastify.log.info("Contact form submission");
+diff --git a/templates/web/src/pages/contact.ts b/templates/web/src/pages/contact.ts
+index 7cf353b..beea131 100644
+--- a/templates/web/src/pages/contact.ts
++++ b/templates/web/src/pages/contact.ts
+@@ -25,7 +25,7 @@ import { contactRoutes } from "../shared/routes.js";
+ 
+ const ids = defineIds(["name", "email", "subject", "message"] as const);
+ 
+-export function ContactPage(config: SiteConfig) {
++export function ContactPage(config: SiteConfig, errors: ContactFormProps["errors"] = {}) {
+   return [
+     Div(
+       Div(
+@@ -59,7 +59,7 @@ export function ContactPage(config: SiteConfig) {
+               .font("bold")
+               .text("gray-900")
+               .m("b", "6"),
+-            ContactForm({ errors: {} }),
++            ContactForm({ errors }),
+           ).lg({ colSpan: "2" }),
+ 
+           Div(
+@@ -219,9 +219,8 @@ export function ContactForm(props: ContactFormProps) {
+       .hover({ bg: "primary-hover" })
+       .transition("colors"),
+   )
+-    .setHtmx(contactRoutes.submit({
+-      swap: "outerMorph show:window:top",
+-    }))
++    .setAction(contactRoutes.submit.resolve())
++    .setMethod("post")
+     .bg("white")
+     .p("8")
+     .rounded("xl")
+diff --git a/templates/web/tests/smoke.test.ts b/templates/web/tests/smoke.test.ts
+index bd38bdc..15db29b 100644
+--- a/templates/web/tests/smoke.test.ts
++++ b/templates/web/tests/smoke.test.ts
+@@ -1,4 +1,5 @@
+ import { describe, it, expect } from "vitest";
++import { render } from "fluent-html";
+ import { getRoutes, renderPage } from "../src/pages/index.js";
+ 
+ describe("page rendering", () => {
+@@ -8,10 +9,11 @@ describe("page rendering", () => {
+     expect(routes).toContain("/");
+   });
+ 
+-  it("should render all registered pages without errors", () => {
++  // The layout serves no htmx, so an hx-* attribute is a request path that never fires.
++  it("should render all registered pages without errors or hx-* attributes", () => {
+     for (const route of getRoutes()) {
+-      const view = renderPage(route);
+-      expect(view).not.toBeNull();
++      const html = render(renderPage(route)!);
++      expect(html.match(/[\s<]hx-[\w:-]*(?==|[\s>])/g), route).toBeNull();
+     }
+   });
+ });

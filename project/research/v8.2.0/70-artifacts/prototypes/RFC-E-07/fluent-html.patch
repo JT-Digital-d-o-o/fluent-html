@@ -1,0 +1,197 @@
+diff --git a/README.md b/README.md
+index f0aaac2..c977c1f 100644
+--- a/README.md
++++ b/README.md
+@@ -196,6 +196,7 @@ ForEachKeyed(users, (u) => u.id, (u) => Li(u.name))  // keyed morphs: focus/scro
+ ```typescript
+ IfThen(user.avatar, (avatar) => Img().setSrc(avatar))            // callback gets the non-null value
+ IfThenElse(user.name, (name) => Span(name), () => Span("Anon"))
++IfNotEmptyElse(orders, (os) => Section(H2("Orders"), OrdersTable({ rows: os })), () => P("No orders yet"))  // lists: [], null, undefined take the else
+ ```
+ 
+ No `!!x`, no `x != null`, no `!` in the callback — the value-passing form narrows for you.
+diff --git a/src/control/conditionals.ts b/src/control/conditionals.ts
+index e82d3dc..83b2546 100644
+--- a/src/control/conditionals.ts
++++ b/src/control/conditionals.ts
+@@ -207,3 +207,48 @@ export function Match(
+   }
+   return ((casesOrDefault as Thunk<View> | undefined) ?? Empty)();
+ }
++
++/**
++ * An array proven to hold at least one item: `items[0]` is the element type, not
++ * `T | undefined`. Keeps the input's own array type, so a mutable `T[]` still
++ * passes to a `T[]` prop.
++ */
++export type NonEmpty<A extends readonly unknown[]> = A & { readonly 0: A[number] };
++
++/** The argument check behind IfNotEmpty/IfNotEmptyElse: a non-array names the fix instead of failing as `never`. */
++type ListOrAbsent<A> = A extends readonly unknown[] | null | undefined
++  ? A
++  : "IfNotEmpty/IfNotEmptyElse take the array itself: IfNotEmpty(items, (items) => ...). A boolean, string, number or Set goes to IfThen.";
++
++/**
++ * Render `then` with the list when it holds at least one item; render nothing when it
++ * is empty, `null` or `undefined`. The branch receives the list itself, narrowed to
++ * `NonEmpty` (no restating it, no `!` on `items[0]`).
++ *
++ * @example
++ * IfNotEmpty(props.tags, (tags) => Div(ForEach(tags, Chip)))
++ */
++export function IfNotEmpty<A, R extends View>(
++  items: ListOrAbsent<A>,
++  then: (items: NonEmpty<Extract<A, readonly unknown[]>>) => R,
++): R | "";
++export function IfNotEmpty(items: readonly unknown[] | null | undefined, then: (items: readonly unknown[]) => View): View {
++  return items != null && items.length > 0 ? then(items) : Empty();
++}
++
++/**
++ * `IfNotEmpty` with an else branch: `then` with the non-empty list, `otherwise` for an
++ * empty, `null` or `undefined` list. The whole container is swapped (a section with
++ * its heading, a table with its head), not just the rows.
++ *
++ * @example
++ * IfNotEmptyElse(orders, (os) => Table(Tbody(ForEach(os, OrderRow))), () => P("No orders yet"))
++ */
++export function IfNotEmptyElse<A, R extends View, E extends View>(
++  items: ListOrAbsent<A>,
++  then: (items: NonEmpty<Extract<A, readonly unknown[]>>) => R,
++  otherwise: Thunk<E>,
++): R | E;
++export function IfNotEmptyElse(items: readonly unknown[] | null | undefined, then: (items: readonly unknown[]) => View, otherwise: Thunk<View>): View {
++  return items != null && items.length > 0 ? then(items) : otherwise();
++}
+diff --git a/src/control/index.ts b/src/control/index.ts
+index a364496..2b63c8b 100644
+--- a/src/control/index.ts
++++ b/src/control/index.ts
+@@ -2,8 +2,11 @@
+ export {
+   IfThen,
+   IfThenElse,
++  IfNotEmpty,
++  IfNotEmptyElse,
+   Match,
+ } from "./conditionals.js";
++export type { NonEmpty } from "./conditionals.js";
+ 
+ // Control flow - Value mapping
+ export { MatchValue } from "./match-value.js";
+diff --git a/src/index.ts b/src/index.ts
+index 5a399d1..92b8d4e 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -333,6 +333,8 @@ export type { OverlayPosition } from './control/index.js';
+ export {
+   IfThen,
+   IfThenElse,
++  IfNotEmpty,
++  IfNotEmptyElse,
+   Match,
+   MatchValue,
+   ForEach,
+@@ -341,6 +343,7 @@ export {
+   Repeat,
+   Intersperse,
+ } from './control/index.js';
++export type { NonEmpty } from './control/index.js';
+ 
+ // HTMX
+ export {
+diff --git a/test/if-not-empty.test.ts b/test/if-not-empty.test.ts
+new file mode 100644
+index 0000000..323fa94
+--- /dev/null
++++ b/test/if-not-empty.test.ts
+@@ -0,0 +1,32 @@
++import { describe, it } from "node:test";
++import assert from "node:assert/strict";
++import { IfNotEmpty, IfNotEmptyElse, IfThen, ForEach, ForEachElse, Section, H2, Ul, Li, P, render } from "../src/index.js";
++
++const list = (xs: readonly string[]) => Section(H2("Tags"), Ul(ForEach(xs, (x) => Li(x))));
++
++describe("IfNotEmpty / IfNotEmptyElse", () => {
++  it("renders the branch with the list itself when it has items", () => {
++    assert.equal(render(IfNotEmpty(["a", "b"], list)), "<section><h2>Tags</h2>\n<ul><li>a</li>\n<li>b</li></ul></section>");
++  });
++  it("renders nothing for [], null and undefined", () => {
++    for (const v of [[], null, undefined] as const) assert.equal(render(IfNotEmpty(v as readonly string[] | null | undefined, list)), "");
++  });
++  it("IfNotEmptyElse takes the else branch for [], null and undefined", () => {
++    for (const v of [[], null, undefined] as const) assert.equal(render(IfNotEmptyElse(v as readonly string[] | null | undefined, list, () => P("none"))), "<p>none</p>");
++  });
++  it("calls the branch once with the same array object (no copy)", () => {
++    const xs = ["a"]; let seen: unknown; let calls = 0;
++    IfNotEmpty(xs, (ys) => { calls++; seen = ys; return ""; });
++    assert.equal(calls, 1); assert.equal(seen, xs);
++  });
++  it("closes the IfThen value-overload gap: IfThen([]) renders an empty container, IfNotEmpty([]) renders nothing", () => {
++    assert.equal(render(IfThen([] as string[], list)), "<section><h2>Tags</h2>\n<ul></ul></section>");
++    assert.equal(render(IfNotEmpty([] as string[], list)), "");
++  });
++  it("ForEachElse migration: IfNotEmptyElse(xs, (ys) => ForEach(ys, f), e) renders like ForEachElse(xs, f, e)", () => {
++    for (const xs of [["a", "b"], []]) {
++      assert.equal(render(Ul(IfNotEmptyElse(xs, (ys) => ForEach(ys, (x, i) => Li(`${i}:${x}`)), () => Li("none")))),
++                   render(Ul(ForEachElse(xs, (x, i) => Li(`${i}:${x}`), () => Li("none")))));
++    }
++  });
++});
+diff --git a/test/types/if-any-probe/probe.ts b/test/types/if-any-probe/probe.ts
+new file mode 100644
+index 0000000..db27767
+--- /dev/null
++++ b/test/types/if-any-probe/probe.ts
+@@ -0,0 +1,37 @@
++// Compile-contract probe for IfAny/IfNotEmptyElse. Lines tagged FAIL must error; everything else must compile.
++import { IfNotEmpty, IfNotEmptyElse, IfThen, ForEach, Section, H2, Table, Tbody, Tr, Td, Ul, Li, P, Span, type NonEmpty, type Tag } from "../../../src/index.js";
++
++type Order = { id: number; customer: string; total: number };
++declare const orders: Order[];
++declare const ro: readonly Order[];
++declare const maybe: Order[] | undefined;
++declare const nullable: readonly string[] | null;
++declare const tuple: readonly [Order, Order];
++declare const anyList: any;
++declare const name: string;
++declare const count: number;
++declare const tagSet: Set<string>;
++function OrdersTable(props: { rows: Order[] }): Tag { return Table(Tbody(ForEach(props.rows, (o) => Tr(Td(o.customer))))); }
++
++// ---- must compile ----
++const a1 = IfNotEmpty(orders, (os) => Section(H2("Orders"), OrdersTable({ rows: os })));   // NonEmpty<Order[]> into a mutable Order[] prop
++const a2 = IfNotEmpty(ro, (os) => Ul(ForEach(os, (o) => Li(o.customer))));
++const a3 = IfNotEmpty(maybe, (os) => Span(os[0].customer));                               // os[0] defined under noUncheckedIndexedAccess
++const a4 = IfNotEmptyElse(nullable, (xs) => Ul(ForEach(xs, (x) => Li(x))), () => P("none"));
++const a5 = IfNotEmpty(tuple, (t) => Span(t[1].customer));
++const a6 = IfNotEmpty(anyList, (xs) => Span(String(xs.length)));
++const a7 = IfNotEmpty(orders, () => P(`${orders.length} orders`));                       // zero-arg branch is allowed
++const r1: Tag | "" = a1;                                                              // branch type reported, not View
++const r2: Tag = a4;
++const n1: NonEmpty<Order[]>[0] = orders[0]!;
++void [a2, a3, a5, a6, a7, r1, r2, n1];
++
++// ---- must fail ----
++IfNotEmpty(orders.length > 0, () => Section(H2("Orders")));                               // FAIL boolean
++IfNotEmpty(name, (n) => Span(n));                                                          // FAIL string
++IfNotEmpty(count, () => Span("x"));                                                        // FAIL number
++IfNotEmpty(tagSet, () => Span("x"));                                                       // FAIL set
++IfNotEmpty(orders, (o) => Li(o.customer));                                                 // FAIL per-item confusion
++IfNotEmpty(orders, (os) => os.length);                                                     // FAIL non-View branch
++IfNotEmptyElse(orders, (os) => Span(os[0].customer), P("none"));                           // FAIL else not a thunk
++IfThen(maybe, (os) => Section(H2("Orders"), OrdersTable({ rows: os })));              // compiles today: renders an empty section for []
+diff --git a/tsconfig.json b/tsconfig.json
+index 260a662..f5615f2 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -46,6 +46,7 @@
+     "test/acceptance",
+     "test/types/color-optout",
+     "test/types/setter-probe",
+-    "test/types/brand-probe"
++    "test/types/brand-probe",
++    "test/types/if-any-probe"
+   ]
+ }
+\ No newline at end of file

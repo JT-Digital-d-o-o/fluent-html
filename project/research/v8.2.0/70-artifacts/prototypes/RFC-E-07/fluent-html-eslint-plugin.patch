@@ -1,0 +1,204 @@
+diff --git a/src/rules/prefer-if-not-empty.cjs b/src/rules/prefer-if-not-empty.cjs
+new file mode 100644
+index 0000000..1b4585c
+--- /dev/null
++++ b/src/rules/prefer-if-not-empty.cjs
+@@ -0,0 +1,198 @@
++"use strict";
++// prefer-if-not-empty (prototype). Type-aware: no-ops without parser services, like match-subset-default.
++// 1. guard:      IfThen(X.length > 0, f) / IfThenElse(X.length > 0 | === 0, a, b) / coerce-bind X.length > 0 ? X : null
++//                over an array-typed X  -> autofix to IfNotEmpty / IfNotEmptyElse, binding the list in the branch.
++// 2. arrayValue: IfThen(xs, f) / IfThenElse(xs, f, g) with an array-typed xs runs on [] -> suggestion only (output changes).
++
++const IMPORT_SOURCE = "fluent-html";
++
++function strip(n) {
++  while (n && (n.type === "ChainExpression" || n.type === "TSNonNullExpression" || n.type === "TSAsExpression" && false)) n = n.expression;
++  return n;
++}
++const isNullish = (n) => (n = strip(n)) && ((n.type === "Literal" && n.value === null && n.raw === "null") || (n.type === "Identifier" && n.name === "undefined"));
++const isNum = (n, v) => (n = strip(n)) && n.type === "Literal" && n.value === v;
++
++module.exports = {
++  meta: {
++    type: "suggestion",
++    fixable: "code",
++    hasSuggestions: true,
++    docs: { description: "Guard a list with IfNotEmpty/IfNotEmptyElse instead of a restated length check, and do not pass an array to IfThen's value overload", recommended: true },
++    messages: {
++      guard: "{{callee}}({{guard}}, ...) restates the list. Use {{replacement}}({{list}}, ({{name}}) => ...): the branch gets the list narrowed to NonEmpty, and null, undefined and [] all skip it.",
++      arrayValue: "{{callee}} runs its branch for an empty array ([] is not null), so the container renders with no items. Use {{replacement}}({{list}}, ...) to skip [] too.",
++      toIfAny: "Replace {{callee}} with {{replacement}} (an empty array then renders the else branch / nothing).",
++      unusedImport: "{{name}} is no longer used after the {{replacement}} rewrite; drop it from the import.",
++    },
++    schema: [],
++  },
++  create(context) {
++    const sc = context.sourceCode ?? context.getSourceCode();
++    const services = sc.parserServices ?? context.parserServices;
++    if (!services || !services.program || !services.esTreeNodeToTSNodeMap) return {};
++    const checker = services.program.getTypeChecker();
++    const text = (n) => sc.getText(n);
++    const norm = (n) => text(n).replace(/\s+/g, "").replace(/\?\./g, ".");
++    const tsType = (n) => checker.getTypeAtLocation(services.esTreeNodeToTSNodeMap.get(n));
++    const isArrayish = (n) => {
++      const t = checker.getNonNullableType(tsType(n));
++      const parts = t.isUnion() ? t.types : [t];
++      return parts.length > 0 && parts.every((p) => checker.isArrayType(p) || checker.isTupleType(p));
++    };
++    // X.length, X?.length, (X ?? []).length, (X?.length ?? 0)  -> X
++    const lenRecv = (e) => {
++      e = strip(e);
++      if (!e) return null;
++      if (e.type === "LogicalExpression" && e.operator === "??" && isNum(e.right, 0)) return lenRecv(e.left);
++      if (e.type === "MemberExpression" && !e.computed && e.property.name === "length") {
++        let x = strip(e.object);
++        if (x.type === "LogicalExpression" && x.operator === "??" && strip(x.right).type === "ArrayExpression" && strip(x.right).elements.length === 0) x = strip(x.left);
++        return x;
++      }
++      return null;
++    };
++    const nullCheckOf = (e) => {
++      e = strip(e);
++      if (e.type === "UnaryExpression" && e.operator === "!" && strip(e.argument).type === "UnaryExpression" && strip(e.argument).operator === "!") return norm(strip(e.argument).argument);
++      if (e.type === "BinaryExpression" && (e.operator === "!=" || e.operator === "!==") && isNullish(e.right)) return norm(e.left);
++      if (e.type === "Identifier" || e.type === "MemberExpression") return norm(e);
++      return null;
++    };
++    const FLIP = { "<": ">", "<=": ">=", ">": "<", ">=": "<=" };
++    const guard = (c) => {
++      c = strip(c);
++      if (!c) return null;
++      if (c.type === "LogicalExpression" && c.operator === "&&") {
++        const g = guard(c.right); const nc = nullCheckOf(c.left);
++        return g && g.pol === 1 && nc && nc === norm(g.X) ? g : null;
++      }
++      if (c.type === "BinaryExpression") {
++        let X = lenRecv(c.left), n = strip(c.right), op = c.operator;
++        if (!X) { X = lenRecv(c.right); n = strip(c.left); op = FLIP[op] ?? op; }
++        if (!X || !n || n.type !== "Literal" || typeof n.value !== "number") return null;
++        const v = n.value;
++        if ((v === 0 && [">", "!==", "!="].includes(op)) || (v === 1 && op === ">=")) return { X, pol: 1 };
++        if ((v === 0 && ["===", "==", "<="].includes(op)) || (v === 1 && op === "<")) return { X, pol: -1 };
++        return null;
++      }
++      if (c.type === "UnaryExpression" && c.operator === "!") {
++        const i = strip(c.argument);
++        if (i.type === "UnaryExpression" && i.operator === "!") { const X = lenRecv(i.argument); return X ? { X, pol: 1 } : null; }
++        const X = lenRecv(i); return X ? { X, pol: -1 } : null;
++      }
++      return null;
++    };
++    const coerce = (c) => {
++      c = strip(c);
++      if (!c || c.type !== "ConditionalExpression") return null;
++      const g = guard(c.test);
++      if (g && g.pol === 1 && isNullish(c.alternate) && norm(c.consequent) === norm(g.X)) return { X: g.X, pol: 1 };
++      if (g && g.pol === -1 && isNullish(c.consequent) && norm(c.alternate) === norm(g.X)) return { X: g.X, pol: 1 };
++      return null;
++    };
++    const stablePath = (n) => {
++      n = strip(n);
++      if (n.type === "Identifier" || n.type === "ThisExpression") return true;
++      if (n.type === "MemberExpression") return (!n.computed || n.property.type === "Literal") && stablePath(n.object);
++      return false;
++    };
++    const visit = (node, fn) => {
++      fn(node);
++      for (const key of sc.visitorKeys[node.type] ?? []) {
++        const v = node[key];
++        if (Array.isArray(v)) v.forEach((c) => c && typeof c.type === "string" && visit(c, fn));
++        else if (v && typeof v.type === "string") visit(v, fn);
++      }
++    };
++    const program = sc.ast;
++    const importFix = (fixer, names) => {
++      const decl = program.body.find((s) => s.type === "ImportDeclaration" && s.source.value === IMPORT_SOURCE && s.importKind !== "type" && s.specifiers.some((x) => x.type === "ImportSpecifier"));
++      const have = new Set();
++      for (const s of program.body) if (s.type === "ImportDeclaration") for (const sp of s.specifiers) have.add(sp.local.name);
++      const missing = names.filter((n) => !have.has(n));
++      if (!missing.length) return [];
++      if (decl) { const last = decl.specifiers[decl.specifiers.length - 1]; return [fixer.insertTextAfter(last, `, ${missing.join(", ")}`)]; }
++      return [fixer.insertTextBefore(program.body[0], `import { ${missing.join(", ")} } from "${IMPORT_SOURCE}";\n`)];
++    };
++    // the branch: bind the list; substitute a restated property path inside a zero-param arrow
++    const branchText = (cb, X) => {
++      const c = strip(cb);
++      if ((c.type === "ArrowFunctionExpression" || c.type === "FunctionExpression") && c.params.length > 0) return { t: text(cb), name: c.params[0].type === "Identifier" ? c.params[0].name : "items" };
++      if ((c.type !== "ArrowFunctionExpression" && c.type !== "FunctionExpression") || c.params.length !== 0 || !stablePath(X)) return { t: text(cb), name: "items" };
++      const Xs = strip(X);
++      const name = Xs.type === "Identifier" ? Xs.name : Xs.type === "MemberExpression" && !Xs.computed ? Xs.property.name : null;
++      if (!name || name === "length") return { t: text(cb), name: "items" };
++      const bodyRange = c.body.range; let body = sc.text.slice(bodyRange[0], bodyRange[1]);
++      if (Xs.type !== "Identifier") {
++        let clash = false; const reps = []; const xn = norm(X);
++        visit(c.body, (n) => {
++          if (n.type === "Identifier" && n.name === name && !(n.parent && n.parent.type === "MemberExpression" && n.parent.property === n && !n.parent.computed) && !(n.parent && n.parent.type === "Property" && n.parent.key === n && !n.parent.shorthand)) clash = true;
++          if (n.type === "MemberExpression" && norm(n) === xn && !(n.parent && n.parent.type === "AssignmentExpression" && n.parent.left === n)) reps.push(n.range);
++        });
++        if (clash) return { t: text(cb), name: "items" };
++        // keep outermost matches only
++        reps.sort((a, b) => b[0] - a[0]);
++        for (const [s, e] of reps) body = body.slice(0, s - bodyRange[0]) + name + body.slice(e - bodyRange[0]);
++      }
++      const asyncKw = c.async ? "async " : "";
++      const rt = c.returnType ? text(c.returnType) : "";
++      const t = c.type === "ArrowFunctionExpression" ? `${asyncKw}(${name})${rt} => ${body}` : `${asyncKw}function (${name})${rt} ${body}`;
++      return { t, name };
++    };
++    return {
++      // after the autofix rewrote the last IfThen/IfThenElse call, drop the now-unused specifier
++      ImportDeclaration(node) {
++        if (node.source.value !== IMPORT_SOURCE) return;
++        const usesNew = /\bIfNotEmpty(Else)?\(/.test(sc.text);
++        if (!usesNew) return;
++        for (const sp of node.specifiers) {
++          if (sp.type !== "ImportSpecifier" || !["IfThen", "IfThenElse"].includes(sp.local.name)) continue;
++          const v = sc.getDeclaredVariables(sp)[0];
++          if (!v || v.references.length > 0) continue;
++          context.report({ node: sp, messageId: "unusedImport", data: { name: sp.local.name, replacement: sp.local.name === "IfThen" ? "IfNotEmpty" : "IfNotEmptyElse" },
++            fix: (fixer) => {
++              const named = node.specifiers.filter((x) => x.type === "ImportSpecifier");
++              if (node.specifiers.length === 1) return fixer.remove(node);
++              const after = sc.getTokenAfter(sp);
++              if (after && after.value === ",") return fixer.removeRange([sp.range[0], sc.getTokenAfter(after).range[0]]);
++              const before = sc.getTokenBefore(sp);
++              return fixer.removeRange([before.range[0], sp.range[1]]);
++            } });
++        }
++      },
++      CallExpression(node) {
++        const callee = node.callee;
++        if (callee.type !== "Identifier" || (callee.name !== "IfThen" && callee.name !== "IfThenElse")) return;
++        const want = callee.name === "IfThen" ? 2 : 3;
++        if (node.arguments.length !== want) return;
++        const a0 = node.arguments[0];
++        const hit = coerce(a0) ?? guard(a0);
++        const replacement = callee.name === "IfThen" ? "IfNotEmpty" : "IfNotEmptyElse";
++        if (hit) {
++          if (!isArrayish(hit.X)) return;
++          if (callee.name === "IfThen" && hit.pol === -1) return; // IfThen(xs.length === 0, ...) has no IfNotEmpty form
++          const [thenCb, elseCb] = hit.pol === 1 ? [node.arguments[1], node.arguments[2]] : [node.arguments[2], node.arguments[1]];
++          const b = branchText(thenCb, hit.X);
++          context.report({
++            node, messageId: "guard",
++            data: { callee: callee.name, guard: text(a0).replace(/\s+/g, " ").slice(0, 60), replacement, list: text(hit.X), name: b.name },
++            fix: (fixer) => {
++              const args = [text(hit.X), b.t]; if (elseCb) args.push(text(elseCb));
++              return [fixer.replaceText(node, `${replacement}(${args.join(", ")})`), ...importFix(fixer, [replacement])];
++            },
++          });
++          return;
++        }
++        // value overload with an array value: runs on []
++        const ta = strip(a0);
++        if (ta.type === "ConditionalExpression") return;
++        if (!isArrayish(a0)) return;
++        context.report({
++          node, messageId: "arrayValue", data: { callee: callee.name, replacement, list: text(a0) },
++          suggest: [{ messageId: "toIfAny", data: { callee: callee.name, replacement }, fix: (fixer) => [fixer.replaceText(callee, replacement), ...importFix(fixer, [replacement])] }],
++        });
++      },
++    };
++  },
++};

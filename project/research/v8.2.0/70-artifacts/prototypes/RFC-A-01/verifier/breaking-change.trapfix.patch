@@ -1,0 +1,19 @@
+162c162
+<   [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,[tabindex]")].filter(
+---
+>   [...root.querySelectorAll<HTMLElement>("a[href],button,input,select,textarea,summary,[contenteditable],[tabindex]")].filter(
+175c175,177
+<   const at = items.indexOf(doc.activeElement as HTMLElement);
+---
+>   const step = e.shiftKey ? n - 1 : 1;
+>   let at = items.indexOf(doc.activeElement as HTMLElement);
+>   if (at < 0) at = e.shiftKey ? 0 : n - 1;
+177c179,184
+<   items[at < 0 ? (e.shiftKey ? n - 1 : 0) : (at + (e.shiftKey ? n - 1 : 1)) % n]!.focus();
+---
+>   // A listed node can still refuse focus (closed <details> content, visibility:hidden): try the next one.
+>   for (let k = 0; k < n; k++) {
+>     const c = items[(at = (at + step) % n)]!;
+>     c.focus();
+>     if (doc.activeElement === c) break;
+>   }
