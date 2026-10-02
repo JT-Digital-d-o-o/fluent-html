@@ -14,6 +14,7 @@ checkbox binding and behaviors runtime fixes, with the htmx grammar oracle in li
 
 ## Next Up
 
+- route-method-tag: `RenderTagged` carries the route's method, so projects-template's `.defer` and `.poll` can refuse a POST in types; release vehicle is the open decision below ([route-method-tag](route-method-tag/prd.md))
 - fluent-html 8.1.1: projects-template 3.8.0 builds on it (K2), and K1 holds 8.2.0's RFC-B-03 until its dev throw ships
 - Plugin 4.2.0 and extractor main (RFC-D-01 text), independent of 8.1.1; guidelines G1 and the 4b CLAUDE.md commit are gated on both
 - Guidelines G1 and the 4b commit land inside the projects-template 3.8.0 window; the template re-vendors after the last hunk
@@ -23,6 +24,7 @@ checkbox binding and behaviors runtime fixes, with the htmx grammar oracle in li
 
 ## Blocked on a Decision
 
+- route-method-tag: fold into 8.2.0 (lockstep step 6) or ship as its own minor release first? (Tony; [todo](route-method-tag/todo.md))
 - 9.0.0 preconditions: RFC-C-02's guess top-up to 20 leak-free runs per condition (K11, also decides `ForEachElse`), open call 1 (`nonce?: never` tombstone), open call 2 (the chunking bag) and open call 5 (`typesVersions` for 4 or 10 subpaths): the user
 - Process docs and memory: the ALGORITHM §5.10 rewording (open call 3), the guardrail 5 rewording (open call 4) and the RFC-C-04 user-memory edits: the user
 - Behaviors asset size: the L-260 call (the ADR-12 amendment in decisions.md) before any runtime byte after RFC-A-01, which leaves the asset at 6140 of 6144 B min
