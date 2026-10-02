@@ -21,13 +21,19 @@ Small batch, half a day: one type parameter, its tests, a release.
 - The default keeps every existing `RenderTagged<X>` annotation compiling (`PageRoute`,
   `FragmentRoute<N>` in projects-template): a call's result only becomes narrower. Type-only, no
   runtime change: the bag already carries the literal method.
+- Better, per the 2. 10. 26 type review: make both tags required phantoms,
+  `HTMX & { readonly [stance]: S; readonly method: M }`. TypeScript reduces
+  `cond ? routes.frag() : routes.page()` to the fragment arm before any verb sees it while
+  `render` is optional, and a bare `hx()` bag satisfies every stance; a required tag rejects both,
+  and projects-template can delete `NeedsStance`/`DeclaresNothing`. All route-typed props in the
+  fleet are `PageRoute`/`FragmentRoute` aliases, so they keep compiling.
 - Consumers then demand `"get"` the way they demand a render stance, with a readable
   missing-property error (projects-template `swap-verbs/defer-verb`).
 
 ## Rabbit Holes
 
-- Tagging `hx(url)` bags: an ad-hoc url has no def, keeps the union, and the verbs already refuse
-  it through their stance check.
+- Giving `hx(url)` bags a stance or method: an ad-hoc url has no def. With required tags it carries
+  neither, so every stance-checking verb refuses it, which is the intent; it stays for `.setHtmx`.
 
 ## No-Gos
 
