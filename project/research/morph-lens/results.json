@@ -1,0 +1,2157 @@
+{
+  "chromium": {
+    "version": "149.0.7827.55",
+    "props": {
+      "PutGet: the page equals the new render": {
+        "tally": {
+          "ok": 300,
+          "violated": 0,
+          "n/a": 0
+        },
+        "counterexample": null
+      },
+      "PutGet with a focused control": {
+        "tally": {
+          "ok": 221,
+          "violated": 0,
+          "n/a": 79
+        },
+        "counterexample": null
+      },
+      "Identity: a surviving id keeps its element": {
+        "tally": {
+          "ok": 231,
+          "violated": 1,
+          "n/a": 68
+        },
+        "counterexample": {
+          "h1": "<div><div><div id=\"c\"></div></div></div><div></div>",
+          "h2": "<div id=\"c\"></div><div><div></div></div><div></div>",
+          "edits": [],
+          "observed": [],
+          "ids": [
+            {
+              "id": "c",
+              "tag": "div",
+              "kept": false
+            }
+          ]
+        }
+      },
+      "GetPut[type]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 113,
+          "violated": 0,
+          "n/a": 187
+        },
+        "counterexample": null
+      },
+      "GetPut[check]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 100,
+          "violated": 0,
+          "n/a": 200
+        },
+        "counterexample": null
+      },
+      "GetPut[select]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 115,
+          "violated": 0,
+          "n/a": 185
+        },
+        "counterexample": null
+      },
+      "GetPut[textarea]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 93,
+          "violated": 0,
+          "n/a": 207
+        },
+        "counterexample": null
+      },
+      "GetPut[details]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 94,
+          "n/a": 206
+        },
+        "counterexample": {
+          "h1": "<div><details><summary>s</summary></details></div>",
+          "h2": "<div><details><summary>s</summary></details></div>",
+          "edits": [
+            {
+              "kind": "details",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "details",
+              "desc": "details",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[attr]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 296,
+          "n/a": 4
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "attr",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "attr",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[child]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 217,
+          "n/a": 83
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "child",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "child",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[src]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 95,
+          "n/a": 205
+        },
+        "counterexample": {
+          "h1": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "h2": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "edits": [
+            {
+              "kind": "src",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "src",
+              "desc": "img",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[scroll]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 94,
+          "violated": 0,
+          "n/a": 206
+        },
+        "counterexample": null
+      },
+      "GetPut[focus]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 224,
+          "violated": 0,
+          "n/a": 76
+        },
+        "counterexample": null
+      },
+      "Complement[type]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 86,
+          "violated": 0,
+          "n/a": 214
+        },
+        "counterexample": null
+      },
+      "Complement[check]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 80,
+          "violated": 0,
+          "n/a": 220
+        },
+        "counterexample": null
+      },
+      "Complement[select]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 81,
+          "violated": 0,
+          "n/a": 219
+        },
+        "counterexample": null
+      },
+      "Complement[textarea]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 65,
+          "violated": 0,
+          "n/a": 235
+        },
+        "counterexample": null
+      },
+      "Complement[attr]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 226,
+          "n/a": 74
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "attr",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "attr",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[child]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 181,
+          "n/a": 119
+        },
+        "counterexample": {
+          "h1": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "h2": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "edits": [
+            {
+              "kind": "child",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "child",
+              "desc": "div.scroller",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[src]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 77,
+          "n/a": 223
+        },
+        "counterexample": {
+          "h1": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "h2": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "edits": [
+            {
+              "kind": "src",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "src",
+              "desc": "img",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[scroll]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 76,
+          "violated": 0,
+          "n/a": 224
+        },
+        "counterexample": null
+      },
+      "Complement[focus]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 175,
+          "violated": 0,
+          "n/a": 125
+        },
+        "counterexample": null
+      }
+    },
+    "forms": [
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "text",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "text",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "select",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "old"
+      }
+    ],
+    "formsKeepOpen": [
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      }
+    ],
+    "align": {
+      "tally": {
+        "ok": 202,
+        "violated": 98
+      },
+      "byOp": {
+        "relabel": {
+          "ok": 53,
+          "violated": 0
+        },
+        "remove": {
+          "ok": 61,
+          "violated": 0
+        },
+        "prepend": {
+          "ok": 67,
+          "violated": 0
+        },
+        "prepend+relabel": {
+          "ok": 0,
+          "violated": 71
+        },
+        "remove+relabel": {
+          "ok": 21,
+          "violated": 27
+        }
+      },
+      "counterexample": {
+        "labels1": [
+          "A",
+          "B"
+        ],
+        "labels2": [
+          "Z*",
+          "A*",
+          "B*"
+        ],
+        "typed": 0,
+        "expect": "A*",
+        "op": "prepend+relabel",
+        "observed": {
+          "typedLabel": "A",
+          "nowUnder": "Z*",
+          "rows": [
+            {
+              "label": "Z*",
+              "value": "typed!"
+            },
+            {
+              "label": "A*",
+              "value": ""
+            },
+            {
+              "label": "B*",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    "moves": [
+      {
+        "name": "first to last",
+        "moved": 1,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "last to first",
+        "moved": 4,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "swap middle",
+        "moved": 2,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "swap middle (other)",
+        "moved": 3,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "reverse",
+        "moved": 2,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      }
+    ]
+  },
+  "firefox": {
+    "version": "151.0",
+    "props": {
+      "PutGet: the page equals the new render": {
+        "tally": {
+          "ok": 300,
+          "violated": 0,
+          "n/a": 0
+        },
+        "counterexample": null
+      },
+      "PutGet with a focused control": {
+        "tally": {
+          "ok": 221,
+          "violated": 0,
+          "n/a": 79
+        },
+        "counterexample": null
+      },
+      "Identity: a surviving id keeps its element": {
+        "tally": {
+          "ok": 231,
+          "violated": 1,
+          "n/a": 68
+        },
+        "counterexample": {
+          "h1": "<div><div><div id=\"c\"></div></div></div><div></div>",
+          "h2": "<div id=\"c\"></div><div><div></div></div><div></div>",
+          "edits": [],
+          "observed": [],
+          "ids": [
+            {
+              "id": "c",
+              "tag": "div",
+              "kept": false
+            }
+          ]
+        }
+      },
+      "GetPut[type]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 113,
+          "violated": 0,
+          "n/a": 187
+        },
+        "counterexample": null
+      },
+      "GetPut[check]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 100,
+          "violated": 0,
+          "n/a": 200
+        },
+        "counterexample": null
+      },
+      "GetPut[select]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 115,
+          "violated": 0,
+          "n/a": 185
+        },
+        "counterexample": null
+      },
+      "GetPut[textarea]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 93,
+          "violated": 0,
+          "n/a": 207
+        },
+        "counterexample": null
+      },
+      "GetPut[details]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 94,
+          "n/a": 206
+        },
+        "counterexample": {
+          "h1": "<div><details><summary>s</summary></details></div>",
+          "h2": "<div><details><summary>s</summary></details></div>",
+          "edits": [
+            {
+              "kind": "details",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "details",
+              "desc": "details",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[attr]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 296,
+          "n/a": 4
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "attr",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "attr",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[child]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 217,
+          "n/a": 83
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "child",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "child",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[src]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 95,
+          "n/a": 205
+        },
+        "counterexample": {
+          "h1": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "h2": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "edits": [
+            {
+              "kind": "src",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "src",
+              "desc": "img",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[scroll]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 94,
+          "violated": 0,
+          "n/a": 206
+        },
+        "counterexample": null
+      },
+      "GetPut[focus]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 224,
+          "violated": 0,
+          "n/a": 76
+        },
+        "counterexample": null
+      },
+      "Complement[type]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 86,
+          "violated": 0,
+          "n/a": 214
+        },
+        "counterexample": null
+      },
+      "Complement[check]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 80,
+          "violated": 0,
+          "n/a": 220
+        },
+        "counterexample": null
+      },
+      "Complement[select]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 81,
+          "violated": 0,
+          "n/a": 219
+        },
+        "counterexample": null
+      },
+      "Complement[textarea]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 65,
+          "violated": 0,
+          "n/a": 235
+        },
+        "counterexample": null
+      },
+      "Complement[attr]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 226,
+          "n/a": 74
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "attr",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "attr",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[child]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 181,
+          "n/a": 119
+        },
+        "counterexample": {
+          "h1": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "h2": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "edits": [
+            {
+              "kind": "child",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "child",
+              "desc": "div.scroller",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[src]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 77,
+          "n/a": 223
+        },
+        "counterexample": {
+          "h1": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "h2": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "edits": [
+            {
+              "kind": "src",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "src",
+              "desc": "img",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[scroll]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 69,
+          "violated": 7,
+          "n/a": 224
+        },
+        "counterexample": {
+          "h1": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div><div id=\"d\"></div>",
+          "h2": "<div id=\"d\"></div><div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "edits": [
+            {
+              "kind": "scroll",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "scroll",
+              "desc": "div.scroller",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[focus]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 174,
+          "violated": 1,
+          "n/a": 125
+        },
+        "counterexample": {
+          "h1": "<div><img id=\"c\" data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt></div><div><textarea id=\"d\"></textarea></div><div><div id=\"a\"></div><div id=\"e\"></div></div>",
+          "h2": "<textarea id=\"d\"></textarea><div><img id=\"c\" data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt></div><div></div><div><div id=\"a\"></div><div id=\"e\"></div></div>",
+          "edits": [
+            {
+              "kind": "focus",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "focus",
+              "desc": "textarea#d",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      }
+    },
+    "forms": [
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "text",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "text",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "select",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "old"
+      }
+    ],
+    "formsKeepOpen": [
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      }
+    ],
+    "align": {
+      "tally": {
+        "ok": 202,
+        "violated": 98
+      },
+      "byOp": {
+        "relabel": {
+          "ok": 53,
+          "violated": 0
+        },
+        "remove": {
+          "ok": 61,
+          "violated": 0
+        },
+        "prepend": {
+          "ok": 67,
+          "violated": 0
+        },
+        "prepend+relabel": {
+          "ok": 0,
+          "violated": 71
+        },
+        "remove+relabel": {
+          "ok": 21,
+          "violated": 27
+        }
+      },
+      "counterexample": {
+        "labels1": [
+          "A",
+          "B"
+        ],
+        "labels2": [
+          "Z*",
+          "A*",
+          "B*"
+        ],
+        "typed": 0,
+        "expect": "A*",
+        "op": "prepend+relabel",
+        "observed": {
+          "typedLabel": "A",
+          "nowUnder": "Z*",
+          "rows": [
+            {
+              "label": "Z*",
+              "value": "typed!"
+            },
+            {
+              "label": "A*",
+              "value": ""
+            },
+            {
+              "label": "B*",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    "moves": [
+      {
+        "name": "first to last",
+        "moved": 1,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "last to first",
+        "moved": 4,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": false
+      },
+      {
+        "name": "swap middle",
+        "moved": 2,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "swap middle (other)",
+        "moved": 3,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "reverse",
+        "moved": 2,
+        "moveBefore": true,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      }
+    ]
+  },
+  "webkit": {
+    "version": "26.5",
+    "props": {
+      "PutGet: the page equals the new render": {
+        "tally": {
+          "ok": 300,
+          "violated": 0,
+          "n/a": 0
+        },
+        "counterexample": null
+      },
+      "PutGet with a focused control": {
+        "tally": {
+          "ok": 221,
+          "violated": 0,
+          "n/a": 79
+        },
+        "counterexample": null
+      },
+      "Identity: a surviving id keeps its element": {
+        "tally": {
+          "ok": 231,
+          "violated": 1,
+          "n/a": 68
+        },
+        "counterexample": {
+          "h1": "<div><div><div id=\"c\"></div></div></div><div></div>",
+          "h2": "<div id=\"c\"></div><div><div></div></div><div></div>",
+          "edits": [],
+          "observed": [],
+          "ids": [
+            {
+              "id": "c",
+              "tag": "div",
+              "kept": false
+            }
+          ]
+        }
+      },
+      "GetPut[type]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 113,
+          "violated": 0,
+          "n/a": 187
+        },
+        "counterexample": null
+      },
+      "GetPut[check]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 100,
+          "violated": 0,
+          "n/a": 200
+        },
+        "counterexample": null
+      },
+      "GetPut[select]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 115,
+          "violated": 0,
+          "n/a": 185
+        },
+        "counterexample": null
+      },
+      "GetPut[textarea]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 93,
+          "violated": 0,
+          "n/a": 207
+        },
+        "counterexample": null
+      },
+      "GetPut[details]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 94,
+          "n/a": 206
+        },
+        "counterexample": {
+          "h1": "<div><details><summary>s</summary></details></div>",
+          "h2": "<div><details><summary>s</summary></details></div>",
+          "edits": [
+            {
+              "kind": "details",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "details",
+              "desc": "details",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[attr]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 296,
+          "n/a": 4
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "attr",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "attr",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[child]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 217,
+          "n/a": 83
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "child",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "child",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[src]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 95,
+          "n/a": 205
+        },
+        "counterexample": {
+          "h1": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "h2": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "edits": [
+            {
+              "kind": "src",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "src",
+              "desc": "img",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "GetPut[scroll]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 94,
+          "violated": 0,
+          "n/a": 206
+        },
+        "counterexample": null
+      },
+      "GetPut[focus]: a no-op morph keeps it": {
+        "tally": {
+          "ok": 224,
+          "violated": 0,
+          "n/a": 76
+        },
+        "counterexample": null
+      },
+      "Complement[type]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 86,
+          "violated": 0,
+          "n/a": 214
+        },
+        "counterexample": null
+      },
+      "Complement[check]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 80,
+          "violated": 0,
+          "n/a": 220
+        },
+        "counterexample": null
+      },
+      "Complement[select]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 81,
+          "violated": 0,
+          "n/a": 219
+        },
+        "counterexample": null
+      },
+      "Complement[textarea]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 65,
+          "violated": 0,
+          "n/a": 235
+        },
+        "counterexample": null
+      },
+      "Complement[attr]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 226,
+          "n/a": 74
+        },
+        "counterexample": {
+          "h1": "<div></div>",
+          "h2": "<div></div>",
+          "edits": [
+            {
+              "kind": "attr",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "attr",
+              "desc": "div",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[child]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 181,
+          "n/a": 119
+        },
+        "counterexample": {
+          "h1": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "h2": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "edits": [
+            {
+              "kind": "child",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "child",
+              "desc": "div.scroller",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[src]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 0,
+          "violated": 77,
+          "n/a": 223
+        },
+        "counterexample": {
+          "h1": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "h2": "<img data-src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt>",
+          "edits": [
+            {
+              "kind": "src",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "src",
+              "desc": "img",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[scroll]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 69,
+          "violated": 7,
+          "n/a": 224
+        },
+        "counterexample": {
+          "h1": "<div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div><div id=\"d\"></div>",
+          "h2": "<div id=\"d\"></div><div class=\"scroller\" style=\"overflow:auto;height:20px\"><div style=\"height:200px\"></div></div>",
+          "edits": [
+            {
+              "kind": "scroll",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "scroll",
+              "desc": "div.scroller",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      },
+      "Complement[focus]: an unrelated change keeps it": {
+        "tally": {
+          "ok": 164,
+          "violated": 11,
+          "n/a": 125
+        },
+        "counterexample": {
+          "h1": "<button type=\"button\">b</button><div></div>",
+          "h2": "<div></div><button type=\"button\">b</button>",
+          "edits": [
+            {
+              "kind": "focus",
+              "pick": 0
+            }
+          ],
+          "observed": [
+            {
+              "kind": "focus",
+              "desc": "button[type=button]",
+              "connected": true,
+              "serverChanged": false,
+              "holds": false
+            }
+          ],
+          "ids": []
+        }
+      }
+    },
+    "forms": [
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "text",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "text",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "text",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "textarea",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "textarea",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "checkbox",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "changes",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "select",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "select",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "new"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "old"
+      }
+    ],
+    "formsKeepOpen": [
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": false,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "changes",
+        "touched": false,
+        "focused": true,
+        "same": true,
+        "shows": "old"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": false,
+        "same": true,
+        "shows": "client"
+      },
+      {
+        "control": "details",
+        "server": "same",
+        "touched": true,
+        "focused": true,
+        "same": true,
+        "shows": "client"
+      }
+    ],
+    "align": {
+      "tally": {
+        "ok": 202,
+        "violated": 98
+      },
+      "byOp": {
+        "relabel": {
+          "ok": 53,
+          "violated": 0
+        },
+        "remove": {
+          "ok": 61,
+          "violated": 0
+        },
+        "prepend": {
+          "ok": 67,
+          "violated": 0
+        },
+        "prepend+relabel": {
+          "ok": 0,
+          "violated": 71
+        },
+        "remove+relabel": {
+          "ok": 21,
+          "violated": 27
+        }
+      },
+      "counterexample": {
+        "labels1": [
+          "A",
+          "B"
+        ],
+        "labels2": [
+          "Z*",
+          "A*",
+          "B*"
+        ],
+        "typed": 0,
+        "expect": "A*",
+        "op": "prepend+relabel",
+        "observed": {
+          "typedLabel": "A",
+          "nowUnder": "Z*",
+          "rows": [
+            {
+              "label": "Z*",
+              "value": "typed!"
+            },
+            {
+              "label": "A*",
+              "value": ""
+            },
+            {
+              "label": "B*",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    "moves": [
+      {
+        "name": "first to last",
+        "moved": 1,
+        "moveBefore": false,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "last to first",
+        "moved": 4,
+        "moveBefore": false,
+        "same": true,
+        "focusKept": false,
+        "blurred": false,
+        "scrollKept": false
+      },
+      {
+        "name": "swap middle",
+        "moved": 2,
+        "moveBefore": false,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "swap middle (other)",
+        "moved": 3,
+        "moveBefore": false,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      },
+      {
+        "name": "reverse",
+        "moved": 2,
+        "moveBefore": false,
+        "same": true,
+        "focusKept": true,
+        "blurred": false,
+        "scrollKept": true
+      }
+    ]
+  }
+}
