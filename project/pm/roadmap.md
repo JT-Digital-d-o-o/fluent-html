@@ -21,10 +21,12 @@ checkbox binding and behaviors runtime fixes, with the htmx grammar oracle in li
 - fluent-html 8.2.0, then plugin 4.3.0 (lib-first: it imports `IfNotEmpty` and reads the `size` row), then G2 and 7b, then projects-template 3.9.0
 - fluent-html 9.0.0 and G3, gated on the decisions below
 - llm-styling leftovers: the demos leak-site autofix and the canonical codemod over ttl/rideshare/mngmt, gated on those repos' bumps
+- morph-ownership: the conformance suite first (it judges the rest and ledgers what is parked), then client-only `.owns()` and its extension as its own asset; unblocks the template's adoption ([morph-ownership](morph-ownership/prd.md))
 
 ## Blocked on a Decision
 
 - route-method-tag: fold into 8.2.0 (lockstep step 6) or ship as its own minor release first? (Tony; [todo](route-method-tag/todo.md))
+- morph-ownership: its own minor after 8.2.0, or folded into the lockstep? The suite does not wait on it (Tony; [todo](morph-ownership/todo.md))
 - 9.0.0 preconditions: RFC-C-02's guess top-up to 20 leak-free runs per condition (K11, also decides `ForEachElse`), open call 1 (`nonce?: never` tombstone), open call 2 (the chunking bag) and open call 5 (`typesVersions` for 4 or 10 subpaths): the user
 - Process docs and memory: the ALGORITHM §5.10 rewording (open call 3), the guardrail 5 rewording (open call 4) and the RFC-C-04 user-memory edits: the user
 - Behaviors asset size: the L-260 call (the ADR-12 amendment in decisions.md) before any runtime byte after RFC-A-01, which leaves the asset at 6140 of 6144 B min

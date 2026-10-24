@@ -14,6 +14,7 @@ v6: a greenfield, v4-native, instruction-set rewrite of the contract for new pro
 | P8 | [llm-styling](llm-styling/) | styling surface for LLM authors — vocab generator + validity oracle, escape-hatch closure, canonical names, object variants, optional `.tl()` sink |
 | P9 | [review-v8.2](review-v8.2/) | v8.2.0 review rollout: fluent-html 8.1.1, 8.2.0 and 9.0.0, the extractor's D-01 text, guideline waves G1 to G3, in lockstep order (contracts: [research/v8.2.0](../research/v8.2.0/40-synthesis/v8-spec.md)) |
 | P10 | [route-method-tag](route-method-tag/prd.md) | a route call's bag carries its method literally, so verbs can refuse a POST at compile time (for projects-template's `.defer` and `.poll`) |
+| P13 | [morph-ownership](morph-ownership/prd.md) | a script's or the reader's part of an element declared the client's (`.owns("client")` through `hx-morph-skip`, one attribute through htmx's morph hook), judged by a three-engine conformance suite of the morph's lens laws that ledgers the parked failures (experiment: [research/morph-lens](../research/morph-lens/README.md); template adoption in `projects-template/project/pm/morph-ownership/`) |
 
 ## Downstream (separate packages — not this repo's scope)
 
