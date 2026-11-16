@@ -49,6 +49,13 @@ One registered round: diverge, screen, a bake-off on runnable prototypes, a verd
 **Price.** At most 8 headless Claude Code sessions on Opus 5.5 (three designs and the control, two
 runs each), each capped at $5: at most $40.
 
+**House rule any design keeps: the full layout is the default answer** (16. 11. 26). A link, a form
+and an action answer the page, morphed into `#main-content`, so every region on it is re-rendered
+from one load and none can go stale. A targeted swap is an opt-in that names its reason (a poll, a
+deferred region, a heavy list under live search). A 422 is the page again, with the form's values
+and errors. Page Parts as first built inverts this (regions first, the 422 as the form region
+alone), and the rewrite PRD turns it back.
+
 ## Rabbit Holes
 
 - A new file format or syntax with its own compiler. FHX measured that.

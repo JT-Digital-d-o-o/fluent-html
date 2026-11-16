@@ -15,5 +15,7 @@ Why: [prd.md](prd.md).
 - [x] [P1] Verdict against K1 to K5: go, gated, with Page Parts; Lean Tags fails K4 and is harvested ([verdict](../../research/from-scratch/2026-11-15/verdict.md))
 - [ ] [P1] The gate: Page Parts re-run on its reference alone (the first arm's sessions read a worked example), beside a Fluent Nine arm, two runs each
 - [ ] [P1] The harvest: the verdict's 14 items as rows in fluent-html's own releases, the XSS fixture set as a gate on 8.1.1
+- [ ] [P1] Page Parts with the full layout as its default answer: every part answers its page into `#main-content`, a targeted swap is an opt-in with a named reason; re-measured
+- [ ] [P1] The mistake suite gains "a region left stale by a targeted swap" (a counter, a badge, a flash elsewhere on the page), tagged per design
 - [x] [P1] Write tests: each prototype's escaping on the XSS fixtures
 - [ ] [P1] Check for bugs: one bake-off run's numbers recounted from its transcript
