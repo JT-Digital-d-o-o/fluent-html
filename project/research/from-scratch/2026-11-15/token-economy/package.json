@@ -1,0 +1,9 @@
+{
+  "name": "from-scratch-token-economy",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#lt": "./lt.ts",
+    "#zod": "./support/zod.ts"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": [],
+    "lib": [
+      "ES2023"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "fluent-html": [
+        "../../../../../../dist/src/index.d.ts"
+      ],
+      "@sinclair/typebox": [
+        "./src/typebox.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "src/template.d.ts",
+    "src/app/projects/projects.routes.ts",
+    "src/app/projects/projects.schema.ts",
+    "src/app/projects/projects.views.ts"
+  ]
+}

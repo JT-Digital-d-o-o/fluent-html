@@ -1,0 +1,181 @@
+{
+  "arms": [
+    "fluent-html 8",
+    "Lean Tags",
+    "backtick tags (first attempt, dropped)"
+  ],
+  "rows": [
+    {
+      "label": "R1 list view",
+      "counts": [
+        {
+          "all": 2068,
+          "body": 1733,
+          "dense": 1393
+        },
+        {
+          "all": 1741,
+          "body": 1441,
+          "dense": 1143
+        },
+        {
+          "all": 1666,
+          "body": 1370,
+          "dense": 1111
+        }
+      ]
+    },
+    {
+      "label": "R2 form view",
+      "counts": [
+        {
+          "all": 1846,
+          "body": 1503,
+          "dense": 1285
+        },
+        {
+          "all": 1293,
+          "body": 1048,
+          "dense": 891
+        },
+        {
+          "all": 1308,
+          "body": 1062,
+          "dense": 926
+        }
+      ]
+    },
+    {
+      "label": "R3 detail view",
+      "counts": [
+        {
+          "all": 1847,
+          "body": 1499,
+          "dense": 1278
+        },
+        {
+          "all": 1546,
+          "body": 1200,
+          "dense": 969
+        },
+        {
+          "all": 1485,
+          "body": 1143,
+          "dense": 948
+        }
+      ]
+    },
+    {
+      "label": "shared components (pills, buttons, job badge)",
+      "counts": [
+        {
+          "all": 1819,
+          "body": 1653,
+          "dense": 1414
+        },
+        {
+          "all": 1536,
+          "body": 1374,
+          "dense": 1191
+        },
+        {
+          "all": 1549,
+          "body": 1385,
+          "dense": 1212
+        }
+      ]
+    },
+    {
+      "label": "routes and ids",
+      "counts": [
+        {
+          "all": 684,
+          "body": 627,
+          "dense": 516
+        },
+        {
+          "all": 460,
+          "body": 357,
+          "dense": 300
+        },
+        {
+          "all": 460,
+          "body": 357,
+          "dense": 300
+        }
+      ]
+    },
+    {
+      "label": "schema and validation",
+      "counts": [
+        {
+          "all": 1395,
+          "body": 1338,
+          "dense": 1143
+        },
+        {
+          "all": 351,
+          "body": 323,
+          "dense": 284
+        },
+        {
+          "all": 351,
+          "body": 323,
+          "dense": 284
+        }
+      ]
+    },
+    {
+      "label": "controller",
+      "counts": [
+        {
+          "all": 2328,
+          "body": 1657,
+          "dense": 1292
+        },
+        {
+          "all": 1309,
+          "body": 835,
+          "dense": 677
+        },
+        {
+          "all": 1309,
+          "body": 835,
+          "dense": 677
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "viewsAll": [
+      7580,
+      6116,
+      6008
+    ],
+    "viewsBody": [
+      6388,
+      5063,
+      4960
+    ],
+    "featureAll": [
+      11987,
+      8236,
+      8128
+    ],
+    "featureBody": [
+      10010,
+      6578,
+      6475
+    ],
+    "viewsDense": [
+      5370,
+      4194,
+      4197
+    ],
+    "featureDense": [
+      8321,
+      5455,
+      5458
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+# html-validate-11.17.0 config: { "extends": ["html-validate:recommended"] }
+lean-tags bench-page.document.html errors=0 
+lean-tags bench-page.fragment.html errors=0 
+lean-tags r1-list.html errors=0 
+lean-tags r1-rows-empty.fragment.html errors=0 
+lean-tags r2-invalid.fragment.html errors=0 
+lean-tags r2-new.html errors=0 
+lean-tags r3-detail.html errors=0 
+lean-tags r3-status-done.fragment.html errors=0 
+lean-tags TOTAL errors=0
+fh8 bench-page.document.html errors=12 no-implicit-button-typex12
+fh8 bench-page.fragment.html errors=12 no-implicit-button-typex12
+fh8 r1-list.html errors=1 no-dup-classx1
+fh8 r1-rows-empty.fragment.html errors=0 
+fh8 r2-invalid.fragment.html errors=1 no-dup-classx1
+fh8 r2-new.html errors=1 no-dup-classx1
+fh8 r3-detail.html errors=1 no-dup-classx1
+fh8 r3-status-done.fragment.html errors=0 
+fh8 TOTAL errors=28

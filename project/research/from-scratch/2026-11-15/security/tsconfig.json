@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": [
+      "es2023"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "sealed",
+    "baseUrl": ".",
+    "paths": {
+      "sealed": [
+        "./sealed/index.ts"
+      ],
+      "sealed/jsx-runtime": [
+        "./sealed/jsx-runtime.ts"
+      ]
+    },
+    "typeRoots": [
+      "../../../../../node_modules/@types"
+    ]
+  },
+  "include": [
+    "sealed",
+    "screens",
+    "bench",
+    "xss",
+    "probes/runtime.tsx"
+  ]
+}

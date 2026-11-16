@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>r3-running</title>
+</head>
+<body>
+<main id="main-content">
+<div><div class="flex items-start justify-between mb-6"><div><h1 class="text-2xl font-semibold text-text">Timetable</h1>
+<p class="text-text-dim">Ljubljana Bus</p></div>
+<button class="inline-flex items-center px-4 py-2 rounded-control text-sm font-medium cursor-pointer border border-line-strong bg-surface text-text hover:bg-surface-2" type="button" command="show-modal" commandfor="delete-dialog">Delete</button></div>
+<div class="p-6 bg-surface border border-line rounded-card"><h2 class="text-sm font-medium text-text-dim mb-2">Build</h2>
+<div id="project-status" class="flex items-center gap-3" hx-get="/projects/2/status" hx-target="this" hx-swap="outerHTML" hx-trigger="every 3s"><span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning">Building</span>
+<span class="text-sm text-text-faint">Updated 2026-11-14</span></div></div>
+<dialog id="delete-dialog" class="w-full max-w-md p-6 rounded-card bg-surface backdrop:bg-inverse/50" closedby="any" aria-label="Delete project"><h2 class="text-lg font-semibold text-text">Delete this project?</h2>
+<p class="mt-2 text-sm text-text-dim">&quot;Timetable&quot; and its builds are removed. This cannot be undone.</p>
+<div class="flex justify-end gap-3 mt-6"><button class="inline-flex items-center px-4 py-2 rounded-control text-sm font-medium cursor-pointer border border-line-strong bg-surface text-text hover:bg-surface-2" type="button" command="close" commandfor="delete-dialog">Cancel</button>
+<button class="cursor-pointer inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-danger text-on-accent hover:bg-danger-700" type="button" hx-delete="/projects/2" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" hx-disable="this">Delete project</button></div></dialog></div>
+</main>
+</body>
+</html>

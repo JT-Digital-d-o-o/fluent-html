@@ -1,0 +1,9 @@
+$ node tools/check-classes.mjs tools/theme.css probes/class-mistakes.ts
+probes/class-mistakes.ts(5,20): error CLASS: "itms-center": not a class in this theme
+probes/class-mistakes.ts(6,15): error CLASS: "bg-gray-100": "gray-100" is a palette colour and the theme closed the palette; its colours are: black, primary, primary-700, on-accent, surface, surface-2, line, text, text-dim, info, success, danger
+probes/class-mistakes.ts(7,15): error CLASS: "hovr:bg-surface-2": the variant "hovr:" does not exist
+probes/class-mistakes.ts(8,42): error CLASS: "ring-primry": not a class in this theme
+probes/class-mistakes.ts(9,42): error CLASS: "text-fant": not a class in this theme
+probes/class-mistakes.ts(10,39): error CLASS: "text-red-600": "red-600" is a palette colour and the theme closed the palette; its colours are: black, primary, primary-700, on-accent, surface, surface-2, line, text, text-dim, info, success, danger
+15 classes checked in 1 file(s), 6 error(s)
+exit=1

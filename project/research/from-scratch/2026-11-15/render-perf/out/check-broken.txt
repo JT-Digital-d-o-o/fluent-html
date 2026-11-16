@@ -1,0 +1,13 @@
+tools/broken/mistakes.ts:8 class "bg-gray-100": no such class under this theme; colors are ink, dim, surface, surface-2, line, primary, primary-700, on-accent, danger, success, info
+tools/broken/mistakes.ts:10 class "rouned-card": no such class under this theme; colors are ink, dim, surface, surface-2, line, primary, primary-700, on-accent, danger, success, info
+tools/broken/mistakes.ts:12 class "bg-/10": a class name is never built from a hole: pick whole class strings with match()
+tools/broken/mistakes.ts:17 <button> needs type="button" or type="submit"
+tools/broken/mistakes.ts:19 inline event handler "onclick" is refused: use an htmx verb or a behavior
+tools/broken/mistakes.ts:21 <Card>: elements are lowercase HTML; a component is a function call in a hole, ${Card(props)}
+tools/broken/mistakes.ts:26 </ul> closes <li>
+tools/broken/mistakes.ts:28 an attribute name cannot come from a hole: use attrs({ [name]: value })
+tools/broken/mistakes.ts:30 <iframe srcdoc> with a hole needs a static sandbox attribute without allow-scripts
+tools/broken/mistakes.ts:32 <img> needs alt (alt="" for decoration)
+tools/broken/mistakes.ts:34 tw`` holds literal class text only: a hole hides the class from Tailwind
+tools/broken/mistakes.ts:36 class "text-red-500": no such class under this theme; colors are ink, dim, surface, surface-2, line, primary, primary-700, on-accent, danger, success, info
+hh check: 1 files, 12 templates, 9 class uses, 12 findings; parse+compile 139 ms, total 400 ms; classes judged by tailwindcss 4.3.3

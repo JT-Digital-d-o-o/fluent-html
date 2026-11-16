@@ -1,0 +1,30 @@
+probes/negative.tsx:7:25 TS2322 Type '"p-4"' is not assignable to type 'false | "rtsx: write class" | null | undefined'.
+probes/negative.tsx:8:28 TS2322 Type '() => void' is not assignable to type 'false | "rtsx: no inline handlers; use command/commandfor, popovertarget or an hx-* attribute" | null | undefined'.
+probes/negative.tsx:9:23 TS2322 Type '"/projects"' is not assignable to type 'false | RouteCallOrUrlValue | null | undefined'.
+probes/negative.tsx:10:23 TS2322 Type 'string' is not assignable to type 'false | RouteCallOrUrlValue | null | undefined'.
+probes/negative.tsx:11:21 TS2322 hx-post: Type '"get"' is not assignable to type '"post"'.
+probes/negative.tsx:12:23 TS2322 Type 'Id<"job-status">' is not assignable to type 'undefined'. (Type 'RouteOf<{ readonly path: "/:id/status"; readonly render: Id<"job-status">; readonly poll: "2s"; }>' is not assignable to type 'false | RouteCall…)
+probes/negative.tsx:13:61 TS2345 Argument of type '"nmae"' is not assignable to parameter of type '"name" | "client" | "status" | "notes"'.
+probes/negative.tsx:14:38 TS2554 Expected 1 arguments, but got 0.
+probes/negative.tsx:15:45 TS2353 Object literal may only specify known properties, and 'query' does not exist in type 'ArgsOf<{ readonly path: "/"; readonly query: S<{ q: string; }>; }>'.
+probes/negative.tsx:16:40 TS2345 Property 'failed' is missing in type '{ queued: () => "q"; running: () => "r"; done: () => "d"; }' but required in type '{ queued: (v: { state: "queued"; }) => Out; running: (v: { state: "running"; percent: number; }) => Out; done: (v: { state: "done"; finishedAt: string; }) => Out; failed: (v: { state: "failed"; reason: string; }) => Out; }'. (Argument of type '{ queued: () => "q"; running: () => "r"; done: () => "d"; }' is not assignable to parameter of type '{ queued: (v: { state: "queued"…)
+probes/negative.tsx:17:21 TS2322 hx-swap: Type '"morph"' is not assignable to type 'false | Swap | null | undefined'.
+probes/negative.tsx:19:21 TS2322 Property 'alt' is missing in type '{ src: string; }' but required in type '{ src: string; alt: string; }'. (Type '{ src: string; }' is not assignable to type 'Opt<{ [aria: `aria-${string}`]: string | number | boolean | Id<string> | null | undefined; [data: `…)
+probes/negative.tsx:20:28 TS2322 Type 'string' is not assignable to type 'Html'.
+probes/negative.tsx:21:25 TS2322 Type 'string' is not assignable to type 'false | { readonly [property: string]: string | number | false | null | undefined; } | null | undefined'.
+probes/negative.tsx:22:39 TS2747 'input' components don't accept text as child elements. Text in JSX has the type 'string', but the expected type of 'children' is 'undefined'.
+probes/negative.tsx:23:21 TS2322 hx-target: Type '"#project-list"' is not assignable to type 'false | Target | null | undefined'.
+probes/negative.tsx:24:27 TS2322 Type '"x"' is not assignable to type 'false | "rtsx: write for" | null | undefined'.
+probes/negative.tsx:25:21 TS2322 hx-get: Type 'string' is not assignable to type 'false | Verb<"get"> | null | undefined'.
+probes/negative.tsx:26:28 TS2322 Type '"outside"' is not assignable to type 'false | "none" | "any" | "closerequest" | null | undefined'.
+probes/negative.tsx:18:25 RX-ATTR "hx-gte" is not an htmx attribute. Nearest: hx-get, hx-put, hx-post
+probes/classes.tsx:5:30 RX-CLASS "bg-gray-100": gray-100 is not a color in this theme. Theme colors: black, surface, surface-2, text, text-dim, line, primary, primary-700, on-accent, success, warning, danger
+probes/classes.tsx:6:30 RX-CLASS "flex-wrapp" is not a class in this theme. Nearest: flex-wrap, flex-nowrap, flex-row
+probes/classes.tsx:7:30 RX-CLASS "px-4" and "px-6" set the same properties (padding-inline); keep one
+probes/classes.tsx:8:30 RX-CLASS "hover:bg-surfce" is not a class in this theme. Nearest: hover:bg-surface, hover:bg-surface-2, hover:bg-scroll
+probes/classes.tsx:8:30 RX-CLASS "md:text-text-faint" is not a class in this theme. Nearest: md:text-text-dim, md:text-text, md:text-left
+probes/classes.tsx:9:31 RX-CLASS a class must be a complete literal: pick between whole strings, do not build one with ${}
+probes/classes.tsx:3:14 RX-CLASS "p-6" and "p-4" set the same properties (padding); keep one
+probes/classes.tsx:10:59 RX-CLASS "text-dangr" is not a class in this theme. Nearest: text-danger, text-base, text-center
+probes/classes.tsx:11:24 RX-ATTR "hx-gte" is not an htmx attribute. Nearest: hx-get, hx-put, hx-post
+rtsx check: 29 findings

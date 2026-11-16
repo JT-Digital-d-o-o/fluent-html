@@ -1,0 +1,106 @@
+probes/mistakes.ts(12,24): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): El<Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }, PageRef>', gave the following error.
+    Object literal may only specify known properties, and 'hreff' does not exist in type 'TemplateStringsArray'.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef)[]): Html<...>', gave the following error.
+    Object literal may only specify known properties, and 'hreff' does not exist in type 'Root<string>'.
+  Overload 3 of 3, '(...args: (Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef)[]): Html<...>', gave the following error.
+    Object literal may only specify known properties, and 'hreff' does not exist in type 'Wire | Html<string | undefined> | AnyEl | readonly Child[] | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef'.
+probes/mistakes.ts(13,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): El<Global, never>', gave the following error.
+    Object literal may only specify known properties, and 'class' does not exist in type 'TemplateStringsArray'.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | Child | Global)[]): Html<string>', gave the following error.
+    Object literal may only specify known properties, and 'class' does not exist in type 'Root<string>'.
+  Overload 3 of 3, '(...args: (Wire | Child | Global)[]): Html<undefined>', gave the following error.
+    Argument of type '{ class: "flex gap-4"; }' is not assignable to parameter of type 'Wire | Child | Global'.
+      Types of property 'class' are incompatible.
+        Type '"flex gap-4"' is not assignable to type '"classes go in the tag template: div`flex gap-4`(…)"'.
+probes/mistakes.ts(14,20): error TS2349: This expression is not callable.
+  Type 'Html<undefined>' has no call signatures.
+probes/mistakes.ts(15,40): error TS2353: Object literal may only specify known properties, and 'idd' does not exist in type '{ id: number; }'.
+probes/mistakes.ts(16,38): error TS2353: Object literal may only specify known properties, and 'query' does not exist in type '{ q?: string | undefined; }'.
+probes/mistakes.ts(17,69): error TS2345: Argument of type '"query"' is not assignable to parameter of type '"q"'.
+probes/mistakes.ts(18,104): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(name: "name" | "description" | "status", attrs?: Omit<Global & { type?: "number" | "hidden" | "text" | "search" | "email" | "password" | "tel" | "url" | "date" | "datetime-local" | ... 6 more ... | undefined; ... 17 more ...; accept?: V; }, "id" | ... 1 more ... | "value"> | undefined): Html<...>', gave the following error.
+    Argument of type '"nmae"' is not assignable to parameter of type '"name" | "description" | "status"'.
+  Overload 2 of 2, '(classes: TemplateStringsArray, ...holes: Hole[]): (name: "name" | "description" | "status", attrs?: Omit<Global & { type?: "number" | "hidden" | ... 14 more ... | undefined; ... 17 more ...; accept?: V; }, "id" | ... 1 more ... | "value"> | undefined) => Html<...>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'TemplateStringsArray'.
+probes/mistakes.ts(19,98): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(name: "status", options: Record<"active" | "paused", string>, attrs?: Omit<Global & { name?: string | undefined; required?: B; disabled?: B; multiple?: B; }, "id" | "name"> | undefined): Html<...>', gave the following error.
+    Argument of type '{ active: string; }' is not assignable to parameter of type 'Record<"active" | "paused", string>'.
+      Property 'paused' is missing in type '{ active: string; }' but required in type 'Record<"active" | "paused", string>'.
+  Overload 2 of 2, '(classes: TemplateStringsArray, ...holes: Hole[]): <K extends "name" | "description" | "status">(name: K, options: Record<Extract<({ name: string; status: "active" | "paused"; } & { ...; })[K], string>, string>, attrs?: Omit<...> | undefined) => Html<...>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'TemplateStringsArray'.
+probes/mistakes.ts(21,22): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): El<Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }, PageRef>', gave the following error.
+    Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type 'TemplateStringsArray'.
+      Type 'PartRef<"project-list", { q?: string | undefined; }>' is missing the following properties from type 'TemplateStringsArray': raw, length, concat, join, and 27 more.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef)[]): Html<...>', gave the following error.
+    Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type 'Root<string>'.
+      Type 'PartRef<"project-list", { q?: string | undefined; }>' is missing the following properties from type 'Root<string>': $root, $wire, s, on
+  Overload 3 of 3, '(...args: (Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef)[]): Html<...>', gave the following error.
+    Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type 'Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef'.
+      Type 'PartRef<"project-list", { q?: string | undefined; }>' is missing the following properties from type 'PageRef': on, $wire, s
+probes/mistakes.ts(22,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): El<Global, never>', gave the following error.
+    Object literal may only specify known properties, and '"hx-get"' does not exist in type 'TemplateStringsArray'.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | Child | Global)[]): Html<string>', gave the following error.
+    Object literal may only specify known properties, and '"hx-get"' does not exist in type 'Root<string>'.
+  Overload 3 of 3, '(...args: (Wire | Child | Global)[]): Html<undefined>', gave the following error.
+    Argument of type '{ "hx-get": "/x"; }' is not assignable to parameter of type 'Wire | Child | Global'.
+      Types of property '"hx-get"' are incompatible.
+        Type '"/x"' is not assignable to type '"htmx attributes come from a route wire: route(...), .search(), .poll(), wire({…})"'.
+probes/mistakes.ts(23,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): El<Global & Cmd & { type?: "button" | "submit" | "reset" | undefined; name?: string | undefined; ... 4 more ...; autofocus?: B; }, ActionRef<...>>', gave the following error.
+    Object literal may only specify known properties, and 'onclick' does not exist in type 'TemplateStringsArray'.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | Child | (Global & Cmd & { type?: "button" | "submit" | "reset" | undefined; name?: string | undefined; value?: V; disabled?: B; form?: string | undefined; formaction?: string | undefined; autofocus?: B; }) | ActionRef<...>)[]): Html<...>', gave the following error.
+    Object literal may only specify known properties, and 'onclick' does not exist in type 'Root<string>'.
+  Overload 3 of 3, '(...args: (Wire | Child | (Global & Cmd & { type?: "button" | "submit" | "reset" | undefined; name?: string | undefined; value?: V; disabled?: B; form?: string | undefined; formaction?: string | undefined; autofocus?: B; }) | ActionRef<...>)[]): Html<...>', gave the following error.
+    Argument of type '{ onclick: "go()"; }' is not assignable to parameter of type 'Wire | Child | (Global & Cmd & { type?: "button" | "submit" | "reset" | undefined; name?: string | undefined; value?: V; disabled?: B; form?: string | undefined; formaction?: string | undefined; autofocus?: B; }) | ActionRef<...>'.
+      Types of property 'onclick' are incompatible.
+        Type '"go()"' is not assignable to type '"inline event handlers are not rendered: use a route wire or a native command"'.
+probes/mistakes.ts(24,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): VoidEl<Global & { type?: "number" | "hidden" | "text" | "search" | "email" | "password" | "tel" | ... 9 more ... | undefined; ... 17 more ...; accept?: V; }, never>', gave the following error.
+    Object literal may only specify known properties, and 'type' does not exist in type 'TemplateStringsArray'.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | (Global & { type?: "number" | "hidden" | "text" | "search" | "email" | "password" | "tel" | "url" | "date" | "datetime-local" | ... 6 more ... | undefined; ... 17 more ...; accept?: V; }))[]): Html<...>', gave the following error.
+    Object literal may only specify known properties, and 'type' does not exist in type 'Root<string>'.
+  Overload 3 of 3, '(...args: (Wire | (Global & { type?: "number" | "hidden" | "text" | "search" | "email" | "password" | "tel" | "url" | "date" | "datetime-local" | "time" | "checkbox" | "radio" | "file" | "range" | "color" | undefined; ... 17 more ...; accept?: V; }))[]): Html<...>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'Wire | (Global & { type?: "number" | "hidden" | "text" | "search" | "email" | "password" | "tel" | "url" | "date" | "datetime-local" | "time" | "checkbox" | "radio" | "file" | "range" | "color" | undefined; ... 17 more ...; accept?: V; })'.
+probes/mistakes.ts(25,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): VoidEl<Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | ... 1 more ... | undefined; decoding?: "auto" | ... 2 more ... | undefined; srcset?: string | undefined; sizes?: V; }, never>', gave the following error.
+    Object literal may only specify known properties, and 'src' does not exist in type 'TemplateStringsArray'.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | (Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | ... 2 more ... | undefined; srcset?: string | undefined; sizes?: V; }))[]): Html<...>', gave the following error.
+    Object literal may only specify known properties, and 'src' does not exist in type 'Root<string>'.
+  Overload 3 of 3, '(...args: (Wire | (Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | "async" | "sync" | undefined; srcset?: string | undefined; sizes?: V; }))[]): Html<...>', gave the following error.
+    Argument of type '{ src: string; }' is not assignable to parameter of type 'Wire | (Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | "async" | "sync" | undefined; srcset?: string | undefined; sizes?: V; })'.
+      Type '{ src: string; }' is not assignable to type 'Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | "async" | "sync" | undefined; srcset?: string | undefined; sizes?: V; }'.
+        Property 'alt' is missing in type '{ src: string; }' but required in type '{ src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | "async" | "sync" | undefined; srcset?: string | undefined; sizes?: V; }'.
+probes/mistakes.ts(26,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): El<Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }, PageRef>', gave the following error.
+    Object literal may only specify known properties, and 'href' does not exist in type 'TemplateStringsArray'.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef)[]): Html<...>', gave the following error.
+    Object literal may only specify known properties, and 'href' does not exist in type 'Root<string>'.
+  Overload 3 of 3, '(...args: (Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef)[]): Html<...>', gave the following error.
+    Argument of type '{ href: PageRef; }' is not assignable to parameter of type 'Wire | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef'.
+      Types of property 'href' are incompatible.
+        Type 'PageRef' is not assignable to type 'string'.
+probes/mistakes.ts(27,24): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(classes: TemplateStringsArray, ...holes: Hole[]): El<Global, never>', gave the following error.
+    Argument of type 'Project' is not assignable to parameter of type 'TemplateStringsArray'.
+      Type 'Project' is missing the following properties from type 'TemplateStringsArray': raw, length, concat, join, and 27 more.
+  Overload 2 of 3, '(root: Root<string>, ...rest: (Wire | Child | Global)[]): Html<string>', gave the following error.
+    Argument of type 'Project' is not assignable to parameter of type 'Root<string>'.
+      Type 'Project' is missing the following properties from type 'Root<string>': $root, $wire, s, on
+  Overload 3 of 3, '(...args: (Wire | Child | Global)[]): Html<undefined>', gave the following error.
+    Argument of type 'Project' is not assignable to parameter of type 'Wire | Child | Global'.
+      Type 'Project' is not assignable to type 'Global'.
+        Types of property 'id' are incompatible.
+          Type 'number' is not assignable to type 'string'.
+probes/mistakes.ts(30,21): error TS2322: Type 'Promise<Html<undefined>>' is not assignable to type 'Awaitable<NotFound | Html<"project-list">>'.
+  Type 'Promise<Html<undefined>>' is not assignable to type 'Promise<NotFound | Html<"project-list">>'.
+    Type 'Html<undefined>' is not assignable to type 'NotFound | Html<"project-list">'.
+      Type 'Html<undefined>' is not assignable to type 'Html<"project-list">'.
+        Type 'undefined' is not assignable to type '"project-list"'.
+probes/mistakes.ts(34,23): error TS2322: Type 'Promise<Page>' is not assignable to type 'Awaitable<NotFound | Html<"project-status">>'.
+  Type 'Promise<Page>' is not assignable to type 'Promise<NotFound | Html<"project-status">>'.
+    Type 'Page' is not assignable to type 'NotFound | Html<"project-status">'.
+      Type 'Page' is missing the following properties from type 'Html<"project-status">': $id, id

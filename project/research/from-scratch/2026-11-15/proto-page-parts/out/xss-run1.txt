@@ -1,0 +1,37 @@
+adapter: page-parts  cases: 206  K3 escapes (xss+css): 0
+┌─────────┬────────────────────┬─────────┬─────┬─────┬────────┬──────────┬──────┬────────┬────────┬─────────────┐
+│ (index) │ ctx                │ hostile │ xss │ css │ legacy │ rejected │ safe │ benign │ broken │ unsupported │
+├─────────┼────────────────────┼─────────┼─────┼─────┼────────┼──────────┼──────┼────────┼────────┼─────────────┤
+│ 0       │ 'text'             │ 8       │ 0   │ 0   │ 0      │ 0        │ 8    │ 3      │ 0      │ 0           │
+│ 1       │ 'rcdata-textarea'  │ 2       │ 0   │ 0   │ 0      │ 0        │ 2    │ 1      │ 0      │ 0           │
+│ 2       │ 'rcdata-title'     │ 1       │ 0   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 3       │ 'attr-title'       │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 4       │ 'attr-data'        │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 5       │ 'attr-id'          │ 3       │ 0   │ 0   │ 0      │ 0        │ 3    │ 1      │ 0      │ 0           │
+│ 6       │ 'attr-class'       │ 3       │ 0   │ 0   │ 0      │ 0        │ 3    │ 1      │ 0      │ 0           │
+│ 7       │ 'attr-input-value' │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 8       │ 'attr-name'        │ 6       │ 0   │ 0   │ 0      │ 6        │ 0    │ 1      │ 0      │ 0           │
+│ 9       │ 'url-href'         │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 5      │ 0      │ 0           │
+│ 10      │ 'url-img-src'      │ 14      │ 0   │ 0   │ 0      │ 0        │ 14   │ 4      │ 0      │ 0           │
+│ 11      │ 'url-iframe-src'   │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 3      │ 0      │ 0           │
+│ 12      │ 'url-form-action'  │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 1      │ 0      │ 0           │
+│ 13      │ 'url-formaction'   │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 1      │ 0      │ 0           │
+│ 14      │ 'style-value'      │ 8       │ 0   │ 0   │ 0      │ 0        │ 8    │ 3      │ 0      │ 0           │
+│ 15      │ 'style-element'    │ 8       │ 0   │ 0   │ 0      │ 0        │ 8    │ 3      │ 0      │ 0           │
+│ 16      │ 'json-script'      │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 17      │ 'js-script-var'    │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 18      │ 'htmx-get'         │ 4       │ 0   │ 0   │ 0      │ 4        │ 0    │ 1      │ 0      │ 0           │
+│ 19      │ 'htmx-confirm'     │ 0       │ 0   │ 0   │ 0      │ 0        │ 0    │ 0      │ 0      │ 4           │
+│ 20      │ 'htmx-vals'        │ 5       │ 0   │ 0   │ 0      │ 0        │ 5    │ 1      │ 0      │ 0           │
+│ 21      │ 'htmx-headers'     │ 5       │ 0   │ 0   │ 0      │ 0        │ 5    │ 1      │ 0      │ 0           │
+│ 22      │ 'iframe-srcdoc'    │ 3       │ 0   │ 0   │ 0      │ 0        │ 3    │ 1      │ 0      │ 0           │
+│ 23      │ 'TOTAL'            │ 165     │ 0   │ 0   │ 0      │ 10       │ 155  │ 37     │ 0      │ 4           │
+└─────────┴────────────────────┴─────────┴─────┴─────┴────────┴──────────┴──────┴────────┴────────┴─────────────┘
+UNSUPPORTED htmx-confirm/js-prefix  payload="js:alert(1)"
+            no hx-confirm sink: an action's confirm is a native <dialog> whose title and body are text (covered by the part-sink test)
+UNSUPPORTED htmx-confirm/javascript-prefix  payload="javascript:alert(1)"
+            no hx-confirm sink: an action's confirm is a native <dialog> whose title and body are text (covered by the part-sink test)
+UNSUPPORTED htmx-confirm/breakout  payload="\" hx-on:click=\"alert(1)"
+            no hx-confirm sink: an action's confirm is a native <dialog> whose title and body are text (covered by the part-sink test)
+UNSUPPORTED htmx-confirm/question  payload="Delete \"Q3 <draft>\" & its notes?"
+            no hx-confirm sink: an action's confirm is a native <dialog> whose title and body are text (covered by the part-sink test)

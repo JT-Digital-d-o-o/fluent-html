@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "es2023", "lib": ["es2023", "dom"], "module": "nodenext", "moduleResolution": "nodenext",
+    "strict": true, "noEmit": true, "skipLibCheck": true, "types": [],
+    "baseUrl": ".",
+    "paths": { "@tpl/*": ["/Users/tony/jt-digital/projects-template/templates/full-stack/src/*"], "fluent-html": ["/Users/tony/jt-digital/projects-template/templates/full-stack/node_modules/fluent-html"] }
+  },
+  "include": ["*.ts"]
+}

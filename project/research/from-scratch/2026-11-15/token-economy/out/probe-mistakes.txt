@@ -1,0 +1,44 @@
+probes/mistakes.ts(12,24): error TS2353: Object literal may only specify known properties, and 'hreff' does not exist in type 'Tw | Html<string | undefined> | readonly Child[] | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef | Wire<...>'.
+probes/mistakes.ts(13,24): error TS2345: Argument of type '{ class: "flex gap-4"; }' is not assignable to parameter of type 'Tw | Child | Global | Wire<never>'.
+  Types of property 'class' are incompatible.
+    Type '"flex gap-4"' is not assignable to type '"classes are a leading tw argument: div(tw`flex gap-4`, …)"'.
+probes/mistakes.ts(14,34): error TS2345: Argument of type '"p-4"' is not assignable to parameter of type 'Tw | Falsy'.
+probes/mistakes.ts(15,40): error TS2353: Object literal may only specify known properties, and 'idd' does not exist in type '{ id: number; }'.
+probes/mistakes.ts(16,38): error TS2353: Object literal may only specify known properties, and 'query' does not exist in type '{ q?: string | undefined; }'.
+probes/mistakes.ts(17,69): error TS2345: Argument of type '"query"' is not assignable to parameter of type '"q"'.
+probes/mistakes.ts(18,104): error TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"name" | "description" | "status"'.
+probes/mistakes.ts(19,115): error TS2345: Argument of type '{ active: string; }' is not assignable to parameter of type 'Record<"active" | "paused", string>'.
+  Property 'paused' is missing in type '{ active: string; }' but required in type 'Record<"active" | "paused", string>'.
+probes/mistakes.ts(20,27): error TS2345: Argument of type 'PageRef' is not assignable to parameter of type 'Tw | Child | (Global & Cmd & { type?: "button" | "submit" | "reset" | undefined; name?: string | undefined; value?: V; disabled?: B; form?: string | undefined; formaction?: string | undefined; autofocus?: B; }) | ActionRef<...> | Wire<...>'.
+  Type 'PageRef' is missing the following properties from type 'ActionRef<any>': $b, formId, fire, form
+probes/mistakes.ts(21,22): error TS2345: Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type 'Tw | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef | Wire<...>'.
+  Property 'on' is missing in type 'PartRef<"project-list", { q?: string | undefined; }>' but required in type 'PageRef'.
+probes/mistakes.ts(22,24): error TS2345: Argument of type '{ "hx-get": "/x"; }' is not assignable to parameter of type 'Tw | Child | Global | Wire<never>'.
+  Types of property '"hx-get"' are incompatible.
+    Type '"/x"' is not assignable to type '"htmx attributes come from a route wire: route(...), .search(), .poll(), wire({…})"'.
+probes/mistakes.ts(23,27): error TS2345: Argument of type '{ onclick: "go()"; }' is not assignable to parameter of type 'Tw | Child | (Global & Cmd & { type?: "button" | "submit" | "reset" | undefined; name?: string | undefined; value?: V; disabled?: B; form?: string | undefined; formaction?: string | undefined; autofocus?: B; }) | ActionRef<...> | Wire<...>'.
+  Types of property 'onclick' are incompatible.
+    Type '"go()"' is not assignable to type '"inline event handlers are not rendered: use a route wire or a native command"'.
+probes/mistakes.ts(24,44): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Tw | (Global & { type?: "number" | "hidden" | "text" | "search" | "email" | "password" | "tel" | "url" | "date" | "datetime-local" | "time" | "checkbox" | "radio" | "file" | "range" | "color" | undefined; ... 17 more ...; accept?: V; }) | Wire<...>'.
+probes/mistakes.ts(25,24): error TS2345: Argument of type '{ src: string; }' is not assignable to parameter of type 'Tw | (Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | "async" | "sync" | undefined; srcset?: string | undefined; sizes?: V; }) | Wire<...>'.
+  Type '{ src: string; }' is not assignable to type 'Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | "async" | "sync" | undefined; srcset?: string | undefined; sizes?: V; }'.
+    Property 'alt' is missing in type '{ src: string; }' but required in type '{ src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | "eager" | undefined; decoding?: "auto" | "async" | "sync" | undefined; srcset?: string | undefined; sizes?: V; }'.
+probes/mistakes.ts(26,22): error TS2345: Argument of type '{ href: PageRef; }' is not assignable to parameter of type 'Tw | Child | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "_top" | undefined; rel?: V; download?: true | V; }) | PageRef | Wire<...>'.
+  Types of property 'href' are incompatible.
+    Type 'PageRef' is not assignable to type 'string'.
+probes/mistakes.ts(27,24): error TS2345: Argument of type 'Project' is not assignable to parameter of type 'Tw | Child | Global | Wire<never>'.
+  Type 'Project' is missing the following properties from type 'Wire<never>': $root, s
+probes/mistakes.ts(28,28): error TS2820: Type '"txt"' is not assignable to type '"number" | "hidden" | "text" | "search" | "email" | "password" | "tel" | "url" | "date" | "datetime-local" | "time" | "checkbox" | "radio" | "file" | "range" | "color" | undefined'. Did you mean '"text"'?
+probes/mistakes.ts(31,21): error TS2322: Type 'Promise<Html<undefined>>' is not assignable to type 'Awaitable<NotFound | Html<"project-list">>'.
+  Type 'Promise<Html<undefined>>' is not assignable to type 'Promise<NotFound | Html<"project-list">>'.
+    Type 'Html<undefined>' is not assignable to type 'NotFound | Html<"project-list">'.
+      Type 'Html<undefined>' is not assignable to type 'Html<"project-list">'.
+        Type 'undefined' is not assignable to type '"project-list"'.
+probes/mistakes.ts(35,23): error TS2322: Type 'Promise<Page>' is not assignable to type 'Awaitable<NotFound | Html<"project-status">>'.
+  Type 'Promise<Page>' is not assignable to type 'Promise<NotFound | Html<"project-status">>'.
+    Type 'Page' is not assignable to type 'NotFound | Html<"project-status">'.
+      Type 'Page' is missing the following properties from type 'Html<"project-status">': $id, id
+probes/mistakes.ts(36,44): error TS2345: Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type 'PageRef'.
+  Property 'on' is missing in type 'PartRef<"project-list", { q?: string | undefined; }>' but required in type 'PageRef'.
+probes/mistakes.ts(38,39): error TS2345: Argument of type '{ list: ({ input }: Ctx<{ q?: string | undefined; }, undefined>) => Promise<Page>; new: () => Page; create: { form: (state: State<{ name: string; status: "active" | "paused"; } & { ...; }>) => Html<...>; ok: ({ redirect }: Ctx<...>) => Promise<...>; }; detail: () => Promise<...>; }' is not assignable to parameter of type '{ readonly list: (ctx: Ctx<{ q?: string | undefined; }, undefined>) => Awaitable<Page | Redirect | NotFound>; readonly rows: (ctx: Ctx<{ q?: string | undefined; }, undefined>) => Awaitable<...>; ... 4 more ...; readonly remove: (ctx: Ctx<...>) => Awaitable<...>; }'.
+  Type '{ list: ({ input }: Ctx<{ q?: string | undefined; }, undefined>) => Promise<Page>; new: () => Page; create: { form: (state: State<{ name: string; status: "active" | "paused"; } & { ...; }>) => Html<...>; ok: ({ redirect }: Ctx<...>) => Promise<...>; }; detail: () => Promise<...>; }' is missing the following properties from type '{ readonly list: (ctx: Ctx<{ q?: string | undefined; }, undefined>) => Awaitable<Page | Redirect | NotFound>; readonly rows: (ctx: Ctx<{ q?: string | undefined; }, undefined>) => Awaitable<...>; ... 4 more ...; readonly remove: (ctx: Ctx<...>) => Awaitable<...>; }': rows, status, remove

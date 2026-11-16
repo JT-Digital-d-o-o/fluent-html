@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Projects</title>
+</head>
+<body>
+<main id="main">
+<section class="mx-auto flex max-w-3xl flex-col gap-4 p-6">
+<div class="flex items-center justify-between">
+<h1 class="text-2xl font-bold text-ink">Projects</h1>
+<a href="/projects/new" hx-get="/projects/new" hx-target="#main" hx-swap="outerMorph show:top" hx-push-url="true" class="rounded-control bg-primary px-4 py-2 text-on-accent hover:bg-primary-700">New project</a>
+</div>
+<input hx-get="/projects/rows" hx-trigger="input changed delay:300ms, search" hx-sync="this:replace" hx-include="this" hx-target="#project-list" hx-swap="outerMorph" type="search" name="q" aria-label="Search projects" placeholder="Search projects" class="w-full rounded-control border border-line px-3 py-2">
+<div id="project-list" class="rounded-card border border-line bg-surface">
+<ul class="divide-y divide-line"><li>
+<a href="/projects/1" hx-get="/projects/1" hx-target="#main" hx-swap="outerMorph show:top" hx-push-url="true" class="flex items-center justify-between px-4 py-3 hover:bg-surface-2">
+<span class="font-medium text-ink">Atlas &lt;migration&gt;</span>
+<span class="text-sm text-dim">ana@example.com</span>
+</a>
+</li><li>
+<a href="/projects/2" hx-get="/projects/2" hx-target="#main" hx-swap="outerMorph show:top" hx-push-url="true" class="flex items-center justify-between px-4 py-3 hover:bg-surface-2">
+<span class="font-medium text-ink">Billing &amp; invoices</span>
+<span class="text-sm text-dim">bor@example.com</span>
+</a>
+</li></ul>
+</div>
+</section>
+</main>
+</body>
+</html>

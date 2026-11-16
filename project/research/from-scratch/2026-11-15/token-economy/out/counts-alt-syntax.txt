@@ -1,0 +1,7 @@
+fluent-html 8 (typed chain)     1499 ch  375 tok  x1.00 | no whitespace  1278 ch  x1.00
+JSX                             1364 ch  341 tok  x0.91 | no whitespace  1138 ch  x0.89
+html tagged template            1361 ch  340 tok  x0.91 | no whitespace  1138 ch  x0.89
+hiccup arrays                   1391 ch  348 tok  x0.93 | no whitespace  1130 ch  x0.88
+tag({ class: "…" }, …)          1343 ch  336 tok  x0.90 | no whitespace  1074 ch  x0.84
+Lean Tags: tag(tw`…`, …)        1200 ch  300 tok  x0.80 | no whitespace   969 ch  x0.76
+backtick tags: tag`…`(…)        1143 ch  286 tok  x0.76 | no whitespace   948 ch  x0.74

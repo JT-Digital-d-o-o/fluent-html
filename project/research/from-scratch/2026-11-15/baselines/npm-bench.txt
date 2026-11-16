@@ -1,0 +1,44 @@
+# fluent-html f041a97, copy at /private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fh8 (tracked dist identical to a fresh build: diff -rq dist/src)
+# 22:40  up 23 days, 23:32, 6 users, load averages: 278.74 321.04 286.18
+$ npm run bench
+> fluent-html@8.1.0 bench
+> npm run build && node dist/bench/render.js
+> fluent-html@8.1.0 build
+> tsc && tsc -p src/behaviors/client/tsconfig.json && node scripts/build-behaviors.mjs
+fluent-behaviors 8.1.0:c1f56451 → dist/fluent-behaviors.8.1.0.js (5977 B min, 2671 B gz)
+╔═══════════════════════════════════════════════════════════════════════╗
+║                     fluent-html Benchmark Suite                     ║
+╚═══════════════════════════════════════════════════════════════════════╝
+Render benchmarks:
+────────────────────────────────────────────────────────────────────────
+  Flat page (1000 divs)                        1.98K ops/sec       0.5063 ms/op
+  Deep tree (100 levels)                     102.20K ops/sec       0.0098 ms/op
+  Heavy escaping (200 paragraphs)              1.17K ops/sec       0.8540 ms/op
+  HTMX attributes (100 buttons)               10.88K ops/sec       0.0919 ms/op
+  Realistic page (~200 tags)                  16.66K ops/sec       0.0600 ms/op
+  Variant-heavy (100 buttons, 10+ variants)     31.71K ops/sec       0.0315 ms/op
+  Large ForEach (5000 items)                     194 ops/sec       5.1546 ms/op
+  Build+render realistic (per req)             2.55K ops/sec       0.3925 ms/op
+Memory usage:
+────────────────────────────────────────────────────────────────────────
+  (Run with --expose-gc for memory measurements)
+$ npm run bench:mem   (build skipped: node --expose-gc dist/bench/render.js)
+╔═══════════════════════════════════════════════════════════════════════╗
+║                     fluent-html Benchmark Suite                     ║
+╚═══════════════════════════════════════════════════════════════════════╝
+Render benchmarks:
+────────────────────────────────────────────────────────────────────────
+  Flat page (1000 divs)                          938 ops/sec       1.0661 ms/op
+  Deep tree (100 levels)                      80.66K ops/sec       0.0124 ms/op
+  Heavy escaping (200 paragraphs)              4.66K ops/sec       0.2147 ms/op
+  HTMX attributes (100 buttons)                7.01K ops/sec       0.1426 ms/op
+  Realistic page (~200 tags)                  31.76K ops/sec       0.0315 ms/op
+  Variant-heavy (100 buttons, 10+ variants)     16.86K ops/sec       0.0593 ms/op
+  Large ForEach (5000 items)                     174 ops/sec       5.7471 ms/op
+  Build+render realistic (per req)             2.08K ops/sec       0.4819 ms/op
+Memory usage:
+────────────────────────────────────────────────────────────────────────
+  Flat page construction (1000 divs)          4995.7 KB heap (100 iterations)
+  Realistic page construction                 6754.7 KB heap (100 iterations)
+  Flat page render (1000 divs)               21544.6 KB heap (100 iterations)
+  Realistic page render                       6707.8 KB heap (100 iterations)

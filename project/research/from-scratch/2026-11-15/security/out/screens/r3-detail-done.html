@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harbour redesign</title>
+<link rel="stylesheet" href="/css/app.css">
+<script src="/js/htmx.js" defer nonce="dGVzdG5vbmNl">
+</script>
+</head>
+<body class="bg-bg text-text">
+<main id="main-content" class="mx-auto max-w-3xl p-6">
+<nav aria-label="Breadcrumb" class="text-sm text-text-dim">
+<a href="/projects" hx-get="/projects" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" class="hover:underline">Projects</a> / Harbour redesign</nav>
+<header class="mt-2 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<h1 class="text-2xl font-semibold">Harbour redesign</h1>
+<span id="status-badge" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-success/10 text-success">Ready</span>
+</div>
+<button command="show-modal" commandfor="confirm-delete" class="rounded-control border border-line px-3 py-2 text-sm text-danger hover:bg-danger/10 cursor-pointer" type="button">Delete</button>
+</header>
+<dl class="mt-6 grid grid-cols-2 gap-4 text-sm">
+<dt class="text-text-dim">Client</dt>
+<dd>Luka Koper</dd>
+<dt class="text-text-dim">Budget</dt>
+<dd>12000 EUR</dd>
+<dt class="text-text-dim">Website</dt>
+<dd>
+<a href="https://example.com/harbour" rel="noopener" class="underline">https://example.com/harbour</a>
+</dd>
+</dl>
+<dialog id="confirm-delete" closedby="any" aria-labelledby="confirm-delete-title" class="rounded-card p-6 backdrop:bg-inverse/40">
+<h2 id="confirm-delete-title" class="text-lg font-semibold">Delete Harbour redesign?</h2>
+<p class="mt-2 text-sm text-text-dim">This removes the project and its entries. It cannot be undone.</p>
+<div class="mt-6 flex justify-end gap-3">
+<button command="close" commandfor="confirm-delete" class="rounded-control border border-line px-3 py-2 text-sm cursor-pointer" type="button">Cancel</button>
+<button class="rounded-control bg-danger px-3 py-2 text-sm font-medium text-on-accent cursor-pointer" hx-delete="/projects/1" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" type="button">Delete project</button>
+</div>
+</dialog>
+</main>
+</body>
+</html>

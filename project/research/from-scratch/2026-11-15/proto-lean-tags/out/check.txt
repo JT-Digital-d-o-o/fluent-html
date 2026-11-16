@@ -1,0 +1,15 @@
+$ node lean-tags/check.mjs support/theme.css screens support
+139 classes in 10 files, 0 problems
+exit=0
+$ node lean-tags/check.mjs support/theme.css probes
+probes/bad-classes.ts:3:29 unknown class "bg-gray-100": "gray-100" is not in the theme. Colors: danger, danger-700, line, on-accent, overlay, primary, primary-700, success, surface, surface-2, text-dim, warning
+probes/bad-classes.ts:4:25 unknown class "text-smm": did you mean text-sm?
+probes/bad-classes.ts:5:25 unknown class "bg-primry": did you mean bg-primary?
+probes/bad-classes.ts:6:30 variant prefix on a hole: "hover:${…}" prefixes only the preset's first class. Write the prefix on each class inside the preset
+probes/bad-classes.ts:7:25 unknown class "hovr:bg-surface": unknown variant "hovr:", did you mean hover:bg-surface?
+probes/bad-classes.ts:8:25 unknown class "rounded-crd": did you mean rounded-card?
+probes/classes-as-text.ts:2:18 classes written as text: div("flex gap-4", …) renders "flex gap-4" as visible text. Write div(tw`flex gap-4`, …)
+probes/classes-as-text.ts:3:18 classes written as text: a("text-sm underline", …) renders "text-sm underline" as visible text. Write a(tw`text-sm underline`, …)
+probes/classes-as-text.ts:4:18 classes written as text: span('rounded-full px-2 hover:bg-surface-2', …) renders "rounded-full px-2 hover:bg-surface-2" as visible text. Write span(tw`rounded-full px-2 hover:bg-surface-2`, …)
+10 classes in 2 files, 9 problems
+exit=1

@@ -1,0 +1,24 @@
+# html-validate 11.17.0 (npx html-validate --version), config .htmlvalidate.json: {"extends":["html-validate:recommended"]}
+# control-fh8/bench-page.*: fixtures/bench/expected.fh8.html (fragment, and wrapped as bench/write-output.mjs wraps ours)
+# control-fh8/screens/*: keep-fh9 lane fluent-html 8 renders of the reference screens (keep-fh9/out/fh8, compiled, copied 2026-11-15)
+$ node tools/validate-summary.mjs out/*.html out/control-fh8/*.html out/control-fh8/screens/*.html
+  0  out/bench-page.document.html
+  0  out/bench-page.fragment.html
+  0  out/r1-empty.fragment.html
+  0  out/r1-list.document.html
+  0  out/r1-rows.fragment.html
+  0  out/r2-form.document.html
+  0  out/r2-invalid-nojs.document.html
+  0  out/r2-invalid.fragment.html
+  0  out/r3-detail.document.html
+  0  out/r3-status-done.fragment.html
+  0  out/r3-status-running.fragment.html
+ 12  out/control-fh8/bench-page.document.html  (no-implicit-button-type)
+ 12  out/control-fh8/bench-page.fragment.html  (no-implicit-button-type)
+  0  out/control-fh8/screens/r1-empty.html
+  0  out/control-fh8/screens/r1-list.html
+  0  out/control-fh8/screens/r2-form.html
+  0  out/control-fh8/screens/r2-invalid.html
+  0  out/control-fh8/screens/r3-done.html
+  0  out/control-fh8/screens/r3-running.html
+ 24  total errors

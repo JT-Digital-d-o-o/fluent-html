@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "node": "v26.0.0",
+    "nodeEnv": "production",
+    "loadavg": [
+      173.97705078125,
+      156.3017578125,
+      182.55419921875
+    ],
+    "rounds": 11,
+    "sampleMs": 300,
+    "gcExposed": true,
+    "sink": true
+  },
+  "rows": [
+    {
+      "arm": "fluent-html-8",
+      "buildRenderOps": 12772,
+      "buildRenderRange": [
+        11117,
+        13146
+      ],
+      "buildRenderWallOps": 2232,
+      "renderOnlyOps": 24011,
+      "renderOnlyRange": [
+        23635,
+        25294
+      ],
+      "allocBytesPerBuildRender": 138977,
+      "ratioVsFirst": 1,
+      "ratioRange": [
+        1,
+        1
+      ],
+      "outputBytes": 8248,
+      "outputSha": "b4a4fca94ffc9aa4",
+      "sameAsExpected": true,
+      "sameIgnoringWhitespace": true
+    },
+    {
+      "arm": "sealed-sinks",
+      "buildRenderOps": 35960,
+      "buildRenderRange": [
+        33525,
+        37118
+      ],
+      "buildRenderWallOps": 6848,
+      "renderOnlyOps": 25728160,
+      "renderOnlyRange": [
+        24479012,
+        26584373
+      ],
+      "allocBytesPerBuildRender": 77639,
+      "ratioVsFirst": 2.826,
+      "ratioRange": [
+        2.625,
+        3.232
+      ],
+      "outputBytes": 8312,
+      "outputSha": "c1414b8a3ac26644",
+      "sameAsExpected": false,
+      "sameIgnoringWhitespace": false
+    },
+    {
+      "arm": "template-literal-ceiling",
+      "buildRenderOps": 277394,
+      "buildRenderRange": [
+        254165,
+        284345
+      ],
+      "buildRenderWallOps": 48093,
+      "renderOnlyOps": 27075627,
+      "renderOnlyRange": [
+        25593461,
+        28084107
+      ],
+      "allocBytesPerBuildRender": 13454,
+      "ratioVsFirst": 21.444,
+      "ratioRange": [
+        20.374,
+        24.932
+      ],
+      "outputBytes": 8248,
+      "outputSha": "b4a4fca94ffc9aa4",
+      "sameAsExpected": true,
+      "sameIgnoringWhitespace": true
+    }
+  ]
+}

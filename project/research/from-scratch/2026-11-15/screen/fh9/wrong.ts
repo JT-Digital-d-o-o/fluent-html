@@ -1,0 +1,11 @@
+import { Div } from "../../keep-fh9/proto/fh9.js";
+export const a = Div().tw("flx");
+export const b = Div().tw("text-smm");
+export const c = Div().tw("gap-99x");
+export const d = Div().tw("itemz-center");
+export const e = Div().tw("rounded-crd");
+export const f = Div().tw("grid-cols-13x");
+export const g = Div().tw("font-semibld");
+export const h = Div().tw("p-4 p-6");
+export const i = Div().tw("text-primry");
+export const j = Div().tw("shadow-huge");

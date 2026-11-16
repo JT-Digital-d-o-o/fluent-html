@@ -1,0 +1,9 @@
+html-validate html-validate-11.17.0, config html-validate:recommended
+lt/bench-page.document.html exit 0 errors 0
+lt/bench-page.fragment.html exit 0 errors 0
+lt/r1-list.html exit 0 errors 0
+lt/r1-rows-empty.fragment.html exit 0 errors 0
+lt/r2-invalid.fragment.html exit 0 errors 0
+lt/r2-new.html exit 0 errors 0
+lt/r3-detail.html exit 0 errors 0
+lt/r3-status-done.fragment.html exit 0 errors 0

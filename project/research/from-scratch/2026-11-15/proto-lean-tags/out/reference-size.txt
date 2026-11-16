@@ -1,0 +1,6 @@
+$ wc -w -c README.md (fluent-html 8 agent-facing reference, the cap)
+    2105   14932 README.md
+$ wc -w -c lean-tags/REFERENCE.md
+    1572   10342 lean-tags/REFERENCE.md
+$ grep -c "—" lean-tags/REFERENCE.md
+0

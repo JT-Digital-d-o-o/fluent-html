@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2023", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "strict": true, "noUncheckedIndexedAccess": true, "exactOptionalPropertyTypes": false,
+    "noEmit": true, "allowImportingTsExtensions": true, "erasableSyntaxOnly": true,
+    "skipLibCheck": true, "types": [], "lib": ["ES2023"]
+  },
+  "include": ["src", "screens"]
+}

@@ -1,0 +1,1 @@
+{ "extends": "./tsconfig.json", "include": ["screens/fh9/**/*.ts", "screens/domain.ts", "proto/*.ts"] }

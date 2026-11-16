@@ -1,0 +1,8 @@
+probes/bad-classes.ts:7:38 unknown class "bg-gray-100": "gray-100" is not in the theme. Colors: danger, danger-700, line, on-accent, overlay, primary, primary-700, success, surface, surface-2, text-dim, warning
+probes/bad-classes.ts:8:27 unknown class "text-smm": "smm" is not in the theme. Colors: danger, danger-700, line, on-accent, overlay, primary, primary-700, success, surface, surface-2, text-dim, warning
+probes/bad-classes.ts:9:27 unknown class "bg-primry": did you mean bg-primary?
+probes/bad-classes.ts:10:32 variant prefix on a hole: "hover:${…}" prefixes only the preset's first class. Write the prefix on each class inside the preset
+probes/bad-classes.ts:11:27 unknown class "hovr:bg-surface": did you mean hovr:bg-surface?
+probes/bad-classes.ts:12:27 unknown class "Hello": Tailwind generates no CSS for it under this theme
+probes/bad-classes.ts:12:33 unknown class "world": Tailwind generates no CSS for it under this theme
+14 classes in 1 files, 7 problems

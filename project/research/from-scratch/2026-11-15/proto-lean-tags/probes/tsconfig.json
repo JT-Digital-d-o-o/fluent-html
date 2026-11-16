@@ -1,0 +1,1 @@
+{ "extends": "../tsconfig.json", "include": ["../support/*.ts", "../screens/lt/**/*.ts", "mistakes.ts"] }

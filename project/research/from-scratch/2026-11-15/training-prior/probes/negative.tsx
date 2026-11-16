@@ -1,0 +1,26 @@
+import { form, match } from "rtsx";
+import { projects, ids } from "../screens/projects.routes.js";
+import type { Job } from "../screens/projects.schema.js";
+declare const job: Job;
+declare const site: string;
+
+export const p01 = <div className="p-4">x</div>;
+export const p02 = <button onClick={() => {}}>x</button>;
+export const p03 = <a href="/projects">x</a>;
+export const p04 = <a href={site}>x</a>;
+export const p05 = <button hx-post={projects.list()}>x</button>;
+export const p06 = <a href={projects.status({ id: 1 })}>x</a>;
+export const p07 = <input {...form(projects.create()).field("nmae")} />;
+export const p08 = <a href={projects.detail()}>x</a>;
+export const p09 = <a href={projects.list({ query: "x" })}>x</a>;
+export const p10 = match(job, "state", { queued: () => "q", running: () => "r", done: () => "d" });
+export const p11 = <div hx-get={projects.results()} hx-swap="morph" />;
+export const p12 = <div hx-gte={projects.results()} />;
+export const p13 = <img src="/a.png" />;
+export const p14 = <script>{"alert(1)"}</script>;
+export const p15 = <div style="color: red" />;
+export const p16 = <input type="text">x</input>;
+export const p17 = <div hx-target="#project-list" hx-get={projects.results()} />;
+export const p18 = <label htmlFor="x">x</label>;
+export const p19 = <button hx-get="/projects">x</button>;
+export const p20 = <dialog closedby="outside" />;

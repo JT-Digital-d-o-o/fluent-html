@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "node": "v26.0.0",
+    "nodeEnv": "production",
+    "loadavg": [
+      155.3935546875,
+      144.99462890625,
+      147.38134765625
+    ],
+    "rounds": 11,
+    "sampleMs": 300,
+    "gcExposed": true,
+    "sink": true
+  },
+  "rows": [
+    {
+      "arm": "fluent-html-8",
+      "buildRenderOps": 15318,
+      "buildRenderRange": [
+        12196,
+        15773
+      ],
+      "buildRenderWallOps": 8322,
+      "renderOnlyOps": 28524,
+      "renderOnlyRange": [
+        26899,
+        29086
+      ],
+      "allocBytesPerBuildRender": 138717,
+      "ratioVsFirst": 1,
+      "ratioRange": [
+        1,
+        1
+      ],
+      "outputBytes": 8248,
+      "outputSha": "b4a4fca94ffc9aa4",
+      "sameAsExpected": true,
+      "sameIgnoringWhitespace": true
+    },
+    {
+      "arm": "page-parts",
+      "buildRenderOps": 50073,
+      "buildRenderRange": [
+        47896,
+        54686
+      ],
+      "buildRenderWallOps": 24665,
+      "renderOnlyOps": 27130027,
+      "renderOnlyRange": [
+        26215840,
+        27580000
+      ],
+      "allocBytesPerBuildRender": 57597,
+      "ratioVsFirst": 3.324,
+      "ratioRange": [
+        3.072,
+        3.956
+      ],
+      "outputBytes": 8312,
+      "outputSha": "c1414b8a3ac26644",
+      "sameAsExpected": false,
+      "sameIgnoringWhitespace": false
+    }
+  ]
+}

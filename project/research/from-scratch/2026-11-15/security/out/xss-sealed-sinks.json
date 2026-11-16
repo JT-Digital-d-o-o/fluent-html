@@ -1,0 +1,2390 @@
+{
+  "adapter": "sealed-sinks",
+  "k3Escapes": 0,
+  "contexts": {
+    "text": "element text content: <div>{payload}</div>",
+    "rcdata-textarea": "textarea content: <textarea>{payload}</textarea>",
+    "rcdata-title": "title content: <title>{payload}</title>",
+    "attr-title": "a generic attribute value: <div title=\"{payload}\"></div>",
+    "attr-data": "a data attribute value: <div data-note=\"{payload}\"></div>",
+    "attr-id": "the id attribute: <div id=\"{payload}\"></div>",
+    "attr-class": "one class token from data: <div class=\"{payload}\"></div>",
+    "attr-input-value": "an input's value: <input value=\"{payload}\">",
+    "attr-name": "a data attribute whose name comes from data: <div data-{payload.key}=\"{payload.value}\"></div>",
+    "url-href": "a link target: <a href=\"{payload}\">link</a>",
+    "url-img-src": "an image source: <img src=\"{payload}\" alt=\"x\">",
+    "url-iframe-src": "an iframe source: <iframe src=\"{payload}\"></iframe>",
+    "url-form-action": "a form action: <form action=\"{payload}\" method=\"post\"></form>",
+    "url-formaction": "a submit button's formaction: <button type=\"submit\" formaction=\"{payload}\">Go</button>",
+    "style-value": "a CSS color from data in an inline style: <div style=\"color: {payload}\"></div>",
+    "style-element": "a CSS color from data in a style element: <style>.x{color: {payload}}</style>",
+    "json-script": "data embedded as JSON: <script type=\"application/json\">{JSON of {v: payload}}</script>",
+    "js-script-var": "data handed to inline JS: <script>window.__DATA = {JSON of {v: payload}}</script>",
+    "htmx-get": "an htmx request URL from data: <button hx-get=\"{payload}\">Load</button>",
+    "htmx-confirm": "an htmx confirm prompt from data: <button hx-post=\"/items/1\" hx-confirm=\"{payload}\">Delete</button>",
+    "htmx-vals": "extra request values from data: <button hx-post=\"/items\" hx-vals=\"{JSON of {q: payload}}\">Save</button>",
+    "htmx-headers": "extra request headers from data: <button hx-post=\"/items\" hx-headers=\"{JSON of {X-Note: payload}}\">Save</button>",
+    "iframe-srcdoc": "user HTML previewed in an iframe: <iframe srcdoc=\"{payload}\"></iframe>"
+  },
+  "summary": [
+    {
+      "ctx": "text",
+      "hostile": 8,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 8,
+      "benign": 3,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "rcdata-textarea",
+      "hostile": 2,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 2,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "rcdata-title",
+      "hostile": 1,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 1,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "attr-title",
+      "hostile": 7,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 7,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "attr-data",
+      "hostile": 7,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 7,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "attr-id",
+      "hostile": 3,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 3,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "attr-class",
+      "hostile": 3,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 3,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "attr-input-value",
+      "hostile": 7,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 7,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "attr-name",
+      "hostile": 6,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 6,
+      "safe": 0,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "url-href",
+      "hostile": 15,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 15,
+      "benign": 5,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "url-img-src",
+      "hostile": 14,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 14,
+      "benign": 4,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "url-iframe-src",
+      "hostile": 15,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 15,
+      "benign": 3,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "url-form-action",
+      "hostile": 15,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 15,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "url-formaction",
+      "hostile": 15,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 15,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "style-value",
+      "hostile": 8,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 8,
+      "benign": 3,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "style-element",
+      "hostile": 8,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 8,
+      "benign": 3,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "json-script",
+      "hostile": 7,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 7,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "js-script-var",
+      "hostile": 7,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 7,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "htmx-get",
+      "hostile": 4,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 4,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "htmx-confirm",
+      "hostile": 3,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 3,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "htmx-vals",
+      "hostile": 5,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 5,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "htmx-headers",
+      "hostile": 5,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 5,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "iframe-srcdoc",
+      "hostile": 3,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 0,
+      "safe": 3,
+      "benign": 1,
+      "broken": 0,
+      "unsupported": 0
+    },
+    {
+      "ctx": "TOTAL",
+      "hostile": 168,
+      "xss": 0,
+      "css": 0,
+      "legacy": 0,
+      "rejected": 6,
+      "safe": 162,
+      "benign": 38,
+      "broken": 0,
+      "unsupported": 0
+    }
+  ],
+  "results": [
+    {
+      "id": "text/script",
+      "ctx": "text",
+      "payload": "<script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&lt;script&gt;alert(1)&lt;/script&gt;</div>"
+    },
+    {
+      "id": "text/img-onerror",
+      "ctx": "text",
+      "payload": "<img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&lt;img src=x onerror=alert(1)&gt;</div>"
+    },
+    {
+      "id": "text/close-and-script",
+      "ctx": "text",
+      "payload": "</div><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&lt;/div&gt;&lt;script&gt;alert(1)&lt;/script&gt;</div>"
+    },
+    {
+      "id": "text/svg-script",
+      "ctx": "text",
+      "payload": "<svg><script>alert(1)</script></svg>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&lt;svg&gt;&lt;script&gt;alert(1)&lt;/script&gt;&lt;/svg&gt;</div>"
+    },
+    {
+      "id": "text/comment-open",
+      "ctx": "text",
+      "payload": "<!--<img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&lt;!--&lt;img src=x onerror=alert(1)&gt;</div>"
+    },
+    {
+      "id": "text/cdata",
+      "ctx": "text",
+      "payload": "<![CDATA[<script>alert(1)</script>]]>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&lt;![CDATA[&lt;script&gt;alert(1)&lt;/script&gt;]]&gt;</div>"
+    },
+    {
+      "id": "text/pre-encoded",
+      "ctx": "text",
+      "payload": "&lt;script&gt;alert(1)&lt;/script&gt;",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&amp;lt;script&amp;gt;alert(1)&amp;lt;/script&amp;gt;</div>"
+    },
+    {
+      "id": "text/iframe-js",
+      "ctx": "text",
+      "payload": "<iframe src=javascript:alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>&lt;iframe src=javascript:alert(1)&gt;</div>"
+    },
+    {
+      "id": "text/math",
+      "ctx": "text",
+      "payload": "a < b && c > d",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>a &lt; b &amp;&amp; c &gt; d</div>"
+    },
+    {
+      "id": "text/quotes",
+      "ctx": "text",
+      "payload": "O'Reilly said \"hi\"",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>O&#39;Reilly said &quot;hi&quot;</div>"
+    },
+    {
+      "id": "text/unicode",
+      "ctx": "text",
+      "payload": "Café ☕ 日本   end",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div>Café ☕ 日本   end</div>"
+    },
+    {
+      "id": "rcdata-textarea/close",
+      "ctx": "rcdata-textarea",
+      "payload": "</textarea><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<textarea>&lt;/textarea&gt;&lt;script&gt;alert(1)&lt;/script&gt;</textarea>"
+    },
+    {
+      "id": "rcdata-textarea/close-upper",
+      "ctx": "rcdata-textarea",
+      "payload": "</TEXTAREA ><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<textarea>&lt;/TEXTAREA &gt;&lt;img src=x onerror=alert(1)&gt;</textarea>"
+    },
+    {
+      "id": "rcdata-textarea/plain",
+      "ctx": "rcdata-textarea",
+      "payload": "line one\nline <two>",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<textarea>line one\nline &lt;two&gt;</textarea>"
+    },
+    {
+      "id": "rcdata-title/close",
+      "ctx": "rcdata-title",
+      "payload": "</title><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<title>&lt;/title&gt;&lt;script&gt;alert(1)&lt;/script&gt;</title>"
+    },
+    {
+      "id": "rcdata-title/plain",
+      "ctx": "rcdata-title",
+      "payload": "Q3 & Q4 <draft>",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<title>Q3 &amp; Q4 &lt;draft&gt;</title>"
+    },
+    {
+      "id": "attr-title/dq-breakout",
+      "ctx": "attr-title",
+      "payload": "\" onmouseover=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"&quot; onmouseover=&quot;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-title/sq-breakout",
+      "ctx": "attr-title",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"&#39; onmouseover=&#39;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-title/tag-breakout",
+      "ctx": "attr-title",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\"></div>"
+    },
+    {
+      "id": "attr-title/unquoted-style",
+      "ctx": "attr-title",
+      "payload": "x onmouseover=alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"x onmouseover=alert(1)\"></div>"
+    },
+    {
+      "id": "attr-title/backtick",
+      "ctx": "attr-title",
+      "payload": "`onmouseover=alert(1)`",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"`onmouseover=alert(1)`\"></div>"
+    },
+    {
+      "id": "attr-title/pre-encoded",
+      "ctx": "attr-title",
+      "payload": "&quot; onmouseover=&quot;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"&amp;quot; onmouseover=&amp;quot;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-title/gt-lt",
+      "ctx": "attr-title",
+      "payload": "</div><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"&lt;/div&gt;&lt;img src=x onerror=alert(1)&gt;\"></div>"
+    },
+    {
+      "id": "attr-title/tom-and-jerry",
+      "ctx": "attr-title",
+      "payload": "Tom & Jerry \"<3\" it's",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div title=\"Tom &amp; Jerry &quot;&lt;3&quot; it&#39;s\"></div>"
+    },
+    {
+      "id": "attr-data/dq-breakout",
+      "ctx": "attr-data",
+      "payload": "\" onmouseover=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"&quot; onmouseover=&quot;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-data/sq-breakout",
+      "ctx": "attr-data",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"&#39; onmouseover=&#39;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-data/tag-breakout",
+      "ctx": "attr-data",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\"></div>"
+    },
+    {
+      "id": "attr-data/unquoted-style",
+      "ctx": "attr-data",
+      "payload": "x onmouseover=alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"x onmouseover=alert(1)\"></div>"
+    },
+    {
+      "id": "attr-data/backtick",
+      "ctx": "attr-data",
+      "payload": "`onmouseover=alert(1)`",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"`onmouseover=alert(1)`\"></div>"
+    },
+    {
+      "id": "attr-data/pre-encoded",
+      "ctx": "attr-data",
+      "payload": "&quot; onmouseover=&quot;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"&amp;quot; onmouseover=&amp;quot;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-data/gt-lt",
+      "ctx": "attr-data",
+      "payload": "</div><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"&lt;/div&gt;&lt;img src=x onerror=alert(1)&gt;\"></div>"
+    },
+    {
+      "id": "attr-data/tom-and-jerry",
+      "ctx": "attr-data",
+      "payload": "Tom & Jerry \"<3\" it's",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-note=\"Tom &amp; Jerry &quot;&lt;3&quot; it&#39;s\"></div>"
+    },
+    {
+      "id": "attr-id/dq-breakout",
+      "ctx": "attr-id",
+      "payload": "\" onmouseover=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div id=\"&quot; onmouseover=&quot;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-id/sq-breakout",
+      "ctx": "attr-id",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div id=\"&#39; onmouseover=&#39;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-id/tag-breakout",
+      "ctx": "attr-id",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div id=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\"></div>"
+    },
+    {
+      "id": "attr-id/slug",
+      "ctx": "attr-id",
+      "payload": "user-42",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div id=\"user-42\"></div>"
+    },
+    {
+      "id": "attr-class/dq-breakout",
+      "ctx": "attr-class",
+      "payload": "\" onmouseover=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div class=\"&quot; onmouseover=&quot;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-class/sq-breakout",
+      "ctx": "attr-class",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div class=\"&#39; onmouseover=&#39;alert(1)\"></div>"
+    },
+    {
+      "id": "attr-class/tag-breakout",
+      "ctx": "attr-class",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div class=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\"></div>"
+    },
+    {
+      "id": "attr-class/token",
+      "ctx": "attr-class",
+      "payload": "is-active",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div class=\"is-active\"></div>"
+    },
+    {
+      "id": "attr-input-value/dq-breakout",
+      "ctx": "attr-input-value",
+      "payload": "\" onmouseover=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"&quot; onmouseover=&quot;alert(1)\">"
+    },
+    {
+      "id": "attr-input-value/sq-breakout",
+      "ctx": "attr-input-value",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"&#39; onmouseover=&#39;alert(1)\">"
+    },
+    {
+      "id": "attr-input-value/tag-breakout",
+      "ctx": "attr-input-value",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\">"
+    },
+    {
+      "id": "attr-input-value/unquoted-style",
+      "ctx": "attr-input-value",
+      "payload": "x onmouseover=alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"x onmouseover=alert(1)\">"
+    },
+    {
+      "id": "attr-input-value/backtick",
+      "ctx": "attr-input-value",
+      "payload": "`onmouseover=alert(1)`",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"`onmouseover=alert(1)`\">"
+    },
+    {
+      "id": "attr-input-value/pre-encoded",
+      "ctx": "attr-input-value",
+      "payload": "&quot; onmouseover=&quot;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"&amp;quot; onmouseover=&amp;quot;alert(1)\">"
+    },
+    {
+      "id": "attr-input-value/gt-lt",
+      "ctx": "attr-input-value",
+      "payload": "</div><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"&lt;/div&gt;&lt;img src=x onerror=alert(1)&gt;\">"
+    },
+    {
+      "id": "attr-input-value/tom-and-jerry",
+      "ctx": "attr-input-value",
+      "payload": "Tom & Jerry \"<3\" it's",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<input value=\"Tom &amp; Jerry &quot;&lt;3&quot; it&#39;s\">"
+    },
+    {
+      "id": "attr-name/space-handler",
+      "ctx": "attr-name",
+      "payload": {
+        "key": "x onmouseover",
+        "value": "alert(1)"
+      },
+      "benign": false,
+      "verdict": "rejected",
+      "detail": "threw: sealed: <div>: \"data-x onmouseover\" is not an attribute of this element (known attributes, data-* and aria-* only)"
+    },
+    {
+      "id": "attr-name/tag-breakout",
+      "ctx": "attr-name",
+      "payload": {
+        "key": "x\"><img src=x onerror=alert(1)>",
+        "value": "1"
+      },
+      "benign": false,
+      "verdict": "rejected",
+      "detail": "threw: sealed: <div>: \"data-x\\\"><img src=x onerror=alert(1)>\" is not an attribute of this element (known attributes, data-* and aria-* only)"
+    },
+    {
+      "id": "attr-name/hx-on",
+      "ctx": "attr-name",
+      "payload": {
+        "key": "hx-on:click",
+        "value": "alert(1)"
+      },
+      "benign": false,
+      "verdict": "rejected",
+      "detail": "threw: sealed: <div data-hx-on:click>: hx-* attributes are not writable. Use the hx prop: hx={swap(route)}, search(route), poll(route, \"2s\"), fire(route), load(route)"
+    },
+    {
+      "id": "attr-name/hx-on-camel",
+      "ctx": "attr-name",
+      "payload": {
+        "key": "hxOn:click",
+        "value": "alert(1)"
+      },
+      "benign": false,
+      "verdict": "rejected",
+      "detail": "threw: sealed: <div>: \"data-hxOn:click\" is not an attribute of this element (known attributes, data-* and aria-* only)"
+    },
+    {
+      "id": "attr-name/hx-get-js",
+      "ctx": "attr-name",
+      "payload": {
+        "key": "hx-get",
+        "value": "javascript:alert(1)"
+      },
+      "benign": false,
+      "verdict": "rejected",
+      "detail": "threw: sealed: <div data-hx-get>: hx-* attributes are not writable. Use the hx prop: hx={swap(route)}, search(route), poll(route, \"2s\"), fire(route), load(route)"
+    },
+    {
+      "id": "attr-name/hx-trigger-load-js",
+      "ctx": "attr-name",
+      "payload": {
+        "key": "hx-post",
+        "value": "js:alert(1)"
+      },
+      "benign": false,
+      "verdict": "rejected",
+      "detail": "threw: sealed: <div data-hx-post>: hx-* attributes are not writable. Use the hx prop: hx={swap(route)}, search(route), poll(route, \"2s\"), fire(route), load(route)"
+    },
+    {
+      "id": "attr-name/plain",
+      "ctx": "attr-name",
+      "payload": {
+        "key": "user-id",
+        "value": "42"
+      },
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div data-user-id=\"42\"></div>"
+    },
+    {
+      "id": "url-href/js",
+      "ctx": "url-href",
+      "payload": "javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/js-upper",
+      "ctx": "url-href",
+      "payload": "JAVASCRIPT:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/js-leading-space",
+      "ctx": "url-href",
+      "payload": "  javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/js-leading-c0",
+      "ctx": "url-href",
+      "payload": "\u0001javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/js-tab",
+      "ctx": "url-href",
+      "payload": "java\tscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/js-newline",
+      "ctx": "url-href",
+      "payload": "java\nscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/js-comment-newline",
+      "ctx": "url-href",
+      "payload": "javascript://%0aalert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/vbscript",
+      "ctx": "url-href",
+      "payload": "vbscript:msgbox(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/data-html",
+      "ctx": "url-href",
+      "payload": "data:text/html,<script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/data-html-b64",
+      "ctx": "url-href",
+      "payload": "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/data-svg",
+      "ctx": "url-href",
+      "payload": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<a href=\"about:invalid#blocked\">link</a>"
+    },
+    {
+      "id": "url-href/breakout-dq",
+      "ctx": "url-href",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\">link</a>"
+    },
+    {
+      "id": "url-href/breakout-sq",
+      "ctx": "url-href",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"&#39; onmouseover=&#39;alert(1)\">link</a>"
+    },
+    {
+      "id": "url-href/entity-js",
+      "ctx": "url-href",
+      "payload": "&#106;avascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"&amp;#106;avascript:alert(1)\">link</a>"
+    },
+    {
+      "id": "url-href/entity-colon",
+      "ctx": "url-href",
+      "payload": "javascript&colon;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"javascript&amp;colon;alert(1)\">link</a>"
+    },
+    {
+      "id": "url-href/relative-query",
+      "ctx": "url-href",
+      "payload": "/search?q=a&b=c#top",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"/search?q=a&amp;b=c#top\">link</a>"
+    },
+    {
+      "id": "url-href/https",
+      "ctx": "url-href",
+      "payload": "https://example.com/p?x=1&y=2",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"https://example.com/p?x=1&amp;y=2\">link</a>"
+    },
+    {
+      "id": "url-href/mailto",
+      "ctx": "url-href",
+      "payload": "mailto:a@example.com",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"mailto:a@example.com\">link</a>"
+    },
+    {
+      "id": "url-href/fragment",
+      "ctx": "url-href",
+      "payload": "#section-2",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"#section-2\">link</a>"
+    },
+    {
+      "id": "url-href/data-png",
+      "ctx": "url-href",
+      "payload": "data:image/png;base64,iVBORw0KGgo=",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<a href=\"data:image/png;base64,iVBORw0KGgo=\">link</a>"
+    },
+    {
+      "id": "url-img-src/js",
+      "ctx": "url-img-src",
+      "payload": "javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/js-upper",
+      "ctx": "url-img-src",
+      "payload": "JAVASCRIPT:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/js-leading-space",
+      "ctx": "url-img-src",
+      "payload": "  javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/js-leading-c0",
+      "ctx": "url-img-src",
+      "payload": "\u0001javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/js-tab",
+      "ctx": "url-img-src",
+      "payload": "java\tscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/js-newline",
+      "ctx": "url-img-src",
+      "payload": "java\nscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/js-comment-newline",
+      "ctx": "url-img-src",
+      "payload": "javascript://%0aalert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/vbscript",
+      "ctx": "url-img-src",
+      "payload": "vbscript:msgbox(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/data-html",
+      "ctx": "url-img-src",
+      "payload": "data:text/html,<script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/data-html-b64",
+      "ctx": "url-img-src",
+      "payload": "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<img src=\"about:invalid#blocked\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/breakout-dq",
+      "ctx": "url-img-src",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/breakout-sq",
+      "ctx": "url-img-src",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"&#39; onmouseover=&#39;alert(1)\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/entity-js",
+      "ctx": "url-img-src",
+      "payload": "&#106;avascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"&amp;#106;avascript:alert(1)\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/entity-colon",
+      "ctx": "url-img-src",
+      "payload": "javascript&colon;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"javascript&amp;colon;alert(1)\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/relative-query",
+      "ctx": "url-img-src",
+      "payload": "/search?q=a&b=c#top",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"/search?q=a&amp;b=c#top\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/https",
+      "ctx": "url-img-src",
+      "payload": "https://example.com/p?x=1&y=2",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"https://example.com/p?x=1&amp;y=2\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/fragment",
+      "ctx": "url-img-src",
+      "payload": "#section-2",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"#section-2\" alt=\"x\">"
+    },
+    {
+      "id": "url-img-src/data-png",
+      "ctx": "url-img-src",
+      "payload": "data:image/png;base64,iVBORw0KGgo=",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<img src=\"data:image/png;base64,iVBORw0KGgo=\" alt=\"x\">"
+    },
+    {
+      "id": "url-iframe-src/js",
+      "ctx": "url-iframe-src",
+      "payload": "javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/js-upper",
+      "ctx": "url-iframe-src",
+      "payload": "JAVASCRIPT:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/js-leading-space",
+      "ctx": "url-iframe-src",
+      "payload": "  javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/js-leading-c0",
+      "ctx": "url-iframe-src",
+      "payload": "\u0001javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/js-tab",
+      "ctx": "url-iframe-src",
+      "payload": "java\tscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/js-newline",
+      "ctx": "url-iframe-src",
+      "payload": "java\nscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/js-comment-newline",
+      "ctx": "url-iframe-src",
+      "payload": "javascript://%0aalert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/vbscript",
+      "ctx": "url-iframe-src",
+      "payload": "vbscript:msgbox(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/data-html",
+      "ctx": "url-iframe-src",
+      "payload": "data:text/html,<script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/data-html-b64",
+      "ctx": "url-iframe-src",
+      "payload": "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/data-svg",
+      "ctx": "url-iframe-src",
+      "payload": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<iframe src=\"about:invalid#blocked\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/breakout-dq",
+      "ctx": "url-iframe-src",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe src=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/breakout-sq",
+      "ctx": "url-iframe-src",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe src=\"&#39; onmouseover=&#39;alert(1)\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/entity-js",
+      "ctx": "url-iframe-src",
+      "payload": "&#106;avascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe src=\"&amp;#106;avascript:alert(1)\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/entity-colon",
+      "ctx": "url-iframe-src",
+      "payload": "javascript&colon;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe src=\"javascript&amp;colon;alert(1)\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/relative-query",
+      "ctx": "url-iframe-src",
+      "payload": "/search?q=a&b=c#top",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe src=\"/search?q=a&amp;b=c#top\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/https",
+      "ctx": "url-iframe-src",
+      "payload": "https://example.com/p?x=1&y=2",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe src=\"https://example.com/p?x=1&amp;y=2\"></iframe>"
+    },
+    {
+      "id": "url-iframe-src/fragment",
+      "ctx": "url-iframe-src",
+      "payload": "#section-2",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe src=\"#section-2\"></iframe>"
+    },
+    {
+      "id": "url-form-action/js",
+      "ctx": "url-form-action",
+      "payload": "javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/js-upper",
+      "ctx": "url-form-action",
+      "payload": "JAVASCRIPT:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/js-leading-space",
+      "ctx": "url-form-action",
+      "payload": "  javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/js-leading-c0",
+      "ctx": "url-form-action",
+      "payload": "\u0001javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/js-tab",
+      "ctx": "url-form-action",
+      "payload": "java\tscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/js-newline",
+      "ctx": "url-form-action",
+      "payload": "java\nscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/js-comment-newline",
+      "ctx": "url-form-action",
+      "payload": "javascript://%0aalert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/vbscript",
+      "ctx": "url-form-action",
+      "payload": "vbscript:msgbox(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/data-html",
+      "ctx": "url-form-action",
+      "payload": "data:text/html,<script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/data-html-b64",
+      "ctx": "url-form-action",
+      "payload": "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/data-svg",
+      "ctx": "url-form-action",
+      "payload": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<form action=\"about:invalid#blocked\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/breakout-dq",
+      "ctx": "url-form-action",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<form action=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/breakout-sq",
+      "ctx": "url-form-action",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<form action=\"&#39; onmouseover=&#39;alert(1)\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/entity-js",
+      "ctx": "url-form-action",
+      "payload": "&#106;avascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<form action=\"&amp;#106;avascript:alert(1)\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/entity-colon",
+      "ctx": "url-form-action",
+      "payload": "javascript&colon;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<form action=\"javascript&amp;colon;alert(1)\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-form-action/relative-query",
+      "ctx": "url-form-action",
+      "payload": "/search?q=a&b=c",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<form action=\"/search?q=a&amp;b=c\" method=\"post\"></form>"
+    },
+    {
+      "id": "url-formaction/js",
+      "ctx": "url-formaction",
+      "payload": "javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/js-upper",
+      "ctx": "url-formaction",
+      "payload": "JAVASCRIPT:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/js-leading-space",
+      "ctx": "url-formaction",
+      "payload": "  javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/js-leading-c0",
+      "ctx": "url-formaction",
+      "payload": "\u0001javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/js-tab",
+      "ctx": "url-formaction",
+      "payload": "java\tscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/js-newline",
+      "ctx": "url-formaction",
+      "payload": "java\nscript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/js-comment-newline",
+      "ctx": "url-formaction",
+      "payload": "javascript://%0aalert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/vbscript",
+      "ctx": "url-formaction",
+      "payload": "vbscript:msgbox(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/data-html",
+      "ctx": "url-formaction",
+      "payload": "data:text/html,<script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/data-html-b64",
+      "ctx": "url-formaction",
+      "payload": "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/data-svg",
+      "ctx": "url-formaction",
+      "payload": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' onload='alert(1)'/>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"about:invalid#blocked\">Go</button>"
+    },
+    {
+      "id": "url-formaction/breakout-dq",
+      "ctx": "url-formaction",
+      "payload": "\"><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;\">Go</button>"
+    },
+    {
+      "id": "url-formaction/breakout-sq",
+      "ctx": "url-formaction",
+      "payload": "' onmouseover='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"&#39; onmouseover=&#39;alert(1)\">Go</button>"
+    },
+    {
+      "id": "url-formaction/entity-js",
+      "ctx": "url-formaction",
+      "payload": "&#106;avascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"&amp;#106;avascript:alert(1)\">Go</button>"
+    },
+    {
+      "id": "url-formaction/entity-colon",
+      "ctx": "url-formaction",
+      "payload": "javascript&colon;alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"javascript&amp;colon;alert(1)\">Go</button>"
+    },
+    {
+      "id": "url-formaction/relative-query",
+      "ctx": "url-formaction",
+      "payload": "/search?q=a&b=c",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button type=\"submit\" formaction=\"/search?q=a&amp;b=c\">Go</button>"
+    },
+    {
+      "id": "style-value/decl-injection",
+      "ctx": "style-value",
+      "payload": "red; background-image: url(https://evil.example/leak)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/attr-breakout",
+      "ctx": "style-value",
+      "payload": "red\" onmouseover=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/rule-breakout",
+      "ctx": "style-value",
+      "payload": "red}body{background:url(https://evil.example/leak)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/style-close",
+      "ctx": "style-value",
+      "payload": "red}</style><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/style-close-upper",
+      "ctx": "style-value",
+      "payload": "red}</STYLE ><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/expression",
+      "ctx": "style-value",
+      "payload": "expression(alert(1))",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/url-js",
+      "ctx": "style-value",
+      "payload": "url(javascript:alert(1))",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/comment-escape",
+      "ctx": "style-value",
+      "payload": "red/*",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<div></div>"
+    },
+    {
+      "id": "style-value/named",
+      "ctx": "style-value",
+      "payload": "rebeccapurple",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div style=\"color:rebeccapurple\"></div>"
+    },
+    {
+      "id": "style-value/hex",
+      "ctx": "style-value",
+      "payload": "#ff8800",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div style=\"color:#ff8800\"></div>"
+    },
+    {
+      "id": "style-value/rgb",
+      "ctx": "style-value",
+      "payload": "rgb(10 20 30 / 50%)",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<div style=\"color:rgb(10 20 30 / 50%)\"></div>"
+    },
+    {
+      "id": "style-element/decl-injection",
+      "ctx": "style-element",
+      "payload": "red; background-image: url(https://evil.example/leak)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/attr-breakout",
+      "ctx": "style-element",
+      "payload": "red\" onmouseover=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/rule-breakout",
+      "ctx": "style-element",
+      "payload": "red}body{background:url(https://evil.example/leak)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/style-close",
+      "ctx": "style-element",
+      "payload": "red}</style><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/style-close-upper",
+      "ctx": "style-element",
+      "payload": "red}</STYLE ><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/expression",
+      "ctx": "style-element",
+      "payload": "expression(alert(1))",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/url-js",
+      "ctx": "style-element",
+      "payload": "url(javascript:alert(1))",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/comment-escape",
+      "ctx": "style-element",
+      "payload": "red/*",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: }</style>"
+    },
+    {
+      "id": "style-element/named",
+      "ctx": "style-element",
+      "payload": "rebeccapurple",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: rebeccapurple}</style>"
+    },
+    {
+      "id": "style-element/hex",
+      "ctx": "style-element",
+      "payload": "#ff8800",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: #ff8800}</style>"
+    },
+    {
+      "id": "style-element/rgb",
+      "ctx": "style-element",
+      "payload": "rgb(10 20 30 / 50%)",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<style nonce=\"dGVzdG5vbmNl\">.x{color: rgb(10 20 30 / 50%)}</style>"
+    },
+    {
+      "id": "json-script/script-close",
+      "ctx": "json-script",
+      "payload": "</script><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"\\u003c/script\\u003e\\u003cscript\\u003ealert(1)\\u003c/script\\u003e\"}</script>"
+    },
+    {
+      "id": "json-script/script-close-upper",
+      "ctx": "json-script",
+      "payload": "</SCRIPT ><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"\\u003c/SCRIPT \\u003e\\u003cimg src=x onerror=alert(1)\\u003e\"}</script>"
+    },
+    {
+      "id": "json-script/double-escape",
+      "ctx": "json-script",
+      "payload": "<!--<script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"\\u003c!--\\u003cscript\\u003e\"}</script>"
+    },
+    {
+      "id": "json-script/comment-close-then-script",
+      "ctx": "json-script",
+      "payload": "<!--</script><script>alert(1)//-->",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"\\u003c!--\\u003c/script\\u003e\\u003cscript\\u003ealert(1)//--\\u003e\"}</script>"
+    },
+    {
+      "id": "json-script/line-sep",
+      "ctx": "json-script",
+      "payload": "a b c",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"a\\u2028b\\u2029c\"}</script>"
+    },
+    {
+      "id": "json-script/quote-breakout",
+      "ctx": "json-script",
+      "payload": "\"};alert(1);//",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"\\\"};alert(1);//\"}</script>"
+    },
+    {
+      "id": "json-script/backslash",
+      "ctx": "json-script",
+      "payload": "\\\"};alert(1);//",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"\\\\\\\"};alert(1);//\"}</script>"
+    },
+    {
+      "id": "json-script/plain",
+      "ctx": "json-script",
+      "payload": "Hello, world & friends <3",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script type=\"application/json\">{\"v\":\"Hello, world \\u0026 friends \\u003c3\"}</script>"
+    },
+    {
+      "id": "js-script-var/script-close",
+      "ctx": "js-script-var",
+      "payload": "</script><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"\\u003c/script\\u003e\\u003cscript\\u003ealert(1)\\u003c/script\\u003e\"}</script>"
+    },
+    {
+      "id": "js-script-var/script-close-upper",
+      "ctx": "js-script-var",
+      "payload": "</SCRIPT ><img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"\\u003c/SCRIPT \\u003e\\u003cimg src=x onerror=alert(1)\\u003e\"}</script>"
+    },
+    {
+      "id": "js-script-var/double-escape",
+      "ctx": "js-script-var",
+      "payload": "<!--<script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"\\u003c!--\\u003cscript\\u003e\"}</script>"
+    },
+    {
+      "id": "js-script-var/comment-close-then-script",
+      "ctx": "js-script-var",
+      "payload": "<!--</script><script>alert(1)//-->",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"\\u003c!--\\u003c/script\\u003e\\u003cscript\\u003ealert(1)//--\\u003e\"}</script>"
+    },
+    {
+      "id": "js-script-var/line-sep",
+      "ctx": "js-script-var",
+      "payload": "a b c",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"a\\u2028b\\u2029c\"}</script>"
+    },
+    {
+      "id": "js-script-var/quote-breakout",
+      "ctx": "js-script-var",
+      "payload": "\"};alert(1);//",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"\\\"};alert(1);//\"}</script>"
+    },
+    {
+      "id": "js-script-var/backslash",
+      "ctx": "js-script-var",
+      "payload": "\\\"};alert(1);//",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"\\\\\\\"};alert(1);//\"}</script>"
+    },
+    {
+      "id": "js-script-var/plain",
+      "ctx": "js-script-var",
+      "payload": "Hello, world & friends <3",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<script nonce=\"dGVzdG5vbmNl\">window.__DATA = {\"v\":\"Hello, world \\u0026 friends \\u003c3\"}</script>"
+    },
+    {
+      "id": "htmx-get/js-prefix",
+      "ctx": "htmx-get",
+      "payload": "js:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\">Load</button>"
+    },
+    {
+      "id": "htmx-get/javascript-prefix",
+      "ctx": "htmx-get",
+      "payload": "javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\">Load</button>"
+    },
+    {
+      "id": "htmx-get/javascript-upper",
+      "ctx": "htmx-get",
+      "payload": "JAVASCRIPT:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\">Load</button>"
+    },
+    {
+      "id": "htmx-get/breakout",
+      "ctx": "htmx-get",
+      "payload": "\" hx-on:click=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button type=\"submit\">Load</button>"
+    },
+    {
+      "id": "htmx-get/relative",
+      "ctx": "htmx-get",
+      "payload": "/items?page=2&sort=name",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-get=\"/items?page=2&amp;sort=name\" hx-target=\"#result\" hx-swap=\"outerMorph\" type=\"button\">Load</button>"
+    },
+    {
+      "id": "htmx-confirm/js-prefix",
+      "ctx": "htmx-confirm",
+      "payload": "js:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button hx-post=\"/items/1\" hx-swap=\"none\" hx-confirm=\"⁠js:alert(1)\" type=\"button\">Delete</button>"
+    },
+    {
+      "id": "htmx-confirm/javascript-prefix",
+      "ctx": "htmx-confirm",
+      "payload": "javascript:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": false,
+      "detail": "",
+      "html": "<button hx-post=\"/items/1\" hx-swap=\"none\" hx-confirm=\"⁠javascript:alert(1)\" type=\"button\">Delete</button>"
+    },
+    {
+      "id": "htmx-confirm/breakout",
+      "ctx": "htmx-confirm",
+      "payload": "\" hx-on:click=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items/1\" hx-swap=\"none\" hx-confirm=\"&quot; hx-on:click=&quot;alert(1)\" type=\"button\">Delete</button>"
+    },
+    {
+      "id": "htmx-confirm/question",
+      "ctx": "htmx-confirm",
+      "payload": "Delete \"Q3 <draft>\" & its notes?",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items/1\" hx-swap=\"none\" hx-confirm=\"Delete &quot;Q3 &lt;draft&gt;&quot; &amp; its notes?\" type=\"button\">Delete</button>"
+    },
+    {
+      "id": "htmx-vals/js-prefix-value",
+      "ctx": "htmx-vals",
+      "payload": "js:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-vals=\"{&quot;q&quot;:&quot;js:alert(1)&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-vals/json-breakout",
+      "ctx": "htmx-vals",
+      "payload": "\"}, \"x\": \"y",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-vals=\"{&quot;q&quot;:&quot;\\&quot;}, \\&quot;x\\&quot;: \\&quot;y&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-vals/attr-breakout",
+      "ctx": "htmx-vals",
+      "payload": "\" hx-on:click=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-vals=\"{&quot;q&quot;:&quot;\\&quot; hx-on:click=\\&quot;alert(1)&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-vals/sq-attr-breakout",
+      "ctx": "htmx-vals",
+      "payload": "' hx-on:click='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-vals=\"{&quot;q&quot;:&quot;&#39; hx-on:click=&#39;alert(1)&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-vals/script-close",
+      "ctx": "htmx-vals",
+      "payload": "</script><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-vals=\"{&quot;q&quot;:&quot;&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-vals/plain",
+      "ctx": "htmx-vals",
+      "payload": "a & b",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-vals=\"{&quot;q&quot;:&quot;a &amp; b&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-headers/js-prefix-value",
+      "ctx": "htmx-headers",
+      "payload": "js:alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-headers=\"{&quot;X-Note&quot;:&quot;js:alert(1)&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-headers/json-breakout",
+      "ctx": "htmx-headers",
+      "payload": "\"}, \"x\": \"y",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-headers=\"{&quot;X-Note&quot;:&quot;\\&quot;}, \\&quot;x\\&quot;: \\&quot;y&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-headers/attr-breakout",
+      "ctx": "htmx-headers",
+      "payload": "\" hx-on:click=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-headers=\"{&quot;X-Note&quot;:&quot;\\&quot; hx-on:click=\\&quot;alert(1)&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-headers/sq-attr-breakout",
+      "ctx": "htmx-headers",
+      "payload": "' hx-on:click='alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-headers=\"{&quot;X-Note&quot;:&quot;&#39; hx-on:click=&#39;alert(1)&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-headers/script-close",
+      "ctx": "htmx-headers",
+      "payload": "</script><script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-headers=\"{&quot;X-Note&quot;:&quot;&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "htmx-headers/plain",
+      "ctx": "htmx-headers",
+      "payload": "a & b",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<button hx-post=\"/items\" hx-swap=\"none\" hx-headers=\"{&quot;X-Note&quot;:&quot;a &amp; b&quot;}\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "iframe-srcdoc/script",
+      "ctx": "iframe-srcdoc",
+      "payload": "<script>alert(1)</script>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe srcdoc=\"&lt;script&gt;alert(1)&lt;/script&gt;\" sandbox=\"\"></iframe>"
+    },
+    {
+      "id": "iframe-srcdoc/img-onerror",
+      "ctx": "iframe-srcdoc",
+      "payload": "<img src=x onerror=alert(1)>",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe srcdoc=\"&lt;img src=x onerror=alert(1)&gt;\" sandbox=\"\"></iframe>"
+    },
+    {
+      "id": "iframe-srcdoc/attr-breakout",
+      "ctx": "iframe-srcdoc",
+      "payload": "\" onload=\"alert(1)",
+      "benign": false,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe srcdoc=\"&quot; onload=&quot;alert(1)\" sandbox=\"\"></iframe>"
+    },
+    {
+      "id": "iframe-srcdoc/markup",
+      "ctx": "iframe-srcdoc",
+      "payload": "<p>Hello <b>world</b></p>",
+      "benign": true,
+      "verdict": "safe",
+      "roundTrip": true,
+      "detail": "",
+      "html": "<iframe srcdoc=\"&lt;p&gt;Hello &lt;b&gt;world&lt;/b&gt;&lt;/p&gt;\" sandbox=\"\"></iframe>"
+    }
+  ]
+}

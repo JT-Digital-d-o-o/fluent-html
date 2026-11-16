@@ -1,0 +1,28 @@
+screens/negative-shown.ts(8,9): error TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"status" | "name" | "ownerEmail" | "notes"'.
+screens/negative-shown.ts(9,21): error TS2345: Argument of type '{ active: string; }' is not assignable to parameter of type '{ readonly active: string; readonly paused: string; }'.
+  Property 'paused' is missing in type '{ active: string; }' but required in type '{ readonly active: string; readonly paused: string; }'.
+screens/negative-shown.ts(10,19): error TS2322: Type 'string' is not assignable to type 'number'.
+screens/negative-shown.ts(11,10): error TS2554: Expected 1 arguments, but got 0.
+screens/negative-shown.ts(12,17): error TS2353: Object literal may only specify known properties, and 'query' does not exist in type '{ readonly q?: string | null | undefined; }'.
+screens/negative-shown.ts(13,9): error TS2345: Argument of type 'Route<{ readonly query: { readonly q: "string"; }; }>' is not assignable to parameter of type 'FragmentRoute'.
+  Type '{ readonly query: { readonly q: "string"; }; }' is not assignable to type 'RouteDef & { readonly fragment: Id<string>; }'.
+    Property 'fragment' is missing in type '{ readonly query: { readonly q: "string"; }; }' but required in type '{ readonly fragment: Id<string>; }'.
+screens/negative-shown.ts(14,6): error TS2345: Argument of type 'RouteFn<{ readonly query: { readonly q: "string"; }; }>' is not assignable to parameter of type '{ readonly def: RouteDef & { readonly body: ObjectSchema<Record<string, FieldSchema>>; }; }'.
+  Types of property 'def' are incompatible.
+    Type '{ readonly query: { readonly q: "string"; }; }' is not assignable to type 'RouteDef & { readonly body: ObjectSchema<Record<string, FieldSchema>>; }'.
+      Property 'body' is missing in type '{ readonly query: { readonly q: "string"; }; }' but required in type '{ readonly body: ObjectSchema<Record<string, FieldSchema>>; }'.
+screens/negative-shown.ts(26,49): error TS2322: Type 'Rooted<"job-status">' is not assignable to type 'Rooted<"project-list"> | Promise<Rooted<"project-list">>'.
+  Type 'Rooted<"job-status">' is not assignable to type 'Rooted<"project-list">'.
+    Type 'Rooted<"job-status">' is not assignable to type '{ readonly [ROOT]: "project-list"; }'.
+      Types of property '[ROOT]' are incompatible.
+        Type '"job-status"' is not assignable to type '"project-list"'.
+screens/negative-shown.ts(27,51): error TS2322: Type 'Html' is not assignable to type 'Rooted<"job-status"> | Promise<Rooted<"job-status">>'.
+  Type 'Html' is not assignable to type 'Rooted<"job-status">'.
+    Property '[ROOT]' is missing in type 'Html' but required in type '{ readonly [ROOT]: "job-status"; }'.
+screens/negative-shown.ts(28,49): error TS2322: Type 'Html' is not assignable to type 'Page | Redirect | Promise<Page | Redirect>'.
+screens/negative-shown.ts(29,59): error TS2322: Type 'Rooted<"job-status">' is not assignable to type 'Rooted<"project-form">'.
+  Type 'Rooted<"job-status">' is not assignable to type '{ readonly [ROOT]: "project-form"; }'.
+    Types of property '[ROOT]' are incompatible.
+      Type '"job-status"' is not assignable to type '"project-form"'.
+screens/negative-shown.ts(31,22): error TS2345: Argument of type '{ list: () => Page; rows: () => Rooted<"project-list">; new: () => Page; create: { readonly form: (state: FormState<{ name: string; ownerEmail: string; status: "active" | "paused"; notes: string; }>) => Rooted<...>; readonly valid: () => Redirect; }; detail: () => Page; status: () => Rooted<...>; }' is not assignable to parameter of type '{ readonly li
+  Property 'remove' is missing in type '{ list: () => Page; rows: () => Rooted<"project-list">; new: () => Page; create: { readonly form: (state: FormState<{ name: string; ownerEmail: string; status: "active" | "paused"; notes: string; }>) => Rooted<...>; readonly valid: () => Redirect; }; detail: () => Page; status: () => Rooted<...>; }' but required in type '{ readonly list: (ctx: Ctx<{ readonly query: { readonly q

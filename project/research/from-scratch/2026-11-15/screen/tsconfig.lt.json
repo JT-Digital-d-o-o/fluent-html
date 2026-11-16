@@ -1,0 +1,1 @@
+{ "extends": "../token-economy/tsconfig.json", "include": ["lt-silent.ts"] }

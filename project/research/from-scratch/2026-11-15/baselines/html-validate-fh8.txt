@@ -1,0 +1,46 @@
+# html-validate html-validate-11.17.0, config: {"extends":["html-validate:recommended"]}
+# input: fixtures/bench/expected.fh8.html (fragment) and the same wrapped in a minimal document
+$ npx html-validate bench-page.fragment.html
+
+/private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-validate/bench-page.fragment.html
+  12:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  17:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  22:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  27:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  32:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  37:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  42:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  47:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  52:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  57:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  62:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  67:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+
+✖ 12 problems (12 errors, 0 warnings)
+
+More information:
+  https://html-validate.org/rules/no-implicit-button-type.html
+
+exit=1
+$ npx html-validate bench-page.document.html
+
+/private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-validate/bench-page.document.html
+  19:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  24:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  29:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  34:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  39:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  44:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  49:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  54:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  59:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  64:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  69:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+  74:2  error  <button> is missing recommended "type" attribute  no-implicit-button-type
+
+✖ 12 problems (12 errors, 0 warnings)
+
+More information:
+  https://html-validate.org/rules/no-implicit-button-type.html
+
+exit=1

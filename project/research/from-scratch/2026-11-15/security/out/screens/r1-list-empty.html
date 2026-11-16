@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects</title>
+<link rel="stylesheet" href="/css/app.css">
+<script src="/js/htmx.js" defer nonce="dGVzdG5vbmNl">
+</script>
+</head>
+<body class="bg-bg text-text">
+<main id="main-content" class="mx-auto max-w-3xl p-6">
+<header class="flex items-center justify-between gap-4">
+<h1 class="text-2xl font-semibold">Projects</h1>
+<a href="/projects/new" hx-get="/projects/new" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" class="rounded-control bg-primary px-4 py-2 text-sm font-medium text-on-accent hover:bg-primary-700">New project</a>
+</header>
+<input type="search" name="q" value="&lt;img src=x onerror=alert(1)&gt;" placeholder="Search projects" aria-label="Search projects" class="mt-6 w-full rounded-control border border-line bg-surface px-3 py-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-hidden" hx-get="/projects/rows" hx-trigger="input changed delay:300ms, search" hx-target="#project-list" hx-swap="outerMorph" hx-sync="this:replace">
+<section id="project-list" class="mt-4" aria-label="Projects">
+<div class="rounded-card border border-dashed border-line p-10 text-center">
+<p class="font-medium">No projects match &quot;&lt;img src=x onerror=alert(1)&gt;&quot;</p>
+<p class="mt-1 text-sm text-text-dim">Try a different search.</p>
+</div>
+</section>
+</main>
+</body>
+</html>

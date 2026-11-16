@@ -1,0 +1,9 @@
+ok  GET /projects answers the list page
+ok  GET /projects/rows?q=zzz answers the region alone
+ok  GET /projects/1 answers the detail page
+ok  GET /projects/abc (not a number) answers 404
+ok  GET /projects/99 answers 404
+ok  POST /projects invalid answers 422 with the form
+ok  POST /projects valid answers 303 to the new project
+ok  POST /projects from htmx answers HX-Redirect
+8 checks passed

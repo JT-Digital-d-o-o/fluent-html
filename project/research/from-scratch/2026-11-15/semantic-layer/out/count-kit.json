@@ -1,0 +1,40 @@
+{
+ "label": "semantic-kit",
+ "files": 1,
+ "bytes": 4707,
+ "codeLines": 100,
+ "tsTokens": 955,
+ "stringLiteralChars": 1640,
+ "vocabulary": 27,
+ "imports": [
+  "Div",
+  "H1",
+  "Link",
+  "List",
+  "P",
+  "Page",
+  "Search",
+  "Span",
+  "Type",
+  "invalid",
+  "notFound",
+  "page",
+  "redirect"
+ ],
+ "calledMembers": [
+  "Integer",
+  "Literal",
+  "Object",
+  "Optional",
+  "String",
+  "Union",
+  "action",
+  "button",
+  "field",
+  "form",
+  "region",
+  "show",
+  "submit",
+  "view"
+ ]
+}

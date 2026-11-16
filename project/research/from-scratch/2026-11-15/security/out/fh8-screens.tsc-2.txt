@@ -1,0 +1,7 @@
+screens-fh8/r2-project-form.ts(12,14): error TS2345: Argument of type '"aria-invalid"' is not assignable to parameter of type 'TailwindState | TailwindBreakpoint'.
+screens-fh8/r2-project-form.ts(27,23): error TS2339: Property 'apply' does not exist on type 'View'.
+  Property 'apply' does not exist on type 'string'.
+screens-fh8/r2-project-form.ts(32,25): error TS2339: Property 'apply' does not exist on type 'View'.
+  Property 'apply' does not exist on type 'string'.
+screens-fh8/r2-project-form.ts(37,25): error TS2339: Property 'apply' does not exist on type 'View'.
+  Property 'apply' does not exist on type 'string'.

@@ -1,0 +1,14 @@
+hx-get={false} is left out  =>  <span>x</span>
+plain button  =>  <button type="submit">Save</button>
+hx button  =>  <button hx-post="/p" hx-target="#main-content" hx-swap="outerMorph" type="button">Save</button>
+explicit target wins  =>  <div hx-get="/p/r" hx-swap="outerMorph" hx-target="this"></div>
+unknown hx attribute  =>  THROWS rtsx: unknown htmx attribute "hx-gte". Known: hx-get, hx-post, hx-put, hx-patch, hx-delete, hx-target, hx-trigger, hx-confirm, hx-vals, hx-headers, hx-swap, hx-push-url, hx-replace-url, hx-include, hx-select, hx-indicator, hx-disable, hx-sync, hx-boost, hx-encoding, hx-validate, hx-preserve, hx-ignore
+onclick through a spread  =>  THROWS rtsx: inline handler "onclick" is not allowed: use command/commandfor, popovertarget or an hx-* attribute
+hx-on through a spread  =>  THROWS rtsx: "hx-on:click" would run script through htmx and is not allowed
+string in script  =>  THROWS rtsx: <script> content must come from json(data) or js`…`
+string in hx-get  =>  THROWS rtsx: hx-get takes a route (routes.x(), or localUrl(path) for a path from data), not a string
+get route in hx-post  =>  THROWS rtsx: hx-post got a get route
+object child  =>  THROWS rtsx: a child must be text, a number, an element or an array, got object
+className through any  =>  THROWS rtsx: className is not an attribute: use class="…"
+trigger filter  =>  THROWS rtsx: hx-trigger filters ([expr]) run script and are not allowed
+style string  =>  THROWS rtsx: style takes an object, e.g. style={{ width: `${pct}%` }}

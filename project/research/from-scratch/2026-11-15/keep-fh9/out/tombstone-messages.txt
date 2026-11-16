@@ -1,0 +1,4 @@
+probes/tombstone/probe.ts(15,24): error TS2349: This expression is not callable.
+  Type 'Use<".tw(\"flex-col\")">' has no call signatures.
+probes/tombstone/probe.ts(16,24): error TS2349: This expression is not callable.
+  Type 'Use<".setSrc(url)">' has no call signatures.

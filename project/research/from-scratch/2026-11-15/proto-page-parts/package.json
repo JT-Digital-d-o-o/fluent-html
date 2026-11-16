@@ -1,0 +1,23 @@
+{
+  "name": "proto-page-parts",
+  "private": true,
+  "type": "module",
+  "description": "Page Parts: the from-scratch bake-off prototype (research only).",
+  "scripts": {
+    "check": "tsc -p tsconfig.json && node tools/check-classes.mjs tools/theme.css screens",
+    "test": "node --test test/*.test.ts",
+    "css": "tailwindcss -i tools/theme.css -o out/app.css",
+    "start": "node server.ts",
+    "xss": "node ../fixtures/xss/check.mjs xss/adapter.mjs",
+    "bench": "NODE_ENV=production node --expose-gc ../fixtures/bench/harness.mjs --rounds 11 --sample-ms 300 ../fixtures/bench/arms/fluent-html-8.mjs bench/arm.mjs",
+    "validate": "node bench/write-output.mjs && node tools/validate-summary.mjs out/*.html"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@types/node": "24.10.1",
+    "html-validate": "11.17.0",
+    "parse5": "7.3.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3"
+  }
+}

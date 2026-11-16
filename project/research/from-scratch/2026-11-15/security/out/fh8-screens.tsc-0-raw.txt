@@ -1,0 +1,109 @@
+screens-fh8/layout.ts(14,88): error TS2345: Argument of type '"canvas"' is not assignable to parameter of type 'TailwindColor'.
+screens-fh8/layout.ts(14,103): error TS2345: Argument of type '"ink"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r1-project-list.ts(16,20): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): AnchorTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): AnchorTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r1-project-list.ts(16,34): error TS2345: Argument of type '"primary"' is not assignable to parameter of type 'TailwindColor'.
+screens-fh8/r1-project-list.ts(16,92): error TS2345: Argument of type '"on-accent"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r1-project-list.ts(17,20): error TS2322: Type '"primary-700"' is not assignable to type 'TailwindColor | undefined'.
+screens-fh8/r1-project-list.ts(24,27): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r1-project-list.ts(26,36): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): InputTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): InputTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r1-project-list.ts(26,63): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: 0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | ... 496 more ... | undefined): InputTag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | "black" | ... 495 more ... | undefined'.
+  Overload 2 of 2, '(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: 0 | "0" | 2 | 4 | "2" | "4" | "8" | `[${string}]` | "inherit" | "current" | "transparent" | "black" | ... 491 more ... | undefined): InputTag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '"x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r"'.
+screens-fh8/r1-project-list.ts(26,74): error TS2345: Argument of type '"surface"' is not assignable to parameter of type 'TailwindColor'.
+screens-fh8/r1-project-list.ts(27,36): error TS2353: Object literal may only specify known properties, and 'ringColor' does not exist in type 'VariantStyleObject'.
+screens-fh8/r1-project-list.ts(39,22): error TS2339: Property 'divideColor' does not exist on type 'Tag'.
+screens-fh8/r1-project-list.ts(42,53): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r1-project-list.ts(49,44): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r1-project-list.ts(53,16): error TS2322: Type '"surface-2"' is not assignable to type 'TailwindColor | undefined'.
+screens-fh8/r1-project-list.ts(60,103): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r1-project-list.ts(61,13): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): Tag', gave the following error.
+    Argument of type '"card"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): Tag', gave the following error.
+    Argument of type '"card"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r1-project-list.ts(61,54): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: 0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | ... 496 more ... | undefined): Tag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | "black" | ... 495 more ... | undefined'.
+  Overload 2 of 2, '(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: 0 | "0" | 2 | 4 | "2" | "4" | "8" | `[${string}]` | "inherit" | "current" | "transparent" | "black" | ... 491 more ... | undefined): Tag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '"x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r"'.
+screens-fh8/r2-project-form.ts(1,48): error TS2724: '"fluent-html"' has no exported member named 'Styler'. Did you mean 'Style'?
+screens-fh8/r2-project-form.ts(11,24): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(12,26): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(15,24): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(25,33): error TS2345: Argument of type 'ProjectFormState' is not assignable to parameter of type 'FormState<CreateProjectReq>'.
+  Types of property 'values' are incompatible.
+    Type 'Partial<Record<keyof CreateProjectReq, string>> | undefined' is not assignable to type 'Partial<CreateProjectReq> | undefined'.
+      Type 'Partial<Record<keyof CreateProjectReq, string>>' is not assignable to type 'Partial<CreateProjectReq>'.
+        Types of property 'budget' are incompatible.
+          Type 'string | undefined' is not assignable to type 'number | undefined'.
+            Type 'string' is not assignable to type 'number'.
+screens-fh8/r2-project-form.ts(25,41): error TS7006: Parameter 'f' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(44,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r2-project-form.ts(44,32): error TS2345: Argument of type '"primary"' is not assignable to parameter of type 'TailwindColor'.
+screens-fh8/r2-project-form.ts(44,90): error TS2345: Argument of type '"on-accent"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r2-project-form.ts(45,18): error TS2322: Type '"primary-700"' is not assignable to type 'TailwindColor | undefined'.
+screens-fh8/r2-project-form.ts(46,61): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r2-project-form.ts(52,21): error TS2339: Property 'flexCol' does not exist on type 'FormTag & Rooted<"projectForm">'.
+screens-fh8/r3-project-detail.ts(1,106): error TS2305: Module '"fluent-html"' has no exported member 'StylerFor'.
+screens-fh8/r3-project-detail.ts(8,37): error TS7006: Parameter 'status' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(8,49): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(10,14): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(11,15): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(12,12): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(13,14): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(23,27): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r3-project-detail.ts(23,57): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r3-project-detail.ts(31,20): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r3-project-detail.ts(31,47): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: 0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | ... 496 more ... | undefined): ButtonTag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | "black" | ... 495 more ... | undefined'.
+  Overload 2 of 2, '(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: 0 | "0" | 2 | 4 | "2" | "4" | "8" | `[${string}]` | "inherit" | "current" | "transparent" | "black" | ... 491 more ... | undefined): ButtonTag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '"x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r"'.
+screens-fh8/r3-project-detail.ts(31,87): error TS2345: Argument of type '"danger"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r3-project-detail.ts(32,20): error TS2322: Type '"danger/10"' is not assignable to type 'TailwindColor | undefined'.
+screens-fh8/r3-project-detail.ts(35,27): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r3-project-detail.ts(37,27): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r3-project-detail.ts(39,28): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r3-project-detail.ts(65,97): error TS2345: Argument of type '"dim"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r3-project-detail.ts(71,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r3-project-detail.ts(71,45): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: 0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | ... 496 more ... | undefined): ButtonTag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '0 | "0" | 2 | "none" | 4 | "2" | "4" | "8" | "hidden" | `[${string}]` | "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r" | "inherit" | "current" | "transparent" | "black" | ... 495 more ... | undefined'.
+  Overload 2 of 2, '(direction: "x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r", value?: 0 | "0" | 2 | 4 | "2" | "4" | "8" | `[${string}]` | "inherit" | "current" | "transparent" | "black" | ... 491 more ... | undefined): ButtonTag', gave the following error.
+    Argument of type '"line"' is not assignable to parameter of type '"x" | "y" | "top" | "bottom" | "left" | "right" | "t" | "b" | "l" | "r"'.
+screens-fh8/r3-project-detail.ts(75,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): ButtonTag', gave the following error.
+    Argument of type '"control"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r3-project-detail.ts(75,32): error TS2345: Argument of type '"danger"' is not assignable to parameter of type 'TailwindColor'.
+screens-fh8/r3-project-detail.ts(75,89): error TS2345: Argument of type '"on-accent"' is not assignable to parameter of type '"sm" | "lg" | "xl" | "2xl" | "xs" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl" | `[${string}]` | "left" | "right" | "inherit" | "current" | "transparent" | "black" | "white" | "slate-50" | "slate-100" | ... 495 more ... | "pretty"'.
+screens-fh8/r3-project-detail.ts(80,28): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r3-project-detail.ts(81,14): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value?: TailwindRounded | undefined): DialogTag & Rooted<"confirmDelete">', gave the following error.
+    Argument of type '"card"' is not assignable to parameter of type 'TailwindRounded | undefined'.
+  Overload 2 of 2, '(corner: TailwindRoundedCorner, value?: TailwindRounded | undefined): DialogTag & Rooted<"confirmDelete">', gave the following error.
+    Argument of type '"card"' is not assignable to parameter of type 'TailwindRoundedCorner'.
+screens-fh8/r3-project-detail.ts(82,14): error TS2345: Argument of type '"backdrop"' is not assignable to parameter of type 'TailwindState | TailwindBreakpoint'.

@@ -1,0 +1,28 @@
+probes/mistakes.ts(12,59): error TS2322: Type '"search"' is not assignable to type '"q"'.
+probes/mistakes.ts(15,6): error TS2345: Argument of type '{ to: PagePart<{ id: number; }, {}, { id: number; name: string; }>; }' is not assignable to parameter of type '{ to: PagePart<{ id: number; }, {}, any>; query?: Partial<{}> | undefined; class?: string | undefined; "aria-label"?: string | undefined; } & { params: { id: number; }; }'.
+  Property 'params' is missing in type '{ to: PagePart<{ id: number; }, {}, { id: number; name: string; }>; }' but required in type '{ params: { id: number; }; }'.
+probes/mistakes.ts(18,30): error TS2322: Type 'string' is not assignable to type 'number'.
+probes/mistakes.ts(21,37): error TS2322: Type '{ id: TSchema<number>; }' is not assignable to type '{ readonly id: TSchema<number>; } & Record<"id" | "file", TSchema>'.
+  Property 'file' is missing in type '{ id: TSchema<number>; }' but required in type 'Record<"id" | "file", TSchema>'.
+probes/mistakes.ts(28,29): error TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"name" | "status"'.
+probes/mistakes.ts(31,51): error TS2741: Property 'active' is missing in type '{ draft: string; }' but required in type 'Record<"draft" | "active", string>'.
+probes/mistakes.ts(34,83): error TS2322: Type 'Invalid<{ title: unknown; }>' is not assignable to type 'Result | Invalid<{ name: string; }> | Promise<Result | Invalid<{ name: string; }>>'.
+  Type 'Invalid<{ title: unknown; }>' is not assignable to type 'Invalid<{ name: string; }>'.
+    Types of property 'errors' are incompatible.
+      Type 'Errors<{ title: unknown; }>' has no properties in common with type 'Errors<{ name: string; }>'.
+probes/mistakes.ts(37,7): error TS2353: Object literal may only specify known properties, and 'clas' does not exist in type 'View | readonly Child[] | Global'.
+probes/mistakes.ts(40,10): error TS2353: Object literal may only specify known properties, and 'onclick' does not exist in type 'View | readonly Child[] | ButtonAttrs'.
+probes/mistakes.ts(43,7): error TS2353: Object literal may only specify known properties, and '"hx-get"' does not exist in type 'View | readonly Child[] | Global'.
+probes/mistakes.ts(46,3): error TS2345: Argument of type '{ href: string; }' is not assignable to parameter of type 'Child | AAttrs'.
+  Types of property 'href' are incompatible.
+    Type 'string' is not assignable to type 'Href'.
+probes/mistakes.ts(49,5): error TS2345: Argument of type '{ src: Href; }' is not assignable to parameter of type 'ImgAttrs'.
+  Property 'alt' is missing in type '{ src: Href; }' but required in type 'ImgAttrs'.
+probes/mistakes.ts(52,27): error TS2739: Type 'View' is missing the following properties from type 'PageView': title, description
+probes/mistakes.ts(55,42): error TS2345: Argument of type 'RegionPart<{}, { q?: string | undefined; }, string[]>' is not assignable to parameter of type 'PagePart<unknown, unknown, any>'.
+  Type 'RegionPart<{}, { q?: string | undefined; }, string[]>' is missing the following properties from type 'PagePart<unknown, unknown, any>': path, owned, url, region, and 3 more.
+probes/mistakes.ts(58,5): error TS2345: Argument of type 'string' is not assignable to parameter of type 'TrustedHtml'.
+  Type 'string' is not assignable to type '{ readonly [trusted]: true; }'.
+probes/mistakes.ts(61,22): error TS2554: Expected 1 arguments, but got 2.
+probes/mistakes.ts(64,46): error TS2339: Property 'title' does not exist on type '{ id: number; name: string; }'.
+probes/mistakes.ts(67,127): error TS2367: This comparison appears to be unintentional because the types '"running" | "done"' and '"pending"' have no overlap.

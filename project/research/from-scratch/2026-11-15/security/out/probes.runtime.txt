@@ -1,0 +1,50 @@
+REFUSED   hx typo passes tsc (hx-trgger)
+          sealed: <button hx-trgger>: hx-* attributes are not writable. Use the hx prop: hx={swap(route)}, search(route), poll(route, "2s"), fire(route), load(route)
+REFUSED   data-hx-get
+          sealed: <div data-hx-get>: hx-* attributes are not writable. Use the hx prop: hx={swap(route)}, search(route), poll(route, "2s"), fire(route), load(route)
+REFUSED   onclick via spread
+          sealed: <button onclick>: inline handlers are not writable. Use command/commandfor, popovertarget, or the hx prop
+REFUSED   style string via any
+          sealed: style takes an object ({ color: value }), got "color:red;background:url(//evil)". A style string cannot be made safe
+REFUSED   script string via any
+          sealed: <script> holds json(data) or js`...`, or has a src. Got "alert(1)"
+REFUSED   forged Html shape as a child
+          sealed: [object Object] is not renderable. A child is text, a number, JSX, or an array of those
+REFUSED   forged Verb shape
+          sealed: <button hx> takes a verb: search(route), poll(route, "2s"), swap(route), fire(route), load(route). Got [object Object]
+REFUSED   forged Route shape in href
+          sealed: <a href> takes a route or a string, got [object Object]
+REFUSED   verb given a string URL
+          sealed: an hx verb takes a route, got "javascript:alert(1)". Routes come from defineRoutes(); a path stored as data goes through localUrl()
+REFUSED   dynamic tag from data: script
+          sealed: <script> holds json(data) or js`...`, or has a src. Got "alert(1)"
+REFUSED   dynamic tag from data: unknown
+          sealed: <x onload=alert(1)> is not a writable element
+REFUSED   srcdoc with scripts and same origin
+          sealed: <iframe srcdoc>: a string runs with no scripts; allow-scripts needs srcdoc to be JSX
+REFUSED   poll on an element with another id
+          sealed: <span id="project-list"> polls a route whose region is "status-badge"
+REFUSED   nonce missing at render
+          sealed: this view has a <script> or <style>: render(view, { nonce }) needs the response's CSP nonce
+REFUSED   nonce attribute by hand
+          sealed: <script nonce> is set by the runtime from render(view, { nonce })
+REFUSED   html tag with a hole
+          sealed: html`...` takes no holes; compose with JSX
+REFUSED   html tag called as a function
+          sealed: html is a template tag: html`...`
+REFUSED   css hole in a selector
+          sealed: css`...`: a hole goes only where a declaration's value goes (after `property:`)
+REFUSED   vals string
+          sealed: hx vals must be an object, got "js:alert(1)"
+REFUSED   stringified view
+          sealed: an Html value was stringified; pass it as a JSX child, or call render(view, ctx) at the response
+REFUSED   route param from data with a slash
+          sealed: route detail: param id must be a number, got "1/../../admin"
+RENDERED  CONTROL json in script renders
+          <script type="application/json">{"v":"\u003c/script\u003e\u003c!--\u003cscript\u003e"}</script>
+RENDERED  CONTROL url from data neutralised, no throw
+          <a href="about:invalid#blocked">x</a>
+RENDERED  CONTROL css value from data dropped, no throw
+          <div style="width:40%">x</div>
+
+refused 21, rendered 3 (the 3 CONTROL cases are meant to render)

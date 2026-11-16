@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "node": "v26.0.0",
+    "nodeEnv": "production",
+    "loadavg": [
+      137.2080078125,
+      149.17236328125,
+      188.0771484375
+    ],
+    "rounds": 11,
+    "sampleMs": 300,
+    "gcExposed": true,
+    "sink": true
+  },
+  "rows": [
+    {
+      "arm": "fluent-html-8",
+      "buildRenderOps": 14637,
+      "buildRenderRange": [
+        13266,
+        15602
+      ],
+      "buildRenderWallOps": 3751,
+      "renderOnlyOps": 27466,
+      "renderOnlyRange": [
+        26825,
+        28883
+      ],
+      "allocBytesPerBuildRender": 138808,
+      "ratioVsFirst": 1,
+      "ratioRange": [
+        1,
+        1
+      ],
+      "outputBytes": 8248,
+      "outputSha": "b4a4fca94ffc9aa4",
+      "sameAsExpected": true,
+      "sameIgnoringWhitespace": true
+    },
+    {
+      "arm": "route-typed-tsx",
+      "buildRenderOps": 39770,
+      "buildRenderRange": [
+        36685,
+        42600
+      ],
+      "buildRenderWallOps": 10355,
+      "renderOnlyOps": 26164853,
+      "renderOnlyRange": [
+        24298347,
+        27350507
+      ],
+      "allocBytesPerBuildRender": 78038,
+      "ratioVsFirst": 2.653,
+      "ratioRange": [
+        2.506,
+        2.982
+      ],
+      "outputBytes": 8312,
+      "outputSha": "c1414b8a3ac26644",
+      "sameAsExpected": false,
+      "sameIgnoringWhitespace": false
+    }
+  ]
+}

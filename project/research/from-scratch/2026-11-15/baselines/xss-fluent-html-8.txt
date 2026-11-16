@@ -1,0 +1,98 @@
+adapter: fluent-html-8  cases: 206  K3 escapes (xss+css): 18
+┌─────────┬────────────────────┬─────────┬─────┬─────┬────────┬──────────┬──────┬────────┬────────┬─────────────┐
+│ (index) │ ctx                │ hostile │ xss │ css │ legacy │ rejected │ safe │ benign │ broken │ unsupported │
+├─────────┼────────────────────┼─────────┼─────┼─────┼────────┼──────────┼──────┼────────┼────────┼─────────────┤
+│ 0       │ 'text'             │ 8       │ 0   │ 0   │ 0      │ 0        │ 8    │ 3      │ 0      │ 0           │
+│ 1       │ 'rcdata-textarea'  │ 2       │ 0   │ 0   │ 0      │ 0        │ 2    │ 1      │ 0      │ 0           │
+│ 2       │ 'rcdata-title'     │ 1       │ 0   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 3       │ 'attr-title'       │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 4       │ 'attr-data'        │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 5       │ 'attr-id'          │ 3       │ 0   │ 0   │ 0      │ 0        │ 3    │ 1      │ 0      │ 0           │
+│ 6       │ 'attr-class'       │ 3       │ 0   │ 0   │ 0      │ 0        │ 3    │ 1      │ 0      │ 0           │
+│ 7       │ 'attr-input-value' │ 7       │ 0   │ 0   │ 0      │ 0        │ 7    │ 1      │ 0      │ 0           │
+│ 8       │ 'attr-name'        │ 6       │ 4   │ 0   │ 0      │ 2        │ 0    │ 1      │ 0      │ 0           │
+│ 9       │ 'url-href'         │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 5      │ 0      │ 0           │
+│ 10      │ 'url-img-src'      │ 14      │ 0   │ 0   │ 0      │ 0        │ 14   │ 4      │ 0      │ 0           │
+│ 11      │ 'url-iframe-src'   │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 3      │ 0      │ 0           │
+│ 12      │ 'url-form-action'  │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 1      │ 0      │ 0           │
+│ 13      │ 'url-formaction'   │ 15      │ 0   │ 0   │ 0      │ 0        │ 15   │ 1      │ 0      │ 0           │
+│ 14      │ 'style-value'      │ 8       │ 0   │ 1   │ 3      │ 0        │ 4    │ 3      │ 0      │ 0           │
+│ 15      │ 'style-element'    │ 8       │ 0   │ 5   │ 2      │ 0        │ 1    │ 3      │ 0      │ 0           │
+│ 16      │ 'json-script'      │ 7       │ 1   │ 0   │ 0      │ 0        │ 6    │ 1      │ 0      │ 0           │
+│ 17      │ 'js-script-var'    │ 7       │ 1   │ 0   │ 0      │ 0        │ 6    │ 1      │ 0      │ 0           │
+│ 18      │ 'htmx-get'         │ 4       │ 2   │ 0   │ 0      │ 0        │ 2    │ 1      │ 0      │ 0           │
+│ 19      │ 'htmx-confirm'     │ 3       │ 2   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 20      │ 'htmx-vals'        │ 5       │ 0   │ 0   │ 0      │ 0        │ 5    │ 1      │ 0      │ 0           │
+│ 21      │ 'htmx-headers'     │ 5       │ 0   │ 0   │ 0      │ 0        │ 5    │ 1      │ 0      │ 0           │
+│ 22      │ 'iframe-srcdoc'    │ 3       │ 2   │ 0   │ 0      │ 0        │ 1    │ 1      │ 0      │ 0           │
+│ 23      │ 'TOTAL'            │ 168     │ 12  │ 6   │ 5      │ 2        │ 143  │ 38     │ 0      │ 0           │
+└─────────┴────────────────────┴─────────┴─────┴─────┴────────┴──────────┴──────┴────────┴────────┴─────────────┘
+ESCAPE:XSS  attr-name/hx-on  payload={"key":"hx-on:click","value":"alert(1)"}
+            [xss] htmx handler data-hx-on:click
+            html: "<div data-hx-on:click=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-name/hx-on-camel  payload={"key":"hxOn:click","value":"alert(1)"}
+            [xss] htmx handler data-hx-on:click
+            html: "<div data-hx-on:click=\"alert(1)\"></div>"
+ESCAPE:XSS  attr-name/hx-get-js  payload={"key":"hx-get","value":"javascript:alert(1)"}
+            [xss] htmx js: action in data-hx-get
+            html: "<div data-hx-get=\"javascript:alert(1)\"></div>"
+ESCAPE:XSS  attr-name/hx-trigger-load-js  payload={"key":"hx-post","value":"js:alert(1)"}
+            [xss] htmx js: action in data-hx-post
+            html: "<div data-hx-post=\"js:alert(1)\"></div>"
+ESCAPE:CSS  style-value/decl-injection  payload="red; background-image: url(https://evil.example/leak)"
+            [css] 2 declarations in style attribute, expected 1
+            html: "<div style=\"color: red; background-image: url(https://evil.example/leak)\"></div>"
+LEGACY      style-value/rule-breakout  payload="red}body{background:url(https://evil.example/leak)"
+            [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<div style=\"color: red}body{background:url(https://evil.example/leak)\"></div>"
+LEGACY      style-value/expression  payload="expression(alert(1))"
+            [legacy] expression() in style attribute
+            html: "<div style=\"color: expression(alert(1))\"></div>"
+LEGACY      style-value/url-js  payload="url(javascript:alert(1))"
+            [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<div style=\"color: url(javascript:alert(1))\"></div>"
+ESCAPE:CSS  style-element/decl-injection  payload="red; background-image: url(https://evil.example/leak)"
+            [css] 2 declarations in the <style> rule, expected 1
+            html: "<style>.x{color: red; background-image: url(https://evil.example/leak)}</style>"
+ESCAPE:CSS  style-element/rule-breakout  payload="red}body{background:url(https://evil.example/leak)"
+            [css] 2 rule openings, 2 closings in <style>, expected 1; [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<style>.x{color: red}body{background:url(https://evil.example/leak)}</style>"
+ESCAPE:CSS  style-element/style-close  payload="red}</style><script>alert(1)</script>"
+            [css] 1 rule openings, 2 closings in <style>, expected 1; [css] comment or backslash escape in <style>
+            html: "<style>.x{color: red}<\\/style><script>alert(1)</script>}</style>"
+ESCAPE:CSS  style-element/style-close-upper  payload="red}</STYLE ><img src=x onerror=alert(1)>"
+            [css] 1 rule openings, 2 closings in <style>, expected 1; [css] comment or backslash escape in <style>
+            html: "<style>.x{color: red}<\\/style ><img src=x onerror=alert(1)>}</style>"
+LEGACY      style-element/expression  payload="expression(alert(1))"
+            [legacy] expression() in <style>
+            html: "<style>.x{color: expression(alert(1))}</style>"
+LEGACY      style-element/url-js  payload="url(javascript:alert(1))"
+            [legacy] url() inside the color value (invalid CSS, inert)
+            html: "<style>.x{color: url(javascript:alert(1))}</style>"
+ESCAPE:CSS  style-element/comment-escape  payload="red/*"
+            [css] comment or backslash escape in <style>
+            html: "<style>.x{color: red/*}</style>"
+ESCAPE:XSS  json-script/double-escape  payload="<!--<script>"
+            [xss] structure: sentinel swallowed; [xss] structure: 1 top-level elements, expected 2
+            html: "<script type=\"application/json\">{\"v\":\"<!--<script>\"}</script>"
+ESCAPE:XSS  js-script-var/double-escape  payload="<!--<script>"
+            [xss] structure: sentinel swallowed; [xss] structure: 1 top-level elements, expected 2
+            html: "<script>window.__DATA = {\"v\":\"<!--<script>\"}</script>"
+ESCAPE:XSS  htmx-get/js-prefix  payload="js:alert(1)"
+            [xss] htmx js: action in hx-get
+            html: "<button hx-get=\"js:alert(1)\">Load</button>"
+ESCAPE:XSS  htmx-get/javascript-prefix  payload="javascript:alert(1)"
+            [xss] htmx js: action in hx-get
+            html: "<button hx-get=\"javascript:alert(1)\">Load</button>"
+ESCAPE:XSS  htmx-confirm/js-prefix  payload="js:alert(1)"
+            [xss] htmx js: value in hx-confirm
+            html: "<button hx-post=\"/items/1\" hx-confirm=\"js:alert(1)\">Delete</button>"
+ESCAPE:XSS  htmx-confirm/javascript-prefix  payload="javascript:alert(1)"
+            [xss] htmx js: value in hx-confirm
+            html: "<button hx-post=\"/items/1\" hx-confirm=\"javascript:alert(1)\">Delete</button>"
+ESCAPE:XSS  iframe-srcdoc/script  payload="<script>alert(1)</script>"
+            [xss] srcdoc runs: script element
+            html: "<iframe srcdoc=\"&lt;script&gt;alert(1)&lt;/script&gt;\"></iframe>"
+ESCAPE:XSS  iframe-srcdoc/img-onerror  payload="<img src=x onerror=alert(1)>"
+            [xss] srcdoc runs: event handler onerror
+            html: "<iframe srcdoc=\"&lt;img src=x onerror=alert(1)&gt;\"></iframe>"

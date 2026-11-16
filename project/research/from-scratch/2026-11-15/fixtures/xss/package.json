@@ -1,0 +1,9 @@
+{
+  "name": "from-scratch-xss-fixtures",
+  "private": true,
+  "type": "module",
+  "description": "XSS fixture set and checker for the fluent-html from-scratch round (K3). node check.mjs <adapter.mjs>",
+  "dependencies": {
+    "parse5": "7.3.0"
+  }
+}

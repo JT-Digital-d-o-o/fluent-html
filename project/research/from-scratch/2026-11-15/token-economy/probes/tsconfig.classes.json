@@ -1,0 +1,1 @@
+{ "extends": "../tsconfig.json", "include": ["../lt.ts", "bad-classes.ts"] }

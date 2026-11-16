@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "es2023", "module": "nodenext", "moduleResolution": "nodenext",
+    "strict": true, "noUncheckedIndexedAccess": true, "exactOptionalPropertyTypes": false,
+    "noEmit": true, "allowImportingTsExtensions": true, "erasableSyntaxOnly": true, "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["kit", "screens", "test"]
+}

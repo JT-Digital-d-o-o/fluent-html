@@ -1,0 +1,1 @@
+{ "extends": "./tsconfig.json", "compilerOptions": { "noEmit": false, "outDir": "build", "rootDir": "." }, "include": ["screens/**/*.ts", "proto/*.ts", "render-screens.ts"] }

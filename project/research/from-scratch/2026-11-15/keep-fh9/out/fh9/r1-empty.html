@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>r1-empty</title>
+</head>
+<body>
+<main id="main-content">
+<div><div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-semibold text-text">Projects</h1>
+<a class="cursor-pointer inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-primary text-on-accent hover:bg-primary-700 focus-visible:ring-2 focus-visible:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed" href="/projects/new" hx-get="/projects/new" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" hx-sync="#main-content:replace">New project</a></div>
+<input class="w-full px-3 py-2 rounded-control border border-line-strong bg-surface text-text focus:border-primary focus:outline-hidden aria-invalid:border-danger mb-4" type="search" name="q" placeholder="Search projects" value="zz" aria-label="Search projects" hx-get="/projects/rows" hx-target="#project-list" hx-swap="outerMorph" hx-trigger="input changed delay:300ms" hx-include="this" hx-indicator="#global-loading" hx-sync="replace">
+<div id="project-list" class="p-6 bg-surface border border-line rounded-card p-0"><div class="px-6 py-12 text-center"><p class="font-medium text-text">No projects match &quot;zz&quot;.</p>
+<p class="text-sm text-text-dim">Create one to get started.</p></div></div></div>
+</main>
+</body>
+</html>

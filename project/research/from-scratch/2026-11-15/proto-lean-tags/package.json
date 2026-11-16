@@ -1,0 +1,23 @@
+{
+  "name": "proto-lean-tags",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#zod": "./support/zod.ts"
+  },
+  "dependencies": {
+    "lean-tags": "file:./lean-tags"
+  },
+  "scripts": {
+    "build": "tsc -p lean-tags/tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "check:classes": "node lean-tags/check.mjs support/theme.css screens support",
+    "screens": "node tools/run-screens.mjs && node tools/bench-page.mjs",
+    "control": "tsc -p control/tsconfig.json; node control/build/render.js",
+    "validate": "sh tools/validate.sh",
+    "xss": "node ../fixtures/xss/check.mjs xss/adapter.mjs",
+    "test": "node --test test/*.test.mjs",
+    "smoke": "node tools/serve-smoke.mjs",
+    "bench": "NODE_ENV=production node --expose-gc ../fixtures/bench/harness.mjs --rounds 11 --sample-ms 300 ../fixtures/bench/arms/fluent-html-8.mjs bench/lean-tags.mjs ../fixtures/bench/arms/template-literal.mjs"
+  }
+}

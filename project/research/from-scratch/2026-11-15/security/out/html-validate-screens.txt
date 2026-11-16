@@ -1,0 +1,2 @@
+$ npx html-validate sealed/screens/{r1-list,r1-list-empty,r2-form,r2-form-invalid,r3-detail-running,r3-detail-done}.html
+exit=0

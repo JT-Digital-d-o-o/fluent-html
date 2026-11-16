@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Atlas migration></title>
+</head>
+<body>
+<main id="main">
+<section class="mx-auto flex max-w-3xl flex-col gap-6 p-6">
+<div class="flex items-center justify-between">
+<h1 class="text-2xl font-bold text-ink">Atlas &lt;migration&gt;</h1>
+<button type="button" command="show-modal" commandfor="delete-dialog" class="rounded-control border border-danger px-4 py-2 text-danger hover:bg-danger/10">Delete</button>
+</div>
+<p class="text-dim">Owner: ana@example.com</p>
+<p class="flex items-center gap-2 text-sm text-dim">Import job <span id="job-status" hx-get="/projects/1/status" hx-trigger="every 2s" hx-target="this" hx-swap="outerHTML" class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm bg-info/10 text-info">
+Running, 40%
+</span></p>
+<dialog id="delete-dialog" closedby="any" aria-labelledby="delete-title" class="rounded-card p-6">
+<h2 id="delete-title" class="text-lg font-bold text-ink">Delete Atlas &lt;migration&gt;?</h2>
+<p class="mt-2 text-dim">This removes the project and its jobs. It cannot be undone.</p>
+<div class="mt-6 flex justify-end gap-3">
+<button type="button" command="close" commandfor="delete-dialog" class="rounded-control px-4 py-2 text-dim hover:bg-surface-2">Cancel</button>
+<button type="button" hx-delete="/projects/1" hx-target="#main" hx-swap="outerMorph show:top" hx-push-url="true" class="rounded-control bg-danger px-4 py-2 text-on-accent">Delete project</button>
+</div>
+</dialog>
+</section>
+</main>
+</body>
+</html>

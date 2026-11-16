@@ -1,0 +1,1 @@
+{ "extends": "../tsconfig.json", "compilerOptions": { "baseUrl": "..", "paths": { "rtsx": ["./rtsx/index.ts"], "rtsx/jsx-runtime": ["./rtsx/jsx-runtime.ts"] } }, "include": ["negative.tsx", "classes.tsx"] }

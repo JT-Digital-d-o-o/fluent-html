@@ -1,0 +1,4 @@
+$ npx html-validate sealed/bench-page.fragment.html
+exit=0
+$ npx html-validate sealed/bench-page.document.html
+exit=0

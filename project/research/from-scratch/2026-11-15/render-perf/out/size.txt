@@ -1,0 +1,9 @@
+part              hoisted B    fh8 B  ratio   hoisted pcs  fh8 pcs  ratio
+routes+schema           896     1317   0.68           303      404   0.75
+views                  5492     6372   0.86          1928     2313   0.83
+views:head              392      715   0.55           124      241   0.51
+views:R1               1292     1454   0.89           464      525   0.88
+views:R2               1749     1776   0.98           624      648   0.96
+views:R3               2056     2424   0.85           716      899   0.80
+controller             1153     2765   0.42           349      691   0.51
+total                  7541    10454   0.72          2580     3408   0.76

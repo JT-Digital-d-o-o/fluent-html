@@ -1,0 +1,10 @@
+sealed r1                            2188 B    1923 B squashed    63 lines
+fh8    r1                            2320 B    2055 B squashed    63 lines
+sealed r2                            1758 B    1581 B squashed    43 lines
+fh8    r2                            2143 B    1979 B squashed    51 lines
+sealed r3                            3090 B    2792 B squashed    71 lines
+fh8    r3                            3542 B    3140 B squashed    84 lines
+sealed routes                         998 B     968 B squashed    21 lines
+fh8    routes+schema                  803 B     780 B squashed    15 lines
+sealed r1+r2+r3                      7036 B    6296 B squashed   177 lines
+fh8    r1+r2+r3                      8005 B    7174 B squashed   198 lines

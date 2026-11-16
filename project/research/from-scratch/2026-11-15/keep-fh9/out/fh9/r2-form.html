@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>r2-form</title>
+</head>
+<body>
+<main id="main-content">
+<div class="max-w-lg"><h1 class="text-2xl font-semibold text-text mb-6">New project</h1>
+<div id="project-form" class="p-6 bg-surface border border-line rounded-card"><form action="/projects" method="post" hx-post="/projects" hx-target="#main-content" hx-swap="outerMorph show:top" hx-push-url="true" hx-indicator="#global-loading" hx-disable="findAll button" hx-status:422="swap:outerMorph target:#project-form push:false"><div class="mb-4"><label class="block mb-1 text-sm font-medium text-text" for="name">Name</label>
+<input id="name" class="w-full px-3 py-2 rounded-control border border-line-strong bg-surface text-text focus:border-primary focus:outline-hidden aria-invalid:border-danger" type="text" name="name" required>
+<div class="mt-1 text-sm text-danger"></div></div>
+<div class="mb-4"><label class="block mb-1 text-sm font-medium text-text" for="client">Client</label>
+<input id="client" class="w-full px-3 py-2 rounded-control border border-line-strong bg-surface text-text focus:border-primary focus:outline-hidden aria-invalid:border-danger" type="text" name="client" required>
+<div class="mt-1 text-sm text-danger"></div></div>
+<div class="mb-4"><label class="block mb-1 text-sm font-medium text-text" for="kind">Kind</label>
+<select id="kind" class="w-full px-3 py-2 rounded-control border border-line-strong bg-surface text-text focus:border-primary focus:outline-hidden aria-invalid:border-danger" name="kind"><option value="site">Website</option>
+<option value="app">Web app</option></select>
+<div class="mt-1 text-sm text-danger"></div></div>
+<div class="flex gap-3 mt-6"><button class="inline-flex items-center px-4 py-2 rounded-control text-sm font-medium cursor-pointer bg-primary text-on-accent hover:bg-primary-700 focus-visible:ring-2 focus-visible:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed" type="submit">Create project</button>
+<button class="inline-flex items-center px-4 py-2 rounded-control text-sm font-medium cursor-pointer border border-line-strong bg-surface text-text hover:bg-surface-2" type="button" data-behavior="back">Cancel</button></div></form></div></div>
+</main>
+</body>
+</html>

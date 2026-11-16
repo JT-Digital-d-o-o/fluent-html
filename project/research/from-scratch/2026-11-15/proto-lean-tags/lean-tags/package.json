@@ -1,0 +1,11 @@
+{
+  "name": "lean-tags",
+  "version": "0.0.0-proto",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+  },
+  "bin": { "lean-tags-check": "./check.mjs" },
+  "files": ["dist", "check.mjs", "REFERENCE.md"]
+}

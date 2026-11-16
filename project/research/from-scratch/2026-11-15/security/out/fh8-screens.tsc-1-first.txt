@@ -1,0 +1,27 @@
+screens-fh8/r1-project-list.ts(24,27): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r1-project-list.ts(27,36): error TS2353: Object literal may only specify known properties, and 'ringColor' does not exist in type 'VariantStyleObject'.
+screens-fh8/r1-project-list.ts(39,22): error TS2339: Property 'divideColor' does not exist on type 'Tag'.
+screens-fh8/r1-project-list.ts(42,53): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r2-project-form.ts(1,48): error TS2724: '"fluent-html"' has no exported member named 'Styler'. Did you mean 'Style'?
+screens-fh8/r2-project-form.ts(11,24): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(12,26): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(15,24): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(25,33): error TS2345: Argument of type 'ProjectFormState' is not assignable to parameter of type 'FormState<CreateProjectReq>'.
+  Types of property 'values' are incompatible.
+    Type 'Partial<Record<keyof CreateProjectReq, string>> | undefined' is not assignable to type 'Partial<CreateProjectReq> | undefined'.
+      Type 'Partial<Record<keyof CreateProjectReq, string>>' is not assignable to type 'Partial<CreateProjectReq>'.
+        Types of property 'budget' are incompatible.
+          Type 'string | undefined' is not assignable to type 'number | undefined'.
+            Type 'string' is not assignable to type 'number'.
+screens-fh8/r2-project-form.ts(25,41): error TS7006: Parameter 'f' implicitly has an 'any' type.
+screens-fh8/r2-project-form.ts(52,21): error TS2339: Property 'flexCol' does not exist on type 'FormTag & Rooted<"projectForm">'.
+screens-fh8/r3-project-detail.ts(1,106): error TS2305: Module '"fluent-html"' has no exported member 'StylerFor'.
+screens-fh8/r3-project-detail.ts(8,37): error TS7006: Parameter 'status' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(8,49): error TS7006: Parameter 't' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(10,14): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(11,15): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(12,12): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(13,14): error TS7006: Parameter 's' implicitly has an 'any' type.
+screens-fh8/r3-project-detail.ts(23,27): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r3-project-detail.ts(80,28): error TS2554: Expected 1 arguments, but got 2.
+screens-fh8/r3-project-detail.ts(82,14): error TS2345: Argument of type '"backdrop"' is not assignable to parameter of type 'TailwindState | TailwindBreakpoint'.

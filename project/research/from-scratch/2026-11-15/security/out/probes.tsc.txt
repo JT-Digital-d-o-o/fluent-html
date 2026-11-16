@@ -1,0 +1,38 @@
+probes/probes.tsx(9,23): error TS2322: Type 'RouteOf<{ readonly path: "/rows"; readonly query: { readonly q: "string"; }; readonly region: Id<"project-list">; }>' is not assignable to type 'LinkUrl | undefined'.
+  Type 'Route<"fragment", "get", never>' is not assignable to type 'Route<"page" | "none", "get", unknown>'.
+    Type '"fragment"' is not assignable to type '"page" | "none"'.
+probes/probes.tsx(10,21): error TS2322: Type '{ children: string; "hx-get": string; }' is not assignable to type 'ButtonAttrs'.
+  Types of property '"hx-get"' are incompatible.
+    Type 'string' is not assignable to type 'No<"hx-* attributes are not writable. Use the hx prop: hx={swap(route)}, search(route), poll(route, '2s'), fire(route) or load(route); a link is <a href={route}>, a form is <form action={route}>">'.
+probes/probes.tsx(12,28): error TS2322: Type 'string' is not assignable to type 'No<"inline handlers are not writable. Use command/commandfor, popovertarget, or the hx prop">'.
+probes/probes.tsx(13,28): error TS2322: Type '() => void' is not assignable to type 'No<"inline handlers are not writable. Use command/commandfor, popovertarget, or the hx prop">'.
+probes/probes.tsx(14,25): error TS2322: Type 'string' is not assignable to type 'Css | StyleObject | undefined'.
+probes/probes.tsx(15,25): error TS2322: Type 'string' is not assignable to type 'Css | StyleObject | undefined'.
+probes/probes.tsx(16,28): error TS2747: 'script' components don't accept text as child elements. Text in JSX has the type 'string', but the expected type of 'children' is 'ScriptBody | undefined'.
+probes/probes.tsx(17,28): error TS2322: Type 'string' is not assignable to type 'ScriptBody | undefined'.
+probes/probes.tsx(18,52): error TS2353: Object literal may only specify known properties, and '__html' does not exist in type 'No<"there is no raw-HTML prop. Pass JSX children; html`...` holds literal markup; sanitize(markup) admits third-party HTML">'.
+probes/probes.tsx(19,39): error TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"name" | "client" | "budget"'.
+probes/probes.tsx(20,38): error TS2322: Type 'string' is not assignable to type 'number'.
+probes/probes.tsx(21,29): error TS2554: Expected 1 arguments, but got 0.
+probes/probes.tsx(22,36): error TS2353: Object literal may only specify known properties, and 'page' does not exist in type '{ readonly q?: string | null | undefined; }'.
+probes/probes.tsx(23,38): error TS2345: Argument of type 'RouteOf<{ readonly path: "/"; readonly query: { readonly q: "string"; }; }>' is not assignable to parameter of type 'Route<"fragment", "get", unknown>'.
+  Type '"page"' is not assignable to type '"fragment"'.
+probes/probes.tsx(24,28): error TS2322: Type 'string' is not assignable to type 'Id<string>'.
+probes/probes.tsx(25,21): error TS2741: Property 'alt' is missing in type '{ src: string; }' but required in type 'ImgAttrs'.
+probes/probes.tsx(26,23): error TS2322: Type '{ a: number; }' is not assignable to type 'Child'.
+probes/probes.tsx(27,28): error TS2322: Type 'string' is not assignable to type '`/${string}`'.
+probes/probes.tsx(28,27): error TS2322: Type 'string' is not assignable to type 'Css'.
+probes/probes.tsx(29,35): error TS2345: Argument of type 'RouteOf<{ readonly path: "/:id"; readonly params: { readonly id: "number"; }; }>' is not assignable to parameter of type 'Route<"fragment", "get", unknown>'.
+  Type '"page"' is not assignable to type '"fragment"'.
+probes/probes.tsx(30,30): error TS2322: Type 'Html' is not assignable to type 'string | number | undefined'.
+probes/probes.tsx(31,27): error TS2322: Type '{ maxLength: number; }' is not assignable to type 'InputAttrs'.
+  Property 'maxLength' does not exist on type 'InputAttrs'. Did you mean 'maxlength'?
+probes/probes.tsx(32,28): error TS2322: Type 'string' is not assignable to type 'Verb'.
+probes/probes.tsx(33,37): error TS2345: Argument of type 'RouteOf<{ readonly path: "/rows"; readonly query: { readonly q: "string"; }; readonly region: Id<"project-list">; }>' is not assignable to parameter of type 'Route<"page" | "none", Method, unknown>'.
+  Type '"fragment"' is not assignable to type '"page" | "none"'.
+probes/probes.tsx(34,23): error TS2322: Type 'RouteOf<{ readonly method: "delete"; readonly path: "/:id"; readonly params: { readonly id: "number"; }; }>' is not assignable to type 'LinkUrl | undefined'.
+  Type 'Route<"page", "delete", never>' is not assignable to type 'Route<"page" | "none", "get", unknown>'.
+    Type '"delete"' is not assignable to type '"get"'.
+probes/probes.tsx(35,67): error TS2322: Type 'string' is not assignable to type 'Record<string, unknown>'.
+probes/probes.tsx(36,20): error TS2339: Property 'dvi' does not exist on type 'JSX.IntrinsicElements'.
+probes/probes.tsx(36,26): error TS2339: Property 'dvi' does not exist on type 'JSX.IntrinsicElements'.

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New project</title>
+</head>
+<body>
+<main id="main">
+<section class="mx-auto flex max-w-xl flex-col gap-6 p-6">
+<h1 class="text-2xl font-bold text-ink">New project</h1>
+<form id="project-form" action="/projects" method="post" hx-post="/projects" hx-target="#main" hx-swap="outerMorph show:top" hx-push-url="true" hx-status:422="swap:outerMorph target:#project-form push:false" class="flex flex-col gap-4">
+<div>
+<label for="name" class="block text-sm font-medium text-ink">Name</label>
+<input id="name" name="name" required minlength="3" maxlength="80" type="text" class="mt-1 w-full rounded-control border border-line px-3 py-2 aria-invalid:border-danger">
+
+</div>
+<div>
+<label for="ownerEmail" class="block text-sm font-medium text-ink">Owner email</label>
+<input id="ownerEmail" name="ownerEmail" required type="email" class="mt-1 w-full rounded-control border border-line px-3 py-2 aria-invalid:border-danger">
+
+</div>
+<div>
+<label for="status" class="block text-sm font-medium text-ink">Status</label>
+<select id="status" name="status" required class="mt-1 w-full rounded-control border border-line px-3 py-2 aria-invalid:border-danger"><option value="active">Active</option><option value="paused">Paused</option></select>
+
+</div>
+<div>
+<label for="notes" class="block text-sm font-medium text-ink">Notes</label>
+<textarea id="notes" name="notes" maxlength="500" rows="4" class="mt-1 w-full rounded-control border border-line px-3 py-2 aria-invalid:border-danger"></textarea>
+
+</div>
+<button type="submit" class="rounded-control bg-primary px-4 py-2 text-on-accent hover:bg-primary-700">Create project</button>
+</form>
+</section>
+</main>
+</body>
+</html>

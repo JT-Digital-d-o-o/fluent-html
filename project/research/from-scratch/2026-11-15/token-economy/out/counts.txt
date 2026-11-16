@@ -1,0 +1,31 @@
+                                                 fluent-html 8       | Lean Tags           | backtick tags (firs
+-- without import lines
+R1 list view                                       1733 ch   433 tok |   1441 ch   360 tok |   1370 ch   343 tok | LT saves 16.8%
+R2 form view                                       1503 ch   376 tok |   1048 ch   262 tok |   1062 ch   266 tok | LT saves 30.3%
+R3 detail view                                     1499 ch   375 tok |   1200 ch   300 tok |   1143 ch   286 tok | LT saves 19.9%
+shared components (pills, buttons, job badge)      1653 ch   413 tok |   1374 ch   344 tok |   1385 ch   346 tok | LT saves 16.9%
+routes and ids                                      627 ch   157 tok |    357 ch    89 tok |    357 ch    89 tok | LT saves 43.1%
+schema and validation                              1338 ch   335 tok |    323 ch    81 tok |    323 ch    81 tok | LT saves 75.9%
+controller                                         1657 ch   414 tok |    835 ch   209 tok |    835 ch   209 tok | LT saves 49.6%
+VIEWS (R1+R2+R3+components)                        6388 ch  1597 tok |   5063 ch  1266 tok |   4960 ch  1240 tok | LT saves 20.7%
+WHOLE FEATURE                                     10010 ch  2503 tok |   6578 ch  1645 tok |   6475 ch  1619 tok | LT saves 34.3%
+-- with import lines
+R1 list view                                       2068 ch   517 tok |   1741 ch   435 tok |   1666 ch   417 tok | LT saves 15.8%
+R2 form view                                       1846 ch   462 tok |   1293 ch   323 tok |   1308 ch   327 tok | LT saves 30.0%
+R3 detail view                                     1847 ch   462 tok |   1546 ch   387 tok |   1485 ch   371 tok | LT saves 16.3%
+shared components (pills, buttons, job badge)      1819 ch   455 tok |   1536 ch   384 tok |   1549 ch   387 tok | LT saves 15.6%
+routes and ids                                      684 ch   171 tok |    460 ch   115 tok |    460 ch   115 tok | LT saves 32.7%
+schema and validation                              1395 ch   349 tok |    351 ch    88 tok |    351 ch    88 tok | LT saves 74.8%
+controller                                         2328 ch   582 tok |   1309 ch   327 tok |   1309 ch   327 tok | LT saves 43.8%
+VIEWS (R1+R2+R3+components)                        7580 ch  1895 tok |   6116 ch  1529 tok |   6008 ch  1502 tok | LT saves 19.3%
+WHOLE FEATURE                                     11987 ch  2997 tok |   8236 ch  2059 tok |   8128 ch  2032 tok | LT saves 31.3%
+-- without import lines and without any whitespace (formatting-independent)
+R1 list view                                       1393 ch   348 tok |   1143 ch   286 tok |   1111 ch   278 tok | LT saves 17.9%
+R2 form view                                       1285 ch   321 tok |    891 ch   223 tok |    926 ch   232 tok | LT saves 30.7%
+R3 detail view                                     1278 ch   320 tok |    969 ch   242 tok |    948 ch   237 tok | LT saves 24.2%
+shared components (pills, buttons, job badge)      1414 ch   354 tok |   1191 ch   298 tok |   1212 ch   303 tok | LT saves 15.8%
+routes and ids                                      516 ch   129 tok |    300 ch    75 tok |    300 ch    75 tok | LT saves 41.9%
+schema and validation                              1143 ch   286 tok |    284 ch    71 tok |    284 ch    71 tok | LT saves 75.2%
+controller                                         1292 ch   323 tok |    677 ch   169 tok |    677 ch   169 tok | LT saves 47.6%
+VIEWS (R1+R2+R3+components)                        5370 ch  1343 tok |   4194 ch  1049 tok |   4197 ch  1049 tok | LT saves 21.9%
+WHOLE FEATURE                                      8321 ch  2080 tok |   5455 ch  1364 tok |   5458 ch  1365 tok | LT saves 34.4%
