@@ -1,35 +1,39 @@
-arm	id	kind	cell	how	tsc	check	run	law	oracle	tscStray	checkStray	tscFirst	checkFirst	runFirst	lawFirst	lawOther
-fluent-nine	NEST-1	nest-li	law		green	-	ok	red	live	0	0				1: element-permitted-content: <li> element is not permitted as content under <div>	
-fluent-nine	NEST-2	nest-link	law		green	-	ok	red	live	0	0				2: element-permitted-content: <a> element is not permitted as a descendant of <a>	no-trailing-whitespace
-fluent-nine	NEST-3	nest-form	law		green	-	ok	red	live	0	0				6: element-permitted-content: <form> element is not permitted as a descendant of <form>	no-dup-id
-fluent-nine	NEST-4	nest-button	law		green	-	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <button>	
-fluent-nine	A11Y-1	no-label	nowhere		green	-	ok	green	live	0	0					
-fluent-nine	A11Y-2	no-alt	law		green	-	ok	red	live	0	0				1: wcag/h37: <img> is missing required "alt" attribute	
-fluent-nine	A11Y-3	button-no-name	law		green	-	ok	red	live	0	0				1: text-content: <button> must have accessible text	
-fluent-nine	ATTR-1	bad-attribute-value	tsc		red	-	ok	red	live	0	0	3: TS2345: Argument of type '"txt"' is not assignable to parameter of type 'InputType | undefined'.			1: attribute-allowed-values: Attribute "type" has invalid value "txt"	
-fluent-nine	BTN-1	button-implicit-submit	runtime	absorbed	green	-	ok	green	not-live	0	0					
-fluent-nine	ID-1	duplicate-id	law		green	-	ok	red	live	0	0				5: no-dup-id: Duplicate ID "project-count"	
-fluent-nine	ID-2	derived-id-repeat	law		green	-	ok	red	live	0	0				11: no-dup-id: Duplicate ID "project-form"	
-fluent-nine	TW-1	unknown-class	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"flex justify-centre"' is not assignable to parameter of type 'false | ("flex justify-centre" & ["✗ 'justify-centre' is not a Tailwind class"]) | null | undefined'.				
-fluent-nine	TW-2	palette-colour	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"bg-gray-100"' is not assignable to parameter of type 'false | ("bg-gray-100" & ["✗ 'bg-gray-100': 'gray-100' after 'bg-' is not a colour. Colours: danger, primary, primary-700, on-accent, su				
-fluent-nine	TW-3	unknown-variant	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"hovr:bg-surface-2"' is not assignable to parameter of type 'false | ("hovr:bg-surface-2" & ["✗ 'hovr:bg-surface-2': unknown variant 'hovr:'"]) | null | undefined'.				
-fluent-nine	TW-4	dynamic-class	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type 'false | (`bg-${string}/20` & ["✗ class text is literal: pass a tw(…) constant or a value in its own argument, .tw(base, \"…\"), never a templat				
-fluent-nine	TW-5	tailwind-in-raw-class	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"p-4 bg-gray-100"' is not assignable to parameter of type '"p-4 bg-gray-100" & ["✗ 'p-4' is Tailwind class text: write it in .tw(\"…\"), which checks it" | "✗ 'bg-gray-100' is Tailwind class 				
-fluent-nine	TW-6	classes-as-text	nowhere		green	-	ok	green	live	0	0					
-fluent-nine	HX-1	target-mismatch	tsc		red	-	ok	green	live	0	0	5: TS2345: Argument of type 'RenderTagged<Id<"project-status">>' is not assignable to parameter of type 'HTMX & { readonly render?: Id<"project-list"> | undefined; } & { readonly render?: Id<"project-status"> | undefined				
-fluent-nine	HX-2	wrong-answer	tsc		red	-	ok	green	live	0	0	3: TS2322: Type 'Tag & Rooted<"project-list">' is not assignable to type 'RootedView<"project-status">'.				
-fluent-nine	HX-3	422-no-region	nowhere		green	-	ok	green	live	0	0					
-fluent-nine	HX-4	poll-never-stops	nowhere		green	-	ok	green	live	0	0					
-fluent-nine	HX-5	raw-hx-attribute	runtime	throws	green	-	throws	-	-	0	0			fluent-html: addAttribute("hx-get") is refused; use an htmx verb (.nav/.submit/.fragment) or .setHtmx(route)		
-fluent-nine	HX-6	route-stance	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'RenderTagged<Id<"project-list">>' is not assignable to parameter of type 'PageRoute'.				
-fluent-nine	HX-7	raw-url	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"/projects/rowz"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.				
-fluent-nine	HX-8	stale-region	nowhere		green	-	ok	green	live	0	0					
-fluent-nine	FORM-1	field-not-in-schema	tsc		red	-	ok	green	live	0	0	4: TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"status" | "name"'.				
-fluent-nine	XSS-1	unescaped-html	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type 'string & ["✗ Raw() takes a source literal or trustHtml(…), never a runtime string: text is escaped by default, Div(text)"]'.				attr-quotes
-fluent-nine	XSS-2	js-url-link	runtime	throws	green	-	throws	-	-	0	0			fluent-html: externalUrl refused "javascript:alert(1)": http(s), mailto:, tel:, a same-origin path or a media data: URL only		
-fluent-nine	XSS-3	js-url-htmx	runtime	throws	green	-	throws	-	-	0	0			fluent-html: externalUrl refused "javascript:alert(1)": http(s), mailto:, tel:, a same-origin path or a media data: URL only		
-fluent-nine	XSS-4	hx-on-from-data	runtime	throws	green	-	throws	-	-	0	0			fluent-html: addAttribute("hx-on:click") is refused; use an htmx verb (.nav/.submit/.fragment) or .setHtmx(route)		
-fluent-nine	XSS-5	raw-interpolation	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type '`<strong>${string}</strong>` & ["✗ Raw() takes a source literal or trustHtml(…), never a template string: text is escaped by default, Div(text)				attr-quotes
-fluent-nine	XSS-6	style-from-data	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type '`color: ${string}` & ["✗ setStyle takes literal CSS, not a template string; a runtime value goes through .setStyles({ prop: value }), which che				no-inline-style
-fluent-nine	PURE-1	view-io	nowhere		green	-	ok	green	-	0	0					
-fluent-nine	PURE-2	forgotten-state	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '{ queued: () => Tag; running: () => Tag; done: () => Tag; }' is not assignable to parameter of type '{ queued: Thunk<View>; running: Thunk<View>; done: Thunk<View>; failed: Thunk<View>; } & N				
+arm	id	kind	cell	how	tsc	check	run	law	oracle	tscStray	checkStray	tscFirst	checkFirst	runFirst	lawFirst	lawOther	spellings
+fluent-nine	NEST-1	nest-li	law		green	-	ok	red	live	0	0				1: element-permitted-content: <li> element is not permitted as content under <div>		
+fluent-nine	NEST-2	nest-link	law		green	-	ok	red	live	0	0				2: element-permitted-content: <a> element is not permitted as a descendant of <a>	no-trailing-whitespace	
+fluent-nine	NEST-3	nest-form	law		green	-	ok	red	live	0	0				6: element-permitted-content: <form> element is not permitted as a descendant of <form>	no-dup-id	
+fluent-nine	NEST-4	nest-button	law		green	-	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <button>		
+fluent-nine	A11Y-1	no-label	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	A11Y-2	no-alt	law		green	-	ok	red	live	0	0				1: wcag/h37: <img> is missing required "alt" attribute		
+fluent-nine	A11Y-3	button-no-name	law		green	-	ok	red	live	0	0				1: text-content: <button> must have accessible text		
+fluent-nine	ATTR-1	bad-attribute-value	tsc		red	-	ok	red	live	0	0	3: TS2345: Argument of type '"txt"' is not assignable to parameter of type 'InputType | undefined'.			1: attribute-allowed-values: Attribute "type" has invalid value "txt"		
+fluent-nine	BTN-1	button-implicit-submit	runtime	absorbed	green	-	ok	green	not-live	0	0						
+fluent-nine	ID-1	duplicate-id	law		green	-	ok	red	live	0	0				5: no-dup-id: Duplicate ID "project-count"		
+fluent-nine	ID-2	derived-id-repeat	law		green	-	ok	red	live	0	0				11: no-dup-id: Duplicate ID "project-form"		
+fluent-nine	TW-1	unknown-class	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"flex justify-centre"' is not assignable to parameter of type 'false | ("flex justify-centre" & ["✗ 'justify-centre' is not a Tailwind class"]) | null | undefined'.					
+fluent-nine	TW-2	palette-colour	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"bg-gray-100"' is not assignable to parameter of type 'false | ("bg-gray-100" & ["✗ 'bg-gray-100': 'gray-100' after 'bg-' is not a colour. Colours: danger, primary, primary-700, on-accent, su					
+fluent-nine	TW-3	unknown-variant	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"hovr:bg-surface-2"' is not assignable to parameter of type 'false | ("hovr:bg-surface-2" & ["✗ 'hovr:bg-surface-2': unknown variant 'hovr:'"]) | null | undefined'.					
+fluent-nine	TW-4	dynamic-class	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type 'false | (`bg-${string}/20` & ["✗ class text is literal: pass a tw(…) constant or a value in its own argument, .tw(base, \"…\"), never a templat					
+fluent-nine	TW-5	tailwind-in-raw-class	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"p-4 bg-gray-100"' is not assignable to parameter of type '"p-4 bg-gray-100" & ["✗ 'p-4' is Tailwind class text: write it in .tw(\"…\"), which checks it" | "✗ 'bg-gray-100' is Tailwind class 					
+fluent-nine	TW-6	classes-as-text	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	HX-1	target-mismatch	tsc		red	-	ok	green	live	0	0	5: TS2345: Argument of type 'RenderTagged<Id<"project-status">>' is not assignable to parameter of type 'HTMX & { readonly render?: Id<"project-list"> | undefined; } & { readonly render?: Id<"project-status"> | undefined					
+fluent-nine	HX-2	wrong-answer	tsc		red	-	ok	green	live	0	0	3: TS2322: Type 'Tag & Rooted<"project-list">' is not assignable to type 'RootedView<"project-status">'.					
+fluent-nine	HX-3	422-no-region	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	HX-4	poll-never-stops	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	HX-5	raw-hx-attribute	runtime	throws	green	-	throws	-	-	0	0			fluent-html: addAttribute("hx-get") is refused; use an htmx verb (.nav/.submit/.fragment) or .setHtmx(route)			
+fluent-nine	HX-6	route-stance	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'RenderTagged<Id<"project-list">>' is not assignable to parameter of type 'PageRoute'.					
+fluent-nine	HX-7	raw-url	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '"/projects/rowz"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.					
+fluent-nine	HX-8	stale-region	nowhere		green	-	ok	green	live	0	0						counter=nowhere badge=nowhere flash=nowhere search=nowhere
+fluent-nine	HX-8.counter	stale-region: counter	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	HX-8.badge	stale-region: badge	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	HX-8.flash	stale-region: flash	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	HX-8.search	stale-region: search	nowhere		green	-	ok	green	live	0	0						
+fluent-nine	FORM-1	field-not-in-schema	tsc		red	-	ok	green	live	0	0	4: TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"status" | "name"'.					
+fluent-nine	XSS-1	unescaped-html	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type 'string & ["✗ Raw() takes a source literal or trustHtml(…), never a runtime string: text is escaped by default, Div(text)"]'.				attr-quotes	
+fluent-nine	XSS-2	js-url-link	runtime	throws	green	-	throws	-	-	0	0			fluent-html: externalUrl refused "javascript:alert(1)": http(s), mailto:, tel:, a same-origin path or a media data: URL only			
+fluent-nine	XSS-3	js-url-htmx	runtime	throws	green	-	throws	-	-	0	0			fluent-html: externalUrl refused "javascript:alert(1)": http(s), mailto:, tel:, a same-origin path or a media data: URL only			
+fluent-nine	XSS-4	hx-on-from-data	runtime	throws	green	-	throws	-	-	0	0			fluent-html: addAttribute("hx-on:click") is refused; use an htmx verb (.nav/.submit/.fragment) or .setHtmx(route)			
+fluent-nine	XSS-5	raw-interpolation	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type '`<strong>${string}</strong>` & ["✗ Raw() takes a source literal or trustHtml(…), never a template string: text is escaped by default, Div(text)				attr-quotes	
+fluent-nine	XSS-6	style-from-data	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type '`color: ${string}` & ["✗ setStyle takes literal CSS, not a template string; a runtime value goes through .setStyles({ prop: value }), which che				no-inline-style	
+fluent-nine	PURE-1	view-io	nowhere		green	-	ok	green	-	0	0						
+fluent-nine	PURE-2	forgotten-state	tsc		red	-	ok	green	live	0	0	3: TS2345: Argument of type '{ queued: () => Tag; running: () => Tag; done: () => Tag; }' is not assignable to parameter of type '{ queued: Thunk<View>; running: Thunk<View>; done: Thunk<View>; failed: Thunk<View>; } & N					

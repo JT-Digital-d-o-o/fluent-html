@@ -1,0 +1,10 @@
+control-r1: turns 32, output tokens 29618, $1.739, first tsc errors 6, tsc runs 6 (1 failed), library lookups 11, tools {'Bash': 19, 'Read': 2, 'Write': 10}
+control-r2: turns 38, output tokens 30041, $1.748, first tsc errors 18, tsc runs 4 (2 failed), library lookups 12, tools {'Bash': 22, 'Read': 2, 'Write': 11, 'Edit': 2}
+strict-tags-r1: turns 22, output tokens 20374, $1.051, first tsc errors 1, tsc runs 3 (1 failed), library lookups 5, tools {'Bash': 10, 'Write': 11}
+strict-tags-r2: turns 12, output tokens 24691, $1.082, first tsc errors 6, tsc runs 3 (1 failed), library lookups 4, tools {'Bash': 10, 'Read': 1}
+turns: worse run 22 against the control's better run 32: 31.25% under; the 25% line is 24.0
+turns: worse run 22 against the floor's better run 25: -12.0%; against its worse run 28: -21.4%
+tokens: worse run 24691 against the control's better run 29618: 16.64% under; the 25% line is 22213.5
+tokens: worse run 24691 against the floor's better run 18607: +32.7%; against its worse run 19632: +25.8%
+cost: four sessions $5.62; mean $1.066 against $1.744 (-38.8%); against the floor's $0.950: +12.3%
+means: turns 17.0 against 35.0; tokens 22532.5 against 29829.5

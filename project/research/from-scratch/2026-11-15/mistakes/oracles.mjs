@@ -38,6 +38,51 @@ const nestedInMarkup = (html, tag) => {
 };
 const hxUrls = (e) => attrs(e).filter((a) => /^hx-(get|post|put|patch|delete)$/.test(a.name)).map((a) => a.value);
 
+// HX-8. [page, the answer the client swaps]. Every region on the page whose id names a count, a badge or a flash must
+// be re-rendered by what the client swaps: a full navigation (`navigates`), the main swap (the answer's `target`, else
+// the control's own or inherited hx-target; hx-swap="none" swaps nothing unless a header named a target; with no
+// target, the control itself) when
+// the target holds the region on the page and the answer holds it too, a partial aimed at an element holding it, or
+// an hx-swap-oob element. The control is the page's hx-post (or put, patch, delete), else its live-search hx-get, else
+// a form under hx-boost, else any hx-get. Live when one such region is left as it was.
+const REGION = /(count|badge|flash)/;
+const idsUnder = (root) => new Set([attr(root, "id"), ...[...walk(root)].map(([e]) => attr(e, "id"))].filter(Boolean));
+const inherited = (e, anc, name) => attr(e, name) ?? [...anc].reverse().map((x) => attr(x, `${name}:inherited`)).find((v) => v !== undefined);
+function stale(a) {
+  if (a.length < 2) return null;
+  const page = els(a[0].html), ans = a.at(-1);
+  const regions = page.map(([e]) => attr(e, "id")).filter((id) => id && REGION.test(id));
+  if (!regions.length) return null;
+  if (ans.navigates) return false;
+  const verb = (e, re) => attrs(e).some((x) => re.test(x.name));
+  const boosted = ([e, anc]) => e.tagName === "form" && inherited(e, anc, "hx-boost") === "true";
+  const control =
+    page.find(([e]) => verb(e, /^hx-(post|put|patch|delete)$/)) ??
+    page.find(([e]) => verb(e, /^hx-get$/) && /input|search|change/.test(attr(e, "hx-trigger") ?? "")) ??
+    page.find((p) => boosted(p) && attr(p[0], "method") === "post") ?? page.find(boosted) ??
+    page.find(([e]) => verb(e, /^hx-get$/));
+  if (!control) return null;
+  const [ce, canc] = control;
+  const fresh = new Set();
+  const byId = (sel) => page.find(([e]) => attr(e, "id") === sel.replace(/^.*#/, ""))?.[0];
+  const cover = (holder, content) => { if (!holder) return; const want = idsUnder(holder); for (const id of content) if (want.has(id)) fresh.add(id); };
+  const swap = inherited(ce, canc, "hx-swap") ?? "";
+  const tsel = ans.target ?? inherited(ce, canc, "hx-target");
+  const answerEls = els(ans.html);
+  if (ans.target !== undefined || !/^none\b/.test(swap)) {
+    const main = new Set(answerEls.filter(([e, anc]) => !anc.some((x) => attr(x, "hx-swap-oob") !== undefined || x.tagName === "hx-partial")).map(([e]) => attr(e, "id")).filter(Boolean));
+    cover(!tsel || tsel === "this" ? ce : byId(tsel), main);
+  }
+  for (const [e] of answerEls) {
+    if ((e.tagName === "template" && attr(e, "type") === "partial") || e.tagName === "hx-partial") {
+      const content = e.content ? new Set([...walk(e.content)].map(([x]) => attr(x, "id")).filter(Boolean)) : idsUnder(e);
+      cover(byId(attr(e, "hx-target") ?? ""), content);
+    }
+    if (attr(e, "hx-swap-oob") !== undefined) for (const id of idsUnder(e)) fresh.add(id);
+  }
+  return regions.some((id) => !fresh.has(id));
+}
+
 export const ORACLES = {
   "NEST-1": (a) => any(a, (h) => els(h).some(([e, anc]) => e.tagName === "li" && !["ul", "ol", "menu"].includes(anc.at(-1)?.tagName))),
   // An HTML parser closes the outer <a>/<form> on the inner one, so these two read the markup as written.
@@ -83,8 +128,7 @@ export const ORACLES = {
     return urls.some((u) => /^\/projects\/rows(\?|$)/.test(u)) && (!attr(e, "hx-target") || /main/.test(attr(e, "hx-target")));
   })),
   "HX-7": (a) => any(a, (h) => h.includes("/projects/rowz")),
-  // [page, the answer to the delete]. An answer marked `navigates` is a full navigation (every region re-rendered).
-  "HX-8": (a) => !a.at(-1).navigates && !/id="[^"]*count/.test(a.at(-1).html) && /id="[^"]*count/.test(a[0].html),
+  "HX-8": (a) => stale(a),
   "FORM-1": (a) => any(a, (h) => els(h).some(([e]) => attr(e, "name") === "nmae")),
   "XSS-1": (a) => any(a, (h) => els(h).some(([e]) => attrs(e).some((x) => /^on/.test(x.name)))),
   "XSS-2": (a) => any(a, (h) => els(h).some(([e]) => e.tagName === "a" && /^\s*javascript:/i.test(attr(e, "href") ?? ""))),

@@ -1,0 +1,26 @@
+cbc          HX-8.full-layout.badge   nowhere            tsc green / check green / run ok / law green / oracle live
+cbc          HX-8.full-layout.counter runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+cbc          HX-8.full-layout.fire    nowhere            tsc green / check green / run ok / law green / oracle live
+cbc          HX-8.full-layout.flash   runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+cbc          HX-8.full-layout.search  runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+fh8          HX-8.full-layout.badge   runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+fh8          HX-8.full-layout.counter runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+fh8          HX-8.full-layout.flash   runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+fh8          HX-8.full-layout.oob     runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+fh8          HX-8.full-layout.search  runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+fluent-nine  HX-8.full-layout.badge   runtime  absorbed  tsc green / check - / run ok / law green / oracle not-live
+fluent-nine  HX-8.full-layout.counter runtime  absorbed  tsc green / check - / run ok / law green / oracle not-live
+fluent-nine  HX-8.full-layout.flash   runtime  absorbed  tsc green / check - / run ok / law green / oracle not-live
+fluent-nine  HX-8.full-layout.search  runtime  absorbed  tsc green / check - / run ok / law green / oracle not-live
+lean-tags    HX-8.full-layout.badge   runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+lean-tags    HX-8.full-layout.counter runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+lean-tags    HX-8.full-layout.flash   runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+lean-tags    HX-8.full-layout.search  runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+page-parts   HX-8.full-layout.badge   runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+page-parts   HX-8.full-layout.counter runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+page-parts   HX-8.full-layout.flash   runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+page-parts   HX-8.full-layout.oob     runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+page-parts   HX-8.full-layout.search  runtime  absorbed  tsc green / check green / run ok / law green / oracle not-live
+fh8          HX-8.rule.counter        tsc                tsc red / check green / run ok / law green / oracle live
+fh8          HX-8.rule.hatch          nowhere            tsc green / check green / run ok / law green / oracle live
+fh8          HX-8.rule.search         nowhere            tsc green / check green / run ok / law green / oracle live

@@ -1,0 +1,11 @@
+app	files	lines	route-files	ctrl-files	verb-calls	hatch-calls	Raw
+competify	121	16701	17	19	136	17	3
+studio	82	10434	11	14	87	16	0
+website-sales-funnel-automation-system	MISSING
+everyframe	105	15579	13	16	105	16	0
+everyframe-composer	526	118532	65	78	1053	61	3
+home-page	163	23757	29	28	157	18	11
+fluent-html-home-page	60	9214	8	10	65	18	3
+fl-um	67	6418	11	15	71	16	0
+gzs/stem-50	141	18003	25	29	146	20	0
+total	1265	218638	179	209	1820	182	20

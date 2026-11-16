@@ -1,0 +1,95 @@
+=== strict-tags-r1
+$ npx tsc --noEmit
+tsc_exit=0
+$ npx tsx src/render.ts
+wrote out/s1.html and out/s2.html (invalid submit → 422, valid submit → 303)
+(node:56125) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+render_exit=0
+rerender identical to session output
+$ html-validate -c .htmlvalidate.check.json out/s1.html
+hv_exit=0
+$ html-validate -c .htmlvalidate.check.json out/s2.html
+
+/private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-trial3/strict-tags-r1/out/s2.html
+  1:1210  error  <form> element must have a submit button  wcag/h32
+  1:7736  error  <form> element must have a submit button  wcag/h32
+
+✖ 2 problems (2 errors, 0 warnings)
+
+More information:
+  https://html-validate.org/rules/wcag/h32.html
+
+hv_exit=1
+=== strict-tags-r2
+$ npx tsc --noEmit
+tsc_exit=0
+$ npx tsx src/render.ts
+wrote out/s1.html and out/s2.html
+(node:56956) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+render_exit=0
+rerender identical to session output
+$ html-validate -c .htmlvalidate.check.json out/s1.html
+hv_exit=0
+$ html-validate -c .htmlvalidate.check.json out/s2.html
+hv_exit=0
+=== control-r1
+$ npx tsc --noEmit
+tsc_exit=0
+$ npx tsx src/render.ts
+wrote out/s1.html, out/s2.html
+(node:57387) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+render_exit=0
+rerender identical to session output
+$ html-validate -c .htmlvalidate.check.json out/s1.html
+
+/private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-trial3/control-r1/out/s1.html
+  14:68  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  37:68  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  59:68  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+
+✖ 3 problems (3 errors, 0 warnings)
+
+More information:
+  https://html-validate.org/rules/unique-landmark.html
+
+hv_exit=1
+$ html-validate -c .htmlvalidate.check.json out/s2.html
+hv_exit=0
+=== control-r2
+$ npx tsc --noEmit
+tsc_exit=0
+$ npx tsx src/render.ts
+wrote /private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-trial3/control-r2/out/s1.html (9651 bytes)
+wrote /private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-trial3/control-r2/out/s2.html (11703 bytes)
+(node:57814) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+render_exit=0
+rerender identical to session output
+$ html-validate -c .htmlvalidate.check.json out/s1.html
+
+/private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-trial3/control-r2/out/s1.html
+  15:117  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  35:117  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  55:115  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+
+✖ 3 problems (3 errors, 0 warnings)
+
+More information:
+  https://html-validate.org/rules/unique-landmark.html
+
+hv_exit=1
+$ html-validate -c .htmlvalidate.check.json out/s2.html
+
+/private/tmp/claude-501/-Users-tony-jt-digital-projects-template/d3781ff4-0ec4-4fcc-b36e-0e399263002b/scratchpad/fs-trial3/control-r2/out/s2.html
+  15:117  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  74:113  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+
+✖ 2 problems (2 errors, 0 warnings)
+
+More information:
+  https://html-validate.org/rules/unique-landmark.html
+
+hv_exit=1

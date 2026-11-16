@@ -1,0 +1,9 @@
+== strict-tags-r1.jsonl
+   src/render.ts(36,5): error TS2345: Argument of type 'FlowKid[]' is not assignable to parameter of type 'readonly ("✗ this may hold anything (a component whose children are plain FlowKid[] or PhrasingKid[]), so it cannot go inside <section>: type its children F
+== strict-tags-r2.jsonl
+   src/orders.ts(11,3): error TS2322: Type 'Cls<"bg-warning/10 text-warning">' is not assignable to type 'Cls<"">'.
+   src/orders.ts(12,3): error TS2322: Type 'Cls<"bg-primary/10 text-primary">' is not assignable to type 'Cls<"">'.
+   src/orders.ts(13,3): error TS2322: Type 'Cls<"bg-success/10 text-success">' is not assignable to type 'Cls<"">'.
+   src/orders.ts(14,3): error TS2322: Type 'Cls<"bg-surface-2 text-text-dim">' is not assignable to type 'Cls<"">'.
+   src/orders.ts(15,3): error TS2322: Type 'Cls<"bg-danger/10 text-danger">' is not assignable to type 'Cls<"">'.
+   src/settings.ts(25,72): error TS2353: Object literal may only specify known properties, and 'value' does not exist in type 'Cls<string> | Bound<Global & { type?: InputType | undefined; name?: string | undefined; value?: V; placeholder?: V; required?: B; disabl

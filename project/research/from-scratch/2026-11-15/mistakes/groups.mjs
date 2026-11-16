@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { KINDS } from "./kinds.mjs";
 const group = Object.fromEntries(KINDS.map((k) => [k[0], k[2]]));
 const arms = ["fh8", "page-parts", "lean-tags", "fluent-nine", "cbc"];
-const rows = Object.fromEntries(arms.map((a) => [a, readFileSync(new URL(`results/${a}.tsv`, import.meta.url), "utf8").trim().split("\n").slice(1).map((l) => l.split("\t"))]));
+const rows = Object.fromEntries(arms.map((a) => [a, readFileSync(new URL(`results/${a}.tsv`, import.meta.url), "utf8").trim().split("\n").slice(1).map((l) => l.split("\t")).filter((r) => group[r[1]])]));
 const before = (r) => r[3] === "tsc" || r[3] === "check";
 console.log(`| Group | Kinds | ${arms.join(" | ")} |\n|---|---|${arms.map(() => "---").join("|")}|`);
 for (const g of [...new Set(KINDS.map((k) => k[2])), "all"]) {

@@ -3,6 +3,9 @@
 //   node run.mjs clean                         G1: each arm's clean control through every rung (must be green)
 //   node run.mjs all [--arm a,b] [--only ID,…] [--jobs N]   seeds -> results/<arm>.tsv
 //   node run.mjs table                         results/*.tsv -> results/table.md
+//   node run.mjs twins [--arm a,b]             HX-8 under the house rule, not counted: seeds/HX-8/full-layout/ (the
+//                                              full-layout default, and probes) and seeds/HX-8/rule/ (the rule as a
+//                                              type over fluent-html 8's routes) -> results/hx8-full-layout.tsv
 // Rungs: tsc (the arm's type-check), check (the arm's own check command beyond tsc), runtime (the seed is run:
 // a throw, or an output the oracle finds neutralised), law (html-validate recommended on every answer).
 // A rung counts only on a line marked `// ✗` in the seed; a diagnostic elsewhere is a gate failure (stray).
@@ -10,7 +13,7 @@ import { execFile } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { KINDS } from "./kinds.mjs";
+import { KINDS, SPELLINGS } from "./kinds.mjs";
 import { LAW_RULES, ORACLES } from "./oracles.mjs";
 
 const M = dirname(fileURLToPath(import.meta.url));
@@ -99,8 +102,9 @@ async function rungs(arm, id, seedRel) {
     try { law = JSON.parse(hv.out || "[]").flatMap((f) => f.messages.filter((m) => m.severity === 2).map((m) => ({ line: m.line, rule: m.ruleId, text: `${m.ruleId}: ${m.message}` }))); } catch { law = [{ line: null, rule: "parse", text: `html-validate: ${hv.out.slice(0, 120)}` }]; }
     lawAll = law;
     // A law counts only through a rule that names this kind (LAW_RULES); the clean control counts every rule.
-    if (id !== "CLEAN") law = law.filter((m) => (LAW_RULES[id] ?? []).includes(m.rule));
-    oracle = ORACLES[id] ? ORACLES[id](res.answers) : null;
+    const base = id.split(".")[0];
+    if (id !== "CLEAN") law = law.filter((m) => (LAW_RULES[base] ?? []).includes(m.rule));
+    oracle = ORACLES[base] ? ORACLES[base](res.answers) : null;
   }
   const cell = tscHits.length ? "tsc" : chkHits.length ? "check" : !res.ok ? "runtime" : law.length ? "law" : oracle === false ? "runtime" : "nowhere";
   const how = cell === "runtime" ? (res.ok ? "absorbed" : "throws") : "";
@@ -122,8 +126,18 @@ async function pool(items, n, f) {
   return out;
 }
 
-const COLS = ["arm", "id", "kind", "cell", "how", "tsc", "check", "run", "law", "oracle", "tscStray", "checkStray", "tscFirst", "checkFirst", "runFirst", "lawFirst", "lawOther"];
+const COLS = ["arm", "id", "kind", "cell", "how", "tsc", "check", "run", "law", "oracle", "tscStray", "checkStray", "tscFirst", "checkFirst", "runFirst", "lawFirst", "lawOther", "spellings"];
 const kindOf = Object.fromEntries(KINDS.map((k) => [k[0], k[1]]));
+for (const [id, ss] of Object.entries(SPELLINGS)) for (const s of ss) kindOf[`${id}.${s}`] = `${kindOf[id]}: ${s}`;
+const RUNG = ["tsc", "check", "runtime", "law", "nowhere"];
+// The kind's row: its weakest spelling, with every spelling's cell listed.
+const weakest = (id, rows) => {
+  const w = rows.reduce((a, b) => (RUNG.indexOf(b.cell) > RUNG.indexOf(a.cell) ? b : a));
+  return { ...w, id, spellings: rows.map((r) => `${r.id.split(".")[1]}=${r.cell}${r.how ? `(${r.how})` : ""}`).join(" ") };
+};
+const seedsOf = (arm, id) => SPELLINGS[id]
+  ? SPELLINGS[id].filter((s) => existsSync(`${M}/seeds/${id}/${arm}.${s}.ts`)).map((s) => [`${id}.${s}`, `seeds/${id}/${arm}.${s}.ts`])
+  : existsSync(`${M}/seeds/${id}/${arm}.ts`) ? [[id, `seeds/${id}/${arm}.ts`]] : [];
 const tsv = (rows) => [COLS.join("\t"), ...rows.map((r) => COLS.map((c) => String(r[c] ?? (c === "kind" ? kindOf[r.id] ?? "control" : "")).replace(/[\t\n]/g, " ")).join("\t"))].join("\n") + "\n";
 const opt = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined; };
 const arms = opt("--arm")?.split(",") ?? Object.keys(ARMS);
@@ -151,12 +165,16 @@ if (cmd === "toml") {
   const ids = KINDS.map((k) => k[0]).filter((id) => !only || only.includes(id));
   mkdirSync(`${M}/results`, { recursive: true });
   await Promise.all(arms.map(async (arm) => {
-    const todo = ids.filter((id) => existsSync(`${M}/seeds/${id}/${arm}.ts`));
-    const rows = await pool(todo, jobs, (id) => rungs(arm, id, `seeds/${id}/${arm}.ts`));
+    const todo = ids.filter((id) => seedsOf(arm, id).length);
+    const flat = await pool(todo.flatMap((id) => seedsOf(arm, id)), jobs, ([sid, rel]) => rungs(arm, sid, rel));
+    const rows = todo.flatMap((id) => {
+      const mine = flat.filter((r) => r.id === id || r.id.startsWith(`${id}.`));
+      return SPELLINGS[id] ? [weakest(id, mine), ...mine] : mine;
+    });
     const na = ids.filter((id) => !todo.includes(id)).map((id) => ({ arm, id, cell: "n/a" }));
     const file = `${M}/results/${arm}.tsv`;
-    const keep = !only || !existsSync(file) ? [] : readFileSync(file, "utf8").trim().split("\n").slice(1).map((l) => Object.fromEntries(l.split("\t").map((v, i) => [COLS[i], v]))).filter((r) => !ids.includes(r.id));
-    const order = KINDS.map((k) => k[0]);
+    const keep = !only || !existsSync(file) ? [] : readFileSync(file, "utf8").trim().split("\n").slice(1).map((l) => Object.fromEntries(l.split("\t").map((v, i) => [COLS[i], v]))).filter((r) => !ids.includes(r.id.split(".")[0]));
+    const order = KINDS.flatMap((k) => [k[0], ...(SPELLINGS[k[0]] ?? []).map((s) => `${k[0]}.${s}`)]);
     const merged = [...keep, ...rows, ...na].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
     writeFileSync(file, tsv(merged));
     for (const r of rows) console.log(`${arm.padEnd(12)} ${r.id.padEnd(7)} ${r.cell.padEnd(8)} ${r.how.padEnd(11)} tsc ${r.tsc}${r.tscStray ? `(+${r.tscStray} stray)` : ""} / check ${r.check}${r.checkStray ? `(+${r.checkStray} stray)` : ""} / run ${r.run} / law ${r.law} / oracle ${r.oracle}`);
@@ -172,14 +190,23 @@ if (cmd === "toml") {
   const present = Object.keys(data);
   const cell = (r) => (!r ? "" : r.cell === "runtime" ? `runtime (${r.how})` : r.cell) + (r && ((Number(r.tscStray) && r.tsc !== "red") || (Number(r.checkStray) && r.check !== "red")) ? " !" : "");
   let md = `# Mistake suite: where each seed is caught\n\nGenerated by \`node run.mjs table\` from results/*.tsv. Do not edit.\n\n| Seed | Kind | ${present.map((a) => NAME[a]).join(" | ")} |\n|---|---|${present.map(() => "---").join("|")}|\n`;
-  for (const [id, kind] of KINDS) md += `| ${id} | ${kind} | ${present.map((a) => cell(data[a][id])).join(" | ")} |\n`;
+  for (const [id, kind] of KINDS) {
+    md += `| ${id} | ${kind} | ${present.map((a) => cell(data[a][id])).join(" | ")} |\n`;
+    for (const s of SPELLINGS[id] ?? []) md += `| ↳ ${s} | (not counted) | ${present.map((a) => cell(data[a][`${id}.${s}`])).join(" | ")} |\n`;
+  }
+  const counted = (a) => Object.values(data[a]).filter((r) => !r.id.includes("."));
   md += `\n| Count | ${present.map((a) => NAME[a]).join(" | ")} |\n|---|${present.map(() => "---").join("|")}|\n`;
-  for (const tag of ["tsc", "check", "runtime", "law", "nowhere", "n/a"]) md += `| ${tag} | ${present.map((a) => Object.values(data[a]).filter((r) => r.cell === tag).length).join(" | ")} |\n`;
-  md += `| before run (tsc + check) | ${present.map((a) => { const rs = Object.values(data[a]).filter((r) => r.cell !== "n/a"); const n = rs.filter((r) => r.cell === "tsc" || r.cell === "check").length; return `${n} of ${rs.length} (${Math.round((100 * n) / rs.length)}%)`; }).join(" | ")} |\n`;
-  md += `\n\`!\` marks a seed with a diagnostic off its \`// ✗\` line (a gate failure to fix before the number is read).\n`;
+  for (const tag of ["tsc", "check", "runtime", "law", "nowhere", "n/a"]) md += `| ${tag} | ${present.map((a) => counted(a).filter((r) => r.cell === tag).length).join(" | ")} |\n`;
+  md += `| before run (tsc + check) | ${present.map((a) => { const rs = counted(a).filter((r) => r.cell !== "n/a"); const n = rs.filter((r) => r.cell === "tsc" || r.cell === "check").length; return `${n} of ${rs.length} (${Math.round((100 * n) / rs.length)}%)`; }).join(" | ")} |\n`;
+  md += `\n\`!\` marks a seed with a diagnostic off its \`// ✗\` line (a gate failure to fix before the number is read).\nA kind written more than one way (\`↳\` rows) counts once, as its weakest spelling.\n`;
   writeFileSync(`${M}/results/table.md`, md);
   console.log(md);
+} else if (cmd === "twins") {
+  const files = ["full-layout", "rule"].flatMap((d) => readdirSync(`${M}/seeds/HX-8/${d}`).filter((f) => f.endsWith(".ts") && arms.includes(f.split(".")[0])).sort().map((f) => [d, f]));
+  const rows = await pool(files, jobs, ([d, f]) => rungs(f.split(".")[0], `HX-8.${d}.${f.split(".")[1]}`, `seeds/HX-8/${d}/${f}`));
+  writeFileSync(`${M}/results/hx8-full-layout.tsv`, tsv(rows));
+  for (const r of rows) console.log(`${r.arm.padEnd(12)} ${r.id.padEnd(24)} ${r.cell.padEnd(8)} ${r.how.padEnd(9)} tsc ${r.tsc}${r.tscStray ? `(+${r.tscStray} stray: ${r.tscFirst})` : ""} / check ${r.check}${r.checkStray ? `(+${r.checkStray} stray: ${r.checkFirst})` : ""} / run ${r.run}${r.runFirst ? ` (${r.runFirst})` : ""} / law ${r.law}${r.lawOther ? ` [${r.lawOther}]` : ""} / oracle ${r.oracle}`);
 } else {
-  console.error("usage: node run.mjs toml | clean | all [--arm a,b] [--only ID,…] [--jobs N] | table");
+  console.error("usage: node run.mjs toml | clean | all [--arm a,b] [--only ID,…] [--jobs N] | table | twins [--arm a,b]");
   process.exit(2);
 }

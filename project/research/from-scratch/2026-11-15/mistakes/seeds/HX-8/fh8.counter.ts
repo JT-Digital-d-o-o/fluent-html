@@ -1,5 +1,5 @@
-// HX-8 fluent-nine: A delete swaps only the list region, so the project count elsewhere on the page goes stale.
-import { Button, Layout, ProjectList, Span, defineRoutes, fragment, html, ids } from "../../arms/fluent-nine/app.ts";
+// HX-8 fh8, counter: A delete swaps only the list region, so the project count elsewhere on the page goes stale.
+import { Button, Layout, ProjectList, Span, defineRoutes, fragment, html, ids } from "../../arms/fh8/app.ts";
 const routes = defineRoutes("/projects", {
   remove: { method: "post", path: "/:id/delete", params: { id: "number" } as const, render: ids.projectList }, // ✗
 } as const);

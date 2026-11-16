@@ -1,0 +1,24 @@
+Version 5.9.3 tsconfig.json errors=0
+Version 7.0.2 tsconfig.json errors=0
+Version 5.9.3 probes/tsconfig.json errors=0
+Version 7.0.2 probes/tsconfig.json errors=0
+Version 5.9.3 probes/tsconfig.reference.json errors=0
+Version 7.0.2 probes/tsconfig.reference.json errors=0
+Version 5.9.3 probes/tsconfig.mistakes.json errors=81
+Version 7.0.2 probes/tsconfig.mistakes.json errors=81
+Version 5.9.3 probes/tsconfig.components.json errors=4
+Version 7.0.2 probes/tsconfig.components.json errors=4
+Version 5.9.3 probes/tsconfig.helpers.json errors=3
+Version 7.0.2 probes/tsconfig.helpers.json errors=3
+mistake probe: positions 5.9.3=81 7.0.2=81 differing=0
+mistake probe: first line carries the fix (✗) 5.9.3=56 7.0.2=56
+mistake probe: positions whose error code differs=5
+Version 5.9.3 stress 2000 errors=0 wall 1.82 s
+Version 5.9.3 stress 2000 errors=0 wall 1.82 s
+Version 5.9.3 stress 2000 errors=0 wall 1.88 s
+Version 7.0.2 stress 2000 errors=0 wall 0.81 s
+Version 7.0.2 stress 2000 errors=0 wall 0.83 s
+Version 7.0.2 stress 2000 errors=0 wall 0.8 s
+Version 5.9.3 house-rule probe errors=6 (6 seeded)
+Version 7.0.2 house-rule probe errors=6 (6 seeded)
+ 9:52  up 24 days, 10:44, 6 users, load averages: 18.72 55.66 65.51

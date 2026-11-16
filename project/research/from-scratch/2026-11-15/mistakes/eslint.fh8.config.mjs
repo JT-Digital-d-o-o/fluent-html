@@ -6,8 +6,8 @@ import fluentHtml from "/Users/tony/jt-digital/fluent-html-eslint-plugin/dist/in
 const recommended = fluentHtml.configs.recommended.rules;
 export default [
   {
-    files: ["**/fh8.ts", "arms/fh8/*.ts"],
-    languageOptions: { parser, parserOptions: { ecmaVersion: 2022, sourceType: "module", projectService: { allowDefaultProject: ["seeds/*/fh8.ts", "arms/fh8/*.ts"], maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 200 }, tsconfigRootDir: import.meta.dirname } },
+    files: ["**/fh8.ts", "**/fh8.*.ts", "arms/fh8/*.ts"],
+    languageOptions: { parser, parserOptions: { ecmaVersion: 2022, sourceType: "module", projectService: { allowDefaultProject: ["seeds/*/fh8.ts", "seeds/*/fh8.*.ts", "seeds/*/*/fh8.*.ts", "arms/fh8/*.ts"], maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 200 }, tsconfigRootDir: import.meta.dirname } },
     plugins: { "fluent-html": fluentHtml },
     rules: {
       ...recommended,

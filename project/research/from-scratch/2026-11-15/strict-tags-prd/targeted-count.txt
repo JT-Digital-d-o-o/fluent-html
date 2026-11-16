@@ -1,0 +1,10 @@
+app	fragment-routes	of-which-mutations	fragment()	search()	onChange()	poll()	defer()	fire()	Partial(
+competify	5	5	13	0	4	2	0	1	2
+studio	1	0	4	0	3	4	0	3	1
+everyframe	2	1	5	0	3	2	0	3	1
+everyframe-composer	379	118	413	16	29	43	14	12	135
+home-page	25	14	18	0	5	3	9	1	1
+fluent-html-home-page	0	0	5	0	2	3	0	2	1
+fl-um	4	0	7	0	2	3	0	1	1
+gzs/stem-50	15	5	19	0	4	2	0	1	9
+total	431	143	484	16	52	62	23	24	151

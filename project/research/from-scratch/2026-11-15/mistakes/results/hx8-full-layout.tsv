@@ -1,0 +1,27 @@
+arm	id	kind	cell	how	tsc	check	run	law	oracle	tscStray	checkStray	tscFirst	checkFirst	runFirst	lawFirst	lawOther	spellings
+cbc	HX-8.full-layout.badge	control	nowhere		green	green	ok	green	live	0	0						
+cbc	HX-8.full-layout.counter	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+cbc	HX-8.full-layout.fire	control	nowhere		green	green	ok	green	live	0	0						
+cbc	HX-8.full-layout.flash	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+cbc	HX-8.full-layout.search	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+fh8	HX-8.full-layout.badge	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+fh8	HX-8.full-layout.counter	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+fh8	HX-8.full-layout.flash	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+fh8	HX-8.full-layout.oob	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+fh8	HX-8.full-layout.search	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+fluent-nine	HX-8.full-layout.badge	control	runtime	absorbed	green	-	ok	green	not-live	0	0						
+fluent-nine	HX-8.full-layout.counter	control	runtime	absorbed	green	-	ok	green	not-live	0	0						
+fluent-nine	HX-8.full-layout.flash	control	runtime	absorbed	green	-	ok	green	not-live	0	0						
+fluent-nine	HX-8.full-layout.search	control	runtime	absorbed	green	-	ok	green	not-live	0	0						
+lean-tags	HX-8.full-layout.badge	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+lean-tags	HX-8.full-layout.counter	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+lean-tags	HX-8.full-layout.flash	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+lean-tags	HX-8.full-layout.search	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	HX-8.full-layout.badge	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	HX-8.full-layout.counter	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	HX-8.full-layout.flash	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	HX-8.full-layout.oob	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	HX-8.full-layout.search	control	runtime	absorbed	green	green	ok	green	not-live	0	0						
+fh8	HX-8.rule.counter	control	tsc		red	green	ok	green	live	0	0	5: TS2322: Type 'Id<"project-list">' is not assignable to type 'Id<"project-list"> & "✗ a mutation answers the page: drop render, and the full layout re-renders every region"'.					
+fh8	HX-8.rule.hatch	control	nowhere		green	green	ok	green	live	0	0						
+fh8	HX-8.rule.search	control	nowhere		green	green	ok	green	live	0	0						

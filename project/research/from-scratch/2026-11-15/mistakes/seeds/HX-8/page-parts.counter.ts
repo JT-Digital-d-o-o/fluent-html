@@ -1,4 +1,4 @@
-// HX-8 page-parts: A delete swaps only the list region, so the project count elsewhere on the page goes stale.
+// HX-8 page-parts, counter: A delete swaps only the list region, so the project count elsewhere on the page goes stale.
 import { Li, Page, Span, Ul, page, refresh, serve, htmx } from "../../arms/page-parts/app.ts";
 const names = ["Apollo", "Borealis"];
 export const seed = page("/seed", { load: () => names });

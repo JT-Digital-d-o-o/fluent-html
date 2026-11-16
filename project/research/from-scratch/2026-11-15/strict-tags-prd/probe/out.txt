@@ -1,0 +1,15 @@
+house-rule.ts(57,62): error TS2339: Property 'q' does not exist on type 'Omit<In<{ readonly q: "string?"; readonly sort: "string?"; }>, "q">'.
+house-rule.ts(68,23): error TS2322: Type 'Promise<El<"status">>' is not assignable to type 'El<"rows"> | Promise<El<"rows">>'.
+  Type 'Promise<El<"status">>' is not assignable to type 'Promise<El<"rows">>'.
+    Type 'El<"status">' is not assignable to type 'El<"rows">'.
+      Type '"status"' is not assignable to type '"rows"'.
+house-rule.ts(69,25): error TS2322: Type 'Promise<El<"status">>' is not assignable to type 'Done | Again<"status"> | Promise<Done | Again<"status">>'.
+  Type 'Promise<El<"status">>' is not assignable to type 'Promise<Done | Again<"status">>'.
+    Type 'El<"status">' is not assignable to type 'Done | Again<"status">'.
+house-rule.ts(74,18): error TS2322: Type '{ reason: "poll"; every: "2s"; }' is not assignable to type 'Part'.
+  Property 'max' is missing in type '{ reason: "poll"; every: "2s"; }' but required in type 'Poll'.
+house-rule.ts(75,26): error TS2322: Type '"sort"' is not assignable to type '"search" | "poll" | "defer"'.
+house-rule.ts(76,32): error TS2322: Type '{ reason: "search"; owns: ["term"]; }' is not assignable to type '{ readonly reason: "search"; readonly owns: readonly ["term"]; } & "✗ a search part owns keys of its page's query"'.
+  Type '{ reason: "search"; owns: ["term"]; }' is not assignable to type '"✗ a search part owns keys of its page's query"'.
+tsc_exit=2
+seeded=6 error_lines=6 missed= stray=

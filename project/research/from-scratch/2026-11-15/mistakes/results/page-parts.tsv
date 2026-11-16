@@ -1,35 +1,39 @@
-arm	id	kind	cell	how	tsc	check	run	law	oracle	tscStray	checkStray	tscFirst	checkFirst	runFirst	lawFirst	lawOther
-page-parts	NEST-1	nest-li	law		green	green	ok	red	live	0	0				1: element-permitted-content: <li> element is not permitted as content under <div>	
-page-parts	NEST-2	nest-link	law		green	green	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <a>	
-page-parts	NEST-3	nest-form	law		green	green	ok	red	live	0	0				1: element-permitted-content: <form> element is not permitted as a descendant of <form>	
-page-parts	NEST-4	nest-button	law		green	green	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <button>	
-page-parts	A11Y-1	no-label	nowhere		green	green	ok	green	live	0	0					
-page-parts	A11Y-2	no-alt	tsc		red	green	ok	red	live	0	0	4: TS2345: Argument of type '{ src: Href; }' is not assignable to parameter of type 'ImgAttrs'.			1: wcag/h37: <img> is missing required "alt" attribute	
-page-parts	A11Y-3	button-no-name	law		green	green	ok	red	live	0	0				1: text-content: <button> must have accessible text	
-page-parts	ATTR-1	bad-attribute-value	tsc		red	green	ok	red	live	0	0	4: TS2345: Argument of type '{ type: "txt"; "aria-label": string; }' is not assignable to parameter of type 'Child | InputAttrs'.			1: attribute-allowed-values: Attribute "type" has invalid value "txt"	
-page-parts	BTN-1	button-implicit-submit	runtime	absorbed	green	green	ok	green	not-live	0	0					
-page-parts	ID-1	duplicate-id	law		green	green	ok	red	live	0	0				1: no-dup-id: Duplicate ID "project-count"	
-page-parts	ID-2	derived-id-repeat	law		green	green	ok	red	live	0	0				1: no-dup-id: Duplicate ID "seed-create"	
-page-parts	TW-1	unknown-class	check		green	red	ok	green	live	0	0		4: "justify-centre": not a class in this theme			
-page-parts	TW-2	palette-colour	check		green	red	ok	green	live	0	0		4: "bg-gray-100": "gray-100" is a palette colour and the theme closed the palette; its colours are: black, primary, primary-700, on-accent, surface, surface-2, line, text, text-dim, info, success, danger			
-page-parts	TW-3	unknown-variant	check		green	red	ok	green	live	0	0		4: "hovr:bg-surface-2": the variant "hovr:" does not exist			
-page-parts	TW-4	dynamic-class	check		green	red	ok	green	live	0	0		4: "bg-": not a class in this theme			
-page-parts	TW-5	tailwind-in-raw-class	n/a													
-page-parts	TW-6	classes-as-text	nowhere		green	green	ok	green	live	0	0					
-page-parts	HX-1	target-mismatch	runtime	absorbed	green	green	ok	green	not-live	0	0					
-page-parts	HX-2	wrong-answer	runtime	absorbed	green	green	ok	green	not-live	0	0					
-page-parts	HX-3	422-no-region	tsc		red	green	ok	green	not-live	0	0	4: TS2322: Type 'Invalid<{ name: unknown; }>' is not assignable to type 'Result | Promise<Result>'.				
-page-parts	HX-4	poll-never-stops	nowhere		green	green	ok	green	live	0	0					
-page-parts	HX-5	raw-hx-attribute	tsc		red	green	throws	-	-	0	0	4: TS2353: Object literal may only specify known properties, and '"hx-get"' does not exist in type 'View | readonly Child[] | Global'.		"hx-get": htmx attributes come from a part (region, form, action) or hx()		
-page-parts	HX-6	route-stance	tsc		red	green	throws	-	-	0	0	4: TS2740: Type 'RegionPart<{}, { q?: string | undefined; }, Project[]>' is missing the following properties from type 'PagePart<unknown, unknown, any>': path, owned, url, region, and 3 more.		Cannot read properties of undefined (reading 'includes')		
-page-parts	HX-7	raw-url	nowhere		green	green	ok	green	live	0	0					
-page-parts	HX-8	stale-region	nowhere		green	green	ok	green	live	0	0					
-page-parts	FORM-1	field-not-in-schema	tsc		red	green	throws	-	-	0	0	5: TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"name"'.		Cannot read properties of undefined (reading 'type')		
-page-parts	XSS-1	unescaped-html	tsc		red	green	ok	green	live	0	0	4: TS2345: Argument of type 'string' is not assignable to parameter of type 'TrustedHtml'.				attr-quotes
-page-parts	XSS-2	js-url-link	runtime	absorbed	green	green	ok	green	not-live	0	0					
-page-parts	XSS-3	js-url-htmx	runtime	throws	green	green	throws	-	-	0	0			local(): "javascript:alert(1)" is not a same-origin path (it must start with one "/")		
-page-parts	XSS-4	hx-on-from-data	tsc		red	green	throws	-	-	0	0	4: TS2353: Object literal may only specify known properties, and '"hx-on:click"' does not exist in type 'View | readonly Child[] | ButtonAttrs'.		"hx-on:click": htmx attributes come from a part (region, form, action) or hx()		
-page-parts	XSS-5	raw-interpolation	tsc		red	green	ok	green	not-live	0	0	4: TS2554: Expected 1 arguments, but got 2.				
-page-parts	XSS-6	style-from-data	tsc		red	green	throws	-	-	0	0	4: TS2345: Argument of type '{ style: string; }' is not assignable to parameter of type 'Child | Global'.		style: "0" is not a CSS property name		
-page-parts	PURE-1	view-io	nowhere		green	green	ok	green	-	0	0					
-page-parts	PURE-2	forgotten-state	tsc		red	green	ok	green	live	0	0	5: TS2339: Property 'failed' does not exist on type '{ queued: string; running: string; done: string; }'.				
+arm	id	kind	cell	how	tsc	check	run	law	oracle	tscStray	checkStray	tscFirst	checkFirst	runFirst	lawFirst	lawOther	spellings
+page-parts	NEST-1	nest-li	law		green	green	ok	red	live	0	0				1: element-permitted-content: <li> element is not permitted as content under <div>		
+page-parts	NEST-2	nest-link	law		green	green	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <a>		
+page-parts	NEST-3	nest-form	law		green	green	ok	red	live	0	0				1: element-permitted-content: <form> element is not permitted as a descendant of <form>		
+page-parts	NEST-4	nest-button	law		green	green	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <button>		
+page-parts	A11Y-1	no-label	nowhere		green	green	ok	green	live	0	0						
+page-parts	A11Y-2	no-alt	tsc		red	green	ok	red	live	0	0	4: TS2345: Argument of type '{ src: Href; }' is not assignable to parameter of type 'ImgAttrs'.			1: wcag/h37: <img> is missing required "alt" attribute		
+page-parts	A11Y-3	button-no-name	law		green	green	ok	red	live	0	0				1: text-content: <button> must have accessible text		
+page-parts	ATTR-1	bad-attribute-value	tsc		red	green	ok	red	live	0	0	4: TS2345: Argument of type '{ type: "txt"; "aria-label": string; }' is not assignable to parameter of type 'Child | InputAttrs'.			1: attribute-allowed-values: Attribute "type" has invalid value "txt"		
+page-parts	BTN-1	button-implicit-submit	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	ID-1	duplicate-id	law		green	green	ok	red	live	0	0				1: no-dup-id: Duplicate ID "project-count"		
+page-parts	ID-2	derived-id-repeat	law		green	green	ok	red	live	0	0				1: no-dup-id: Duplicate ID "seed-create"		
+page-parts	TW-1	unknown-class	check		green	red	ok	green	live	0	0		4: "justify-centre": not a class in this theme				
+page-parts	TW-2	palette-colour	check		green	red	ok	green	live	0	0		4: "bg-gray-100": "gray-100" is a palette colour and the theme closed the palette; its colours are: black, primary, primary-700, on-accent, surface, surface-2, line, text, text-dim, info, success, danger				
+page-parts	TW-3	unknown-variant	check		green	red	ok	green	live	0	0		4: "hovr:bg-surface-2": the variant "hovr:" does not exist				
+page-parts	TW-4	dynamic-class	check		green	red	ok	green	live	0	0		4: "bg-": not a class in this theme				
+page-parts	TW-5	tailwind-in-raw-class	n/a														
+page-parts	TW-6	classes-as-text	nowhere		green	green	ok	green	live	0	0						
+page-parts	HX-1	target-mismatch	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	HX-2	wrong-answer	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	HX-3	422-no-region	tsc		red	green	ok	green	not-live	0	0	4: TS2322: Type 'Invalid<{ name: unknown; }>' is not assignable to type 'Result | Promise<Result>'.					
+page-parts	HX-4	poll-never-stops	nowhere		green	green	ok	green	live	0	0						
+page-parts	HX-5	raw-hx-attribute	tsc		red	green	throws	-	-	0	0	4: TS2353: Object literal may only specify known properties, and '"hx-get"' does not exist in type 'View | readonly Child[] | Global'.		"hx-get": htmx attributes come from a part (region, form, action) or hx()			
+page-parts	HX-6	route-stance	tsc		red	green	throws	-	-	0	0	4: TS2740: Type 'RegionPart<{}, { q?: string | undefined; }, Project[]>' is missing the following properties from type 'PagePart<unknown, unknown, any>': path, owned, url, region, and 3 more.		Cannot read properties of undefined (reading 'includes')			
+page-parts	HX-7	raw-url	nowhere		green	green	ok	green	live	0	0						
+page-parts	HX-8	stale-region	nowhere		green	green	ok	green	live	0	0						counter=nowhere badge=nowhere flash=nowhere search=nowhere
+page-parts	HX-8.counter	stale-region: counter	nowhere		green	green	ok	green	live	0	0						
+page-parts	HX-8.badge	stale-region: badge	nowhere		green	green	ok	green	live	0	0						
+page-parts	HX-8.flash	stale-region: flash	nowhere		green	green	ok	green	live	0	0						
+page-parts	HX-8.search	stale-region: search	nowhere		green	green	ok	green	live	0	0						
+page-parts	FORM-1	field-not-in-schema	tsc		red	green	throws	-	-	0	0	5: TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"name"'.		Cannot read properties of undefined (reading 'type')			
+page-parts	XSS-1	unescaped-html	tsc		red	green	ok	green	live	0	0	4: TS2345: Argument of type 'string' is not assignable to parameter of type 'TrustedHtml'.				attr-quotes	
+page-parts	XSS-2	js-url-link	runtime	absorbed	green	green	ok	green	not-live	0	0						
+page-parts	XSS-3	js-url-htmx	runtime	throws	green	green	throws	-	-	0	0			local(): "javascript:alert(1)" is not a same-origin path (it must start with one "/")			
+page-parts	XSS-4	hx-on-from-data	tsc		red	green	throws	-	-	0	0	4: TS2353: Object literal may only specify known properties, and '"hx-on:click"' does not exist in type 'View | readonly Child[] | ButtonAttrs'.		"hx-on:click": htmx attributes come from a part (region, form, action) or hx()			
+page-parts	XSS-5	raw-interpolation	tsc		red	green	ok	green	not-live	0	0	4: TS2554: Expected 1 arguments, but got 2.					
+page-parts	XSS-6	style-from-data	tsc		red	green	throws	-	-	0	0	4: TS2345: Argument of type '{ style: string; }' is not assignable to parameter of type 'Child | Global'.		style: "0" is not a CSS property name			
+page-parts	PURE-1	view-io	nowhere		green	green	ok	green	-	0	0						
+page-parts	PURE-2	forgotten-state	tsc		red	green	ok	green	live	0	0	5: TS2339: Property 'failed' does not exist on type '{ queued: string; running: string; done: string; }'.					

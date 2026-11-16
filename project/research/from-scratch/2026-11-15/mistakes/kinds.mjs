@@ -25,7 +25,7 @@ export const KINDS = [
   ["HX-5", "raw-hx-attribute", "htmx", "task", "An hx-get attribute is written by hand, with a mistyped path."],
   ["HX-6", "route-stance", "htmx", "verdict: safety parity P5", "A link navigates to a fragment route as if it answered a page."],
   ["HX-7", "raw-url", "htmx", "verdict: safety parity P6", "An htmx request is given a hand-written URL string, with a mistyped path."],
-  ["HX-8", "stale-region", "htmx", "todo: the region left stale by a targeted swap", "A delete swaps only the list region, so the project count elsewhere on the page goes stale."],
+  ["HX-8", "stale-region", "htmx", "todo: the region left stale by a targeted swap", "A targeted answer leaves a region elsewhere on the page stale: a count, a nav badge, a flash after a delete, or a result count after a live search."],
   ["FORM-1", "field-not-in-schema", "forms", "task", "A form field is named nmae, which the schema does not have."],
   ["XSS-1", "unescaped-html", "security", "task; verdict: safety parity P7", "HTML from data goes through the raw-markup sink."],
   ["XSS-2", "js-url-link", "security", "task", "A link's href is a javascript: URL from data."],
@@ -36,3 +36,7 @@ export const KINDS = [
   ["PURE-1", "view-io", "purity", "task", "A view reads a file while it renders."],
   ["PURE-2", "forgotten-state", "purity", "task", "A lookup over the job union leaves out failed."],
 ];
+
+// A kind written more than one way: seeds/<ID>/<arm>.<spelling>.ts, one result row each (<ID>.<spelling>). The kind's
+// own row is its weakest spelling (tsc < check < runtime < law < nowhere), and only that row counts in the shares.
+export const SPELLINGS = { "HX-8": ["counter", "badge", "flash", "search"] };
