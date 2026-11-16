@@ -1,0 +1,14 @@
+Version 5.9.3: spellings 8, error lines 1 (the control is line 7)
+forge.ts(7,50): error TS2345: Argument of type 'El<"phrasing", MarksOf<"button", readonly ["New"]>, undefined>' is not assignable to parameter of type '"✗ <button> cann
+Version 6.0.3: spellings 8, error lines 1 (the control is line 7)
+forge.ts(7,50): error TS2345: Argument of type 'El<"phrasing", MarksOf<"button", readonly ["New"]>, undefined>' is not assignable to parameter of type '"✗ <button> cann
+Version 7.0.2: spellings 8, error lines 1 (the control is line 7)
+forge.ts(7,50): error TS2345: Argument of type 'El<"phrasing", MarksOf<"button", readonly ["New"]>, undefined>' is not assignable to parameter of type '"✗ <button> cann
+f9 <button type="button">Projects <button type="button">New</button></button>
+f10 <button type="button">Projects <button type="button">New</button></button>
+f11 throws: strict-tags: refused attribute name "$s"
+f12 throws: ambient is not defined
+f13 <button type="button">Projects <button type="button">New</button></button>
+f14 <button type="button">Projects <button type="button">New</button></button>
+f15 <button type="button">Projects <button type="button">New</button></button>
+f16 <iframe title="x" srcdoc="&lt;script&gt;alert(1)&lt;/script&gt;" sandbox=""></iframe>

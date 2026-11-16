@@ -1,0 +1,24 @@
+tsc 5.9.3: seeded 4, missed [], also refused [], valid.ts errors 0
+tsc 6.0.3: seeded 4, missed [], also refused [], valid.ts errors 0
+tsc 7.0.2: seeded 4, missed [], also refused [], valid.ts errors 0
+eslint: seeded 7, missed [], valid.ts reports 0
+forge.ts:10:29: @typescript-eslint/no-unsafe-argument: Unsafe argument of type error typed assigned to a parameter of type `ClsC | Kid<never>`.
+forge.ts:10:29: @typescript-eslint/no-unsafe-call: Unsafe construction of a type that could not be resolved.
+forge.ts:11:29: @typescript-eslint/consistent-type-assertions: Do not use any type assertions.
+forge.ts:11:29: @typescript-eslint/consistent-type-assertions: Do not use any type assertions.
+forge.ts:12:29: @typescript-eslint/no-unsafe-argument: Unsafe argument of type `any` assigned to a parameter of type `ClsC | Kid<never>`.
+forge.ts:13:29: @typescript-eslint/no-unsafe-argument: Unsafe argument of type `any` assigned to a parameter of type `ClsC | Kid<never>`.
+forge.ts:13:29: @typescript-eslint/consistent-type-assertions: Do not use any type assertions.
+forge.ts:13:39: @typescript-eslint/no-explicit-any: Unexpected any. Specify a different type.
+forge.ts:14:29: @typescript-eslint/no-unsafe-argument: Unsafe argument of type error typed assigned to a parameter of type `ClsC | Kid<never>`.
+forge.ts:14:29: @typescript-eslint/no-unsafe-call: Unsafe construction of a type that could not be resolved.
+forge.ts:15:1: @typescript-eslint/ban-ts-comment: Do not use "@ts-expect-error" because it alters compilation errors.
+forge.ts:17:26: no-restricted-syntax: strict file: no type predicate. A predicate can claim a brand its value does not have; put domain predicates in 
+forge.ts:19:1: no-restricted-syntax: strict file: no overload signature and no ambient function. A signature can claim a brand its body does not make
+forge.ts:24:1: no-restricted-syntax: strict file: no ambient value. A declaration can claim a brand nothing made
+open (pass tsc and eslint): lines 27 29 31 35 37 
+s13 <button>Projects <button>New</button></button>
+s14 <button>Projects <button>New</button></button>
+s15 <button>Projects <button>New</button></button>
+s17 <div>x&#34; onmouseover=&#34;alert(1)x</div>
+s18 <div>&#60;img src=x onerror=alert(1)&#62;</div>

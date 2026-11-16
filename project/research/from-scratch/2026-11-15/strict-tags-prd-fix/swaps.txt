@@ -1,0 +1,17 @@
+verb	get fragment	mutation fragment	get page	mutation page	get none	mutation none	unresolved	total
+fragment	71	271	3	3	0	0	113	461
+search	5	1	23	1	0	0	15	45
+onChange	0	0	13	15	0	0	16	44
+poll	34	0	3	0	0	0	9	46
+defer	19	0	0	0	0	0	2	21
+fire	0	7	0	0	0	6	3	16
+
+app	fragment:mutation	search:mutation	onChange:mutation	poll:mutation	defer:mutation	fire:mutation	onChange:get fragment
+competify	3	0	0	0	0	0	0
+studio	0	0	0	0	0	1	0
+everyframe	1	0	0	0	0	1	0
+everyframe-composer	248	2	14	0	0	11	0
+home-page	7	0	0	0	0	0	0
+fluent-html-home-page	0	0	0	0	0	0	0
+fl-um	3	0	1	0	0	0	0
+gzs/stem-50	12	0	0	0	0	0	0

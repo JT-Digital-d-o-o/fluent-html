@@ -1,0 +1,5 @@
+Version 5.9.3: spellings 8, error lines 0, compile 8
+Version 7.0.2: spellings 8, error lines 0, compile 8
+<div><img src=x onerror=alert(1)></div>
+<div class="x" onmouseover="alert(1)">x</div>
+<a href="#blocked">x</a>

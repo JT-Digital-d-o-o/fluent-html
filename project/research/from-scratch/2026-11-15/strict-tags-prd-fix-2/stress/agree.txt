@@ -1,0 +1,12 @@
+5.9.3	elements 2000: strict / fh8	2.81	2.37	apart 19%
+5.9.3	elements 11330: strict / fh8	6.03	4.05	apart 49%
+5.9.3	routes: (composer - one page) / fh8 2000	0.61	0.77	apart 25%
+5.9.3	library alone / fh8 2000	0.86	0.99	apart 15%
+6.0.3	elements 2000: strict / fh8	3.67	3.09	apart 19%
+6.0.3	elements 11330: strict / fh8	4.78	5.22	apart 9%
+6.0.3	routes: (composer - one page) / fh8 2000	0.95	0.99	apart 4%
+6.0.3	library alone / fh8 2000	1.31	1.32	apart 1%
+7.0.2	elements 2000: strict / fh8	4.48	3.65	apart 23%
+7.0.2	elements 11330: strict / fh8	8.69	7.37	apart 18%
+7.0.2	routes: (composer - one page) / fh8 2000	0.81	0.79	apart 4%
+7.0.2	library alone / fh8 2000	1.30	1.11	apart 17%

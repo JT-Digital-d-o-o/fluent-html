@@ -1,0 +1,10 @@
+mutation fragments	fragment routes	route file	view files	view lines
+56	72	src/app/apps/composer/studio/studio.routes.ts	27	10678
+30	36	src/app/apps/composer/projects/projects.routes.ts	11	5450
+27	55	src/app/apps/agent/agent.routes.ts	92	20299
+21	25	src/app/apps/cut/cut.routes.ts	20	5735
+21	22	src/app/apps/composer/experiments/experiments.routes.ts	7	2115
+20	24	src/app/media/library/library.routes.ts	15	6412
+19	19	src/app/media/captions/captions.routes.ts	4	3066
+9	10	src/app/people/admin/admin.routes.ts	14	2163
+total	272	379	files 65

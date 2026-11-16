@@ -1,0 +1,8 @@
+fl-um	files=65	predicates=1	overloads=0	ambient values=1	module augmentations (not banned)=5
+fluent-html-home-page	files=58	predicates=7	overloads=0	ambient values=3	module augmentations (not banned)=5
+studio	files=80	predicates=7	overloads=0	ambient values=3	module augmentations (not banned)=5
+everyframe	files=103	predicates=7	overloads=0	ambient values=3	module augmentations (not banned)=5
+competify	files=118	predicates=7	overloads=0	ambient values=3	module augmentations (not banned)=6
+gzs/stem-50	files=138	predicates=1	overloads=0	ambient values=4	module augmentations (not banned)=5
+home-page	files=159	predicates=5	overloads=0	ambient values=4	module augmentations (not banned)=6
+everyframe-composer	files=519	predicates=20	overloads=0	ambient values=3	module augmentations (not banned)=6

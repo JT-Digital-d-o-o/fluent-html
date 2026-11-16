@@ -1,0 +1,8 @@
+tsconfig.json errors: 5.9.3=0 6.0.3=0 7.0.2=0
+probes/tsconfig.json errors: 5.9.3=0 6.0.3=0 7.0.2=0
+probes/tsconfig.reference.json errors: 5.9.3=0 6.0.3=0 7.0.2=0
+probes/tsconfig.mistakes.json errors: 5.9.3=81 6.0.3=81 7.0.2=81
+probes/tsconfig.components.json errors: 5.9.3=4 6.0.3=4 7.0.2=4
+probes/tsconfig.helpers.json errors: 5.9.3=3 6.0.3=3 7.0.2=3
+mistake probe positions: 5.9.3=81 6.0.3=81 7.0.2=81; 6.0.3 differs from 5.9.3 at 0, with another code at 0; 7.0.2 differs from 6.0.3 at 0
+first line carries the fix: 5.9.3=56 6.0.3=56 7.0.2=56
