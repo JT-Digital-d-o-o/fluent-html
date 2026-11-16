@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-surface: #ffffff;
+  --color-surface-2: #f4f4f5;
+  --color-line: #e4e4e7;
+  --color-text-dim: #71717a;
+  --color-primary: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-on-accent: #ffffff;
+  --color-danger: #dc2626;
+  --color-danger-700: #b91c1c;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-overlay: #000000;
+  --radius-card: 1rem;
+  --radius-control: 0.5rem;
+}

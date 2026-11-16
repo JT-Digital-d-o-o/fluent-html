@@ -1,0 +1,6 @@
+id = "BTN-1"
+kind = "button-implicit-submit"
+group = "html"
+source = "verdict: harvest 1 (all 12 bench-page K4 errors)"
+mistake = "A Cancel button inside a form has no type, so it submits the form."
+oracle = "oracles.mjs BTN-1"

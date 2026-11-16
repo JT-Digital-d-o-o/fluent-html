@@ -1,0 +1,6 @@
+id = "A11Y-3"
+kind = "button-no-name"
+group = "html"
+source = "task"
+mistake = "An icon button has no text and no accessible name."
+oracle = "oracles.mjs A11Y-3"

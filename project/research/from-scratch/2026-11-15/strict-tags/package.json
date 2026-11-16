@@ -1,0 +1,9 @@
+{
+  "name": "strict-tags-prototype",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#st": "./lib/index.ts",
+    "#zod": "./support/zod.ts"
+  }
+}

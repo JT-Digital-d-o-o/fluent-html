@@ -1,0 +1,9 @@
+bench-page.document.html errors=0
+bench-page.fragment.html errors=0
+r1-list.html errors=0
+r1-rows-empty.fragment.html errors=0
+r2-invalid.fragment.html errors=0
+r2-new.html errors=0
+r3-detail.html errors=0
+r3-status-done.fragment.html errors=0
+three-states.html errors=0

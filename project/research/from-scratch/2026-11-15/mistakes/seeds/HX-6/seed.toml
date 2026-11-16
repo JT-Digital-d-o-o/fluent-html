@@ -1,0 +1,6 @@
+id = "HX-6"
+kind = "route-stance"
+group = "htmx"
+source = "verdict: safety parity P5"
+mistake = "A link navigates to a fragment route as if it answered a page."
+oracle = "oracles.mjs HX-6"

@@ -1,0 +1,6 @@
+id = "FORM-1"
+kind = "field-not-in-schema"
+group = "forms"
+source = "task"
+mistake = "A form field is named nmae, which the schema does not have."
+oracle = "oracles.mjs FORM-1"

@@ -1,0 +1,6 @@
+id = "ID-2"
+kind = "derived-id-repeat"
+group = "html"
+source = "verdict: harvest 8 (18 library-written duplicate ids in Lean Tags)"
+mistake = "One form is rendered twice on one page, so the ids the library derives repeat."
+oracle = "oracles.mjs ID-2"

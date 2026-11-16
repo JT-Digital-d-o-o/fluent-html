@@ -1,0 +1,6 @@
+id = "TW-6"
+kind = "classes-as-text"
+group = "tailwind"
+source = "verdict: harvest 9 (Lean Tags check)"
+mistake = "Class text is passed where a child goes, so it renders as visible text."
+oracle = "oracles.mjs TW-6"

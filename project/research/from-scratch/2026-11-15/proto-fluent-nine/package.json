@@ -1,0 +1,24 @@
+{
+  "name": "proto-fluent-nine",
+  "private": true,
+  "type": "module",
+  "description": "Fluent Nine: fluent-html 8.1.0 with the fluent-nine design's changes (research only).",
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "@types/node": "24.10.1",
+    "html-validate": "11.17.0",
+    "parse5": "7.3.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "build": "node tools/gen-grammar.mjs && tsc -p pkg/tsconfig.json",
+    "check": "tsc -p tsconfig.json && tsc -p bench/tsconfig.json && tsc -p probes/tsconfig.json",
+    "test": "node --test test/*.test.ts",
+    "bench": "NODE_ENV=production node --expose-gc ../fixtures/bench/harness.mjs --rounds 11 --sample-ms 300 ../fixtures/bench/arms/fluent-html-8.mjs bench/arm.ts",
+    "xss": "NODE_ENV=production node ../fixtures/xss/check.mjs xss/adapter.mjs",
+    "validate": "node bench/write-output.ts && node tools/render-screens.ts && html-validate -c .htmlvalidate.json out/bench/fh9.fragment.html out/bench/fh9.document.html out/screens/*.html",
+    "parity": "node tools/parity.mjs",
+    "grammar": "node tools/grammar-corpus.mjs out/grammar-corpus"
+  }
+}

@@ -1,0 +1,6 @@
+id = "HX-1"
+kind = "target-mismatch"
+group = "htmx"
+source = "task; verdict: safety parity P4"
+mistake = "A request to the status fragment route is aimed at the list region."
+oracle = "oracles.mjs HX-1"

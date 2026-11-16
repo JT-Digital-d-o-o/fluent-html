@@ -1,0 +1,24 @@
+== fh8
+exit 0
+== fluent-nine
+exit 0
+== cbc
+cbc.ts(3,47): error TS2322: Type 'string' is not assignable to type 'PageRef | PartRef<any, any> | Local | undefined'.
+cbc.ts(4,47): error TS2322: Type 'string' is not assignable to type 'PageRef | PartRef<any, any> | Local | undefined'.
+cbc.ts(4,74): error TS2322: Type '"#project-rows"' is not assignable to type 'PartRef<any, any> | "this" | undefined'.
+exit 2
+== page-parts
+page-parts.ts(3,46): error TS2322: Type 'string' is not assignable to type 'Href'.
+exit 2
+== render fh8
+{"ok":true,"answers":[{"status":200,"html":"<button type=\"button\" hx-get=\"/projects/rowz\">Load</button>"},{"status":200,"html":"<button type=\"button\" hx-get=\"/projects/7/status\" hx-target=\"#project-list\">Refresh</button>"},{"status":200,"html":"<button type=\"button\" hx-get=\"/projects/7/status\" hx-target=\"#project-list\">Refresh</button>"}]}
+== render fluent-nine
+{"ok":true,"answers":[{"status":200,"html":"<button type=\"button\" hx-get=\"/projects/rowz\">Load</button>"},{"status":200,"html":"<button type=\"button\" hx-get=\"/projects/7/status\" hx-target=\"#project-list\">Refresh</button>"},{"status":200,"html":"<button type=\"button\" hx-get=\"/projects/7/status\" hx-target=\"#project-list\">Refresh</button>"}]}
+== eslint fh8
+
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/mistakes/seeds/ZZ-GATE/fh8.ts
+  5:124  error  Avoid hardcoded target: "#project-list". Use defineIds() for type-safe targets (e.g. ids.projectList)  fluent-html/no-raw-ids
+
+✖ 1 problem (1 error, 0 warnings)
+
+exit 1

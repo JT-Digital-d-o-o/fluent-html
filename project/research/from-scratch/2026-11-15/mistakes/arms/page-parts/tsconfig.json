@@ -1,0 +1,1 @@
+{ "extends": "../tsconfig.base.json", "compilerOptions": { "types": ["node"], "typeRoots": ["../../../proto-page-parts/node_modules/@types"], "noUncheckedIndexedAccess": true, "erasableSyntaxOnly": true }, "files": ["clean.ts"] }

@@ -1,0 +1,6 @@
+id = "XSS-4"
+kind = "hx-on-from-data"
+group = "security"
+source = "task"
+mistake = "An hx-on handler's code comes from data."
+oracle = "oracles.mjs XSS-4"

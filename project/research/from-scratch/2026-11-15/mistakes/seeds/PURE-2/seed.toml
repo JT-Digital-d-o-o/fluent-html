@@ -1,0 +1,6 @@
+id = "PURE-2"
+kind = "forgotten-state"
+group = "purity"
+source = "task"
+mistake = "A lookup over the job union leaves out failed."
+oracle = "oracles.mjs PURE-2"

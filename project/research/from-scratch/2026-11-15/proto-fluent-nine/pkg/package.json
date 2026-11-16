@@ -1,0 +1,62 @@
+{
+  "name": "fluent-html",
+  "version": "9.0.0-proto",
+  "description": "fluent-html 9 prototype: 8.1.0 with the Fluent Nine changes (research only)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "default": "./dist/core/index.js"
+    },
+    "./elements": {
+      "types": "./dist/elements/index.d.ts",
+      "default": "./dist/elements/index.js"
+    },
+    "./control": {
+      "types": "./dist/control/index.d.ts",
+      "default": "./dist/control/index.js"
+    },
+    "./render": {
+      "types": "./dist/render/index.d.ts",
+      "default": "./dist/render/index.js"
+    },
+    "./ids": {
+      "types": "./dist/ids.d.ts",
+      "default": "./dist/ids.js"
+    },
+    "./routes": {
+      "types": "./dist/routes.d.ts",
+      "default": "./dist/routes.js"
+    },
+    "./htmx": {
+      "types": "./dist/htmx.d.ts",
+      "default": "./dist/htmx.js"
+    },
+    "./behaviors": {
+      "types": "./dist/behaviors/index.d.ts",
+      "default": "./dist/behaviors/index.js"
+    },
+    "./package.json": "./package.json",
+    "./verbs": {
+      "types": "./dist/verbs.d.ts",
+      "default": "./dist/verbs.js"
+    }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "REFERENCE.md"
+  ],
+  "sideEffects": [
+    "./dist/core/register.js",
+    "./dist/core/tw.js",
+    "./dist/core/htmx-methods.js",
+    "./dist/behaviors/emit.js",
+    "./dist/core/overlay.js",
+    "./dist/verbs.js"
+  ]
+}

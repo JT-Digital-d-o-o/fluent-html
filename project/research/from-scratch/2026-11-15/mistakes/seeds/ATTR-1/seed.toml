@@ -1,0 +1,6 @@
+id = "ATTR-1"
+kind = "bad-attribute-value"
+group = "html"
+source = "verdict: safety parity P8"
+mistake = "An input's type is a value HTML does not have (txt)."
+oracle = "oracles.mjs ATTR-1"

@@ -1,0 +1,3 @@
+bytes 8416 fluent-html 8 8248 fluent-html 8 equals expected.fh8.html: true
+same as fluent-html 8 ignoring whitespace and the default type="button": true
+rendered 6 files

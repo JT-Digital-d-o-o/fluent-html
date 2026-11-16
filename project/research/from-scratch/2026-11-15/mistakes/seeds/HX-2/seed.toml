@@ -1,0 +1,6 @@
+id = "HX-2"
+kind = "wrong-answer"
+group = "htmx"
+source = "task"
+mistake = "The status fragment route answers with the list region."
+oracle = "oracles.mjs HX-2"

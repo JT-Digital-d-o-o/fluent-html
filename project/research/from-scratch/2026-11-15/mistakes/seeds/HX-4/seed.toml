@@ -1,0 +1,6 @@
+id = "HX-4"
+kind = "poll-never-stops"
+group = "htmx"
+source = "task"
+mistake = "The status region polls in every state, the finished one included."
+oracle = "oracles.mjs HX-4"

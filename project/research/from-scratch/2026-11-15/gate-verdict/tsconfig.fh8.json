@@ -1,0 +1,1 @@
+{ "extends": "../mistakes/arms/fh8/tsconfig.json", "files": ["fh8.ts"] }

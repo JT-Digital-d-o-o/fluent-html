@@ -1,0 +1,6 @@
+id = "ID-1"
+kind = "duplicate-id"
+group = "html"
+source = "task"
+mistake = "Two elements on one page are given the same id."
+oracle = "oracles.mjs ID-1"

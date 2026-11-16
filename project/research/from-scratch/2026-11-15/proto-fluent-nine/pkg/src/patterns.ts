@@ -1,0 +1,411 @@
+// ------------------------------------
+// Common UI Patterns for Fluent HTML
+// ------------------------------------
+//
+// This module provides reusable component patterns and layout helpers
+// built on top of the core fluent-html API.
+
+import { Tag } from "./core/tag.js";
+import type { View } from "./core/types.js";
+import type { BooleanAttribute } from "./elements/html-types.js";
+import type { HxSwap, HxSwapStyle, HxTarget } from "./htmx.js";
+import type { Id, Rooted } from "./ids.js";
+import { isId } from "./ids.js";
+import { render } from "./render/render.js";
+
+// HTTP header values must be Latin-1 — Node's setHeader throws ERR_INVALID_CHAR on
+// any character above U+00FF (routine in non-English detail payloads: š, č, emoji,
+// typographic quotes). Library-built header JSON (HX-Trigger / HX-Location) escapes
+// those as \uXXXX; htmx parses the header with JSON.parse, which decodes them transparently.
+function toHeaderSafeJson(value: unknown): string {
+  return JSON.stringify(value).replace(/[\u007f-\uffff]/g, (c) =>
+    "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"),
+  );
+}
+
+// ------------------------------------
+// HTMX Partial Helpers (htmx 4)
+// ------------------------------------
+
+/**
+ * Create a `<template hx type="partial">` element for multi-swap responses.
+ *
+ * Each partial independently declares its target and swap strategy.
+ * This replaces OOB swaps with a cleaner, more explicit pattern.
+ *
+ * htmx 4 scans a response with `root.querySelectorAll("template[hx]")` and routes
+ * each hit on its `type` attribute (`type="partial"` → target + swap spec, content
+ * taken from the template's parsed `content` fragment). The **bare `hx` marker is
+ * what makes the element visible to that scan** — an element htmx never looks for
+ * (the pre-4 `<hx-partial>` shape) is silently inert in the browser.
+ *
+ * When the target is (or contains) a self-polling element (`trigger: "every …"`),
+ * pass `"outerHTML"` — the default morph preserves settled poller nodes and their
+ * `every` timers, resurrecting a poll that a plain replace would have stopped.
+ *
+ * Given a typed `Id`, the returned envelope is `Rooted<N>`: the partial's target IS the
+ * region this response updates, so it satisfies a consumer asking for "a view rooted at
+ * #N" (`reply.renderFragment(ids.x, Partial(ids.x, …))`). That is the runtime's own
+ * model, not a convenient fiction — htmx resolves a partial's destination as
+ * `hx-target` **or else the template's own `id`**, i.e. target and root id are one slot;
+ * and a response body consisting only of partials performs no main swap at all (htmx
+ * removes each `template[hx]` while collecting it, then skips the main swap when what
+ * remains is empty and at least one partial was found). So the id a `Partial` names is
+ * exactly, and only, what the response changes.
+ *
+ * A raw selector target stays unbranded — `".items"` or `"closest tr"` names a region
+ * no `Id` witnesses, so there is nothing to prove.
+ *
+ * @param target - CSS selector string or Id object
+ * @param content - Content to swap in
+ * @param swap - Swap strategy (default: "outerMorph")
+ * @returns Tag rendering as `<template hx type="partial" hx-target=… hx-swap=…>`,
+ *          branded `Rooted<N>` when `target` is a typed `Id`
+ *
+ * @example
+ * render(
+ *   Partial(ids.userList, UserList(users)),
+ *   Partial(ids.userCount, Span(`${users.length} users`)),
+ * )
+ * // <template type="partial" hx-target="#user-list" hx-swap="outerMorph" hx>…</template>
+ */
+export function Partial<const N extends string>(
+  target: Id<N>,
+  content: View,
+  swap?: HxSwap
+): Tag & Rooted<N>;
+export function Partial(
+  target: HxTarget,
+  content: View,
+  swap?: HxSwap
+): Tag;
+export function Partial(
+  target: HxTarget | Id,
+  content: View,
+  swap: HxSwap = "outerMorph"
+): Tag {
+  // Resolve an Id to its selector; pass any explicit CSS selector through verbatim
+  // (HxTarget legitimately includes class/closest/find/attribute selectors — a partial
+  // takes any selector). Only a bare id token (`user-list`) gets the `#` convenience;
+  // never a value containing '.', a space, or a combinator/pseudo character, which the
+  // old `#${target}` blanket-prefix corrupted (e.g. `.items` → `#.items`).
+  const selector = isId(target) ? target.selector :
+    /^[A-Za-z][\w-]*$/.test(target) ? `#${target}` : target;
+  return new Tag("template", content)
+    .addAttribute("type", "partial")
+    ._attr("hx-target", selector)
+    ._attr("hx-swap", swap)
+    // htmx's marker attribute is valueless. `BooleanAttribute` is the HTML boolean
+    // list, which this is not a member of — the cast is contained to this one site,
+    // and the serializer validates the name before emitting it bare.
+    .toggle("hx" as BooleanAttribute);
+}
+
+// ------------------------------------
+// HTMX Global Config Helper (htmx 4)
+// ------------------------------------
+
+/**
+ * Type-safe global htmx configuration via `<meta>` tag.
+ *
+ * In htmx 4, extensions and global settings are configured through
+ * `<meta name="htmx-config">` instead of per-element attributes.
+ *
+ * @param config - Global htmx configuration
+ * @returns Meta tag with htmx-config
+ *
+ * @example
+ * Head(
+ *   HtmxConfig({
+ *     extensions: "sse, preload",
+ *     transitions: true,
+ *     defaultSwap: "outerMorph",
+ *   }),
+ *   Script().setSrc("/htmx.js"),
+ * )
+ */
+export type HtmxGlobalConfig = {
+  extensions?: string;
+  transitions?: boolean;
+  defaultSwap?: HxSwapStyle;
+  defaultTimeout?: number;
+  implicitInheritance?: boolean;
+  noSwap?: (number | string)[];
+  prefix?: string;
+  metaCharacter?: string;
+  inlineScriptNonce?: string;
+  inlineStyleNonce?: string;
+  mode?: string;
+  history?: boolean;
+  logAll?: boolean;
+};
+
+export function HtmxConfig(config: HtmxGlobalConfig): Tag {
+  return new Tag("meta")
+    .addAttribute("name", "htmx-config")
+    .addAttribute("content", JSON.stringify(config));
+}
+
+// ------------------------------------
+// HTMX Response Helpers
+// ------------------------------------
+
+/**
+ * Location header configuration for HX-Location
+ */
+export interface HxLocationConfig {
+  path: string;
+  target?: string;
+  swap?: HxSwapStyle;
+  select?: string;
+  source?: string;
+  event?: string;
+  handler?: string;
+  values?: Record<string, unknown>;
+  headers?: Record<string, string>;
+}
+
+/**
+ * Result from building an HxResponse
+ */
+export interface HxResponseResult {
+  html: string;
+  headers: Record<string, string>;
+}
+
+/**
+ * Builder for HTMX responses with response headers.
+ *
+ * HTMX responses can include special headers that control client-side behavior
+ * like triggering events, redirecting, updating the URL, etc.
+ *
+ * @example
+ * // Express.js example
+ * app.post('/api/items', (req, res) => {
+ *   const response = hxResponse(Div("Item created!"))
+ *     .trigger("itemCreated")
+ *     .pushUrl("/items/123")
+ *     .build();
+ *
+ *   Object.entries(response.headers).forEach(([key, value]) => {
+ *     res.setHeader(key, value);
+ *   });
+ *   res.send(response.html);
+ * });
+ */
+export class HxResponse {
+  private _content: View;
+  private _headers: Record<string, string> = {};
+  private _triggers: Map<string, Record<string, unknown> | null> = new Map();
+
+  constructor(content: View) {
+    this._content = content;
+  }
+
+  /**
+   * Trigger a client-side event after the response is processed. Repeatable — events
+   * accumulate in order and serialize once at `build()`/`getHeaders()`.
+   *
+   * @param event - Event name to trigger
+   * @param detail - Optional event detail data
+   *
+   * @example
+   * hxResponse(content).trigger("itemAdded")
+   * hxResponse(content).trigger("showMessage", { text: "Saved!", type: "success" })
+   */
+  trigger(event: string, detail?: Record<string, unknown>): this {
+    // A later detail upgrades a bare event; a bare call never clobbers an existing detail.
+    this._triggers.set(event, detail ?? this._triggers.get(event) ?? null);
+    return this;
+  }
+
+  /** Comma-joined event names when all are bare, else the JSON object form htmx accepts. */
+  private serializeTriggers(): string | undefined {
+    if (this._triggers.size === 0) return undefined;
+    let allBare = true;
+    for (const v of this._triggers.values()) if (v !== null) { allBare = false; break; }
+    if (allBare) return [...this._triggers.keys()].join(", ");
+    const obj: Record<string, unknown> = {};
+    for (const [k, v] of this._triggers) obj[k] = v ?? {};
+    return toHeaderSafeJson(obj);
+  }
+
+  /**
+   * Push a URL onto the browser history stack.
+   *
+   * @param url - URL to push (use "false" to prevent any push)
+   *
+   * @example
+   * hxResponse(content).pushUrl("/items/123")
+   */
+  pushUrl(url: string): this {
+    this._headers["HX-Push-Url"] = url;
+    return this;
+  }
+
+  /**
+   * Replace the current URL in the browser history.
+   *
+   * @param url - URL to replace with (use "false" to prevent)
+   */
+  replaceUrl(url: string): this {
+    this._headers["HX-Replace-Url"] = url;
+    return this;
+  }
+
+  /**
+   * Redirect the browser to a new URL.
+   *
+   * @param url - URL to redirect to
+   *
+   * @example
+   * hxResponse(Empty()).redirect("/login")
+   */
+  redirect(url: string): this {
+    this._headers["HX-Redirect"] = url;
+    return this;
+  }
+
+  /**
+   * Refresh the current page.
+   */
+  refresh(): this {
+    this._headers["HX-Refresh"] = "true";
+    return this;
+  }
+
+  /**
+   * Override the target element for the swap.
+   *
+   * @param selector - CSS selector for the new target
+   */
+  retarget(selector: string): this {
+    this._headers["HX-Retarget"] = selector;
+    return this;
+  }
+
+  /**
+   * Override the swap strategy.
+   *
+   * @param strategy - New swap strategy
+   */
+  reswap(strategy: HxSwapStyle | string): this {
+    this._headers["HX-Reswap"] = strategy;
+    return this;
+  }
+
+  /**
+   * Override the content selection from the response.
+   *
+   * @param selector - CSS selector to select content
+   */
+  reselect(selector: string): this {
+    this._headers["HX-Reselect"] = selector;
+    return this;
+  }
+
+  /**
+   * Navigate to a URL with HTMX (AJAX-style navigation).
+   *
+   * @param config - URL string or location configuration object
+   *
+   * @example
+   * // Simple navigation
+   * hxResponse(Empty()).location("/dashboard")
+   *
+   * // With options
+   * hxResponse(Empty()).location({
+   *   path: "/dashboard",
+   *   target: "#main",
+   *   swap: "innerHTML"
+   * })
+   */
+  location(config: string | HxLocationConfig): this {
+    if (typeof config === 'string') {
+      this._headers["HX-Location"] = config;
+    } else {
+      this._headers["HX-Location"] = toHeaderSafeJson(config);
+    }
+    return this;
+  }
+
+  /**
+   * Build the final response with rendered HTML and headers.
+   *
+   * @returns Object with html string and headers object
+   *
+   * @example
+   * const { html, headers } = hxResponse(content)
+   *   .trigger("saved")
+   *   .pushUrl("/items/123")
+   *   .build();
+   */
+  build(): HxResponseResult {
+    return {
+      html: render(this._content),
+      headers: this.getHeaders(),
+    };
+  }
+
+  /**
+   * Get just the headers without rendering.
+   * Useful when you want to render the content separately.
+   */
+  getHeaders(): Record<string, string> {
+    const headers = { ...this._headers };
+    const triggers = this.serializeTriggers();
+    if (triggers !== undefined) headers["HX-Trigger"] = triggers;
+    return headers;
+  }
+}
+
+/**
+ * Create an HTMX response builder with headers.
+ *
+ * This helper makes it easy to build HTMX responses with the appropriate
+ * response headers for client-side behavior like triggering events,
+ * URL manipulation, redirects, etc.
+ *
+ * @param content - The HTML content to render
+ * @returns HxResponse builder
+ *
+ * @example
+ * // Basic usage - trigger an event after update
+ * const response = hxResponse(
+ *   Div("Item saved successfully!")
+ * )
+ *   .trigger("itemSaved")
+ *   .build();
+ *
+ * @example
+ * // Complex response with multiple headers
+ * const response = hxResponse(
+ *   Div([
+ *     H2("Order #123"),
+ *     P("Your order has been placed.")
+ *   ])
+ * )
+ *   .trigger("orderPlaced", { orderId: 123 })
+ *   .pushUrl("/orders/123")
+ *   .build();
+ *
+ * @example
+ * // Redirect after action
+ * const response = hxResponse(Empty())
+ *   .redirect("/login?expired=true")
+ *   .build();
+ *
+ * @example
+ * // Express.js integration
+ * app.post('/api/task', (req, res) => {
+ *   const { html, headers } = hxResponse(Div("Done!"))
+ *     .trigger("taskCompleted")
+ *     .build();
+ *
+ *   res.set(headers);
+ *   res.send(html);
+ * });
+ */
+export function hxResponse(content: View): HxResponse {
+  return new HxResponse(content);
+}

@@ -1,0 +1,13 @@
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:12:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:17:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:22:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:27:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:32:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:37:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:42:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:47:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:52:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:57:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:62:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-fluent-nine/out/bench/fh8.fragment.html:67:2: error [no-implicit-button-type] <button> is missing recommended "type" attribute
+exit=1

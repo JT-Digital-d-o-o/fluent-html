@@ -1,0 +1,23 @@
+arm | turns | msg ids | tokens | cost
+control | 44 / 39 | 33 / 33 | 31813 / 34628 | 1.871 / 1.938
+lean-tags | 20 / 19 | 15 / 16 | 21689 / 17994 | 0.946 / 0.857
+page-parts | 21 / 20 | 17 / 17 | 25799 / 27882 | 1.256 / 1.263
+correct-by-construction | 19 / 19 | 15 / 17 | 22531 / 21916 | 1.093 / 1.065
+fluent-nine | 28 / 25 | 19 / 21 | 18607 / 19632 | 0.946 / 0.954
+page-parts-ref-only | 11 / 23 | 11 / 17 | 34089 / 29572 | 1.342 / 1.312
+
+against control (mean; worse run against control's better run; better run against control's worse run)
+lean-tags | turns -53.0% / -48.7% / -56.8% | ids -53.0% / -51.5% / -54.5% | tokens -40.3% / -31.8% / -48.0% | cost -52.7% / -49.5% / -55.8%
+page-parts | turns -50.6% / -46.2% / -54.5% | ids -48.5% / -48.5% / -48.5% | tokens -19.2% / -12.4% / -25.5% | cost -33.8% / -32.5% / -35.2%
+correct-by-construction | turns -54.2% / -51.3% / -56.8% | ids -51.5% / -48.5% / -54.5% | tokens -33.1% / -29.2% / -36.7% | cost -43.3% / -41.6% / -45.0%
+fluent-nine | turns -36.1% / -28.2% / -43.2% | ids -39.4% / -36.4% / -42.4% | tokens -42.4% / -38.3% / -46.3% | cost -50.1% / -49.0% / -51.2%
+page-parts-ref-only | turns -59.0% / -41.0% / -75.0% | ids -57.6% / -48.5% / -66.7% | tokens -4.2% / +7.2% / -14.6% | cost -30.3% / -28.3% / -32.3%
+
+against fluent-nine (mean; worse run against fluent-nine's better run; better run against fluent-nine's worse run)
+control | turns +56.6% / +76.0% / +39.3% | ids +65.0% / +73.7% / +57.1% | tokens +73.8% / +86.1% / +62.0% | cost +100.5% / +104.9% / +96.1%
+lean-tags | turns -26.4% / -20.0% / -32.1% | ids -22.5% / -15.8% / -28.6% | tokens +3.8% / +16.6% / -8.3% | cost -5.1% / -0.0% / -10.1%
+page-parts | turns -22.6% / -16.0% / -28.6% | ids -15.0% / -10.5% / -19.0% | tokens +40.4% / +49.8% / +31.4% | cost +32.6% / +33.6% / +31.7%
+correct-by-construction | turns -28.3% / -24.0% / -32.1% | ids -20.0% / -10.5% / -28.6% | tokens +16.2% / +21.1% / +11.6% | cost +13.6% / +15.5% / +11.6%
+page-parts-ref-only | turns -35.8% / -8.0% / -60.7% | ids -30.0% / -10.5% / -47.6% | tokens +66.5% / +83.2% / +50.6% | cost +39.7% / +41.9% / +37.5%
+
+sessions 12, spend $14.842 (gate round $6.712)

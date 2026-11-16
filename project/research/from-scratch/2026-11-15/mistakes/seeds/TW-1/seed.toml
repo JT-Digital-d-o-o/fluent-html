@@ -1,0 +1,6 @@
+id = "TW-1"
+kind = "unknown-class"
+group = "tailwind"
+source = "task"
+mistake = "A class Tailwind does not have (justify-centre)."
+oracle = "oracles.mjs TW-1"

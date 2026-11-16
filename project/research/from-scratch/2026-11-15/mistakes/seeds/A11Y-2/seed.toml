@@ -1,0 +1,6 @@
+id = "A11Y-2"
+kind = "no-alt"
+group = "html"
+source = "task"
+mistake = "An image is rendered with no alt text."
+oracle = "oracles.mjs A11Y-2"

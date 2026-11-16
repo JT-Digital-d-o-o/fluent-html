@@ -1,0 +1,6 @@
+id = "TW-4"
+kind = "dynamic-class"
+group = "tailwind"
+source = "task"
+mistake = "A class built from data at run time (bg-${tone}/20)."
+oracle = "oracles.mjs TW-4"

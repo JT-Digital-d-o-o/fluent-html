@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "typeRoots": ["/Users/tony/jt-digital/fluent-html/node_modules/@types"]
+  },
+  "include": ["lib/*.ts", "support/*.ts", "screens/**/*.ts"]
+}

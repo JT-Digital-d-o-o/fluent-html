@@ -1,0 +1,6 @@
+id = "TW-2"
+kind = "palette-colour"
+group = "tailwind"
+source = "task"
+mistake = "A default-palette colour the theme closed (bg-gray-100)."
+oracle = "oracles.mjs TW-2"

@@ -1,0 +1,14 @@
+
+/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/strict-tags-review/port-r1/out/s1.html
+  1:1091  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  1:1214  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  1:3669  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  1:3792  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  1:6601  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+  1:6891  error  Landmarks must have a non-empty and unique accessible name (aria-label or aria-labelledby)  unique-landmark
+
+✖ 6 problems (6 errors, 0 warnings)
+
+More information:
+  https://html-validate.org/rules/unique-landmark.html
+

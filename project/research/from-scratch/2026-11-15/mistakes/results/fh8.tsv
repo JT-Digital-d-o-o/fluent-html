@@ -1,0 +1,35 @@
+arm	id	kind	cell	how	tsc	check	run	law	oracle	tscStray	checkStray	tscFirst	checkFirst	runFirst	lawFirst	lawOther
+fh8	NEST-1	nest-li	law		green	green	ok	red	live	0	0				1: element-permitted-content: <li> element is not permitted as content under <div>	
+fh8	NEST-2	nest-link	law		green	green	ok	red	live	0	0				2: element-permitted-content: <a> element is not permitted as a descendant of <a>	no-trailing-whitespace
+fh8	NEST-3	nest-form	law		green	green	ok	red	live	0	0				6: element-permitted-content: <form> element is not permitted as a descendant of <form>	no-dup-id
+fh8	NEST-4	nest-button	law		green	green	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <button>	
+fh8	A11Y-1	no-label	nowhere		green	green	ok	green	live	0	0					
+fh8	A11Y-2	no-alt	law		green	green	ok	red	live	0	0				1: wcag/h37: <img> is missing required "alt" attribute	
+fh8	A11Y-3	button-no-name	law		green	green	ok	red	live	0	0				1: text-content: <button> must have accessible text	
+fh8	ATTR-1	bad-attribute-value	tsc		red	green	ok	red	live	0	0	3: TS2345: Argument of type '"txt"' is not assignable to parameter of type 'InputType | undefined'.			1: attribute-allowed-values: Attribute "type" has invalid value "txt"	
+fh8	BTN-1	button-implicit-submit	law		green	green	ok	red	live	0	0				4: no-implicit-button-type: <button> is missing recommended "type" attribute	
+fh8	ID-1	duplicate-id	law		green	green	ok	red	live	0	0				5: no-dup-id: Duplicate ID "project-count"	
+fh8	ID-2	derived-id-repeat	law		green	green	ok	red	live	0	0				11: no-dup-id: Duplicate ID "project-form"	
+fh8	TW-1	unknown-class	tsc		red	green	ok	green	live	0	0	3: TS2345: Argument of type '"centre"' is not assignable to parameter of type 'TailwindJustifyContent'.				
+fh8	TW-2	palette-colour	tsc		red	green	ok	green	live	0	0	3: TS2345: Argument of type '"gray-100"' is not assignable to parameter of type 'TailwindColor'.				
+fh8	TW-3	unknown-variant	tsc		red	green	ok	green	live	0	0	3: TS2345: Argument of type '"hovr"' is not assignable to parameter of type 'TailwindState | TailwindBreakpoint'.				
+fh8	TW-4	dynamic-class	tsc		red	red	ok	green	live	0	0	3: TS2345: Argument of type '`${string}/20`' is not assignable to parameter of type 'TailwindColor'.	3: fluent-html/no-dynamic-typed-styling-arg: .bg(`${tone}/20`) uses a non-literal argument the safelist extractor can't resolve — the css build fails on it, and a dropped class is invisible to Tailwind v4 (renders unstyl			
+fh8	TW-5	tailwind-in-raw-class	check		green	red	ok	green	live	0	0		3: fluent-html/no-tailwind-in-cssclass: 'p-4' in .cssClass() is a Tailwind utility — .cssClass() marks non-Tailwind classes only. Replace with: .p("4"). [autofix]			
+fh8	TW-6	classes-as-text	nowhere		green	green	ok	green	live	0	0					
+fh8	HX-1	target-mismatch	tsc		red	green	ok	green	live	0	0	5: TS2345: Argument of type 'RenderTagged<Id<"project-status">>' is not assignable to parameter of type 'HTMX & { readonly render?: Id<"project-list"> | undefined; } & { readonly render?: Id<"project-status"> | undefined				
+fh8	HX-2	wrong-answer	tsc		red	green	ok	green	live	0	0	3: TS2322: Type 'Tag & Rooted<"project-list">' is not assignable to type 'RootedView<"project-status">'.				
+fh8	HX-3	422-no-region	nowhere		green	green	ok	green	live	0	0					
+fh8	HX-4	poll-never-stops	nowhere		green	green	ok	green	live	0	0					
+fh8	HX-5	raw-hx-attribute	check		green	red	ok	green	live	0	0		3: fluent-html/prefer-htmx-api: Use the HTMX API (hxGet, hxPost, setHtmx) instead of .addAttribute("hx-get", ...). The HTMX API provides type safety and consolidates hx-* attributes into a single options object.			
+fh8	HX-6	route-stance	tsc		red	green	ok	green	live	0	0	3: TS2345: Argument of type 'RenderTagged<Id<"project-list">>' is not assignable to parameter of type 'PageRoute'.				
+fh8	HX-7	raw-url	tsc		red	green	ok	green	live	0	0	3: TS2345: Argument of type '"/projects/rowz"' is not assignable to parameter of type 'ResolvedRoute | ExternalHref'.				
+fh8	HX-8	stale-region	nowhere		green	green	ok	green	live	0	0					
+fh8	FORM-1	field-not-in-schema	tsc		red	green	ok	green	live	0	0	4: TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"status" | "name"'.				
+fh8	XSS-1	unescaped-html	nowhere		green	green	ok	green	live	0	0					attr-quotes
+fh8	XSS-2	js-url-link	runtime	absorbed	green	green	ok	green	not-live	0	0					
+fh8	XSS-3	js-url-htmx	nowhere		green	green	ok	green	live	0	0					
+fh8	XSS-4	hx-on-from-data	nowhere		green	green	ok	green	live	0	0					
+fh8	XSS-5	raw-interpolation	nowhere		green	green	ok	green	live	0	0					attr-quotes
+fh8	XSS-6	style-from-data	nowhere		green	green	ok	green	live	0	0					no-inline-style
+fh8	PURE-1	view-io	nowhere		green	green	ok	green	-	0	0					
+fh8	PURE-2	forgotten-state	tsc		red	green	ok	green	live	0	0	3: TS2345: Argument of type '{ queued: () => Tag; running: () => Tag; done: () => Tag; }' is not assignable to parameter of type '{ queued: Thunk<View>; running: Thunk<View>; done: Thunk<View>; failed: Thunk<View>; } & N				

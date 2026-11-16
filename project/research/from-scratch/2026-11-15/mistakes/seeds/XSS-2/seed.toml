@@ -1,0 +1,6 @@
+id = "XSS-2"
+kind = "js-url-link"
+group = "security"
+source = "task"
+mistake = "A link's href is a javascript: URL from data."
+oracle = "oracles.mjs XSS-2"

@@ -1,0 +1,8 @@
+out/bench/fh8.fragment.html 12
+out/bench/fh8.document.html 12
+../keep-fh9/out/fh8/r1-empty.html 0
+../keep-fh9/out/fh8/r1-list.html 0
+../keep-fh9/out/fh8/r2-form.html 0
+../keep-fh9/out/fh8/r2-invalid.html 0
+../keep-fh9/out/fh8/r3-done.html 0
+../keep-fh9/out/fh8/r3-running.html 0

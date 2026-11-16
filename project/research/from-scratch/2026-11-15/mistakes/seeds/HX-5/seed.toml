@@ -1,0 +1,6 @@
+id = "HX-5"
+kind = "raw-hx-attribute"
+group = "htmx"
+source = "task"
+mistake = "An hx-get attribute is written by hand, with a mistyped path."
+oracle = "oracles.mjs HX-5"

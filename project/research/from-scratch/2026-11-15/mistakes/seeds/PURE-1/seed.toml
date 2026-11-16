@@ -1,0 +1,6 @@
+id = "PURE-1"
+kind = "view-io"
+group = "purity"
+source = "task"
+mistake = "A view reads a file while it renders."
+oracle = ""

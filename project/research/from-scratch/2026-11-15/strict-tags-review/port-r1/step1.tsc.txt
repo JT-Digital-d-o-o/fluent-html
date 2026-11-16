@@ -1,0 +1,22 @@
+src/orders.ts(119,61): error TS2345: Argument of type 'Cls<string> | Record<`aria-${string}`, string> | PhrasingKid<"text">' is not assignable to parameter of type '"✗ a link needs a destination: a(projects.detail({ id }), …) or { href: url(value) }"'.
+  Type 'undefined' is not assignable to type '"✗ a link needs a destination: a(projects.detail({ id }), …) or { href: url(value) }"'.
+src/render.ts(43,70): error TS2345: Argument of type 'El<"flow", "text" | "interactive" | "form", undefined>' is not assignable to parameter of type 'FlowKid<Content>'.
+  Type 'El<"flow", "text" | "interactive" | "form", undefined>' is not assignable to type 'El<Flow, Content, any>'.
+    Type '"text" | "interactive" | "form"' is not assignable to type 'Content'.
+      Type '"form"' is not assignable to type 'Content'.
+src/render.ts(48,5): error TS2345: Argument of type 'El<"flow", "text" | "interactive" | "form", undefined>' is not assignable to parameter of type 'FlowKid<Content>'.
+  Type 'El<"flow", "text" | "interactive" | "form", undefined>' is not assignable to type 'El<Flow, Content, any>'.
+    Type '"text" | "interactive" | "form"' is not assignable to type 'Content'.
+      Type '"form"' is not assignable to type 'Content'.
+src/render.ts(54,5): error TS2345: Argument of type 'El<"flow", "text" | "interactive" | "form", undefined>' is not assignable to parameter of type 'FlowKid<Content>'.
+  Type 'El<"flow", "text" | "interactive" | "form", undefined>' is not assignable to type 'El<Flow, Content, any>'.
+    Type '"text" | "interactive" | "form"' is not assignable to type 'Content'.
+      Type '"form"' is not assignable to type 'Content'.
+src/render.ts(68,87): error TS2345: Argument of type 'El<"flow", "text" | "interactive" | "form" | "label", "orders-table">' is not assignable to parameter of type 'FlowKid<Content>'.
+  Type 'El<"flow", "text" | "interactive" | "form" | "label", "orders-table">' is not assignable to type 'El<Flow, Content, any>'.
+    Type '"text" | "interactive" | "form" | "label"' is not assignable to type 'Content'.
+      Type '"form"' is not assignable to type 'Content'.
+src/render.ts(69,103): error TS2345: Argument of type 'El<"flow", "text" | "interactive" | "form" | "label", "orders-table">' is not assignable to parameter of type 'FlowKid<Content>'.
+  Type 'El<"flow", "text" | "interactive" | "form" | "label", "orders-table">' is not assignable to type 'El<Flow, Content, any>'.
+    Type '"text" | "interactive" | "form" | "label"' is not assignable to type 'Content'.
+      Type '"form"' is not assignable to type 'Content'.

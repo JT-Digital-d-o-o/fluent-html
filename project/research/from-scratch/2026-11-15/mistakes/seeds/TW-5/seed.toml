@@ -1,0 +1,6 @@
+id = "TW-5"
+kind = "tailwind-in-raw-class"
+group = "tailwind"
+source = "verdict: safety parity P11"
+mistake = "Tailwind class text goes through the raw class sink, past the class check."
+oracle = "oracles.mjs TW-5"

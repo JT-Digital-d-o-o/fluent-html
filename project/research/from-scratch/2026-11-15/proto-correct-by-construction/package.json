@@ -1,0 +1,15 @@
+{
+  "name": "proto-correct-by-construction",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#st": "./lib/index.ts",
+    "#zod": "./support/zod.ts"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "html-validate": "11.17.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,1 @@
+{ "extends": "../tsconfig.base.json", "compilerOptions": { "types": ["node"], "typeRoots": ["../../../proto-correct-by-construction/node_modules/@types"] }, "files": ["clean.ts"] }

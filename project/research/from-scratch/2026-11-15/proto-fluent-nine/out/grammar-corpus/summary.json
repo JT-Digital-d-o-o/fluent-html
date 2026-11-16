@@ -1,0 +1,12 @@
+{
+  "tokens": 641,
+  "seeded": 433,
+  "seededTailwindRejects": 414,
+  "seededFalseNegatives": 0,
+  "colours": 22,
+  "radii": 2,
+  "bothAccept": 227,
+  "bothReject": 414,
+  "falsePositives": [],
+  "falseNegatives": []
+}

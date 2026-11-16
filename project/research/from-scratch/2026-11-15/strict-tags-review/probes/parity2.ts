@@ -1,0 +1,16 @@
+import { cls } from "strict-tags";
+export const a01 = cls("bg-transparent");
+export const a02 = cls("text-current");
+export const a03 = cls("bg-inherit");
+export const a04 = cls("border-transparent");
+export const a05 = cls("p-4.5");
+export const a06 = cls("h-18");
+export const a07 = cls("top-13");
+export const a08 = cls("rounded-[10px]");
+export const a09 = cls("tracking-[0.2em]");
+export const a10 = cls("leading-[1.1]");
+export const a11 = cls("border-[3px]");
+export const a12 = cls("shadow-[0_1px_2px_rgba(0,0,0,0.1)]");
+export const a13 = cls("rounded");
+export const a14 = cls("rounded-md");
+export const a15 = cls("mx-auto grid max-w-5xl gap-6 px-4 py-8 sm:px-6 lg:px-8");

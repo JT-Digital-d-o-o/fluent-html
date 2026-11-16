@@ -1,0 +1,6 @@
+id = "HX-3"
+kind = "422-no-region"
+group = "htmx"
+source = "task"
+mistake = "A form's 422 answer is not the region the form swaps into."
+oracle = "oracles.mjs HX-3"

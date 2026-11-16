@@ -1,0 +1,6 @@
+id = "HX-8"
+kind = "stale-region"
+group = "htmx"
+source = "todo: the region left stale by a targeted swap"
+mistake = "A delete swaps only the list region, so the project count elsewhere on the page goes stale."
+oracle = "oracles.mjs HX-8"

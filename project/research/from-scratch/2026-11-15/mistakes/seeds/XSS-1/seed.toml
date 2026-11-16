@@ -1,0 +1,6 @@
+id = "XSS-1"
+kind = "unescaped-html"
+group = "security"
+source = "task; verdict: safety parity P7"
+mistake = "HTML from data goes through the raw-markup sink."
+oracle = "oracles.mjs XSS-1"

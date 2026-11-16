@@ -1,0 +1,5 @@
+probes/conflicts.ts:5:22 "p-6" and "p-0" set the same properties (padding) in one class list: the stylesheet's order decides, not yours
+probes/conflicts.ts:6:21 "flex" and "inline-flex" set the same properties (display) in one class list: the stylesheet's order decides, not yours
+probes/conflicts.ts:7:24 "hover:bg-surface-2" and "hover:bg-primary" set the same properties (background-color) in one class list: the stylesheet's order decides, not yours
+probes/conflicts.ts:7:41 "hover:bg-surface-2" and "hover:bg-primary" set the same properties (background-color) in one class list: the stylesheet's order decides, not yours
+0 tsc errors; 8 class lists read from types (0 without a literal), 19 distinct classes, 0 without a Tailwind rule; 4 conflicts

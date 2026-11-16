@@ -1,0 +1,6 @@
+id = "HX-7"
+kind = "raw-url"
+group = "htmx"
+source = "verdict: safety parity P6"
+mistake = "An htmx request is given a hand-written URL string, with a mistyped path."
+oracle = "oracles.mjs HX-7"

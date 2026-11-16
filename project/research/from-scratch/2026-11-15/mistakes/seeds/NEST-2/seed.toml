@@ -1,0 +1,6 @@
+id = "NEST-2"
+kind = "nest-link"
+group = "html"
+source = "task"
+mistake = "A link is placed inside another link."
+oracle = "oracles.mjs NEST-2"

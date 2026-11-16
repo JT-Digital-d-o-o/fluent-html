@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "node": "v26.0.0",
+    "nodeEnv": "production",
+    "loadavg": [
+      8.1650390625,
+      11.5048828125,
+      15.01025390625
+    ],
+    "rounds": 11,
+    "sampleMs": 300,
+    "gcExposed": true,
+    "sink": true
+  },
+  "rows": [
+    {
+      "arm": "fluent-html-8",
+      "buildRenderOps": 16957,
+      "buildRenderRange": [
+        15524,
+        17145
+      ],
+      "buildRenderWallOps": 18056,
+      "renderOnlyOps": 31250,
+      "renderOnlyRange": [
+        29686,
+        31792
+      ],
+      "allocBytesPerBuildRender": 137300,
+      "ratioVsFirst": 1,
+      "ratioRange": [
+        1,
+        1
+      ],
+      "outputBytes": 8248,
+      "outputSha": "b4a4fca94ffc9aa4",
+      "sameAsExpected": true,
+      "sameIgnoringWhitespace": true
+    },
+    {
+      "arm": "strict-tags",
+      "buildRenderOps": 55231,
+      "buildRenderRange": [
+        53844,
+        56065
+      ],
+      "buildRenderWallOps": 57347,
+      "renderOnlyOps": 28539467,
+      "renderOnlyRange": [
+        27477653,
+        28894240
+      ],
+      "allocBytesPerBuildRender": 64249,
+      "ratioVsFirst": 3.265,
+      "ratioRange": [
+        3.205,
+        3.49
+      ],
+      "outputBytes": 8375,
+      "outputSha": "ed756ce0cd722eda",
+      "sameAsExpected": false,
+      "sameIgnoringWhitespace": false
+    },
+    {
+      "arm": "lean-tags",
+      "buildRenderOps": 63388,
+      "buildRenderRange": [
+        60030,
+        65030
+      ],
+      "buildRenderWallOps": 67379,
+      "renderOnlyOps": 28700213,
+      "renderOnlyRange": [
+        27994240,
+        28918037
+      ],
+      "allocBytesPerBuildRender": 55192,
+      "ratioVsFirst": 3.781,
+      "ratioRange": [
+        3.694,
+        3.867
+      ],
+      "outputBytes": 8312,
+      "outputSha": "c1414b8a3ac26644",
+      "sameAsExpected": false,
+      "sameIgnoringWhitespace": false
+    },
+    {
+      "arm": "template-literal-ceiling",
+      "buildRenderOps": 324304,
+      "buildRenderRange": [
+        300960,
+        332120
+      ],
+      "buildRenderWallOps": 306283,
+      "renderOnlyOps": 28422027,
+      "renderOnlyRange": [
+        25521760,
+        29334942
+      ],
+      "allocBytesPerBuildRender": 13469,
+      "ratioVsFirst": 19.386,
+      "ratioRange": [
+        17.628,
+        20.788
+      ],
+      "outputBytes": 8248,
+      "outputSha": "b4a4fca94ffc9aa4",
+      "sameAsExpected": true,
+      "sameIgnoringWhitespace": true
+    }
+  ]
+}

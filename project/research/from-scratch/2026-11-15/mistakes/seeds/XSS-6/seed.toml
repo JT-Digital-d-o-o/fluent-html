@@ -1,0 +1,6 @@
+id = "XSS-6"
+kind = "style-from-data"
+group = "security"
+source = "verdict: safety parity P10; harvest 3"
+mistake = "A style attribute is built from a data string."
+oracle = "oracles.mjs XSS-6"

@@ -1,0 +1,169 @@
+fluent-nine  NEST-1  law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  NEST-2  law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  NEST-3  law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  NEST-4  law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  A11Y-1  nowhere              tsc green / check - / run ok / law green / oracle live
+fluent-nine  A11Y-2  law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  A11Y-3  law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  ATTR-1  tsc                  tsc red / check - / run ok / law red / oracle live
+fluent-nine  BTN-1   runtime  absorbed    tsc green / check - / run ok / law green / oracle not-live
+fluent-nine  ID-1    law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  ID-2    law                  tsc green / check - / run ok / law red / oracle live
+fluent-nine  TW-1    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  TW-2    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  TW-3    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  TW-4    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  TW-5    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  TW-6    nowhere              tsc green / check - / run ok / law green / oracle live
+fluent-nine  HX-1    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  HX-2    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  HX-3    nowhere              tsc green / check - / run ok / law green / oracle live
+fluent-nine  HX-4    nowhere              tsc green / check - / run ok / law green / oracle live
+fluent-nine  HX-5    runtime  throws      tsc green / check - / run throws / law - / oracle -
+fluent-nine  HX-6    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  HX-7    tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  HX-8    nowhere              tsc green / check - / run ok / law green / oracle live
+fluent-nine  FORM-1  tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  XSS-1   tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  XSS-2   runtime  throws      tsc green / check - / run throws / law - / oracle -
+fluent-nine  XSS-3   runtime  throws      tsc green / check - / run throws / law - / oracle -
+fluent-nine  XSS-4   runtime  throws      tsc green / check - / run throws / law - / oracle -
+fluent-nine  XSS-5   tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  XSS-6   tsc                  tsc red / check - / run ok / law green / oracle live
+fluent-nine  PURE-1  nowhere              tsc green / check - / run ok / law green / oracle -
+fluent-nine  PURE-2  tsc                  tsc red / check - / run ok / law green / oracle live
+lean-tags    NEST-1  law                  tsc green / check green / run ok / law red / oracle live
+lean-tags    NEST-2  law                  tsc green / check green / run ok / law red / oracle live
+lean-tags    NEST-3  law                  tsc green / check green / run ok / law red / oracle live
+lean-tags    NEST-4  law                  tsc green / check green / run ok / law red / oracle live
+lean-tags    A11Y-1  nowhere              tsc green / check green / run ok / law green / oracle live
+lean-tags    A11Y-2  tsc                  tsc red / check green / run ok / law red / oracle live
+lean-tags    A11Y-3  law                  tsc green / check green / run ok / law red / oracle live
+lean-tags    ATTR-1  tsc                  tsc red / check green / run ok / law red / oracle live
+lean-tags    BTN-1   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+lean-tags    ID-1    law                  tsc green / check green / run ok / law red / oracle live
+lean-tags    ID-2    law                  tsc green / check green / run ok / law red / oracle live
+lean-tags    TW-1    check                tsc green / check red / run ok / law green / oracle live
+lean-tags    TW-2    check                tsc green / check red / run ok / law green / oracle live
+lean-tags    TW-3    check                tsc green / check red / run ok / law green / oracle live
+lean-tags    TW-4    tsc                  tsc red / check red / run throws / law - / oracle -
+lean-tags    TW-5    tsc                  tsc red / check green / run throws / law - / oracle -
+lean-tags    TW-6    check                tsc green / check red / run ok / law green / oracle live
+lean-tags    HX-1    nowhere              tsc green / check green / run ok / law green / oracle live
+lean-tags    HX-2    tsc                  tsc red / check green / run throws / law - / oracle -
+lean-tags    HX-3    tsc                  tsc red / check green / run ok / law green / oracle live
+lean-tags    HX-4    nowhere              tsc green / check green / run ok / law green / oracle live
+lean-tags    HX-5    tsc                  tsc red / check green / run throws / law - / oracle -
+lean-tags    HX-6    tsc                  tsc red / check green / run ok / law green / oracle not-live
+lean-tags    HX-7    nowhere              tsc green / check green / run ok / law green / oracle live
+lean-tags    HX-8    runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+lean-tags    FORM-1  tsc                  tsc red / check green / run ok / law green / oracle live
+lean-tags    XSS-1   tsc                  tsc red / check green / run throws / law - / oracle -
+lean-tags    XSS-2   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+lean-tags    XSS-3   runtime  throws      tsc green / check green / run throws / law - / oracle -
+lean-tags    XSS-4   tsc                  tsc red / check green / run throws / law - / oracle -
+lean-tags    XSS-5   tsc                  tsc red / check green / run throws / law - / oracle -
+lean-tags    XSS-6   tsc                  tsc red / check green / run throws / law - / oracle -
+lean-tags    PURE-1  nowhere              tsc green / check green / run ok / law green / oracle -
+lean-tags    PURE-2  tsc                  tsc red / check green / run throws / law - / oracle -
+page-parts   NEST-1  law                  tsc green / check green / run ok / law red / oracle live
+page-parts   NEST-2  law                  tsc green / check green / run ok / law red / oracle live
+page-parts   NEST-3  law                  tsc green / check green / run ok / law red / oracle live
+page-parts   NEST-4  law                  tsc green / check green / run ok / law red / oracle live
+page-parts   A11Y-1  nowhere              tsc green / check green / run ok / law green / oracle live
+page-parts   A11Y-2  tsc                  tsc red / check green / run ok / law red / oracle live
+page-parts   A11Y-3  law                  tsc green / check green / run ok / law red / oracle live
+page-parts   ATTR-1  tsc                  tsc red / check green / run ok / law red / oracle live
+page-parts   BTN-1   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+page-parts   ID-1    law                  tsc green / check green / run ok / law red / oracle live
+page-parts   ID-2    law                  tsc green / check green / run ok / law red / oracle live
+page-parts   TW-1    check                tsc green / check red / run ok / law green / oracle live
+page-parts   TW-2    check                tsc green / check red / run ok / law green / oracle live
+page-parts   TW-3    check                tsc green / check red / run ok / law green / oracle live
+page-parts   TW-4    check                tsc green / check red / run ok / law green / oracle live
+page-parts   TW-6    nowhere              tsc green / check green / run ok / law green / oracle live
+page-parts   HX-1    runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+page-parts   HX-2    runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+page-parts   HX-3    tsc                  tsc red / check green / run ok / law green / oracle not-live
+page-parts   HX-4    nowhere              tsc green / check green / run ok / law green / oracle live
+page-parts   HX-5    tsc                  tsc red / check green / run throws / law - / oracle -
+page-parts   HX-6    tsc                  tsc red / check green / run throws / law - / oracle -
+page-parts   HX-7    nowhere              tsc green / check green / run ok / law green / oracle live
+page-parts   HX-8    nowhere              tsc green / check green / run ok / law green / oracle live
+page-parts   FORM-1  tsc                  tsc red / check green / run throws / law - / oracle -
+page-parts   XSS-1   tsc                  tsc red / check green / run ok / law green / oracle live
+page-parts   XSS-2   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+page-parts   XSS-3   runtime  throws      tsc green / check green / run throws / law - / oracle -
+page-parts   XSS-4   tsc                  tsc red / check green / run throws / law - / oracle -
+page-parts   XSS-5   tsc                  tsc red / check green / run ok / law green / oracle not-live
+page-parts   XSS-6   tsc                  tsc red / check green / run throws / law - / oracle -
+page-parts   PURE-1  nowhere              tsc green / check green / run ok / law green / oracle -
+page-parts   PURE-2  tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          NEST-1  law                  tsc green / check green / run ok / law red / oracle live
+fh8          NEST-2  law                  tsc green / check green / run ok / law red / oracle live
+fh8          NEST-3  law                  tsc green / check green / run ok / law red / oracle live
+fh8          NEST-4  law                  tsc green / check green / run ok / law red / oracle live
+fh8          A11Y-1  nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          A11Y-2  law                  tsc green / check green / run ok / law red / oracle live
+fh8          A11Y-3  law                  tsc green / check green / run ok / law red / oracle live
+fh8          ATTR-1  tsc                  tsc red / check green / run ok / law red / oracle live
+fh8          BTN-1   law                  tsc green / check green / run ok / law red / oracle live
+fh8          ID-1    law                  tsc green / check green / run ok / law red / oracle live
+fh8          ID-2    law                  tsc green / check green / run ok / law red / oracle live
+fh8          TW-1    tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          TW-2    tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          TW-3    tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          TW-4    tsc                  tsc red / check red / run ok / law green / oracle live
+fh8          TW-5    check                tsc green / check red / run ok / law green / oracle live
+fh8          TW-6    nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          HX-1    tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          HX-2    tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          HX-3    nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          HX-4    nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          HX-5    check                tsc green / check red / run ok / law green / oracle live
+fh8          HX-6    tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          HX-7    tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          HX-8    nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          FORM-1  tsc                  tsc red / check green / run ok / law green / oracle live
+fh8          XSS-1   nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          XSS-2   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+fh8          XSS-3   nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          XSS-4   nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          XSS-5   nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          XSS-6   nowhere              tsc green / check green / run ok / law green / oracle live
+fh8          PURE-1  nowhere              tsc green / check green / run ok / law green / oracle -
+fh8          PURE-2  tsc                  tsc red / check green / run ok / law green / oracle live
+cbc          NEST-1  tsc                  tsc red / check green / run ok / law red / oracle live
+cbc          NEST-2  tsc                  tsc red / check green / run ok / law red / oracle live
+cbc          NEST-3  tsc                  tsc red / check green / run ok / law red / oracle live
+cbc          NEST-4  tsc                  tsc red / check green / run ok / law red / oracle live
+cbc          A11Y-1  tsc                  tsc red / check green / run ok / law green / oracle live
+cbc          A11Y-2  tsc                  tsc red / check green / run ok / law red / oracle live
+cbc          A11Y-3  tsc                  tsc red / check green / run ok / law red / oracle live
+cbc          ATTR-1  tsc                  tsc red / check green / run ok / law red / oracle live
+cbc          BTN-1   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+cbc          ID-1    runtime  throws      tsc green / check green / run throws / law - / oracle -
+cbc          ID-2    runtime  throws      tsc green / check green / run throws / law - / oracle -
+cbc          TW-1    tsc                  tsc red / check red / run ok / law green / oracle live
+cbc          TW-2    tsc                  tsc red / check red / run ok / law green / oracle live
+cbc          TW-3    tsc                  tsc red / check red / run ok / law green / oracle live
+cbc          TW-4    tsc                  tsc red / check green / run ok / law green / oracle live
+cbc          TW-5    tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          TW-6    tsc                  tsc red / check green / run ok / law green / oracle live
+cbc          HX-1    nowhere              tsc green / check green / run ok / law green / oracle live
+cbc          HX-2    tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          HX-3    tsc                  tsc red / check green / run ok / law green / oracle live
+cbc          HX-4    nowhere              tsc green / check green / run ok / law green / oracle live
+cbc          HX-5    tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          HX-6    tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          HX-7    nowhere              tsc green / check green / run ok / law green / oracle live
+cbc          HX-8    nowhere              tsc green / check green / run ok / law green / oracle live
+cbc          FORM-1  tsc                  tsc red / check green / run ok / law green / oracle live
+cbc          XSS-1   tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          XSS-2   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+cbc          XSS-3   runtime  absorbed    tsc green / check green / run ok / law green / oracle not-live
+cbc          XSS-4   tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          XSS-5   tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          XSS-6   tsc                  tsc red / check green / run throws / law - / oracle -
+cbc          PURE-1  nowhere              tsc green / check green / run ok / law green / oracle -
+cbc          PURE-2  tsc                  tsc red(+1 stray) / check green / run throws / law - / oracle -

@@ -1,0 +1,73 @@
+// Renders the three reference screens through the handler table and checks the behaviours the
+// brief names. Writes each answer to out/ for html-validate.
+//   node tools/run-screens.mjs
+import assert from "node:assert/strict";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import dispatch from "../screens/projects.controller.ts";
+import { finishJob } from "../support/projects.service.ts";
+
+const out = resolve(dirname(fileURLToPath(import.meta.url)), "../out");
+mkdirSync(out, { recursive: true });
+const save = (name, html) => writeFileSync(resolve(out, name), html + "\n");
+const checks = [];
+const check = async (name, fn) => { await fn(); checks.push(name); };
+
+// R1
+const list = await dispatch("list", { input: {} });
+save("r1-list.html", list.body);
+await check("R1 search box reloads the list region after typing stops", () => {
+  assert.match(list.body, /<input class="[^"]+" type="search" placeholder="Search projects" aria-label="Search projects" name="q" hx-get="\/projects\/rows" hx-trigger="input changed delay:300ms, search" hx-target="#project-list" hx-swap="outerMorph"/);
+  assert.match(list.body, /<div class="[^"]+" id="project-list">/);
+});
+await check("R1 each row links to the detail page", () => assert.match(list.body, /<a class="[^"]+hover:bg-surface-2" href="\/projects\/1">/));
+await check("R1 text is escaped", () => assert.ok(list.body.includes("Atlas &lt;redesign&gt;") && list.body.includes("Q3 &amp; Q4")));
+await check("R1 the document has one main, the swap target", () => assert.equal(list.body.match(/<main /g).length, 1));
+const rows = await dispatch("rows", { input: { q: "zzz" } });
+save("r1-rows-empty.fragment.html", rows.body);
+await check("R1 the fragment answers the region alone, with the empty state", () => {
+  assert.ok(rows.body.startsWith('<div class="rounded-card border border-line bg-surface" id="project-list">'));
+  assert.ok(rows.body.includes("No projects match &quot;zzz&quot;"));
+});
+
+// R2
+const fresh = await dispatch("new");
+save("r2-new.html", fresh.body);
+const bad = await dispatch("create", { body: { name: "", description: "x".repeat(501), status: "nope" } });
+save("r2-invalid.fragment.html", bad.body);
+await check("R2 an invalid submit answers 422 with the form region and each field's error", () => {
+  assert.equal(bad.status, 422);
+  assert.ok(bad.body.startsWith('<form class="grid max-w-lg gap-4" id="projects-create-form" action="/projects" method="post" hx-post="/projects"'));
+  assert.ok(bad.body.includes('hx-status:422="target:#projects-create-form swap:outerMorph push:false"'));
+  assert.ok(bad.body.includes('name="name" id="projects-create-name" aria-invalid="true" aria-describedby="projects-create-name-error"'));
+  assert.match(bad.body, /<span class="[^"]+" id="projects-create-name-error">Name is required<\/span>/);
+  assert.ok(bad.body.includes("Keep the description under 500 characters"));
+  assert.ok(bad.body.includes("Choose one of: active, paused"));
+  assert.ok(bad.body.includes("aria-invalid:border-danger"));
+});
+const good = await dispatch("create", { body: { name: "New one", description: "", status: "paused" } });
+await check("R2 a valid submit redirects to the new project", () => assert.deepEqual(good, { status: 303, location: "/projects/3" }));
+
+// R3
+const detail = await dispatch("detail", { input: { id: 1 } });
+save("r3-detail.html", detail.body);
+await check("R3 the delete button opens a native dialog that is named by its title", () => {
+  assert.match(detail.body, /<button class="[^"]+" command="show-modal" commandfor="delete-project" type="button">Delete<\/button>/);
+  assert.match(detail.body, /<dialog class="[^"]+backdrop:bg-overlay\/40" id="delete-project" closedby="any" aria-labelledby="delete-project-title">/);
+  assert.match(detail.body, /<h2 class="[^"]+" id="delete-project-title">Delete project\?<\/h2>/);
+  assert.match(detail.body, /<button class="[^"]+" hx-post="\/projects\/1\/delete"[^>]* type="button">Delete project<\/button>/);
+});
+await check("R3 the badge polls while the job runs, under an id that carries the project", () =>
+  assert.match(detail.body, /<span class="[^"]+" id="project-status-1" hx-get="\/projects\/1\/status" hx-trigger="every 2s" hx-target="this" hx-swap="outerHTML">Exporting…<\/span>/));
+finishJob(1);
+const settled = await dispatch("status", { input: { id: 1 } });
+save("r3-status-done.fragment.html", settled.body);
+await check("R3 the badge stops polling when the job is done", () =>
+  assert.equal(settled.body, '<span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-success/10 text-success" id="project-status-1">Export ready</span>'));
+await check("R3 a missing project answers 404", async () => assert.equal((await dispatch("detail", { input: { id: 99 } })).status, 404));
+const removed = await dispatch("remove", { input: { id: 2 } });
+await check("R3 delete redirects to the list", () => assert.deepEqual(removed, { status: 303, location: "/projects" }));
+
+for (const c of checks) console.log("ok  " + c);
+console.log(`${checks.length} checks passed`);

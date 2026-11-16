@@ -1,0 +1,3 @@
+/* The bench page uses Tailwind's default palette (text-gray-600, bg-blue-500), so its classes are
+   checked against the default theme, not the app's closed one. */
+@import "tailwindcss";

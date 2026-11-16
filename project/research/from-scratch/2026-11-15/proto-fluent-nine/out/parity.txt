@@ -1,0 +1,18 @@
+| Mistake | Kind | fluent-html 8 (tsc) | Fluent Nine (tsc) |
+|---|---|---|---|
+| P1 | unknown class | rejected | rejected |
+| P2 | palette literal | rejected | rejected |
+| P3 | bad variant | rejected | rejected |
+| P4 | fragment id mismatch | rejected | rejected |
+| P5 | wrong route stance | rejected | rejected |
+| P6 | raw hx-* URL | rejected | rejected |
+| P8 | bad attribute value | rejected | rejected |
+| P8b | bad attribute value | rejected | rejected |
+| P7 | unescaped HTML from data | **accepted** | rejected |
+| P10 | runtime CSS into a style attribute | **accepted** | rejected |
+| P11 | Tailwind text in a raw class sink | **accepted** | rejected |
+| P9 | a fluent-html 8 styling method | not written | rejected |
+
+tsc errors: fluent-html 8 8, Fluent Nine 12
+text escaping: fluent-html 8 <div>&lt;img src=x onerror=alert(1)&gt;&quot;&#39;&amp;</div>, Fluent Nine <div>&lt;img src=x onerror=alert(1)&gt;&quot;&#39;&amp;</div>, identical: true
+parity (every mistake 8 rejects, 9 rejects): true

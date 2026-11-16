@@ -1,0 +1,1 @@
+{ "extends": "./tsconfig.json", "include": ["parity2.ts"] }

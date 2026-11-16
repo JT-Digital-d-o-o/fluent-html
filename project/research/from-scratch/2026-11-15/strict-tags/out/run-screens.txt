@@ -1,0 +1,13 @@
+ok  R1 search box reloads the list region after typing stops
+ok  R1 each row links to the detail page
+ok  R1 text is escaped
+ok  R1 the document has one main, the swap target
+ok  R1 the fragment answers the region alone, with the empty state
+ok  R2 an invalid submit answers 422 with the form region and each field's error
+ok  R2 a valid submit redirects to the new project
+ok  R3 the delete button opens a native dialog that is named by its title
+ok  R3 the badge polls while the job runs, under an id that carries the project
+ok  R3 the badge stops polling when the job is done
+ok  R3 a missing project answers 404
+ok  R3 delete redirects to the list
+12 checks passed

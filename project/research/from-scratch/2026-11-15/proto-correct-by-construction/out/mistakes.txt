@@ -1,0 +1,83 @@
+mA1   TS2345   Argument of type '"flex justify-centre"' is not assignable to parameter of type '"✗ \"justify-centre\" is not a class of this design system"'.
+mA2   TS2345   Argument of type '"bg-gray-100 text-gray-500"' is not assignable to parameter of type '"✗ \"bg-gray-100\": \"gray-100\" is not a colour of this theme. Colours: danger, danger-700, line, on-accent, overlay, primary, primary-700, su
+mA3   TS2551   Property 'hovr' does not exist on type 'typeof import("/Users/tony/jt-digital/fluent-html/project/research/from-scratch/2026-11-15/proto-correct-by-construction/lib/index", { with: { "resolution-mode": "import" } })'. Did you mean
+mA4   TS2345   Argument of type '"flex hovr:bg-surface-2"' is not assignable to parameter of type '"✗ \"hovr\" is not a variant of this design system (and a variant is a function: hover(\"…\"), md(\"…\"))"'.
+mA5   TS2322 +4 Type 'Promise<El<"flow", MarksOf<"a", readonly [Cls<"flex items-center justify-between gap-4 px-4 py-3 hover:bg-surface-2">, PageRef, El<"flow", "text", undefined>, El<"phrasing", "text", undefined>]>, "project-list">>' is not ass
+mA6   TS2322 +4 Type 'Promise<El<"flow", "text", undefined>>' is not assignable to type 'Awaitable<NotFound | El<string, "text" | "interactive" | "form" | "label" | "main" | "banner", "project-list">>'.
+mA7   TS2345   Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type '"✗ a part is not an address: use its .root, .poll(), .search(), .load() or .defer() wire"'.
+mA8   TS2322 +3 Type 'Promise<El<"flow", MarksOf<"a", readonly [Cls<"flex items-center justify-between gap-4 px-4 py-3 hover:bg-surface-2">, PageRef, El<"flow", "text", undefined>, El<"phrasing", "text", undefined>]>, "project-list">>' is not ass
+mA9   TS2322   Type '"/projects/rows"' is not assignable to type '"✗ htmx attributes come from a route: route(…), .search(), .poll(), .load()"'.
+mA10  TS2322   Type 'string' is not assignable to type 'PageRef | PartRef<any, any> | Local | undefined'.
+mA11  TS2345   Argument of type 'string' is not assignable to parameter of type 'Trusted'.
+mA12  TS2554   Expected 1 arguments, but got 2.
+mA13  TS2820   Type '"txt"' is not assignable to type 'InputType | undefined'. Did you mean '"text"'?
+mA14  TS2322   Type '"column"' is not assignable to type '"col" | "row" | "rowgroup" | "colgroup" | undefined'.
+mB1   TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ <ul> takes only li(…) children"'.
+mB2   TS2345   Argument of type 'El<"li", "text", undefined>' is not assignable to parameter of type '"✗ li(…) goes inside ul(…) or ol(…)"'.
+mB3   TS2345   Argument of type 'El<"phrasing", MarksOf<"a", readonly [PageRef, "inner"]>, undefined>' is not assignable to parameter of type '"✗ <a> cannot contain a link, a button or a form control"'.
+mB4   TS2345   Argument of type 'El<"flow", MarksOf<"button", readonly ["x"]>, undefined>' is not assignable to parameter of type '"✗ <a> cannot contain a link, a button or a form control"'.
+mB5   TS2345   Argument of type 'El<"phrasing", MarksOf<"a", readonly [PageRef, "x"]>, undefined>' is not assignable to parameter of type '"✗ <button> cannot contain a link, a button or a form control"'.
+mB6   TS2322   Type 'El<"flow", MarksOf<"form", readonly [El<"flow", "text", undefined>]>, undefined>' is not assignable to type '"✗ <form> cannot contain another form"'.
+mB7   TS2345   Argument of type 'El<"flow", MarksOf<"form", readonly [El<"flow", "text", undefined>]>, undefined>' is not assignable to parameter of type '"✗ <form> cannot contain another form"'.
+mB8   TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ <p> takes text and inline elements only, not a block such as div, p, ul or form"'.
+mB9   TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ <h1> takes text and inline elements only, not a block such as div, p, ul or form"'.
+mB10  TS2345   Argument of type 'El<"cells", "text", undefined>' is not assignable to parameter of type '"✗ td(…) and th(…) go inside tr(…)"'.
+mB11  TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ <tr> takes only td(…) and th(…) children"'.
+mB12  TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ <dl> takes only dt(…) and dd(…) children"'.
+mB13  TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ <select> takes only option(…) children"'.
+mB14  TS2345   Argument of type 'El<"phrasing", "text", undefined>' is not assignable to parameter of type '"✗ <option> takes text only"'.
+mB15  TS2345   Argument of type '"child of a void element"' is not assignable to parameter of type '"✗ <input> takes no children"'.
+mB16  TS2345   Argument of type 'El<"flow", MarksOf<"footer", readonly [El<"flow", "text", undefined>]>, undefined>' is not assignable to parameter of type '"✗ <header> cannot contain header or footer"'.
+mB17  TS2345   Argument of type 'El<"flow", MarksOf<"main", readonly [El<"flow", "text", undefined>]>, undefined>' is not assignable to parameter of type '"✗ <article> cannot contain main: main sits directly under the document body"'.
+mB18  TS2345   Argument of type 'El<"phrasing", MarksOf<"label", readonly ["B", El<"phrasing", MarksOf<"input", readonly [{}]>, undefined>]>, undefined>' is not assignable to parameter of type '"✗ <label> cannot contain another label"'.
+mB19  TS2345 +1 Argument of type 'El<"flow", "text", undefined>[]' is not assignable to parameter of type 'readonly "✗ <ul> takes only li(…) children"[]'.
+mB20  TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ <span> takes text and inline elements only, not a block such as div, p, ul or form"'.
+mC1   TS2345   Argument of type 'El<"phrasing", MarksOf<"input", readonly [{ readonly type: "text"; }]>, undefined>' is not assignable to parameter of type '"✗ a form control needs a label: wrap it in label(\"Name\", …) or give it { \"aria-label
+mC2   TS2322   Type 'Field' is not assignable to type '"✗ a form control needs a label: wrap it in label(\"Name\", …) or give it { \"aria-label\": \"…\" }"'.
+mC3   TS2345   Argument of type '{ src: st.Url; }' is not assignable to parameter of type '"✗ an image needs { src, alt }: alt: \"\" marks a decorative image"'.
+mC4   TS2345   Argument of type 'Cls<"p-2">' is not assignable to parameter of type '"✗ a button needs a name: text content or { \"aria-label\": \"…\" }"'.
+mC5   TS2345   Argument of type 'PageRef' is not assignable to parameter of type '"✗ a link needs a name: text content or { \"aria-label\": \"…\" }"'.
+mC6   TS2345   Argument of type 'Cls<"text-lg">' is not assignable to parameter of type '"✗ <h2> needs text content"'.
+mC7   TS2345   Argument of type 'El<"flow", "text", undefined>' is not assignable to parameter of type '"✗ a dialog needs a name: spread modal(id).root, or give it { \"aria-label\": \"…\" }"'.
+mC8   TS2345   Argument of type '{ src: st.Url; }' is not assignable to parameter of type '"✗ an iframe needs { title }: screen readers announce it"'.
+mC9   TS2345   Argument of type '"no destination"' is not assignable to parameter of type '"✗ a link needs a destination: a(projects.detail({ id }), …) or { href: url(value) }"'.
+mC10  TS2345   Argument of type 'El<"phrasing", MarksOf<"textarea", readonly []>, undefined>' is not assignable to parameter of type '"✗ a form control needs a label: wrap it in label(\"Name\", …) or give it { \"aria-label\": \"…\" }"'.
+mD1   TS2345   Argument of type '"flex hover:bg-surface-2"' is not assignable to parameter of type '"✗ a variant is a function, not a prefix: hover(\"bg-surface-2\")"'.
+mD2   TS2345   Argument of type '"bg-[#fff]"' is not assignable to parameter of type '"✗ \"bg-[#fff]\": bg-[…] is not open to bracket values in this theme; use a theme token"'.
+mD3   TS2345   Argument of type '`p-4 ${string}`' is not assignable to parameter of type '"✗ class text is a literal: put a cls(…) value in its own argument, or use cls.token(value) for one class from data"'.
+mD4   TS2345   Argument of type 'string' is not assignable to parameter of type '"✗ class text is a literal: put a cls(…) value in its own argument, or use cls.token(value) for one class from data"'.
+mD5   TS2345   Argument of type '"flex gap-4"' is not assignable to parameter of type '"✗ \"flex gap-4\" is class text: write cls(\"flex gap-4\"). For the word as content, write text(\"flex gap-4\")"'.
+mD6   TS2322   Type '"flex gap-4"' is not assignable to type '"✗ classes are a cls(…) argument: div(cls(\"flex gap-4\"), …)"'.
+mD7   TS2345   Argument of type '"bg-primry"' is not assignable to parameter of type '"✗ \"bg-primry\": \"primry\" is not a colour of this theme. Colours: danger, danger-700, line, on-accent, overlay, primary, primary-700, success, surface, surf
+mD8   TS2345   Argument of type '"dta-[state=open]"' is not assignable to parameter of type '"✗ \"dta-[state=open]\" is not a variant of this design system"'.
+mD9   TS2345   Argument of type '"bg-primary/x"' is not assignable to parameter of type '"✗ \"bg-primary/x\": the modifier after / is a number"'.
+mD11  TS2345   Argument of type '"underlin"' is not assignable to parameter of type '"✗ \"underlin\" is not a class of this design system"'.
+mE1   TS2353   Object literal may only specify known properties, and 'idd' does not exist in type '{ id: number; }'.
+mE2   TS2353   Object literal may only specify known properties, and 'query' does not exist in type '{ q?: string | undefined; }'.
+mE3   TS2322   Type 'string' is not assignable to type 'number'.
+mE4   TS2345   Argument of type '"query"' is not assignable to parameter of type '"q"'.
+mE5   TS2345   Argument of type '"nmae"' is not assignable to parameter of type '"status" | "name" | "description"'.
+mE6   TS2345 +1 Argument of type '{ active: string; }' is not assignable to parameter of type 'Record<"active" | "paused", string>'.
+mE7   TS2345   Argument of type 'PageRef' is not assignable to parameter of type '"✗ a page route goes on a(…) or form(…); a button needs an action route"'.
+mE8   TS2345   Argument of type 'ActionRef<undefined>' is not assignable to parameter of type '"✗ an action route goes on button(…), or use route.form(…)"'.
+mE9   TS2322   Type '"/projects"' is not assignable to type 'Url | "✗ a URL attribute takes url(value) or asset(\"/file\"); an in-app link takes a route: a(projects.list(), …)" | undefined'.
+mE10  TS2345   Argument of type '"/projects"' is not assignable to parameter of type '"✗ an in-app address comes from a route: a(projects.detail({ id }), …). asset(\"/img/x.png\") is for static files"'.
+mE11  TS2345   Argument of type 'Wire<never, "input">' is not assignable to parameter of type '"✗ this wire belongs on input(…)"'.
+mE12  TS2345 +1 Argument of type '{ list: () => Promise<st.Page>; new: () => st.Page; create: { form: (state: State<{ name: string; status: "active" | "paused"; } & { description?: string | undefined; }>) => st.El<...>; ok: ({ redirect }: { redir
+mE13  TS2345 +1 Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type 'PageRef'.
+mE14  TS2322 +2 Type 'Promise<Page>' is not assignable to type 'Awaitable<Redirect | NotFound>'.
+mE15  TS2353   Object literal may only specify known properties, and 'nmae' does not exist in type '{ name?: string | undefined; status?: string | undefined; description?: string | undefined; }'.
+mF1   TS2322   Type '"go()"' is not assignable to type '"✗ inline event handlers are not rendered: use a route wire or a native command"'.
+mF2   TS2322   Type '"color: red"' is not assignable to type 'Style | "✗ style is an object: { style: { width: value } }" | undefined'.
+mF3   TS2345   Argument of type 'string' is not assignable to parameter of type 'Css'.
+mF4   TS2345   Argument of type 'Promise<El<"flow", "text", undefined>>' is not assignable to parameter of type '"✗ a view is synchronous: await the data in the route handler and pass it in"'.
+mF5   TS2345   Argument of type 'Promise<El<"flow", "text", undefined>>' is not assignable to parameter of type '"✗ a view is synchronous: await the data in the route handler and pass it in"'.
+mF6   TS2345   Argument of type 'TagFn<"hr">' is not assignable to parameter of type '"✗ call the tag to make a child: hr(), not hr"'.
+mF7   TS2345 +2 Argument of type 'Project' is not assignable to parameter of type 'Global'.
+mF8   TS2322   Type '"/logo.png"' is not assignable to type 'Url | "✗ a URL attribute takes url(value) or asset(\"/file\"); an in-app link takes a route: a(projects.list(), …)"'.
+mF9   TS2322 +2 Type 'Promise<{ (path: PathOrFileDescriptor, options?: { encoding?: null | undefined; flag?: string | undefined; } | null | undefined): NonSharedBuffer; (path: PathOrFileDescriptor, options: { ...; } | BufferEncoding): string; (pa
+mF10  TS2353   Object literal may only specify known properties, and 'hreff' does not exist in type 'Global'.
+mF11  TS2345 +1 Argument of type '{ active: () => st.El<"phrasing", "text", undefined>; paused: () => st.El<"phrasing", "text", undefined>; }' is not assignable to parameter of type '{ active: (value: "active") => unknown; paused: (value: "paused
+mF12  TS2345 +1 Argument of type '{ queued: () => number; running: () => number; done: () => number; }' is not assignable to parameter of type '{ queued: (value: never) => unknown; running: (value: never) => unknown; done: (value: never) => unkno
+
+81 of 81 mistakes rejected by tsc; 20 of 20 controls accepted; 69 diagnostics are one line; 58 name the fix on their first line; 0 overload lists; errors outside the probe: 0

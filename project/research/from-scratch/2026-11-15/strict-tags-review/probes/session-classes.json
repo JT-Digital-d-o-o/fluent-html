@@ -1,0 +1,1279 @@
+{
+"grid": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"gap-5": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r1(html)"
+],
+"gap-1": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"text-lg": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"font-semibold": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"text-sm": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"text-text-dim": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"font-medium": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"flex": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"items-center": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"gap-3": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"size-4": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"accent-primary": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"justify-end": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"rounded-card": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"border": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"border-success": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"bg-surface": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"p-4": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"text-success": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"gap-4": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"text-2xl": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"font-bold": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"border-warning": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"text-warning": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"control-r1(html)"
+],
+"border-primary": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r1(html)"
+],
+"text-primary": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"border-line": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"px-4": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"py-3": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"text-left": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"inline-flex": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"rounded-control": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"hover:text-primary": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"focus-visible:outline-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"focus-visible:outline-primary": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"text-xs": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"sr-only": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"rounded-full": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1(html)",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"px-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"py-0.5": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1(html)",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"border-t": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"hover:bg-surface-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"font-mono": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"text-right": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"tabular-nums": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"flex-wrap": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"items-end": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"w-48": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"px-3": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"py-1.5": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"justify-between": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"bg-primary": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"text-on-accent": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"justify-items-center": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"gap-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"border-dashed": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"p-10": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r2(html)"
+],
+"text-center": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"overflow-x-auto": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"w-full": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"bg-surface-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"p-6": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"shadow-sm": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"py-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"aria-invalid:border-danger": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"focus:outline-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"focus:outline-primary": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"hover:bg-primary-700": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"focus-visible:outline-offset-2": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"text-danger": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"border-b": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"mx-auto": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"max-w-5xl": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"mr-auto": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2"
+],
+"gap-6": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r2(html)"
+],
+"py-8": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"py-6": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Lean Tags-r2",
+"control-r1(html)",
+"control-r2(html)"
+],
+"pt-6": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"text-xl": [
+"Lean Tags-r1",
+"Lean Tags-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"gap-1.5": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"font-normal": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"border-danger": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"text-danger-700": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"rounded": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"max-w-xl": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"mb-4": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r2(html)"
+],
+"inline-block": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r2(html)"
+],
+"px-6": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r1(html)"
+],
+"py-12": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"control-r1(html)"
+],
+"min-w-9": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"p-0": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"pt-8": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"uppercase": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"control-r2(html)"
+],
+"tracking-wide": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)",
+"control-r2(html)"
+],
+"gap-12": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"text-3xl": [
+"Lean Tags-r2",
+"Lean Tags-r2(html)"
+],
+"text-text": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"flex-col": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"py-10": [
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"mt-1": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)",
+"control-r2(html)"
+],
+"mt-6": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r2(html)"
+],
+"bg-success/10": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"mt-8": [
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"self-start": [
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"mt-4": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r2(html)"
+],
+"underline": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"control-r2(html)"
+],
+"hover:text-primary-700": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"divide-y": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r2(html)"
+],
+"divide-line": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"bg-info/10": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"text-info": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"bg-primary/10": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"text-primary-700": [
+"Page Parts-r1",
+"Page Parts-r1(html)",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"bg-danger/10": [
+"Page Parts-r1",
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"mt-10": [
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"mt-3": [
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"h-[52rem]": [
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"h-[32rem]": [
+"Page Parts-r1",
+"Page Parts-r1(html)"
+],
+"pb-3": [
+"Page Parts-r2"
+],
+"hover:text-text": [
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"aria-[current=page]:font-semibold": [
+"Page Parts-r2"
+],
+"aria-[current=page]:text-text": [
+"Page Parts-r2"
+],
+"max-w-4xl": [
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"gap-10": [
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"mb-2": [
+"Page Parts-r2",
+"Page Parts-r2(html)",
+"control-r1(html)"
+],
+"text-base": [
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"pt-4": [
+"Page Parts-r2",
+"Page Parts-r2(html)"
+],
+"bg-bg": [
+"control-r1(html)"
+],
+"min-h-screen": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"gap-8": [
+"control-r1(html)"
+],
+"items-baseline": [
+"control-r1(html)"
+],
+"text-text-faint": [
+"control-r1(html)"
+],
+"border-line-strong": [
+"control-r1(html)"
+],
+"ring-primary": [
+"control-r1(html)"
+],
+"focus:outline-hidden": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"focus:ring-2": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"cursor-pointer": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"underline-offset-4": [
+"control-r1(html)"
+],
+"hover:underline": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"focus-visible:outline-hidden": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"focus-visible:ring-2": [
+"control-r1(html)"
+],
+"rounded-sm": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"bg-warning/10": [
+"control-r1(html)"
+],
+"border-2": [
+"control-r1(html)"
+],
+"block": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"mb-1": [
+"control-r1(html)"
+],
+"aria-[invalid=true]:border-danger": [
+"control-r1(html)"
+],
+"w-4": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"h-4": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"disabled:opacity-60": [
+"control-r1(html)",
+"control-r2(html)"
+],
+"border-danger/30": [
+"control-r1(html)"
+],
+"border-success/30": [
+"control-r1(html)"
+],
+"bg-slate-50": [
+"control-r2(html)"
+],
+"text-slate-900": [
+"control-r2(html)"
+],
+"focus:p-2": [
+"control-r2(html)"
+],
+"focus:bg-white": [
+"control-r2(html)"
+],
+"bg-white": [
+"control-r2(html)"
+],
+"border-slate-200": [
+"control-r2(html)"
+],
+"rounded-md": [
+"control-r2(html)"
+],
+"text-slate-700": [
+"control-r2(html)"
+],
+"hover:bg-slate-100": [
+"control-r2(html)"
+],
+"bg-slate-900": [
+"control-r2(html)"
+],
+"text-white": [
+"control-r2(html)"
+],
+"mb-8": [
+"control-r2(html)"
+],
+"mb-12": [
+"control-r2(html)"
+],
+"text-slate-500": [
+"control-r2(html)"
+],
+"text-slate-600": [
+"control-r2(html)"
+],
+"rounded-lg": [
+"control-r2(html)"
+],
+"border-slate-300": [
+"control-r2(html)"
+],
+"hover:text-indigo-700": [
+"control-r2(html)"
+],
+"ml-1": [
+"control-r2(html)"
+],
+"divide-slate-100": [
+"control-r2(html)"
+],
+"hover:bg-slate-50": [
+"control-r2(html)"
+],
+"bg-blue-100": [
+"control-r2(html)"
+],
+"text-blue-800": [
+"control-r2(html)"
+],
+"bg-amber-100": [
+"control-r2(html)"
+],
+"text-amber-800": [
+"control-r2(html)"
+],
+"bg-green-100": [
+"control-r2(html)"
+],
+"text-green-800": [
+"control-r2(html)"
+],
+"text-slate-400": [
+"control-r2(html)"
+],
+"bg-indigo-600": [
+"control-r2(html)"
+],
+"text-indigo-700": [
+"control-r2(html)"
+],
+"text-slate-800": [
+"control-r2(html)"
+],
+"ring-indigo-600": [
+"control-r2(html)"
+],
+"aria-[invalid=true]:border-red-600": [
+"control-r2(html)"
+],
+"text-red-700": [
+"control-r2(html)"
+],
+"mt-2": [
+"control-r2(html)"
+],
+"accent-indigo-600": [
+"control-r2(html)"
+],
+"hover:bg-indigo-700": [
+"control-r2(html)"
+],
+"ring-indigo-300": [
+"control-r2(html)"
+],
+"focus-visible:ring-4": [
+"control-r2(html)"
+],
+"border-red-300": [
+"control-r2(html)"
+],
+"bg-red-50": [
+"control-r2(html)"
+],
+"text-red-800": [
+"control-r2(html)"
+],
+"border-green-300": [
+"control-r2(html)"
+],
+"bg-green-50": [
+"control-r2(html)"
+],
+"px-2.5": [
+"Page Parts-r1(html)",
+"Page Parts-r2(html)"
+],
+"has-[input[type=checkbox]]:flex-row": [
+"Page Parts-r1(html)",
+"Page Parts-r2(html)"
+],
+"has-[input[type=checkbox]]:items-center": [
+"Page Parts-r1(html)",
+"Page Parts-r2(html)"
+],
+"has-[input[type=checkbox]]:gap-2": [
+"Page Parts-r1(html)"
+],
+"has-[input[type=checkbox]]:flex-wrap": [
+"Page Parts-r2(html)"
+],
+"has-[input[type=checkbox]]:gap-x-3": [
+"Page Parts-r2(html)"
+]
+}

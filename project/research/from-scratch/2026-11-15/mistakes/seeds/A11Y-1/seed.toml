@@ -1,0 +1,6 @@
+id = "A11Y-1"
+kind = "no-label"
+group = "html"
+source = "task"
+mistake = "A text input is rendered with no label."
+oracle = "oracles.mjs A11Y-1"

@@ -1,0 +1,35 @@
+arm	id	kind	cell	how	tsc	check	run	law	oracle	tscStray	checkStray	tscFirst	checkFirst	runFirst	lawFirst	lawOther
+lean-tags	NEST-1	nest-li	law		green	green	ok	red	live	0	0				1: element-permitted-content: <li> element is not permitted as content under <div>	
+lean-tags	NEST-2	nest-link	law		green	green	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <a>	
+lean-tags	NEST-3	nest-form	law		green	green	ok	red	live	0	0				1: element-permitted-content: <form> element is not permitted as a descendant of <form>	
+lean-tags	NEST-4	nest-button	law		green	green	ok	red	live	0	0				1: element-permitted-content: <a> element is not permitted as a descendant of <button>	
+lean-tags	A11Y-1	no-label	nowhere		green	green	ok	green	live	0	0					
+lean-tags	A11Y-2	no-alt	tsc		red	green	ok	red	live	0	0	3: TS2345: Argument of type '{ src: string; }' is not assignable to parameter of type 'Tw | Wire<never> | (Global & { src: string; alt: string; width?: number | undefined; height?: number | undefined; loading?: "lazy" | 			1: wcag/h37: <img> is missing required "alt" attribute	
+lean-tags	A11Y-3	button-no-name	law		green	green	ok	red	live	0	0				1: text-content: <button> must have accessible text	
+lean-tags	ATTR-1	bad-attribute-value	tsc		red	green	ok	red	live	0	0	3: TS2820: Type '"txt"' is not assignable to type '"number" | "search" | "text" | "email" | "password" | "tel" | "url" | "date" | "datetime-local" | "time" | "checkbox" | "radio" | "hidden" | "file" | "range" | "color" |			1: attribute-allowed-values: Attribute "type" has invalid value "txt"	
+lean-tags	BTN-1	button-implicit-submit	runtime	absorbed	green	green	ok	green	not-live	0	0					
+lean-tags	ID-1	duplicate-id	law		green	green	ok	red	live	0	0				1: no-dup-id: Duplicate ID "project-count"	
+lean-tags	ID-2	derived-id-repeat	law		green	green	ok	red	live	0	0				1: no-dup-id: Duplicate ID "projects-create-form"	
+lean-tags	TW-1	unknown-class	check		green	red	ok	green	live	0	0		3: unknown class "justify-centre": did you mean justify-center?			
+lean-tags	TW-2	palette-colour	check		green	red	ok	green	live	0	0		3: unknown class "bg-gray-100": "gray-100" is not in the theme. Colors: danger, danger-700, line, on-accent, overlay, primary, primary-700, success, surface, surface-2, text-dim, warning			
+lean-tags	TW-3	unknown-variant	check		green	red	ok	green	live	0	0		3: unknown class "hovr:bg-surface-2": unknown variant "hovr:", did you mean hover:bg-surface-2?			
+lean-tags	TW-4	dynamic-class	tsc		red	red	throws	-	-	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type 'Tw | Falsy'.	3: unknown class "bg-": Tailwind generates no CSS for it under this theme	lt: a tw hole takes another tw`…` value (or false/null); a raw string is unchecked. Use tw.token(value) for one class from data		
+lean-tags	TW-5	tailwind-in-raw-class	tsc		red	green	throws	-	-	0	0	3: TS2345: Argument of type '{ class: "p-4 bg-gray-100"; }' is not assignable to parameter of type 'Child | Global | Tw | Wire<never>'.		lt: classes are a leading tw argument: div(tw`flex gap-4`, …), not a class attribute		
+lean-tags	TW-6	classes-as-text	check		green	red	ok	green	live	0	0		3: classes written as text: div("flex gap-4", …) renders "flex gap-4" as visible text. Write div(tw`flex gap-4`, …)			
+lean-tags	HX-1	target-mismatch	nowhere		green	green	ok	green	live	0	0					
+lean-tags	HX-2	wrong-answer	tsc		red	green	throws	-	-	0	0	3: TS2322: Type 'Promise<Html<"project-list">>' is not assignable to type 'Awaitable<Html<"project-status"> | NotFound>'.		lt: status must answer the element whose root is status().root (id project-status)		
+lean-tags	HX-3	422-no-region	tsc		red	green	ok	green	live	0	0	3: TS2739: Type 'Page' is missing the following properties from type 'Html<string | undefined>': $id, id				
+lean-tags	HX-4	poll-never-stops	nowhere		green	green	ok	green	live	0	0					
+lean-tags	HX-5	raw-hx-attribute	tsc		red	green	throws	-	-	0	0	3: TS2345: Argument of type '{ "hx-get": "/projects/rowz"; }' is not assignable to parameter of type 'Child | Global | Tw | Wire<never>'.		lt: refused attribute hx-get: htmx attributes come from a route wire (route(...), .search(), .poll(), wire({…}))		
+lean-tags	HX-6	route-stance	tsc		red	green	ok	green	not-live	0	0	3: TS2345: Argument of type 'PartRef<"project-list", { q?: string | undefined; }>' is not assignable to parameter of type 'Child | Tw | Wire<never> | (Global & { href?: string | undefined; target?: "_blank" | "_self" | "				
+lean-tags	HX-7	raw-url	nowhere		green	green	ok	green	live	0	0					
+lean-tags	HX-8	stale-region	runtime	absorbed	green	green	ok	green	not-live	0	0					
+lean-tags	FORM-1	field-not-in-schema	tsc		red	green	ok	green	live	0	0	4: TS2345: Argument of type '"nmae"' is not assignable to parameter of type '"name" | "description" | "status"'.				
+lean-tags	XSS-1	unescaped-html	tsc		red	green	throws	-	-	0	0	3: TS2345: Argument of type 'string' is not assignable to parameter of type 'Trusted'.		lt: raw() takes trusted`…` markup, never a string		
+lean-tags	XSS-2	js-url-link	runtime	absorbed	green	green	ok	green	not-live	0	0					
+lean-tags	XSS-3	js-url-htmx	runtime	throws	green	green	throws	-	-	0	0			lt: refused htmx URL "javascript:alert(1)"		
+lean-tags	XSS-4	hx-on-from-data	tsc		red	green	throws	-	-	0	0	3: TS2345: Argument of type '{ "hx-on:click": string; }' is not assignable to parameter of type 'Child | Tw | Wire<never> | (Global & Cmd & { type?: "button" | "submit" | "reset" | undefined; name?: string | undefined; v		lt: refused attribute hx-on:click: htmx attributes come from a route wire (route(...), .search(), .poll(), wire({…}))		
+lean-tags	XSS-5	raw-interpolation	tsc		red	green	throws	-	-	0	0	3: TS2554: Expected 1 arguments, but got 2.		lt: trusted`…` takes no holes		
+lean-tags	XSS-6	style-from-data	tsc		red	green	throws	-	-	0	0	3: TS2345: Argument of type '{ style: string; }' is not assignable to parameter of type 'Child | Global | Tw | Wire<never>'.		lt: refused CSS property "0"		
+lean-tags	PURE-1	view-io	nowhere		green	green	ok	green	-	0	0					
+lean-tags	PURE-2	forgotten-state	tsc		red	green	throws	-	-	0	0	3: TS2345: Argument of type '{ queued: () => Html<undefined>; running: () => Html<undefined>; done: () => Html<undefined>; }' is not assignable to parameter of type '{ queued: (value: "queued") => Html<undefined>; runnin		a[value] is not a function		

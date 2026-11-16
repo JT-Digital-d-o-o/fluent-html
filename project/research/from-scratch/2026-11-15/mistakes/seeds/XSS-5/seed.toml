@@ -1,0 +1,6 @@
+id = "XSS-5"
+kind = "raw-interpolation"
+group = "security"
+source = "verdict: harvest 4 (F07b served a live script through Raw)"
+mistake = "Data is interpolated into markup the code vouches for as trusted."
+oracle = "oracles.mjs XSS-5"

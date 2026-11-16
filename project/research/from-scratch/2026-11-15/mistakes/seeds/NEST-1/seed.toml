@@ -1,0 +1,6 @@
+id = "NEST-1"
+kind = "nest-li"
+group = "html"
+source = "task"
+mistake = "A list item is written outside any list."
+oracle = "oracles.mjs NEST-1"

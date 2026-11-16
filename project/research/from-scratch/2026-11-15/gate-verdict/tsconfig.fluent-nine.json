@@ -1,0 +1,1 @@
+{ "extends": "../mistakes/arms/fluent-nine/tsconfig.json", "files": ["fluent-nine.ts"] }

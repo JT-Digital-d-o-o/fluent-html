@@ -1,0 +1,1 @@
+{ "extends": "../mistakes/arms/cbc/tsconfig.json", "files": ["cbc.ts"] }

@@ -1,0 +1,2 @@
+0 tsc errors; 52 class lists read from types (0 without a literal), 69 distinct classes, 0 without a Tailwind rule; 0 conflicts; wrote out/classes.css
+69 classes in out/classes.css, 69 have a rule in the built stylesheet (13907 B)

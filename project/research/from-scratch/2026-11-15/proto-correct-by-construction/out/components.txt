@@ -1,0 +1,10 @@
+probes/components.ts(13,26): error TS2345: Argument of type 'El<"flow", AnyMark, undefined>' is not assignable to parameter of type '"✗ this may hold anything (a component whose children are plain FlowKid[] or PhrasingKid[]), so it cannot go inside <form>: type its children FlowKid<Content>[], or PhrasingKid<\"text\">[] inside a link or button"'.
+probes/components.ts(14,40): error TS2345: Argument of type 'El<"flow", Content, undefined>' is not assignable to parameter of type '"✗ <a> cannot contain a link, a button or a form control"'.
+probes/components.ts(15,27): error TS2345: Argument of type 'El<"flow", MarksOf<"form", readonly [El<"flow", "text", undefined>]>, undefined>' is not assignable to parameter of type 'FlowKid<Content>'.
+  Type 'El<"flow", MarksOf<"form", readonly [El<"flow", "text", undefined>]>, undefined>' is not assignable to type 'El<Flow, Content, any>'.
+    Type 'MarksOf<"form", readonly [El<"flow", "text", undefined>]>' is not assignable to type 'Content'.
+      Type '"form"' is not assignable to type 'Content'.
+probes/components.ts(16,26): error TS2345: Argument of type 'El<"phrasing", MarksOf<"a", readonly [PageRef, "x"]>, undefined>' is not assignable to parameter of type 'PhrasingKid<"text">'.
+  Type 'El<"phrasing", MarksOf<"a", readonly [PageRef, "x"]>, undefined>' is not assignable to type 'El<"phrasing", "text", any>'.
+    Type 'MarksOf<"a", readonly [PageRef, "x"]>' is not assignable to type '"text"'.
+      Type '"interactive"' is not assignable to type '"text"'.
