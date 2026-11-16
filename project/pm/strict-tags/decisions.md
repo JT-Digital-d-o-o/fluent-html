@@ -27,3 +27,10 @@
 **Decision:** The app stays on fluent-html 8. Cut's full-layout answer is timed on fluent-html 8 first (press to settled DOM within 100 ms at the 95th percentile); on a pass Cut moves and the rest follows, on a miss the house rule is not claimed for editors.
 **Reasoning:** The full-layout rule is the house default; an editor is where it is least proven.
 **Consequences:** The timing runs after fl-um is priced, against the line set here.
+
+## The checks guard against mistakes, not crafted inputs
+**Date:** 16. 11. 26
+**Context:** Gate 1a's class surface (c2) stopped after five fix rounds. Its reviewers were blocking on inputs nobody writes by accident: `attr()` smuggled into a gradient's arbitrary value, `-webkit-link` inside a hand-written `-webkit-box-shadow`, a colour hidden between CSS comments. One blocker was real: the grammar accepted any dash prefix, so `items-[center]` compiled to no CSS.
+**Decision:** The rule the stack-dsl lanes adopted the same day applies here. A finding blocks only when the program that slips through is one an agent or a developer would plausibly write without trying to get around the check. Crafted inputs are follow-ups, collected in the package's out-of-scope table. c2 gets five fresh rounds under the rule; chunk 1's results stand.
+**Reasoning:** The kill reads mistake kinds rejected before run. An adversarial reading of CSS's arbitrary-value grammar has no end and held c2 for five rounds.
+**Consequences:** Strict Tags claims "mistakes", never "cannot be bypassed". The out-of-scope table ships with the package.
