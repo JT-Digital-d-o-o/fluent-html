@@ -1,0 +1,43 @@
+Gate 1a: S3, S4's controls, S5 and S9 (S5 is read on the CI runner only)
+
+S3 amendments      ok    21 of 77 registered files changed since c1 (34f447d), 21 as the last of 20 dated rows of suite/AMENDMENTS.tsv left them (2 more move a reading)
+                         $ git diff --name-only 34f447d -- <registered files>; git hash-object <file> against suite/AMENDMENTS.tsv
+S3 registry        ok    registry: complete
+                         $ node suite/run.mjs registry
+S3 clean           ok    tsc green / check green / run ok / law green  G1 holds
+                         $ node suite/run.mjs clean
+S3 share           ok    28 of 34 kinds before run (at least 27), each on its ✗ line with its registered message; 42 of 42 rows read as registered
+                         $ node suite/run.mjs all
+S3 parity          ok    13 of 13 kinds fluent-html 8 rejects before run read tsc or check
+                         $ node suite/run.mjs all; suite/baseline/fh8-kinds.txt
+S3 nowhere         ok    0 kinds nowhere (at most 1)
+                         $ node suite/run.mjs all
+S3 stray           ok    0 seeds with a diagnostic off their ✗ line; 0 rows marked ! in suite/results/table.md
+                         $ node suite/run.mjs table
+S3 full layout     ok    4 of 4 full-layout controls (badge, counter, flash, search) compile, run and read not-live
+                         $ node suite/run.mjs twins
+S3 live search     ok    live-search: includes 4 of 4 request controls, replace-url present, fresh links 0 includes (of 2) [tsc green / check green / run ok / law green / oracle not-live] ok
+                         $ node suite/run.mjs controls
+S4 controls        ok    0 of 112 registered valid lines rejected on 5.9.3, 6.0.3, 7.0.2; 0 kept refusals off their text, 0 stray; 0 probe-file readings missing of 36, 0 runs exited non-zero, tsc3 exited 0; mistakes.ts controls 23 of 23 accepted
+                         $ node tools/tsc3.mjs probes/tsconfig.json --expect probes/expected.tsv; node suite/run.mjs probes --tsc <v>; node tools/mistakes.mjs
+                         5.9.3  probes/tsconfig.json: seeded 38, error lines 38, missed 0, stray 0, message mismatches 0; 31 of 38 first lines name the fix
+                         6.0.3  probes/tsconfig.json: seeded 38, error lines 38, missed 0, stray 0, message mismatches 0; 31 of 38 first lines name the fix
+                         7.0.2  probes/tsconfig.json: seeded 38, error lines 38, missed 0, stray 0, message mismatches 0; 31 of 38 first lines name the fix
+S4 rulings         note  review probes: 3 lines flipped to valid (fp3 fp13a fp13b), 13 refusals kept (fp1 fp2 fp4-helper fp4 fp4-control fp5-helper fp5 fp6 fp12 tryA-helper tryA tryB tryB-use), 7 valid as written
+                         $ probes/expected.tsv, column ruling
+S5 check time      wait  script built, local preview only: waiting on the remote (local preview: elements 2000 2.33 to 2.68 (cap 2), elements 11330 3.39 to 5.61 (cap 2), routes added 1.68 to 1.89 (cap 1.25), lint 11330 2.21 (cap 1), positions equal on 3 compilers; 10 of 10 timed lines over their cap; load 3.85 5.47 6.46 -> 6.67 6.01 6.55, then 6.67 6.01 6.55 -> 6.14 5.95 6.46; strict a02a9f2fdb88, the timed files as they are; it decides nothing). It needs the remote, its runner and one secret (FLUENT_HTML_READ_TOKEN)
+                         $ node bench/check-time/read.mjs out/check-time-local-a.tsv out/check-time-local-b.tsv; .github/workflows/check-time.yml on the runner
+S9 ran             ok    forge/run.mjs exits 0 from the source, 0 from the emitted declarations
+                         $ node forge/run.mjs && node forge/run.mjs --declarations
+S9 refused         ok    13 of 13 forging spellings refused on their registered rung and line, from the source and from the emitted declarations
+                         $ node forge/run.mjs && node forge/run.mjs --declarations
+S9 named           ok    3 open spellings named and counted (13 14 15), 3 registered open
+                         $ node forge/run.mjs
+S9 escaped         ok    11 of 18 spellings render without a throw, 0 unescaped sinks; html-validate flags the open spellings' nesting (13 14 15)
+                         $ node forge/run.mjs
+S9 kept current    ok    the rule is stated in forge/expected.tsv's header: a spelling found later is added with its rung, or as open, and the kill read again
+                         $ forge/expected.tsv
+S9 quiet           ok    0 lint reports on the valid controls (forge/valid.ts, probes, screens, support), 0 on the reference's examples
+                         $ node forge/run.mjs; node_modules/.bin/eslint probes/reference-examples.ts
+
+S3, S4, S9 hold; S5 waits on the remote
